@@ -1,8 +1,8 @@
 {
-  "name": "hmpps-template-typescript",
+  "name": "hmpps-accredited-programmes-ui",
   "version": "0.0.1",
-  "description": "HMPPS Typescript Template",
-  "repository": "git@github.com:ministryofjustice/hmpps-template-typescript.git",
+  "description": "HMPPS Accredited Programmes UI",
+  "repository": "git@github.com:ministryofjustice/hmpps-accredited-programmes-ui.git",
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
