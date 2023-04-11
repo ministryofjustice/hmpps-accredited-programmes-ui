@@ -6,6 +6,7 @@ generic-service:
 
   ingress:
     host: accredited-programmes-dev.hmpps.service.justice.gov.uk
+    tlsSecretName: hmpps-accredited-programmes-dev-cert
 
   env:
     INGRESS_URL: "https://accredited-programmes-dev.hmpps.service.justice.gov.uk"
