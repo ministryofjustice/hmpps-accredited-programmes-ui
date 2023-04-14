@@ -1,0 +1,87 @@
+@startuml
+skinparam linetype ortho
+
+entity Programme {
+  An accredited programme
+  --
+  * id: uuid
+  * name: text
+  * programType: text
+  * description: text
+  * intensity: text
+  * programmePrerequisites: ProgrammePrerequisites[]
+}
+
+entity ProgrammePrerequisites {
+  Prerequisites for enrolling in the programme.
+  e.g. gender, risk score, offence type
+  --
+  * key: text
+  * value: text
+  * programme: Programme
+}
+
+entity Organisation {
+  i.e. A Prison
+  --
+  * id: uuid
+  * name: text
+  * email: text
+  * address: Address
+}
+
+entity Address {
+ * addressLine1: text
+   addressLine2: text
+ * town: text
+ * postCode: text
+ * country: text
+}
+
+entity Person {
+  e.g. A person in prison/on probation.
+  Identifer used fetch details from other services
+  --
+  * id: uuid
+  * identifier: text (e.g. NOMIS number)
+  --cached--
+  name: text
+  riskScores: JSON
+  releaseDate: Date
+}
+
+entity StaffMember {
+  e.g. A POM, COM
+  --
+  * id: uuid
+  * identifier: text (e.g. hmpps-auth id)
+}
+
+entity Referral {
+  * id: uuid
+  * person: Person
+  * offering: ProgrammeOffering
+  * referrer: StaffMember
+  * status: text
+  * createdAt: Date
+}
+
+entity ProgrammeOffering {
+  Join between Programme and Organisation
+  --
+  * id: uuid
+  * programme: Programme
+  * organisation: Organisation
+}
+
+ProgrammeOffering }o--|| Programme
+ProgrammeOffering }o--|| Organisation
+Programme }o--|| ProgrammePrerequisites
+
+Referral }o--|| StaffMember
+Referral }o--|| ProgrammeOffering
+Referral }o--|| Person
+
+Organisation ||--|| Address
+
+@enduml
