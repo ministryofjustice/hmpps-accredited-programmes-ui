@@ -1,16 +1,19 @@
 import { dataAccess } from '../data'
+import ProgrammeService from './programmeService'
 import UserService from './userService'
 
 export const services = () => {
-  const { hmppsAuthClient } = dataAccess()
+  const { hmppsAuthClient, programmeClientBuilder } = dataAccess()
 
   const userService = new UserService(hmppsAuthClient)
+  const programmeService = new ProgrammeService(programmeClientBuilder)
 
   return {
     userService,
+    programmeService,
   }
 }
 
 export type Services = ReturnType<typeof services>
 
-export { UserService }
+export { UserService, ProgrammeService }

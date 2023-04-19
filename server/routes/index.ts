@@ -8,9 +8,11 @@ export default function routes(controllers: Controllers): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  const { dashboardController } = controllers
+  const { dashboardController, programmesController } = controllers
 
   get('/', dashboardController.index())
+
+  get('/programmes', programmesController.index())
 
   return router
 }
