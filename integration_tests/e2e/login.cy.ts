@@ -26,6 +26,12 @@ context('SignIn', () => {
     indexPage.headerUserName().should('contain.text', 'J. Smith')
   })
 
+  it('Redirects signed in users to a landing page', () => {
+    cy.signIn()
+    const indexPage = Page.verifyOnPage(IndexPage)
+    indexPage.findLink().should('contain.text', 'Find an accredited programme')
+  })
+
   it('User can log out', () => {
     cy.signIn()
     const indexPage = Page.verifyOnPage(IndexPage)

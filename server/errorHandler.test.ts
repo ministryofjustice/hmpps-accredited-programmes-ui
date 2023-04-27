@@ -1,12 +1,6 @@
-import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes } from './routes/testutils/appSetup'
-
-let app: Express
-
-beforeEach(() => {
-  app = appWithAllRoutes({})
-})
+import DashboardController from './controllers/dashboardController'
 
 afterEach(() => {
   jest.resetAllMocks()
@@ -14,7 +8,7 @@ afterEach(() => {
 
 describe('GET 404', () => {
   it('should render content with stack in dev mode', () => {
-    return request(app)
+    return request(appWithAllRoutes({ controllers: { dashboardController: new DashboardController() } }))
       .get('/unknown')
       .expect(404)
       .expect('Content-Type', /html/)
@@ -25,7 +19,9 @@ describe('GET 404', () => {
   })
 
   it('should render content without stack in production mode', () => {
-    return request(appWithAllRoutes({ production: true }))
+    return request(
+      appWithAllRoutes({ production: true, controllers: { dashboardController: new DashboardController() } }),
+    )
       .get('/unknown')
       .expect(404)
       .expect('Content-Type', /html/)
