@@ -4,6 +4,7 @@ import { DeepMocked, createMock } from '@golevelup/ts-jest'
 import ProgrammesController from './programmesController'
 import { programmeFactory } from '../../testutils/factories'
 import { ProgrammeService } from '../../services'
+import { programmeListItems } from '../../utils/programmeUtils'
 
 describe('ProgrammesController', () => {
   const request: DeepMocked<Request> = createMock<Request>({})
@@ -29,7 +30,7 @@ describe('ProgrammesController', () => {
 
       expect(response.render).toHaveBeenCalledWith('programmes/index', {
         pageHeading: 'List of accredited programmes',
-        programmes,
+        programmeListItems: programmeListItems(programmes),
       })
 
       expect(programmeService.getProgrammes).toHaveBeenCalledWith('token')

@@ -1,7 +1,22 @@
-<h1>{{ pageHeading }}</h1>
+{% from "./_programmeSummary.njk" import programmeSummary %}
 
-<ul>
-  {% for programme in programmes %}
-    <li>{{ programme.name }}</li>
-  {% endfor %}
-</ul>
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <h1>{{ pageHeading }}</h1>
+
+  <div role="list">
+    {% for programmeListItem in programmeListItems %}
+      {{ programmeSummary(programmeListItem) }}
+
+      {% if loop.index < programmeListItems.length %}
+        <div class="govuk-grid-row">
+          <hr class="govuk-section-break govuk-section-break--visible">
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endblock content %}
