@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 import type { HTTPError } from 'superagent'
 import logger from '../logger'
 
