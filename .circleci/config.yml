@@ -49,7 +49,7 @@ jobs:
             npm run record-build-info
       - run: # Run linter after build because the integration test code depend on compiled typescript...
           name: Linter check
-          command: npm run lint
+          command: npm run lint:ci
       - persist_to_workspace:
           root: .
           paths:
