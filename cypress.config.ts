@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
+import programmes from './integration_tests/mockApis/programmes'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 
 export default defineConfig({
@@ -21,6 +22,7 @@ export default defineConfig({
       on('task', {
         reset: resetStubs,
         ...auth,
+        ...programmes,
         ...tokenVerification,
       })
     },
