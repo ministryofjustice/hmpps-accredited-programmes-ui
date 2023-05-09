@@ -8,6 +8,12 @@ declare module 'express-session' {
   }
 }
 
+declare module 'express' {
+  interface TypedRequestHandler<T, U = Response> extends Express.RequestHandler {
+    (req: T, res: U, next: () => void): void
+  }
+}
+
 export declare global {
   namespace Express {
     interface User {

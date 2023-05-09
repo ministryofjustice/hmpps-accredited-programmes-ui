@@ -1,6 +1,8 @@
-import superagent, { SuperAgentRequest, Response } from 'superagent'
+import superagent, { Response, SuperAgentRequest } from 'superagent'
 
-const url = 'http://localhost:9091/__admin'
+const wiremockEndpoint = process.env.CYPRESS ? 'http://localhost:9091' : 'http://localhost:9092'
+
+const url = `${wiremockEndpoint}/__admin`
 
 const stubFor = (mapping: Record<string, unknown>): SuperAgentRequest =>
   superagent.post(`${url}/mappings`).send(mapping)

@@ -6,7 +6,11 @@
     "types": ["cypress", "express", "express-session"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "typeRoots": ["../server/@types"]
+    "typeRoots": ["../server/@types"],
+    "baseUrl": "..",
+    "paths": {
+      "@accredited-programmes/models": ["server/@types/models/index.d.ts"]
+    }
   },
   "include": ["**/*.ts"]
 }

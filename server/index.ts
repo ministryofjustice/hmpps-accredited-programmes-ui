@@ -6,7 +6,7 @@ import { controllers } from './controllers'
 
 promClient.collectDefaultMetrics()
 
-const app = createApp(controllers(), services())
+const app = createApp(controllers(services()), services())
 const metricsApp = createMetricsApp()
 
 export { app, metricsApp }
