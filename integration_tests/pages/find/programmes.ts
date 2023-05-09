@@ -8,7 +8,10 @@ export default class ProgrammesPage extends Page {
 
   shouldHaveProgrammes(programmes: Array<AccreditedProgramme>) {
     cy.get('li').each((programmeElement, programmeElementIndex) => {
-      cy.wrap(programmeElement).should('have.text', programmes[programmeElementIndex].name)
+      cy.wrap(programmeElement)
+        .invoke('text')
+        .then(text => text.trim())
+        .should('equal', programmes[programmeElementIndex].name)
     })
   }
 }

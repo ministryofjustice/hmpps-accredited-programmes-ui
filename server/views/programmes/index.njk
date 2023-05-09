@@ -1,7 +1,11 @@
-<h1>{{ pageHeading }}</h1>
+<h1>
+  {{ pageHeading }}
+</h1>
 
 <ul>
-{% for programme in programmes %}
-  <li>{{ programme.name }}</li>
-{% endfor %}
+  {% for programme in programmes %}
+    <li>
+      {{ programme.name }}
+    </li>
+  {% endfor %}
 </ul>
