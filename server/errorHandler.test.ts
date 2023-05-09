@@ -1,6 +1,25 @@
+import express, { type Express } from 'express'
+import createError from 'http-errors'
 import request from 'supertest'
-import { appWithAllRoutes } from './routes/testutils/appSetup'
-import DashboardController from './controllers/dashboardController'
+
+import path from 'path'
+import nunjucksSetup from './utils/nunjucksSetup'
+import errorHandler from './errorHandler'
+
+const setupApp = (production: boolean): Express => {
+  const app = express()
+  app.set('view engine', 'njk')
+
+  nunjucksSetup(app, path)
+
+  app.get('/known', (_req, res, _next) => {
+    res.send('known')
+  })
+  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use(errorHandler(production))
+
+  return app
+}
 
 afterEach(() => {
   jest.resetAllMocks()
@@ -8,7 +27,9 @@ afterEach(() => {
 
 describe('GET 404', () => {
   it('should render content with stack in dev mode', () => {
-    return request(appWithAllRoutes({ controllers: { dashboardController: new DashboardController() } }))
+    const app = setupApp(false)
+
+    return request(app)
       .get('/unknown')
       .expect(404)
       .expect('Content-Type', /html/)
@@ -19,9 +40,9 @@ describe('GET 404', () => {
   })
 
   it('should render content without stack in production mode', () => {
-    return request(
-      appWithAllRoutes({ production: true, controllers: { dashboardController: new DashboardController() } }),
-    )
+    const app = setupApp(true)
+
+    return request(app)
       .get('/unknown')
       .expect(404)
       .expect('Content-Type', /html/)
