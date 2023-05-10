@@ -1,9 +1,9 @@
 import superagent from 'superagent'
 import nock from 'nock'
 import {
-  restClientMetricsMiddleware,
   normalizePath,
   requestHistogram,
+  restClientMetricsMiddleware,
   timeoutCounter,
 } from './restClientMetricsMiddleware'
 
