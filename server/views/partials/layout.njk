@@ -17,17 +17,17 @@
           crossorigin="anonymous"></script>
   <link href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css" rel="stylesheet" nonce="{{ cspNonce }}" crossorigin>
 
-{% endblock %}
+{% endblock head %}
 
 {% block pageTitle %}
   {{pageTitle | default(applicationName)}}
-{% endblock %}
+{% endblock pageTitle %}
 
 {% block header %}
   {% include "./header.njk" %}
-{% endblock %}
+{% endblock header %}
 
-{% block bodyStart %}{% endblock %}
+{% block bodyStart %}{% endblock bodyStart %}
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the
@@ -35,4 +35,4 @@
   <script src="/assets/govuk/all.js"></script>
   <script src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
-{% endblock %}
+{% endblock bodyEnd %}
