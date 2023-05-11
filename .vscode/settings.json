@@ -1,0 +1,7 @@
+{
+  "[nj][njk][nunjucks][twig]": {
+    "editor.defaultFormatter": "okitavera.vscode-nunjucks-formatter",
+    "editor.formatOnSave": true
+  },
+  "nunjucksFormat.newline": true
+}
