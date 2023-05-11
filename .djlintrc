@@ -1,6 +1,5 @@
 {
   "extension": "njk",
-  "files": ["server/views"],
   "ignore": "T001",
   "profile": "nunjucks"
 }
