@@ -96,7 +96,7 @@
     ]
   },
   "dependencies": {
-    "@faker-js/faker": "^7.6.0",
+    "@faker-js/faker": "^8.0.0",
     "@ministryofjustice/frontend": "^1.6.6",
     "agentkeepalive": "^4.3.0",
     "applicationinsights": "^2.5.1",
