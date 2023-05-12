@@ -7,7 +7,7 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-script/utils/launch-docker.sh
+script/utils/launch-docker
 
 echo "==> Installing application dependencies..."
 
