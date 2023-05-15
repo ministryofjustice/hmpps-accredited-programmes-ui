@@ -13,9 +13,9 @@ cleanup() {
 }
 trap cleanup EXIT
 
-script/utils/launch-docker.sh
+script/utils/launch-docker
 
-script/utils/start-backing-services.sh
+script/utils/start-backing-services
 
 echo "==> Starting the server..."
 
