@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import type { HTTPError } from 'superagent'
+
 import logger from '../logger'
 
 export default function createErrorHandler(production: boolean) {

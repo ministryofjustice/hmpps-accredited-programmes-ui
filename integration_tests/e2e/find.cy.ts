@@ -1,6 +1,6 @@
+import { programmeFactory } from '../../server/testutils/factories'
 import ProgrammesPage from '../pages/find/programmes'
 import Page from '../pages/page'
-import { programmeFactory } from '../../server/testutils/factories'
 
 context('Find', () => {
   beforeEach(() => {

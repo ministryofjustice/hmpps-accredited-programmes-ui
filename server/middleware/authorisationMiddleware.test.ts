@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken'
 import type { Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 
 import authorisationMiddleware from './authorisationMiddleware'
 

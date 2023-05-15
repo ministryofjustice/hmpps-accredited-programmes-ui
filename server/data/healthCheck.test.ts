@@ -1,4 +1,5 @@
 import nock from 'nock'
+
 import { serviceCheckFactory } from './healthCheck'
 import { AgentConfig } from '../config'
 

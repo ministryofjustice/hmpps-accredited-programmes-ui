@@ -1,10 +1,10 @@
 import express, { type Express } from 'express'
 import createError from 'http-errors'
+import path from 'path'
 import request from 'supertest'
 
-import path from 'path'
-import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
+import nunjucksSetup from './utils/nunjucksSetup'
 
 const setupApp = (production: boolean): Express => {
   const app = express()

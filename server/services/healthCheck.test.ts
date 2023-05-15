@@ -1,5 +1,5 @@
-import healthCheck from './healthCheck'
 import type { HealthCheckCallback, HealthCheckService } from './healthCheck'
+import healthCheck from './healthCheck'
 
 describe('Healthcheck', () => {
   it('Healthcheck reports healthy', done => {

@@ -1,7 +1,8 @@
 import { SuperAgentRequest } from 'superagent'
-import type { AccreditedProgramme } from '@accredited-programmes/models'
+
 import { stubFor } from './wiremock'
 import paths from '../../server/paths/api'
+import type { AccreditedProgramme } from '@accredited-programmes/models'
 
 export default {
   stubProgrammes: (programmes: Array<AccreditedProgramme>): SuperAgentRequest =>

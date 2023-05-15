@@ -1,4 +1,5 @@
 import { Request, RequestHandler, Response } from 'express'
+
 import paths from '../paths/find'
 
 export default class DashboardController {

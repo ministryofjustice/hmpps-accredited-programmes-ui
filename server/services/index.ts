@@ -1,6 +1,6 @@
-import { dataAccess } from '../data'
 import ProgrammeService from './programmeService'
 import UserService from './userService'
+import { dataAccess } from '../data'
 
 export const services = () => {
   const { hmppsAuthClient, programmeClientBuilder } = dataAccess()

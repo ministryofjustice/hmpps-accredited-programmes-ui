@@ -1,7 +1,7 @@
 import { type RequestHandler, Router } from 'express'
 
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import { Controllers } from '../controllers'
+import asyncMiddleware from '../middleware/asyncMiddleware'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(controllers: Controllers): Router {

@@ -1,4 +1,5 @@
 import { DistributedTracingModes, TelemetryClient, defaultClient, setup } from 'applicationinsights'
+
 import applicationVersion from '../applicationVersion'
 
 function defaultName(): string {

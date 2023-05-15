@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
-import nunjucks from 'nunjucks'
 import express from 'express'
+import nunjucks from 'nunjucks'
 import * as pathModule from 'path'
+
 import { initialiseName } from './utils'
 
 const production = process.env.NODE_ENV === 'production'

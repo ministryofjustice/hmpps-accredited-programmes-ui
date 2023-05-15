@@ -1,5 +1,6 @@
-import nock from 'nock'
 import { Request } from 'express'
+import nock from 'nock'
+
 import verifyToken from './tokenVerification'
 import config from '../config'
 

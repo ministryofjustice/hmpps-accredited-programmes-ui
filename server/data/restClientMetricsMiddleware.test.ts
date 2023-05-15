@@ -1,5 +1,6 @@
-import superagent from 'superagent'
 import nock from 'nock'
+import superagent from 'superagent'
+
 import {
   normalizePath,
   requestHistogram,
