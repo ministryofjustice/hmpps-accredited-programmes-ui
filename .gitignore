@@ -122,7 +122,8 @@ assets/stylesheets/*.css
 build-info.json
 dist/
 test_results/
-integration_tests/videos/
+integration_tests/downloads/
 integration_tests/screenshots/
+integration_tests/videos/
 */*.iml
 **/Chart.lock

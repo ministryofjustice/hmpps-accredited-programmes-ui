@@ -7,6 +7,7 @@ import { resetStubs } from './integration_tests/mockApis/wiremock'
 
 export default defineConfig({
   chromeWebSecurity: false,
+  downloadsFolder: 'integration_tests/downloads',
   fixturesFolder: 'integration_tests/fixtures',
   screenshotsFolder: 'integration_tests/screenshots',
   videosFolder: 'integration_tests/videos',
