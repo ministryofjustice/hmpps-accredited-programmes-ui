@@ -5,8 +5,8 @@
   "repository": "git@github.com:ministryofjustice/hmpps-accredited-programmes-ui.git",
   "license": "MIT",
   "scripts": {
-    "api-stubs:create": "npx ts-node --transpile-only ./wiremock/stubApis.ts",
-    "api-stubs:reset": "npx ts-node --transpile-only ./wiremock/resetStubs.ts",
+    "api-stubs:create": "npx ts-node --transpile-only ./wiremock/scripts/stubApis.ts",
+    "api-stubs:reset": "npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts",
     "prepare": "husky install",
     "copy-views": "cp -R server/views dist/server/",
     "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css assets/scss/application-ie8.scss:./assets/stylesheets/application-ie8.css --style compressed",
