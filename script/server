@@ -7,6 +7,13 @@ set -e
 
 cd "$(dirname "$0")/.."
 
+for arg in "$@"
+do
+  if [[ $arg == "--mock-api" ]]; then
+    MOCK_API=true
+  fi
+done
+
 cleanup() {
   echo "==> Tearing down any old containers..."
   docker-compose down
@@ -15,8 +22,16 @@ trap cleanup EXIT
 
 script/utils/launch-docker
 
-script/utils/start-backing-services
+if [ "$MOCK_API" = true ]; then
+  script/utils/start-backing-services --mock-api
+else
+  script/utils/start-backing-services
+fi
 
 echo "==> Starting the server..."
 
-npm run start:dev
+if [ "$MOCK_API" = true ]; then
+  ACCREDITED_PROGRAMMES_API_URL=http://localhost:9093 npm run start:dev
+else
+  npm run start:dev
+fi
