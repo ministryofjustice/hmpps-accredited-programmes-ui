@@ -27,3 +27,8 @@ response fixtures in the UI and connecting to a running API backend application.
 
 This will unblock frontend work and prevent future blocks should there be any
 hurdles encountered in API development.
+
+We'll need to make sure we keep the data structures of the API and UI in sync
+when relying on a mocked server, but we believe we can be alerted of any changes
+through contract testing with Pact and, where they exist, generate types from
+the API.
