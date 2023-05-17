@@ -52,6 +52,13 @@ To run linting, typechecking and the test suite, run:
   script/test
 ```
 
+By default, this will update backing service images (e.g. the API) and
+dependencies. If you want skip the update when running the full test suite, run:
+
+```bash
+  script/test --skip-update
+```
+
 The API will run on port 9091 in the test environment.
 
 ### Running unit tests
