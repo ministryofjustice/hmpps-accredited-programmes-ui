@@ -42,7 +42,7 @@ To run the application as above but with a mocked API (port 9093), run:
 script/server --mock-api
 ```
 
-API endpoint stubbing is set up in `/wiremock/stubApis.ts`.
+API endpoint stubbing is set up in `/wiremock/scripts/stubApis.ts`.
 
 ## Running the tests
 
