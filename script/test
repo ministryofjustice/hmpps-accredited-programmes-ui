@@ -4,21 +4,27 @@
 
 set -e
 
+cd "$(dirname "$0")/.."
+
+if [ -n "$DEBUG" ]; then
+  set -x
+fi
+
+echo "==> Updating..."
+
+script/update
+
 echo "==> Linting the code..."
 
 npm run lint
 
-echo "==> Typechecking the code"
+echo "==> Typechecking the code..."
 
 npm run typecheck
 
 echo "==> Running unit tests..."
 
 npm run test
-
-echo "==> Starting the backing services in Docker..."
-
-script/utils/launch-docker
 
 echo "==> Running integration tests..."
 
