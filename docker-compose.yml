@@ -35,6 +35,15 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
 
+  wiremock:
+    image: wiremock/wiremock
+    networks:
+      - hmpps
+    container_name: wiremock
+    restart: always
+    ports:
+      - "9093:8080"
+
   app:
     build: .
     networks:

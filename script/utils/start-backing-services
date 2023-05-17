@@ -2,4 +2,20 @@
 
 echo "==> Starting the backing services in Docker..."
 
-docker-compose up --scale=app=0 -d
+for arg in "$@"
+do
+  if [[ $arg == "--mock-api" ]]; then
+    MOCK_API=true
+  fi
+done
+
+if [ "$MOCK_API" = true ]; then
+  docker-compose up --scale=app=0 --scale=hmpps-accredited-programmes-api=0 -d
+
+  echo "==> Stubbing API endpoints..."
+
+  npm run api-stubs:reset > /dev/null
+  npm run api-stubs:create > /dev/null
+else
+  docker-compose up --scale=app=0 --scale=wiremock=0 -d
+fi
