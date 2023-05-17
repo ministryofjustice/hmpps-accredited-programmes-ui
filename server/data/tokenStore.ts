@@ -1,5 +1,4 @@
 import type { RedisClient } from './redisClient'
-
 import logger from '../../logger'
 
 export default class TokenStore {

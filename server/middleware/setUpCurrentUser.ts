@@ -1,7 +1,8 @@
 import { Router } from 'express'
+
+import populateCurrentUser from './populateCurrentUser'
 import auth from '../authentication/auth'
 import tokenVerifier from '../data/tokenVerification'
-import populateCurrentUser from './populateCurrentUser'
 import type { Services } from '../services'
 
 export default function setUpCurrentUser({ userService }: Services): Router {

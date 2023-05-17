@@ -1,6 +1,6 @@
-import { Services } from '../services'
 import DashboardController from './dashboardController'
 import ProgrammesController from './find/programmesController'
+import { Services } from '../services'
 
 export const controllers = (services: Services) => {
   const dashboardController = new DashboardController()

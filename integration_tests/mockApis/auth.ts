@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 
-import { getMatchingRequests, stubFor } from './wiremock'
 import tokenVerification from './tokenVerification'
+import { getMatchingRequests, stubFor } from './wiremock'
 
 const createToken = () => {
   const payload = {

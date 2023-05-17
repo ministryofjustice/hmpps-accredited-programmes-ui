@@ -1,6 +1,6 @@
-import type { AccreditedProgramme } from '@accredited-programmes/models'
-import Page from '../page'
 import { prerequisiteSummaryListRows } from '../../../server/utils/programmeUtils'
+import Page from '../page'
+import type { AccreditedProgramme } from '@accredited-programmes/models'
 
 export default class ProgrammesPage extends Page {
   constructor() {

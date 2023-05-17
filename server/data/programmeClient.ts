@@ -1,7 +1,7 @@
-import type { AccreditedProgramme } from '@accredited-programmes/models'
-import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
+import config, { ApiConfig } from '../config'
 import paths from '../paths/api'
+import type { AccreditedProgramme } from '@accredited-programmes/models'
 
 export default class ProgrammeClient {
   restClient: RestClient

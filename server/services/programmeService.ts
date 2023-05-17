@@ -1,6 +1,6 @@
-import type { AccreditedProgramme } from '@accredited-programmes/models'
 import { RestClientBuilder } from '../data'
 import ProgrammeClient from '../data/programmeClient'
+import type { AccreditedProgramme } from '@accredited-programmes/models'
 
 export default class ProgrammeService {
   constructor(private readonly programmeClientFactory: RestClientBuilder<ProgrammeClient>) {}

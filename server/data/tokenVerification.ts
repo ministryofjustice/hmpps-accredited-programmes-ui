@@ -1,8 +1,9 @@
-import superagent from 'superagent'
 import type { Request } from 'express'
-import getSanitisedError from '../sanitisedError'
-import config from '../config'
+import superagent from 'superagent'
+
 import logger from '../../logger'
+import config from '../config'
+import getSanitisedError from '../sanitisedError'
 
 function getApiClientToken(token: string) {
   return superagent

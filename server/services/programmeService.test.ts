@@ -1,6 +1,6 @@
-import { programmeFactory } from '../testutils/factories'
-import ProgrammeClient from '../data/programmeClient'
 import ProgrammeService from './programmeService'
+import ProgrammeClient from '../data/programmeClient'
+import { programmeFactory } from '../testutils/factories'
 
 jest.mock('../data/programmeClient')
 

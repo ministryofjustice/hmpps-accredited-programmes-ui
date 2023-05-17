@@ -1,9 +1,10 @@
+import flash from 'connect-flash'
 import type { Router } from 'express'
 import express from 'express'
 import passport from 'passport'
-import flash from 'connect-flash'
-import config from '../config'
+
 import auth from '../authentication/auth'
+import config from '../config'
 
 const router = express.Router()
 

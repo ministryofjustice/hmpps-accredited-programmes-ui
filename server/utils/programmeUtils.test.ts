@@ -1,5 +1,5 @@
-import { programmeFactory, programmePrerequisiteFactory } from '../testutils/factories'
 import { prerequisiteSummaryListRows, programmeListItems } from './programmeUtils'
+import { programmeFactory, programmePrerequisiteFactory } from '../testutils/factories'
 
 describe('programmeUtils', () => {
   describe('prerequisiteSummaryListRows', () => {

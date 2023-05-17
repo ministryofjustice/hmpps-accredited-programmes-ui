@@ -1,8 +1,9 @@
 import promClient from 'prom-client'
-import { createMetricsApp } from './monitoring/metricsApp'
+
 import createApp from './app'
-import { services } from './services'
 import { controllers } from './controllers'
+import { createMetricsApp } from './monitoring/metricsApp'
+import { services } from './services'
 
 promClient.collectDefaultMetrics()
 

@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response } from 'express'
 import { DeepMocked, createMock } from '@golevelup/ts-jest'
+import { NextFunction, Request, Response } from 'express'
+
 import DashboardController from './dashboardController'
 import paths from '../paths/find'
 

@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from 'express'
 import { DeepMocked, createMock } from '@golevelup/ts-jest'
+import { NextFunction, Request, Response } from 'express'
 
 import ProgrammesController from './programmesController'
-import { programmeFactory } from '../../testutils/factories'
 import { ProgrammeService } from '../../services'
+import { programmeFactory } from '../../testutils/factories'
 import { programmeListItems } from '../../utils/programmeUtils'
 
 describe('ProgrammesController', () => {
