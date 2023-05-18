@@ -1,4 +1,5 @@
-import { DistributedTracingModes, TelemetryClient, defaultClient, setup } from 'applicationinsights'
+import type { TelemetryClient } from 'applicationinsights'
+import { DistributedTracingModes, defaultClient, setup } from 'applicationinsights'
 
 import applicationVersion from '../applicationVersion'
 

@@ -24,6 +24,6 @@ const dataAccess = () => ({
 
 type DataAccess = ReturnType<typeof dataAccess>
 
-export { CourseClient, HmppsAuthClient, RestClientBuilder, dataAccess }
+export { CourseClient, HmppsAuthClient, dataAccess }
 
-export type { DataAccess }
+export type { DataAccess, RestClientBuilder }

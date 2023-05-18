@@ -1,4 +1,5 @@
-import superagent, { Response, SuperAgentRequest } from 'superagent'
+import type { Response, SuperAgentRequest } from 'superagent'
+import superagent from 'superagent'
 
 const wiremockEndpoint = process.env.CYPRESS ? 'http://localhost:9091' : 'http://localhost:9093'
 

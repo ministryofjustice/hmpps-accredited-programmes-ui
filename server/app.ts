@@ -2,7 +2,7 @@ import express from 'express'
 import createError from 'http-errors'
 import path from 'path'
 
-import { Controllers } from './controllers'
+import type { Controllers } from './controllers'
 import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import setUpAuthentication from './middleware/setUpAuthentication'

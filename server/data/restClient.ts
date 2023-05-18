@@ -4,7 +4,7 @@ import superagent from 'superagent'
 
 import { restClientMetricsMiddleware } from './restClientMetricsMiddleware'
 import logger from '../../logger'
-import { ApiConfig } from '../config'
+import type { ApiConfig } from '../config'
 import type { UnsanitisedError } from '../sanitisedError'
 import sanitiseError from '../sanitisedError'
 

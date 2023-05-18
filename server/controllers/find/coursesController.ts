@@ -1,6 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import CourseService from '../../services/courseService'
+import type CourseService from '../../services/courseService'
 import { courseListItems } from '../../utils/courseUtils'
 
 export default class CoursesController {

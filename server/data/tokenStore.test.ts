@@ -1,4 +1,4 @@
-import { RedisClient } from './redisClient'
+import type { RedisClient } from './redisClient'
 import TokenStore from './tokenStore'
 
 const redisClient = {

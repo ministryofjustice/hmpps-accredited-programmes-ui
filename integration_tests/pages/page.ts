@@ -1,4 +1,4 @@
-import { SummaryListRow } from '@accredited-programmes/ui'
+import type { SummaryListRow } from '@accredited-programmes/ui'
 
 export type PageElement = Cypress.Chainable<JQuery>
 

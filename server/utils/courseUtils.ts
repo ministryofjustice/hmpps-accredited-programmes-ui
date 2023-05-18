@@ -1,7 +1,7 @@
 import { omit } from 'lodash'
 
-import { Course, CoursePrerequisite } from '@accredited-programmes/models'
-import { CourseListItem, SummaryListRow } from '@accredited-programmes/ui'
+import type { Course, CoursePrerequisite } from '@accredited-programmes/models'
+import type { CourseListItem, SummaryListRow } from '@accredited-programmes/ui'
 
 const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): Array<SummaryListRow> => {
   return prerequisites.map(prerequisite => {

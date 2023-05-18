@@ -1,4 +1,4 @@
-import { SuperAgentRequest } from 'superagent'
+import type { SuperAgentRequest } from 'superagent'
 
 import paths from '../../server/paths/api'
 import { stubFor } from '../../wiremock'

@@ -1,6 +1,6 @@
 import { type RequestHandler, Router } from 'express'
 
-import { Controllers } from '../controllers'
+import type { Controllers } from '../controllers'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 
 export default function routes(controllers: Controllers): Router {

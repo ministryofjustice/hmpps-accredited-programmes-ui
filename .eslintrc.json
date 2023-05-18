@@ -12,6 +12,12 @@
     "plugin:prettier/recommended"
   ],
 
+  "parserOptions": {
+    "project": ["tsconfig.json", "integration_tests/tsconfig.json"]
+  },
+
+  "ignorePatterns": ["cypress.config.ts"],
+
   "plugins": ["@typescript-eslint", "import", "no-only-tests", "sort-exports"],
 
   "settings": {
@@ -29,6 +35,8 @@
   },
 
   "rules": {
+    "@typescript-eslint/consistent-type-exports": "error",
+    "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/no-unused-vars": [
       1,

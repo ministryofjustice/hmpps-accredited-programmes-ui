@@ -75,4 +75,4 @@ export default class HmppsAuthClient {
   }
 }
 
-export { User, UserRole }
+export type { User, UserRole }

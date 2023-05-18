@@ -1,4 +1,4 @@
-import { Course } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
 
 type CourseListItem = Omit<Course, 'coursePrerequisites'> & {
   prerequisitesSummaryListRows: Array<SummaryListRow>

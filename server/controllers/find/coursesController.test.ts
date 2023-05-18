@@ -1,8 +1,9 @@
-import { DeepMocked, createMock } from '@golevelup/ts-jest'
-import { NextFunction, Request, Response } from 'express'
+import type { DeepMocked } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-jest'
+import type { NextFunction, Request, Response } from 'express'
 
 import CoursesController from './coursesController'
-import { CourseService } from '../../services'
+import type { CourseService } from '../../services'
 import { courseFactory } from '../../testutils/factories'
 import { courseListItems } from '../../utils/courseUtils'
 

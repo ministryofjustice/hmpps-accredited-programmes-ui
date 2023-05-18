@@ -1,4 +1,5 @@
-import Page, { PageElement } from './page'
+import type { PageElement } from './page'
+import Page from './page'
 
 export default class IndexPage extends Page {
   constructor() {
