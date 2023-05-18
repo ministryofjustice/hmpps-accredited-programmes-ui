@@ -10,9 +10,20 @@ if [ -n "$DEBUG" ]; then
   set -x
 fi
 
-echo "==> Updating..."
+UPDATE=true
 
-script/update
+for arg in "$@"
+do
+  if [[ $arg == "--skip-update" ]]; then
+    UPDATE=false
+  fi
+done
+
+if [ "$UPDATE" = true ]; then
+  echo "==> Updating..."
+
+  script/update --skip-backing-service-images
+fi
 
 echo "==> Linting the code..."
 

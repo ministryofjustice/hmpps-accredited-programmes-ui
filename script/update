@@ -6,6 +6,10 @@ set -e
 
 cd "$(dirname "$0")/.."
 
+echo "==> Pulling latest backing service images..."
+
+docker compose pull
+
 echo "==> Bootstrapping..."
 
 script/bootstrap
