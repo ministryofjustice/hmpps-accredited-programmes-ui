@@ -1,9 +1,9 @@
 import { path } from 'static-path'
 
-const programmesPath = path('/programmes')
+const coursesPath = path('/courses')
 
 export default {
-  programmes: {
-    index: programmesPath,
+  courses: {
+    index: coursesPath,
   },
 }

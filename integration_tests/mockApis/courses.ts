@@ -2,19 +2,19 @@ import { SuperAgentRequest } from 'superagent'
 
 import paths from '../../server/paths/api'
 import { stubFor } from '../../wiremock'
-import type { AccreditedProgramme } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
 
 export default {
-  stubProgrammes: (programmes: Array<AccreditedProgramme>): SuperAgentRequest =>
+  stubCourses: (courses: Array<Course>): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        url: paths.programmes.index,
+        url: paths.courses.index,
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: programmes,
+        jsonBody: courses,
       },
     }),
 }

@@ -1,18 +1,18 @@
-import { prerequisiteSummaryListRows } from '../../../server/utils/programmeUtils'
+import { prerequisiteSummaryListRows } from '../../../server/utils/courseUtils'
 import Page from '../page'
-import type { AccreditedProgramme } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
 
-export default class ProgrammesPage extends Page {
+export default class CoursesPage extends Page {
   constructor() {
     super('List of accredited programmes')
   }
 
-  shouldHaveProgrammes(programmes: Array<AccreditedProgramme>) {
-    cy.get('div[role=listitem]').each((programmeElement, programmeElementIndex) => {
-      cy.wrap(programmeElement).within(() => {
-        const programme = programmes[programmeElementIndex]
+  shouldHaveCourses(courses: Array<Course>) {
+    cy.get('div[role=listitem]').each((courseElement, courseElementIndex) => {
+      cy.wrap(courseElement).within(() => {
+        const course = courses[courseElementIndex]
 
-        cy.get('h2').should('have.text', programme.name)
+        cy.get('h2').should('have.text', course.name)
 
         // TODO: update the following once API/model is updated
         const hardcodedTags = ['SEXUAL OFFENCE', 'EXTREMISM', 'INTIMATE PARTNER VIOLENCE', 'GENERAL VIOLENCE']
@@ -24,9 +24,9 @@ export default class ProgrammesPage extends Page {
           })
         })
 
-        cy.get('p:nth-of-type(2)').should('have.text', programme.description)
+        cy.get('p:nth-of-type(2)').should('have.text', course.description)
 
-        const rows = prerequisiteSummaryListRows(programme.programmePrerequisites)
+        const rows = prerequisiteSummaryListRows(course.coursePrerequisites)
 
         cy.get('.govuk-summary-list').then(summaryListElement => {
           this.shouldContainSummaryListRows(rows, summaryListElement)

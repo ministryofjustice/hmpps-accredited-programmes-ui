@@ -1,11 +1,11 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% macro programmeSummary(programmeListItem) %}
+{% macro courseSummary(courseListItem) %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds" role="listitem">
       <a class="govuk-link" href="#">
-        <h2>{{ programmeListItem.name }}</h2>
+        <h2>{{ courseListItem.name }}</h2>
       </a>
 
       <p class="govuk-body">
@@ -15,11 +15,11 @@
         {{ govukTag({text: "GENERAL VIOLENCE", classes: "govuk-tag--purple"}) }}
       </p>
 
-      <p class="govuk-body">{{ programmeListItem.description }}</p>
+      <p class="govuk-body">{{ courseListItem.description }}</p>
 
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',
-        rows: programmeListItem.prerequisitesSummaryListRows
+        rows: courseListItem.prerequisitesSummaryListRows
       }) }}
     </div>
   </div>

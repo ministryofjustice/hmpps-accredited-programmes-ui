@@ -1,2 +1,2 @@
-export type { AccreditedProgramme } from './AccreditedProgramme'
-export type { ProgrammePrerequisite } from './ProgrammePrerequisite'
+export type { Course } from './Course'
+export type { CoursePrerequisite } from './CoursePrerequisite'

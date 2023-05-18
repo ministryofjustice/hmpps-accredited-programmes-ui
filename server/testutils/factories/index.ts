@@ -1,4 +1,4 @@
-import programmeFactory from './programme'
-import programmePrerequisiteFactory from './programmePrerequisite'
+import courseFactory from './course'
+import coursePrerequisiteFactory from './coursePrerequisite'
 
-export { programmeFactory, programmePrerequisiteFactory }
+export { courseFactory, coursePrerequisiteFactory }

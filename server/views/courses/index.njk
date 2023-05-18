@@ -1,4 +1,4 @@
-{% from "./_programmeSummary.njk" import programmeSummary %}
+{% from "./_courseSummary.njk" import courseSummary %}
 
 {% extends "../partials/layout.njk" %}
 
@@ -9,10 +9,10 @@
   <h1>{{ pageHeading }}</h1>
 
   <div role="list">
-    {% for programmeListItem in programmeListItems %}
-      {{ programmeSummary(programmeListItem) }}
+    {% for courseListItem in courseListItems %}
+      {{ courseSummary(courseListItem) }}
 
-      {% if loop.index < programmeListItems.length %}
+      {% if loop.index < courseListItems.length %}
         <div class="govuk-grid-row">
           <hr class="govuk-section-break govuk-section-break--visible">
         </div>
