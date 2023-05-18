@@ -10,13 +10,20 @@ if [ -n "$DEBUG" ]; then
   set -x
 fi
 
+BUILD=true
 UPDATE=true
 
 for arg in "$@"
 do
-  if [[ $arg == "--skip-update" ]]; then
-    UPDATE=false
-  fi
+  case $arg in
+    --skip-update)
+      UPDATE=false
+      ;;
+    --skip-build)
+      BUILD=false
+      ;;
+  esac
+  shift
 done
 
 if [ "$UPDATE" = true ]; then
@@ -36,6 +43,12 @@ npm run typecheck
 echo "==> Running unit tests..."
 
 npm run test
+
+if [ "$BUILD" = true ]; then
+  echo "==> Building..."
+
+  npm run build
+fi
 
 echo "==> Running integration tests..."
 
