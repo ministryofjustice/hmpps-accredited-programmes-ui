@@ -1,5 +1,5 @@
-import { programmeFactory } from '../../server/testutils/factories'
-import ProgrammesPage from '../pages/find/programmes'
+import { courseFactory } from '../../server/testutils/factories'
+import CoursesPage from '../pages/find/courses'
 import Page from '../pages/page'
 
 context('Find', () => {
@@ -9,16 +9,16 @@ context('Find', () => {
     cy.task('stubAuthUser')
   })
 
-  it('Shows a list of all programmes', () => {
+  it('Shows a list of all courses', () => {
     cy.signIn()
 
-    const programmes = programmeFactory.buildList(4)
+    const courses = courseFactory.buildList(4)
 
-    cy.task('stubProgrammes', programmes)
+    cy.task('stubCourses', courses)
 
     cy.visit('/programmes')
 
-    const programmesPage = Page.verifyOnPage(ProgrammesPage)
-    programmesPage.shouldHaveProgrammes(programmes)
+    const coursesPage = Page.verifyOnPage(CoursesPage)
+    coursesPage.shouldHaveCourses(courses)
   })
 })

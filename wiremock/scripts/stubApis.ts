@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { stubFor } from '../index'
-import programmes from '../stubs/programmes.json'
+import courses from '../stubs/courses.json'
 
 const stubs = []
 
@@ -15,7 +15,7 @@ stubs.push(async () =>
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: programmes,
+      jsonBody: courses,
     },
   }),
 )
