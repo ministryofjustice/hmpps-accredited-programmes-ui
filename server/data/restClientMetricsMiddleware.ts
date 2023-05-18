@@ -46,4 +46,4 @@ function normalizePath(url: string) {
   return urlValueParser.replacePathValues(pathname, urlPathReplacement)
 }
 
-export { restClientMetricsMiddleware, normalizePath, requestHistogram, timeoutCounter }
+export { normalizePath, requestHistogram, restClientMetricsMiddleware, timeoutCounter }

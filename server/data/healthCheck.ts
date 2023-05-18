@@ -4,15 +4,15 @@ import superagent from 'superagent'
 import logger from '../../logger'
 import { AgentConfig } from '../config'
 
-export type ServiceCheck = () => Promise<string>
+type ServiceCheck = () => Promise<string>
 
-export class ServiceTimeout {
+class ServiceTimeout {
   response = 1500
 
   deadline = 2000
 }
 
-export function serviceCheckFactory(
+function serviceCheckFactory(
   name: string,
   url: string,
   agentOptions: AgentConfig,
@@ -42,3 +42,7 @@ export function serviceCheckFactory(
         })
     })
 }
+
+export { ServiceTimeout, serviceCheckFactory }
+
+export type { ServiceCheck }

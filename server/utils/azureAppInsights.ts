@@ -14,7 +14,7 @@ function version(): string {
   return buildNumber
 }
 
-export function initialiseAppInsights(): void {
+function initialiseAppInsights(): void {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     // eslint-disable-next-line no-console
     console.log('Enabling azure application insights')
@@ -23,7 +23,7 @@ export function initialiseAppInsights(): void {
   }
 }
 
-export function buildAppInsightsClient(name = defaultName()): TelemetryClient {
+function buildAppInsightsClient(name = defaultName()): TelemetryClient {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     defaultClient.context.tags['ai.cloud.role'] = name
     defaultClient.context.tags['ai.application.ver'] = version()
@@ -31,3 +31,5 @@ export function buildAppInsightsClient(name = defaultName()): TelemetryClient {
   }
   return null
 }
+
+export { buildAppInsightsClient, initialiseAppInsights }

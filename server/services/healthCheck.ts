@@ -21,8 +21,8 @@ interface HealthCheckResult extends Record<string, unknown> {
   checks: Record<string, unknown>
 }
 
-export type HealthCheckService = () => Promise<HealthCheckStatus>
-export type HealthCheckCallback = (result: HealthCheckResult) => void
+type HealthCheckCallback = (result: HealthCheckResult) => void
+type HealthCheckService = () => Promise<HealthCheckStatus>
 
 function service(name: string, url: string, agentConfig: AgentConfig): HealthCheckService {
   const check = serviceCheckFactory(name, url, agentConfig)
@@ -86,3 +86,5 @@ export default function healthCheck(callback: HealthCheckCallback, checks = apiC
     callback(addAppInfo(result))
   })
 }
+
+export type { HealthCheckCallback, HealthCheckService }
