@@ -2,7 +2,7 @@ import { DeepMocked, createMock } from '@golevelup/ts-jest'
 import { NextFunction, Request, Response } from 'express'
 
 import CoursesController from './coursesController'
-import { CourseService } from '../../services'
+import { CourseService, OrganisationService } from '../../services'
 import { courseFactory } from '../../testutils/factories'
 import { courseListItems } from '../../utils/courseUtils'
 
@@ -12,11 +12,12 @@ describe('CoursesController', () => {
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
   const courseService = createMock<CourseService>({})
+  const organisationService = createMock<OrganisationService>({})
 
   let coursesController: CoursesController
 
   beforeEach(() => {
-    coursesController = new CoursesController(courseService)
+    coursesController = new CoursesController(courseService, organisationService)
   })
 
   describe('index', () => {
