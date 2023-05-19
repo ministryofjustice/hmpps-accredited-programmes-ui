@@ -4,7 +4,7 @@ import superagent from 'superagent'
 
 import { restClientMetricsMiddleware } from './restClientMetricsMiddleware'
 import logger from '../../logger'
-import { ApiConfig } from '../config'
+import type { ApiConfig } from '../config'
 import type { UnsanitisedError } from '../sanitisedError'
 import sanitiseError from '../sanitisedError'
 
@@ -121,7 +121,7 @@ export default class RestClient {
             reject(error)
           } else if (response) {
             const s = new Readable()
-            // eslint-disable-next-line no-underscore-dangle,@typescript-eslint/no-empty-function
+            // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/no-empty-function
             s._read = () => {}
             s.push(response.body)
             s.push(null)

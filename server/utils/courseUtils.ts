@@ -1,9 +1,9 @@
 import { omit } from 'lodash'
 
-import { Course, CoursePrerequisite } from '@accredited-programmes/models'
-import { CourseListItem, SummaryListRow } from '@accredited-programmes/ui'
+import type { Course, CoursePrerequisite } from '@accredited-programmes/models'
+import type { CourseListItem, SummaryListRow } from '@accredited-programmes/ui'
 
-export const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): Array<SummaryListRow> => {
+const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): Array<SummaryListRow> => {
   return prerequisites.map(prerequisite => {
     return {
       key: { text: prerequisite.name },
@@ -12,7 +12,7 @@ export const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequis
   })
 }
 
-export const courseListItems = (courses: Array<Course>): Array<CourseListItem> => {
+const courseListItems = (courses: Array<Course>): Array<CourseListItem> => {
   return courses.map(course => {
     const prerequisitesSummaryListRows = prerequisiteSummaryListRows(course.coursePrerequisites)
 
@@ -22,3 +22,5 @@ export const courseListItems = (courses: Array<Course>): Array<CourseListItem> =
     }
   })
 }
+
+export { courseListItems, prerequisiteSummaryListRows }

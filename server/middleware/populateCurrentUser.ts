@@ -1,7 +1,7 @@
-import { RequestHandler } from 'express'
+import type { RequestHandler } from 'express'
 
 import logger from '../../logger'
-import UserService from '../services/userService'
+import type UserService from '../services/userService'
 
 export default function populateCurrentUser(userService: UserService): RequestHandler {
   return async (req, res, next) => {

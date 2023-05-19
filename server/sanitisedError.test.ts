@@ -1,4 +1,5 @@
-import sanitisedError, { UnsanitisedError } from './sanitisedError'
+import type { UnsanitisedError } from './sanitisedError'
+import sanitisedError from './sanitisedError'
 
 describe('sanitised error', () => {
   it('it should omit the request headers from the error object ', () => {

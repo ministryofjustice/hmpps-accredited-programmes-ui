@@ -1,4 +1,5 @@
-import superagent, { Response, SuperAgentRequest } from 'superagent'
+import type { Response, SuperAgentRequest } from 'superagent'
+import superagent from 'superagent'
 
 const wiremockEndpoint = process.env.CYPRESS ? 'http://localhost:9091' : 'http://localhost:9093'
 
@@ -12,4 +13,4 @@ const getMatchingRequests = (body: object) => superagent.post(`${url}/requests/f
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-export { stubFor, getMatchingRequests, resetStubs }
+export { getMatchingRequests, resetStubs, stubFor }

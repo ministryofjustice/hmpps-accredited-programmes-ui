@@ -17,11 +17,13 @@ import TokenStore from './tokenStore'
 
 type RestClientBuilder<T> = (token: string) => T
 
-export const dataAccess = () => ({
+const dataAccess = () => ({
   hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
   courseClientBuilder: ((token: string) => new CourseClient(token)) as RestClientBuilder<CourseClient>,
 })
 
-export type DataAccess = ReturnType<typeof dataAccess>
+type DataAccess = ReturnType<typeof dataAccess>
 
-export { HmppsAuthClient, CourseClient, RestClientBuilder }
+export { CourseClient, HmppsAuthClient, dataAccess }
+
+export type { DataAccess, RestClientBuilder }

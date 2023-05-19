@@ -1,5 +1,6 @@
 import crypto from 'crypto'
-import express, { NextFunction, Request, Response, Router } from 'express'
+import type { NextFunction, Request, Response, Router } from 'express'
+import express from 'express'
 import helmet from 'helmet'
 
 export default function setUpWebSecurity(): Router {

@@ -1,6 +1,10 @@
-import { Course } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
 
-export type SummaryListRow = {
+type CourseListItem = Omit<Course, 'coursePrerequisites'> & {
+  prerequisitesSummaryListRows: Array<SummaryListRow>
+}
+
+type SummaryListRow = {
   key: {
     text: string
   }
@@ -9,6 +13,4 @@ export type SummaryListRow = {
   }
 }
 
-export type CourseListItem = Omit<Course, 'coursePrerequisites'> & {
-  prerequisitesSummaryListRows: Array<SummaryListRow>
-}
+export type { CourseListItem, SummaryListRow }

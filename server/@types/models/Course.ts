@@ -1,4 +1,4 @@
-import { CoursePrerequisite } from './CoursePrerequisite'
+import type { CoursePrerequisite } from './CoursePrerequisite'
 
 export type Course = {
   name: string

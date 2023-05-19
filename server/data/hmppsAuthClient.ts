@@ -31,12 +31,12 @@ function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagen
     .timeout(timeoutSpec)
 }
 
-export interface User {
+interface User {
   name: string
   activeCaseLoadId: string
 }
 
-export interface UserRole {
+interface UserRole {
   roleCode: string
 }
 
@@ -74,3 +74,5 @@ export default class HmppsAuthClient {
     return newToken.body.access_token
   }
 }
+
+export type { User, UserRole }

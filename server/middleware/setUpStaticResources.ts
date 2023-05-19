@@ -1,5 +1,6 @@
 import compression from 'compression'
-import express, { Router } from 'express'
+import type { Router } from 'express'
+import express from 'express'
 import noCache from 'nocache'
 import path from 'path'
 

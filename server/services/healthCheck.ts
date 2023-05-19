@@ -21,8 +21,8 @@ interface HealthCheckResult extends Record<string, unknown> {
   checks: Record<string, unknown>
 }
 
-export type HealthCheckService = () => Promise<HealthCheckStatus>
-export type HealthCheckCallback = (result: HealthCheckResult) => void
+type HealthCheckCallback = (result: HealthCheckResult) => void
+type HealthCheckService = () => Promise<HealthCheckStatus>
 
 function service(name: string, url: string, agentConfig: AgentConfig): HealthCheckService {
   const check = serviceCheckFactory(name, url, agentConfig)
@@ -45,7 +45,7 @@ function addAppInfo(result: HealthCheckResult): HealthCheckResult {
 
 function getBuild() {
   try {
-    // eslint-disable-next-line import/no-unresolved,global-require
+    // eslint-disable-next-line import/no-unresolved, global-require
     return require('../../build-info.json')
   } catch (ex) {
     return null
@@ -86,3 +86,5 @@ export default function healthCheck(callback: HealthCheckCallback, checks = apiC
     callback(addAppInfo(result))
   })
 }
+
+export type { HealthCheckCallback, HealthCheckService }

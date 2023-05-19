@@ -2,7 +2,7 @@ import CourseService from './courseService'
 import UserService from './userService'
 import { dataAccess } from '../data'
 
-export const services = () => {
+const services = () => {
   const { hmppsAuthClient, courseClientBuilder } = dataAccess()
 
   const userService = new UserService(hmppsAuthClient)
@@ -14,6 +14,8 @@ export const services = () => {
   }
 }
 
-export type Services = ReturnType<typeof services>
+type Services = ReturnType<typeof services>
 
-export { UserService, CourseService }
+export { CourseService, UserService, services }
+
+export type { Services }

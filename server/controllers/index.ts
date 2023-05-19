@@ -1,6 +1,6 @@
 import DashboardController from './dashboardController'
 import CoursesController from './find/coursesController'
-import { Services } from '../services'
+import type { Services } from '../services'
 
 export const controllers = (services: Services) => {
   const coursesController = new CoursesController(services.courseService)

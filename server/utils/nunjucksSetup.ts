@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-import express from 'express'
+import type express from 'express'
 import nunjucks from 'nunjucks'
-import * as pathModule from 'path'
+import type * as pathModule from 'path'
 
 import { initialiseName } from './utils'
 

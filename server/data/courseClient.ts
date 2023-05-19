@@ -1,5 +1,6 @@
 import RestClient from './restClient'
-import config, { ApiConfig } from '../config'
+import type { ApiConfig } from '../config'
+import config from '../config'
 import paths from '../paths/api'
 import type { Course } from '@accredited-programmes/models'
 

@@ -1,6 +1,6 @@
-import { Socket } from 'net'
+import type { Socket } from 'net'
 import promClient from 'prom-client'
-import { Response, SuperAgentRequest } from 'superagent'
+import type { Response, SuperAgentRequest } from 'superagent'
 import UrlValueParser from 'url-value-parser'
 
 const requestHistogram = new promClient.Histogram({
@@ -46,4 +46,4 @@ function normalizePath(url: string) {
   return urlValueParser.replacePathValues(pathname, urlPathReplacement)
 }
 
-export { restClientMetricsMiddleware, normalizePath, requestHistogram, timeoutCounter }
+export { normalizePath, requestHistogram, restClientMetricsMiddleware, timeoutCounter }
