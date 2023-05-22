@@ -60,6 +60,8 @@ jobs:
             - .cache/Cypress
 
   unit_test:
+    environment:
+      PACT_BROKER_BASE_URL: "https://pact-broker-prod.apps.live-1.cloud-platform.service.justice.gov.uk"
     executor:
       name: hmpps/node
       tag: << pipeline.parameters.node-version >>
@@ -74,6 +76,15 @@ jobs:
           path: test_results
       - store_artifacts:
           path: test_results/unit-test-reports.html
+      - store_artifacts:
+          path: pact/pacts
+      - run:
+          name: Upload pact files to broker
+          command: |
+            npx pact-broker publish pact/pacts \
+              --broker-base-url $PACT_BROKER_BASE_URL \
+              --consumer-app-version $CIRCLE_SHA1 --tag $CIRCLE_BRANCH \
+              -u $PACT_BROKER_USERNAME -p $PACT_BROKER_PASSWORD
 
   integration_test:
     executor:
@@ -124,6 +135,7 @@ workflows:
       - unit_test:
           requires:
             - build
+          context: hmpps-common-vars
       - integration_test:
           requires:
             - build
