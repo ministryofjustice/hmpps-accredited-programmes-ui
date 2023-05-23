@@ -12,6 +12,7 @@ buildAppInsightsClient()
 
 import CourseClient from './courseClient'
 import HmppsAuthClient from './hmppsAuthClient'
+import PrisonClient from './prisonClient'
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
 
@@ -20,6 +21,7 @@ type RestClientBuilder<T> = (token: string) => T
 const dataAccess = () => ({
   hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
   courseClientBuilder: ((token: string) => new CourseClient(token)) as RestClientBuilder<CourseClient>,
+  prisonClientBuilder: ((token: string) => new PrisonClient(token)) as RestClientBuilder<PrisonClient>,
 })
 
 type DataAccess = ReturnType<typeof dataAccess>
