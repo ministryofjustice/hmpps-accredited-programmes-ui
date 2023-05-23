@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import paths from '../../server/paths/api'
 import { stubFor } from '../index'
 import courses from '../stubs/courses.json'
 
@@ -8,7 +9,7 @@ stubs.push(async () =>
   stubFor({
     request: {
       method: 'GET',
-      url: '/programmes',
+      url: paths.courses.index({}),
     },
     response: {
       status: 200,
