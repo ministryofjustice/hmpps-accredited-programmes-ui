@@ -8,7 +8,8 @@ import { courseFactory } from '../../testutils/factories'
 import { courseListItems } from '../../utils/courseUtils'
 
 describe('CoursesController', () => {
-  const request: DeepMocked<Request> = createMock<Request>({})
+  const token = 'SOME_TOKEN'
+  const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
@@ -34,7 +35,7 @@ describe('CoursesController', () => {
         courseListItems: courseListItems(courses),
       })
 
-      expect(courseService.getCourses).toHaveBeenCalledWith('token')
+      expect(courseService.getCourses).toHaveBeenCalledWith(token)
     })
   })
 })

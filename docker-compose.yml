@@ -21,6 +21,8 @@ services:
       - "9092:8080"
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+    environment:
+      - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
 
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest

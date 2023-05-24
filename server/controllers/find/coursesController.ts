@@ -7,8 +7,8 @@ export default class CoursesController {
   constructor(private readonly courseService: CourseService) {}
 
   index(): TypedRequestHandler<Request, Response> {
-    return async (_req: Request, res: Response) => {
-      const courses = await this.courseService.getCourses('token')
+    return async (req: Request, res: Response) => {
+      const courses = await this.courseService.getCourses(req.user.token)
 
       res.render('courses/index', {
         pageHeading: 'List of accredited programmes',
