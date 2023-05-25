@@ -28,6 +28,7 @@ describe('OrganisationService', () => {
         const result = await service.getOrganisation(token, prison.agencyId)
 
         expect(result).toEqual({
+          id: prison.agencyId,
           name: prison.premise,
           category: 'N/A',
           address: {
@@ -53,6 +54,7 @@ describe('OrganisationService', () => {
         const result = await service.getOrganisation(token, prison.agencyId)
 
         expect(result).toEqual({
+          id: prison.agencyId,
           name: prison.premise,
           category: 'N/A',
           address: {

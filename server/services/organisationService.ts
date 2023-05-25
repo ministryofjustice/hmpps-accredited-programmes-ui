@@ -5,9 +5,9 @@ import type { Organisation } from '@accredited-programmes/models'
 export default class OrganisationService {
   constructor(private readonly prisonClientFactory: RestClientBuilder<PrisonClient>) {}
 
-  async getOrganisation(token: string, agencyId: string): Promise<Organisation | null> {
+  async getOrganisation(token: string, id: string): Promise<Organisation | null> {
     const prisonClient = this.prisonClientFactory(token)
-    const prison = await prisonClient.getPrison(agencyId)
+    const prison = await prisonClient.getPrison(id)
 
     if (!prison) {
       return null
@@ -16,6 +16,7 @@ export default class OrganisationService {
     const primaryAddress = prison.addresses.find(address => address.primary)
 
     return {
+      id,
       name: prison.premise,
       category: 'N/A',
       address: {

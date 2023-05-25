@@ -13,4 +13,16 @@ type SummaryListRow = {
   }
 }
 
-export type { CourseWithPrerequisiteSummaryListRows, SummaryListRow }
+type TableCellWithText = {
+  text: string
+}
+
+type TableCellWithHtml = {
+  html: string
+}
+
+type TableCell = TableCellWithText | TableCellWithHtml
+
+type TableRow = Array<TableCell>
+
+export type { CourseWithPrerequisiteSummaryListRows, SummaryListRow, TableRow }
