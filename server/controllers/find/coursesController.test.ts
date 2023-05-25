@@ -5,7 +5,7 @@ import type { NextFunction, Request, Response } from 'express'
 import CoursesController from './coursesController'
 import type { CourseService } from '../../services'
 import { courseFactory } from '../../testutils/factories'
-import { courseListItems } from '../../utils/courseUtils'
+import courseWithPrerequisiteSummaryListRows from '../../utils/courseUtils'
 
 describe('CoursesController', () => {
   const token = 'SOME_TOKEN'
@@ -26,13 +26,17 @@ describe('CoursesController', () => {
       const courses = courseFactory.buildList(3)
       courseService.getCourses.mockResolvedValue(courses)
 
+      const coursesWithPrerequisiteSummaryListRows = courses.map(course =>
+        courseWithPrerequisiteSummaryListRows(course),
+      )
+
       const requestHandler = coursesController.index()
 
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         pageHeading: 'List of accredited programmes',
-        courseListItems: courseListItems(courses),
+        courses: coursesWithPrerequisiteSummaryListRows,
       })
 
       expect(courseService.getCourses).toHaveBeenCalledWith(token)

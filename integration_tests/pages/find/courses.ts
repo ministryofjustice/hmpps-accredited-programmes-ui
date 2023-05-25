@@ -1,4 +1,4 @@
-import { prerequisiteSummaryListRows } from '../../../server/utils/courseUtils'
+import courseWithPrerequisiteSummaryListRows from '../../../server/utils/courseUtils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'
 
@@ -10,7 +10,7 @@ export default class CoursesPage extends Page {
   shouldHaveCourses(courses: Array<Course>) {
     cy.get('div[role=listitem]').each((courseElement, courseElementIndex) => {
       cy.wrap(courseElement).within(() => {
-        const course = courses[courseElementIndex]
+        const course = courseWithPrerequisiteSummaryListRows(courses[courseElementIndex])
 
         cy.get('h2').should('have.text', course.name)
 
@@ -26,10 +26,8 @@ export default class CoursesPage extends Page {
 
         cy.get('p:nth-of-type(2)').should('have.text', course.description)
 
-        const rows = prerequisiteSummaryListRows(course.coursePrerequisites)
-
         cy.get('.govuk-summary-list').then(summaryListElement => {
-          this.shouldContainSummaryListRows(rows, summaryListElement)
+          this.shouldContainSummaryListRows(course.prerequisiteSummaryListRows, summaryListElement)
         })
       })
     })
