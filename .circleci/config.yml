@@ -60,6 +60,8 @@ jobs:
             - .cache/Cypress
 
   unit_test:
+    environment:
+      PACT_BROKER_BASE_URL: "https://pact-broker-prod.apps.live-1.cloud-platform.service.justice.gov.uk"
     executor:
       name: hmpps/node
       tag: << pipeline.parameters.node-version >>
@@ -74,6 +76,15 @@ jobs:
           path: test_results
       - store_artifacts:
           path: test_results/unit-test-reports.html
+      - store_artifacts:
+          path: pact/pacts
+      - run:
+          name: Upload pact files to broker
+          command: |
+            npx pact-broker publish pact/pacts \
+              --broker-base-url $PACT_BROKER_BASE_URL \
+              --consumer-app-version $CIRCLE_SHA1 --tag $CIRCLE_BRANCH \
+              -u $PACT_BROKER_USERNAME -p $PACT_BROKER_PASSWORD
 
   integration_test:
     executor:
@@ -113,6 +124,23 @@ jobs:
       - store_artifacts:
           path: integration-tests/screenshots
 
+  tag_pact_version:
+    environment:
+      PACT_BROKER_BASE_URL: "https://pact-broker-prod.apps.live-1.cloud-platform.service.justice.gov.uk"
+    executor:
+      name: hmpps/node
+      tag: 16.17-browsers
+    parameters:
+      tag:
+        type: string
+    steps:
+      - run:
+          name: Tag contract version with deployment
+          command: |
+            npx --package='@pact-foundation/pact-node' pact-broker create-version-tag \
+              --pacticipant="Accredited Programmes UI" --version="$CIRCLE_SHA1" --tag="<< parameters.tag >>" \
+              --broker-base-url="$PACT_BROKER_BASE_URL" --broker-username="$PACT_BROKER_USERNAME" --broker-password="$PACT_BROKER_PASSWORD"
+
 workflows:
   version: 2
   build-test-and-deploy:
@@ -124,6 +152,7 @@ workflows:
       - unit_test:
           requires:
             - build
+          context: hmpps-common-vars
       - integration_test:
           requires:
             - build
@@ -150,6 +179,11 @@ workflows:
             - integration_test
             - build_docker
           helm_timeout: 5m
+      - tag_pact_version:
+          name: "tag_pact_version_dev"
+          tag: "deployed:dev"
+          requires: [deploy_dev]
+          context: [hmpps-common-vars]
 #      - request-preprod-approval:
 #          type: approval
 #          requires:
