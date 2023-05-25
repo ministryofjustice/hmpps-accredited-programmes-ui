@@ -7,12 +7,16 @@ export default abstract class Page {
     return new constructor()
   }
 
-  constructor(private readonly title: string) {
+  constructor(private readonly mainHeading: string, private readonly customTitle?: string) {
     this.checkOnPage()
   }
 
   checkOnPage(): void {
-    cy.get('h1').contains(this.title)
+    if (this.customTitle) {
+      cy.title().should('equal', `HMPPS Accredited Programmes - ${this.customTitle}`)
+    }
+
+    cy.get('h1').contains(this.mainHeading)
   }
 
   parseHtml(actual: JQuery<HTMLElement>, expected: string): { actual: string; expected: string } {
