@@ -11,3 +11,10 @@
 ### Before
 
 ### After
+
+## Pre merge checklist
+
+- [ ] Have you written an end-to-end test for the happy path in the [Accredited
+  Programmes E2E
+  repo](https://github.com/ministryofjustice/hmpps-accredited-programmes-e2e)
+  (if necessary)?
