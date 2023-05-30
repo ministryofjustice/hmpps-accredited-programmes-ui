@@ -12,6 +12,7 @@ export default function routes(controllers: Controllers): Router {
   get('/', dashboardController.index())
 
   get('/programmes', coursesController.index())
+  get('/programmes/:id', coursesController.show())
 
   return router
 }

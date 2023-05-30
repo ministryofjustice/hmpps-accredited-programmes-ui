@@ -4,7 +4,7 @@ import { pactWith } from 'jest-pact'
 import CourseClient from './courseClient'
 import config from '../config'
 import paths from '../paths/api'
-import courseFactory from '../testutils/factories/course'
+import { courseFactory, courseOfferingFactory } from '../testutils/factories'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -37,10 +37,66 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
     })
 
-    it('should fetch all programmes', async () => {
+    it('should fetch all courses', async () => {
       const result = await courseClient.all()
 
       expect(result).toEqual(allCourses)
+    })
+  })
+
+  const firstCourse = allCourses[0]
+
+  describe('show', () => {
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'Server is healthy',
+        uponReceiving: 'A request for one course',
+        withRequest: {
+          method: 'GET',
+          path: paths.courses.show({ id: firstCourse.id }),
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
+        willRespondWith: {
+          status: 200,
+          body: Matchers.like(firstCourse),
+        },
+      })
+    })
+
+    it('should fetch the given course', async () => {
+      const result = await courseClient.find(firstCourse.id)
+
+      expect(result).toEqual(firstCourse)
+    })
+  })
+
+  const firstCoursesOfferings = courseOfferingFactory.buildList(10)
+
+  describe('offerings', () => {
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'Server is healthy',
+        uponReceiving: "A request for one course's offerings",
+        withRequest: {
+          method: 'GET',
+          path: paths.courses.offerings({ id: firstCourse.id }),
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
+        willRespondWith: {
+          status: 200,
+          body: Matchers.like(firstCoursesOfferings),
+        },
+      })
+    })
+
+    it('should fetch the given course', async () => {
+      const result = await courseClient.findOfferings(firstCourse.id)
+
+      expect(result).toEqual(firstCoursesOfferings)
     })
   })
 })

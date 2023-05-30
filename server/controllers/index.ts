@@ -3,7 +3,7 @@ import CoursesController from './find/coursesController'
 import type { Services } from '../services'
 
 export const controllers = (services: Services) => {
-  const coursesController = new CoursesController(services.courseService)
+  const coursesController = new CoursesController(services.courseService, services.organisationService)
   const dashboardController = new DashboardController()
 
   return {
