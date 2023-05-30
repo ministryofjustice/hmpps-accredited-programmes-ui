@@ -1,7 +1,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% macro courseSummary(course) %}
+{% macro indexCourseSummary(course) %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds" role="listitem">
       <a class="govuk-link" href="/programmes/{{ course.id }}">

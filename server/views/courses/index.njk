@@ -1,4 +1,4 @@
-{% from "./_courseSummary.njk" import courseSummary %}
+{% from "./_indexCourseSummary.njk" import indexCourseSummary %}
 
 {% extends "../partials/layout.njk" %}
 
@@ -10,7 +10,7 @@
 
   <div role="list">
     {% for course in courses %}
-      {{ courseSummary(course) }}
+      {{ indexCourseSummary(course) }}
 
       {% if loop.index < courses.length %}
         <div class="govuk-grid-row">
