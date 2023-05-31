@@ -58,7 +58,7 @@ export default {
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
     accreditedProgrammesApi: {
-      url: get('ACCREDITED_PROGRAMMES_API_URL', 'http://localhost:9092', requiredInProduction),
+      url: get('ACCREDITED_PROGRAMMES_API_URL', 'http://localhost:9091', requiredInProduction),
       timeout: {
         response: Number(get('ACCREDITED_PROGRAMMES_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('ACCREDITED_PROGRAMMES_API_TIMEOUT_DEADLINE', 10000)),
@@ -66,7 +66,7 @@ export default {
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
     },
     prisonApi: {
-      url: get('PRISON_API_URL', 'http://localhost:9091', requiredInProduction),
+      url: get('PRISON_API_URL', 'http://localhost:9092', requiredInProduction),
       timeout: {
         response: Number(get('PRISON_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISON_API_TIMEOUT_DEADLINE', 10000)),

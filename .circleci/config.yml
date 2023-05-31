@@ -62,7 +62,7 @@ jobs:
 
   unit_test:
     environment:
-      PACT_BROKER_BASE_URL: "https://pact-broker-prod.apps.live-1.cloud-platform.service.justice.gov.uk"
+      PACT_BROKER_BASE_URL: 'https://pact-broker-prod.apps.live-1.cloud-platform.service.justice.gov.uk'
     executor:
       name: hmpps/node
       tag: << pipeline.parameters.node-version >>
@@ -91,7 +91,7 @@ jobs:
     executor:
       name: hmpps/node_redis
       node_tag: << pipeline.parameters.node-version >>
-      redis_tag: "6.2"
+      redis_tag: '6.2'
     steps:
       - checkout
       - attach_workspace:
@@ -106,7 +106,7 @@ jobs:
           command: curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
       - run:
           name: Run wiremock
-          command: java -jar wiremock.jar --port 9091
+          command: java -jar wiremock.jar --port 9199
           background: true
       - run:
           name: Run the node app.
@@ -148,7 +148,7 @@ jobs:
 
   tag_pact_version:
     environment:
-      PACT_BROKER_BASE_URL: "https://pact-broker-prod.apps.live-1.cloud-platform.service.justice.gov.uk"
+      PACT_BROKER_BASE_URL: 'https://pact-broker-prod.apps.live-1.cloud-platform.service.justice.gov.uk'
     executor:
       name: hmpps/node
       tag: 16.17-browsers
@@ -188,7 +188,7 @@ workflows:
                 - main
       - hmpps/deploy_env:
           name: deploy_dev
-          env: "dev"
+          env: 'dev'
           jira_update: true
           context: hmpps-common-vars
           filters:
@@ -210,47 +210,47 @@ workflows:
           requires:
             - deploy_dev
       - tag_pact_version:
-          name: "tag_pact_version_dev"
-          tag: "deployed:dev"
+          name: 'tag_pact_version_dev'
+          tag: 'deployed:dev'
           requires: [deploy_dev]
           context: [hmpps-common-vars]
-#      - request-preprod-approval:
-#          type: approval
-#          requires:
-#            - deploy_dev
-#      - hmpps/deploy_env:
-#          name: deploy_preprod
-#          env: "preprod"
-#          jira_update: true
-#          jira_env_type: staging
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-accredited-programmes-ui-preprod
-#          requires:
-#            - request-preprod-approval
-#          helm_timeout: 5m
-#      - request-prod-approval:
-#          type: approval
-#          requires:
-#            - deploy_preprod
-#      - hmpps/deploy_env:
-#          name: deploy_prod
-#          env: "prod"
-#          jira_update: true
-#          jira_env_type: production
-#          slack_notification: true
-#          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-accredited-programmes-ui-prod
-#          requires:
-#            - request-prod-approval
-#          helm_timeout: 5m
+  #      - request-preprod-approval:
+  #          type: approval
+  #          requires:
+  #            - deploy_dev
+  #      - hmpps/deploy_env:
+  #          name: deploy_preprod
+  #          env: "preprod"
+  #          jira_update: true
+  #          jira_env_type: staging
+  #          context:
+  #            - hmpps-common-vars
+  #            - hmpps-accredited-programmes-ui-preprod
+  #          requires:
+  #            - request-preprod-approval
+  #          helm_timeout: 5m
+  #      - request-prod-approval:
+  #          type: approval
+  #          requires:
+  #            - deploy_preprod
+  #      - hmpps/deploy_env:
+  #          name: deploy_prod
+  #          env: "prod"
+  #          jira_update: true
+  #          jira_env_type: production
+  #          slack_notification: true
+  #          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
+  #          context:
+  #            - hmpps-common-vars
+  #            - hmpps-accredited-programmes-ui-prod
+  #          requires:
+  #            - request-prod-approval
+  #          helm_timeout: 5m
 
   security:
     triggers:
       - schedule:
-          cron: "58 6 * * 1-5"
+          cron: '58 6 * * 1-5'
           filters:
             branches:
               only:
@@ -276,7 +276,7 @@ workflows:
   security-weekly:
     triggers:
       - schedule:
-          cron: "19 6 * * 1"
+          cron: '19 6 * * 1'
           filters:
             branches:
               only:

@@ -1,7 +1,7 @@
 import type { Response, SuperAgentRequest } from 'superagent'
 import superagent from 'superagent'
 
-const wiremockEndpoint = process.env.CYPRESS ? 'http://localhost:9091' : 'http://localhost:9093'
+const wiremockEndpoint = process.env.CYPRESS ? 'http://localhost:9199' : 'http://localhost:9099'
 
 const url = `${wiremockEndpoint}/__admin`
 

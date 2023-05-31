@@ -28,7 +28,7 @@ script/bootstrap
 
 ### With the current API
 
-To start Docker, run all backing services including a local copy of the current API (port 9092), and then the application itself, run:
+To start Docker, run all backing services including a local copy of the Accredited Programmes API (port 9091) and the Prison API (port 9092), and then the application itself, run:
 
 ```bash
   script/server
@@ -36,7 +36,7 @@ To start Docker, run all backing services including a local copy of the current 
 
 ### With a mocked API
 
-To run the application as above but with a mocked API (port 9093), run:
+To run the application as above but with a mocked Accredited Programmes API (port 9099), run:
 
 ```bash
 script/server --mock-api
@@ -59,7 +59,7 @@ dependencies. If you want skip the update when running the full test suite, run:
   script/test --skip-update
 ```
 
-The API will run on port 9091 in the test environment.
+The Accredited Programmes API will run on port 9199 in the test environment.
 
 ### Running unit tests
 
