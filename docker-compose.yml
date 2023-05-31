@@ -10,19 +10,6 @@ services:
     ports:
       - '6379:6379'
 
-  hmpps-accredited-programmes-api:
-    image: quay.io/hmpps/hmpps-accredited-programmes-api:latest
-    restart: always
-    networks:
-      - hmpps
-    container_name: accredited-programmes-api
-    ports:
-      - '9091:8080'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-    environment:
-      - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
-
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest
     networks:
@@ -35,6 +22,19 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
+
+  hmpps-accredited-programmes-api:
+    image: quay.io/hmpps/hmpps-accredited-programmes-api:latest
+    restart: always
+    networks:
+      - hmpps
+    container_name: accredited-programmes-api
+    ports:
+      - '9091:8080'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+    environment:
+      - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
 
   prison-api:
     image: quay.io/hmpps/prison-api:latest
