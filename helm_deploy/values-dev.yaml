@@ -9,11 +9,11 @@ generic-service:
     tlsSecretName: hmpps-accredited-programmes-dev-cert
 
   env:
-    ACCREDITED_PROGRAMMES_API_URL: "https://accredited-programmes-api-dev.hmpps.service.justice.gov.uk"
-    INGRESS_URL: "https://accredited-programmes-dev.hmpps.service.justice.gov.uk"
-    HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
-    PRISON_API_URL: "https://api-dev.prison.service.justice.gov.uk"
+    ACCREDITED_PROGRAMMES_API_URL: 'https://accredited-programmes-api-dev.hmpps.service.justice.gov.uk'
+    INGRESS_URL: 'https://accredited-programmes-dev.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
+    PRISON_API_URL: 'https://api-dev.prison.service.justice.gov.uk'
 
   allowlist: null
 
