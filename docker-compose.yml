@@ -18,7 +18,7 @@ services:
       - hmpps
     container_name: accredited-programmes-api
     ports:
-      - "9092:8080"
+      - "9091:8080"
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
     environment:
@@ -43,7 +43,7 @@ services:
       - hmpps
     container_name: prison-api
     ports:
-      - "9091:8080"
+      - "9092:8080"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
     environment:
@@ -56,7 +56,7 @@ services:
     container_name: wiremock
     restart: always
     ports:
-      - "9093:8080"
+      - "9099:8080"
 
   app:
     build: .
