@@ -1,13 +1,16 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% macro courseSummary(courseListItem) %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds" role="listitem">
-      <a class="govuk-link" href="#">
-        <h2>{{ courseListItem.name }}</h2>
-      </a>
+{% extends "../partials/layout.njk" %}
 
+{% set pageTitle = applicationName + " - " + course.name %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <h1>{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
       <p class="govuk-body">
         {{ govukTag({text: "SEXUAL OFFENCE", classes: "govuk-tag--red"}) }}
         {{ govukTag({text: "EXTREMISM", classes: "govuk-tag--blue"}) }}
@@ -15,12 +18,20 @@
         {{ govukTag({text: "GENERAL VIOLENCE", classes: "govuk-tag--purple"}) }}
       </p>
 
-      <p class="govuk-body">{{ courseListItem.description }}</p>
+      <h2>Programme criteria</h2>
 
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',
-        rows: courseListItem.prerequisitesSummaryListRows
+        rows: course.prerequisiteSummaryListRows
       }) }}
+
+      <h2>Programme description</h2>
+
+      <p class="govuk-body">{{ course.description }}</p>
+
+      <h2>Locations</h2>
+
+      {% include "./_locationsTable.njk" %}
     </div>
   </div>
-{% endmacro %}
+{% endblock content %}

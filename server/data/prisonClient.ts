@@ -1,3 +1,5 @@
+import createError from 'http-errors'
+
 import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
@@ -11,7 +13,17 @@ export default class PrisonClient {
     this.restClient = new RestClient('prisonClient', config.apis.prisonApi as ApiConfig, token)
   }
 
-  async getPrison(agencyId: string): Promise<Prison> {
-    return (await this.restClient.get({ path: paths.prisons.show({ agencyId }) })) as Prison
+  async getPrison(agencyId: string): Promise<Prison | null> {
+    try {
+      return (await this.restClient.get({ path: paths.prisons.show({ agencyId }) })) as Prison
+    } catch (error) {
+      if (error.status === 404) {
+        return null
+      }
+
+      throw createError(error.status || 500, error, {
+        userMessage: 'Could not get prison from Prison API.',
+      })
+    }
   }
 }

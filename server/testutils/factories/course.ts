@@ -6,6 +6,7 @@ import { convertToTitleCase } from '../../utils/utils'
 import type { Course } from '@accredited-programmes/models'
 
 export default Factory.define<Course>(() => ({
+  id: faker.string.uuid(),
   name: `${convertToTitleCase(faker.color.human())} Course`,
   type: 'Accredited Programme',
   description: faker.lorem.sentences(),

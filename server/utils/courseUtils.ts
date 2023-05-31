@@ -1,7 +1,5 @@
-import { omit } from 'lodash'
-
 import type { Course, CoursePrerequisite } from '@accredited-programmes/models'
-import type { CourseListItem, SummaryListRow } from '@accredited-programmes/ui'
+import type { CourseWithPrerequisiteSummaryListRows, SummaryListRow } from '@accredited-programmes/ui'
 
 const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): Array<SummaryListRow> => {
   return prerequisites.map(prerequisite => {
@@ -12,15 +10,11 @@ const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): 
   })
 }
 
-const courseListItems = (courses: Array<Course>): Array<CourseListItem> => {
-  return courses.map(course => {
-    const prerequisitesSummaryListRows = prerequisiteSummaryListRows(course.coursePrerequisites)
-
-    return {
-      ...omit(course, ['coursePrerequisites']),
-      prerequisitesSummaryListRows,
-    }
-  })
+const courseWithPrerequisiteSummaryListRows = (course: Course): CourseWithPrerequisiteSummaryListRows => {
+  return {
+    ...course,
+    prerequisiteSummaryListRows: prerequisiteSummaryListRows(course.coursePrerequisites),
+  }
 }
 
-export { courseListItems, prerequisiteSummaryListRows }
+export default courseWithPrerequisiteSummaryListRows

@@ -1,0 +1,26 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% macro indexCourseSummary(course) %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds" role="listitem">
+      <a class="govuk-link" href="/programmes/{{ course.id }}">
+        <h2>{{ course.name }}</h2>
+      </a>
+
+      <p class="govuk-body">
+        {{ govukTag({text: "SEXUAL OFFENCE", classes: "govuk-tag--red"}) }}
+        {{ govukTag({text: "EXTREMISM", classes: "govuk-tag--blue"}) }}
+        {{ govukTag({text: "INTIMATE PARTNER VIOLENCE", classes: "govuk-tag--green"}) }}
+        {{ govukTag({text: "GENERAL VIOLENCE", classes: "govuk-tag--purple"}) }}
+      </p>
+
+      <p class="govuk-body">{{ course.description }}</p>
+
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border',
+        rows: course.prerequisiteSummaryListRows
+      }) }}
+    </div>
+  </div>
+{% endmacro %}

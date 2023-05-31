@@ -9,7 +9,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.index,
+        url: paths.courses.index({}),
       },
       response: {
         status: 200,
