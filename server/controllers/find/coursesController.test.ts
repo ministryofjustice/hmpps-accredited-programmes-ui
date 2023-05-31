@@ -6,7 +6,7 @@ import { when } from 'jest-when'
 import CoursesController from './coursesController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
-import courseWithPrerequisiteSummaryListRows from '../../utils/courseUtils'
+import presentCourse from '../../utils/courseUtils'
 import organisationTableRows from '../../utils/organisationUtils'
 import type { Course } from '@accredited-programmes/models'
 
@@ -30,17 +30,13 @@ describe('CoursesController', () => {
       const courses = courseFactory.buildList(3)
       courseService.getCourses.mockResolvedValue(courses)
 
-      const coursesWithPrerequisiteSummaryListRows = courses.map(course =>
-        courseWithPrerequisiteSummaryListRows(course),
-      )
-
       const requestHandler = coursesController.index()
 
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         pageHeading: 'List of accredited programmes',
-        courses: coursesWithPrerequisiteSummaryListRows,
+        courses: courses.map(course => presentCourse(course)),
       })
 
       expect(courseService.getCourses).toHaveBeenCalledWith(token)
@@ -79,7 +75,7 @@ describe('CoursesController', () => {
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           pageHeading: course.name,
-          course: courseWithPrerequisiteSummaryListRows(course),
+          course: presentCourse(course),
           organisationsTableData: organisationTableRows(course, organisations),
         })
       })
@@ -117,7 +113,7 @@ describe('CoursesController', () => {
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           pageHeading: course.name,
-          course: courseWithPrerequisiteSummaryListRows(course),
+          course: presentCourse(course),
           organisationsTableData: organisationTableRows(course, existingOrganisations),
         })
       })

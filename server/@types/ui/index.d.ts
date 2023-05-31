@@ -1,7 +1,10 @@
 import type { Course } from '@accredited-programmes/models'
 
-type CourseWithPrerequisiteSummaryListRows = Course & {
-  prerequisiteSummaryListRows: Array<SummaryListRow>
+type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
+
+type Tag = {
+  text: string
+  classes: `govuk-tag govuk-tag--${TagColour}`
 }
 
 type SummaryListRow = {
@@ -25,4 +28,9 @@ type TableCell = TableCellWithText | TableCellWithHtml
 
 type TableRow = Array<TableCell>
 
-export type { CourseWithPrerequisiteSummaryListRows, SummaryListRow, TableRow }
+type CoursePresenter = Course & {
+  audienceTags: Array<Tag>
+  prerequisiteSummaryListRows: Array<SummaryListRow>
+}
+
+export type { CoursePresenter, SummaryListRow, TableRow, Tag, TagColour }

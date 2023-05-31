@@ -1,5 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% from "./_audienceTags.njk" import audienceTags %}
 
 {% extends "../partials/layout.njk" %}
 
@@ -11,12 +12,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <p class="govuk-body">
-        {{ govukTag({text: "SEXUAL OFFENCE", classes: "govuk-tag--red"}) }}
-        {{ govukTag({text: "EXTREMISM", classes: "govuk-tag--blue"}) }}
-        {{ govukTag({text: "INTIMATE PARTNER VIOLENCE", classes: "govuk-tag--green"}) }}
-        {{ govukTag({text: "GENERAL VIOLENCE", classes: "govuk-tag--purple"}) }}
-      </p>
+      {{ audienceTags(course.audienceTags) }}
 
       <h2>Programme criteria</h2>
 

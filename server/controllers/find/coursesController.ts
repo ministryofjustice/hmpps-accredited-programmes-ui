@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService } from '../../services'
-import courseWithPrerequisiteSummaryListRows from '../../utils/courseUtils'
+import presentCourse from '../../utils/courseUtils'
 import organisationTableRows from '../../utils/organisationUtils'
 import type { CourseOffering } from '@accredited-programmes/models'
 
@@ -14,13 +14,10 @@ export default class CoursesController {
   index(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       const courses = await this.courseService.getCourses(req.user.token)
-      const coursesWithPrerequisiteSummaryListRows = courses.map(course =>
-        courseWithPrerequisiteSummaryListRows(course),
-      )
 
       res.render('courses/index', {
         pageHeading: 'List of accredited programmes',
-        courses: coursesWithPrerequisiteSummaryListRows,
+        courses: courses.map(course => presentCourse(course)),
       })
     }
   }
@@ -40,7 +37,7 @@ export default class CoursesController {
 
       res.render('courses/show', {
         pageHeading: course.name,
-        course: courseWithPrerequisiteSummaryListRows(course),
+        course: presentCourse(course),
         organisationsTableData,
       })
     }
