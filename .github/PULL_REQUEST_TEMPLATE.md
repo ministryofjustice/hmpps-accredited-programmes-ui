@@ -12,7 +12,7 @@
 
 ### After
 
-## Pre merge checklist
+## Post-merge checklist
 
 - [ ] Have you written an end-to-end test for the happy path in the [Accredited
   Programmes E2E
