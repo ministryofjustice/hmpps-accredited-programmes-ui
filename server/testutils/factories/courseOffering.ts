@@ -9,6 +9,4 @@ export default Factory.define<CourseOffering>(() => ({
   id: faker.string.uuid(),
   organisationId: faker.string.alpha({ length: 3, casing: 'upper' }),
   contactEmail: `nobody-${organisationId.toLowerCase()}@digital.justice.gov.uk`,
-  duration: 'PT240H',
-  groupSize: faker.number.int({ min: 4, max: 20 }),
 }))

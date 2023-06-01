@@ -2,7 +2,6 @@
   {
     "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
     "name": "Becoming New Me Plus",
-    "type": "Accredited Programme",
     "description": "Becoming New Me Plus (BNM+) is a programme...",
     "audiences": [
       {
@@ -32,7 +31,6 @@
   {
     "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
     "name": "Becoming New Me Plus",
-    "type": "Accredited Programme",
     "description": "Becoming New Me Plus (BNM+) is a programme...",
     "audiences": [
       {
@@ -58,7 +56,6 @@
   {
     "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
     "name": "Building Better Relationships (BBR)",
-    "type": "Accredited Programme",
     "description": "BBR is a programme...",
     "audiences": [
       {
@@ -84,7 +81,6 @@
   {
     "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
     "name": "Healthy Identity Intervention (HII)",
-    "type": "Accredited Programme",
     "description": "HII is a programme...",
     "audiences": [
       {
@@ -110,7 +106,6 @@
   {
     "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
     "name": "Healthy Sex Programme (HSP)",
-    "type": "Accredited Programme",
     "description": "HSP is a programme...",
     "audiences": [
       {
