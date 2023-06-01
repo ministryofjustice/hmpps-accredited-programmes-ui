@@ -1,4 +1,4 @@
-import courseWithPrerequisiteSummaryListRows from '../../../server/utils/courseUtils'
+import presentCourse from '../../../server/utils/courseUtils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'
 
@@ -10,18 +10,12 @@ export default class CoursesPage extends Page {
   shouldHaveCourses(courses: Array<Course>) {
     cy.get('div[role=listitem]').each((courseElement, courseElementIndex) => {
       cy.wrap(courseElement).within(() => {
-        const course = courseWithPrerequisiteSummaryListRows(courses[courseElementIndex])
+        const course = presentCourse(courses[courseElementIndex])
 
         cy.get('h2').should('have.text', course.name)
 
-        // TODO: update the following once API/model is updated
-        const hardcodedTags = ['SEXUAL OFFENCE', 'EXTREMISM', 'INTIMATE PARTNER VIOLENCE', 'GENERAL VIOLENCE']
-
-        cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
-          cy.wrap(tagElement).then(wrappedTagElement => {
-            const { actual, expected } = this.parseHtml(wrappedTagElement, hardcodedTags[tagElementIndex])
-            expect(actual).to.equal(expected)
-          })
+        cy.get('p:first-of-type').then(tagContainerElement => {
+          this.shouldContainTags(course.audienceTags, tagContainerElement)
         })
 
         cy.get('p:nth-of-type(2)').should('have.text', course.description)

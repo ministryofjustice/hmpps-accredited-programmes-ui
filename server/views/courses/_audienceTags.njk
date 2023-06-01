@@ -1,0 +1,9 @@
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% macro audienceTags(audienceTagData) %}
+  <p class="govuk-body">
+    {% for tag in audienceTagData %}
+      {{ govukTag({text: tag.text, classes: tag.classes}) }}
+    {% endfor %}
+  </p>
+{% endmacro %}

@@ -1,4 +1,4 @@
-import type { SummaryListRow } from '@accredited-programmes/ui'
+import type { SummaryListRow, Tag } from '@accredited-programmes/ui'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -48,6 +48,17 @@ export default abstract class Page {
             expect(actual).to.equal(expected)
           })
         })
+      })
+    })
+  }
+
+  shouldContainTags(tags: Array<Tag>, tagContainerElement: JQuery<HTMLElement>): void {
+    cy.wrap(tagContainerElement).within(() => {
+      cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
+        const tag = tags[tagElementIndex]
+        const { actual, expected } = this.parseHtml(tagElement, tag.text)
+        expect(actual).to.equal(expected)
+        cy.wrap(tagElement).should('have.class', tag.classes)
       })
     })
   }

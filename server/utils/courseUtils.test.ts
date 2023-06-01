@@ -1,13 +1,28 @@
-import courseWithPrerequisiteSummaryListRows from './courseUtils'
-import { courseFactory } from '../testutils/factories'
+import presentCourse from './courseUtils'
+import { courseAudienceFactory, courseFactory } from '../testutils/factories'
 
 describe('courseUtils', () => {
-  describe('courseWithPrerequisiteSummaryListRows', () => {
-    it('adds prerequisite summary list rows to a course', () => {
-      const course = courseFactory.build()
+  describe('presentCourse', () => {
+    it('returns a course with UI-formatted audience and prerequisite data', () => {
+      const course = courseFactory.build({
+        audiences: [
+          courseAudienceFactory.build({ value: 'Intimate partner violence' }),
+          courseAudienceFactory.build({ value: 'General violence' }),
+        ],
+      })
 
-      expect(courseWithPrerequisiteSummaryListRows(course)).toEqual({
+      expect(presentCourse(course)).toEqual({
         ...course,
+        audienceTags: [
+          {
+            text: 'Intimate partner violence',
+            classes: 'govuk-tag govuk-tag--green',
+          },
+          {
+            text: 'General violence',
+            classes: 'govuk-tag govuk-tag--purple',
+          },
+        ],
         prerequisiteSummaryListRows: [
           {
             key: { text: course.coursePrerequisites[0].name },
