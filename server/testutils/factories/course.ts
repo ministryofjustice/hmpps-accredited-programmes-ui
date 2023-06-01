@@ -10,7 +10,6 @@ import type { Course } from '@accredited-programmes/models'
 export default Factory.define<Course>(({ params }) => ({
   id: faker.string.uuid(),
   name: `${convertToTitleCase(faker.color.human())} Course`,
-  type: 'Accredited Programme',
   description: faker.lorem.sentences(),
   audiences: params.audiences || buildListBetween(courseAudienceFactory, { min: 1, max: 3 }),
   coursePrerequisites: [
