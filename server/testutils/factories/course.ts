@@ -7,11 +7,11 @@ import buildListBetween from './factoryHelpers'
 import { convertToTitleCase } from '../../utils/utils'
 import type { Course } from '@accredited-programmes/models'
 
-export default Factory.define<Course>(({ params }) => ({
+export default Factory.define<Course>(() => ({
   id: faker.string.uuid(),
   name: `${convertToTitleCase(faker.color.human())} Course`,
   description: faker.lorem.sentences(),
-  audiences: params.audiences || buildListBetween(courseAudienceFactory, { min: 1, max: 3 }),
+  audiences: buildListBetween(courseAudienceFactory, { min: 1, max: 3 }),
   coursePrerequisites: [
     coursePrerequisiteFactory.setting().build(),
     coursePrerequisiteFactory.riskCriteria().build(),

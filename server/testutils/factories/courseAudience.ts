@@ -3,15 +3,13 @@ import { Factory } from 'fishery'
 
 import type { CourseAudience } from '@accredited-programmes/models'
 
-export default Factory.define<CourseAudience>(({ params }) => ({
+export default Factory.define<CourseAudience>(() => ({
   id: faker.string.uuid(),
-  value:
-    params.value ||
-    faker.helpers.arrayElement([
-      'Extremism',
-      'General violence',
-      'Intimate partner violence',
-      'Online sexual violence',
-      'Sexual violence',
-    ]),
+  value: faker.helpers.arrayElement([
+    'Extremism',
+    'General violence',
+    'Intimate partner violence',
+    'Online sexual violence',
+    'Sexual violence',
+  ]),
 }))
