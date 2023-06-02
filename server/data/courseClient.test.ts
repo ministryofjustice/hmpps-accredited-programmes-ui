@@ -17,11 +17,15 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   const allCourses = courseFactory.buildList(3)
+  const course = courseFactory.build({
+    id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8',
+  })
+  const courseOfferings = courseOfferingFactory.buildList(3)
 
   describe('all', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Server is healthy',
+        state: 'Courses exist on the API',
         uponReceiving: 'A request for all courses',
         withRequest: {
           method: 'GET',
@@ -44,59 +48,55 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
-  const firstCourse = allCourses[0]
-
   describe('show', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Server is healthy',
-        uponReceiving: 'A request for one course',
+        state: `A course exists with ID ${course.id}`,
+        uponReceiving: `A request for course "${course.id}"`,
         withRequest: {
           method: 'GET',
-          path: paths.courses.show({ id: firstCourse.id }),
+          path: paths.courses.show({ id: course.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
         },
         willRespondWith: {
           status: 200,
-          body: Matchers.like(firstCourse),
+          body: Matchers.like(course),
         },
       })
     })
 
     it('should fetch the given course', async () => {
-      const result = await courseClient.find(firstCourse.id)
+      const result = await courseClient.find(course.id)
 
-      expect(result).toEqual(firstCourse)
+      expect(result).toEqual(course)
     })
   })
-
-  const firstCoursesOfferings = courseOfferingFactory.buildList(10)
 
   describe('offerings', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Server is healthy',
-        uponReceiving: "A request for one course's offerings",
+        state: `Offerings exist for a course with ID ${course.id}`,
+        uponReceiving: `A request for course "${course.id}"'s offerings`,
         withRequest: {
           method: 'GET',
-          path: paths.courses.offerings({ id: firstCourse.id }),
+          path: paths.courses.offerings({ id: course.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
         },
         willRespondWith: {
           status: 200,
-          body: Matchers.like(firstCoursesOfferings),
+          body: Matchers.like(courseOfferings),
         },
       })
     })
 
     it('should fetch the given course', async () => {
-      const result = await courseClient.findOfferings(firstCourse.id)
+      const result = await courseClient.findOfferings(course.id)
 
-      expect(result).toEqual(firstCoursesOfferings)
+      expect(result).toEqual(courseOfferings)
     })
   })
 })
