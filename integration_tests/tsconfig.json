@@ -7,11 +7,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "typeRoots": ["../server/@types"],
-    "baseUrl": "..",
     "paths": {
-      "@accredited-programmes/models": ["server/@types/models/index.d.ts"],
-      "@accredited-programmes/ui": ["server/@types/ui/index.d.ts"],
-      "@prison-api": ["server/@types/prisonApi/index.d.ts"]
+      "@accredited-programmes/models": ["../server/@types/models/index.d.ts"],
+      "@accredited-programmes/ui": ["../server/@types/ui/index.d.ts"],
+      "@prison-api": ["../server/@types/prisonApi/index.d.ts"]
     }
   },
   "include": ["**/*.ts"]
