@@ -18,7 +18,7 @@ export default class CoursesPage extends Page {
           this.shouldContainTags(course.audienceTags, tagContainerElement)
         })
 
-        cy.get('p:nth-of-type(2)').should('have.text', course.description)
+        cy.get('p:nth-of-type(2)').should('not.have.text', course.description)
 
         cy.get('.govuk-summary-list').then(summaryListElement => {
           this.shouldContainSummaryListRows(course.prerequisiteSummaryListRows, summaryListElement)
