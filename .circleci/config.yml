@@ -119,11 +119,11 @@ jobs:
           name: integration tests
           command: npm run int-test:ci
       - store_test_results:
-          path: integration_test_results
+          path: test_results
       - store_artifacts:
-          path: integration_test_results/videos
+          path: test_results/videos
       - store_artifacts:
-          path: integration_test_results/screenshots
+          path: test_results/screenshots
 
   end_to_end_test:
     docker:
