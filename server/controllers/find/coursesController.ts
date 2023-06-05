@@ -3,7 +3,8 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import type { CourseService, OrganisationService } from '../../services'
 import presentCourse from '../../utils/courseUtils'
 import organisationTableRows from '../../utils/organisationUtils'
-import type { CourseOffering } from '@accredited-programmes/models'
+import isNotNull from '../../utils/typeUtils'
+import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
 export default class CoursesController {
   constructor(
@@ -31,7 +32,9 @@ export default class CoursesController {
         return this.organisationService.getOrganisation(req.user.token, offering.organisationId)
       })
 
-      const organisations = (await Promise.all(unresolvedOrganisationPromises)).filter(organisation => organisation)
+      const organisations: Array<Organisation> = (await Promise.all(unresolvedOrganisationPromises)).filter(
+        isNotNull<Organisation>,
+      )
 
       const organisationsTableData = organisationTableRows(course, organisations)
 
