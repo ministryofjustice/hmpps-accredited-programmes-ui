@@ -1,4 +1,5 @@
 import createError from 'http-errors'
+import type { ResponseError } from 'superagent'
 
 import RestClient from './restClient'
 import type { ApiConfig } from '../config'
@@ -17,11 +18,13 @@ export default class PrisonClient {
     try {
       return (await this.restClient.get({ path: paths.prisons.show({ agencyId }) })) as Prison
     } catch (error) {
-      if (error.status === 404) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
         return null
       }
 
-      throw createError(error.status || 500, error, {
+      throw createError(knownError.status || 500, knownError, {
         userMessage: 'Could not get prison from Prison API.',
       })
     }
