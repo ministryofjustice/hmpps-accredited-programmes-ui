@@ -38,7 +38,7 @@ export default class CoursePage extends Page {
         cy.wrap(tableRowElement).within(() => {
           cy.get('.govuk-table__cell:first-of-type').should('have.text', prison.premise)
           cy.get('.govuk-table__cell:nth-of-type(2)').should('have.text', 'N/A')
-          cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', primaryAddress.locality || 'Not found')
+          cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', primaryAddress?.locality || 'Not found')
           cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', `Contact prison (${prison.premise})`)
           cy.get('.govuk-table__cell:nth-of-type(4) a').should(
             'have.attr',

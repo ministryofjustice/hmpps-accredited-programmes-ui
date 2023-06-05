@@ -32,11 +32,11 @@ describe('OrganisationService', () => {
           name: prison.premise,
           category: 'N/A',
           address: {
-            addressLine1: primaryAddress.street,
-            town: primaryAddress.town,
-            county: primaryAddress.locality,
-            postalCode: primaryAddress.postalCode,
-            country: primaryAddress.country,
+            addressLine1: primaryAddress?.street,
+            town: primaryAddress?.town,
+            county: primaryAddress?.locality,
+            postalCode: primaryAddress?.postalCode,
+            country: primaryAddress?.country,
           },
         })
 
