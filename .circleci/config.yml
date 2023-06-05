@@ -117,13 +117,13 @@ jobs:
           command: sleep 5
       - run:
           name: integration tests
-          command: npm run int-test
+          command: npm run int-test:ci
       - store_test_results:
-          path: test_results
+          path: integration_test_results
       - store_artifacts:
-          path: integration-tests/videos
+          path: integration_test_results/videos
       - store_artifacts:
-          path: integration-tests/screenshots
+          path: integration_test_results/screenshots
 
   end_to_end_test:
     docker:
