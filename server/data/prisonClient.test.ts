@@ -3,7 +3,7 @@ import nock from 'nock'
 
 import PrisonClient from './prisonClient'
 import config from '../config'
-import prisonFactory from '../testutils/factories/prison'
+import { prisonFactory } from '../testutils/factories'
 import type { Prison } from '@prison-api'
 
 describe('PrisonClient', () => {

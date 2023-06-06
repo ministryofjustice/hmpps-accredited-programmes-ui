@@ -1,6 +1,6 @@
 import OrganisationService from './organisationService'
 import PrisonClient from '../data/prisonClient'
-import prisonFactory from '../testutils/factories/prison'
+import { prisonFactory } from '../testutils/factories'
 
 jest.mock('../data/prisonClient')
 

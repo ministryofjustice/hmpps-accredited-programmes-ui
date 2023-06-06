@@ -2,6 +2,7 @@ import { defineConfig } from 'cypress'
 
 import auth from './integration_tests/mockApis/auth'
 import courses from './integration_tests/mockApis/courses'
+import prisons from './integration_tests/mockApis/prisons'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import { resetStubs } from './wiremock'
 
@@ -25,6 +26,7 @@ export default defineConfig({
         reset: resetStubs,
         ...auth,
         ...courses,
+        ...prisons,
         ...tokenVerification,
       })
     },
