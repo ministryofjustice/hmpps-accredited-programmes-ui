@@ -3,7 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import type { CourseService, OrganisationService } from '../../services'
 import presentCourse from '../../utils/courseUtils'
 import organisationTableRows from '../../utils/organisationUtils'
-import isNotNull from '../../utils/typeUtils'
+import { assertHasUser, isNotNull } from '../../utils/typeUtils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
 export default class CoursesController {
@@ -14,6 +14,8 @@ export default class CoursesController {
 
   index(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
+      assertHasUser(req)
+
       const courses = await this.courseService.getCourses(req.user.token)
 
       res.render('courses/index', {
@@ -25,6 +27,8 @@ export default class CoursesController {
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
+      assertHasUser(req)
+
       const course = await this.courseService.getCourse(req.user.token, req.params.id)
       const offerings = await this.courseService.getOfferingsByCourse(req.user.token, course.id)
 
