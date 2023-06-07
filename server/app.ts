@@ -9,6 +9,7 @@ import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
 import setUpCurrentUser from './middleware/setUpCurrentUser'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
+import { setUpSentryErrorHandler, setUpSentryRequestHandler } from './middleware/setUpSentry'
 import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
@@ -25,6 +26,9 @@ export default function createApp(controllers: Controllers, services: Services):
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
+  // The Sentry request handler must be the first middleware on the app
+  setUpSentryRequestHandler(app)
+
   app.use(metricsMiddleware)
   app.use(setUpHealthChecks())
   app.use(setUpWebSecurity())
@@ -40,6 +44,8 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(routes(controllers))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
+  // The Sentry error handler must be before any other error middleware and after all controllers
+  setUpSentryErrorHandler(app)
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
 
   return app
