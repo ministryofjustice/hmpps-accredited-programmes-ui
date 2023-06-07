@@ -1,5 +1,6 @@
 import type { RestClientBuilder } from '../data'
 import type PrisonClient from '../data/prisonClient'
+import { organisationFromPrison } from '../utils/organisationUtils'
 import type { Organisation } from '@accredited-programmes/models'
 
 export default class OrganisationService {
@@ -13,19 +14,6 @@ export default class OrganisationService {
       return null
     }
 
-    const primaryAddress = prison.addresses.find(address => address.primary)
-
-    return {
-      id,
-      name: prison.premise,
-      category: 'N/A',
-      address: {
-        addressLine1: primaryAddress?.street || 'Not found',
-        town: primaryAddress?.town || 'Not found',
-        county: primaryAddress?.locality || 'Not found',
-        postalCode: primaryAddress?.postalCode || 'Not found',
-        country: primaryAddress?.country || 'Not found',
-      },
-    }
+    return organisationFromPrison(id, prison)
   }
 }

@@ -1,7 +1,40 @@
-import organisationTableRows from './organisationUtils'
-import { courseFactory, organisationFactory } from '../testutils/factories'
+import { organisationFromPrison, organisationTableRows } from './organisationUtils'
+import { courseFactory, organisationFactory, prisonAddressFactory, prisonFactory } from '../testutils/factories'
 
 describe('organisationUtils', () => {
+  describe('organisationFromPrison', () => {
+    it('returns an organisation given an ID and a prison', () => {
+      const prison = prisonFactory.build({
+        premise: 'HMP Cardiff',
+        addresses: [
+          prisonAddressFactory.build({
+            street: 'Rabbit Avenue',
+            town: 'Leporidaeville',
+            locality: undefined,
+            postalCode: 'LM19 0PH',
+            primary: true,
+          }),
+          prisonAddressFactory.build({
+            primary: false,
+          }),
+        ],
+      })
+
+      expect(organisationFromPrison('an-ID', prison)).toEqual({
+        id: 'an-ID',
+        name: prison.premise,
+        category: 'N/A',
+        address: {
+          addressLine1: 'Rabbit Avenue',
+          town: 'Leporidaeville',
+          county: 'Not found',
+          postalCode: 'LM19 0PH',
+          country: 'United Kingdom',
+        },
+      })
+    })
+  })
+
   describe('organisationTableRows', () => {
     it('returns organisation data formatted for `govukTable` rows', () => {
       const course = courseFactory.build()
