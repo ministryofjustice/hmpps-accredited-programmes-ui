@@ -2,8 +2,7 @@ import paths from '../../../server/paths/find'
 import presentCourse from '../../../server/utils/courseUtils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'
-import type { CoursePresenter } from '@accredited-programmes/ui'
-import type { Prison } from '@prison-api'
+import type { CoursePresenter, OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 export default class CoursePage extends Page {
   course: CoursePresenter
@@ -27,23 +26,24 @@ export default class CoursePage extends Page {
     })
   }
 
-  shouldHavePrisons(prisons: Array<Prison>) {
-    const sortedPrisons = prisons.sort((prisonA, prisonB) => prisonA.premise.localeCompare(prisonB.premise))
+  shouldHaveOrganisations(organisationsWithOfferingIds: Array<OrganisationWithOfferingId>) {
+    const sortedOrganisations = organisationsWithOfferingIds.sort((organisationA, organisationB) =>
+      organisationA.name.localeCompare(organisationB.name),
+    )
 
     cy.get('.govuk-table__body').within(() => {
       cy.get('.govuk-table__row').each((tableRowElement, tableRowElementIndex) => {
-        const prison = sortedPrisons[tableRowElementIndex]
-        const primaryAddress = prison.addresses.find(address => address.primary)
+        const organisation = sortedOrganisations[tableRowElementIndex]
 
         cy.wrap(tableRowElement).within(() => {
-          cy.get('.govuk-table__cell:first-of-type').should('have.text', prison.premise)
+          cy.get('.govuk-table__cell:first-of-type').should('have.text', organisation.name)
           cy.get('.govuk-table__cell:nth-of-type(2)').should('have.text', 'N/A')
-          cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', primaryAddress?.locality || 'Not found')
-          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', `Contact prison (${prison.premise})`)
+          cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', organisation.address.county || 'Not found')
+          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', `Contact prison (${organisation.name})`)
           cy.get('.govuk-table__cell:nth-of-type(4) a').should(
             'have.attr',
             'href',
-            paths.courses.offerings.show({ id: this.course.id, organisationId: prison.agencyId }),
+            paths.courses.offerings.show({ id: this.course.id, courseOfferingId: organisation.courseOfferingId }),
           )
         })
       })

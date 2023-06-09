@@ -8,7 +8,8 @@ import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import presentCourse from '../../utils/courseUtils'
 import { organisationTableRows } from '../../utils/organisationUtils'
-import type { Course } from '@accredited-programmes/models'
+import type { Course, CourseOffering } from '@accredited-programmes/models'
+import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('CoursesController', () => {
   const token = 'SOME_TOKEN'
@@ -55,13 +56,16 @@ describe('CoursesController', () => {
       it('renders the course show template with all organisations', async () => {
         const organisations = organisationFactory.buildList(3)
 
+        const courseOfferings: Array<CourseOffering> = []
+        const organisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
+
         organisations.forEach(organisation => {
           when(organisationService.getOrganisation).calledWith(token, organisation.id).mockResolvedValue(organisation)
-        })
 
-        const courseOfferings = organisations.map(organisation =>
-          courseOfferingFactory.build({ organisationId: organisation.id }),
-        )
+          const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
+          courseOfferings.push(courseOffering)
+          organisationsWithOfferingIds.push({ ...organisation, courseOfferingId: courseOffering.id })
+        })
 
         courseService.getOfferingsByCourse.mockResolvedValue(courseOfferings)
 
@@ -76,7 +80,7 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           pageHeading: course.name,
           course: presentCourse(course),
-          organisationsTableData: organisationTableRows(course, organisations),
+          organisationsTableData: organisationTableRows(course, organisationsWithOfferingIds),
         })
       })
     })
@@ -87,9 +91,14 @@ describe('CoursesController', () => {
         const nonexistentOrganisation = organisationFactory.build({ id: 'NOTFOUND' })
         const allOrganisations = [...existingOrganisations, nonexistentOrganisation]
 
-        const courseOfferingsForExistingOrganisations = existingOrganisations.map(organisation =>
-          courseOfferingFactory.build({ organisationId: organisation.id }),
-        )
+        const courseOfferingsForExistingOrganisations: Array<CourseOffering> = []
+        const existingOrganisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
+
+        existingOrganisations.forEach(organisation => {
+          const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
+          courseOfferingsForExistingOrganisations.push(courseOffering)
+          existingOrganisationsWithOfferingIds.push({ ...organisation, courseOfferingId: courseOffering.id })
+        })
 
         const courseOfferingsForAllOrganisations = [
           ...courseOfferingsForExistingOrganisations,
@@ -114,7 +123,7 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           pageHeading: course.name,
           course: presentCourse(course),
-          organisationsTableData: organisationTableRows(course, existingOrganisations),
+          organisationsTableData: organisationTableRows(course, existingOrganisationsWithOfferingIds),
         })
       })
     })

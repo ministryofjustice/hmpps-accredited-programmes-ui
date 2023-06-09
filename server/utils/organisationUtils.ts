@@ -1,6 +1,6 @@
 import paths from '../paths/find'
 import type { Course, Organisation } from '@accredited-programmes/models'
-import type { TableRow } from '@accredited-programmes/ui'
+import type { OrganisationWithOfferingId, TableRow } from '@accredited-programmes/ui'
 import type { Prison } from '@prison-api'
 
 const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organisation => {
@@ -20,9 +20,12 @@ const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organis
   }
 }
 
-const organisationTableRows = (course: Course, organisations: Array<Organisation>): Array<TableRow> => {
+const organisationTableRows = (course: Course, organisations: Array<OrganisationWithOfferingId>): Array<TableRow> => {
   return organisations.map(organisation => {
-    const offeringPath = paths.courses.offerings.show({ id: course.id, organisationId: organisation.id })
+    const offeringPath = paths.courses.offerings.show({
+      id: course.id,
+      courseOfferingId: organisation.courseOfferingId,
+    })
     const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`
     const contactLink = `<a href="${offeringPath}" class="govuk-link">Contact prison ${visuallyHiddenPrisonInformation}</a>`
 

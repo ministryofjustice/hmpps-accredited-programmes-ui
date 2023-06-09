@@ -1,4 +1,4 @@
-import type { Course } from '@accredited-programmes/models'
+import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 
 type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
 
@@ -33,4 +33,8 @@ type CoursePresenter = Course & {
   prerequisiteSummaryListRows: Array<SummaryListRow>
 }
 
-export type { CoursePresenter, SummaryListRow, TableRow, Tag, TagColour }
+type OrganisationWithOfferingId = Organisation & {
+  courseOfferingId: CourseOffering['id']
+}
+
+export type { CoursePresenter, OrganisationWithOfferingId, SummaryListRow, TableRow, Tag, TagColour }

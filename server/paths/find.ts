@@ -3,7 +3,7 @@ import { path } from 'static-path'
 const coursesPath = path('/programmes')
 const coursePath = coursesPath.path(':id')
 
-const courseOfferingPath = coursePath.path('prison/:organisationId')
+const courseOfferingPath = coursePath.path('offerings/:courseOfferingId')
 
 export default {
   courses: {
