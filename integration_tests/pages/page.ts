@@ -39,8 +39,8 @@ export default abstract class Page {
     cy.wrap(buttonLinkElement).should('have.attr', 'href', href)
   }
 
-  shouldContainSummaryListRows(rows: Array<SummaryListRow>, summaryList: JQuery<HTMLElement>): void {
-    cy.wrap(summaryList).within(() => {
+  shouldContainSummaryListRows(rows: Array<SummaryListRow>, summaryListElement: JQuery<HTMLElement>): void {
+    cy.wrap(summaryListElement).within(() => {
       cy.get('.govuk-summary-list__row').each((rowElement, rowElementIndex) => {
         cy.wrap(rowElement).within(() => {
           const row = rows[rowElementIndex]
