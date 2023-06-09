@@ -48,7 +48,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
-  describe('show', () => {
+  describe('find', () => {
     beforeEach(() => {
       provider.addInteraction({
         state: `A course exists with ID ${course.id}`,
@@ -74,7 +74,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
-  describe('offerings', () => {
+  describe('findOfferings', () => {
     beforeEach(() => {
       provider.addInteraction({
         state: `Offerings exist for a course with ID ${course.id}`,
@@ -93,7 +93,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
     })
 
-    it('should fetch the given course', async () => {
+    it("should fetch the given course's offerings", async () => {
       const result = await courseClient.findOfferings(course.id)
 
       expect(result).toEqual(courseOfferings)
