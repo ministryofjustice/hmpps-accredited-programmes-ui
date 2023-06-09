@@ -1,3 +1,4 @@
+import type { HttpError } from 'http-errors'
 import createError from 'http-errors'
 import nock from 'nock'
 
@@ -64,8 +65,10 @@ describe('PrisonClient', () => {
         try {
           await prisonClient.getPrison(otherErrorPrisonId)
         } catch (error) {
-          expect(error.status).toEqual(500)
-          expect(error.userMessage).toEqual('Could not get prison from Prison API.')
+          const knownError = error as HttpError
+
+          expect(knownError.status).toEqual(500)
+          expect(knownError.userMessage).toEqual('Could not get prison from Prison API.')
         }
       })
     })

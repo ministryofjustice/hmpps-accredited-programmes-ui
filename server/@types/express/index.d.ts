@@ -25,6 +25,8 @@ export declare global {
       id: string
       logout(done: (err: unknown) => void): void
     }
+
+    type RequestWithUser = Request & { user: Express.User }
   }
 }
 

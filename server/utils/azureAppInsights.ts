@@ -24,7 +24,7 @@ function initialiseAppInsights(): void {
   }
 }
 
-function buildAppInsightsClient(name = defaultName()): TelemetryClient {
+function buildAppInsightsClient(name = defaultName()): TelemetryClient | null {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     defaultClient.context.tags['ai.cloud.role'] = name
     defaultClient.context.tags['ai.application.ver'] = version()

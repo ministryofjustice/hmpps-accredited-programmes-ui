@@ -24,7 +24,7 @@ describe('token verification api tests', () => {
 
       it('Token always considered valid', async () => {
         fakeApi.post('/token/verify', '').reply(200, { active: true })
-        const data = await verifyToken({} as Request)
+        const data = await verifyToken({ user: {} } as Request)
         expect(data).toEqual(true)
         expect(nock.isDone()).toBe(false) // assert api was not called
       })
@@ -55,7 +55,7 @@ describe('token verification api tests', () => {
 
       it('Already verified', async () => {
         fakeApi.post('/token/verify', '').reply(200, {})
-        const data = await verifyToken({ verified: true } as Request)
+        const data = await verifyToken({ user: {}, verified: true } as Request)
         expect(data).toEqual(true)
         expect(nock.isDone()).toBe(false) // assert api was not called
       })

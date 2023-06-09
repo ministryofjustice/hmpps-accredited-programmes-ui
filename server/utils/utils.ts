@@ -11,8 +11,8 @@ const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
  */
 const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
 
-const convertToTitleCase = (sentence: string): string =>
-  isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
+const convertToTitleCase = (sentence: string | null): string =>
+  sentence === null || isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
 
 const initialiseName = (fullName?: string): string | null => {
   // this check is for the authError page

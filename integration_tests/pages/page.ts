@@ -3,7 +3,7 @@ import type { SummaryListRow, Tag } from '@accredited-programmes/ui'
 export type PageElement = Cypress.Chainable<JQuery>
 
 export default abstract class Page {
-  static verifyOnPage<T>(constructor: new (...args: Array<unknown>) => T, ...args: Array<unknown>): T {
+  static verifyOnPage<T, U = unknown>(constructor: new (...args: Array<U>) => T, ...args: Array<U>): T {
     return new constructor(...args)
   }
 
