@@ -81,7 +81,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course "${course.id}"'s offerings`,
         withRequest: {
           method: 'GET',
-          path: paths.courses.offerings({ id: course.id }),
+          path: paths.courses.offerings.index({ id: course.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },

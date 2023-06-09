@@ -22,7 +22,7 @@ const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organis
 
 const organisationTableRows = (course: Course, organisations: Array<Organisation>): Array<TableRow> => {
   return organisations.map(organisation => {
-    const offeringPath = paths.courseOffering.show({ id: course.id, organisationId: organisation.id })
+    const offeringPath = paths.courses.offerings.show({ id: course.id, organisationId: organisation.id })
     const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`
     const contactLink = `<a href="${offeringPath}" class="govuk-link">Contact prison ${visuallyHiddenPrisonInformation}</a>`
 

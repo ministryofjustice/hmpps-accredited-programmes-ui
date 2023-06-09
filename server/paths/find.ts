@@ -9,8 +9,8 @@ export default {
   courses: {
     index: coursesPath,
     show: coursePath,
-  },
-  courseOffering: {
-    show: courseOfferingPath,
+    offerings: {
+      show: courseOfferingPath,
+    },
   },
 }

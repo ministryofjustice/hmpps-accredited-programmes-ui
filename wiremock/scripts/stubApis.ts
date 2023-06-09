@@ -42,7 +42,7 @@ courses.forEach(course => {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.offerings({ id: course.id }),
+        url: paths.courses.offerings.index({ id: course.id }),
       },
       response: {
         status: 200,
