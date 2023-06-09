@@ -1,0 +1,31 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../_audienceTags.njk" import audienceTags %}
+
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - " + course.name + ", " + organisation.name %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <h1>{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ audienceTags(course.audienceTags) }}
+
+      <h2>{{ organisation.name }}</h2>
+
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border',
+        rows: organisation.summaryListRows
+      }) }}
+
+      {{ govukButton({
+        text: 'Make referral',
+        href: emailHref
+      }) }}
+    </div>
+  </div>
+{% endblock content %}

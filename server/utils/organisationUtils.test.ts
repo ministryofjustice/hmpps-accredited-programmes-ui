@@ -1,5 +1,15 @@
-import { organisationFromPrison, organisationTableRows } from './organisationUtils'
-import { courseFactory, organisationFactory, prisonAddressFactory, prisonFactory } from '../testutils/factories'
+import {
+  organisationFromPrison,
+  organisationTableRows,
+  presentOrganisationWithOfferingEmail,
+} from './organisationUtils'
+import {
+  courseFactory,
+  organisationAddressFactory,
+  organisationFactory,
+  prisonAddressFactory,
+  prisonFactory,
+} from '../testutils/factories'
 
 describe('organisationUtils', () => {
   describe('organisationFromPrison', () => {
@@ -71,6 +81,46 @@ describe('organisationUtils', () => {
           },
         ],
       ])
+    })
+  })
+
+  describe('presentOrganisationWithOfferingEmail', () => {
+    it('returns an organisation and course offering email with UI-formatted data', () => {
+      const organisation = organisationFactory.build({
+        name: 'HMP What',
+        category: 'Category C',
+        address: organisationAddressFactory.build({
+          addressLine1: '123 Alphabet Street',
+          addressLine2: undefined,
+          town: 'That Town Over There',
+          county: 'Thisshire',
+          postalCode: 'HE3 3TA',
+        }),
+      })
+
+      const email = `nobody-hmp-what@digital.justice.gov.uk`
+
+      expect(presentOrganisationWithOfferingEmail(organisation, email)).toEqual({
+        ...organisation,
+        summaryListRows: [
+          {
+            key: { text: 'Prison category' },
+            value: { text: 'Category C' },
+          },
+          {
+            key: { text: 'Address' },
+            value: { text: '123 Alphabet Street, That Town Over There, Thisshire, HE3 3TA' },
+          },
+          {
+            key: { text: 'Region' },
+            value: { text: 'Thisshire' },
+          },
+          {
+            key: { text: 'Email address' },
+            value: { text: 'nobody-hmp-what@digital.justice.gov.uk' },
+          },
+        ],
+      })
     })
   })
 })

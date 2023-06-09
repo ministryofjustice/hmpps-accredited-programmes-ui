@@ -1,7 +1,7 @@
 import paths from '../../server/paths/find'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
 import { organisationFromPrison } from '../../server/utils/organisationUtils'
-import { CoursePage, CoursesPage } from '../pages/find'
+import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
 import Page from '../pages/page'
 import type { CourseOffering } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
@@ -55,5 +55,24 @@ context('Find', () => {
     const coursePage = Page.verifyOnPage(CoursePage, course)
     coursePage.shouldHaveCourse()
     coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
+  })
+
+  it('Shows a single offering', () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+    const prison = prisonFactory.build({ agencyId: courseOffering.organisationId })
+    const organisation = organisationFromPrison('an-ID', prison)
+
+    cy.task('stubCourse', course)
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+
+    cy.visit(paths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }))
+
+    const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+    courseOfferingPage.shouldHaveAudience()
+    courseOfferingPage.shouldHaveOrganisationWithOfferingEmail()
   })
 })

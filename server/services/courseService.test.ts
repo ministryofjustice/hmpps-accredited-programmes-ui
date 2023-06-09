@@ -61,4 +61,20 @@ describe('CourseService', () => {
       expect(courseClient.findOfferings).toHaveBeenCalledWith(course.id)
     })
   })
+
+  describe('getOffering', () => {
+    it('returns a given offering', async () => {
+      const course = courseFactory.build()
+      const courseOffering = courseOfferingFactory.build()
+
+      when(courseClient.findOffering).calledWith(course.id, courseOffering.id).mockResolvedValue(courseOffering)
+
+      const result = await service.getOffering(token, course.id, courseOffering.id)
+
+      expect(result).toEqual(courseOffering)
+
+      expect(courseClientFactory).toHaveBeenCalledWith(token)
+      expect(courseClient.findOffering).toHaveBeenCalledWith(course.id, courseOffering.id)
+    })
+  })
 })

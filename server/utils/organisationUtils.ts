@@ -1,6 +1,11 @@
 import paths from '../paths/find'
-import type { Course, Organisation } from '@accredited-programmes/models'
-import type { OrganisationWithOfferingId, TableRow } from '@accredited-programmes/ui'
+import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
+import type {
+  OrganisationWithOfferingEmailPresenter,
+  OrganisationWithOfferingEmailSummaryListRows,
+  OrganisationWithOfferingId,
+  TableRow,
+} from '@accredited-programmes/ui'
 import type { Prison } from '@prison-api'
 
 const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organisation => {
@@ -38,4 +43,44 @@ const organisationTableRows = (course: Course, organisations: Array<Organisation
   })
 }
 
-export { organisationFromPrison, organisationTableRows }
+const concatenatedOrganisationAddress = (address: OrganisationAddress): string => {
+  return [address.addressLine1, address.addressLine2, address.town, address.county, address.postalCode]
+    .filter(Boolean)
+    .join(', ')
+}
+
+const organisationWithOfferingEmailSummaryListRows = (
+  organisation: Organisation,
+  email: CourseOffering['contactEmail'],
+): OrganisationWithOfferingEmailSummaryListRows => {
+  return [
+    {
+      key: { text: 'Prison category' },
+      value: { text: organisation.category },
+    },
+    {
+      key: { text: 'Address' },
+      value: { text: concatenatedOrganisationAddress(organisation.address) },
+    },
+    {
+      key: { text: 'Region' },
+      value: { text: organisation.address.county },
+    },
+    {
+      key: { text: 'Email address' },
+      value: { text: email },
+    },
+  ]
+}
+
+const presentOrganisationWithOfferingEmail = (
+  organisation: Organisation,
+  email: CourseOffering['contactEmail'],
+): OrganisationWithOfferingEmailPresenter => {
+  return {
+    ...organisation,
+    summaryListRows: organisationWithOfferingEmailSummaryListRows(organisation, email),
+  }
+}
+
+export { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmail }
