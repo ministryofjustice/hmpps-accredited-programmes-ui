@@ -1,19 +1,17 @@
-import { type RequestHandler, Router } from 'express'
+import { Router } from 'express'
 
+import findRoutes from './find'
 import type { Controllers } from '../controllers'
-import asyncMiddleware from '../middleware/asyncMiddleware'
+import actions from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers): Router {
   const router = Router()
-  const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
+  const { get } = actions(router)
 
-  const { dashboardController, coursesController, courseOfferingsController } = controllers
-
+  const { dashboardController } = controllers
   get('/', dashboardController.index())
 
-  get('/programmes', coursesController.index())
-  get('/programmes/:id', coursesController.show())
-  get('/programmes/:id/offerings/:courseOfferingId', courseOfferingsController.show())
+  findRoutes(controllers, router)
 
   return router
 }
