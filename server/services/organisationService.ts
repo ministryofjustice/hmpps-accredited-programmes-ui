@@ -1,3 +1,6 @@
+import createError from 'http-errors'
+import type { ResponseError } from 'superagent'
+
 import type { RestClientBuilder } from '../data'
 import type PrisonClient from '../data/prisonClient'
 import { organisationFromPrison } from '../utils/organisationUtils'
@@ -8,12 +11,21 @@ export default class OrganisationService {
 
   async getOrganisation(token: string, id: string): Promise<Organisation | null> {
     const prisonClient = this.prisonClientFactory(token)
-    const prison = await prisonClient.getPrison(id)
 
-    if (!prison) {
-      return null
+    try {
+      const prison = await prisonClient.getPrison(id)
+
+      return organisationFromPrison(id, prison)
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, knownError, {
+        userMessage: `Error fetching organisation ${id}.`,
+      })
     }
-
-    return organisationFromPrison(id, prison)
   }
 }

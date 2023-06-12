@@ -1,3 +1,5 @@
+import createError from 'http-errors'
+
 import OrganisationService from './organisationService'
 import PrisonClient from '../data/prisonClient'
 import { prisonFactory } from '../testutils/factories'
@@ -71,9 +73,10 @@ describe('OrganisationService', () => {
       })
     })
 
-    describe('if for any reason the prison is not found', () => {
+    describe('if the prison client throws a 404 error', () => {
       it('returns `null`', async () => {
-        prisonClient.getPrison.mockResolvedValue(null)
+        const clientError = createError(404)
+        prisonClient.getPrison.mockRejectedValue(clientError)
 
         const notFoundPrisonId = 'NOT-FOUND'
 
