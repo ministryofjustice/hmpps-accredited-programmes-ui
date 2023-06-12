@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import paths from '../../server/paths/api'
+import apiPaths from '../../server/paths/api'
 import { stubFor } from '../index'
 import { courseOfferings, courses } from '../stubs'
 
@@ -9,7 +9,7 @@ stubs.push(async () =>
   stubFor({
     request: {
       method: 'GET',
-      url: paths.courses.index({}),
+      url: apiPaths.courses.index({}),
     },
     response: {
       status: 200,
@@ -26,7 +26,7 @@ courses.forEach(course => {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.show({ id: course.id }),
+        url: apiPaths.courses.show({ id: course.id }),
       },
       response: {
         status: 200,
@@ -42,7 +42,7 @@ courses.forEach(course => {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.offerings.index({ id: course.id }),
+        url: apiPaths.courses.offerings.index({ id: course.id }),
       },
       response: {
         status: 200,
@@ -59,7 +59,7 @@ courses.forEach(course => {
       stubFor({
         request: {
           method: 'GET',
-          url: paths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }),
+          url: apiPaths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }),
         },
         response: {
           status: 200,

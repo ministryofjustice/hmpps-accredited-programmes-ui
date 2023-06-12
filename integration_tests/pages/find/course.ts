@@ -1,4 +1,4 @@
-import paths from '../../../server/paths/find'
+import findPaths from '../../../server/paths/find'
 import presentCourse from '../../../server/utils/courseUtils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'
@@ -43,7 +43,7 @@ export default class CoursePage extends Page {
           cy.get('.govuk-table__cell:nth-of-type(4) a').should(
             'have.attr',
             'href',
-            paths.courses.offerings.show({ id: this.course.id, courseOfferingId: organisation.courseOfferingId }),
+            findPaths.courses.offerings.show({ id: this.course.id, courseOfferingId: organisation.courseOfferingId }),
           )
         })
       })

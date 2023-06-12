@@ -1,7 +1,7 @@
 import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
-import paths from '../paths/prisonApi'
+import prisonApiPaths from '../paths/prisonApi'
 import type { Prison } from '@prison-api'
 
 export default class PrisonClient {
@@ -12,6 +12,6 @@ export default class PrisonClient {
   }
 
   async getPrison(agencyId: string): Promise<Prison> {
-    return (await this.restClient.get({ path: paths.prisons.show({ agencyId }) })) as Prison
+    return (await this.restClient.get({ path: prisonApiPaths.prisons.show({ agencyId }) })) as Prison
   }
 }

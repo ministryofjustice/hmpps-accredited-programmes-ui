@@ -1,6 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import paths from '../../server/paths/prisonApi'
+import prisonApiPaths from '../../server/paths/prisonApi'
 import { stubFor } from '../../wiremock'
 import type { Prison } from '@prison-api'
 
@@ -9,7 +9,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.prisons.show({ agencyId: prison.agencyId }),
+        url: prisonApiPaths.prisons.show({ agencyId: prison.agencyId }),
       },
       response: {
         status: 200,
