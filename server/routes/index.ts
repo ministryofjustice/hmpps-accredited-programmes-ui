@@ -14,5 +14,9 @@ export default function routes(controllers: Controllers): Router {
   get('/programmes', coursesController.index())
   get('/programmes/:id', coursesController.show())
 
+  get('/debug-sentry', (_req, res) => {
+    throw new Error('My first Sentry error!')
+  })
+
   return router
 }
