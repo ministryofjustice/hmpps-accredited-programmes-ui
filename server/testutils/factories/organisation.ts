@@ -6,7 +6,7 @@ import type { Organisation } from '@accredited-programmes/models'
 
 export default Factory.define<Organisation>(() => ({
   id: faker.string.alpha({ length: 3, casing: 'upper' }),
-  name: `HMP ${faker.location.county()}`,
+  name: `${faker.location.county()} (HMP)`,
   category: 'Not sure',
   address: organisationAddressFactory.build(),
 }))

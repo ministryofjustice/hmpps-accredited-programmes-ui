@@ -36,17 +36,18 @@ services:
     environment:
       - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
 
-  prison-api:
-    image: quay.io/hmpps/prison-api:latest
+  prison-register-api:
+    image: quay.io/hmpps/prison-register:latest
     networks:
       - hmpps
-    container_name: prison-api
+    container_name: prison-register-api
     ports:
       - '9092:8080'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
     environment:
-      - SPRING_PROFILES_ACTIVE=nomis-hsqldb
+      - SPRING_PROFILES_ACTIVE=dev
+      - OAUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
 
   wiremock:
     image: wiremock/wiremock

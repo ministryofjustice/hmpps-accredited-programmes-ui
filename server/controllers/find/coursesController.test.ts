@@ -52,7 +52,7 @@ describe('CoursesController', () => {
       courseService.getCourse.mockResolvedValue(course)
     })
 
-    describe('when all organisations are found by the organisation service', () => {
+    describe('when all organisations are returned by the organisation service', () => {
       it('renders the course show template with all organisations', async () => {
         const organisations = organisationFactory.buildList(3)
 
@@ -85,8 +85,8 @@ describe('CoursesController', () => {
       })
     })
 
-    describe('when some but not all organisations are found by the organisation service', () => {
-      it('renders the course show template with the found organisations', async () => {
+    describe('when some but not all organisations are returned by the organisation service', () => {
+      it('renders the course show template with the returned organisations', async () => {
         const existingOrganisations = organisationFactory.buildList(2)
         const nonexistentOrganisation = organisationFactory.build({ id: 'NOTFOUND' })
         const allOrganisations = [...existingOrganisations, nonexistentOrganisation]

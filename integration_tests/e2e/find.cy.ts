@@ -34,7 +34,7 @@ context('Find', () => {
     const organisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
 
     prisons.forEach((prison, prisonIndex) => {
-      const courseOffering = courseOfferingFactory.build({ organisationId: prison.agencyId })
+      const courseOffering = courseOfferingFactory.build({ organisationId: prison.prisonId })
       courseOfferings.push(courseOffering)
 
       organisationsWithOfferingIds.push({
@@ -62,7 +62,7 @@ context('Find', () => {
 
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
-    const prison = prisonFactory.build({ agencyId: courseOffering.organisationId })
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = organisationFromPrison('an-ID', prison)
 
     cy.task('stubCourse', course)

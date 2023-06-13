@@ -5,8 +5,9 @@ import type { OrganisationAddress } from '@accredited-programmes/models'
 
 export default Factory.define<OrganisationAddress>(() => ({
   addressLine1: faker.location.streetAddress(),
+  addressLine2: null,
   town: faker.location.city(),
   county: faker.location.county(),
   postalCode: faker.location.zipCode(),
-  country: 'United Kingdom',
+  country: faker.helpers.arrayElement(['England', 'Wales']),
 }))

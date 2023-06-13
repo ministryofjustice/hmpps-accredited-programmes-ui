@@ -15,6 +15,10 @@ export default class OrganisationService {
     try {
       const prison = await prisonClient.getPrison(id)
 
+      if (!prison.active) {
+        return null
+      }
+
       return organisationFromPrison(id, prison)
     } catch (error) {
       const knownError = error as ResponseError
