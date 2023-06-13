@@ -1,4 +1,4 @@
-import paths from '../../../server/paths/find'
+import findPaths from '../../../server/paths/find'
 import presentCourse from '../../../server/utils/courseUtils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'
@@ -13,7 +13,7 @@ export default class CoursesPage extends Page {
       cy.wrap(courseElement).within(() => {
         const course = presentCourse(courses[courseElementIndex])
 
-        cy.get('a').should('have.attr', 'href', paths.courses.show({ id: course.id }))
+        cy.get('a').should('have.attr', 'href', findPaths.courses.show({ id: course.id }))
         cy.get('a h2').should('have.text', course.name)
 
         cy.get('p:first-of-type').then(tagContainerElement => {

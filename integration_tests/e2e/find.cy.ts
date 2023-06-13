@@ -1,4 +1,4 @@
-import paths from '../../server/paths/find'
+import findPaths from '../../server/paths/find'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
 import { organisationFromPrison } from '../../server/utils/organisationUtils'
 import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
@@ -20,7 +20,7 @@ context('Find', () => {
 
     cy.task('stubCourses', courses)
 
-    cy.visit(paths.courses.index({}))
+    cy.visit(findPaths.courses.index({}))
 
     const coursesPage = Page.verifyOnPage(CoursesPage)
     coursesPage.shouldHaveCourses(courses)
@@ -50,7 +50,7 @@ context('Find', () => {
     cy.task('stubCourse', course)
     cy.task('stubCourseOfferings', { courseId: course.id, courseOfferings })
 
-    cy.visit(paths.courses.show({ id: course.id }))
+    cy.visit(findPaths.courses.show({ id: course.id }))
 
     const coursePage = Page.verifyOnPage(CoursePage, course)
     coursePage.shouldHaveCourse()
@@ -69,7 +69,7 @@ context('Find', () => {
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
 
-    cy.visit(paths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }))
+    cy.visit(findPaths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }))
 
     const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
     courseOfferingPage.shouldHaveAudience()

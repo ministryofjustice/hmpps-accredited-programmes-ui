@@ -1,7 +1,7 @@
 import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
-import paths from '../paths/api'
+import apiPaths from '../paths/api'
 import type { Course, CourseOffering } from '@accredited-programmes/models'
 
 export default class CourseClient {
@@ -12,22 +12,22 @@ export default class CourseClient {
   }
 
   async all(): Promise<Array<Course>> {
-    return (await this.restClient.get({ path: paths.courses.index({}) })) as Array<Course>
+    return (await this.restClient.get({ path: apiPaths.courses.index({}) })) as Array<Course>
   }
 
   async find(id: Course['id']): Promise<Course> {
-    return (await this.restClient.get({ path: paths.courses.show({ id }) })) as Course
+    return (await this.restClient.get({ path: apiPaths.courses.show({ id }) })) as Course
   }
 
   async findOfferings(courseId: Course['id']): Promise<Array<CourseOffering>> {
     return (await this.restClient.get({
-      path: paths.courses.offerings.index({ id: courseId }),
+      path: apiPaths.courses.offerings.index({ id: courseId }),
     })) as Array<CourseOffering>
   }
 
   async findOffering(courseId: Course['id'], courseOfferingId: CourseOffering['id']): Promise<CourseOffering> {
     return (await this.restClient.get({
-      path: paths.courses.offerings.show({ id: courseId, courseOfferingId }),
+      path: apiPaths.courses.offerings.show({ id: courseId, courseOfferingId }),
     })) as CourseOffering
   }
 }

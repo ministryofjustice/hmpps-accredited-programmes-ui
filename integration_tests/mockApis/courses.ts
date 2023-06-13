@@ -1,6 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import paths from '../../server/paths/api'
+import apiPaths from '../../server/paths/api'
 import { stubFor } from '../../wiremock'
 import type { Course, CourseOffering } from '@accredited-programmes/models'
 
@@ -9,7 +9,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.show({ id: course.id }),
+        url: apiPaths.courses.show({ id: course.id }),
       },
       response: {
         status: 200,
@@ -22,7 +22,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.index({}),
+        url: apiPaths.courses.index({}),
       },
       response: {
         status: 200,
@@ -35,7 +35,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.offerings.index({ id: args.courseId }),
+        url: apiPaths.courses.offerings.index({ id: args.courseId }),
       },
       response: {
         status: 200,
@@ -48,7 +48,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.offerings.show({ id: args.courseId, courseOfferingId: args.courseOffering.id }),
+        url: apiPaths.courses.offerings.show({ id: args.courseId, courseOfferingId: args.courseOffering.id }),
       },
       response: {
         status: 200,

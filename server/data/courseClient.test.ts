@@ -3,7 +3,7 @@ import { pactWith } from 'jest-pact'
 
 import CourseClient from './courseClient'
 import config from '../config'
-import paths from '../paths/api'
+import apiPaths from '../paths/api'
 import { courseFactory, courseOfferingFactory } from '../testutils/factories'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
@@ -32,7 +32,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: 'A request for all courses',
         withRequest: {
           method: 'GET',
-          path: paths.courses.index({}),
+          path: apiPaths.courses.index({}),
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -58,7 +58,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course "${course.id}"`,
         withRequest: {
           method: 'GET',
-          path: paths.courses.show({ id: course.id }),
+          path: apiPaths.courses.show({ id: course.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -84,7 +84,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course "${course.id}"'s offerings`,
         withRequest: {
           method: 'GET',
-          path: paths.courses.offerings.index({ id: course.id }),
+          path: apiPaths.courses.offerings.index({ id: course.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -110,7 +110,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course offering "${courseOffering.id}"`,
         withRequest: {
           method: 'GET',
-          path: paths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }),
+          path: apiPaths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },

@@ -1,4 +1,4 @@
-import paths from '../paths/find'
+import findPaths from '../paths/find'
 import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
 import type {
   OrganisationWithOfferingEmailPresenter,
@@ -27,7 +27,7 @@ const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organis
 
 const organisationTableRows = (course: Course, organisations: Array<OrganisationWithOfferingId>): Array<TableRow> => {
   return organisations.map(organisation => {
-    const offeringPath = paths.courses.offerings.show({
+    const offeringPath = findPaths.courses.offerings.show({
       id: course.id,
       courseOfferingId: organisation.courseOfferingId,
     })

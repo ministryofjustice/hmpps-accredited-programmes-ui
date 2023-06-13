@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import DashboardController from './dashboardController'
-import paths from '../paths/find'
+import findPaths from '../paths/find'
 
 describe('DashboardController', () => {
   const request: DeepMocked<Request> = createMock<Request>({})
@@ -24,7 +24,7 @@ describe('DashboardController', () => {
 
       expect(response.render).toHaveBeenCalledWith('dashboard/index', {
         pageHeading: 'Accredited Programmes',
-        findPath: paths.courses.index({}),
+        findPath: findPaths.courses.index({}),
       })
     })
   })
