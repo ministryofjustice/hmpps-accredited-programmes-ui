@@ -1,0 +1,15 @@
+---
+# Per environment values which override defaults in hmpps-accredited-programmes-ui/values.yaml
+
+generic-service:
+  ingress:
+    host: accredited-programmes-preprod.hmpps.service.justice.gov.uk
+    tlsSecretName: hmpps-accredited-programmes-preprod-cert
+
+  env:
+    ENVIRONMENT: preprod
+    ACCREDITED_PROGRAMMES_API_URL: 'https://accredited-programmes-api-preprod.hmpps.service.justice.gov.uk'
+    INGRESS_URL: 'https://accredited-programmes-preprod.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-preprod.hmpps.service.justice.gov.uk/auth'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-preprod.prison.service.justice.gov.uk'
+    PRISON_API_URL: 'https://api-preprod.prison.service.justice.gov.uk'
