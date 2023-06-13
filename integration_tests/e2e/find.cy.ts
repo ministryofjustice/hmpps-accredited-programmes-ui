@@ -1,8 +1,10 @@
 import paths from '../../server/paths/find'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
-import { CoursePage, CoursesPage } from '../pages/find'
+import { organisationFromPrison } from '../../server/utils/organisationUtils'
+import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
 import Page from '../pages/page'
 import type { CourseOffering } from '@accredited-programmes/models'
+import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 context('Find', () => {
   beforeEach(() => {
@@ -29,9 +31,17 @@ context('Find', () => {
 
     const prisons = prisonFactory.buildList(3)
     const courseOfferings: Array<CourseOffering> = []
+    const organisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
 
-    prisons.forEach(prison => {
-      courseOfferings.push(courseOfferingFactory.build({ organisationId: prison.agencyId }))
+    prisons.forEach((prison, prisonIndex) => {
+      const courseOffering = courseOfferingFactory.build({ organisationId: prison.agencyId })
+      courseOfferings.push(courseOffering)
+
+      organisationsWithOfferingIds.push({
+        ...organisationFromPrison(`an-ID${prisonIndex}`, prison),
+        courseOfferingId: courseOffering.id,
+      })
+
       cy.task('stubPrison', prison)
     })
 
@@ -44,6 +54,25 @@ context('Find', () => {
 
     const coursePage = Page.verifyOnPage(CoursePage, course)
     coursePage.shouldHaveCourse()
-    coursePage.shouldHavePrisons(prisons)
+    coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
+  })
+
+  it('Shows a single offering', () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+    const prison = prisonFactory.build({ agencyId: courseOffering.organisationId })
+    const organisation = organisationFromPrison('an-ID', prison)
+
+    cy.task('stubCourse', course)
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+
+    cy.visit(paths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }))
+
+    const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+    courseOfferingPage.shouldHaveAudience()
+    courseOfferingPage.shouldHaveOrganisationWithOfferingEmail()
   })
 })

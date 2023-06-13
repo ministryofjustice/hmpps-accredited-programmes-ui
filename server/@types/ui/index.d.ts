@@ -1,4 +1,4 @@
-import type { Course } from '@accredited-programmes/models'
+import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 
 type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
 
@@ -7,12 +7,12 @@ type Tag = {
   classes: `govuk-tag govuk-tag--${TagColour}`
 }
 
-type SummaryListRow = {
+type SummaryListRow<T = string, U = string> = {
   key: {
-    text: string
+    text: T
   }
   value: {
-    text: string
+    text: U
   }
 }
 
@@ -33,4 +33,28 @@ type CoursePresenter = Course & {
   prerequisiteSummaryListRows: Array<SummaryListRow>
 }
 
-export type { CoursePresenter, SummaryListRow, TableRow, Tag, TagColour }
+type OrganisationWithOfferingId = Organisation & {
+  courseOfferingId: CourseOffering['id']
+}
+
+type OrganisationWithOfferingEmailSummaryListRows = [
+  SummaryListRow<'Prison category', string>,
+  SummaryListRow<'Address', string>,
+  SummaryListRow<'Region', string>,
+  SummaryListRow<'Email address', CourseOffering['contactEmail']>,
+]
+
+type OrganisationWithOfferingEmailPresenter = Organisation & {
+  summaryListRows: OrganisationWithOfferingEmailSummaryListRows
+}
+
+export type {
+  CoursePresenter,
+  OrganisationWithOfferingEmailPresenter,
+  OrganisationWithOfferingEmailSummaryListRows,
+  OrganisationWithOfferingId,
+  SummaryListRow,
+  TableRow,
+  Tag,
+  TagColour,
+}

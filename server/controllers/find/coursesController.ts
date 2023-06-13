@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService } from '../../services'
 import presentCourse from '../../utils/courseUtils'
-import organisationTableRows from '../../utils/organisationUtils'
+import { organisationTableRows } from '../../utils/organisationUtils'
 import { assertHasUser, isNotNull } from '../../utils/typeUtils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
@@ -40,7 +40,12 @@ export default class CoursesController {
         isNotNull<Organisation>,
       )
 
-      const organisationsTableData = organisationTableRows(course, organisations)
+      const organisationsWithOfferingIds = organisations.map(organisation => {
+        const courseOffering = offerings.find(offering => offering.organisationId === organisation.id) as CourseOffering
+        return { ...organisation, courseOfferingId: courseOffering.id }
+      })
+
+      const organisationsTableData = organisationTableRows(course, organisationsWithOfferingIds)
 
       res.render('courses/show', {
         pageHeading: course.name,

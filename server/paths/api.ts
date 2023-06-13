@@ -4,11 +4,15 @@ const coursesPath = path('/courses')
 const coursePath = coursesPath.path(':id')
 
 const courseOfferingsPath = coursePath.path('offerings')
+const courseOfferingPath = courseOfferingsPath.path(':courseOfferingId')
 
 export default {
   courses: {
     index: coursesPath,
-    offerings: courseOfferingsPath,
     show: coursePath,
+    offerings: {
+      index: courseOfferingsPath,
+      show: courseOfferingPath,
+    },
   },
 }

@@ -35,12 +35,25 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: paths.courses.offerings({ id: args.courseId }),
+        url: paths.courses.offerings.index({ id: args.courseId }),
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.courseOfferings,
+      },
+    }),
+
+  stubCourseOffering: (args: { courseId: Course['id']; courseOffering: CourseOffering }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: paths.courses.offerings.show({ id: args.courseId, courseOfferingId: args.courseOffering.id }),
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.courseOffering,
       },
     }),
 }

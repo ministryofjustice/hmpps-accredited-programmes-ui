@@ -1,4 +1,5 @@
 import CoursePage from './course'
+import CourseOfferingPage from './courseOffering'
 import CoursesPage from './courses'
 
-export { CoursePage, CoursesPage }
+export { CourseOfferingPage, CoursePage, CoursesPage }

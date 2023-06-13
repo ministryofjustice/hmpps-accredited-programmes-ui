@@ -20,6 +20,14 @@ export default class CourseClient {
   }
 
   async findOfferings(courseId: Course['id']): Promise<Array<CourseOffering>> {
-    return (await this.restClient.get({ path: paths.courses.offerings({ id: courseId }) })) as Array<CourseOffering>
+    return (await this.restClient.get({
+      path: paths.courses.offerings.index({ id: courseId }),
+    })) as Array<CourseOffering>
+  }
+
+  async findOffering(courseId: Course['id'], courseOfferingId: CourseOffering['id']): Promise<CourseOffering> {
+    return (await this.restClient.get({
+      path: paths.courses.offerings.show({ id: courseId, courseOfferingId }),
+    })) as CourseOffering
   }
 }
