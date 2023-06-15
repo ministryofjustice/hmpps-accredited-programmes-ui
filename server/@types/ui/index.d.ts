@@ -1,32 +1,27 @@
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 
-type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
-
-type Tag = {
-  text: string
-  classes: `govuk-tag govuk-tag--${TagColour}`
+type ObjectWithTextString<T = string> = {
+  text: T
 }
 
-type SummaryListRow<T = string, U = string> = {
-  key: {
-    text: T
-  }
-  value: {
-    text: U
-  }
-}
-
-type TableCellWithText = {
-  text: string
-}
-
-type TableCellWithHtml = {
+type ObjectWithHtmlString = {
   html: string
 }
 
-type TableCell = TableCellWithText | TableCellWithHtml
+type ObjectWithTextOrHtmlString = ObjectWithTextString | ObjectWithHtmlString
 
-type TableRow = Array<TableCell>
+type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
+
+type Tag = ObjectWithTextString & {
+  classes: `govuk-tag govuk-tag--${TagColour}`
+}
+
+type SummaryListRow<T = string, U = ObjectWithTextOrHtmlString> = {
+  key: ObjectWithTextString<T>
+  value: U
+}
+
+type TableRow = Array<ObjectWithTextOrHtmlString>
 
 type CoursePresenter = Course & {
   audienceTags: Array<Tag>
@@ -38,10 +33,10 @@ type OrganisationWithOfferingId = Organisation & {
 }
 
 type OrganisationWithOfferingEmailSummaryListRows = [
-  SummaryListRow<'Prison category', string>,
-  SummaryListRow<'Address', string>,
-  SummaryListRow<'Region', string>,
-  SummaryListRow<'Email address', CourseOffering['contactEmail']>,
+  SummaryListRow<'Prison category', ObjectWithTextString>,
+  SummaryListRow<'Address', ObjectWithTextString>,
+  SummaryListRow<'Region', ObjectWithTextString>,
+  SummaryListRow<'Email address', ObjectWithTextString<CourseOffering['contactEmail']>>,
 ]
 
 type OrganisationWithOfferingEmailPresenter = Organisation & {
@@ -50,6 +45,8 @@ type OrganisationWithOfferingEmailPresenter = Organisation & {
 
 export type {
   CoursePresenter,
+  ObjectWithHtmlString,
+  ObjectWithTextString,
   OrganisationWithOfferingEmailPresenter,
   OrganisationWithOfferingEmailSummaryListRows,
   OrganisationWithOfferingId,
