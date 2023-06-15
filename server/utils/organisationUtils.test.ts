@@ -47,7 +47,7 @@ describe('organisationUtils', () => {
             { text: organisationsWithOfferingIds[0].category },
             { text: organisationsWithOfferingIds[0].address.county },
             {
-              html: `<a href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[0].courseOfferingId}" class="govuk-link">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[0].name})</span></a>`,
+              html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[0].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[0].name})</span></a>`,
             },
           ],
           [
@@ -55,7 +55,7 @@ describe('organisationUtils', () => {
             { text: organisationsWithOfferingIds[1].category },
             { text: organisationsWithOfferingIds[1].address.county },
             {
-              html: `<a href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[1].courseOfferingId}" class="govuk-link">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[1].name})</span></a>`,
+              html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[1].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[1].name})</span></a>`,
             },
           ],
           [
@@ -63,7 +63,7 @@ describe('organisationUtils', () => {
             { text: organisationsWithOfferingIds[2].category },
             { text: organisationsWithOfferingIds[2].address.county },
             {
-              html: `<a href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[2].courseOfferingId}" class="govuk-link">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[2].name})</span></a>`,
+              html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[2].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[2].name})</span></a>`,
             },
           ],
         ])
@@ -81,7 +81,7 @@ describe('organisationUtils', () => {
             { text: organisationWithOfferingId.category },
             { text: 'Not found' },
             {
-              html: `<a href="/programmes/${course.id}/offerings/${organisationWithOfferingId.courseOfferingId}" class="govuk-link">Contact prison <span class="govuk-visually-hidden">(${organisationWithOfferingId.name})</span></a>`,
+              html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationWithOfferingId.courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationWithOfferingId.name})</span></a>`,
             },
           ],
         ])
