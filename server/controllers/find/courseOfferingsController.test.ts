@@ -37,7 +37,6 @@ describe('CoursesOfferingsController', () => {
         pageHeading: course.name,
         course: presentCourse(course),
         organisation: presentOrganisationWithOfferingEmail(organisation, courseOffering.contactEmail),
-        emailHref: `mailto:${courseOffering.contactEmail}`,
       })
     })
   })

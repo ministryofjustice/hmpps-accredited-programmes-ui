@@ -123,7 +123,9 @@ describe('organisationUtils', () => {
             },
             {
               key: { text: 'Email address' },
-              value: { text: 'nobody-hmp-what@digital.justice.gov.uk' },
+              value: {
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
+              },
             },
           ],
         })
@@ -152,7 +154,9 @@ describe('organisationUtils', () => {
             },
             {
               key: { text: 'Email address' },
-              value: { text: 'nobody-hmp-what@digital.justice.gov.uk' },
+              value: {
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
+              },
             },
           ],
         })

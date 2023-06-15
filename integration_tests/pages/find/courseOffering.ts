@@ -31,9 +31,5 @@ export default class CourseOfferingPage extends Page {
     cy.get('.govuk-summary-list').then(summaryListElement => {
       this.shouldContainSummaryListRows(this.organisation.summaryListRows, summaryListElement)
     })
-
-    cy.get('.govuk-button').then(buttonLinkElement => {
-      this.shouldContainButtonLink('Make referral', `mailto:${this.courseOffering.contactEmail}`, buttonLinkElement)
-    })
   }
 }

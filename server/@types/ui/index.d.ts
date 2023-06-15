@@ -36,7 +36,7 @@ type OrganisationWithOfferingEmailSummaryListRows = [
   SummaryListRow<'Prison category', ObjectWithTextString>,
   SummaryListRow<'Address', ObjectWithTextString>,
   SummaryListRow<'Region', ObjectWithTextString>,
-  SummaryListRow<'Email address', ObjectWithTextString<CourseOffering['contactEmail']>>,
+  SummaryListRow<'Email address', ObjectWithHtmlString>,
 ]
 
 type OrganisationWithOfferingEmailPresenter = Organisation & {

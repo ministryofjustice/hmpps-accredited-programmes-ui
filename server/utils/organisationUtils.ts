@@ -62,7 +62,7 @@ const organisationWithOfferingEmailSummaryListRows = (
     },
     {
       key: { text: 'Email address' },
-      value: { text: email },
+      value: { html: `<a class="govuk-link" href="mailto:${email}">${email}</a>` },
     },
   ]
 }
