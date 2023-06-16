@@ -5,9 +5,10 @@
 {% macro indexCourseSummary(course) %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds" role="listitem">
-      <a class="govuk-link" href="/programmes/{{ course.id }}">
-        <h2>{{ course.name }}</h2>
-      </a>
+
+      <h2 class="govuk-heading-m">
+        <a class="govuk-link" href="/programmes/{{ course.id }}">{{ course.name }}</a>
+      </h2>
 
       {{ audienceTags(course.audienceTags) }}
 
