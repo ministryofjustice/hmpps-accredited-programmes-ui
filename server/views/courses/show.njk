@@ -8,24 +8,24 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-  <h1>{{ pageHeading }}</h1>
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ audienceTags(course.audienceTags) }}
 
-      <h2>Programme criteria</h2>
+      <h2 class="govuk-heading-m">Programme criteria</h2>
 
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',
         rows: course.prerequisiteSummaryListRows
       }) }}
 
-      <h2>Programme description</h2>
+      <h2 class="govuk-heading-m">Programme description</h2>
 
       <p class="govuk-body">{{ course.description }}</p>
 
-      <h2>Locations</h2>
+      <h2 class="govuk-heading-m">Locations</h2>
 
       {% include "./_locationsTable.njk" %}
     </div>

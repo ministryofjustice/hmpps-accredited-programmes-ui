@@ -9,13 +9,13 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-  <h1>{{ pageHeading }}</h1>
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ audienceTags(course.audienceTags) }}
 
-      <h2>{{ organisation.name }}</h2>
+      <h2 class="govuk-heading-m">{{ organisation.name }}</h2>
 
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',

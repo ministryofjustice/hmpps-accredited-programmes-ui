@@ -6,7 +6,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-  <h1>{{ pageHeading }}</h1>
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div role="list">
     {% for course in courses %}
@@ -14,7 +14,7 @@
 
       {% if loop.index < courses.length %}
         <div class="govuk-grid-row">
-          <hr class="govuk-section-break govuk-section-break--visible">
+          <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
         </div>
       {% endif %}
     {% endfor %}
