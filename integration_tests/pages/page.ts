@@ -16,7 +16,7 @@ export default abstract class Page {
       cy.title().should('equal', `HMPPS Accredited Programmes - ${this.customTitle}`)
     }
 
-    cy.get('h1').contains(this.mainHeading)
+    cy.get('.govuk-heading-l').contains(this.mainHeading)
   }
 
   parseHtml(actual: JQuery<HTMLElement>, expected: string): { actual: string; expected: string } {
