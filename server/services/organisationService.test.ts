@@ -20,56 +20,47 @@ describe('OrganisationService', () => {
   })
 
   describe('getOrganisation', () => {
-    describe('when the prison has a primary address', () => {
-      it("returns the specified organisation with the prison's primary address", async () => {
-        const prison = prisonFactory.build()
-        const primaryAddress = prison.addresses.find(address => address.primary)
+    describe('if the prison client finds the corresponding prison', () => {
+      describe("and it's active", () => {
+        it('returns the specified organisation', async () => {
+          const prison = prisonFactory.build()
+          const prisonAddress = prison.addresses[0]
 
-        prisonClient.getPrison.mockResolvedValue(prison)
+          prisonClient.getPrison.mockResolvedValue(prison)
 
-        const result = await service.getOrganisation(token, prison.agencyId)
+          const result = await service.getOrganisation(token, prison.prisonId)
 
-        expect(result).toEqual({
-          id: prison.agencyId,
-          name: prison.premise,
-          category: 'N/A',
-          address: {
-            addressLine1: primaryAddress?.street,
-            town: primaryAddress?.town,
-            county: primaryAddress?.locality,
-            postalCode: primaryAddress?.postalCode,
-            country: primaryAddress?.country,
-          },
+          expect(result).toEqual({
+            id: prison.prisonId,
+            name: prison.prisonName,
+            category: 'N/A',
+            address: {
+              addressLine1: prisonAddress.addressLine1,
+              addressLine2: prisonAddress.addressLine2,
+              town: prisonAddress.town,
+              county: prisonAddress.county,
+              postalCode: prisonAddress.postcode,
+              country: prisonAddress.country,
+            },
+          })
+
+          expect(prisonClientFactory).toHaveBeenCalledWith(token)
+          expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.prisonId)
         })
-
-        expect(prisonClientFactory).toHaveBeenCalledWith(token)
-        expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.agencyId)
       })
-    })
 
-    describe('if for any reason the prison has no primary address', () => {
-      it('returns the specified organisation with "Not found" for all address fields', async () => {
-        const prison = prisonFactory.build({ addresses: [] })
+      describe("and it's inactive", () => {
+        it('returns `null`', async () => {
+          const prison = prisonFactory.build({ active: false })
+          prisonClient.getPrison.mockResolvedValue(prison)
 
-        prisonClient.getPrison.mockResolvedValue(prison)
+          const result = await service.getOrganisation(token, prison.prisonId)
 
-        const result = await service.getOrganisation(token, prison.agencyId)
+          expect(result).toEqual(null)
 
-        expect(result).toEqual({
-          id: prison.agencyId,
-          name: prison.premise,
-          category: 'N/A',
-          address: {
-            addressLine1: 'Not found',
-            town: 'Not found',
-            county: 'Not found',
-            postalCode: 'Not found',
-            country: 'Not found',
-          },
+          expect(prisonClientFactory).toHaveBeenCalledWith(token)
+          expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.prisonId)
         })
-
-        expect(prisonClientFactory).toHaveBeenCalledWith(token)
-        expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.agencyId)
       })
     })
 

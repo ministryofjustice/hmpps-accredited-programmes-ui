@@ -6,22 +6,16 @@ import type {
   OrganisationWithOfferingId,
   TableRow,
 } from '@accredited-programmes/ui'
-import type { Prison } from '@prison-api'
+import type { Prison } from '@prison-register-api'
 
 const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organisation => {
-  const primaryAddress = prison.addresses.find(address => address.primary)
+  const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
   return {
     id,
-    name: prison.premise,
+    name: prison.prisonName,
     category: 'N/A',
-    address: {
-      addressLine1: primaryAddress?.street || 'Not found',
-      town: primaryAddress?.town || 'Not found',
-      county: primaryAddress?.locality || 'Not found',
-      postalCode: primaryAddress?.postalCode || 'Not found',
-      country: primaryAddress?.country || 'Not found',
-    },
+    address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
   }
 }
 
@@ -37,7 +31,7 @@ const organisationTableRows = (course: Course, organisations: Array<Organisation
     return [
       { text: organisation.name },
       { text: organisation.category },
-      { text: organisation.address.county },
+      { text: organisation.address.county || 'Not found' },
       { html: contactLink },
     ]
   })
@@ -64,7 +58,7 @@ const organisationWithOfferingEmailSummaryListRows = (
     },
     {
       key: { text: 'Region' },
-      value: { text: organisation.address.county },
+      value: { text: organisation.address.county || 'Not found' },
     },
     {
       key: { text: 'Email address' },
