@@ -40,7 +40,7 @@ export default class CoursePage extends Page {
           cy.get('.govuk-table__cell:nth-of-type(2)').should('have.text', 'N/A')
           cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', organisation.address.county || 'Not found')
           cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', `Contact prison (${organisation.name})`)
-          cy.get('.govuk-table__cell:nth-of-type(4) a').should(
+          cy.get('.govuk-table__cell:nth-of-type(4) .govuk-link').should(
             'have.attr',
             'href',
             findPaths.courses.offerings.show({ id: this.course.id, courseOfferingId: organisation.courseOfferingId }),

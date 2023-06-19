@@ -1,4 +1,4 @@
-import type { SummaryListRow, Tag } from '@accredited-programmes/ui'
+import type { ObjectWithHtmlString, ObjectWithTextString, SummaryListRow, Tag } from '@accredited-programmes/ui'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -32,13 +32,6 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
-  shouldContainButtonLink(text: string, href: string, buttonLinkElement: JQuery<HTMLElement>): void {
-    const textContent = this.parseHtml(buttonLinkElement, text)
-    expect(textContent.actual).to.equal(textContent.expected)
-
-    cy.wrap(buttonLinkElement).should('have.attr', 'href', href)
-  }
-
   shouldContainSummaryListRows(rows: Array<SummaryListRow>, summaryListElement: JQuery<HTMLElement>): void {
     cy.wrap(summaryListElement).within(() => {
       cy.get('.govuk-summary-list__row').each((rowElement, rowElementIndex) => {
@@ -51,7 +44,9 @@ export default abstract class Page {
           })
 
           cy.get('.govuk-summary-list__value').then(summaryListValueElement => {
-            const { actual, expected } = this.parseHtml(summaryListValueElement, row.value.text)
+            const expectedValue =
+              'text' in row.value ? (row.value as ObjectWithTextString).text : (row.value as ObjectWithHtmlString).html
+            const { actual, expected } = this.parseHtml(summaryListValueElement, expectedValue)
             expect(actual).to.equal(expected)
           })
         })

@@ -26,7 +26,7 @@ const organisationTableRows = (course: Course, organisations: Array<Organisation
       courseOfferingId: organisation.courseOfferingId,
     })
     const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`
-    const contactLink = `<a href="${offeringPath}" class="govuk-link">Contact prison ${visuallyHiddenPrisonInformation}</a>`
+    const contactLink = `<a class="govuk-link" href="${offeringPath}">Contact prison ${visuallyHiddenPrisonInformation}</a>`
 
     return [
       { text: organisation.name },
@@ -62,7 +62,7 @@ const organisationWithOfferingEmailSummaryListRows = (
     },
     {
       key: { text: 'Email address' },
-      value: { text: email },
+      value: { html: `<a class="govuk-link" href="mailto:${email}">${email}</a>` },
     },
   ]
 }
