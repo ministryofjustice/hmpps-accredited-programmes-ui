@@ -16,7 +16,5 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
     PRISON_REGISTER_API_URL: 'https://prison-register-dev.hmpps.service.justice.gov.uk'
 
-  allowlist: null
-
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
