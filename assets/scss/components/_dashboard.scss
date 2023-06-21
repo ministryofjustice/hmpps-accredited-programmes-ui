@@ -7,14 +7,14 @@
   flex: 1;
 
   margin-right: -21.8vw;
-  margin-bottom: -60px;
+  margin-bottom: -3.75rem;
   margin-left: -21.8vw;
-  padding: 30px 21.8vw;
+  padding: 1.875rem 21.8vw;
 
   background: #f0f4f5;
 
   @media (width <= 40em) {
-    margin-bottom: -35px;
+    margin-bottom: -2.1875rem;
   }
 }
 
@@ -35,16 +35,16 @@
   position: relative;
 
   width: 100%;
-  margin-bottom: 40px;
-  padding: 25px;
+  margin-bottom: 2.5rem;
+  padding: 1.5625rem;
 
   background: #fff;
-  border: 1px solid #d9dadb;
-  border-bottom-width: 5px;
+  border: 0.0625rem solid #d9dadb;
+  border-bottom-width: 0.3125rem;
 
   &--linked {
     &:active {
-      bottom: -1px;
+      bottom: -0.0625rem;
     }
 
     &:hover {
@@ -53,12 +53,12 @@
   }
 
   @media (width <= 48.0525em) {
-    margin-bottom: 15px;
+    margin-bottom: 0.9375rem;
   }
 }
 
 .dashboard__card-heading {
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
 }
 
 .dashboard__card-description {
@@ -79,8 +79,8 @@
       text-decoration: none;
 
       background-color: #fd0;
-      outline: 3px solid transparent;
-      box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+      outline: 0.1875rem solid transparent;
+      box-shadow: 0 -0.125rem #fd0, 0 0.25rem #0b0c0c;
     }
   }
 }
