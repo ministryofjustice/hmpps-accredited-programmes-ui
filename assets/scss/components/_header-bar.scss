@@ -16,7 +16,7 @@
     @include govuk-responsive-margin(2, 'right');
 
     position: relative;
-    top: -2px;
+    top: -0.125rem;
     fill: govuk-colour('white');
   }
 
@@ -102,7 +102,7 @@
         @include govuk-responsive-padding(4, 'right');
 
         margin-bottom: 0;
-        border-right: 1px solid govuk-colour('white');
+        border-right: 0.0625rem solid govuk-colour('white');
       }
 
       margin-bottom: govuk-spacing(1);
@@ -134,7 +134,7 @@
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  border-bottom: 1px solid $govuk-border-colour;
+  border-bottom: 0.0625rem solid $govuk-border-colour;
 
   &__location {
     @include govuk-font($size: 19, $weight: 'bold');
