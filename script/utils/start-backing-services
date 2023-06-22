@@ -10,12 +10,12 @@ do
 done
 
 if [ "$MOCK_API" = true ]; then
-  docker-compose up --scale=app=0 --scale=hmpps-accredited-programmes-api=0 -d
+  docker compose up --scale=hmpps-accredited-programmes-api=0 --scale=postgresql=0 -d
 
   echo "==> Stubbing API endpoints..."
 
   npm run api-stubs:reset > /dev/null
   npm run api-stubs:create > /dev/null
 else
-  docker-compose up --scale=app=0 --scale=wiremock=0 -d
+  docker compose up --scale=wiremock=0 -d
 fi
