@@ -22,4 +22,11 @@ const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
-export { convertToTitleCase, initialiseName }
+const initialiseTitle = (sentence: string): string => {
+  return sentence
+    .split(' ')
+    .map(word => word[0].toUpperCase())
+    .join('')
+}
+
+export { convertToTitleCase, initialiseName, initialiseTitle }

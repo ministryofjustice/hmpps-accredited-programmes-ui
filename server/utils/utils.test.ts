@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import { convertToTitleCase, initialiseName, initialiseTitle } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -30,4 +30,15 @@ describe('initialise name', () => {
       expect(initialiseName(input)).toEqual(expectedOutput)
     },
   )
+})
+
+describe('intitialiseTitle', () => {
+  it.each([
+    ['One word', 'Lime', 'L'],
+    ['Two words', 'Lime Course', 'LC'],
+    ['Hyphenated word', 'Lime-course', 'L'],
+    ['Mixed case word', 'LimeCourse', 'L'],
+  ])('%s initialiseTitle(%s, %s)', (_inputType: string, input: string, expectedOutput: string) => {
+    expect(initialiseTitle(input)).toEqual(expectedOutput)
+  })
 })
