@@ -21,12 +21,25 @@ const audienceTags = (audiences: Array<CourseAudience>): Array<Tag> => {
 }
 
 const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): Array<SummaryListRow> => {
-  return prerequisites.map(prerequisite => {
-    return {
+  const order: { [key: CoursePrerequisite['name']]: number } = {
+    Setting: 0,
+    Gender: 1,
+    'Risk criteria': 2,
+    'Learning needs': 3,
+  }
+
+  const summaryListRows: Array<SummaryListRow> = []
+
+  prerequisites.forEach(prerequisite => {
+    const index = order[prerequisite.name]
+
+    summaryListRows[index] = {
       key: { text: prerequisite.name },
       value: { text: prerequisite.description },
     }
   })
+
+  return summaryListRows
 }
 
 const presentCourse = (course: Course): CoursePresenter => {

@@ -15,16 +15,20 @@
     ],
     "coursePrerequisites": [
       {
-        "name": "Setting",
-        "description": "Example setting"
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
       },
       {
         "name": "Risk criteria",
         "description": "Example risk criteria"
       },
       {
-        "name": "Criminogenic needs",
-        "description": "Example criminogenic needs"
+        "name": "Setting",
+        "description": "Example setting"
       }
     ]
   },
@@ -40,16 +44,20 @@
     ],
     "coursePrerequisites": [
       {
-        "name": "Setting",
-        "description": "Example setting"
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
       },
       {
         "name": "Risk criteria",
         "description": "Example risk criteria"
       },
       {
-        "name": "Criminogenic needs",
-        "description": "Example criminogenic needs"
+        "name": "Setting",
+        "description": "Example setting"
       }
     ]
   },
@@ -65,16 +73,20 @@
     ],
     "coursePrerequisites": [
       {
-        "name": "Setting",
-        "description": "Example setting"
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
       },
       {
         "name": "Risk criteria",
         "description": "Example risk criteria"
       },
       {
-        "name": "Criminogenic needs",
-        "description": "Example criminogenic needs"
+        "name": "Setting",
+        "description": "Example setting"
       }
     ]
   },
@@ -90,16 +102,20 @@
     ],
     "coursePrerequisites": [
       {
-        "name": "Setting",
-        "description": "Example setting"
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
       },
       {
         "name": "Risk criteria",
         "description": "Example risk criteria"
       },
       {
-        "name": "Criminogenic needs",
-        "description": "Example criminogenic needs"
+        "name": "Setting",
+        "description": "Example setting"
       }
     ]
   },
@@ -115,16 +131,20 @@
     ],
     "coursePrerequisites": [
       {
-        "name": "Setting",
-        "description": "Example setting"
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
       },
       {
         "name": "Risk criteria",
         "description": "Example risk criteria"
       },
       {
-        "name": "Criminogenic needs",
-        "description": "Example criminogenic needs"
+        "name": "Setting",
+        "description": "Example setting"
       }
     ]
   }

@@ -4,10 +4,17 @@ import { Factory } from 'fishery'
 import type { CoursePrerequisite } from '@accredited-programmes/models'
 
 class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
-  setting(description?: string) {
+  gender(description?: string) {
     return this.params({
-      name: 'Setting',
-      description: description || 'Custody',
+      name: 'Gender',
+      description: description || 'Male only',
+    })
+  }
+
+  learningNeeds(description?: string) {
+    return this.params({
+      name: 'Learning needs',
+      description: description || 'Adapted for learning difficulties and challenges (LDC)',
     })
   }
 
@@ -18,10 +25,10 @@ class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
     })
   }
 
-  criminogenicNeeds(description?: string) {
+  setting(description?: string) {
     return this.params({
-      name: 'Criminogenic needs',
-      description: description || 'Relationships, Thinking and Behaviour, Attitudes, Lifestyle',
+      name: 'Setting',
+      description: description || 'Custody',
     })
   }
 }

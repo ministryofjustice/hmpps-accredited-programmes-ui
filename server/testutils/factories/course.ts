@@ -13,8 +13,9 @@ export default Factory.define<Course>(() => ({
   description: faker.lorem.sentences(),
   audiences: buildListBetween(courseAudienceFactory, { min: 1, max: 3 }),
   coursePrerequisites: [
-    coursePrerequisiteFactory.setting().build(),
+    coursePrerequisiteFactory.gender().build(),
+    coursePrerequisiteFactory.learningNeeds().build(),
     coursePrerequisiteFactory.riskCriteria().build(),
-    coursePrerequisiteFactory.criminogenicNeeds().build(),
+    coursePrerequisiteFactory.setting().build(),
   ],
 }))
