@@ -1,6 +1,6 @@
 import { convertToTitleCase, initialiseName, initialiseTitle } from './utils'
 
-describe('convert to title case', () => {
+describe('convertToTitleCase', () => {
   it.each([
     [null, null, ''],
     ['empty string', '', ''],
@@ -16,7 +16,7 @@ describe('convert to title case', () => {
   })
 })
 
-describe('initialise name', () => {
+describe('initialiseName', () => {
   it.each([
     [undefined, undefined, null],
     ['Empty string', '', null],
