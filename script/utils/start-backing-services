@@ -10,7 +10,7 @@ do
 done
 
 if [ "$MOCK_API" = true ]; then
-  docker compose up --scale=hmpps-accredited-programmes-api=0 -d
+  docker compose up --scale=hmpps-accredited-programmes-api=0 --scale=postgresql=0 -d
 
   echo "==> Stubbing API endpoints..."
 
