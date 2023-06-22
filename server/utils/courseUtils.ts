@@ -43,8 +43,11 @@ const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): 
 }
 
 const presentCourse = (course: Course): CoursePresenter => {
+  const nameAndAlternateName = course.alternateName ? `${course.name} (${course.alternateName})` : course.name
+
   return {
     ...course,
+    nameAndAlternateName,
     audienceTags: audienceTags(course.audiences),
     prerequisiteSummaryListRows: prerequisiteSummaryListRows(course.coursePrerequisites),
   }

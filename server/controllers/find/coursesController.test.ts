@@ -77,9 +77,11 @@ describe('CoursesController', () => {
           expect(organisationService.getOrganisation).toHaveBeenCalledWith(token, organisation.id),
         )
 
+        const coursePresenter = presentCourse(course)
+
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          pageHeading: course.name,
-          course: presentCourse(course),
+          pageHeading: coursePresenter.nameAndAlternateName,
+          course: coursePresenter,
           organisationsTableData: organisationTableRows(course, organisationsWithOfferingIds),
         })
       })
@@ -120,9 +122,11 @@ describe('CoursesController', () => {
           expect(organisationService.getOrganisation).toHaveBeenCalledWith(token, organisation.id),
         )
 
+        const coursePresenter = presentCourse(course)
+
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          pageHeading: course.name,
-          course: presentCourse(course),
+          pageHeading: coursePresenter.nameAndAlternateName,
+          course: coursePresenter,
           organisationsTableData: organisationTableRows(course, existingOrganisationsWithOfferingIds),
         })
       })

@@ -33,9 +33,11 @@ describe('CoursesOfferingsController', () => {
       const requestHandler = courseOfferingsController.show()
       await requestHandler(request, response, next)
 
+      const coursePresenter = presentCourse(course)
+
       expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
-        pageHeading: course.name,
-        course: presentCourse(course),
+        pageHeading: coursePresenter.nameAndAlternateName,
+        course: coursePresenter,
         organisation: presentOrganisationWithOfferingEmail(organisation, courseOffering.contactEmail),
       })
     })

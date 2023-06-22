@@ -30,9 +30,11 @@ export default class CourseOfferingsController {
         })
       }
 
+      const coursePresenter = presentCourse(course)
+
       res.render('courses/offerings/show', {
-        pageHeading: course.name,
-        course: presentCourse(course),
+        pageHeading: coursePresenter.nameAndAlternateName,
+        course: coursePresenter,
         organisation: presentOrganisationWithOfferingEmail(organisation, courseOffering.contactEmail),
       })
     }
