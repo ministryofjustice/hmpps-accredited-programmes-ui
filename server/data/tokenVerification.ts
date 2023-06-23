@@ -3,7 +3,7 @@ import superagent from 'superagent'
 
 import logger from '../../logger'
 import config from '../config'
-import getSanitisedError from '../sanitisedError'
+import sanitiseError from '../sanitisedError'
 import { assertHasUser } from '../utils/typeUtils'
 
 function getApiClientToken(token: string) {
@@ -13,7 +13,7 @@ function getApiClientToken(token: string) {
     .timeout(config.apis.tokenVerification.timeout)
     .then(response => Boolean(response.body && response.body.active))
     .catch(error => {
-      logger.error(getSanitisedError(error), 'Error calling tokenVerificationApi')
+      logger.error(sanitiseError(error), 'Error calling tokenVerificationApi')
     })
 }
 
