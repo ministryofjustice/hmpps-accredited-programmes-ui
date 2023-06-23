@@ -41,6 +41,7 @@
     "npm": "^9"
   },
   "jest": {
+    "showSeed": true,
     "transform": {
       "^.+\\.tsx?$": [
         "ts-jest",
