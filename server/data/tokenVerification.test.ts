@@ -4,7 +4,7 @@ import nock from 'nock'
 import verifyToken from './tokenVerification'
 import config from '../config'
 
-describe('token verification api tests', () => {
+describe('tokenVerification', () => {
   let fakeApi: nock.Scope
 
   beforeEach(() => {
@@ -16,48 +16,61 @@ describe('token verification api tests', () => {
     nock.cleanAll()
   })
 
-  describe('POST requests', () => {
-    describe('Token verification disabled', () => {
+  describe('verifyToken', () => {
+    describe('when token verification is disabled', () => {
       beforeAll(() => {
         config.apis.tokenVerification.enabled = false
       })
 
-      it('Token always considered valid', async () => {
+      it("doesn't call the API and returns true", async () => {
         fakeApi.post('/token/verify', '').reply(200, { active: true })
-        const data = await verifyToken({ user: {} } as Request)
-        expect(data).toEqual(true)
-        expect(nock.isDone()).toBe(false) // assert api was not called
+        const verified = await verifyToken({ user: {} } as Request)
+        expect(verified).toEqual(true)
+        expect(nock.isDone()).toBe(false)
       })
     })
 
-    describe('Token Verification enabled', () => {
+    describe('when token verification is enabled', () => {
       beforeEach(() => {
         config.apis.tokenVerification.enabled = true
       })
-      it('Calls verify and parses response', async () => {
-        fakeApi.post('/token/verify', '').reply(200, { active: true })
-        const data = await verifyToken({ user: {}, verified: false } as Request)
-        expect(data).toEqual(true)
-        expect(nock.isDone()).toBe(true) // assert api was called
+
+      describe('and already verified', () => {
+        it("doesn't call the API and returns true", async () => {
+          fakeApi.post('/token/verify', '').reply(200, {})
+          const verified = await verifyToken({ user: {}, verified: true } as Request)
+          expect(verified).toEqual(true)
+          expect(nock.isDone()).toBe(false)
+        })
       })
 
-      it('Calls verify and parses inactive response', async () => {
-        fakeApi.post('/token/verify', '').reply(200, { active: false })
-        const data = await verifyToken({ user: {}, verified: false } as Request)
-        expect(data).toEqual(false)
-      })
+      describe('and not already verified', () => {
+        describe('and verify returns active', () => {
+          it('calls the API and returns true', async () => {
+            fakeApi.post('/token/verify', '').reply(200, { active: true })
+            const verified = await verifyToken({ user: {}, verified: false } as Request)
+            expect(verified).toEqual(true)
+            expect(nock.isDone()).toBe(true)
+          })
+        })
 
-      it('Calls verify and parses no response', async () => {
-        fakeApi.post('/token/verify', '').reply(200, {})
-        const data = await verifyToken({ user: {}, verified: false } as Request)
-        expect(data).toEqual(false)
-      })
+        describe('and verify returns inactive', () => {
+          it('calls the API and returns false', async () => {
+            fakeApi.post('/token/verify', '').reply(200, { active: false })
+            const verified = await verifyToken({ user: {}, verified: false } as Request)
+            expect(verified).toEqual(false)
+            expect(nock.isDone()).toBe(true)
+          })
+        })
 
-      it('Already verified', async () => {
-        fakeApi.post('/token/verify', '').reply(200, {})
-        const data = await verifyToken({ user: {}, verified: true } as Request)
-        expect(data).toEqual(true)
-        expect(nock.isDone()).toBe(false) // assert api was not called
+        describe('and verify returns an empty response', () => {
+          it('calls the API and returns false', async () => {
+            fakeApi.post('/token/verify', '').reply(200, {})
+            const verified = await verifyToken({ user: {}, verified: false } as Request)
+            expect(verified).toEqual(false)
+            expect(nock.isDone()).toBe(true)
+          })
+        })
       })
     })
   })

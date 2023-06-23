@@ -44,7 +44,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
     })
 
-    it('should fetch all courses', async () => {
+    it('fetches all courses', async () => {
       const result = await courseClient.all()
 
       expect(result).toEqual(allCourses)
@@ -70,7 +70,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
     })
 
-    it('should fetch the given course', async () => {
+    it('fetches the given course', async () => {
       const result = await courseClient.find(course.id)
 
       expect(result).toEqual(course)
@@ -96,7 +96,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
     })
 
-    it("should fetch the given course's offerings", async () => {
+    it("fetches the given course's offerings", async () => {
       const result = await courseClient.findOfferings(course.id)
 
       expect(result).toEqual(courseOfferings)
@@ -122,7 +122,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
     })
 
-    it('should fetch the given course offering', async () => {
+    it('fetches the given course offering', async () => {
       const result = await courseClient.findOffering(course.id, courseOffering.id)
 
       expect(result).toEqual(courseOffering)

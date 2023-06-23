@@ -17,7 +17,7 @@ describe('DashboardController', () => {
   })
 
   describe('index', () => {
-    it('should render the dashboard template', () => {
+    it('renders the dashboard index template', () => {
       const requestHandler = dashboardController.index()
 
       requestHandler(request, response, next)

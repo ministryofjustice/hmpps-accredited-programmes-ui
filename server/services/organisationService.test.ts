@@ -20,7 +20,7 @@ describe('OrganisationService', () => {
   })
 
   describe('getOrganisation', () => {
-    describe('if the prison client finds the corresponding prison', () => {
+    describe('when the prison client finds the corresponding prison', () => {
       describe("and it's active", () => {
         it('returns the specified organisation', async () => {
           const prison = prisonFactory.build()
@@ -64,7 +64,7 @@ describe('OrganisationService', () => {
       })
     })
 
-    describe('if the prison client throws a 404 error', () => {
+    describe('when the prison client throws a 404 error', () => {
       it('returns `null`', async () => {
         const clientError = createError(404)
         prisonClient.getPrison.mockRejectedValue(clientError)

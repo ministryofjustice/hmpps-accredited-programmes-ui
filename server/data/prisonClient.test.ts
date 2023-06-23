@@ -28,7 +28,7 @@ describe('PrisonClient', () => {
   describe('getPrison', () => {
     const prison: Prison = prisonFactory.build()
 
-    it('should fetch the given prison', async () => {
+    it('fetches the given prison', async () => {
       fakePrisonRegisterApi
         .get(`/prisons/id/${prison.prisonId}`)
         .matchHeader('authorization', `Bearer ${token}`)

@@ -26,29 +26,33 @@ afterEach(() => {
 })
 
 describe('GET 404', () => {
-  it('should render content with stack in dev mode', () => {
-    const app = setupApp(false)
+  describe('when in dev mode', () => {
+    it('renders content with the stack trace', () => {
+      const app = setupApp(false)
 
-    return request(app)
-      .get('/unknown')
-      .expect(404)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('NotFoundError: Not found')
-        expect(res.text).not.toContain('Something went wrong. The error has been logged. Please try again')
-      })
+      return request(app)
+        .get('/unknown')
+        .expect(404)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('NotFoundError: Not found')
+          expect(res.text).not.toContain('Something went wrong. The error has been logged. Please try again')
+        })
+    })
   })
 
-  it('should render content without stack in production mode', () => {
-    const app = setupApp(true)
+  describe('when in production mode', () => {
+    it('renders content without the stack trace', () => {
+      const app = setupApp(true)
 
-    return request(app)
-      .get('/unknown')
-      .expect(404)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Something went wrong. The error has been logged. Please try again')
-        expect(res.text).not.toContain('NotFoundError: Not found')
-      })
+      return request(app)
+        .get('/unknown')
+        .expect(404)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Something went wrong. The error has been logged. Please try again')
+          expect(res.text).not.toContain('NotFoundError: Not found')
+        })
+    })
   })
 })

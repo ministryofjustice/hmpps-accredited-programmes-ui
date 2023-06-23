@@ -1,8 +1,8 @@
 import type { UnsanitisedError } from './sanitisedError'
 import sanitiseError from './sanitisedError'
 
-describe('sanitised error', () => {
-  it('it should omit the request headers from the error object ', () => {
+describe('sanitiseError', () => {
+  it('omits the request headers from the error object ', () => {
     const error = {
       name: '',
       status: 404,
@@ -36,7 +36,7 @@ describe('sanitised error', () => {
     })
   })
 
-  it('it should return the error message ', () => {
+  it('returns the error message', () => {
     const error = {
       message: 'error description',
     } as unknown as UnsanitisedError
@@ -45,7 +45,7 @@ describe('sanitised error', () => {
     })
   })
 
-  it('it should return an empty object for an unknown error structure', () => {
+  it('returns an empty object for an unknown error structure', () => {
     const error = {
       property: 'unknown',
     } as unknown as UnsanitisedError

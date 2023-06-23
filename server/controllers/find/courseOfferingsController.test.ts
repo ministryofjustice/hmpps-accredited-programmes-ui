@@ -10,7 +10,7 @@ import { presentOrganisationWithOfferingEmail } from '../../utils/organisationUt
 
 describe('CoursesOfferingsController', () => {
   describe('show', () => {
-    it('renders the course offering template', async () => {
+    it('renders the course offering show template', async () => {
       const token = 'SOME_TOKEN'
       const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
       const response: DeepMocked<Response> = createMock<Response>({})
