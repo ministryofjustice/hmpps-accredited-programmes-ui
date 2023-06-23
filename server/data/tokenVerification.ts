@@ -19,7 +19,7 @@ function getApiClientToken(token: string) {
 
 type TokenVerifier = (request: Request) => Promise<boolean | void>
 
-const tokenVerifier: TokenVerifier = async request => {
+const verifyToken: TokenVerifier = async request => {
   assertHasUser(request)
   const { user, verified } = request
 
@@ -41,6 +41,6 @@ const tokenVerifier: TokenVerifier = async request => {
   return result
 }
 
-export default tokenVerifier
+export default verifyToken
 
 export type { TokenVerifier }
