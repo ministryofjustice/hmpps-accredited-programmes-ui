@@ -11,33 +11,7 @@ describe('courseUtils', () => {
         ],
       })
 
-      expect(presentCourse(course)).toEqual({
-        ...course,
-        audienceTags: [
-          {
-            text: 'Intimate partner violence',
-            classes: 'govuk-tag govuk-tag--green',
-          },
-          {
-            text: 'General violence',
-            classes: 'govuk-tag govuk-tag--purple',
-          },
-        ],
-        prerequisiteSummaryListRows: [
-          {
-            key: { text: course.coursePrerequisites[0].name },
-            value: { text: course.coursePrerequisites[0].description },
-          },
-          {
-            key: { text: course.coursePrerequisites[1].name },
-            value: { text: course.coursePrerequisites[1].description },
-          },
-          {
-            key: { text: course.coursePrerequisites[2].name },
-            value: { text: course.coursePrerequisites[2].description },
-          },
-        ],
-      })
+      expect(presentCourse(course)).toEqual('fish')
     })
   })
 })
