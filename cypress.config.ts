@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import cypressMochawesomeReportPlugin from 'cypress-mochawesome-reporter/plugin'
 import fs from 'fs'
 
 import auth from './integration_tests/mockApis/auth'
@@ -15,7 +16,7 @@ export default defineConfig({
   videosFolder: 'integration_tests/videos',
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
-    configFile: 'reporter-config.json',
+    configFile: 'integration_tests/reporterConfig.json',
   },
   videoUploadOnPasses: false,
   taskTimeout: 60000,
@@ -23,6 +24,8 @@ export default defineConfig({
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on) {
+      cypressMochawesomeReportPlugin(on)
+
       on('task', {
         reset: resetStubs,
         ...auth,
