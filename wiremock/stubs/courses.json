@@ -768,5 +768,1391 @@
         "description": "Example setting"
       }
     ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "6: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "6: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "6: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "6: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "6: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "7: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "7: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "7: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "7: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "7: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "8: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "8: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "8: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "8: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "8: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "9: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "9: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "9: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "9: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "9: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "10: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "10: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "10: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "10: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "10: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "11: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "11: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "11: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "11: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "11: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "12: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "12: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "12: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "12: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "12: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "13: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "13: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "13: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "13: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "13: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "654520cc-e109-4f31-81a6-1fc6bc9078b3",
+    "name": "14: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
+        "value": "Intimate partner violence"
+      },
+      {
+        "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
+        "value": "General violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "e4e5e559-739c-4b20-a40f-97d48a4081cb",
+    "name": "14: Becoming New Me Plus",
+    "alternateName": "BNM+",
+    "description": "Becoming New Me Plus (BNM+) is a programme...",
+    "audiences": [
+      {
+        "id": "9adb316f-caab-4f92-ad22-87d3c2bb5c43",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "name": "14: Building Better Relationships",
+    "alternateName": "BBR",
+    "description": "BBR is a programme...",
+    "audiences": [
+      {
+        "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
+        "value": "Intimate partner violence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "4a1630b7-3280-49b4-b559-53d110b3c27b",
+    "name": "14: Healthy Identity Intervention",
+    "alternateName": "HII",
+    "description": "HII is a programme...",
+    "audiences": [
+      {
+        "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
+        "value": "Extremism"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
+  },
+  {
+    "id": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "name": "14: Healthy Sex Programme",
+    "alternateName": "HSP",
+    "description": "HSP is a programme...",
+    "audiences": [
+      {
+        "id": "005a4cf6-749b-4ac2-9a2d-dd0024c0d34a",
+        "value": "Sexual offence"
+      }
+    ],
+    "coursePrerequisites": [
+      {
+        "name": "Gender",
+        "description": "Example gender"
+      },
+      {
+        "name": "Learning needs",
+        "description": "Example learning needs"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria"
+      },
+      {
+        "name": "Setting",
+        "description": "Example setting"
+      }
+    ]
   }
 ]
