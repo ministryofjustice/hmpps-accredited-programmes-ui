@@ -9,7 +9,7 @@
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div role="list">
-    {% for course in courses %}
+    {% for course in paginatedCourses.items %}
       {{ indexCourseSummary(course) }}
 
       {% if loop.index < courses.length %}
@@ -19,4 +19,9 @@
       {% endif %}
     {% endfor %}
   </div>
+
+  <p>
+    Page: {{ paginatedCourses.page }}<br>
+    Total courses: {{ paginatedCourses.totalItems }}
+  </p>
 {% endblock content %}
