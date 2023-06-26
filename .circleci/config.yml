@@ -74,9 +74,11 @@ jobs:
           name: unit tests
           command: npm run test:ci
       - store_test_results:
-          path: test_results
+          path: test_results/unit
       - store_artifacts:
-          path: test_results/unit-test-reports.html
+          path: test_results/unit
+      - store_artifacts:
+          path: test_results/unit/xml
       - store_artifacts:
           path: pact/pacts
       - run:
@@ -119,11 +121,17 @@ jobs:
           name: integration tests
           command: npm run int-test
       - store_test_results:
-          path: test_results
+          path: test_results/integration
       - store_artifacts:
-          path: integration-tests/videos
+          path: test_results/integration
       - store_artifacts:
-          path: integration-tests/screenshots
+          path: test_results/integration/downloads
+      - store_artifacts:
+          path: test_results/integration/screenshots
+      - store_artifacts:
+          path: test_results/integration/videos
+      - store_artifacts:
+          path: test_results/integration/xml
 
   end_to_end_test:
     docker:
