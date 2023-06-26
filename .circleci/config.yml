@@ -76,6 +76,8 @@ jobs:
       - store_test_results:
           path: test_results
       - store_artifacts:
+          path: test_results/jest
+      - store_artifacts:
           path: test_results/unit-test-reports.html
       - store_artifacts:
           path: pact/pacts
@@ -121,9 +123,11 @@ jobs:
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: test_results/videos
+          path: test_results/cypress
       - store_artifacts:
-          path: test_results/screenshots
+          path: integration_tests/videos
+      - store_artifacts:
+          path: integration_tests/screenshots
 
   end_to_end_test:
     docker:
