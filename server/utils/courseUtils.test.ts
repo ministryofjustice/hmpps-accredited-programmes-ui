@@ -5,6 +5,8 @@ describe('courseUtils', () => {
   describe('presentCourse', () => {
     it('returns a course with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
+        name: 'Lime Course',
+        alternateName: 'LC',
         audiences: [
           courseAudienceFactory.build({ value: 'Intimate partner violence' }),
           courseAudienceFactory.build({ value: 'General violence' }),
@@ -19,6 +21,7 @@ describe('courseUtils', () => {
 
       expect(presentCourse(course)).toEqual({
         ...course,
+        nameAndAlternateName: 'Lime Course (LC)',
         audienceTags: [
           {
             text: 'Intimate partner violence',
@@ -47,6 +50,14 @@ describe('courseUtils', () => {
             value: { text: course.coursePrerequisites[1].description },
           },
         ],
+      })
+    })
+
+    describe('when a course has no `alternateName`', () => {
+      it('just uses the `name` as the `nameAndAlternateName`', () => {
+        const course = courseFactory.build({ alternateName: null })
+
+        expect(presentCourse(course).nameAndAlternateName).toEqual(course.name)
       })
     })
   })

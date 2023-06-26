@@ -24,6 +24,7 @@ type SummaryListRow<T = string, U = ObjectWithTextOrHtmlString> = {
 type TableRow = Array<ObjectWithTextOrHtmlString>
 
 type CoursePresenter = Course & {
+  nameAndAlternateName: string
   audienceTags: Array<Tag>
   prerequisiteSummaryListRows: Array<SummaryListRow>
 }

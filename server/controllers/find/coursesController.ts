@@ -47,9 +47,11 @@ export default class CoursesController {
 
       const organisationsTableData = organisationTableRows(course, organisationsWithOfferingIds)
 
+      const coursePresenter = presentCourse(course)
+
       res.render('courses/show', {
-        pageHeading: course.name,
-        course: presentCourse(course),
+        pageHeading: coursePresenter.nameAndAlternateName,
+        course: coursePresenter,
         organisationsTableData,
       })
     }
