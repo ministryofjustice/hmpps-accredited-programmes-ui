@@ -19,7 +19,8 @@ export default class CoursesController {
 
       const courses = await this.courseService.getCourses(req.user.token)
       const coursePresenters = courses.map(course => presentCourse(course))
-      const paginatedCourses = paginatedArray(coursePresenters)
+      const page = parseInt(req.query.page as string, 10) || 1
+      const paginatedCourses = paginatedArray(coursePresenters, page)
 
       res.render('courses/index', {
         pageHeading: 'List of accredited programmes',
