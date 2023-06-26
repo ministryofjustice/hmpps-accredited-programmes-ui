@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import fs from 'fs'
 
 import auth from './integration_tests/mockApis/auth'
 import courses from './integration_tests/mockApis/courses'
@@ -28,6 +29,16 @@ export default defineConfig({
         ...courses,
         ...prisons,
         ...tokenVerification,
+      })
+
+      on('after:spec', (_spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
+        if (results?.video) {
+          const hasFailures = results.tests.some(test => test.attempts.some(attempt => attempt.state === 'failed'))
+
+          if (!hasFailures) {
+            fs.unlinkSync(results.video)
+          }
+        }
       })
     },
     baseUrl: 'http://localhost:3007',
