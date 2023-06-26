@@ -12,7 +12,7 @@ const redisClient = createMock<RedisClient>({})
 const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
 const token = 'some token'
 
-describe('User service', () => {
+describe('UserService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
   let userService: UserService
 
@@ -21,17 +21,21 @@ describe('User service', () => {
       hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
       userService = new UserService(hmppsAuthClient)
     })
-    it('Retrieves and formats user name', async () => {
+
+    it('retrieves user and formats name', async () => {
       hmppsAuthClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
 
       const result = await userService.getUser(token)
 
       expect(result.displayName).toEqual('John Smith')
     })
-    it('Propagates error', async () => {
-      hmppsAuthClient.getUser.mockRejectedValue(new Error('some error'))
 
-      await expect(userService.getUser(token)).rejects.toEqual(new Error('some error'))
+    describe('when the client has an error', () => {
+      it('propagates the error', async () => {
+        hmppsAuthClient.getUser.mockRejectedValue(new Error('some error'))
+
+        await expect(userService.getUser(token)).rejects.toEqual(new Error('some error'))
+      })
     })
   })
 })

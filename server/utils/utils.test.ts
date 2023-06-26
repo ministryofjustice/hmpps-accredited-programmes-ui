@@ -4,15 +4,15 @@ describe('utils', () => {
   describe('convertToTitleCase', () => {
     it.each([
       [null, null, ''],
-      ['empty string', '', ''],
-      ['Lower case', 'robert', 'Robert'],
-      ['Upper case', 'ROBERT', 'Robert'],
-      ['Mixed case', 'RoBErT', 'Robert'],
-      ['Multiple words', 'RobeRT SMiTH', 'Robert Smith'],
-      ['Leading spaces', '  RobeRT', '  Robert'],
-      ['Trailing spaces', 'RobeRT  ', 'Robert  '],
-      ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
-    ])('%s convertToTitleCase(%s, %s)', (_inputType: string | null, input: string | null, expectedOutput: string) => {
+      ['an empty string', '', ''],
+      ['lower case', 'robert', 'Robert'],
+      ['upper case', 'ROBERT', 'Robert'],
+      ['mixed case', 'RoBErT', 'Robert'],
+      ['multiple words', 'RobeRT SMiTH', 'Robert Smith'],
+      ['leading spaces', '  RobeRT', '  Robert'],
+      ['trailing spaces', 'RobeRT  ', 'Robert  '],
+      ['hyphenation', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
+    ])('handles %s: %s -> %s', (_inputType: string | null, input: string | null, expectedOutput: string) => {
       expect(convertToTitleCase(input)).toEqual(expectedOutput)
     })
   })
@@ -20,13 +20,13 @@ describe('utils', () => {
   describe('initialiseName', () => {
     it.each([
       [undefined, undefined, null],
-      ['Empty string', '', null],
-      ['One word', 'robert', 'r. robert'],
-      ['Two words', 'Robert James', 'R. James'],
-      ['Three words', 'Robert James Smith', 'R. Smith'],
-      ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
+      ['an empty string', '', null],
+      ['one name', 'robert', 'r. robert'],
+      ['two names', 'Robert James', 'R. James'],
+      ['three names', 'Robert James Smith', 'R. Smith'],
+      ['double-barrelled names', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
     ])(
-      '%s initialiseName(%s, %s)',
+      'handles %s: %s -> %s',
       (_inputType: string | undefined, input: string | undefined, expectedOutput: string | null) => {
         expect(initialiseName(input)).toEqual(expectedOutput)
       },
@@ -35,11 +35,11 @@ describe('utils', () => {
 
   describe('intitialiseTitle', () => {
     it.each([
-      ['One word', 'Lime', 'L'],
-      ['Two words', 'Lime Course', 'LC'],
-      ['Hyphenated word', 'Lime-course', 'L'],
-      ['Mixed case word', 'LimeCourse', 'L'],
-    ])('%s initialiseTitle(%s, %s)', (_inputType: string, input: string, expectedOutput: string) => {
+      ['one word', 'Lime', 'L'],
+      ['two words', 'Lime Course', 'LC'],
+      ['a hyphenated word', 'Lime-course', 'L'],
+      ['a mixed case word', 'LimeCourse', 'L'],
+    ])('handles %s: %s -> %s', (_inputType: string, input: string, expectedOutput: string) => {
       expect(initialiseTitle(input)).toEqual(expectedOutput)
     })
   })

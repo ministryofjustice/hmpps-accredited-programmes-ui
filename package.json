@@ -40,56 +40,6 @@
     "node": "^v18.16.0",
     "npm": "^9"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": [
-        "ts-jest",
-        {
-          "isolatedModules": true
-        }
-      ]
-    },
-    "collectCoverageFrom": [
-      "server/**/*.{ts,js,jsx,mjs}"
-    ],
-    "testMatch": [
-      "<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
-    ],
-    "testEnvironment": "node",
-    "reporters": [
-      "default",
-      [
-        "jest-junit",
-        {
-          "outputDirectory": "test_results/jest/"
-        }
-      ],
-      [
-        "./node_modules/jest-html-reporter",
-        {
-          "outputPath": "test_results/unit-test-reports.html"
-        }
-      ]
-    ],
-    "moduleFileExtensions": [
-      "web.js",
-      "js",
-      "json",
-      "node",
-      "ts"
-    ]
-  },
-  "nodemonConfig": {
-    "ignore": [
-      ".circleci/*",
-      "migrations/*",
-      "node_modules/*",
-      "test/*",
-      "integration_tests/*"
-    ],
-    "delay": 2500,
-    "ext": "js,json,html,njk"
-  },
   "dependencies": {
     "@faker-js/faker": "^8.0.0",
     "@ministryofjustice/frontend": "^1.6.6",

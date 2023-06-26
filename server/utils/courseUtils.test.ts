@@ -3,7 +3,7 @@ import { courseAudienceFactory, courseFactory, coursePrerequisiteFactory } from 
 
 describe('courseUtils', () => {
   describe('presentCourse', () => {
-    it('returns a course with UI-formatted audience and prerequisite data', () => {
+    it('returns course details with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
         name: 'Lime Course',
         alternateName: 'LC',

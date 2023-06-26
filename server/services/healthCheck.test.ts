@@ -1,36 +1,41 @@
 import type { HealthCheckCallback, HealthCheckService } from './healthCheck'
 import healthCheck from './healthCheck'
 
-describe('Healthcheck', () => {
-  it('Healthcheck reports healthy', done => {
-    const successfulChecks = [successfulCheck('check1'), successfulCheck('check2')]
+describe('healthCheck', () => {
+  describe('when all checks are successful', () => {
+    it('reports healthy', done => {
+      const checks = [successfulCheck('check1'), successfulCheck('check2')]
 
-    const callback: HealthCheckCallback = result => {
-      expect(result).toEqual(
-        expect.objectContaining({
-          healthy: true,
-          checks: { check1: 'some message', check2: 'some message' },
-        }),
-      )
-      done()
-    }
+      const callback: HealthCheckCallback = result => {
+        expect(result).toEqual(
+          expect.objectContaining({
+            healthy: true,
+            checks: { check1: 'some message', check2: 'some message' },
+          }),
+        )
+        done()
+      }
 
-    healthCheck(callback, successfulChecks)
+      healthCheck(callback, checks)
+    })
   })
-  it('Healthcheck reports unhealthy', done => {
-    const successfulChecks = [successfulCheck('check1'), erroredCheck('check2')]
 
-    const callback: HealthCheckCallback = result => {
-      expect(result).toEqual(
-        expect.objectContaining({
-          healthy: false,
-          checks: { check1: 'some message', check2: 'some error' },
-        }),
-      )
-      done()
-    }
+  describe('when any check is unsuccessful', () => {
+    it('reports unhealthy', done => {
+      const checks = [successfulCheck('check1'), erroredCheck('check2')]
 
-    healthCheck(callback, successfulChecks)
+      const callback: HealthCheckCallback = result => {
+        expect(result).toEqual(
+          expect.objectContaining({
+            healthy: false,
+            checks: { check1: 'some message', check2: 'some error' },
+          }),
+        )
+        done()
+      }
+
+      healthCheck(callback, checks)
+    })
   })
 })
 
