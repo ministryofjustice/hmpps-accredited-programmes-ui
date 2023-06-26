@@ -48,6 +48,7 @@ type PaginatedArray<T> = {
   page: number
   totalItems: number
   items: Array<T>
+  mojPaginationConfig: object
 }
 
 export type {

@@ -1,3 +1,5 @@
+import pathWithQuery from './pathUtils'
+import findPaths from '../paths/find'
 import type { PaginatedArray } from '@accredited-programmes/ui'
 
 const properCase = (word: string): string =>
@@ -31,15 +33,54 @@ const initialiseTitle = (sentence: string): string => {
     .join('')
 }
 
-const paginatedArray = <T>(items: Array<T>, page = 1): PaginatedArray<T> => {
+const paginatedArray = <T>(items: Array<T>, currentPage = 1): PaginatedArray<T> => {
   const totalItems = items.length
   const perPage = 10
-  const startIndex = perPage * (page - 1)
+  const startIndex = perPage * (currentPage - 1)
+
+  const totalPages = Math.ceil(totalItems / perPage)
+  const coursesPath = findPaths.courses.index({})
+
+  const pagesToShow = Array.from(new Set([1, currentPage - 1, currentPage, currentPage + 1, totalPages])).filter(
+    (page: number) => page > 0 && page <= totalPages,
+  )
+
+  type MojPaginationConfigItem = { text: string; href: string; selected?: boolean } | { type: string }
+
+  const mojPaginationConfigItems: Array<MojPaginationConfigItem> = []
+
+  pagesToShow.forEach((pageNumber, pageNumberIndex) => {
+    if (pageNumber !== 1 && pageNumber > pagesToShow[pageNumberIndex - 1] + 1) {
+      mojPaginationConfigItems.push({ type: 'dots' })
+    }
+
+    const item: MojPaginationConfigItem = {
+      text: pageNumber.toString(), // toString might be unnecessary
+      href: pathWithQuery(coursesPath, { page: pageNumber }),
+    }
+
+    if (pageNumber === currentPage) {
+      item.selected = true
+    }
+
+    mojPaginationConfigItems.push(item)
+  })
+
+  const mojPaginationConfig = {
+    items: mojPaginationConfigItems,
+    results: {
+      count: totalItems,
+      from: (currentPage - 1) * perPage + 1,
+      to: Math.min(currentPage * perPage, totalItems),
+      text: 'courses',
+    },
+  }
 
   return {
-    page,
+    page: currentPage,
     totalItems,
     items: items.slice(startIndex, startIndex + perPage),
+    mojPaginationConfig,
   }
 }
 
