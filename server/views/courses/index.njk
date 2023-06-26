@@ -1,3 +1,5 @@
+{% from "moj/components/pagination/macro.njk" import mojPagination %}
+
 {% from "./_indexCourseSummary.njk" import indexCourseSummary %}
 
 {% extends "../partials/layout.njk" %}
@@ -20,8 +22,5 @@
     {% endfor %}
   </div>
 
-  <p>
-    Page: {{ paginatedCourses.page }}<br>
-    Total courses: {{ paginatedCourses.totalItems }}
-  </p>
+  {{ mojPagination(paginatedCourses.mojPaginationConfig) }}
 {% endblock content %}
