@@ -66,7 +66,12 @@ const paginatedArray = <T>(items: Array<T>, currentPage = 1): PaginatedArray<T> 
     mojPaginationConfigItems.push(item)
   })
 
-  const mojPaginationConfig = {
+  const mojPaginationConfig: {
+    items: Array<MojPaginationConfigItem>
+    results: object
+    previous?: object
+    next?: object
+  } = {
     items: mojPaginationConfigItems,
     results: {
       count: totalItems,
@@ -74,6 +79,20 @@ const paginatedArray = <T>(items: Array<T>, currentPage = 1): PaginatedArray<T> 
       to: Math.min(currentPage * perPage, totalItems),
       text: 'courses',
     },
+  }
+
+  if (currentPage > 1) {
+    mojPaginationConfig.previous = {
+      text: 'Previous',
+      href: pathWithQuery(coursesPath, { page: currentPage - 1 }),
+    }
+  }
+
+  if (currentPage < totalPages) {
+    mojPaginationConfig.next = {
+      text: 'Next',
+      href: pathWithQuery(coursesPath, { page: currentPage + 1 }),
+    }
   }
 
   return {
