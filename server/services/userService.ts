@@ -1,4 +1,4 @@
-import type HmppsAuthClient from '../data/hmppsAuthClient'
+import type { HmppsAuthClient } from '../data'
 import { convertToTitleCase } from '../utils/utils'
 
 interface UserDetails {

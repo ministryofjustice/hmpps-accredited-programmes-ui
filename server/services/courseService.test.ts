@@ -1,7 +1,7 @@
 import { when } from 'jest-when'
 
 import CourseService from './courseService'
-import CourseClient from '../data/courseClient'
+import { CourseClient } from '../data'
 import { courseFactory, courseOfferingFactory } from '../testutils/factories'
 
 jest.mock('../data/courseClient')

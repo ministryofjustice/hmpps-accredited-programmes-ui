@@ -4,7 +4,7 @@ import { Strategy } from 'passport-oauth2'
 
 import generateOauthClientToken from './clientCredentials'
 import config from '../config'
-import type { TokenVerifier } from '../data/tokenVerification'
+import type { TokenVerifier } from '../data'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport

@@ -1,5 +1,4 @@
-import type { RestClientBuilder } from '../data'
-import type CourseClient from '../data/courseClient'
+import type { CourseClient, RestClientBuilder } from '../data'
 import type { Course, CourseOffering } from '@accredited-programmes/models'
 
 export default class CourseService {

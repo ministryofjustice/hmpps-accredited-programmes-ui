@@ -1,10 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 
 import UserService from './userService'
-import type { User } from '../data/hmppsAuthClient'
-import HmppsAuthClient from '../data/hmppsAuthClient'
-import type { RedisClient } from '../data/redisClient'
-import TokenStore from '../data/tokenStore'
+import type { RedisClient, User } from '../data'
+import { HmppsAuthClient, TokenStore } from '../data'
 
 jest.mock('../data/hmppsAuthClient')
 

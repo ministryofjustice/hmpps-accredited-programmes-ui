@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import logger from '../../logger'
 import config from '../config'
-import { createRedisClient } from '../data/redisClient'
+import { createRedisClient } from '../data'
 
 export default function setUpWebSession(): Router {
   const client = createRedisClient()
