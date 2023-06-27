@@ -228,7 +228,7 @@ workflows:
             - deploy_dev
       - hmpps/deploy_env:
           name: deploy_preprod
-          env: "preprod"
+          env: 'preprod'
           context:
             - hmpps-common-vars
             - hmpps-accredited-programmes-ui-preprod
@@ -246,7 +246,7 @@ workflows:
             - deploy_preprod
       - hmpps/deploy_env:
           name: deploy_prod
-          env: "prod"
+          env: 'prod'
           slack_notification: true
           slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
