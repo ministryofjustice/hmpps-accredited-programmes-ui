@@ -8,7 +8,7 @@ const config: Config = {
     [
       'jest-junit',
       {
-        outputDirectory: 'test_results/unit/xml',
+        outputFile: 'test_results/unit/xml/results-for-ci-report.xml',
       },
     ],
     [

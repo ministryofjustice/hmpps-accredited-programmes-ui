@@ -11,6 +11,6 @@
     "videoOnFailOnly": true
   },
   "mochaJunitReporterReporterOptions": {
-    "mochaFile": "test_results/integration/xml/results-[hash].xml"
+    "mochaFile": "test_results/integration/xml/results-for-ci-report-[hash].xml"
   }
 }
