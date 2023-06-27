@@ -4,7 +4,7 @@ import { Factory } from 'fishery'
 import courseAudienceFactory from './courseAudience'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import buildListBetween from './factoryHelpers'
-import { convertToTitleCase, initialiseTitle } from '../../utils/utils'
+import { convertToTitleCase, initialiseTitle } from '../../utils/stringUtils'
 import type { Course } from '@accredited-programmes/models'
 
 export default Factory.define<Course>(({ params }) => {
