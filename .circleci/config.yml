@@ -74,9 +74,11 @@ jobs:
           name: unit tests
           command: npm run test:ci
       - store_test_results:
-          path: test_results
+          path: test_results/unit
       - store_artifacts:
-          path: test_results/unit-test-reports.html
+          path: test_results/unit
+      - store_artifacts:
+          path: test_results/unit/xml
       - store_artifacts:
           path: pact/pacts
       - run:
@@ -119,11 +121,17 @@ jobs:
           name: integration tests
           command: npm run int-test
       - store_test_results:
-          path: test_results
+          path: test_results/integration
       - store_artifacts:
-          path: integration-tests/videos
+          path: test_results/integration
       - store_artifacts:
-          path: integration-tests/screenshots
+          path: test_results/integration/downloads
+      - store_artifacts:
+          path: test_results/integration/screenshots
+      - store_artifacts:
+          path: test_results/integration/videos
+      - store_artifacts:
+          path: test_results/integration/xml
 
   end_to_end_test:
     docker:
@@ -220,7 +228,7 @@ workflows:
             - deploy_dev
       - hmpps/deploy_env:
           name: deploy_preprod
-          env: "preprod"
+          env: 'preprod'
           context:
             - hmpps-common-vars
             - hmpps-accredited-programmes-ui-preprod
@@ -238,7 +246,7 @@ workflows:
             - deploy_preprod
       - hmpps/deploy_env:
           name: deploy_prod
-          env: "prod"
+          env: 'prod'
           slack_notification: true
           slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:

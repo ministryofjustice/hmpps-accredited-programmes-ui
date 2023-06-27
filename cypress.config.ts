@@ -1,4 +1,6 @@
 import { defineConfig } from 'cypress'
+import cypressMochawesomeReportPlugin from 'cypress-mochawesome-reporter/plugin'
+import fs from 'fs'
 
 import auth from './integration_tests/mockApis/auth'
 import courses from './integration_tests/mockApis/courses'
@@ -8,13 +10,13 @@ import { resetStubs } from './wiremock'
 
 export default defineConfig({
   chromeWebSecurity: false,
-  downloadsFolder: 'integration_tests/downloads',
   fixturesFolder: 'integration_tests/fixtures',
-  screenshotsFolder: 'integration_tests/screenshots',
-  videosFolder: 'integration_tests/videos',
+  downloadsFolder: 'test_results/integration/downloads',
+  screenshotsFolder: 'test_results/integration/screenshots',
+  videosFolder: 'test_results/integration/videos',
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
-    configFile: 'reporter-config.json',
+    configFile: 'integration_tests/reporterConfig.json',
   },
   videoUploadOnPasses: false,
   taskTimeout: 60000,
@@ -22,12 +24,24 @@ export default defineConfig({
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on) {
+      cypressMochawesomeReportPlugin(on)
+
       on('task', {
         reset: resetStubs,
         ...auth,
         ...courses,
         ...prisons,
         ...tokenVerification,
+      })
+
+      on('after:spec', (_spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
+        if (results?.video) {
+          const hasFailures = results.tests.some(test => test.attempts.some(attempt => attempt.state === 'failed'))
+
+          if (!hasFailures) {
+            fs.unlinkSync(results.video)
+          }
+        }
       })
     },
     baseUrl: 'http://localhost:3007',

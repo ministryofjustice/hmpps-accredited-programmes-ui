@@ -8,13 +8,16 @@ const config: Config = {
     [
       'jest-junit',
       {
-        outputDirectory: 'test_results/jest/',
+        outputFile: 'test_results/unit/xml/results-for-ci-report.xml',
       },
     ],
     [
       './node_modules/jest-html-reporter',
       {
-        outputPath: 'test_results/unit-test-reports.html',
+        includeFailureMsg: true,
+        outputPath: 'test_results/unit/results.html',
+        pageTitle: 'HMPPS Accredited Programmes - Unit Test Report',
+        sort: 'status',
       },
     ],
   ],
