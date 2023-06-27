@@ -1,6 +1,8 @@
-export type { Course } from './Course'
-export type { CourseAudience } from './CourseAudience'
-export type { CourseOffering } from './CourseOffering'
-export type { CoursePrerequisite } from './CoursePrerequisite'
-export type { Organisation } from './Organisation'
-export type { OrganisationAddress } from './OrganisationAddress'
+import type { Course } from './Course'
+import type { CourseAudience } from './CourseAudience'
+import type { CourseOffering } from './CourseOffering'
+import type { CoursePrerequisite } from './CoursePrerequisite'
+import type { Organisation } from './Organisation'
+import type { OrganisationAddress } from './OrganisationAddress'
+
+export type { Course, CourseAudience, CourseOffering, CoursePrerequisite, Organisation, OrganisationAddress }
