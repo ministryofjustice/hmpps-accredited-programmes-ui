@@ -11,9 +11,9 @@ import { resetStubs } from './wiremock'
 export default defineConfig({
   chromeWebSecurity: false,
   fixturesFolder: 'integration_tests/fixtures',
-  downloadsFolder: 'test_results/cypress/downloads',
-  screenshotsFolder: 'test_results/cypress/screenshots',
-  videosFolder: 'test_results/cypress/videos',
+  downloadsFolder: 'test_results/integration/downloads',
+  screenshotsFolder: 'test_results/integration/screenshots',
+  videosFolder: 'test_results/integration/videos',
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
     configFile: 'integration_tests/reporterConfig.json',

@@ -3,7 +3,7 @@
   "cypressMochawesomeReporterReporterOptions": {
     "cdn": true,
     "inline": true,
-    "reportDir": "test_results/cypress",
+    "reportDir": "test_results/integration",
     "reportFilename": "results",
     "reportPageTitle": "HMPPS Accredited Programmes - Integration Test Report",
     "reportTitle": "HMPPS Accredited Programmes - Integration Test Report",
@@ -11,6 +11,6 @@
     "videoOnFailOnly": true
   },
   "mochaJunitReporterReporterOptions": {
-    "mochaFile": "test_results/cypress/xml/results-[hash].xml"
+    "mochaFile": "test_results/integration/xml/results-[hash].xml"
   }
 }
