@@ -7,10 +7,10 @@ import { organisationFromPrison } from '../utils/organisationUtils'
 import type { Organisation } from '@accredited-programmes/models'
 
 export default class OrganisationService {
-  constructor(private readonly prisonClientFactory: RestClientBuilder<PrisonClient>) {}
+  constructor(private readonly prisonClientBuilder: RestClientBuilder<PrisonClient>) {}
 
   async getOrganisation(token: string, id: string): Promise<Organisation | null> {
-    const prisonClient = this.prisonClientFactory(token)
+    const prisonClient = this.prisonClientBuilder(token)
 
     try {
       const prison = await prisonClient.getPrison(id)
