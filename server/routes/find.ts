@@ -1,7 +1,7 @@
 import type { Router } from 'express'
 
 import type { Controllers } from '../controllers'
-import findPaths from '../paths/find'
+import { findPaths } from '../paths'
 import actions from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers, router: Router): Router {

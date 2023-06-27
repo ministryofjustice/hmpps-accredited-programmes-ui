@@ -3,7 +3,7 @@ import { pactWith } from 'jest-pact'
 
 import CourseClient from './courseClient'
 import config from '../config'
-import apiPaths from '../paths/api'
+import { apiPaths } from '../paths'
 import { courseFactory, courseOfferingFactory } from '../testutils/factories'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {

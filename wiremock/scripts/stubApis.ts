@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import apiPaths from '../../server/paths/api'
+import { apiPaths } from '../../server/paths'
 import { stubFor } from '../index'
 import { courseOfferings, courses } from '../stubs'
 

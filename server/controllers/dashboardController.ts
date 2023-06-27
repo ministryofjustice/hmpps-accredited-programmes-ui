@@ -1,6 +1,6 @@
 import type { Request, RequestHandler, Response } from 'express'
 
-import findPaths from '../paths/find'
+import { findPaths } from '../paths'
 
 export default class DashboardController {
   index(): RequestHandler {

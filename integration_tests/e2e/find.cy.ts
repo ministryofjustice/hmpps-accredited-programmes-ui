@@ -1,4 +1,4 @@
-import findPaths from '../../server/paths/find'
+import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
 import { organisationFromPrison } from '../../server/utils/organisationUtils'
 import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
