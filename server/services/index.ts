@@ -4,19 +4,13 @@ import OrganisationService from './organisationService'
 import UserService from './userService'
 import { courseClientBuilder, hmppsAuthClient, prisonClientBuilder } from '../data'
 
-const services = () => {
-  const userService = new UserService(hmppsAuthClient)
-  const courseService = new CourseService(courseClientBuilder)
-  const organisationService = new OrganisationService(prisonClientBuilder)
-
-  return {
-    userService,
-    courseService,
-    organisationService,
-  }
+const services = {
+  userService: new UserService(hmppsAuthClient),
+  courseService: new CourseService(courseClientBuilder),
+  organisationService: new OrganisationService(prisonClientBuilder),
 }
 
-type Services = ReturnType<typeof services>
+type Services = typeof services
 
 export { CourseService, OrganisationService, UserService, healthCheck, services }
 
