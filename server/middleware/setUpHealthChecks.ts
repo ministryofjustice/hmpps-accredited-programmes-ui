@@ -1,13 +1,13 @@
 import type { Router } from 'express'
 import express from 'express'
 
-import healthcheck from '../services/healthCheck'
+import { healthCheck } from '../services'
 
 export default function setUpHealthChecks(): Router {
   const router = express.Router()
 
   router.get('/health', (req, res, next) => {
-    healthcheck(result => {
+    healthCheck(result => {
       if (!result.healthy) {
         res.status(503)
       }
