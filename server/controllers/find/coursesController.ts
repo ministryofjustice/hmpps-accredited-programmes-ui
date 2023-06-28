@@ -1,20 +1,16 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import type { CourseService, OrganisationService } from '../../services'
+import { CourseService, OrganisationService } from '../../services'
 import { courseUtils, organisationUtils, typeUtils } from '../../utils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
 export default class CoursesController {
-  constructor(
-    private readonly courseService: CourseService,
-    private readonly organisationService: OrganisationService,
-  ) {}
-
   index(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       typeUtils.assertHasUser(req)
 
-      const courses = await this.courseService.getCourses(req.user.token)
+      const courseService = new CourseService(req.user.token)
+      const courses = await courseService.getCourses()
 
       res.render('courses/index', {
         pageHeading: 'List of accredited programmes',
@@ -27,11 +23,13 @@ export default class CoursesController {
     return async (req: Request, res: Response) => {
       typeUtils.assertHasUser(req)
 
-      const course = await this.courseService.getCourse(req.user.token, req.params.id)
-      const offerings = await this.courseService.getOfferingsByCourse(req.user.token, course.id)
+      const courseService = new CourseService(req.user.token)
+      const course = await courseService.getCourse(req.params.id)
+      const offerings = await courseService.getOfferingsByCourse(course.id)
 
+      const organisationService = new OrganisationService(req.user.token)
       const unresolvedOrganisationPromises = offerings.map((offering: CourseOffering) => {
-        return this.organisationService.getOrganisation(req.user.token, offering.organisationId)
+        return organisationService.getOrganisation(offering.organisationId)
       })
 
       const organisations: Array<Organisation> = (await Promise.all(unresolvedOrganisationPromises)).filter(

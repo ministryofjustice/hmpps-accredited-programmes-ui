@@ -1,13 +1,13 @@
 import type { RequestHandler } from 'express'
 
 import logger from '../../logger'
-import type { UserService } from '../services'
+import { UserService } from '../services'
 
-export default function populateCurrentUser(userService: UserService): RequestHandler {
+export default function populateCurrentUser(): RequestHandler {
   return async (req, res, next) => {
     try {
       if (res.locals.user) {
-        const user = res.locals.user && (await userService.getUser(res.locals.user.token))
+        const user = res.locals.user && (await new UserService(res.locals.user.token).getUser())
         if (user) {
           res.locals.user = { ...user, ...res.locals.user }
         } else {

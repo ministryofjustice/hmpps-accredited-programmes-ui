@@ -1,21 +1,19 @@
 import { Router } from 'express'
 
-import findRoutes from './find'
-import type { Controllers } from '../controllers'
+import registerFindRoutes from './find'
+import controllers from '../controllers'
 import { routeUtils } from '../utils'
 
-export default function routes(controllers: Controllers): Router {
-  const router = Router()
-  const { get } = routeUtils.actions(router)
+const router = Router()
+const { get } = routeUtils.actions(router)
 
-  const { dashboardController } = controllers
-  get('/', dashboardController.index())
+const { dashboardController } = controllers
+get('/', dashboardController.index())
 
-  findRoutes(controllers, router)
+registerFindRoutes(router)
 
-  get('/debug-sentry', (_req, res) => {
-    throw new Error('My first Sentry error!')
-  })
+get('/debug-sentry', (_req, _res) => {
+  throw new Error('My first Sentry error!')
+})
 
-  return router
-}
+export default router

@@ -1,26 +1,19 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
-import type { CourseService, OrganisationService } from '../../services'
+import { CourseService, OrganisationService } from '../../services'
 import { courseUtils, organisationUtils, typeUtils } from '../../utils'
 
 export default class CourseOfferingsController {
-  constructor(
-    private readonly courseService: CourseService,
-    private readonly organisationService: OrganisationService,
-  ) {}
-
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       typeUtils.assertHasUser(req)
 
-      const course = await this.courseService.getCourse(req.user.token, req.params.id)
-      const courseOffering = await this.courseService.getOffering(
-        req.user.token,
-        req.params.id,
-        req.params.courseOfferingId,
-      )
-      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+      const courseService = new CourseService(req.user.token)
+      const organisationService = new OrganisationService(req.user.token)
+      const course = await courseService.getCourse(req.params.id)
+      const courseOffering = await courseService.getOffering(req.params.id, req.params.courseOfferingId)
+      const organisation = await organisationService.getOrganisation(courseOffering.organisationId)
 
       if (!organisation) {
         throw createError(404, {

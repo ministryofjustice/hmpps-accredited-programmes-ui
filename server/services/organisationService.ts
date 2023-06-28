@@ -1,18 +1,20 @@
 import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
-import type { PrisonClient, RestClientBuilder } from '../data'
+import { PrisonClient } from '../data'
 import { organisationUtils } from '../utils'
 import type { Organisation } from '@accredited-programmes/models'
 
 export default class OrganisationService {
-  constructor(private readonly prisonClientBuilder: RestClientBuilder<PrisonClient>) {}
+  prisonClient: PrisonClient
 
-  async getOrganisation(token: string, id: string): Promise<Organisation | null> {
-    const prisonClient = this.prisonClientBuilder(token)
+  constructor(token: string) {
+    this.prisonClient = new PrisonClient(token)
+  }
 
+  async getOrganisation(id: string): Promise<Organisation | null> {
     try {
-      const prison = await prisonClient.getPrison(id)
+      const prison = await this.prisonClient.getPrison(id)
 
       if (!prison.active) {
         return null
