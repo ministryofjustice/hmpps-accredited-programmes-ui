@@ -77,4 +77,4 @@ const presentOrganisationWithOfferingEmail = (
   }
 }
 
-export { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmail }
+export default { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmail }

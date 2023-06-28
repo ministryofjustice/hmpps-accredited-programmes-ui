@@ -53,4 +53,4 @@ const presentCourse = (course: Course): CoursePresenter => {
   }
 }
 
-export default presentCourse
+export default { presentCourse }

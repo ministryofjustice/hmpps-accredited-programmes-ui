@@ -1,10 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 
-import {
-  organisationFromPrison,
-  organisationTableRows,
-  presentOrganisationWithOfferingEmail,
-} from './organisationUtils'
+import organisationUtils from './organisationUtils'
 import { courseFactory, organisationAddressFactory, organisationFactory, prisonFactory } from '../testutils/factories'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
@@ -14,7 +10,7 @@ describe('organisationUtils', () => {
       const prison = prisonFactory.build()
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
-      expect(organisationFromPrison('an-ID', prison)).toEqual({
+      expect(organisationUtils.organisationFromPrison('an-ID', prison)).toEqual({
         id: 'an-ID',
         name: prison.prisonName,
         category: 'N/A',
@@ -41,7 +37,7 @@ describe('organisationUtils', () => {
           organisationsWithOfferingIds[organisationIndex].address.county = faker.location.county()
         })
 
-        expect(organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
+        expect(organisationUtils.organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
           [
             { text: organisationsWithOfferingIds[0].name },
             { text: organisationsWithOfferingIds[0].category },
@@ -75,7 +71,7 @@ describe('organisationUtils', () => {
         const organisationWithOfferingId = organisationsWithOfferingIds[0]
         organisationWithOfferingId.address.county = null
 
-        expect(organisationTableRows(course, [organisationWithOfferingId])).toEqual([
+        expect(organisationUtils.organisationTableRows(course, [organisationWithOfferingId])).toEqual([
           [
             { text: organisationWithOfferingId.name },
             { text: organisationWithOfferingId.category },
@@ -106,7 +102,7 @@ describe('organisationUtils', () => {
 
     describe('when all fields are present', () => {
       it('returns an organisation and course offering email with UI-formatted data', () => {
-        expect(presentOrganisationWithOfferingEmail(organisation, email)).toEqual({
+        expect(organisationUtils.presentOrganisationWithOfferingEmail(organisation, email)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -137,7 +133,7 @@ describe('organisationUtils', () => {
         const organisationDuplicate = { ...organisation }
         organisationDuplicate.address.county = null
 
-        expect(presentOrganisationWithOfferingEmail(organisationDuplicate, email)).toEqual({
+        expect(organisationUtils.presentOrganisationWithOfferingEmail(organisationDuplicate, email)).toEqual({
           ...organisation,
           summaryListRows: [
             {

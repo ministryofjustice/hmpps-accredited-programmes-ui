@@ -1,5 +1,5 @@
 import { findPaths } from '../../../server/paths'
-import presentCourse from '../../../server/utils/courseUtils'
+import { courseUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'
 
@@ -11,7 +11,7 @@ export default class CoursesPage extends Page {
   shouldHaveCourses(courses: Array<Course>) {
     cy.get('div[role=listitem]').each((courseElement, courseElementIndex) => {
       cy.wrap(courseElement).within(() => {
-        const course = presentCourse(courses[courseElementIndex])
+        const course = courseUtils.presentCourse(courses[courseElementIndex])
 
         cy.get('.govuk-link').should('have.attr', 'href', findPaths.courses.show({ id: course.id }))
         cy.get('.govuk-heading-m .govuk-link').should('have.text', course.nameAndAlternateName)

@@ -1,6 +1,6 @@
 import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
-import { organisationFromPrison } from '../../server/utils/organisationUtils'
+import { organisationUtils } from '../../server/utils'
 import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
 import Page from '../pages/page'
 import type { CourseOffering } from '@accredited-programmes/models'
@@ -38,7 +38,7 @@ context('Find', () => {
       courseOfferings.push(courseOffering)
 
       organisationsWithOfferingIds.push({
-        ...organisationFromPrison(`an-ID${prisonIndex}`, prison),
+        ...organisationUtils.organisationFromPrison(`an-ID${prisonIndex}`, prison),
         courseOfferingId: courseOffering.id,
       })
 
@@ -63,7 +63,7 @@ context('Find', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = organisationFromPrison('an-ID', prison)
+    const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
 
     cy.task('stubCourse', course)
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
