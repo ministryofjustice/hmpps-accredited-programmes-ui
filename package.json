@@ -129,7 +129,7 @@
     "stylelint": "^15.8.0",
     "stylelint-config-clean-order": "^5.0.1",
     "stylelint-config-standard-scss": "^9.0.0",
-    "stylelint-selector-bem-pattern": "^2.1.1",
+    "stylelint-selector-bem-pattern": "^3.0.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
