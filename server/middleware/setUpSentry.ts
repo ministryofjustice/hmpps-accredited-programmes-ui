@@ -11,6 +11,11 @@ function setUpSentryErrorHandler(app: express.Express): void {
 }
 
 function setUpSentryRequestHandler(app: express.Express): void {
+  // Prevent usernames which are PII from being sent to Sentry
+  // https://docs.sentry.io/platforms/python/guides/logging/data-management/sensitive-data/#examples
+  const anonymousId = Math.random().toString()
+  Sentry.setUser({ id: anonymousId, username: anonymousId })
+
   if (config.sentry.dsn) {
     Sentry.init({
       dsn: config.sentry.dsn,
