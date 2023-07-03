@@ -38,10 +38,8 @@ ready to be released once merged.
   - [ ] ... and I have written or updated an end-to-end test for the happy path in the [Accredited Programmes E2E repo](https://github.com/ministryofjustice/hmpps-accredited-programmes-e2e)
 - [ ] This makes new expectations of the API...
   - [ ] ... and I have notified the API developer(s) of changes to the contract tests (Pact), or the API is already compliant
-- [ ] [Manually approve](../doc/how-to/perform-a-release.md#releasing-to-the-preprod-environment)
-  release to preprod
-- [ ] [Manually approve](../doc/how-to/perform-a-release.md#releasing-to-the-production-environment)
-  release to prod
+- [ ] [Manually approve](../doc/how-to/perform-a-release.md#releasing-to-the-preprod-environment) release to preprod
+- [ ] [Manually approve](../doc/how-to/perform-a-release.md#releasing-to-the-production-environment) release to prod
 
 <!-- Should a release fail at any step, you as the author should now lead the work to
 fix it as soon as possible. You can monitor deployment failures in CircleCI
