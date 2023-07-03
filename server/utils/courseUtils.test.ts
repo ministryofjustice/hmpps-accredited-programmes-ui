@@ -9,7 +9,7 @@ describe('courseUtils', () => {
         alternateName: 'LC',
         audiences: [
           courseAudienceFactory.build({ value: 'Intimate partner violence' }),
-          courseAudienceFactory.build({ value: 'General violence' }),
+          courseAudienceFactory.build({ value: 'Violent offence' }),
         ],
         coursePrerequisites: [
           coursePrerequisiteFactory.gender().build(),
@@ -28,8 +28,8 @@ describe('courseUtils', () => {
             classes: 'govuk-tag govuk-tag--green',
           },
           {
-            text: 'General violence',
-            classes: 'govuk-tag govuk-tag--purple',
+            text: 'Violent offence',
+            classes: 'govuk-tag govuk-tag--yellow',
           },
         ],
         prerequisiteSummaryListRows: [
