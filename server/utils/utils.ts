@@ -1,3 +1,5 @@
+import type { PaginatedArray } from '@accredited-programmes/ui'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -29,4 +31,16 @@ const initialiseTitle = (sentence: string): string => {
     .join('')
 }
 
-export { convertToTitleCase, initialiseName, initialiseTitle }
+const paginatedArray = <T>(items: Array<T>, page = 1): PaginatedArray<T> => {
+  const totalItems = items.length
+  const perPage = 10
+  const startIndex = perPage * (page - 1)
+
+  return {
+    page,
+    totalItems,
+    items: items.slice(startIndex, startIndex + perPage),
+  }
+}
+
+export { convertToTitleCase, initialiseName, initialiseTitle, paginatedArray }
