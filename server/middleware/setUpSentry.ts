@@ -27,6 +27,23 @@ function setUpSentryRequestHandler(app: express.Express): void {
         // enable Express.js middleware tracing
         new Sentry.Integrations.Express({ app }),
       ],
+      tracesSampler: samplingContext => {
+        const transactionName = samplingContext?.transactionContext?.name
+        if (
+          transactionName?.includes('ping') ||
+          transactionName?.includes('health') ||
+          transactionName?.includes('assets')
+        ) {
+          return 0
+        }
+
+        if (config.environment === 'prod') {
+          return 1
+        }
+
+        // Default sample rate
+        return 0.05
+      },
     })
     app.use(
       Sentry.Handlers.requestHandler({
