@@ -1,4 +1,4 @@
-import type { HmppsAuthClient } from '../data'
+import { HmppsAuthClient } from '../data'
 import { stringUtils } from '../utils'
 
 interface UserDetails {
@@ -7,10 +7,14 @@ interface UserDetails {
 }
 
 export default class UserService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  hmppsAuthClient: HmppsAuthClient
 
-  async getUser(token: string): Promise<UserDetails> {
-    const user = await this.hmppsAuthClient.getUser(token)
+  constructor(token: string) {
+    this.hmppsAuthClient = new HmppsAuthClient(token)
+  }
+
+  async getUser(): Promise<UserDetails> {
+    const user = await this.hmppsAuthClient.getUser()
     return { ...user, displayName: stringUtils.convertToTitleCase(user.name) }
   }
 }

@@ -1,14 +1,11 @@
 import DashboardController from './dashboardController'
 import findControllers from './find'
-import type { Services } from '../services'
 
-export const controllers = (services: Services) => {
-  const dashboardController = new DashboardController()
-
-  return {
-    dashboardController,
-    ...findControllers(services),
-  }
+const controllers = {
+  dashboardController: new DashboardController(),
+  ...findControllers,
 }
 
-export type Controllers = ReturnType<typeof controllers>
+export default controllers
+
+export type Controllers = typeof controllers

@@ -1,8 +1,9 @@
 import superagent from 'superagent'
 import { URLSearchParams } from 'url'
 
+import { createRedisClient } from './redisClient'
 import RestClient from './restClient'
-import type TokenStore from './tokenStore'
+import TokenStore from './tokenStore'
 import logger from '../../logger'
 import { clientCredentials } from '../authentication'
 import config from '../config'
@@ -41,19 +42,22 @@ interface UserRole {
 }
 
 export default class HmppsAuthClient {
-  constructor(private readonly tokenStore: TokenStore) {}
+  tokenStore: TokenStore
 
-  private static restClient(token: string): RestClient {
-    return new RestClient('HMPPS Auth Client', config.apis.hmppsAuth, token)
+  restClient: RestClient
+
+  constructor(token: string) {
+    this.restClient = new RestClient('HMPPS Auth Client', config.apis.hmppsAuth, token)
+    this.tokenStore = new TokenStore(createRedisClient())
   }
 
-  getUser(token: string): Promise<User> {
+  getUser(): Promise<User> {
     logger.info(`Getting user details: calling HMPPS Auth`)
-    return HmppsAuthClient.restClient(token).get({ path: '/api/user/me' }) as Promise<User>
+    return this.restClient.get({ path: '/api/user/me' }) as Promise<User>
   }
 
-  getUserRoles(token: string): Promise<string[]> {
-    return HmppsAuthClient.restClient(token)
+  getUserRoles(): Promise<string[]> {
+    return this.restClient
       .get({ path: '/api/user/me/roles' })
       .then(roles => (<UserRole[]>roles).map(role => role.roleCode))
   }

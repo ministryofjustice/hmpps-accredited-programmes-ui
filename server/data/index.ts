@@ -23,21 +23,6 @@ import verifyToken from './tokenVerification'
 
 type RestClientBuilder<T> = (token: string) => T
 
-const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient()))
-const courseClientBuilder = ((token: string) => new CourseClient(token)) as RestClientBuilder<CourseClient>
-const prisonClientBuilder = ((token: string) => new PrisonClient(token)) as RestClientBuilder<PrisonClient>
-
-export {
-  CourseClient,
-  HmppsAuthClient,
-  PrisonClient,
-  TokenStore,
-  courseClientBuilder,
-  createRedisClient,
-  hmppsAuthClient,
-  prisonClientBuilder,
-  serviceCheckFactory,
-  verifyToken,
-}
+export { CourseClient, HmppsAuthClient, PrisonClient, TokenStore, createRedisClient, serviceCheckFactory, verifyToken }
 
 export type { RedisClient, RestClientBuilder, TokenVerifier, User }

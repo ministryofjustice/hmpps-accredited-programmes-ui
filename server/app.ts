@@ -2,7 +2,6 @@ import express from 'express'
 import createError from 'http-errors'
 import path from 'path'
 
-import type { Controllers } from './controllers'
 import errorHandler from './errorHandler'
 import {
   authorisationMiddleware,
@@ -19,10 +18,9 @@ import {
 } from './middleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
 import routes from './routes'
-import type { Services } from './services'
 import { nunjucksSetup } from './utils'
 
-export default function createApp(controllers: Controllers, services: Services): express.Application {
+export default function createApp(): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
@@ -42,11 +40,11 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
-  app.use(setUpCurrentUser(services))
+  app.use(setUpCurrentUser())
 
-  app.use(routes(controllers))
+  app.use(routes)
 
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use((_req, _res, next) => next(createError(404, 'Not found')))
   // The Sentry error handler must be before any other error middleware and after all controllers
   setUpSentryErrorHandler(app)
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
