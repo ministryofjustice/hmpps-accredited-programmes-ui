@@ -11,7 +11,7 @@
       },
       {
         "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
-        "value": "General violence"
+        "value": "Violent offence"
       }
     ],
     "coursePrerequisites": [
@@ -101,7 +101,7 @@
     "audiences": [
       {
         "id": "9d7acd40-4b84-4c9b-b55c-a616ed038ed5",
-        "value": "Extremism"
+        "value": "Extremism offence"
       }
     ],
     "coursePrerequisites": [

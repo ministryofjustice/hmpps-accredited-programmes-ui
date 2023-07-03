@@ -3,11 +3,12 @@ import type { CoursePresenter, SummaryListRow, Tag, TagColour } from '@accredite
 
 const audienceTags = (audiences: Array<CourseAudience>): Array<Tag> => {
   const audienceColourMap: { [key: CourseAudience['value']]: TagColour } = {
-    Extremism: 'blue',
-    'General violence': 'purple',
+    'Extremism offence': 'turquoise',
+    'Gang offence': 'purple',
     'Intimate partner violence': 'green',
-    'Online sexual offence': 'orange',
-    'Sexual violence': 'red',
+    'Non-intimate partner violence': 'pink',
+    'Sexual offence': 'orange',
+    'Violent offence': 'yellow',
   }
 
   return audiences.map(audience => {

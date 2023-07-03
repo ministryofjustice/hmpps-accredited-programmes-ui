@@ -6,10 +6,11 @@ import type { CourseAudience } from '@accredited-programmes/models'
 export default Factory.define<CourseAudience>(() => ({
   id: faker.string.uuid(),
   value: faker.helpers.arrayElement([
-    'Extremism',
-    'General violence',
+    'Extremism offence',
+    'Gang offence',
     'Intimate partner violence',
-    'Online sexual violence',
-    'Sexual violence',
+    'Non-intimate partner violence',
+    'Sexual offence',
+    'Violent offence',
   ]),
 }))
