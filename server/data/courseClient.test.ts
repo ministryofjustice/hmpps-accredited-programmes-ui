@@ -16,10 +16,19 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
   })
 
-  const allCourses = courseFactory.buildList(3)
-  const course = courseFactory.build({
+  const course1 = courseFactory.build({
     id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8',
+    alternateName: 'AC++',
   })
+  const course2 = courseFactory.build({
+    id: 'd3abc217-75ee-46e9-a010-368f30282367',
+    alternateName: 'LC',
+  })
+  const course3 = courseFactory.build({
+    id: '1811faa6-d568-4fc4-83ce-41118b90242e',
+    alternateName: null,
+  })
+  const allCourses = [course1, course2, course3]
   const courseOfferings = courseOfferingFactory.buildList(3)
   const courseOffering = courseOfferingFactory.build({
     id: '20f3abc8-dd92-43ae-b88e-5797a0ad3f4b',
@@ -54,37 +63,37 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('find', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: `A course exists with ID ${course.id}`,
-        uponReceiving: `A request for course "${course.id}"`,
+        state: `A course exists with ID ${course1.id}`,
+        uponReceiving: `A request for course "${course1.id}"`,
         withRequest: {
           method: 'GET',
-          path: apiPaths.courses.show({ id: course.id }),
+          path: apiPaths.courses.show({ id: course1.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
         },
         willRespondWith: {
           status: 200,
-          body: Matchers.like(course),
+          body: Matchers.like(course1),
         },
       })
     })
 
     it('fetches the given course', async () => {
-      const result = await courseClient.find(course.id)
+      const result = await courseClient.find(course1.id)
 
-      expect(result).toEqual(course)
+      expect(result).toEqual(course1)
     })
   })
 
   describe('findOfferings', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: `Offerings exist for a course with ID ${course.id}`,
-        uponReceiving: `A request for course "${course.id}"'s offerings`,
+        state: `Offerings exist for a course with ID ${course1.id}`,
+        uponReceiving: `A request for course "${course1.id}"'s offerings`,
         withRequest: {
           method: 'GET',
-          path: apiPaths.courses.offerings.index({ id: course.id }),
+          path: apiPaths.courses.offerings.index({ id: course1.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -97,7 +106,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it("fetches the given course's offerings", async () => {
-      const result = await courseClient.findOfferings(course.id)
+      const result = await courseClient.findOfferings(course1.id)
 
       expect(result).toEqual(courseOfferings)
     })
@@ -110,7 +119,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course offering "${courseOffering.id}"`,
         withRequest: {
           method: 'GET',
-          path: apiPaths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }),
+          path: apiPaths.courses.offerings.show({ id: course1.id, courseOfferingId: courseOffering.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -123,7 +132,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('fetches the given course offering', async () => {
-      const result = await courseClient.findOffering(course.id, courseOffering.id)
+      const result = await courseClient.findOffering(course1.id, courseOffering.id)
 
       expect(result).toEqual(courseOffering)
     })
