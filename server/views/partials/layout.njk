@@ -1,5 +1,9 @@
 {% extends "govuk/template.njk" %}
 
+{% block pageTitle %}
+  {{pageTitle | default(applicationName)}}
+{% endblock pageTitle %}
+
 {% block head %}
   <!--[if !IE 8]><!-->
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
@@ -19,15 +23,11 @@
 
 {% endblock head %}
 
-{% block pageTitle %}
-  {{pageTitle | default(applicationName)}}
-{% endblock pageTitle %}
+{% block bodyStart %}{% endblock bodyStart %}
 
 {% block header %}
   {% include "./header.njk" %}
 {% endblock header %}
-
-{% block bodyStart %}{% endblock bodyStart %}
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the
