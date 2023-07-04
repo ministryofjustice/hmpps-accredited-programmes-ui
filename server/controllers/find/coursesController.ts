@@ -4,6 +4,7 @@ import type { CourseService, OrganisationService } from '../../services'
 import presentCourse from '../../utils/courseUtils'
 import { organisationTableRows } from '../../utils/organisationUtils'
 import { assertHasUser, isNotNull } from '../../utils/typeUtils'
+import { paginatedArray } from '../../utils/utils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
 export default class CoursesController {
@@ -17,10 +18,13 @@ export default class CoursesController {
       assertHasUser(req)
 
       const courses = await this.courseService.getCourses(req.user.token)
+      const coursePresenters = courses.map(course => presentCourse(course))
+      const page = parseInt(req.query.page as string, 10) || 1
+      const paginatedCourses = paginatedArray(coursePresenters, page)
 
       res.render('courses/index', {
         pageHeading: 'List of accredited programmes',
-        courses: courses.map(course => presentCourse(course)),
+        paginatedCourses,
       })
     }
   }

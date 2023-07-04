@@ -44,6 +44,13 @@ type OrganisationWithOfferingEmailPresenter = Organisation & {
   summaryListRows: OrganisationWithOfferingEmailSummaryListRows
 }
 
+type PaginatedArray<T> = {
+  page: number
+  totalItems: number
+  items: Array<T>
+  mojPaginationConfig: object
+}
+
 export type {
   CoursePresenter,
   ObjectWithHtmlString,
@@ -51,6 +58,7 @@ export type {
   OrganisationWithOfferingEmailPresenter,
   OrganisationWithOfferingEmailSummaryListRows,
   OrganisationWithOfferingId,
+  PaginatedArray,
   SummaryListRow,
   TableRow,
   Tag,
