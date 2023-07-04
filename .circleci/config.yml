@@ -10,12 +10,12 @@ parameters:
     type: string
     # Normally team specific alert channel e.g. hmpps_tech_alerts, syscon-alerts, dps_sed_alerts
     # This is to avoid a general alert dumping ground that no-one then monitors
-    default: hmpps-accredited-programmes-dev
+    default: accredited-programmes-events
 
   releases-slack-channel:
     type: string
     # Normally dps-releases for most teams / projects
-    default: hmpps-accredited-programmes-dev
+    default: accredited-programmes-events
 
   node-version:
     type: string
