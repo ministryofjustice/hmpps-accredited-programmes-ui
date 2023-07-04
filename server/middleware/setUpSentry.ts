@@ -14,7 +14,7 @@ function setUpSentryRequestHandler(app: express.Express): void {
   // Prevent usernames which are PII from being sent to Sentry
   // https://docs.sentry.io/platforms/python/guides/logging/data-management/sensitive-data/#examples
   const anonymousId = Math.random().toString()
-  Sentry.setUser({ id: anonymousId, username: anonymousId })
+  Sentry.setUser({ id: anonymousId })
 
   if (config.sentry.dsn) {
     Sentry.init({
@@ -43,6 +43,14 @@ function setUpSentryRequestHandler(app: express.Express): void {
 
         // Default sample rate
         return 0.05
+      },
+      beforeSend(event) {
+        if (event.user) {
+          // Don't send username
+          // eslint-disable-next-line no-param-reassign
+          delete event.user.username
+        }
+        return event
       },
     })
     app.use(
