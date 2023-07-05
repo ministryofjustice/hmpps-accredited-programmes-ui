@@ -5,10 +5,10 @@ const audienceTags = (audiences: Array<CourseAudience>): Array<Tag> => {
   const audienceColourMap: { [key: CourseAudience['value']]: TagColour } = {
     'Extremism offence': 'turquoise',
     'Gang offence': 'purple',
-    'Intimate partner violence': 'green',
-    'Non-intimate partner violence': 'pink',
+    'General offence': 'pink',
+    'General violence offence': 'yellow',
+    'Intimate partner violence offence': 'green',
     'Sexual offence': 'orange',
-    'Violent offence': 'yellow',
   }
 
   return audiences.map(audience => {
