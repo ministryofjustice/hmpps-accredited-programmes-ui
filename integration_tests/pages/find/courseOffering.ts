@@ -20,8 +20,10 @@ export default class CourseOfferingPage extends Page {
   }
 
   shouldHaveAudience() {
-    cy.get('p:first-of-type').then(tagContainerElement => {
-      this.shouldContainTags(this.course.audienceTags, tagContainerElement)
+    cy.get('.govuk-main-wrapper').within(() => {
+      cy.get('p:first-of-type').then(tagContainerElement => {
+        this.shouldContainTags(this.course.audienceTags, tagContainerElement)
+      })
     })
   }
 
