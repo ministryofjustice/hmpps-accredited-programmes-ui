@@ -1,4 +1,4 @@
-context('Healthcheck', () => {
+context('Health', () => {
   context('All healthy', () => {
     beforeEach(() => {
       cy.task('reset')
