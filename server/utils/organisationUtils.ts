@@ -44,10 +44,6 @@ const organisationWithOfferingEmailSummaryListRows = (
 ): OrganisationWithOfferingEmailSummaryListRows => {
   return [
     {
-      key: { text: 'Prison category' },
-      value: { text: organisation.category },
-    },
-    {
       key: { text: 'Address' },
       value: { text: concatenatedOrganisationAddress(organisation.address) },
     },
