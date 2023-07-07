@@ -29,7 +29,7 @@ export default class CoursesController {
     return async (req: Request, res: Response) => {
       assertHasUser(req)
 
-      const course = await this.courseService.getCourse(req.user.token, req.params.id)
+      const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
       const offerings = await this.courseService.getOfferingsByCourse(req.user.token, course.id)
 
       const unresolvedOrganisationPromises = offerings.map((offering: CourseOffering) => {

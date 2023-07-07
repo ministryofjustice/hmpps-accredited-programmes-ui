@@ -43,7 +43,10 @@ export default class CoursePage extends Page {
           cy.get('.govuk-table__cell:nth-of-type(3) .govuk-link').should(
             'have.attr',
             'href',
-            findPaths.courses.offerings.show({ id: this.course.id, courseOfferingId: organisation.courseOfferingId }),
+            findPaths.courses.offerings.show({
+              courseId: this.course.id,
+              courseOfferingId: organisation.courseOfferingId,
+            }),
           )
         })
       })

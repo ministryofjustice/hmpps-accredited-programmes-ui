@@ -26,7 +26,7 @@ courses.forEach(course => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.show({ id: course.id }),
+        url: apiPaths.courses.show({ courseId: course.id }),
       },
       response: {
         status: 200,
@@ -42,7 +42,7 @@ courses.forEach(course => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.index({ id: course.id }),
+        url: apiPaths.courses.offerings.index({ courseId: course.id }),
       },
       response: {
         status: 200,
@@ -59,7 +59,7 @@ courses.forEach(course => {
       stubFor({
         request: {
           method: 'GET',
-          url: apiPaths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }),
+          url: apiPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
         },
         response: {
           status: 200,

@@ -1,7 +1,7 @@
 import { path } from 'static-path'
 
 const coursesPath = path('/courses')
-const coursePath = coursesPath.path(':id')
+const coursePath = coursesPath.path(':courseId')
 
 const courseOfferingsPath = coursePath.path('offerings')
 const courseOfferingPath = courseOfferingsPath.path(':courseOfferingId')

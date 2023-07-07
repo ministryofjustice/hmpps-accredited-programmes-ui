@@ -8,11 +8,11 @@ import type {
 } from '@accredited-programmes/ui'
 import type { Prison } from '@prison-register-api'
 
-const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organisation => {
+const organisationFromPrison = (organisationId: Organisation['id'], prison: Prison): Organisation => {
   const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
   return {
-    id,
+    id: organisationId,
     name: prison.prisonName,
     category: 'N/A',
     address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
@@ -22,7 +22,7 @@ const organisationFromPrison = (id: Organisation['id'], prison: Prison): Organis
 const organisationTableRows = (course: Course, organisations: Array<OrganisationWithOfferingId>): Array<TableRow> => {
   return organisations.map(organisation => {
     const offeringPath = findPaths.courses.offerings.show({
-      id: course.id,
+      courseId: course.id,
       courseOfferingId: organisation.courseOfferingId,
     })
     const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`
