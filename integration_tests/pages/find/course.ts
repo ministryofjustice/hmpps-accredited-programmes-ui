@@ -9,7 +9,7 @@ export default class CoursePage extends Page {
 
   constructor(course: Course) {
     const coursePresenter = presentCourse(course)
-    super(coursePresenter.nameAndAlternateName, { customPageTitleEnd: coursePresenter.name })
+    super(coursePresenter.nameAndAlternateName)
     this.course = coursePresenter
   }
 
