@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName, initialiseTitle } from './utils'
+import stringUtils from './stringUtils'
 
 describe('utils', () => {
   describe('convertToTitleCase', () => {
@@ -13,7 +13,7 @@ describe('utils', () => {
       ['trailing spaces', 'RobeRT  ', 'Robert  '],
       ['hyphenation', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
     ])('handles %s: %s -> %s', (_inputType: string | null, input: string | null, expectedOutput: string) => {
-      expect(convertToTitleCase(input)).toEqual(expectedOutput)
+      expect(stringUtils.convertToTitleCase(input)).toEqual(expectedOutput)
     })
   })
 
@@ -28,7 +28,7 @@ describe('utils', () => {
     ])(
       'handles %s: %s -> %s',
       (_inputType: string | undefined, input: string | undefined, expectedOutput: string | null) => {
-        expect(initialiseName(input)).toEqual(expectedOutput)
+        expect(stringUtils.initialiseName(input)).toEqual(expectedOutput)
       },
     )
   })
@@ -40,7 +40,7 @@ describe('utils', () => {
       ['a hyphenated word', 'Lime-course', 'L'],
       ['a mixed case word', 'LimeCourse', 'L'],
     ])('handles %s: %s -> %s', (_inputType: string, input: string, expectedOutput: string) => {
-      expect(initialiseTitle(input)).toEqual(expectedOutput)
+      expect(stringUtils.initialiseTitle(input)).toEqual(expectedOutput)
     })
   })
 })

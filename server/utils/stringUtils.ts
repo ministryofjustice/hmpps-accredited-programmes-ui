@@ -29,4 +29,4 @@ const initialiseTitle = (sentence: string): string => {
     .join('')
 }
 
-export { convertToTitleCase, initialiseName, initialiseTitle }
+export default { convertToTitleCase, initialiseName, initialiseTitle }

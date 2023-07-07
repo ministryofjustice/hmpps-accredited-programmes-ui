@@ -4,14 +4,14 @@ import { URLSearchParams } from 'url'
 import RestClient from './restClient'
 import type TokenStore from './tokenStore'
 import logger from '../../logger'
-import generateOauthClientToken from '../authentication/clientCredentials'
+import { clientCredentials } from '../authentication'
 import config from '../config'
 
 const timeoutSpec = config.apis.hmppsAuth.timeout
 const hmppsAuthUrl = config.apis.hmppsAuth.url
 
 function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagent.Response> {
-  const clientToken = generateOauthClientToken(
+  const clientToken = clientCredentials.generateOauthClientToken(
     config.apis.hmppsAuth.systemClientId,
     config.apis.hmppsAuth.systemClientSecret,
   )

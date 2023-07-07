@@ -1,4 +1,4 @@
-import findPaths from '../paths/find'
+import { findPaths } from '../paths'
 import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
 import type {
   OrganisationWithOfferingEmailPresenter,
@@ -68,4 +68,4 @@ const presentOrganisationWithOfferingEmail = (
   }
 }
 
-export { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmail }
+export default { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmail }

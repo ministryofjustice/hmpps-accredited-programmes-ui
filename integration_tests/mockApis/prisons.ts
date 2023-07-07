@@ -1,6 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import prisonRegisterApiPaths from '../../server/paths/prisonRegisterApi'
+import { prisonRegisterApiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { Prison } from '@prison-register-api'
 

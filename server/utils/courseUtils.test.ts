@@ -1,4 +1,4 @@
-import presentCourse from './courseUtils'
+import courseUtils from './courseUtils'
 import { courseAudienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
 
 describe('courseUtils', () => {
@@ -19,7 +19,7 @@ describe('courseUtils', () => {
         ],
       })
 
-      expect(presentCourse(course)).toEqual({
+      expect(courseUtils.presentCourse(course)).toEqual({
         ...course,
         nameAndAlternateName: 'Lime Course (LC)',
         audienceTags: [
@@ -57,7 +57,7 @@ describe('courseUtils', () => {
       it('just uses the `name` as the `nameAndAlternateName`', () => {
         const course = courseFactory.build({ alternateName: null })
 
-        expect(presentCourse(course).nameAndAlternateName).toEqual(course.name)
+        expect(courseUtils.presentCourse(course).nameAndAlternateName).toEqual(course.name)
       })
     })
   })

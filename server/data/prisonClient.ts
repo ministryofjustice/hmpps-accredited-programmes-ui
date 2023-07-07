@@ -1,7 +1,7 @@
 import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
-import prisonRegisterApiPaths from '../paths/prisonRegisterApi'
+import { prisonRegisterApiPaths } from '../paths'
 import type { Prison } from '@prison-register-api'
 
 export default class PrisonClient {

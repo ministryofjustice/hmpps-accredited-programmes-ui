@@ -1,22 +1,22 @@
 import createError from 'http-errors'
 
 import OrganisationService from './organisationService'
-import PrisonClient from '../data/prisonClient'
+import { PrisonClient } from '../data'
 import { prisonFactory } from '../testutils/factories'
 
 jest.mock('../data/prisonClient')
 
 describe('OrganisationService', () => {
   const prisonClient = new PrisonClient('token') as jest.Mocked<PrisonClient>
-  const prisonClientFactory = jest.fn()
+  const prisonClientBuilder = jest.fn()
 
-  const service = new OrganisationService(prisonClientFactory)
+  const service = new OrganisationService(prisonClientBuilder)
 
   const token = 'token'
 
   beforeEach(() => {
     jest.resetAllMocks()
-    prisonClientFactory.mockReturnValue(prisonClient)
+    prisonClientBuilder.mockReturnValue(prisonClient)
   })
 
   describe('getOrganisation', () => {
@@ -44,7 +44,7 @@ describe('OrganisationService', () => {
             },
           })
 
-          expect(prisonClientFactory).toHaveBeenCalledWith(token)
+          expect(prisonClientBuilder).toHaveBeenCalledWith(token)
           expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.prisonId)
         })
       })
@@ -58,7 +58,7 @@ describe('OrganisationService', () => {
 
           expect(result).toEqual(null)
 
-          expect(prisonClientFactory).toHaveBeenCalledWith(token)
+          expect(prisonClientBuilder).toHaveBeenCalledWith(token)
           expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.prisonId)
         })
       })
@@ -75,7 +75,7 @@ describe('OrganisationService', () => {
 
         expect(result).toEqual(null)
 
-        expect(prisonClientFactory).toHaveBeenCalledWith(token)
+        expect(prisonClientBuilder).toHaveBeenCalledWith(token)
         expect(prisonClient.getPrison).toHaveBeenCalledWith(notFoundPrisonId)
       })
     })

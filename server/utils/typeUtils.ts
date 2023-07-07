@@ -8,4 +8,9 @@ const isNotNull = <T>(argument: T | null): argument is T => {
   return argument !== null
 }
 
-export { assertHasUser, isNotNull }
+const typeUtils: { assertHasUser: typeof assertHasUser; isNotNull: typeof isNotNull } = {
+  assertHasUser,
+  isNotNull,
+}
+
+export default typeUtils

@@ -1,6 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import apiPaths from '../../server/paths/api'
+import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { Course, CourseOffering } from '@accredited-programmes/models'
 

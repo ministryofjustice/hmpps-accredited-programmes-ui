@@ -4,7 +4,7 @@ import path from 'path'
 import request from 'supertest'
 
 import errorHandler from './errorHandler'
-import nunjucksSetup from './utils/nunjucksSetup'
+import { nunjucksSetup } from './utils'
 
 const setupApp = (production: boolean): Express => {
   const app = express()

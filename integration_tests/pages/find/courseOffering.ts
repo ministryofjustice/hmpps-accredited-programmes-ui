@@ -1,5 +1,4 @@
-import presentCourse from '../../../server/utils/courseUtils'
-import { presentOrganisationWithOfferingEmail } from '../../../server/utils/organisationUtils'
+import { courseUtils, organisationUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { CoursePresenter, OrganisationWithOfferingEmailPresenter } from '@accredited-programmes/ui'
@@ -15,8 +14,11 @@ export default class CourseOfferingPage extends Page {
     const { courseOffering, organisation, course } = args
     super(course.name, `${course.name}, ${organisation.name}`)
     this.courseOffering = courseOffering
-    this.course = presentCourse(course)
-    this.organisation = presentOrganisationWithOfferingEmail(organisation, courseOffering.contactEmail)
+    this.course = courseUtils.presentCourse(course)
+    this.organisation = organisationUtils.presentOrganisationWithOfferingEmail(
+      organisation,
+      courseOffering.contactEmail,
+    )
   }
 
   shouldHaveAudience() {

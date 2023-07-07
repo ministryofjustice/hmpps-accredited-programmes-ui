@@ -1,7 +1,7 @@
 import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
-import apiPaths from '../paths/api'
+import { apiPaths } from '../paths'
 import type { Course, CourseOffering } from '@accredited-programmes/models'
 
 export default class CourseClient {

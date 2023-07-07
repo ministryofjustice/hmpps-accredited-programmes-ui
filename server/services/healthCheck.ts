@@ -2,7 +2,7 @@ import promClient from 'prom-client'
 
 import type { AgentConfig } from '../config'
 import config from '../config'
-import { serviceCheckFactory } from '../data/healthCheck'
+import { serviceCheckFactory } from '../data'
 
 const healthCheckGauge = new promClient.Gauge({
   name: 'upstream_healthcheck',
