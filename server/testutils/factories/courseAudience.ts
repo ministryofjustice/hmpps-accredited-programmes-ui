@@ -8,9 +8,9 @@ export default Factory.define<CourseAudience>(() => ({
   value: faker.helpers.arrayElement([
     'Extremism offence',
     'Gang offence',
-    'Intimate partner violence',
-    'Non-intimate partner violence',
+    'General offence',
+    'General violence offence',
+    'Intimate partner violence offence',
     'Sexual offence',
-    'Violent offence',
   ]),
 }))

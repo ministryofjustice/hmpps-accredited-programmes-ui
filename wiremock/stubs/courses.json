@@ -7,11 +7,11 @@
     "audiences": [
       {
         "id": "5a5e5870-1e0f-43ed-840a-fd53d973865f",
-        "value": "Intimate partner violence"
+        "value": "Intimate partner violence offence"
       },
       {
         "id": "5eb2d80c-d08a-4930-b391-0c5166a8ee03",
-        "value": "Violent offence"
+        "value": "General violence offence"
       }
     ],
     "coursePrerequisites": [
@@ -71,7 +71,7 @@
     "audiences": [
       {
         "id": "782cd9ff-7339-4c0c-8b85-5409ff4d6061",
-        "value": "Intimate partner violence"
+        "value": "Intimate partner violence offence"
       }
     ],
     "coursePrerequisites": [

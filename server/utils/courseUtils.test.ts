@@ -8,8 +8,8 @@ describe('courseUtils', () => {
         name: 'Lime Course',
         alternateName: 'LC',
         audiences: [
-          courseAudienceFactory.build({ value: 'Intimate partner violence' }),
-          courseAudienceFactory.build({ value: 'Violent offence' }),
+          courseAudienceFactory.build({ value: 'Intimate partner violence offence' }),
+          courseAudienceFactory.build({ value: 'General violence offence' }),
         ],
         coursePrerequisites: [
           coursePrerequisiteFactory.gender().build(),
@@ -24,11 +24,11 @@ describe('courseUtils', () => {
         nameAndAlternateName: 'Lime Course (LC)',
         audienceTags: [
           {
-            text: 'Intimate partner violence',
+            text: 'Intimate partner violence offence',
             classes: 'govuk-tag govuk-tag--green',
           },
           {
-            text: 'Violent offence',
+            text: 'General violence offence',
             classes: 'govuk-tag govuk-tag--yellow',
           },
         ],
