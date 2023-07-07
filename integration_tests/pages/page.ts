@@ -1,3 +1,4 @@
+import helpers from '../support/helpers'
 import type { ObjectWithHtmlString, ObjectWithTextString, SummaryListRow, Tag } from '@accredited-programmes/ui'
 
 export type PageElement = Cypress.Chainable<JQuery>
@@ -19,15 +20,6 @@ export default abstract class Page {
     cy.get('.govuk-heading-l').contains(this.mainHeading)
   }
 
-  parseHtml(actual: JQuery<HTMLElement>, expected: string): { actual: string; expected: string } {
-    // Get rid of all whitespace in both the actual and expected text,
-    // so we don't have to worry about small differences in whitespace
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(expected, 'text/html')
-
-    return { actual: actual.text().replace(/\s+/g, ''), expected: doc.body.innerText.replace(/\s+/g, '') }
-  }
-
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
@@ -39,14 +31,14 @@ export default abstract class Page {
           const row = rows[rowElementIndex]
 
           cy.get('.govuk-summary-list__key').then(summaryListKeyElement => {
-            const { actual, expected } = this.parseHtml(summaryListKeyElement, row.key.text)
+            const { actual, expected } = helpers.parseHtml(summaryListKeyElement, row.key.text)
             expect(actual).to.equal(expected)
           })
 
           cy.get('.govuk-summary-list__value').then(summaryListValueElement => {
             const expectedValue =
               'text' in row.value ? (row.value as ObjectWithTextString).text : (row.value as ObjectWithHtmlString).html
-            const { actual, expected } = this.parseHtml(summaryListValueElement, expectedValue)
+            const { actual, expected } = helpers.parseHtml(summaryListValueElement, expectedValue)
             expect(actual).to.equal(expected)
           })
         })
@@ -58,7 +50,7 @@ export default abstract class Page {
     cy.wrap(tagContainerElement).within(() => {
       cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
         const tag = tags[tagElementIndex]
-        const { actual, expected } = this.parseHtml(tagElement, tag.text)
+        const { actual, expected } = helpers.parseHtml(tagElement, tag.text)
         expect(actual).to.equal(expected)
         cy.wrap(tagElement).should('have.class', tag.classes)
       })

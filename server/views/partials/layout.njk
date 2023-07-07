@@ -1,4 +1,10 @@
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+
 {% extends "govuk/template.njk" %}
+
+{% block pageTitle %}
+  {{pageTitle | default(applicationName)}}
+{% endblock pageTitle %}
 
 {% block head %}
   <!--[if !IE 8]><!-->
@@ -19,15 +25,20 @@
 
 {% endblock head %}
 
-{% block pageTitle %}
-  {{pageTitle | default(applicationName)}}
-{% endblock pageTitle %}
+{% block bodyStart %}{% endblock bodyStart %}
 
 {% block header %}
   {% include "./header.njk" %}
 {% endblock header %}
 
-{% block bodyStart %}{% endblock bodyStart %}
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - your <a class="govuk-link" href="https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2E8JCpI91GZDsQ5Hyq26MrZUQVQ5VFBIU0tKMUlZTDhLNUpZR01CQ0U5Uy4u">feedback</a> will help us to improve it.'
+  }) }}
+{% endblock beforeContent %}
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the

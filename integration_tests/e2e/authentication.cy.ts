@@ -3,7 +3,7 @@ import AuthSignInPage from '../pages/authSignIn'
 import IndexPage from '../pages/index'
 import Page from '../pages/page'
 
-context('SignIn', () => {
+context('Authentication', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
