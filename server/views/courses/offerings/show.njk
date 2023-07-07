@@ -5,7 +5,7 @@
 
 {% extends "../../partials/layout.njk" %}
 
-{% set pageTitle = applicationName + " - " + course.name + ", " + organisation.name %}
+{% set customPageTitleEnd = course.name + ", " + organisation.name %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

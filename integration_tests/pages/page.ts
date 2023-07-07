@@ -4,20 +4,33 @@ import type { ObjectWithHtmlString, ObjectWithTextString, SummaryListRow, Tag } 
 export type PageElement = Cypress.Chainable<JQuery>
 
 export default abstract class Page {
+  customPageTitleEnd: string | undefined
+
+  external: boolean
+
   static verifyOnPage<T, U = unknown>(constructor: new (...args: Array<U>) => T, ...args: Array<U>): T {
     return new constructor(...args)
   }
 
-  constructor(private readonly mainHeading: string, private readonly customTitle?: string) {
+  constructor(private readonly pageHeading: string, options?: { customPageTitleEnd?: string; external?: boolean }) {
+    this.customPageTitleEnd = options?.customPageTitleEnd
+    this.external = options?.external || false
     this.checkOnPage()
   }
 
   checkOnPage(): void {
-    if (this.customTitle) {
-      cy.title().should('equal', `HMPPS Accredited Programmes - ${this.customTitle}`)
+    if (!this.external) {
+      let expectedTitle = 'HMPPS Accredited Programmes'
+      const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
+
+      if (pageTitleEnd) {
+        expectedTitle += ` - ${pageTitleEnd}`
+      }
+
+      cy.title().should('equal', expectedTitle)
     }
 
-    cy.get('.govuk-heading-l').contains(this.mainHeading)
+    cy.get('.govuk-heading-l').contains(this.pageHeading)
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')

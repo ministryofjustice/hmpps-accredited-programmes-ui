@@ -5,7 +5,7 @@ import type { Course } from '@accredited-programmes/models'
 
 export default class CoursesPage extends Page {
   constructor() {
-    super('List of accredited programmes', 'Programmes')
+    super('List of accredited programmes', { customPageTitleEnd: 'Programmes' })
   }
 
   shouldHaveCourses(courses: Array<Course>) {
