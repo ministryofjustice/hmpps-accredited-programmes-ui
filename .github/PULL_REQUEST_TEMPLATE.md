@@ -28,7 +28,7 @@ ready to be released once merged.
 ### Pre-merge
 
 - [ ] There are changes required to the Accredited Programmes API for this change to work...
-  - [ ] ... and they been released to production already
+  - [ ] ... and they have been released to production already
 
 ### Post-merge
 
