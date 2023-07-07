@@ -37,6 +37,10 @@
   {% include "./header.njk" %}
 {% endblock header %}
 
+{% if not mainClasses %}
+  {% set mainClasses = "app-container govuk-body" %}
+{% endif %}
+
 {% block beforeContent %}
   {{ govukPhaseBanner({
     tag: {
