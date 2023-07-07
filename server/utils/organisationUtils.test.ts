@@ -44,7 +44,6 @@ describe('organisationUtils', () => {
         expect(organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
           [
             { text: organisationsWithOfferingIds[0].name },
-            { text: organisationsWithOfferingIds[0].category },
             { text: organisationsWithOfferingIds[0].address.county },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[0].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[0].name})</span></a>`,
@@ -52,7 +51,6 @@ describe('organisationUtils', () => {
           ],
           [
             { text: organisationsWithOfferingIds[1].name },
-            { text: organisationsWithOfferingIds[1].category },
             { text: organisationsWithOfferingIds[1].address.county },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[1].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[1].name})</span></a>`,
@@ -60,7 +58,6 @@ describe('organisationUtils', () => {
           ],
           [
             { text: organisationsWithOfferingIds[2].name },
-            { text: organisationsWithOfferingIds[2].category },
             { text: organisationsWithOfferingIds[2].address.county },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[2].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[2].name})</span></a>`,
@@ -78,7 +75,6 @@ describe('organisationUtils', () => {
         expect(organisationTableRows(course, [organisationWithOfferingId])).toEqual([
           [
             { text: organisationWithOfferingId.name },
-            { text: organisationWithOfferingId.category },
             { text: 'Not found' },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationWithOfferingId.courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationWithOfferingId.name})</span></a>`,
@@ -110,10 +106,6 @@ describe('organisationUtils', () => {
           ...organisation,
           summaryListRows: [
             {
-              key: { text: 'Prison category' },
-              value: { text: 'Category C' },
-            },
-            {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, Thisshire, HE3 3TA' },
             },
@@ -140,10 +132,6 @@ describe('organisationUtils', () => {
         expect(presentOrganisationWithOfferingEmail(organisationDuplicate, email)).toEqual({
           ...organisation,
           summaryListRows: [
-            {
-              key: { text: 'Prison category' },
-              value: { text: 'Category C' },
-            },
             {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, HE3 3TA' },
