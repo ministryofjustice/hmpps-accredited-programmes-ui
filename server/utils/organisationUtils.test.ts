@@ -68,7 +68,7 @@ describe('organisationUtils', () => {
     })
 
     describe('when the county is `null`', () => {
-      it('uses "Not found" in the region field', () => {
+      it('uses "Not found" in the county field', () => {
         const organisationWithOfferingId = organisationsWithOfferingIds[0]
         organisationWithOfferingId.address.county = null
 
@@ -110,7 +110,7 @@ describe('organisationUtils', () => {
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, Thisshire, HE3 3TA' },
             },
             {
-              key: { text: 'Region' },
+              key: { text: 'County' },
               value: { text: 'Thisshire' },
             },
             {
@@ -125,7 +125,7 @@ describe('organisationUtils', () => {
     })
 
     describe('when the county/an address field is `null`', () => {
-      it('filters the `null` fields from the address and returns `Not found` for the region', () => {
+      it('filters the `null` fields from the address and returns `Not found` for the county', () => {
         const organisationDuplicate = { ...organisation }
         organisationDuplicate.address.county = null
 
@@ -137,7 +137,7 @@ describe('organisationUtils', () => {
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, HE3 3TA' },
             },
             {
-              key: { text: 'Region' },
+              key: { text: 'County' },
               value: { text: 'Not found' },
             },
             {

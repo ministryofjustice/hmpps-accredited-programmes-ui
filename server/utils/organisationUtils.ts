@@ -48,7 +48,7 @@ const organisationWithOfferingEmailSummaryListRows = (
       value: { text: concatenatedOrganisationAddress(organisation.address) },
     },
     {
-      key: { text: 'Region' },
+      key: { text: 'County' },
       value: { text: organisation.address.county || 'Not found' },
     },
     {

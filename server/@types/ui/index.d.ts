@@ -35,7 +35,7 @@ type OrganisationWithOfferingId = Organisation & {
 
 type OrganisationWithOfferingEmailSummaryListRows = [
   SummaryListRow<'Address', ObjectWithTextString>,
-  SummaryListRow<'Region', ObjectWithTextString>,
+  SummaryListRow<'County', ObjectWithTextString>,
   SummaryListRow<'Email address', ObjectWithHtmlString>,
 ]
 
