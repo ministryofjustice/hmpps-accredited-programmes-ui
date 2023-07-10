@@ -5,8 +5,7 @@
 
 {% extends "../../partials/layout.njk" %}
 
-{% set pageTitle = applicationName + " - " + course.name + ", " + organisation.name %}
-{% set mainClasses = "app-container govuk-body" %}
+{% set customPageTitleEnd = course.nameAndAlternateName + ", " + organisation.name %}
 
 {% block content %}
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>

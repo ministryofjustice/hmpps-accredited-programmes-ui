@@ -3,7 +3,7 @@ import Page from './page'
 
 export default class IndexPage extends Page {
   constructor() {
-    super('Accredited Programmes', 'Home')
+    super('Accredited Programmes', { customPageTitleEnd: 'Home' })
   }
 
   headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')

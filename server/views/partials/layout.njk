@@ -2,8 +2,14 @@
 
 {% extends "govuk/template.njk" %}
 
+{% if customPageTitleEnd %}
+  {% set pageTitleEnd = " - " + customPageTitleEnd %}
+{% elif pageHeading %}
+  {% set pageTitleEnd = " - " + pageHeading %}
+{% endif %}
+
 {% block pageTitle %}
-  {{pageTitle | default(applicationName)}}
+  {{ applicationName }}{{ pageTitleEnd }}
 {% endblock pageTitle %}
 
 {% block head %}
@@ -30,6 +36,10 @@
 {% block header %}
   {% include "./header.njk" %}
 {% endblock header %}
+
+{% if not mainClasses %}
+  {% set mainClasses = "app-container govuk-body" %}
+{% endif %}
 
 {% block beforeContent %}
   {{ govukPhaseBanner({
