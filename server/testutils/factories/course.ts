@@ -20,6 +20,7 @@ export default Factory.define<Course>(({ params }) => {
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),
       coursePrerequisiteFactory.riskCriteria().build(),
+      coursePrerequisiteFactory.riskCriteria().build(),
       coursePrerequisiteFactory.setting().build(),
     ],
   }
