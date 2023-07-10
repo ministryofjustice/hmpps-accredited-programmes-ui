@@ -53,6 +53,20 @@ describe('courseUtils', () => {
       })
     })
 
+    describe('when a course has multiple prerequisites with the same name', () => {
+      it('combines the descriptions of the matching prerequisites', () => {
+        const riskCriteriaPrerequisites = coursePrerequisiteFactory.riskCriteria().buildList(2)
+        const course = courseFactory.build({ coursePrerequisites: riskCriteriaPrerequisites })
+        const coursePresenter = presentCourse(course)
+        const riskCriteriaSummaryListRows = coursePresenter.prerequisiteSummaryListRows[2]
+
+        expect(riskCriteriaSummaryListRows).toEqual({
+          key: { text: 'Risk criteria' },
+          value: { text: `${riskCriteriaPrerequisites[0].description}, ${riskCriteriaPrerequisites[1].description}` },
+        })
+      })
+    })
+
     describe('when a course has no `alternateName`', () => {
       it('just uses the `name` as the `nameAndAlternateName`', () => {
         const course = courseFactory.build({ alternateName: null })

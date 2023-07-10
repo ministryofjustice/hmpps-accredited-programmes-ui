@@ -88,6 +88,10 @@
         "description": "Example risk criteria"
       },
       {
+        "name": "Risk criteria",
+        "description": "Example risk criteria 2"
+      },
+      {
         "name": "Setting",
         "description": "Example setting"
       }
@@ -146,6 +150,10 @@
       {
         "name": "Risk criteria",
         "description": "Example risk criteria"
+      },
+      {
+        "name": "Risk criteria",
+        "description": "Example risk criteria 2"
       },
       {
         "name": "Setting",
