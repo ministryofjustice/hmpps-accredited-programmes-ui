@@ -16,10 +16,10 @@ export default class CourseOfferingsController {
     return async (req: Request, res: Response) => {
       assertHasUser(req)
 
-      const course = await this.courseService.getCourse(req.user.token, req.params.id)
+      const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
       const courseOffering = await this.courseService.getOffering(
         req.user.token,
-        req.params.id,
+        req.params.courseId,
         req.params.courseOfferingId,
       )
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)

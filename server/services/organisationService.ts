@@ -9,17 +9,17 @@ import type { Organisation } from '@accredited-programmes/models'
 export default class OrganisationService {
   constructor(private readonly prisonClientFactory: RestClientBuilder<PrisonClient>) {}
 
-  async getOrganisation(token: string, id: string): Promise<Organisation | null> {
+  async getOrganisation(token: string, organisationId: string): Promise<Organisation | null> {
     const prisonClient = this.prisonClientFactory(token)
 
     try {
-      const prison = await prisonClient.getPrison(id)
+      const prison = await prisonClient.getPrison(organisationId)
 
       if (!prison.active) {
         return null
       }
 
-      return organisationFromPrison(id, prison)
+      return organisationFromPrison(organisationId, prison)
     } catch (error) {
       const knownError = error as ResponseError
 
@@ -28,7 +28,7 @@ export default class OrganisationService {
       }
 
       throw createError(knownError.status || 500, knownError, {
-        userMessage: `Error fetching organisation ${id}.`,
+        userMessage: `Error fetching organisation ${organisationId}.`,
       })
     }
   }

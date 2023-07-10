@@ -10,14 +10,14 @@ export default class CourseService {
     return courseClient.all()
   }
 
-  async getCourse(token: string, id: Course['id']): Promise<Course> {
+  async getCourse(token: string, courseId: Course['id']): Promise<Course> {
     const courseClient = this.courseClientFactory(token)
-    return courseClient.find(id)
+    return courseClient.find(courseId)
   }
 
-  async getOfferingsByCourse(token: string, id: Course['id']): Promise<Array<CourseOffering>> {
+  async getOfferingsByCourse(token: string, courseId: Course['id']): Promise<Array<CourseOffering>> {
     const courseClient = this.courseClientFactory(token)
-    return courseClient.findOfferings(id)
+    return courseClient.findOfferings(courseId)
   }
 
   async getOffering(

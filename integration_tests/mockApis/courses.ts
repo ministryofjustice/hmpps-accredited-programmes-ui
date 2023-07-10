@@ -9,7 +9,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.show({ id: course.id }),
+        url: apiPaths.courses.show({ courseId: course.id }),
       },
       response: {
         status: 200,
@@ -35,7 +35,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.index({ id: args.courseId }),
+        url: apiPaths.courses.offerings.index({ courseId: args.courseId }),
       },
       response: {
         status: 200,
@@ -48,7 +48,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.show({ id: args.courseId, courseOfferingId: args.courseOffering.id }),
+        url: apiPaths.courses.offerings.show({ courseId: args.courseId, courseOfferingId: args.courseOffering.id }),
       },
       response: {
         status: 200,

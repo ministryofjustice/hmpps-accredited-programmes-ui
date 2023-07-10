@@ -50,7 +50,7 @@ context('Find', () => {
     cy.task('stubCourse', course)
     cy.task('stubCourseOfferings', { courseId: course.id, courseOfferings })
 
-    cy.visit(findPaths.courses.show({ id: course.id }))
+    cy.visit(findPaths.courses.show({ courseId: course.id }))
 
     const coursePage = Page.verifyOnPage(CoursePage, course)
     coursePage.shouldHaveCourse()
@@ -69,7 +69,7 @@ context('Find', () => {
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
 
-    cy.visit(findPaths.courses.offerings.show({ id: course.id, courseOfferingId: courseOffering.id }))
+    cy.visit(findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }))
 
     const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
     courseOfferingPage.shouldHaveAudience()

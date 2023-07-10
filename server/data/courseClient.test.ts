@@ -67,7 +67,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course "${course1.id}"`,
         withRequest: {
           method: 'GET',
-          path: apiPaths.courses.show({ id: course1.id }),
+          path: apiPaths.courses.show({ courseId: course1.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -93,7 +93,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course "${course1.id}"'s offerings`,
         withRequest: {
           method: 'GET',
-          path: apiPaths.courses.offerings.index({ id: course1.id }),
+          path: apiPaths.courses.offerings.index({ courseId: course1.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -119,7 +119,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: `A request for course offering "${courseOffering.id}"`,
         withRequest: {
           method: 'GET',
-          path: apiPaths.courses.offerings.show({ id: course1.id, courseOfferingId: courseOffering.id }),
+          path: apiPaths.courses.offerings.show({ courseId: course1.id, courseOfferingId: courseOffering.id }),
           headers: {
             authorization: `Bearer ${token}`,
           },
