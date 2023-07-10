@@ -1,5 +1,5 @@
 import type { Course, CourseAudience, CoursePrerequisite } from '@accredited-programmes/models'
-import type { CoursePresenter, SummaryListRow, Tag, TagColour } from '@accredited-programmes/ui'
+import type { CoursePresenter, ObjectWithTextString, SummaryListRow, Tag, TagColour } from '@accredited-programmes/ui'
 
 const audienceTags = (audiences: Array<CourseAudience>): Array<Tag> => {
   const audienceColourMap: { [key: CourseAudience['value']]: TagColour } = {
@@ -34,9 +34,17 @@ const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): 
   prerequisites.forEach(prerequisite => {
     const index = order[prerequisite.name]
 
-    summaryListRows[index] = {
-      key: { text: prerequisite.name },
-      value: { text: prerequisite.description },
+    if (index === undefined) {
+      return
+    }
+
+    if (summaryListRows[index]) {
+      ;(summaryListRows[index].value as ObjectWithTextString).text += `, ${prerequisite.description}`
+    } else {
+      summaryListRows[index] = {
+        key: { text: prerequisite.name },
+        value: { text: prerequisite.description },
+      }
     }
   })
 
