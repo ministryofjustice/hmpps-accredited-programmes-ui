@@ -2,16 +2,20 @@
   {
     "id": "e78237cd-8244-4256-a1e8-8fb29b1f2f76",
     "organisationId": "BMI",
-    "contactEmail": "nobody-bmi@digital.justice.gov.uk"
+    "contactEmail": "nobody-bmi@digital.justice.gov.uk",
+    "secondaryContactEmail": ""
   },
   {
     "id": "c09bf65b-5eba-448b-ad1f-0f8349fcfdb2",
     "organisationId": "BXI",
-    "contactEmail": "nobody-bxi@digital.justice.gov.uk"
+    "contactEmail": "nobody-bxi@digital.justice.gov.uk",
+    "secondaryContactEmail": "nobody2-bxi@digital.justice.gov.uk"
+
   },
   {
     "id": "c09bf65b-5eba-448b-ad1f-0f8349fcfdb2",
     "organisationId": "TRO",
-    "contactEmail": "nobody-tro@digital.justice.gov.uk"
+    "contactEmail": "nobody-tro@digital.justice.gov.uk",
+    "secondaryContactEmail": ""
   }
 ]
