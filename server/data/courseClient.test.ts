@@ -32,6 +32,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   const courseOfferings = courseOfferingFactory.buildList(3)
   const courseOffering = courseOfferingFactory.build({
     id: '20f3abc8-dd92-43ae-b88e-5797a0ad3f4b',
+    secondaryContactEmail: 'nobody2-iry@digital.justice.gov.uk',
   })
 
   describe('all', () => {

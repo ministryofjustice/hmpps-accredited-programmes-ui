@@ -9,4 +9,5 @@ export default Factory.define<CourseOffering>(() => ({
   id: faker.string.uuid(),
   organisationId: faker.string.alpha({ length: 3, casing: 'upper' }),
   contactEmail: `nobody-${organisationId.toLowerCase()}@digital.justice.gov.uk`,
+  secondaryContactEmail: '',
 }))

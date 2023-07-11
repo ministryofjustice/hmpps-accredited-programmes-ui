@@ -37,11 +37,15 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
-  shouldContainSummaryListRows(rows: Array<SummaryListRow>, summaryListElement: JQuery<HTMLElement>): void {
+  shouldContainSummaryListRows(rows: Array<SummaryListRow | undefined>, summaryListElement: JQuery<HTMLElement>): void {
     cy.wrap(summaryListElement).within(() => {
       cy.get('.govuk-summary-list__row').each((rowElement, rowElementIndex) => {
         cy.wrap(rowElement).within(() => {
           const row = rows[rowElementIndex]
+
+          if (row === undefined) {
+            return
+          }
 
           cy.get('.govuk-summary-list__key').then(summaryListKeyElement => {
             const { actual, expected } = helpers.parseHtml(summaryListKeyElement, row.key.text)

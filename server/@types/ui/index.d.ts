@@ -33,22 +33,23 @@ type OrganisationWithOfferingId = Organisation & {
   courseOfferingId: CourseOffering['id']
 }
 
-type OrganisationWithOfferingEmailSummaryListRows = [
+type OrganisationWithOfferingEmailsSummaryListRows = [
   SummaryListRow<'Address', ObjectWithTextString>,
   SummaryListRow<'County', ObjectWithTextString>,
   SummaryListRow<'Email address', ObjectWithHtmlString>,
+  SummaryListRow<'Secondary email address', ObjectWithHtmlString>?,
 ]
 
-type OrganisationWithOfferingEmailPresenter = Organisation & {
-  summaryListRows: OrganisationWithOfferingEmailSummaryListRows
+type OrganisationWithOfferingEmailsPresenter = Organisation & {
+  summaryListRows: OrganisationWithOfferingEmailsSummaryListRows
 }
 
 export type {
   CoursePresenter,
   ObjectWithHtmlString,
   ObjectWithTextString,
-  OrganisationWithOfferingEmailPresenter,
-  OrganisationWithOfferingEmailSummaryListRows,
+  OrganisationWithOfferingEmailsPresenter,
+  OrganisationWithOfferingEmailsSummaryListRows,
   OrganisationWithOfferingId,
   SummaryListRow,
   TableRow,
