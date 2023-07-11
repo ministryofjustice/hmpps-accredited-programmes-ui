@@ -1,8 +1,8 @@
 import findPaths from '../paths/find'
 import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
 import type {
-  OrganisationWithOfferingEmailPresenter,
-  OrganisationWithOfferingEmailSummaryListRows,
+  OrganisationWithOfferingEmailsPresenter,
+  OrganisationWithOfferingEmailsSummaryListRows,
   OrganisationWithOfferingId,
   TableRow,
 } from '@accredited-programmes/ui'
@@ -40,9 +40,11 @@ const concatenatedOrganisationAddress = (address: OrganisationAddress): string =
 
 const organisationWithOfferingEmailSummaryListRows = (
   organisation: Organisation,
-  email: CourseOffering['contactEmail'],
-): OrganisationWithOfferingEmailSummaryListRows => {
-  return [
+  offering: CourseOffering,
+): OrganisationWithOfferingEmailsSummaryListRows => {
+  const mailToLink = (email: string) => `<a class="govuk-link" href="mailto:${email}">${email}</a>`
+
+  const summaryListRows: OrganisationWithOfferingEmailsSummaryListRows = [
     {
       key: { text: 'Address' },
       value: { text: concatenatedOrganisationAddress(organisation.address) },
@@ -53,19 +55,28 @@ const organisationWithOfferingEmailSummaryListRows = (
     },
     {
       key: { text: 'Email address' },
-      value: { html: `<a class="govuk-link" href="mailto:${email}">${email}</a>` },
+      value: { html: mailToLink(offering.contactEmail) },
     },
   ]
+
+  if (offering.secondaryContactEmail) {
+    summaryListRows.push({
+      key: { text: 'Secondary email address' },
+      value: { html: mailToLink(offering.secondaryContactEmail) },
+    })
+  }
+
+  return summaryListRows
 }
 
-const presentOrganisationWithOfferingEmail = (
+const presentOrganisationWithOfferingEmails = (
   organisation: Organisation,
-  email: CourseOffering['contactEmail'],
-): OrganisationWithOfferingEmailPresenter => {
+  offering: CourseOffering,
+): OrganisationWithOfferingEmailsPresenter => {
   return {
     ...organisation,
-    summaryListRows: organisationWithOfferingEmailSummaryListRows(organisation, email),
+    summaryListRows: organisationWithOfferingEmailSummaryListRows(organisation, offering),
   }
 }
 
-export { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmail }
+export { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmails }

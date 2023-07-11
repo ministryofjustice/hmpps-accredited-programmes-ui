@@ -3,9 +3,15 @@ import { faker } from '@faker-js/faker/locale/en_GB'
 import {
   organisationFromPrison,
   organisationTableRows,
-  presentOrganisationWithOfferingEmail,
+  presentOrganisationWithOfferingEmails,
 } from './organisationUtils'
-import { courseFactory, organisationAddressFactory, organisationFactory, prisonFactory } from '../testutils/factories'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  organisationAddressFactory,
+  organisationFactory,
+  prisonFactory,
+} from '../testutils/factories'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('organisationUtils', () => {
@@ -98,11 +104,15 @@ describe('organisationUtils', () => {
       }),
     })
 
-    const email = `nobody-hmp-what@digital.justice.gov.uk`
+    const offering = courseOfferingFactory.build({
+      organisationId: organisation.id,
+      contactEmail: 'nobody-hmp-what@digital.justice.gov.uk',
+      secondaryContactEmail: 'nobody2-hmp-what@digital.justice.gov.uk',
+    })
 
     describe('when all fields are present', () => {
-      it('returns an organisation and course offering email with UI-formatted data', () => {
-        expect(presentOrganisationWithOfferingEmail(organisation, email)).toEqual({
+      it('returns an organisation with its course offering emails with UI-formatted data', () => {
+        expect(presentOrganisationWithOfferingEmails(organisation, offering)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -119,6 +129,12 @@ describe('organisationUtils', () => {
                 html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
               },
             },
+            {
+              key: { text: 'Secondary email address' },
+              value: {
+                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk">nobody2-hmp-what@digital.justice.gov.uk</a>',
+              },
+            },
           ],
         })
       })
@@ -129,7 +145,42 @@ describe('organisationUtils', () => {
         const organisationDuplicate = { ...organisation }
         organisationDuplicate.address.county = null
 
-        expect(presentOrganisationWithOfferingEmail(organisationDuplicate, email)).toEqual({
+        expect(presentOrganisationWithOfferingEmails(organisationDuplicate, offering)).toEqual({
+          ...organisation,
+          summaryListRows: [
+            {
+              key: { text: 'Address' },
+              value: { text: '123 Alphabet Street, Thine District, That Town Over There, HE3 3TA' },
+            },
+            {
+              key: { text: 'County' },
+              value: { text: 'Not found' },
+            },
+            {
+              key: { text: 'Email address' },
+              value: {
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
+              },
+            },
+            {
+              key: { text: 'Secondary email address' },
+              value: {
+                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk">nobody2-hmp-what@digital.justice.gov.uk</a>',
+              },
+            },
+          ],
+        })
+      })
+    })
+
+    describe('when the offering does not have a secondary contact email', () => {
+      it('does not include a secondary email address field', () => {
+        const offeringWithNoSecondaryContactEmail = courseOfferingFactory.build({
+          contactEmail: 'nobody-hmp-what@digital.justice.gov.uk',
+          secondaryContactEmail: '',
+        })
+
+        expect(presentOrganisationWithOfferingEmails(organisation, offeringWithNoSecondaryContactEmail)).toEqual({
           ...organisation,
           summaryListRows: [
             {

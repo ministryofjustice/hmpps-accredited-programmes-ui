@@ -6,7 +6,7 @@ import CourseOfferingsController from './courseOfferingsController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import presentCourse from '../../utils/courseUtils'
-import { presentOrganisationWithOfferingEmail } from '../../utils/organisationUtils'
+import { presentOrganisationWithOfferingEmails } from '../../utils/organisationUtils'
 
 describe('CoursesOfferingsController', () => {
   describe('show', () => {
@@ -38,7 +38,7 @@ describe('CoursesOfferingsController', () => {
       expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
         pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
-        organisation: presentOrganisationWithOfferingEmail(organisation, courseOffering.contactEmail),
+        organisation: presentOrganisationWithOfferingEmails(organisation, courseOffering),
       })
     })
   })
