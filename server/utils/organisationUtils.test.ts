@@ -98,7 +98,7 @@ describe('organisationUtils', () => {
   describe('presentOrganisationWithOfferingEmail', () => {
     const organisation = organisationFactory.build({
       name: 'HMP What',
-      category: 'Category C',
+      category: 'C',
       address: organisationAddressFactory.build({
         addressLine1: '123 Alphabet Street',
         addressLine2: 'Thine District',
@@ -119,6 +119,10 @@ describe('organisationUtils', () => {
         expect(presentOrganisationWithOfferingEmails(organisation, offering)).toEqual({
           ...organisation,
           summaryListRows: [
+            {
+              key: { text: 'Prison category' },
+              value: { text: 'C' },
+            },
             {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, Thisshire, HE3 3TA' },
@@ -152,6 +156,10 @@ describe('organisationUtils', () => {
         expect(presentOrganisationWithOfferingEmails(organisationDuplicate, offering)).toEqual({
           ...organisation,
           summaryListRows: [
+            {
+              key: { text: 'Prison category' },
+              value: { text: 'C' },
+            },
             {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, HE3 3TA' },
@@ -187,6 +195,10 @@ describe('organisationUtils', () => {
         expect(presentOrganisationWithOfferingEmails(organisation, offeringWithNoSecondaryContactEmail)).toEqual({
           ...organisation,
           summaryListRows: [
+            {
+              key: { text: 'Prison category' },
+              value: { text: 'C' },
+            },
             {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, HE3 3TA' },
