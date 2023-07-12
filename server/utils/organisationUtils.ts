@@ -10,11 +10,12 @@ import type { Prison } from '@prison-register-api'
 
 const organisationFromPrison = (organisationId: Organisation['id'], prison: Prison): Organisation => {
   const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
+  const categories = prison.categories.length > 0 ? prison.categories.sort().join('/') : 'Not available'
 
   return {
     id: organisationId,
     name: prison.prisonName,
-    category: prison.categories.length > 0 ? prison.categories.join('/') : 'Not available',
+    category: categories,
     address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
   }
 }
