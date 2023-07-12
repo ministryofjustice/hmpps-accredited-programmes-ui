@@ -43,7 +43,7 @@ const concatenatedOrganisationAddress = (address: OrganisationAddress): string =
     .join(', ')
 }
 
-const organisationWithOfferingEmailSummaryListRows = (
+const organisationWithOfferingEmailsSummaryListRows = (
   organisation: Organisation,
   offering: CourseOffering,
 ): OrganisationWithOfferingEmailsSummaryListRows => {
@@ -84,7 +84,7 @@ const presentOrganisationWithOfferingEmails = (
 ): OrganisationWithOfferingEmailsPresenter => {
   return {
     ...organisation,
-    summaryListRows: organisationWithOfferingEmailSummaryListRows(organisation, offering),
+    summaryListRows: organisationWithOfferingEmailsSummaryListRows(organisation, offering),
   }
 }
 
