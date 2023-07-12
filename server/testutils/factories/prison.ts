@@ -15,6 +15,7 @@ export default Factory.define<Prison>(({ params }) => {
     male: faker.datatype.boolean(),
     female: faker.datatype.boolean(),
     contracted: faker.datatype.boolean(),
+    categories: [faker.helpers.arrayElement(['A', 'B', 'C'])],
     types: [
       {
         code: 'HMP',
