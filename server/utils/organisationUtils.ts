@@ -28,7 +28,12 @@ const organisationTableRows = (course: Course, organisations: Array<Organisation
     const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`
     const contactLink = `<a class="govuk-link" href="${offeringPath}">Contact prison ${visuallyHiddenPrisonInformation}</a>`
 
-    return [{ text: organisation.name }, { text: organisation.address.county || 'Not found' }, { html: contactLink }]
+    return [
+      { text: organisation.name },
+      { text: organisation.category },
+      { text: organisation.address.county || 'Not found' },
+      { html: contactLink },
+    ]
   })
 }
 
