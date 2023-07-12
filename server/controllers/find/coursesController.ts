@@ -20,7 +20,9 @@ export default class CoursesController {
 
       res.render('courses/index', {
         pageHeading: 'List of accredited programmes',
-        courses: courses.map(course => presentCourse(course)),
+        courses: courses
+          .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+          .map(course => presentCourse(course)),
       })
     }
   }
