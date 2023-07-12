@@ -23,7 +23,7 @@ describe('OrganisationService', () => {
     describe('when the prison client finds the corresponding prison', () => {
       describe("and it's active", () => {
         it('returns the specified organisation', async () => {
-          const prison = prisonFactory.build()
+          const prison = prisonFactory.build({ categories: ['A'] })
           const prisonAddress = prison.addresses[0]
 
           prisonClient.getPrison.mockResolvedValue(prison)
@@ -33,7 +33,7 @@ describe('OrganisationService', () => {
           expect(result).toEqual({
             id: prison.prisonId,
             name: prison.prisonName,
-            category: 'N/A',
+            category: 'A',
             address: {
               addressLine1: prisonAddress.addressLine1,
               addressLine2: prisonAddress.addressLine2,

@@ -16,16 +16,22 @@ import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('organisationUtils', () => {
   describe('organisationFromPrison', () => {
-    it('returns an organisation given an ID and a prison', () => {
-      const prison = prisonFactory.build()
+    it('returns an organisation given an ID and a prison, joining its categories into a string', () => {
+      const prison = prisonFactory.build({ categories: ['A', 'B'] })
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
       expect(organisationFromPrison('an-ID', prison)).toEqual({
         id: 'an-ID',
         name: prison.prisonName,
-        category: 'N/A',
+        category: 'A/B',
         address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
       })
+    })
+
+    it('returns "Not available"" for the category if one cannot be found', () => {
+      const prison = prisonFactory.build({ categories: [] })
+
+      expect(organisationFromPrison('an-ID', prison).category).toEqual('Not available')
     })
   })
 

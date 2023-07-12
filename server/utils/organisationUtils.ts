@@ -14,7 +14,7 @@ const organisationFromPrison = (organisationId: Organisation['id'], prison: Pris
   return {
     id: organisationId,
     name: prison.prisonName,
-    category: 'N/A',
+    category: prison.categories.length > 0 ? prison.categories.join('/') : 'Not available',
     address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
   }
 }
