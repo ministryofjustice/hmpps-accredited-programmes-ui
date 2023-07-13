@@ -16,16 +16,22 @@ import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('organisationUtils', () => {
   describe('organisationFromPrison', () => {
-    it('returns an organisation given an ID and a prison', () => {
-      const prison = prisonFactory.build()
+    it('returns an organisation given an ID and a prison, sorting and joining its categories into a string', () => {
+      const prison = prisonFactory.build({ categories: ['B', 'A'] })
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
       expect(organisationFromPrison('an-ID', prison)).toEqual({
         id: 'an-ID',
         name: prison.prisonName,
-        category: 'N/A',
+        category: 'A/B',
         address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
       })
+    })
+
+    it('returns "Not available"" for the category if one cannot be found', () => {
+      const prison = prisonFactory.build({ categories: [] })
+
+      expect(organisationFromPrison('an-ID', prison).category).toEqual('Not available')
     })
   })
 
@@ -50,6 +56,7 @@ describe('organisationUtils', () => {
         expect(organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
           [
             { text: organisationsWithOfferingIds[0].name },
+            { text: organisationsWithOfferingIds[0].category },
             { text: organisationsWithOfferingIds[0].address.county },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[0].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[0].name})</span></a>`,
@@ -57,6 +64,7 @@ describe('organisationUtils', () => {
           ],
           [
             { text: organisationsWithOfferingIds[1].name },
+            { text: organisationsWithOfferingIds[1].category },
             { text: organisationsWithOfferingIds[1].address.county },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[1].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[1].name})</span></a>`,
@@ -64,6 +72,7 @@ describe('organisationUtils', () => {
           ],
           [
             { text: organisationsWithOfferingIds[2].name },
+            { text: organisationsWithOfferingIds[2].category },
             { text: organisationsWithOfferingIds[2].address.county },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationsWithOfferingIds[2].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[2].name})</span></a>`,
@@ -81,6 +90,7 @@ describe('organisationUtils', () => {
         expect(organisationTableRows(course, [organisationWithOfferingId])).toEqual([
           [
             { text: organisationWithOfferingId.name },
+            { text: organisationWithOfferingId.category },
             { text: 'Not found' },
             {
               html: `<a class="govuk-link" href="/programmes/${course.id}/offerings/${organisationWithOfferingId.courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationWithOfferingId.name})</span></a>`,
@@ -94,7 +104,7 @@ describe('organisationUtils', () => {
   describe('presentOrganisationWithOfferingEmail', () => {
     const organisation = organisationFactory.build({
       name: 'HMP What',
-      category: 'Category C',
+      category: 'C',
       address: organisationAddressFactory.build({
         addressLine1: '123 Alphabet Street',
         addressLine2: 'Thine District',
@@ -115,6 +125,10 @@ describe('organisationUtils', () => {
         expect(presentOrganisationWithOfferingEmails(organisation, offering)).toEqual({
           ...organisation,
           summaryListRows: [
+            {
+              key: { text: 'Prison category' },
+              value: { text: 'C' },
+            },
             {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, Thisshire, HE3 3TA' },
@@ -148,6 +162,10 @@ describe('organisationUtils', () => {
         expect(presentOrganisationWithOfferingEmails(organisationDuplicate, offering)).toEqual({
           ...organisation,
           summaryListRows: [
+            {
+              key: { text: 'Prison category' },
+              value: { text: 'C' },
+            },
             {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, HE3 3TA' },
@@ -183,6 +201,10 @@ describe('organisationUtils', () => {
         expect(presentOrganisationWithOfferingEmails(organisation, offeringWithNoSecondaryContactEmail)).toEqual({
           ...organisation,
           summaryListRows: [
+            {
+              key: { text: 'Prison category' },
+              value: { text: 'C' },
+            },
             {
               key: { text: 'Address' },
               value: { text: '123 Alphabet Street, Thine District, That Town Over There, HE3 3TA' },

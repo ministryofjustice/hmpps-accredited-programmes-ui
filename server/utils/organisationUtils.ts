@@ -10,11 +10,12 @@ import type { Prison } from '@prison-register-api'
 
 const organisationFromPrison = (organisationId: Organisation['id'], prison: Prison): Organisation => {
   const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
+  const categories = prison.categories.length > 0 ? prison.categories.sort().join('/') : 'Not available'
 
   return {
     id: organisationId,
     name: prison.prisonName,
-    category: 'N/A',
+    category: categories,
     address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
   }
 }
@@ -28,7 +29,12 @@ const organisationTableRows = (course: Course, organisations: Array<Organisation
     const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`
     const contactLink = `<a class="govuk-link" href="${offeringPath}">Contact prison ${visuallyHiddenPrisonInformation}</a>`
 
-    return [{ text: organisation.name }, { text: organisation.address.county || 'Not found' }, { html: contactLink }]
+    return [
+      { text: organisation.name },
+      { text: organisation.category },
+      { text: organisation.address.county || 'Not found' },
+      { html: contactLink },
+    ]
   })
 }
 
@@ -38,13 +44,17 @@ const concatenatedOrganisationAddress = (address: OrganisationAddress): string =
     .join(', ')
 }
 
-const organisationWithOfferingEmailSummaryListRows = (
+const organisationWithOfferingEmailsSummaryListRows = (
   organisation: Organisation,
   offering: CourseOffering,
 ): OrganisationWithOfferingEmailsSummaryListRows => {
   const mailToLink = (email: string) => `<a class="govuk-link" href="mailto:${email}">${email}</a>`
 
   const summaryListRows: OrganisationWithOfferingEmailsSummaryListRows = [
+    {
+      key: { text: 'Prison category' },
+      value: { text: organisation.category },
+    },
     {
       key: { text: 'Address' },
       value: { text: concatenatedOrganisationAddress(organisation.address) },
@@ -75,7 +85,7 @@ const presentOrganisationWithOfferingEmails = (
 ): OrganisationWithOfferingEmailsPresenter => {
   return {
     ...organisation,
-    summaryListRows: organisationWithOfferingEmailSummaryListRows(organisation, offering),
+    summaryListRows: organisationWithOfferingEmailsSummaryListRows(organisation, offering),
   }
 }
 
