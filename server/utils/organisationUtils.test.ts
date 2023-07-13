@@ -28,10 +28,10 @@ describe('organisationUtils', () => {
       })
     })
 
-    it('returns "Not available"" for the category if one cannot be found', () => {
+    it('returns an empty string for the category if one cannot be found', () => {
       const prison = prisonFactory.build({ categories: [] })
 
-      expect(organisationFromPrison('an-ID', prison).category).toEqual('Not available')
+      expect(organisationFromPrison('an-ID', prison).category).toEqual('')
     })
   })
 
