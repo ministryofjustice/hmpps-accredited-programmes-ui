@@ -27,9 +27,13 @@ describe('CoursesController', () => {
   })
 
   describe('index', () => {
-    it('renders the courses index template', async () => {
-      const courses = courseFactory.buildList(3)
-      courseService.getCourses.mockResolvedValue(courses)
+    it('renders the courses index template with alphabetically-sorted courses', async () => {
+      const courseA = courseFactory.build({ name: 'Course A' })
+      const courseB = courseFactory.build({ name: 'Course B' })
+      const courseC = courseFactory.build({ name: 'Course C' })
+      courseService.getCourses.mockResolvedValue([courseC, courseB, courseA])
+
+      const sortedCourses = [courseA, courseB, courseC]
 
       const requestHandler = coursesController.index()
 
@@ -37,7 +41,7 @@ describe('CoursesController', () => {
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         pageHeading: 'List of accredited programmes',
-        courses: courses.map(course => presentCourse(course)),
+        courses: sortedCourses.map(course => presentCourse(course)),
       })
 
       expect(courseService.getCourses).toHaveBeenCalledWith(token)

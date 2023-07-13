@@ -13,7 +13,7 @@ context('Find', () => {
     cy.task('stubAuthUser')
   })
 
-  it('Shows a list of all courses', () => {
+  it('Shows a list of all courses sorted alphabetically', () => {
     cy.signIn()
 
     const courses = courseFactory.buildList(4)
@@ -23,7 +23,10 @@ context('Find', () => {
     cy.visit(findPaths.courses.index({}))
 
     const coursesPage = Page.verifyOnPage(CoursesPage)
-    coursesPage.shouldHaveCourses(courses)
+
+    const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+
+    coursesPage.shouldHaveCourses(sortedCourses)
   })
 
   it('Shows a single course and its offerings', () => {
