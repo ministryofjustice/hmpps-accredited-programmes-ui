@@ -109,7 +109,7 @@ describe('organisationUtils', () => {
 
     beforeEach(() => {
       organisation = organisationFactory.build({
-        name: 'HMP What',
+        name: 'What (HMP)',
         category: 'C',
         address: organisationAddressFactory.build({
           addressLine1: '123 Alphabet Street',
@@ -149,13 +149,13 @@ describe('organisationUtils', () => {
             {
               key: { text: 'Email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited%20programme%20referral%20-%20What%20(HMP)%20-%20My%20course">nobody-hmp-what@digital.justice.gov.uk</a>',
               },
             },
             {
               key: { text: 'Secondary email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody2-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk?subject=Accredited%20programme%20referral%20-%20What%20(HMP)%20-%20My%20course">nobody2-hmp-what@digital.justice.gov.uk</a>',
               },
             },
           ],
@@ -185,13 +185,13 @@ describe('organisationUtils', () => {
             {
               key: { text: 'Email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited%20programme%20referral%20-%20What%20(HMP)%20-%20My%20course">nobody-hmp-what@digital.justice.gov.uk</a>',
               },
             },
             {
               key: { text: 'Secondary email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody2-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk?subject=Accredited%20programme%20referral%20-%20What%20(HMP)%20-%20My%20course">nobody2-hmp-what@digital.justice.gov.uk</a>',
               },
             },
           ],
@@ -226,7 +226,43 @@ describe('organisationUtils', () => {
             {
               key: { text: 'Email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited%20programme%20referral%20-%20What%20(HMP)%20-%20My%20course">nobody-hmp-what@digital.justice.gov.uk</a>',
+              },
+            },
+          ],
+        })
+      })
+    })
+
+    describe('when the organisation name includes an ampersand', () => {
+      it('encodes the ampersand in the `mailto` link to keep it as one query parameter', () => {
+        organisation.name = 'Wherefore (HMP & YOI)'
+
+        expect(presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
+          ...organisation,
+          summaryListRows: [
+            {
+              key: { text: 'Prison category' },
+              value: { text: 'C' },
+            },
+            {
+              key: { text: 'Address' },
+              value: { text: '123 Alphabet Street, Thine District, That Town Over There, Thisshire, HE3 3TA' },
+            },
+            {
+              key: { text: 'County' },
+              value: { text: 'Thisshire' },
+            },
+            {
+              key: { text: 'Email address' },
+              value: {
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited%20programme%20referral%20-%20Wherefore%20(HMP%20%26%20YOI)%20-%20My%20course">nobody-hmp-what@digital.justice.gov.uk</a>',
+              },
+            },
+            {
+              key: { text: 'Secondary email address' },
+              value: {
+                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk?subject=Accredited%20programme%20referral%20-%20Wherefore%20(HMP%20%26%20YOI)%20-%20My%20course">nobody2-hmp-what@digital.justice.gov.uk</a>',
               },
             },
           ],
