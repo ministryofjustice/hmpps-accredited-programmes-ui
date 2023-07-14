@@ -44,15 +44,20 @@ const concatenatedOrganisationAddress = (address: OrganisationAddress): string =
     .join(', ')
 }
 
+const offeringEmailMailToLink = (
+  email: CourseOffering['contactEmail'] | CourseOffering['secondaryContactEmail'],
+  organisationName: Organisation['name'],
+  courseName: Course['name'],
+): string => {
+  const subject = encodeURIComponent(`Accredited programme referral - ${organisationName} - ${courseName}`)
+  return `<a class="govuk-link" href="mailto:${email}?subject=${subject}">${email}</a>`
+}
+
 const organisationWithOfferingEmailsSummaryListRows = (
   organisation: Organisation,
   offering: CourseOffering,
   courseName: Course['name'],
 ): OrganisationWithOfferingEmailsSummaryListRows => {
-  const mailToLink = (email: string) =>
-    `<a class="govuk-link" href="mailto:${email}?subject=Accredited programme` +
-    ` referral - ${organisation.name} - ${courseName}">${email}</a>`
-
   const summaryListRows: OrganisationWithOfferingEmailsSummaryListRows = [
     {
       key: { text: 'Prison category' },
@@ -68,14 +73,14 @@ const organisationWithOfferingEmailsSummaryListRows = (
     },
     {
       key: { text: 'Email address' },
-      value: { html: mailToLink(offering.contactEmail) },
+      value: { html: offeringEmailMailToLink(offering.contactEmail, organisation.name, courseName) },
     },
   ]
 
   if (offering.secondaryContactEmail) {
     summaryListRows.push({
       key: { text: 'Secondary email address' },
-      value: { html: mailToLink(offering.secondaryContactEmail) },
+      value: { html: offeringEmailMailToLink(offering.secondaryContactEmail, organisation.name, courseName) },
     })
   }
 
