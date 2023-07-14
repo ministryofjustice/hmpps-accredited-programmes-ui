@@ -19,7 +19,7 @@ export default class CourseOfferingPage extends Page {
     })
     this.courseOffering = courseOffering
     this.course = coursePresenter
-    this.organisation = presentOrganisationWithOfferingEmails(organisation, courseOffering)
+    this.organisation = presentOrganisationWithOfferingEmails(organisation, courseOffering, course.name)
   }
 
   shouldHaveAudience() {

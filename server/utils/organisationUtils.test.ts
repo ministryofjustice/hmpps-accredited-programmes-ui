@@ -120,9 +120,11 @@ describe('organisationUtils', () => {
       secondaryContactEmail: 'nobody2-hmp-what@digital.justice.gov.uk',
     })
 
+    const course = courseFactory.build({ name: 'My course' })
+
     describe('when all fields are present', () => {
       it('returns an organisation with its course offering emails with UI-formatted data', () => {
-        expect(presentOrganisationWithOfferingEmails(organisation, offering)).toEqual({
+        expect(presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -140,13 +142,13 @@ describe('organisationUtils', () => {
             {
               key: { text: 'Email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody-hmp-what@digital.justice.gov.uk</a>',
               },
             },
             {
               key: { text: 'Secondary email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk">nobody2-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody2-hmp-what@digital.justice.gov.uk</a>',
               },
             },
           ],
@@ -159,7 +161,7 @@ describe('organisationUtils', () => {
         const organisationDuplicate = { ...organisation }
         organisationDuplicate.address.county = null
 
-        expect(presentOrganisationWithOfferingEmails(organisationDuplicate, offering)).toEqual({
+        expect(presentOrganisationWithOfferingEmails(organisationDuplicate, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -177,13 +179,13 @@ describe('organisationUtils', () => {
             {
               key: { text: 'Email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody-hmp-what@digital.justice.gov.uk</a>',
               },
             },
             {
               key: { text: 'Secondary email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk">nobody2-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody2-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody2-hmp-what@digital.justice.gov.uk</a>',
               },
             },
           ],
@@ -198,7 +200,9 @@ describe('organisationUtils', () => {
           secondaryContactEmail: '',
         })
 
-        expect(presentOrganisationWithOfferingEmails(organisation, offeringWithNoSecondaryContactEmail)).toEqual({
+        expect(
+          presentOrganisationWithOfferingEmails(organisation, offeringWithNoSecondaryContactEmail, course.name),
+        ).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -216,7 +220,7 @@ describe('organisationUtils', () => {
             {
               key: { text: 'Email address' },
               value: {
-                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
+                html: '<a class="govuk-link" href="mailto:nobody-hmp-what@digital.justice.gov.uk?subject=Accredited programme referral - HMP What - My course">nobody-hmp-what@digital.justice.gov.uk</a>',
               },
             },
           ],

@@ -47,8 +47,11 @@ const concatenatedOrganisationAddress = (address: OrganisationAddress): string =
 const organisationWithOfferingEmailsSummaryListRows = (
   organisation: Organisation,
   offering: CourseOffering,
+  courseName: Course['name'],
 ): OrganisationWithOfferingEmailsSummaryListRows => {
-  const mailToLink = (email: string) => `<a class="govuk-link" href="mailto:${email}">${email}</a>`
+  const mailToLink = (email: string) =>
+    `<a class="govuk-link" href="mailto:${email}?subject=Accredited programme` +
+    ` referral - ${organisation.name} - ${courseName}">${email}</a>`
 
   const summaryListRows: OrganisationWithOfferingEmailsSummaryListRows = [
     {
@@ -82,10 +85,11 @@ const organisationWithOfferingEmailsSummaryListRows = (
 const presentOrganisationWithOfferingEmails = (
   organisation: Organisation,
   offering: CourseOffering,
+  courseName: Course['name'],
 ): OrganisationWithOfferingEmailsPresenter => {
   return {
     ...organisation,
-    summaryListRows: organisationWithOfferingEmailsSummaryListRows(organisation, offering),
+    summaryListRows: organisationWithOfferingEmailsSummaryListRows(organisation, offering, courseName),
   }
 }
 
