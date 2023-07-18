@@ -168,8 +168,7 @@ jobs:
           command: |
             npx playwright test
       - store_artifacts:
-          path: test_results
-          destination: test_results
+          path: playwright-report
 
 workflows:
   version: 2
