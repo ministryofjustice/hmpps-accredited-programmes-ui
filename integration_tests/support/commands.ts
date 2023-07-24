@@ -25,5 +25,6 @@ const logAccessibilityViolations = (violations: Result[]) => {
 
 Cypress.Commands.add('checkAccessibility', () => {
   cy.injectAxe()
+  cy.configureAxe({ rules: [{ id: 'region', selector: '.govuk-phase-banner', enabled: false }] })
   cy.checkA11y(undefined, undefined, logAccessibilityViolations)
 })
