@@ -16,6 +16,9 @@ export default abstract class Page {
     this.customPageTitleEnd = options?.customPageTitleEnd
     this.external = options?.external || false
     this.checkOnPage()
+    if (!this.external) {
+      cy.checkAccessibility()
+    }
   }
 
   checkOnPage(): void {
