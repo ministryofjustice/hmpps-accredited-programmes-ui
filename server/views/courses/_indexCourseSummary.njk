@@ -2,10 +2,9 @@
 
 {% from "./_audienceTags.njk" import audienceTags %}
 
-{% macro indexCourseSummary(course) %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds" role="listitem">
-
+{% macro indexCourseSummary(course, isLastInList) %}
+  <div class="govuk-grid-row" role="listitem">
+    <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">
         <a class="govuk-link" href="/programmes/{{ course.id }}">{{ course.nameAndAlternateName }}</a>
       </h2>
@@ -19,5 +18,11 @@
         rows: course.prerequisiteSummaryListRows
       }) }}
     </div>
+
+    {% if not isLastInList %}
+      <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
+      </div>
+    {% endif %}
   </div>
 {% endmacro %}
