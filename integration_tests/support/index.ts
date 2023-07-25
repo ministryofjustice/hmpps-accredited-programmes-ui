@@ -1,2 +1,5 @@
 import './commands'
-import 'cypress-mochawesome-reporter/register' // eslint-disable-line import/no-extraneous-dependencies
+/*  eslint-disable import/no-extraneous-dependencies */
+import 'cypress-mochawesome-reporter/register'
+import 'cypress-axe'
+/*  eslint-enable import/no-extraneous-dependencies */

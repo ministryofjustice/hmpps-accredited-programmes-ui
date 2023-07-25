@@ -7,13 +7,8 @@
 
   <div role="list">
     {% for course in courses %}
-      {{ indexCourseSummary(course) }}
-
-      {% if loop.index < courses.length %}
-        <div class="govuk-grid-row">
-          <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
-        </div>
-      {% endif %}
+      {% set isLastInList = loop.index >= courses.length %}
+      {{ indexCourseSummary(course, isLastInList) }}
     {% endfor %}
   </div>
 {% endblock content %}

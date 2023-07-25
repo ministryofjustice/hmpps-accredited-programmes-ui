@@ -32,6 +32,16 @@ export default defineConfig({
         ...courses,
         ...prisons,
         ...tokenVerification,
+        log(message) {
+          console.log(message)
+
+          return null
+        },
+        table(tableData) {
+          console.table(tableData)
+
+          return null
+        },
       })
 
       on('after:spec', (_spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
