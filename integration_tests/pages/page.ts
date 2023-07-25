@@ -12,7 +12,10 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
-  constructor(private readonly pageHeading: string, options?: { customPageTitleEnd?: string; external?: boolean }) {
+  constructor(
+    private readonly pageHeading: string,
+    options?: { customPageTitleEnd?: string; external?: boolean },
+  ) {
     this.customPageTitleEnd = options?.customPageTitleEnd
     this.external = options?.external || false
     this.checkOnPage()
