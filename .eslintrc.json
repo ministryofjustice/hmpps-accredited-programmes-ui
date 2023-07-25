@@ -83,6 +83,12 @@
         "ignoreRestSiblings": true
       }
     ],
+    "no-empty-function": [
+      1,
+      {
+        "allow": ["constructors"]
+      }
+    ],
     "no-use-before-define": 0,
     "no-useless-constructor": 0,
     "sort-imports": [
