@@ -3,6 +3,8 @@ import type { NextFunction, Request, Response, Router } from 'express'
 import express from 'express'
 import helmet from 'helmet'
 
+import config from '../config'
+
 export default function setUpWebSecurity(): Router {
   const router = express.Router()
 
@@ -27,6 +29,7 @@ export default function setUpWebSecurity(): Router {
           scriptSrc: ["'self'", (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`],
           styleSrc: ["'self'", (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`],
           fontSrc: ["'self'"],
+          formAction: ["'self'", config.apis.hmppsAuth.externalUrl],
         },
       },
       crossOriginEmbedderPolicy: true,
