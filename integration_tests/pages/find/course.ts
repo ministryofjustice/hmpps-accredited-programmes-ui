@@ -14,7 +14,7 @@ export default class CoursePage extends Page {
   }
 
   shouldHaveCourse() {
-    cy.get('.govuk-grid-column-two-thirds').within(() => {
+    cy.get('#main-content .govuk-grid-column-two-thirds').within(() => {
       cy.get('p:first-of-type').then(tagContainerElement => {
         this.shouldContainTags(this.course.audienceTags, tagContainerElement)
       })

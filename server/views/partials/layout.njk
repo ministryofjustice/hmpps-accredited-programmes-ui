@@ -31,7 +31,9 @@
 
 {% endblock head %}
 
-{% block bodyStart %}{% endblock bodyStart %}
+{% block bodyStart %}
+  {% include "./cookieBanner.njk" %}
+{% endblock bodyStart %}
 
 {% block header %}
   {% include "./header.njk" %}

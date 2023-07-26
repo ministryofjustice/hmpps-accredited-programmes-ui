@@ -31,7 +31,7 @@ export default class CourseOfferingPage extends Page {
   }
 
   shouldHaveOrganisationWithOfferingEmails() {
-    cy.get('.govuk-heading-m').should('have.text', this.organisation.name)
+    cy.get('#main-content .govuk-heading-m').should('have.text', this.organisation.name)
 
     cy.get('.govuk-summary-list').then(summaryListElement => {
       this.shouldContainSummaryListRows(this.organisation.summaryListRows, summaryListElement)
