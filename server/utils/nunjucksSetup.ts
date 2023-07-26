@@ -4,6 +4,7 @@ import nunjucks from 'nunjucks'
 import type * as pathModule from 'path'
 
 import { initialiseName } from './utils'
+import findPaths from '../paths/find'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -40,4 +41,8 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   )
 
   njkEnv.addFilter('initialiseName', initialiseName)
+
+  njkEnv.addGlobal('paths', {
+    find: findPaths,
+  })
 }
