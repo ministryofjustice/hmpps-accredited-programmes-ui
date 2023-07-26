@@ -77,6 +77,18 @@ export default {
       },
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
     },
+    prisonerSearch: {
+      url: get('PRISONER_SEARCH_ENDPOINT_URL', 'http://localhost:8084', requiredInProduction),
+      timeout: {
+        response: get('PRISONER_SEARCH_ENDPOINT_TIMEOUT_RESPONSE', 10000),
+        deadline: get('PRISONER_SEARCH_ENDPOINT_TIMEOUT_DEADLINE', 10000),
+      },
+      agent: {
+        maxSockets: 100,
+        maxFreeSockets: 10,
+        freeSocketTimeout: 30000,
+      },
+    },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
       timeout: {
