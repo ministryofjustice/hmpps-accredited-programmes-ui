@@ -56,6 +56,7 @@ context('Find', () => {
     cy.visit(findPaths.courses.show({ courseId: course.id }))
 
     const coursePage = Page.verifyOnPage(CoursePage, course)
+    coursePage.shouldContainBackLink(findPaths.courses.index({}))
     coursePage.shouldHaveCourse()
     coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
   })
@@ -78,6 +79,7 @@ context('Find', () => {
       cy.visit(findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }))
 
       const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
       courseOfferingPage.shouldHaveAudience()
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
       courseOfferingPage.shouldNotContainSecondaryContactEmailSummaryListItem()
@@ -100,6 +102,7 @@ context('Find', () => {
       cy.visit(findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }))
 
       const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
       courseOfferingPage.shouldHaveAudience()
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
     })

@@ -1,3 +1,5 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
@@ -6,6 +8,13 @@
 {% extends "../../partials/layout.njk" %}
 
 {% set customPageTitleEnd = course.nameAndAlternateName + ", " + organisation.name %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: paths.find.courses.show({ courseId: course.id })
+  }) }}
+{% endblock backLink %}
 
 {% block content %}
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>

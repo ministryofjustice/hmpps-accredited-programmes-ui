@@ -79,4 +79,8 @@ export default abstract class Page {
       })
     })
   }
+
+  shouldContainBackLink(href: string): void {
+    cy.get('.govuk-back-link').should('have.attr', 'href', href)
+  }
 }
