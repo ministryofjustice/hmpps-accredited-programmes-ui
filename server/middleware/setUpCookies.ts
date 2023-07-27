@@ -11,6 +11,13 @@ export default function setUpCookies(): Router {
     next()
   })
 
+  router.get('/cookie-policy', (req, res) => {
+    res.render('pages/cookiePolicy', {
+      pageHeading: 'Cookies',
+      preference: req.cookies?.acceptAnalyticsCookies,
+    })
+  })
+
   router.post('/cookie-preferences', (req, res) => {
     if (req.body.acceptAnalyticsCookies) {
       // TODO: get this to redirect to current page
