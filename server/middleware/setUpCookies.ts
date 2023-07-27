@@ -3,11 +3,18 @@ import { Router } from 'express'
 
 export default function setUpCookies(): Router {
   const router = Router()
+  const cookiePreferencesPostRoute = '/cookie-preferences'
 
   router.use(cookieParser())
 
   router.use((req, res, next) => {
+    if (req.url !== cookiePreferencesPostRoute) {
+      req.session.returnTo = req.originalUrl
+    }
     res.locals.acceptAnalyticsCookies = req.cookies?.acceptAnalyticsCookies
+    res.locals.analyticsCookiesPreference = req.cookies?.acceptAnalyticsCookies === 'true' ? 'accepted' : 'rejected'
+    res.locals.messages = req.flash()
+    res.locals.returnTo = req.session.returnTo
     next()
   })
 
@@ -18,10 +25,10 @@ export default function setUpCookies(): Router {
     })
   })
 
-  router.post('/cookie-preferences', (req, res) => {
+  router.post(cookiePreferencesPostRoute, (req, res) => {
     if (req.body.acceptAnalyticsCookies) {
-      // TODO: get this to redirect to current page
-      res.cookie('acceptAnalyticsCookies', req.body.acceptAnalyticsCookies).redirect(302, '/')
+      req.flash('cookies', 'saved')
+      res.cookie('acceptAnalyticsCookies', req.body.acceptAnalyticsCookies).redirect(302, req.session.returnTo || '/')
     }
   })
 

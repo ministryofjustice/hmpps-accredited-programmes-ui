@@ -34,9 +34,7 @@
 
 {% block bodyStart %}
   {% block cookieBanner %}
-    {% if not acceptAnalyticsCookies %}
-      {% include "./cookieBanner.njk" %}
-    {% endif %}
+    {% include "./cookieBanner.njk" %}
   {% endblock cookieBanner %}
 {% endblock bodyStart %}
 
