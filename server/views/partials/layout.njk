@@ -32,7 +32,9 @@
 {% endblock head %}
 
 {% block bodyStart %}
-  {% include "./cookieBanner.njk" %}
+  {% if not acceptAnalyticsCookies %}
+    {% include "./cookieBanner.njk" %}
+  {% endif %}
 {% endblock bodyStart %}
 
 {% block header %}
