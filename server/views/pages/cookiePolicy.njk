@@ -65,6 +65,36 @@
         <li>any errors you see while using the service</li>
       </ul>
 
+      {{ govukTable({
+          firstCellIsHeader: true,
+          head: [
+              {
+                  text: "Name",
+                  classes: 'app-custom-class'
+              },
+              {
+                  text: "Purpose",
+                  classes: 'app-custom-class'
+              },
+              {
+                  text: "Expires",
+                  classes: 'app-custom-class'
+              }
+          ],
+          rows: [
+              [
+                  { text: "ai_user" },
+                  { text: "Checks if you've visited Refer and monitor an intervention before. This helps us count how many people use the service." },
+                  { text: "1 year" }
+              ],
+              [
+                  { text: "ai_session" },
+                  { text: "Used to store data across multiple pages to track metrics like how long users are spending on each page and which pages they're visiting." },
+                  { text: "3 days" }
+              ]
+          ]
+        }) }}
+
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <h2 class="govuk-heading-l">Change your cookie settings</h2>

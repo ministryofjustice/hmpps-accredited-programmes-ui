@@ -4,6 +4,7 @@ import nunjucks from 'nunjucks'
 import type * as pathModule from 'path'
 
 import { initialiseName } from './utils'
+import config from '../config'
 import findPaths from '../paths/find'
 
 const production = process.env.NODE_ENV === 'production'
@@ -13,6 +14,8 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Accredited Programmes'
+  app.locals.enableApplicationInsights = config.enableApplicationInsights
+  app.locals.applicationInsightsConnectionString = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || ''
 
   // Cachebusting version string
   if (production) {
