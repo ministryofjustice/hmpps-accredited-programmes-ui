@@ -20,6 +20,7 @@
     "paths": {
       "@accredited-programmes/models": ["./server/@types/models/index.d.ts"],
       "@accredited-programmes/ui": ["./server/@types/ui/index.d.ts"],
+      "@govuk-frontend": ["./server/@types/govukFrontend/index.d.ts"],
       "@prison-register-api": ["./server/@types/prisonRegisterApi/index.d.ts"]
     }
   },
