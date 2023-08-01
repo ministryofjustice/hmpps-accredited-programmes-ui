@@ -122,6 +122,7 @@ assets/stylesheets/*.css
 .idea
 build-info.json
 dist/
+script/build/
 test_results/
 integration_tests/downloads/
 integration_tests/screenshots/

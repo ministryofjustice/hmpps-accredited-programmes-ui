@@ -19,6 +19,7 @@
     "lint:njk": "djlint .",
     "lint": "npm run lint:css && npm run lint:js && npm run lint:njk",
     "record-build-info": "node ./bin/record-build-info",
+    "scripts:typecheck": "cd script && tsc",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "start-integration-env:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node-feature\" \"npm run watch-sass\"",
     "start-integration-env": "export $(cat integration.env) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
