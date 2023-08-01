@@ -39,7 +39,7 @@ export default class Writer {
 ${components.map(component => component.definitions).join('\n')}
 `
 
-    const outputPath = 'server/utils/govukFrontendTypes.ts'
+    const outputPath = 'server/@types/govukFrontend/index.d.ts'
     await fs.writeFile(outputPath, output)
   }
 }
