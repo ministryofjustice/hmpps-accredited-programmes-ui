@@ -23,6 +23,6 @@
       "@prison-register-api": ["./server/@types/prisonRegisterApi/index.d.ts"]
     }
   },
-  "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "cypress.config.ts"],
+  "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "cypress.config.ts", "script"],
   "include": ["**/*.js", "**/*.ts"]
 }
