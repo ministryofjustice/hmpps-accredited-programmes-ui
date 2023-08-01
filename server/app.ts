@@ -5,8 +5,8 @@ import path from 'path'
 import type { Controllers } from './controllers'
 import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
+import cookieMiddleware from './middleware/cookieMiddleware'
 import setUpAuthentication from './middleware/setUpAuthentication'
-import setUpCookies from './middleware/setUpCookies'
 import setUpCsrf from './middleware/setUpCsrf'
 import setUpCurrentUser from './middleware/setUpCurrentUser'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
@@ -41,7 +41,7 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.use(setUpCookies())
+  app.use(cookieMiddleware())
 
   app.use(routes(controllers))
 

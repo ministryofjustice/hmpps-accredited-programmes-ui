@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser'
 import { Router } from 'express'
 
-export default function setUpCookies(): Router {
+export default function cookieMiddleware(): Router {
   const router = Router()
 
   router.use(cookieParser())

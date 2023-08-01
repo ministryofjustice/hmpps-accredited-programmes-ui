@@ -2,9 +2,9 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import setUpCookies from './setUpCookies'
+import cookieMiddleware from './cookieMiddleware'
 
-describe('setUpCookies', () => {
+describe('cookieMiddleware', () => {
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
@@ -20,7 +20,7 @@ describe('setUpCookies', () => {
       })
 
       it('stores the original url for redirecting back to', () => {
-        setUpCookies()(request, response, next)
+        cookieMiddleware()(request, response, next)
 
         expect(request.session.returnTo).toEqual('original-url')
         expect(response.locals.returnTo).toEqual('original-url')
@@ -33,7 +33,7 @@ describe('setUpCookies', () => {
       })
 
       it('does not set the `returnTo` url value', () => {
-        setUpCookies()(request, response, next)
+        cookieMiddleware()(request, response, next)
 
         expect(request.session.returnTo).toBeUndefined()
         expect(response.locals.returnTo).toBeUndefined()
@@ -49,7 +49,7 @@ describe('setUpCookies', () => {
           url: 'my-url',
         })
 
-        setUpCookies()(request, response, next)
+        cookieMiddleware()(request, response, next)
 
         expect(response.locals.analyticsCookiesPreference).toEqual('rejected')
       })
@@ -64,7 +64,7 @@ describe('setUpCookies', () => {
           },
         })
 
-        setUpCookies()(request, response, next)
+        cookieMiddleware()(request, response, next)
 
         expect(response.locals.analyticsCookiesPreference).toEqual('accepted')
       })
@@ -79,7 +79,7 @@ describe('setUpCookies', () => {
           },
         })
 
-        setUpCookies()(request, response, next)
+        cookieMiddleware()(request, response, next)
 
         expect(response.locals.analyticsCookiesPreference).toEqual('rejected')
       })
@@ -92,7 +92,7 @@ describe('setUpCookies', () => {
         url: 'my-url',
       })
 
-      setUpCookies()(request, response, next)
+      cookieMiddleware()(request, response, next)
 
       expect(request.flash).toHaveBeenCalled()
     })
