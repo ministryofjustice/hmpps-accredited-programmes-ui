@@ -6,10 +6,13 @@ import actions from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers): Router {
   const router = Router()
-  const { get } = actions(router)
+  const { get, post } = actions(router)
 
-  const { dashboardController } = controllers
+  const { dashboardController, cookiePolicyController } = controllers
   get('/', dashboardController.index())
+
+  get('/cookie-policy', cookiePolicyController.index())
+  post('/cookie-preferences', cookiePolicyController.update())
 
   findRoutes(controllers, router)
 
