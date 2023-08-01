@@ -57,7 +57,7 @@ export default class Type {
         const nestedObjectType = this.typeForNestedObjectProperty(property.nestedObjectProperty!)
         if (!handledNestedTypeNames.includes(nestedObjectType.name)) {
           type = nestedObjectType
-          // Since we’ve now handled all of the properties for this nested object — outside of
+          // Since we've now handled all of the properties for this nested object — outside of
           // the natural order of enumerating these properties — we don't want to repeat this
           // the next time we encounter one of those properties.
           handledNestedTypeNames = [...handledNestedTypeNames, type.name]

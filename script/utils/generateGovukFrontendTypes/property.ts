@@ -13,9 +13,9 @@ export default class Property {
 
   get isIncluded(): boolean {
     if (['RadiosArgsItem', 'CheckboxesArgsItem'].includes(this.containingTypeName)) {
-      // These two components’ macro-options.json include a `conditional`
+      // These two components' macro-options.json include a `conditional`
       // property of boolean type, as well as a `conditional.html` property of
-      // string type. These creates a clash, since they’d both map to a property
+      // string type. These creates a clash, since they'd both map to a property
       // named `conditional`. However, looking at the macro.njk for these components,
       // it looks like the boolean property is an error in the options file, so we
       // can just ignore it.
@@ -58,19 +58,19 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
 
   private get isRequired(): boolean {
     // Although the *Html and *Text properties are usually marked as required
-    // in the macro-options.json, in practice (and as explained in the properties’
+    // in the macro-options.json, in practice (and as explained in the properties'
     // descriptions) the actual requirement is that one or the other be provided.
-    // Hence, we mark both as non-required in our generated types. (Perhaps there’s
+    // Hence, we mark both as non-required in our generated types. (Perhaps there's
     // a way in the TypeScript type system to express that at least one of them
-    // must be provided, but I don’t know it.)
+    // must be provided, but I don't know it.)
     if (this.isHtml || this.isText) {
       return false
     }
 
     if (this.describesPropertyOfNestedObject) {
-      // The macro-options.json files aren’t capable of describing whether the
+      // The macro-options.json files aren't capable of describing whether the
       // object within which a dotted property is nested is required or not.
-      // So we’ll mark them as not required.
+      // So we'll mark them as not required.
       return false
     }
 
@@ -89,7 +89,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
     return this.nameContainsCaseInsensitive('text')
   }
 
-  // The macro-options.json definition of a table’s `rows` property is misleading:
+  // The macro-options.json definition of a table's `rows` property is misleading:
   // the `params` property there actually describes an individual table _cell_. But,
   // from looking at the example usage of the table macro, we see that the `rows`
   // property expects an _array of arrays_ of cells. So, to handle this, we add some
@@ -112,8 +112,8 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
       switch (this.macroOptions.type) {
         case 'object':
           if (this.macroOptions.isComponent) {
-            // This property’s type is used as the arguments of another
-            // component; use that component’s arg type.
+            // This property's type is used as the arguments of another
+            // component; use that component's arg type.
             typeWithoutNullability = `${this.name.replace(/^[a-z]/, string => string.toUpperCase())}Args`
           } else if (this.macroOptions.params) {
             typeWithoutNullability = this.typeIntroduced!.name
@@ -135,7 +135,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
           typeWithoutNullability = 'boolean'
           break
         case 'nunjucks-block':
-          // Not sure what this one is; we’ll address it if we ever need it
+          // Not sure what this one is; we'll address it if we ever need it
           typeWithoutNullability = 'unknown'
           comment = 'nunjucks-block'
           break
@@ -148,7 +148,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
               typeWithoutNullability = `${this.typeIntroduced!.name}[]`
             }
           } else {
-            throw new Error('Array property has no params; don’t know how to handle that')
+            throw new Error("Array property has no params; don't know how to handle that")
           }
           break
         default:

@@ -27,7 +27,7 @@ consistent with other MOJ services.
 We have seen other teams that [have diverged from continuous
 deployment](https://dsdmoj.atlassian.net/wiki/spaces/MRD/pages/4228547717/Release+process)
 and are releasing in batches. We are concerned that adding a heavier process
-like this while we’re still in private beta may introduce overheads that will
+like this while we're still in private beta may introduce overheads that will
 slow down delivery.
 
 ## Decision
