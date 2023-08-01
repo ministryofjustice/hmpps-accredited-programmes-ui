@@ -148,7 +148,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
               typeWithoutNullability = `${this.typeIntroduced!.name}[]`
             }
           } else {
-            throw new Error("Array property has no params; don't know how to handle that")
+            typeWithoutNullability = 'Array'
           }
           break
         default:
@@ -178,6 +178,9 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
           macroOptions: this.macroOptions.params as Record<string, unknown>[],
         }
       case 'array': {
+        if (!this.macroOptions.params) {
+          return null
+        }
         let typeName = ''
         if (this.isTableRows) {
           // See isTableRows
