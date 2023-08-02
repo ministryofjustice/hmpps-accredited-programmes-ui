@@ -32,6 +32,7 @@ export interface ApiConfig {
 export default {
   production,
   https: production,
+  enableApplicationInsights: production,
   staticResourceCacheDuration: 20,
   environment: process.env.ENVIRONMENT || 'local',
   redis: {
