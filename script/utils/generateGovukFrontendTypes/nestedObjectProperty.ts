@@ -39,7 +39,7 @@ export default class NestedObjectProperty {
   }
 
   // The name of the type to be used for the object. For example, for the property
-  // "key.text" inside the type SummaryListArgsRow, this is "SummaryListArgsRowKey".
+  // "key.text" inside the type GovukFrontendSummaryListRow, this is "GovukFrontendSummaryListRowKey".
   get objectTypeName(): string {
     return `${this.containingTypeName}${capitalise(this.objectName)}`
   }

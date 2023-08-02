@@ -38,8 +38,8 @@ export default class Type {
 
   private get preamble(): string {
     // See Property.prototype.isTableRows
-    if (this.name === 'TableArgsCell') {
-      return 'type TableArgsRow = TableArgsCell[]\n\n'
+    if (this.name === 'GovukFrontendTableCell') {
+      return 'type GovukFrontendTableRow = GovukFrontendTableCell[]\n\n'
     }
     return ''
   }

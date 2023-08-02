@@ -12,7 +12,7 @@ export default class Property {
   }
 
   get isIncluded(): boolean {
-    if (['RadiosArgsItem', 'CheckboxesArgsItem'].includes(this.containingTypeName)) {
+    if (['GovukFrontendRadiosItem', 'GovukFrontendCheckboxesItem'].includes(this.containingTypeName)) {
       // These two components' macro-options.json include a `conditional`
       // property of boolean type, as well as a `conditional.html` property of
       // string type. These creates a clash, since they'd both map to a property
@@ -95,11 +95,11 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
   // property expects an _array of arrays_ of cells. So, to handle this, we add some
   // special case logic which:
   //
-  // - outputs a property `rows: TableArgsRow[]`
-  // - outputs a type `TableArgsCell`
-  // - outputs an additional declaration `type TableArgsRow = TableArgsCell[]`
+  // - outputs a property `rows: GovukFrontendTableRow[]`
+  // - outputs a type `GovukFrontendTableCell`
+  // - outputs an additional declaration `type GovukFrontendTableRow = GovukFrontendTableCell[]`
   private get isTableRows(): boolean {
-    return this.containingTypeName === 'TableArgs' && this.name === 'rows'
+    return this.containingTypeName === 'GovukFrontendTable' && this.name === 'rows'
   }
 
   private get typeForDefinition(): string {
@@ -114,7 +114,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
           if (this.macroOptions.isComponent) {
             // This property's type is used as the arguments of another
             // component; use that component's arg type.
-            typeWithoutNullability = `${this.name.replace(/^[a-z]/, string => string.toUpperCase())}Args`
+            typeWithoutNullability = `GovukFrontend${this.name.replace(/^[a-z]/, string => string.toUpperCase())}`
           } else if (this.macroOptions.params) {
             typeWithoutNullability = this.typeIntroduced!.name
           } else {
@@ -143,7 +143,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
           if (this.macroOptions.params) {
             if (this.isTableRows) {
               // See isTableRows
-              typeWithoutNullability = 'TableArgsRow[]'
+              typeWithoutNullability = 'GovukFrontendTableRow[]'
             } else {
               typeWithoutNullability = `${this.typeIntroduced!.name}[]`
             }
@@ -184,7 +184,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
         let typeName = ''
         if (this.isTableRows) {
           // See isTableRows
-          typeName = 'TableArgsCell'
+          typeName = 'GovukFrontendTableCell'
         } else if (this.name.endsWith('s')) {
           // Singularise if we can by stripping the final "s"
           typeName = this.containingTypeName + this.capitalisedName.substring(0, this.capitalisedName.length - 1)

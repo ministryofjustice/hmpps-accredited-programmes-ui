@@ -8,7 +8,7 @@ export default class Component {
   ) {}
 
   private get types(): Type[] {
-    return new Type(`${this.upperCamelCaseComponentName}Args`, this.macroOptions).flattenedWithIntroducedTypes
+    return new Type(`GovukFrontend${this.upperCamelCaseComponentName}`, this.macroOptions).flattenedWithIntroducedTypes
   }
 
   private get upperCamelCaseComponentName(): string {
