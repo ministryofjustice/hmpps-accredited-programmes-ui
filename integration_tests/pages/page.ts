@@ -83,4 +83,18 @@ export default abstract class Page {
   shouldContainBackLink(href: string): void {
     cy.get('.govuk-back-link').should('have.attr', 'href', href)
   }
+
+  shouldContainRadioButtonsWithLegend(
+    legendText: string,
+    options: string[],
+    radioButtonsContainerElement: JQuery<HTMLElement>,
+  ): void {
+    cy.wrap(radioButtonsContainerElement).within(() => {
+      cy.get('legend').should('contain', legendText)
+      cy.get('.govuk-radios__item').each((radioItem, radioIndex) => {
+        const { actual, expected } = helpers.parseHtml(radioItem, options[radioIndex])
+        expect(actual).to.equal(expected)
+      })
+    })
+  }
 }
