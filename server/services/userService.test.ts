@@ -14,12 +14,14 @@ const token = 'some token'
 
 describe('UserService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClientBuilder = jest.fn()
   let userService: UserService
 
   describe('getUser', () => {
     beforeEach(() => {
       hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
-      userService = new UserService(hmppsAuthClient)
+      hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
+      userService = new UserService(hmppsAuthClientBuilder)
     })
 
     it('retrieves user and formats name', async () => {

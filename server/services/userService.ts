@@ -1,3 +1,4 @@
+import type { RestClientBuilderWithoutToken } from '../data'
 import type HmppsAuthClient from '../data/hmppsAuthClient'
 import { convertToTitleCase } from '../utils/utils'
 
@@ -7,10 +8,11 @@ interface UserDetails {
 }
 
 export default class UserService {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>) {}
 
   async getUser(token: string): Promise<UserDetails> {
-    const user = await this.hmppsAuthClient.getUser(token)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const user = await hmppsAuthClient.getUser(token)
     return { ...user, displayName: convertToTitleCase(user.name) }
   }
 }
