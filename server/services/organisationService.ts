@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
 import type { PrisonClient, RestClientBuilder } from '../data'
-import { organisationFromPrison } from '../utils/organisationUtils'
+import { organisationUtils } from '../utils'
 import type { Organisation } from '@accredited-programmes/models'
 
 export default class OrganisationService {
@@ -18,7 +18,7 @@ export default class OrganisationService {
         return null
       }
 
-      return organisationFromPrison(organisationId, prison)
+      return organisationUtils.organisationFromPrison(organisationId, prison)
     } catch (error) {
       const knownError = error as ResponseError
 

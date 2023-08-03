@@ -101,4 +101,4 @@ const presentOrganisationWithOfferingEmails = (
   }
 }
 
-export { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmails }
+export default { organisationFromPrison, organisationTableRows, presentOrganisationWithOfferingEmails }

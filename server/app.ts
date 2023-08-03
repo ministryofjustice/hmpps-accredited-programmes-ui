@@ -17,7 +17,7 @@ import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import { metricsMiddleware } from './monitoring/metricsApp'
 import routes from './routes'
 import type { Services } from './services'
-import nunjucksSetup from './utils/nunjucksSetup'
+import { nunjucksSetup } from './utils'
 
 export default function createApp(controllers: Controllers, services: Services): express.Application {
   const app = express()

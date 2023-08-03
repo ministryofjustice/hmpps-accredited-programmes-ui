@@ -1,10 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 
-import {
-  organisationFromPrison,
-  organisationTableRows,
-  presentOrganisationWithOfferingEmails,
-} from './organisationUtils'
+import organisationUtils from './organisationUtils'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -21,7 +17,7 @@ describe('organisationUtils', () => {
       const prison = prisonFactory.build({ categories: ['B', 'A'] })
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
-      expect(organisationFromPrison('an-ID', prison)).toEqual({
+      expect(organisationUtils.organisationFromPrison('an-ID', prison)).toEqual({
         id: 'an-ID',
         name: prison.prisonName,
         category: 'A/B',
@@ -32,7 +28,7 @@ describe('organisationUtils', () => {
     it('returns an empty string for the category if one cannot be found', () => {
       const prison = prisonFactory.build({ categories: [] })
 
-      expect(organisationFromPrison('an-ID', prison).category).toEqual('')
+      expect(organisationUtils.organisationFromPrison('an-ID', prison).category).toEqual('')
     })
   })
 
@@ -54,7 +50,7 @@ describe('organisationUtils', () => {
           organisationsWithOfferingIds[organisationIndex].address.county = faker.location.county()
         })
 
-        expect(organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
+        expect(organisationUtils.organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
           [
             { text: organisationsWithOfferingIds[0].name },
             { text: organisationsWithOfferingIds[0].category },
@@ -88,7 +84,7 @@ describe('organisationUtils', () => {
         const organisationWithOfferingId = organisationsWithOfferingIds[0]
         organisationWithOfferingId.address.county = null
 
-        expect(organisationTableRows(course, [organisationWithOfferingId])).toEqual([
+        expect(organisationUtils.organisationTableRows(course, [organisationWithOfferingId])).toEqual([
           [
             { text: organisationWithOfferingId.name },
             { text: organisationWithOfferingId.category },
@@ -131,7 +127,7 @@ describe('organisationUtils', () => {
 
     describe('when all fields are present', () => {
       it('returns an organisation with its course offering emails with UI-formatted data', () => {
-        expect(presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
+        expect(organisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -167,7 +163,7 @@ describe('organisationUtils', () => {
       it('filters the `null` fields from the address and returns `Not found` for the county', () => {
         organisation.address.county = null
 
-        expect(presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
+        expect(organisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -207,7 +203,11 @@ describe('organisationUtils', () => {
         })
 
         expect(
-          presentOrganisationWithOfferingEmails(organisation, offeringWithNoSecondaryContactEmail, course.name),
+          organisationUtils.presentOrganisationWithOfferingEmails(
+            organisation,
+            offeringWithNoSecondaryContactEmail,
+            course.name,
+          ),
         ).toEqual({
           ...organisation,
           summaryListRows: [
@@ -238,7 +238,7 @@ describe('organisationUtils', () => {
       it('encodes the ampersand in the `mailto` link to keep it as one query parameter', () => {
         organisation.name = 'Wherefore (HMP & YOI)'
 
-        expect(presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
+        expect(organisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {
