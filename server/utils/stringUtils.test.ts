@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName, initialiseTitle } from './utils'
+import { convertToTitleCase, initialiseName, initialiseTitle } from './stringUtils'
 
 describe('utils', () => {
   describe('convertToTitleCase', () => {

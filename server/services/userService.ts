@@ -1,5 +1,5 @@
 import type { HmppsAuthClient, RestClientBuilderWithoutToken } from '../data'
-import { convertToTitleCase } from '../utils/utils'
+import { convertToTitleCase } from '../utils/stringUtils'
 
 interface UserDetails {
   name: string

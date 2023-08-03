@@ -3,7 +3,7 @@ import type express from 'express'
 import nunjucks from 'nunjucks'
 import type * as pathModule from 'path'
 
-import { initialiseName } from './utils'
+import { initialiseName } from './stringUtils'
 import config from '../config'
 import { findPaths } from '../paths'
 
