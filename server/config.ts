@@ -73,6 +73,9 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   enableApplicationInsights: production,
   environment: process.env.ENVIRONMENT || 'local',
+  flags: {
+    referEnabled: get('REFER_ENABLED', 'false') === 'true',
+  },
   https: production,
   production,
   redis: {
