@@ -1,4 +1,4 @@
-import findPaths from '../../../server/paths/find'
+import { findPaths } from '../../../server/paths'
 import presentCourse from '../../../server/utils/courseUtils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'

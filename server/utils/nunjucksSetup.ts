@@ -5,7 +5,7 @@ import type * as pathModule from 'path'
 
 import { initialiseName } from './utils'
 import config from '../config'
-import findPaths from '../paths/find'
+import { findPaths } from '../paths'
 
 const production = process.env.NODE_ENV === 'production'
 

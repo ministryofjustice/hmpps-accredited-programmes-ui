@@ -1,4 +1,4 @@
-import findPaths from '../paths/find'
+import { findPaths } from '../paths'
 import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
 import type {
   OrganisationWithOfferingEmailsPresenter,
