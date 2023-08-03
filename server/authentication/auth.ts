@@ -2,9 +2,9 @@ import type { RequestHandler } from 'express'
 import passport from 'passport'
 import { Strategy } from 'passport-oauth2'
 
-import generateOauthClientToken from './clientCredentials'
+import clientCredentials from './clientCredentials'
 import config from '../config'
-import type { TokenVerifier } from '../data/tokenVerification'
+import type { TokenVerifier } from '../data'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
@@ -37,7 +37,7 @@ function init(): void {
       clientSecret: config.apis.hmppsAuth.apiClientSecret,
       callbackURL: `${config.domain}/sign-in/callback`,
       state: true,
-      customHeaders: { Authorization: generateOauthClientToken() },
+      customHeaders: { Authorization: clientCredentials.generateOauthClientToken() },
     },
     (token, refreshToken, params, profile, done) => {
       return done(null, { token, username: params.user_name, authSource: params.auth_source })

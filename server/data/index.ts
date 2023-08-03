@@ -11,21 +11,35 @@ buildAppInsightsClient()
 /* eslint-enable import/order */
 
 import CourseClient from './courseClient'
+import { serviceCheckFactory } from './healthCheck'
+import type { User } from './hmppsAuthClient'
 import HmppsAuthClient from './hmppsAuthClient'
 import PrisonClient from './prisonClient'
+import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
+import type { TokenVerifier } from './tokenVerification'
+import verifyToken from './tokenVerification'
 
 type RestClientBuilder<T> = (token: string) => T
+type RestClientBuilderWithoutToken<T> = () => T
 
-const dataAccess = () => ({
-  hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
-  courseClientBuilder: ((token: string) => new CourseClient(token)) as RestClientBuilder<CourseClient>,
-  prisonClientBuilder: ((token: string) => new PrisonClient(token)) as RestClientBuilder<PrisonClient>,
-})
+const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = () =>
+  new HmppsAuthClient(new TokenStore(createRedisClient()))
+const courseClientBuilder: RestClientBuilder<CourseClient> = (token: string) => new CourseClient(token)
+const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: string) => new PrisonClient(token)
 
-type DataAccess = ReturnType<typeof dataAccess>
+export {
+  CourseClient,
+  HmppsAuthClient,
+  PrisonClient,
+  TokenStore,
+  courseClientBuilder,
+  createRedisClient,
+  hmppsAuthClientBuilder,
+  prisonClientBuilder,
+  serviceCheckFactory,
+  verifyToken,
+}
 
-export { CourseClient, HmppsAuthClient, dataAccess }
-
-export type { DataAccess, RestClientBuilder }
+export type { RedisClient, RestClientBuilder, RestClientBuilderWithoutToken, TokenVerifier, User }

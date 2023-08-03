@@ -1,9 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService } from '../../services'
-import presentCourse from '../../utils/courseUtils'
-import { organisationTableRows } from '../../utils/organisationUtils'
-import { assertHasUser, isNotNull } from '../../utils/typeUtils'
+import { courseUtils, organisationUtils, typeUtils } from '../../utils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
 export default class CoursesController {
@@ -14,7 +12,7 @@ export default class CoursesController {
 
   index(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      assertHasUser(req)
+      typeUtils.assertHasUser(req)
 
       const courses = await this.courseService.getCourses(req.user.token)
 
@@ -22,14 +20,14 @@ export default class CoursesController {
         pageHeading: 'List of accredited programmes',
         courses: courses
           .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
-          .map(course => presentCourse(course)),
+          .map(course => courseUtils.presentCourse(course)),
       })
     }
   }
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      assertHasUser(req)
+      typeUtils.assertHasUser(req)
 
       const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
       const offerings = await this.courseService.getOfferingsByCourse(req.user.token, course.id)
@@ -39,7 +37,7 @@ export default class CoursesController {
       })
 
       const organisations: Array<Organisation> = (await Promise.all(unresolvedOrganisationPromises)).filter(
-        isNotNull<Organisation>,
+        typeUtils.isNotNull<Organisation>,
       )
 
       const organisationsWithOfferingIds = organisations.map(organisation => {
@@ -47,9 +45,9 @@ export default class CoursesController {
         return { ...organisation, courseOfferingId: courseOffering.id }
       })
 
-      const organisationsTableData = organisationTableRows(course, organisationsWithOfferingIds)
+      const organisationsTableData = organisationUtils.organisationTableRows(course, organisationsWithOfferingIds)
 
-      const coursePresenter = presentCourse(course)
+      const coursePresenter = courseUtils.presentCourse(course)
 
       res.render('courses/show', {
         pageHeading: coursePresenter.nameAndAlternateName,

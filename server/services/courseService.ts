@@ -1,22 +1,21 @@
-import type { RestClientBuilder } from '../data'
-import type CourseClient from '../data/courseClient'
+import type { CourseClient, RestClientBuilder } from '../data'
 import type { Course, CourseOffering } from '@accredited-programmes/models'
 
 export default class CourseService {
-  constructor(private readonly courseClientFactory: RestClientBuilder<CourseClient>) {}
+  constructor(private readonly courseClientBuilder: RestClientBuilder<CourseClient>) {}
 
   async getCourses(token: string): Promise<Array<Course>> {
-    const courseClient = this.courseClientFactory(token)
+    const courseClient = this.courseClientBuilder(token)
     return courseClient.all()
   }
 
   async getCourse(token: string, courseId: Course['id']): Promise<Course> {
-    const courseClient = this.courseClientFactory(token)
+    const courseClient = this.courseClientBuilder(token)
     return courseClient.find(courseId)
   }
 
   async getOfferingsByCourse(token: string, courseId: Course['id']): Promise<Array<CourseOffering>> {
-    const courseClient = this.courseClientFactory(token)
+    const courseClient = this.courseClientBuilder(token)
     return courseClient.findOfferings(courseId)
   }
 
@@ -25,7 +24,7 @@ export default class CourseService {
     courseId: Course['id'],
     courseOfferingId: CourseOffering['id'],
   ): Promise<CourseOffering> {
-    const courseClient = this.courseClientFactory(token)
+    const courseClient = this.courseClientBuilder(token)
     return courseClient.findOffering(courseId, courseOfferingId)
   }
 }

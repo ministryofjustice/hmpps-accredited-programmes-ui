@@ -1,16 +1,15 @@
 import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
-import type { RestClientBuilder } from '../data'
-import type PrisonClient from '../data/prisonClient'
-import { organisationFromPrison } from '../utils/organisationUtils'
+import type { PrisonClient, RestClientBuilder } from '../data'
+import { organisationUtils } from '../utils'
 import type { Organisation } from '@accredited-programmes/models'
 
 export default class OrganisationService {
-  constructor(private readonly prisonClientFactory: RestClientBuilder<PrisonClient>) {}
+  constructor(private readonly prisonClientBuilder: RestClientBuilder<PrisonClient>) {}
 
   async getOrganisation(token: string, organisationId: string): Promise<Organisation | null> {
-    const prisonClient = this.prisonClientFactory(token)
+    const prisonClient = this.prisonClientBuilder(token)
 
     try {
       const prison = await prisonClient.getPrison(organisationId)
@@ -19,7 +18,7 @@ export default class OrganisationService {
         return null
       }
 
-      return organisationFromPrison(organisationId, prison)
+      return organisationUtils.organisationFromPrison(organisationId, prison)
     } catch (error) {
       const knownError = error as ResponseError
 

@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import DashboardController from './dashboardController'
-import findPaths from '../paths/find'
+import { findPaths } from '../paths'
 
 describe('DashboardController', () => {
   const request: DeepMocked<Request> = createMock<Request>({})

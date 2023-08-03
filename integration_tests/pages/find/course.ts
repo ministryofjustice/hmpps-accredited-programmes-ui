@@ -1,5 +1,5 @@
-import findPaths from '../../../server/paths/find'
-import presentCourse from '../../../server/utils/courseUtils'
+import { findPaths } from '../../../server/paths'
+import { courseUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course } from '@accredited-programmes/models'
 import type { CoursePresenter, OrganisationWithOfferingId } from '@accredited-programmes/ui'
@@ -8,7 +8,7 @@ export default class CoursePage extends Page {
   course: CoursePresenter
 
   constructor(course: Course) {
-    const coursePresenter = presentCourse(course)
+    const coursePresenter = courseUtils.presentCourse(course)
     super(coursePresenter.nameAndAlternateName)
     this.course = coursePresenter
   }

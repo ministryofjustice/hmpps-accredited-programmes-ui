@@ -1,22 +1,22 @@
 import { when } from 'jest-when'
 
 import CourseService from './courseService'
-import CourseClient from '../data/courseClient'
+import { CourseClient } from '../data'
 import { courseFactory, courseOfferingFactory } from '../testutils/factories'
 
 jest.mock('../data/courseClient')
 
 describe('CourseService', () => {
   const courseClient = new CourseClient('token') as jest.Mocked<CourseClient>
-  const courseClientFactory = jest.fn()
+  const courseClientBuilder = jest.fn()
 
-  const service = new CourseService(courseClientFactory)
+  const service = new CourseService(courseClientBuilder)
 
   const token = 'token'
 
   beforeEach(() => {
     jest.resetAllMocks()
-    courseClientFactory.mockReturnValue(courseClient)
+    courseClientBuilder.mockReturnValue(courseClient)
   })
 
   describe('getCourses', () => {
@@ -28,7 +28,7 @@ describe('CourseService', () => {
 
       expect(result).toEqual(courses)
 
-      expect(courseClientFactory).toHaveBeenCalledWith(token)
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
       expect(courseClient.all).toHaveBeenCalled()
     })
   })
@@ -42,7 +42,7 @@ describe('CourseService', () => {
 
       expect(result).toEqual(course)
 
-      expect(courseClientFactory).toHaveBeenCalledWith(token)
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
       expect(courseClient.find).toHaveBeenCalledWith(course.id)
     })
   })
@@ -57,7 +57,7 @@ describe('CourseService', () => {
 
       expect(result).toEqual(courseOfferings)
 
-      expect(courseClientFactory).toHaveBeenCalledWith(token)
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
       expect(courseClient.findOfferings).toHaveBeenCalledWith(course.id)
     })
   })
@@ -73,7 +73,7 @@ describe('CourseService', () => {
 
       expect(result).toEqual(courseOffering)
 
-      expect(courseClientFactory).toHaveBeenCalledWith(token)
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
       expect(courseClient.findOffering).toHaveBeenCalledWith(course.id, courseOffering.id)
     })
   })

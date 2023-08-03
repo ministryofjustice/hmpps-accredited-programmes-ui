@@ -2,11 +2,11 @@ import { Router } from 'express'
 
 import findRoutes from './find'
 import type { Controllers } from '../controllers'
-import actions from '../utils/routeUtils'
+import { routeUtils } from '../utils'
 
 export default function routes(controllers: Controllers): Router {
   const router = Router()
-  const { get } = actions(router)
+  const { get } = routeUtils.actions(router)
 
   const { dashboardController } = controllers
   get('/', dashboardController.index())

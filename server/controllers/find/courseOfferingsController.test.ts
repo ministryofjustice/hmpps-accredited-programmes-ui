@@ -5,8 +5,7 @@ import type { NextFunction, Request, Response } from 'express'
 import CourseOfferingsController from './courseOfferingsController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
-import presentCourse from '../../utils/courseUtils'
-import { presentOrganisationWithOfferingEmails } from '../../utils/organisationUtils'
+import { courseUtils, organisationUtils } from '../../utils'
 
 describe('CoursesOfferingsController', () => {
   describe('show', () => {
@@ -33,12 +32,16 @@ describe('CoursesOfferingsController', () => {
       const requestHandler = courseOfferingsController.show()
       await requestHandler(request, response, next)
 
-      const coursePresenter = presentCourse(course)
+      const coursePresenter = courseUtils.presentCourse(course)
 
       expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
         pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
-        organisation: presentOrganisationWithOfferingEmails(organisation, courseOffering, course.name),
+        organisation: organisationUtils.presentOrganisationWithOfferingEmails(
+          organisation,
+          courseOffering,
+          course.name,
+        ),
       })
     })
   })

@@ -12,7 +12,7 @@ declare module 'express' {
   }
 }
 
-export declare global {
+declare global {
   namespace Express {
     interface User {
       username: string
@@ -29,5 +29,11 @@ export declare global {
     type RequestWithUser = Request & { user: Express.User }
   }
 }
+
+type RequestWithUser = Express.RequestWithUser
+
+export { global }
+
+export type { RequestWithUser }
 
 export default {}
