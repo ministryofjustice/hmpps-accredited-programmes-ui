@@ -11,10 +11,15 @@ buildAppInsightsClient()
 /* eslint-enable import/order */
 
 import CourseClient from './courseClient'
+import { serviceCheckFactory } from './healthCheck'
+import type { User } from './hmppsAuthClient'
 import HmppsAuthClient from './hmppsAuthClient'
 import PrisonClient from './prisonClient'
+import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
+import type { TokenVerifier } from './tokenVerification'
+import verifyToken from './tokenVerification'
 
 type RestClientBuilder<T> = (token: string) => T
 type RestClientBuilderWithoutToken<T> = () => T
@@ -24,6 +29,17 @@ const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = (
 const courseClientBuilder: RestClientBuilder<CourseClient> = (token: string) => new CourseClient(token)
 const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: string) => new PrisonClient(token)
 
-export { CourseClient, HmppsAuthClient, courseClientBuilder, hmppsAuthClientBuilder, prisonClientBuilder }
+export {
+  CourseClient,
+  HmppsAuthClient,
+  PrisonClient,
+  TokenStore,
+  courseClientBuilder,
+  createRedisClient,
+  hmppsAuthClientBuilder,
+  prisonClientBuilder,
+  serviceCheckFactory,
+  verifyToken,
+}
 
-export type { RestClientBuilder, RestClientBuilderWithoutToken }
+export type { RedisClient, RestClientBuilder, RestClientBuilderWithoutToken, TokenVerifier, User }

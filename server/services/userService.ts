@@ -1,5 +1,4 @@
-import type { RestClientBuilderWithoutToken } from '../data'
-import type HmppsAuthClient from '../data/hmppsAuthClient'
+import type { HmppsAuthClient, RestClientBuilderWithoutToken } from '../data'
 import { convertToTitleCase } from '../utils/utils'
 
 interface UserDetails {

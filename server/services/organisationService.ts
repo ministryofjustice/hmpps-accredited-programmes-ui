@@ -1,8 +1,7 @@
 import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
-import type { RestClientBuilder } from '../data'
-import type PrisonClient from '../data/prisonClient'
+import type { PrisonClient, RestClientBuilder } from '../data'
 import { organisationFromPrison } from '../utils/organisationUtils'
 import type { Organisation } from '@accredited-programmes/models'
 

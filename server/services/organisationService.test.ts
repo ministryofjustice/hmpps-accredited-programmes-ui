@@ -1,7 +1,7 @@
 import createError from 'http-errors'
 
 import OrganisationService from './organisationService'
-import PrisonClient from '../data/prisonClient'
+import { PrisonClient } from '../data'
 import { prisonFactory } from '../testutils/factories'
 
 jest.mock('../data/prisonClient')
