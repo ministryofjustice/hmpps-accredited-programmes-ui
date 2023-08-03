@@ -53,10 +53,6 @@ export default abstract class Page {
         cy.wrap(rowElement).within(() => {
           const row = rows[rowElementIndex]
 
-          if (row === undefined) {
-            return
-          }
-
           cy.get('.govuk-summary-list__key').then(summaryListKeyElement => {
             const { actual, expected } = helpers.parseHtml(summaryListKeyElement, (row.key as HasTextString).text)
             expect(actual).to.equal(expected)
