@@ -3,7 +3,7 @@ import type { Router } from 'express'
 import express from 'express'
 import passport from 'passport'
 
-import auth from '../authentication/auth'
+import { auth } from '../authentication'
 import config from '../config'
 
 const router = express.Router()

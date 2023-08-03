@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import populateCurrentUser from './populateCurrentUser'
-import auth from '../authentication/auth'
+import { auth } from '../authentication'
 import { verifyToken } from '../data'
 import type { Services } from '../services'
 
