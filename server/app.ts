@@ -4,16 +4,19 @@ import path from 'path'
 
 import type { Controllers } from './controllers'
 import errorHandler from './errorHandler'
-import authorisationMiddleware from './middleware/authorisationMiddleware'
-import setUpAuthentication from './middleware/setUpAuthentication'
-import setUpCsrf from './middleware/setUpCsrf'
-import setUpCurrentUser from './middleware/setUpCurrentUser'
-import setUpHealthChecks from './middleware/setUpHealthChecks'
-import { setUpSentryErrorHandler, setUpSentryRequestHandler } from './middleware/setUpSentry'
-import setUpStaticResources from './middleware/setUpStaticResources'
-import setUpWebSecurity from './middleware/setUpWebSecurity'
-import setUpWebSession from './middleware/setUpWebSession'
-import setUpWebRequestParsing from './middleware/setupRequestParsing'
+import {
+  authorisationMiddleware,
+  setUpAuthentication,
+  setUpCsrf,
+  setUpCurrentUser,
+  setUpHealthChecks,
+  setUpSentryErrorHandler,
+  setUpSentryRequestHandler,
+  setUpStaticResources,
+  setUpWebRequestParsing,
+  setUpWebSecurity,
+  setUpWebSession,
+} from './middleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
 import routes from './routes'
 import type { Services } from './services'
