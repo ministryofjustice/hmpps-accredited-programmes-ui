@@ -126,7 +126,7 @@ describe('organisationUtils', () => {
     })
 
     describe('when all fields are present', () => {
-      it('returns an organisation with its course offering emails with UI-formatted data', () => {
+      it("returns UI-formatted data about an organisation and an associated course offering's emails", () => {
         expect(organisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
