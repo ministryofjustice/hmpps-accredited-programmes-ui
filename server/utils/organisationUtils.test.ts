@@ -199,7 +199,7 @@ describe('organisationUtils', () => {
       it('does not include a secondary email address field', () => {
         const offeringWithNoSecondaryContactEmail = courseOfferingFactory.build({
           contactEmail: 'nobody-hmp-what@digital.justice.gov.uk',
-          secondaryContactEmail: '',
+          secondaryContactEmail: null,
         })
 
         expect(

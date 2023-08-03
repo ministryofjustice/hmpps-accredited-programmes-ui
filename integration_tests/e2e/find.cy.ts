@@ -67,7 +67,7 @@ context('Find', () => {
 
       const course = courseFactory.build()
       const courseOffering = courseOfferingFactory.build({
-        secondaryContactEmail: '',
+        secondaryContactEmail: null,
       })
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
       const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
