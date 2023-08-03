@@ -4,8 +4,8 @@ import type {
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingEmailsSummaryListRows,
   OrganisationWithOfferingId,
-  TableRow,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendTableRow } from '@govuk-frontend'
 import type { Prison } from '@prison-register-api'
 
 const organisationFromPrison = (organisationId: Organisation['id'], prison: Prison): Organisation => {
@@ -20,7 +20,10 @@ const organisationFromPrison = (organisationId: Organisation['id'], prison: Pris
   }
 }
 
-const organisationTableRows = (course: Course, organisations: Array<OrganisationWithOfferingId>): Array<TableRow> => {
+const organisationTableRows = (
+  course: Course,
+  organisations: Array<OrganisationWithOfferingId>,
+): Array<GovukFrontendTableRow> => {
   return organisations.map(organisation => {
     const offeringPath = findPaths.courses.offerings.show({
       courseId: course.id,

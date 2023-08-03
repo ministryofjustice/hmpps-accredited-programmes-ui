@@ -13,7 +13,7 @@
   ],
 
   "parserOptions": {
-    "project": ["tsconfig.json", "integration_tests/tsconfig.json"]
+    "project": ["tsconfig.json", "integration_tests/tsconfig.json", "script/tsconfig.json"]
   },
 
   "ignorePatterns": ["cypress.config.ts"],

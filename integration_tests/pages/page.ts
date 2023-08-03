@@ -1,5 +1,6 @@
 import helpers from '../support/helpers'
-import type { ObjectWithHtmlString, ObjectWithTextString, SummaryListRow, Tag } from '@accredited-programmes/ui'
+import type { HasHtmlString, HasTextString } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRow, GovukFrontendSummaryListRowValue, GovukFrontendTag } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -43,7 +44,10 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
-  shouldContainSummaryListRows(rows: Array<SummaryListRow | undefined>, summaryListElement: JQuery<HTMLElement>): void {
+  shouldContainSummaryListRows(
+    rows: Array<GovukFrontendSummaryListRow & { value: GovukFrontendSummaryListRowValue }>,
+    summaryListElement: JQuery<HTMLElement>,
+  ): void {
     cy.wrap(summaryListElement).within(() => {
       cy.get('.govuk-summary-list__row').each((rowElement, rowElementIndex) => {
         cy.wrap(rowElement).within(() => {
@@ -54,13 +58,13 @@ export default abstract class Page {
           }
 
           cy.get('.govuk-summary-list__key').then(summaryListKeyElement => {
-            const { actual, expected } = helpers.parseHtml(summaryListKeyElement, row.key.text)
+            const { actual, expected } = helpers.parseHtml(summaryListKeyElement, (row.key as HasTextString).text)
             expect(actual).to.equal(expected)
           })
 
           cy.get('.govuk-summary-list__value').then(summaryListValueElement => {
             const expectedValue =
-              'text' in row.value ? (row.value as ObjectWithTextString).text : (row.value as ObjectWithHtmlString).html
+              'text' in row.value ? (row.value as HasTextString).text : (row.value as HasHtmlString).html
             const { actual, expected } = helpers.parseHtml(summaryListValueElement, expectedValue)
             expect(actual).to.equal(expected)
           })
@@ -69,7 +73,7 @@ export default abstract class Page {
     })
   }
 
-  shouldContainTags(tags: Array<Tag>, tagContainerElement: JQuery<HTMLElement>): void {
+  shouldContainTags(tags: Array<GovukFrontendTag & HasTextString>, tagContainerElement: JQuery<HTMLElement>): void {
     cy.wrap(tagContainerElement).within(() => {
       cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
         const tag = tags[tagElementIndex]
