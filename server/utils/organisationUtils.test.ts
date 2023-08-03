@@ -98,7 +98,7 @@ describe('organisationUtils', () => {
     })
   })
 
-  describe('presentOrganisationWithOfferingEmail', () => {
+  describe('presentOrganisationWithOfferingEmails', () => {
     let organisation: Organisation
     let offering: CourseOffering
     let course: Course
