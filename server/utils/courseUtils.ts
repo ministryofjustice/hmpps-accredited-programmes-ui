@@ -1,6 +1,11 @@
 import type { Course, CourseAudience, CoursePrerequisite } from '@accredited-programmes/models'
-import type { CoursePresenter, HasTextString, TagColour } from '@accredited-programmes/ui'
-import type { GovukFrontendSummaryListRow, GovukFrontendTag } from '@govuk-frontend'
+import type {
+  CoursePresenter,
+  GovukFrontendSummaryListRowWithValue,
+  HasTextString,
+  TagColour,
+} from '@accredited-programmes/ui'
+import type { GovukFrontendTag } from '@govuk-frontend'
 
 const audienceTags = (audiences: Array<CourseAudience>): Array<GovukFrontendTag> => {
   const audienceColourMap: { [key: CourseAudience['value']]: TagColour } = {
@@ -22,7 +27,9 @@ const audienceTags = (audiences: Array<CourseAudience>): Array<GovukFrontendTag>
   })
 }
 
-const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): Array<GovukFrontendSummaryListRow> => {
+const prerequisiteSummaryListRows = (
+  prerequisites: Array<CoursePrerequisite>,
+): Array<GovukFrontendSummaryListRowWithValue> => {
   const order: { [key: CoursePrerequisite['name']]: number } = {
     Setting: 0,
     Gender: 1,
@@ -30,7 +37,7 @@ const prerequisiteSummaryListRows = (prerequisites: Array<CoursePrerequisite>): 
     'Learning needs': 3,
   }
 
-  const summaryListRows: Array<GovukFrontendSummaryListRow> = []
+  const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
 
   prerequisites.forEach(prerequisite => {
     const index = order[prerequisite.name]

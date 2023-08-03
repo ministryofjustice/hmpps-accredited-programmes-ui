@@ -1,6 +1,8 @@
 import type { GovukFrontendSummaryListRow } from '../govukFrontend'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 
+type GovukFrontendSummaryListRowWithValue = GovukFrontendSummaryListRow & { value: GovukFrontendSummaryListRowValue }
+
 type HasTextString = {
   text: string
 }
@@ -14,7 +16,7 @@ type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red
 type CoursePresenter = Course & {
   nameAndAlternateName: string
   audienceTags: Array<Tag>
-  prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRow>
+  prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithValue>
 }
 
 type OrganisationWithOfferingId = Organisation & {
@@ -22,11 +24,12 @@ type OrganisationWithOfferingId = Organisation & {
 }
 
 type OrganisationWithOfferingEmailsPresenter = Organisation & {
-  summaryListRows: Array<GovukFrontendSummaryListRow>
+  summaryListRows: Array<GovukFrontendSummaryListRowWithValue>
 }
 
 export type {
   CoursePresenter,
+  GovukFrontendSummaryListRowWithValue,
   HasHtmlString,
   HasTextString,
   OrganisationWithOfferingEmailsPresenter,

@@ -1,6 +1,6 @@
 import helpers from '../support/helpers'
-import type { HasHtmlString, HasTextString } from '@accredited-programmes/ui'
-import type { GovukFrontendSummaryListRow, GovukFrontendSummaryListRowValue, GovukFrontendTag } from '@govuk-frontend'
+import type { GovukFrontendSummaryListRowWithValue, HasHtmlString, HasTextString } from '@accredited-programmes/ui'
+import type { GovukFrontendTag } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -45,7 +45,7 @@ export default abstract class Page {
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
   shouldContainSummaryListRows(
-    rows: Array<GovukFrontendSummaryListRow & { value: GovukFrontendSummaryListRowValue }>,
+    rows: Array<GovukFrontendSummaryListRowWithValue>,
     summaryListElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryListElement).within(() => {
