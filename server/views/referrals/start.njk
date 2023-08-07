@@ -1,0 +1,40 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% from "../partials/audienceTags.njk" import audienceTags %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: paths.find.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "../partials/organisationAndCourse.njk" %}
+
+      {{ audienceTags(course.audienceTags) }}
+
+      <h2 class="govuk-heading-m">What you'll need to do</h2>
+
+      <p class="govuk-body">When completing the referral:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>review this person's information and confirm that it's accurate</li>
+        <li>update information at the source if it's out of date or inaccurate. For example, in OASys or NOMIS</li>
+        <li>provide a reason for the referral and any supporting information</li>
+      </ul>
+
+      {{ govukButton({
+          text: "Start now",
+          href: '#'
+      }) }}
+    </div>
+  </div>
+{% endblock content %}
