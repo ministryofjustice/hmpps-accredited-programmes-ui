@@ -68,16 +68,18 @@
     html: 'This is a new service - your <a class="govuk-link" href="https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2E8JCpI91GZDsQ5Hyq26MrZUQVQ5VFBIU0tKMUlZTDhLNUpZR01CQ0U5Uy4u">feedback</a> will help us to improve it.'
   }) }}
 
-  {{ mojPrimaryNavigation({
-    label: 'Primary navigation',
-    items: [
-      {
-        text: 'List of programmes',
-        href: paths.find.courses.index({}),
-        active: currentPath === (paths.find.courses.index({}))
-      }
-    ]
-  }) }}
+  {% block primaryNavigation %}
+    {{ mojPrimaryNavigation({
+      label: 'Primary navigation',
+      items: [
+        {
+          text: 'List of programmes',
+          href: paths.find.courses.index({}),
+          active: currentPath === (paths.find.courses.index({}))
+        }
+      ]
+    }) }}
+  {% endblock primaryNavigation %}
 
   {% block backLink %}{% endblock backLink %}
 {% endblock beforeContent %}
