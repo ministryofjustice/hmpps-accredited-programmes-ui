@@ -20,9 +20,12 @@ context('Find', () => {
 
     cy.task('stubCourses', courses)
 
-    cy.visit(findPaths.courses.index({}))
+    const path = findPaths.courses.index({})
+
+    cy.visit(path)
 
     const coursesPage = Page.verifyOnPage(CoursesPage)
+    coursesPage.shouldContainNavigation(path)
 
     const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
 
@@ -53,9 +56,12 @@ context('Find', () => {
     cy.task('stubCourse', course)
     cy.task('stubCourseOfferings', { courseId: course.id, courseOfferings })
 
-    cy.visit(findPaths.courses.show({ courseId: course.id }))
+    const path = findPaths.courses.show({ courseId: course.id })
+
+    cy.visit(path)
 
     const coursePage = Page.verifyOnPage(CoursePage, course)
+    coursePage.shouldContainNavigation(path)
     coursePage.shouldContainBackLink(findPaths.courses.index({}))
     coursePage.shouldHaveCourse()
     coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
@@ -76,9 +82,11 @@ context('Find', () => {
       cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
       cy.task('stubPrison', prison)
 
-      cy.visit(findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }))
+      const path = findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
+      cy.visit(path)
 
       const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      courseOfferingPage.shouldContainNavigation(path)
       courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
       courseOfferingPage.shouldHaveAudience()
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
@@ -99,9 +107,11 @@ context('Find', () => {
       cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
       cy.task('stubPrison', prison)
 
-      cy.visit(findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }))
+      const path = findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
+      cy.visit(path)
 
       const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      courseOfferingPage.shouldContainNavigation(path)
       courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
       courseOfferingPage.shouldHaveAudience()
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()

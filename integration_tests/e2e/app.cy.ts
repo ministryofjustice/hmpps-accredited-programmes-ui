@@ -1,3 +1,5 @@
+import IndexPage from '../pages'
+import Page from '../pages/page'
 import helpers from '../support/helpers'
 
 context('App', () => {
@@ -31,5 +33,13 @@ context('App', () => {
         )
       })
     })
+  })
+
+  it("Doesn't show navigation on the index page", () => {
+    cy.signIn()
+    cy.visit('/')
+
+    const indexPage = Page.verifyOnPage(IndexPage)
+    indexPage.shouldNotContainNavigation()
   })
 })

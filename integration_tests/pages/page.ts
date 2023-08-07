@@ -83,4 +83,29 @@ export default abstract class Page {
   shouldContainBackLink(href: string): void {
     cy.get('.govuk-back-link').should('have.attr', 'href', href)
   }
+
+  shouldContainNavigation(currentPath: string): void {
+    const navigationItems = [{ text: 'List of programmes', href: '/programmes' }]
+
+    cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
+      const { text, href } = navigationItems[navigationItemElementIndex]
+
+      const { actual, expected } = helpers.parseHtml(navigationItemElement, text)
+      expect(actual).to.equal(expected)
+
+      cy.wrap(navigationItemElement).within(() => {
+        cy.get('a').should('have.attr', 'href', href)
+
+        if (currentPath === href) {
+          cy.get('a').should('have.attr', 'aria-current', 'page')
+        } else {
+          cy.get('a').should('not.have.attr', 'aria-current', 'page')
+        }
+      })
+    })
+  }
+
+  shouldNotContainNavigation(): void {
+    cy.get('.moj-primary-navigation').should('not.exist')
+  }
 }
