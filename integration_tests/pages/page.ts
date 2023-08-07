@@ -25,18 +25,26 @@ export default abstract class Page {
     }
   }
 
-  checkOnPage(): void {
+  private checkOnPage(): void {
     if (!this.external) {
-      let expectedTitle = 'HMPPS Accredited Programmes'
-      const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
-
-      if (pageTitleEnd) {
-        expectedTitle += ` - ${pageTitleEnd}`
-      }
-
-      cy.title().should('equal', expectedTitle)
+      this.checkTitle()
     }
 
+    this.checkHeading()
+  }
+
+  private checkTitle(): void {
+    let expectedTitle = 'HMPPS Accredited Programmes'
+    const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
+
+    if (pageTitleEnd) {
+      expectedTitle += ` - ${pageTitleEnd}`
+    }
+
+    cy.title().should('equal', expectedTitle)
+  }
+
+  private checkHeading(): void {
     cy.get('.govuk-heading-l').contains(this.pageHeading)
   }
 
