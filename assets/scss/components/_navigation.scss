@@ -1,0 +1,11 @@
+@import '../helpers';
+
+.moj-primary-navigation {
+  @include full-width-within-govuk-width-container;
+}
+
+.moj-primary-navigation__container {
+  @media (width < 76.875em) {
+    margin: 0;
+  }
+}
