@@ -1,20 +1,46 @@
+@use 'sass:math';
+
 .dashboard__main {
   display: flex;
   flex-direction: column;
 }
 
 .dashboard__cards-wrapper {
+  $margin-horizontal: -0.9375rem;
+  $padding-horizontal: 0.9375rem;
+
   flex: 1;
 
-  margin-right: -21.8vw;
-  margin-bottom: -3.75rem;
-  margin-left: -21.8vw;
-  padding: 1.875rem 21.8vw;
+  margin-right: $margin-horizontal;
+  margin-bottom: -2.1875rem;
+  margin-left: $margin-horizontal;
+  padding: 1.875rem $padding-horizontal 1.875rem $padding-horizontal;
 
   background: #f0f4f5;
 
-  @media (width <= 40em) {
-    margin-bottom: -2.1875rem;
+  @media (width > 40em) {
+    $margin-horizontal: -1.875rem;
+    $padding-horizontal: 1.875rem;
+
+    margin-right: $margin-horizontal;
+    margin-bottom: -3.75rem;
+    margin-left: $margin-horizontal;
+    padding-right: $padding-horizontal;
+    padding-left: $padding-horizontal;
+  }
+
+  @media (width >= 76.875em) {
+    $content-width: 73.125rem;
+    $half-content-width: math.div($content-width, 2);
+    $actual-content-margin-differential: 0.46875rem; /* stylelint-disable-line number-max-precision */
+    $margin-horizontal: calc(-50vw + $half-content-width + $actual-content-margin-differential);
+    $padding-horizontal: calc(50vw - $half-content-width - $actual-content-margin-differential);
+
+    width: $content-width;
+    margin-right: $margin-horizontal;
+    margin-left: $margin-horizontal;
+    padding-right: $padding-horizontal;
+    padding-left: $padding-horizontal;
   }
 }
 
