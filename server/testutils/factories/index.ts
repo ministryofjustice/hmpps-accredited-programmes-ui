@@ -6,6 +6,7 @@ import organisationFactory from './organisation'
 import organisationAddressFactory from './organisationAddress'
 import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
+import prisonerFactory from './prisoner'
 
 export {
   courseAudienceFactory,
@@ -16,4 +17,5 @@ export {
   organisationFactory,
   prisonAddressFactory,
   prisonFactory,
+  prisonerFactory,
 }

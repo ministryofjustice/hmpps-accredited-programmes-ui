@@ -15,6 +15,7 @@ import { serviceCheckFactory } from './healthCheck'
 import type { User } from './hmppsAuthClient'
 import HmppsAuthClient from './hmppsAuthClient'
 import PrisonClient from './prisonClient'
+import PrisonerClient from './prisonerClient'
 import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
@@ -33,6 +34,7 @@ export {
   CourseClient,
   HmppsAuthClient,
   PrisonClient,
+  PrisonerClient,
   TokenStore,
   courseClientBuilder,
   createRedisClient,
