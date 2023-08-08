@@ -1,0 +1,39 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% extends "../partials/layout.njk" %}
+
+{% set customPageTitleEnd = "Confirm personal details" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: ''
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukSummaryList({ rows: personSummaryListRows }) }}
+
+      {{ govukWarningText({
+        text: "If this information is out of date or incorrect, you must update the information in NOMIS.",
+        iconFallbackText: "Warning"
+      }) }}
+
+      <form action="">
+        {{ govukButton({ text: "Continue" }) }}
+      </form>
+
+      <a href="" class="govuk-link">
+        Enter a different identifier
+      </a>
+    </div>
+  </div>
+
+{% endblock content %}

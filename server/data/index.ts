@@ -29,6 +29,7 @@ const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = (
   new HmppsAuthClient(new TokenStore(createRedisClient()))
 const courseClientBuilder: RestClientBuilder<CourseClient> = (token: string) => new CourseClient(token)
 const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: string) => new PrisonClient(token)
+const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: string) => new PrisonerClient(token)
 
 export {
   CourseClient,
@@ -40,6 +41,7 @@ export {
   createRedisClient,
   hmppsAuthClientBuilder,
   prisonClientBuilder,
+  prisonerClientBuilder,
   serviceCheckFactory,
   verifyToken,
 }

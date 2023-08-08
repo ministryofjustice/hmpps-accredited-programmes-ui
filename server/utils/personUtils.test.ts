@@ -1,5 +1,5 @@
 import personUtils from './personUtils'
-import { prisonerFactory } from '../testutils/factories'
+import { personFactory, prisonerFactory } from '../testutils/factories'
 
 describe('personUtils', () => {
   describe('personFromPrisoner', () => {
@@ -61,6 +61,56 @@ describe('personUtils', () => {
           currentPrison: 'HMP Hewell',
         })
       })
+    })
+  })
+
+  describe('summaryListRows', () => {
+    it("formats a person's details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro", () => {
+      const person = personFactory.build({
+        name: 'Del Hatton',
+        prisonNumber: 'ABC1234',
+        dateOfBirth: '5 July 1971',
+        ethnicity: 'White',
+        gender: 'Male',
+        religionOrBelief: 'Christian',
+        setting: 'Custody',
+        currentPrison: 'HMP Hewell',
+      })
+
+      expect(personUtils.summaryListRows(person)).toEqual([
+        {
+          key: { text: 'Name' },
+          value: { text: 'Del Hatton' },
+        },
+        {
+          key: { text: 'Prison number' },
+          value: { text: 'ABC1234' },
+        },
+        {
+          key: { text: 'Date of birth' },
+          value: { text: '5 July 1971' },
+        },
+        {
+          key: { text: 'Ethnicity' },
+          value: { text: 'White' },
+        },
+        {
+          key: { text: 'Gender' },
+          value: { text: 'Male' },
+        },
+        {
+          key: { text: 'Religion or belief' },
+          value: { text: 'Christian' },
+        },
+        {
+          key: { text: 'Setting' },
+          value: { text: 'Custody' },
+        },
+        {
+          key: { text: 'Current prison' },
+          value: { text: 'HMP Hewell' },
+        },
+      ])
     })
   })
 })
