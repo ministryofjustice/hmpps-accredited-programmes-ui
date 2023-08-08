@@ -18,6 +18,6 @@ const services = () => {
 
 type Services = ReturnType<typeof services>
 
-export { CourseService, OrganisationService, UserService, healthCheck, services }
+export { CourseService, OrganisationService, PersonService, UserService, healthCheck, services }
 
 export type { Services }
