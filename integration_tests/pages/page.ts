@@ -25,18 +25,26 @@ export default abstract class Page {
     }
   }
 
-  checkOnPage(): void {
+  private checkOnPage(): void {
     if (!this.external) {
-      let expectedTitle = 'HMPPS Accredited Programmes'
-      const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
-
-      if (pageTitleEnd) {
-        expectedTitle += ` - ${pageTitleEnd}`
-      }
-
-      cy.title().should('equal', expectedTitle)
+      this.checkTitle()
     }
 
+    this.checkHeading()
+  }
+
+  private checkTitle(): void {
+    let expectedTitle = 'HMPPS Accredited Programmes'
+    const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
+
+    if (pageTitleEnd) {
+      expectedTitle += ` - ${pageTitleEnd}`
+    }
+
+    cy.title().should('equal', expectedTitle)
+  }
+
+  private checkHeading(): void {
     cy.get('.govuk-heading-l').contains(this.pageHeading)
   }
 
@@ -82,5 +90,30 @@ export default abstract class Page {
 
   shouldContainBackLink(href: string): void {
     cy.get('.govuk-back-link').should('have.attr', 'href', href)
+  }
+
+  shouldContainNavigation(currentPath: string): void {
+    const navigationItems = [{ text: 'List of programmes', href: '/programmes' }]
+
+    cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
+      const { text, href } = navigationItems[navigationItemElementIndex]
+
+      const { actual, expected } = helpers.parseHtml(navigationItemElement, text)
+      expect(actual).to.equal(expected)
+
+      cy.wrap(navigationItemElement).within(() => {
+        cy.get('a').should('have.attr', 'href', href)
+
+        if (currentPath === href) {
+          cy.get('a').should('have.attr', 'aria-current', 'page')
+        } else {
+          cy.get('a').should('not.have.attr', 'aria-current', 'page')
+        }
+      })
+    })
+  }
+
+  shouldNotContainNavigation(): void {
+    cy.get('.moj-primary-navigation').should('not.exist')
   }
 }
