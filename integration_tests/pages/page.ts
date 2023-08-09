@@ -62,6 +62,14 @@ export default abstract class Page {
     cy.get('.govuk-back-link').should('have.attr', 'href', href)
   }
 
+  shouldContainButtonLink(text: string, href: string): void {
+    cy.get('.govuk-button').then(buttonElement => {
+      const { actual, expected } = helpers.parseHtml(buttonElement, text)
+      expect(actual).to.equal(expected)
+      cy.wrap(buttonElement).should('have.attr', 'href', href)
+    })
+  }
+
   shouldContainNavigation(currentPath: string): void {
     const navigationItems = [{ text: 'List of programmes', href: '/programmes' }]
 
