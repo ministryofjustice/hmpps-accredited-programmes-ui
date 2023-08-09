@@ -71,7 +71,10 @@
       "error",
       {
         "alphabetize": { "order": "asc", "orderImportKind": "asc" },
-        "groups": [["builtin", "external"]],
+        "groups": [
+          ["builtin", "external"],
+          ["internal", "parent", "sibling"]
+        ],
         "newlines-between": "always"
       }
     ],
