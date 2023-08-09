@@ -1,5 +1,10 @@
 import helpers from '../support/helpers'
-import type { GovukFrontendSummaryListRowWithValue, HasHtmlString, HasTextString } from '@accredited-programmes/ui'
+import type {
+  CoursePresenter,
+  GovukFrontendSummaryListRowWithValue,
+  HasHtmlString,
+  HasTextString,
+} from '@accredited-programmes/ui'
 import type { GovukFrontendTag } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
@@ -113,6 +118,14 @@ export default abstract class Page {
         const { actual, expected } = helpers.parseHtml(tagElement, tag.text)
         expect(actual).to.equal(expected)
         cy.wrap(tagElement).should('have.class', tag.classes)
+      })
+    })
+  }
+
+  shouldHaveAudience(audienceTags: CoursePresenter['audienceTags']) {
+    cy.get('.govuk-main-wrapper').within(() => {
+      cy.get('p:first-of-type').then(tagContainerElement => {
+        this.shouldContainTags(audienceTags, tagContainerElement)
       })
     })
   }

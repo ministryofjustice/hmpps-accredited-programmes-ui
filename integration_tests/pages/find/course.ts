@@ -14,17 +14,13 @@ export default class CoursePage extends Page {
   }
 
   shouldHaveCourse() {
-    cy.get('.govuk-grid-column-two-thirds').within(() => {
-      cy.get('p:first-of-type').then(tagContainerElement => {
-        this.shouldContainTags(this.course.audienceTags, tagContainerElement)
-      })
+    this.shouldHaveAudience(this.course.audienceTags)
 
-      cy.get('.govuk-summary-list').then(summaryListElement => {
-        this.shouldContainSummaryListRows(this.course.prerequisiteSummaryListRows, summaryListElement)
-      })
-
-      cy.get('p:nth-of-type(2)').should('have.text', this.course.description)
+    cy.get('.govuk-summary-list').then(summaryListElement => {
+      this.shouldContainSummaryListRows(this.course.prerequisiteSummaryListRows, summaryListElement)
     })
+
+    cy.get('p:nth-of-type(2)').should('have.text', this.course.description)
   }
 
   shouldHaveOrganisations(organisationsWithOfferingIds: Array<OrganisationWithOfferingId>) {
