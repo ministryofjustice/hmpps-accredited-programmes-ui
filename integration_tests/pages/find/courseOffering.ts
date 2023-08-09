@@ -13,9 +13,11 @@ export default class CourseOfferingPage extends Page {
   constructor(args: { courseOffering: CourseOffering; course: Course; organisation: Organisation }) {
     const { courseOffering, organisation, course } = args
     const coursePresenter = courseUtils.presentCourse(course)
+
     super(coursePresenter.nameAndAlternateName, {
       customPageTitleEnd: `${coursePresenter.nameAndAlternateName}, ${organisation.name}`,
     })
+
     this.courseOffering = courseOffering
     this.course = coursePresenter
     this.organisation = organisationUtils.presentOrganisationWithOfferingEmails(
