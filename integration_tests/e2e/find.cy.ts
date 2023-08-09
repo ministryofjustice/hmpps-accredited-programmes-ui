@@ -85,7 +85,7 @@ context('Find', () => {
       const path = findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
       cy.visit(path)
 
-      const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
       courseOfferingPage.shouldContainNavigation(path)
       courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
       courseOfferingPage.shouldHaveAudience(courseOfferingPage.course.audienceTags)
@@ -110,7 +110,7 @@ context('Find', () => {
       const path = findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
       cy.visit(path)
 
-      const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
       courseOfferingPage.shouldContainNavigation(path)
       courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
       courseOfferingPage.shouldHaveAudience(courseOfferingPage.course.audienceTags)
