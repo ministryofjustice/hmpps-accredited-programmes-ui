@@ -1,4 +1,5 @@
 import helpers from '../support/helpers'
+import type { Organisation } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithValue,
@@ -84,6 +85,19 @@ export default abstract class Page {
 
   shouldNotContainNavigation(): void {
     cy.get('.moj-primary-navigation').should('not.exist')
+  }
+
+  shouldContainOrganisationAndCourseHeading(pageWithOrganisationAndCoursePresenter: {
+    organisation: Organisation
+    course: CoursePresenter
+  }): void {
+    const { course, organisation } = pageWithOrganisationAndCoursePresenter
+
+    cy.get('h2:nth-of-type(1)').then(organisationAndCourseHeading => {
+      const expectedText = `${organisation.name} | ${course.nameAndAlternateName}`
+      const { actual, expected } = helpers.parseHtml(organisationAndCourseHeading, expectedText)
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldContainSummaryListRows(
