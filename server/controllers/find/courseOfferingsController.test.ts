@@ -37,6 +37,7 @@ describe('CoursesOfferingsController', () => {
       expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
         pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
+        courseOffering,
         organisation: organisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,

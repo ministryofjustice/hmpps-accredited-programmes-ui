@@ -33,6 +33,7 @@ export default class CourseOfferingsController {
       res.render('courses/offerings/show', {
         pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
+        courseOffering,
         organisation: organisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,

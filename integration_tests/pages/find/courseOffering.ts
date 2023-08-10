@@ -1,3 +1,4 @@
+import { referPaths } from '../../../server/paths'
 import { courseUtils, organisationUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
@@ -24,6 +25,13 @@ export default class CourseOfferingPage extends Page {
       organisation,
       courseOffering,
       course.name,
+    )
+  }
+
+  shouldHaveMakeAReferralButton() {
+    this.shouldContainButtonLink(
+      'Make a referral',
+      referPaths.start({ courseId: this.course.id, courseOfferingId: this.courseOffering.id }),
     )
   }
 

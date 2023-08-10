@@ -91,6 +91,7 @@ context('Find', () => {
       courseOfferingPage.shouldHaveAudience(courseOfferingPage.course.audienceTags)
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
       courseOfferingPage.shouldNotContainSecondaryContactEmailSummaryListItem()
+      courseOfferingPage.shouldHaveMakeAReferralButton()
     })
 
     it('shows a single offering with a secondary email address', () => {
@@ -115,6 +116,7 @@ context('Find', () => {
       courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: course.id }))
       courseOfferingPage.shouldHaveAudience(courseOfferingPage.course.audienceTags)
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
+      courseOfferingPage.shouldHaveMakeAReferralButton()
     })
   })
 })
