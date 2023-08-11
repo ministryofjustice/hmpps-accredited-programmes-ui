@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# script/test: Run the unit tests against your git history, starting at
+#              origin/HEAD, or optionally a commit of your choice (`--start=sha`).
+#              Inspired by a Gary Bernhardt script: https://youtu.be/ZQnyApKysg4?t=183
+
+if [ $(git status --porcelain=v1 2>/dev/null | wc -l) = 1 ]
+then
+  echo "( ͡° ʖ̯ ͡°) Unable to execute script: commit or stash changes and try again"
+  exit 1
+fi
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+START=origin/HEAD
+
+for i in "$@"; do
+  case $i in
+    --start=*)
+      START="${i#*=}"
+      shift
+      ;;
+    -*|--*)
+      echo "Unknown option $i"
+      exit 1
+      ;;
+    *)
+      ;;
+  esac
+done
+
+echo "==> Running unit tests on all commits from $START to $BRANCH..."
+
+HISTORY=$(git rev-list --reverse $START..$BRANCH)
+
+while read -r revision
+do
+  git -c advice.detachedHead=false checkout $revision
+  npm run test
+  
+  if [ $? = 1 ]
+  then
+    echo "( ͡° ʖ̯ ͡°) Identified bad commit: $revision. Exiting script..."
+    git checkout $BRANCH
+    exit 1
+  fi
+done <<< "$HISTORY"
+
+echo "( ͡° ͜ʖ ͡°) History clean. Exiting script..."
+
+git checkout $BRANCH
