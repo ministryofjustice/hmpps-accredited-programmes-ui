@@ -42,7 +42,7 @@ npm run typecheck
 
 echo "==> Running unit tests..."
 
-npm run test
+npm run test:unit
 
 if [ "$BUILD" = true ]; then
   echo "==> Building..."
@@ -52,7 +52,7 @@ fi
 
 echo "==> Running integration tests..."
 
-npm run test:integration
+npm run test:integration:cli
 
 cleanup() {
   docker-compose -f docker-compose-test.yml down --remove-orphans

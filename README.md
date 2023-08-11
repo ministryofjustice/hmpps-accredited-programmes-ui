@@ -66,7 +66,7 @@ The Accredited Programmes API will run on port 9199 in the test environment.
 You can run the suite of unit tests with:
 
 ```bash
-  npm run test
+  npm run test:unit
 ```
 
 ### Running end-to-end tests with Cypress
@@ -74,7 +74,7 @@ You can run the suite of unit tests with:
 To run the end-to-end tests by themselves in a headless browser, run:
 
 ```bash
-  npm run test:integration
+  npm run test:integration:cli
 ```
 
 You can run them with the Cypress UI with:
