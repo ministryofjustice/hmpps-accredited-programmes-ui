@@ -8,7 +8,7 @@ import prisons from './integration_tests/mockApis/prisons'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import { resetStubs } from './wiremock'
 
-export default defineConfig({
+export const defaultConfig: Cypress.ConfigOptions = {
   chromeWebSecurity: false,
   fixturesFolder: 'integration_tests/fixtures',
   downloadsFolder: 'test_results/integration/downloads',
@@ -59,4 +59,6 @@ export default defineConfig({
     specPattern: 'integration_tests/e2e/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'integration_tests/support/index.ts',
   },
-})
+}
+
+export default defineConfig(defaultConfig)
