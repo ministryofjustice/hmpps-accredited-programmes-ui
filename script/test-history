@@ -1,7 +1,12 @@
 #!/bin/sh
 
 # script/test: Run the unit tests against your git history, starting at
-#              origin/HEAD, or optionally a commit of your choice (`--start=sha`).
+#              origin/HEAD by default.
+#
+#              Options:
+#                `--start=sha` - start at a different commit, e.g. --start=2hi2hu5
+#                `--test="command"` - execute a custom test command, e.g. --test="npm run typecheck"
+#
 #              Inspired by a Gary Bernhardt script: https://youtu.be/ZQnyApKysg4?t=183
 
 if [ $(git status --porcelain=v1 2>/dev/null | wc -l) = 1 ]
@@ -12,11 +17,16 @@ fi
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 START=origin/HEAD
+TEST="npm run test"
 
 for i in "$@"; do
   case $i in
     --start=*)
       START="${i#*=}"
+      shift
+      ;;
+    --test=*)
+      TEST="${i#*=}"
       shift
       ;;
     -*|--*)
@@ -28,16 +38,16 @@ for i in "$@"; do
   esac
 done
 
-echo "==> Running unit tests on all commits from $START to $BRANCH..."
+echo "==> Running \`$TEST\` on all commits from $START to $BRANCH..."
 
 HISTORY=$(git rev-list --reverse $START..$BRANCH)
 
 while read -r revision
 do
   git -c advice.detachedHead=false checkout $revision
-  npm run test
+  eval $TEST
   
-  if [ $? = 1 ]
+  if [ $? != 0 ]
   then
     echo "( ͡° ʖ̯ ͡°) Identified bad commit: $revision. Exiting script..."
     git checkout $BRANCH
