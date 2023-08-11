@@ -30,7 +30,7 @@
     "test:integration:ui": "npm run test:integration:start-backing-services && start-server-and-test test:integration:ui:server http://localhost:3007/ping test:integration:ui:run",
     "test:unit:ci": "jest --runInBand",
     "test:unit": "jest",
-    "typecheck:script": "cd script && tsc",
+    "typecheck:script": "tsc -p script",
     "typecheck": "tsc && tsc -p integration_tests",
     "watch:node:dev": "DEBUG=gov-starter-server* nodemon -r dotenv/config --watch dist/ dist/server.js | bunyan -o short",
     "watch:node:integration": "export $(cat integration.env) && nodemon --watch dist/ $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
