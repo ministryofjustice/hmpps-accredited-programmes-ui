@@ -25,7 +25,7 @@ const organisationTableRows = (
   organisations: Array<OrganisationWithOfferingId>,
 ): Array<GovukFrontendTableRow> => {
   return organisations.map(organisation => {
-    const offeringPath = findPaths.courses.offerings.show({
+    const offeringPath = findPaths.offerings.show({
       courseId: course.id,
       courseOfferingId: organisation.courseOfferingId,
     })

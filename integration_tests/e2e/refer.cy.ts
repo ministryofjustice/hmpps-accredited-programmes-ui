@@ -31,7 +31,7 @@ context('Refer', () => {
     const referralStartPage = Page.verifyOnPage(ReferralStartPage, { course, organisation })
     referralStartPage.shouldContainNavigation(path)
     referralStartPage.shouldContainBackLink(
-      findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
+      findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
     )
     referralStartPage.shouldContainOrganisationAndCourseHeading(referralStartPage)
     referralStartPage.shouldHaveAudience(referralStartPage.course.audienceTags)
