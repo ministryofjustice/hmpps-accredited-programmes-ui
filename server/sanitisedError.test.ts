@@ -18,7 +18,7 @@ describe('sanitiseError', () => {
           date: 'Tue, 19 May 2020 15:16:20 GMT',
         },
         status: 404,
-        statusText: 'Not found',
+        statusText: 'Not Found',
         text: { details: 'details' },
         body: { content: 'hello' },
       },

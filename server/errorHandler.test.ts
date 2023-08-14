@@ -15,7 +15,7 @@ const setupApp = (production: boolean): Express => {
   app.get('/known', (_req, res, _next) => {
     res.send('known')
   })
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use((req, res, next) => next(createError(404, 'Not Found')))
   app.use(errorHandler(production))
 
   return app
@@ -35,7 +35,7 @@ describe('GET 404', () => {
         .expect(404)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('NotFoundError: Not found')
+          expect(res.text).toContain('NotFoundError: Not Found')
           expect(res.text).not.toContain('Something went wrong. The error has been logged. Please try again')
         })
     })
@@ -51,7 +51,7 @@ describe('GET 404', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain('Something went wrong. The error has been logged. Please try again')
-          expect(res.text).not.toContain('NotFoundError: Not found')
+          expect(res.text).not.toContain('NotFoundError: Not Found')
         })
     })
   })
