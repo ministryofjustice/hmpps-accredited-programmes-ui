@@ -75,9 +75,7 @@ export default abstract class Page {
   }
 
   shouldContainButtonLink(text: string, href: string): void {
-    cy.get('.govuk-button').then(buttonElement => {
-      const { actual, expected } = helpers.parseHtml(buttonElement, text)
-      expect(actual).to.equal(expected)
+    this.shouldContainButton(text).then(buttonElement => {
       cy.wrap(buttonElement).should('have.attr', 'href', href)
     })
   }
