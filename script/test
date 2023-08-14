@@ -50,9 +50,13 @@ if [ "$BUILD" = true ]; then
   npm run build
 fi
 
-echo "==> Running integration tests..."
+echo "==> Running refer-enabled integration tests..."
 
 npm run test:integration:cli
+
+echo "==> Running refer-disabled integration tests..."
+
+npm run test:integration:refer-disabled:cli
 
 cleanup() {
   docker-compose -f docker-compose-test.yml down --remove-orphans
