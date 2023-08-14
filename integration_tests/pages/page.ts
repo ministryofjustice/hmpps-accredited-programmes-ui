@@ -58,6 +58,14 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
+  shouldContainAudienceTags(audienceTags: CoursePresenter['audienceTags']) {
+    cy.get('.govuk-main-wrapper').within(() => {
+      cy.get('p:first-of-type').then(tagContainerElement => {
+        this.shouldContainTags(audienceTags, tagContainerElement)
+      })
+    })
+  }
+
   shouldContainBackLink(href: string): void {
     cy.get('.govuk-back-link').should('have.attr', 'href', href)
   }
@@ -144,14 +152,6 @@ export default abstract class Page {
         const { actual, expected } = helpers.parseHtml(tagElement, tag.text)
         expect(actual).to.equal(expected)
         cy.wrap(tagElement).should('have.class', tag.classes)
-      })
-    })
-  }
-
-  shouldHaveAudience(audienceTags: CoursePresenter['audienceTags']) {
-    cy.get('.govuk-main-wrapper').within(() => {
-      cy.get('p:first-of-type').then(tagContainerElement => {
-        this.shouldContainTags(audienceTags, tagContainerElement)
       })
     })
   }

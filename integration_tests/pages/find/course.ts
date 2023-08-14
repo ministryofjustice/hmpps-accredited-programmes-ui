@@ -16,7 +16,7 @@ export default class CoursePage extends Page {
   }
 
   shouldHaveCourse() {
-    this.shouldHaveAudience(this.course.audienceTags)
+    this.shouldContainAudienceTags(this.course.audienceTags)
 
     cy.get('.govuk-summary-list').then(summaryListElement => {
       this.shouldContainSummaryListRows(this.course.prerequisiteSummaryListRows, summaryListElement)

@@ -29,6 +29,6 @@ context('Find', () => {
     cy.visit(path)
 
     const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
-    courseOfferingPage.shouldNotHaveMakeAReferralButton()
+    courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
   })
 })

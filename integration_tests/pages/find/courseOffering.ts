@@ -28,15 +28,19 @@ export default class CourseOfferingPage extends Page {
     )
   }
 
-  shouldHaveMakeAReferralButton() {
+  shouldContainMakeAReferralButtonLink() {
     this.shouldContainButtonLink(
       'Make a referral',
       referPaths.start({ courseId: this.course.id, courseOfferingId: this.courseOffering.id }),
     )
   }
 
-  shouldNotHaveMakeAReferralButton() {
+  shouldNotContainMakeAReferralButtonLink() {
     this.shouldNotContainButtonLink()
+  }
+
+  shouldNotContainSecondaryContactEmailSummaryListItem() {
+    cy.get('.govuk-summary-list').should('not.contain', 'Secondary email address')
   }
 
   shouldHaveOrganisationWithOfferingEmails() {
@@ -45,9 +49,5 @@ export default class CourseOfferingPage extends Page {
     cy.get('.govuk-summary-list').then(summaryListElement => {
       this.shouldContainSummaryListRows(this.organisation.summaryListRows, summaryListElement)
     })
-  }
-
-  shouldNotContainSecondaryContactEmailSummaryListItem() {
-    cy.get('.govuk-summary-list').should('not.contain', 'Secondary email address')
   }
 }

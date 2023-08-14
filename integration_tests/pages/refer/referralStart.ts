@@ -17,6 +17,10 @@ export default class ReferralStartPage extends Page {
     this.organisation = organisation
   }
 
+  shouldContainStartButtonLink() {
+    this.shouldContainButtonLink('Start now', '#')
+  }
+
   shouldHaveProcessInformation() {
     cy.get('h2:nth-of-type(2)').should('have.text', "What you'll need to do")
 
@@ -31,9 +35,5 @@ export default class ReferralStartPage extends Page {
     cy.get('.govuk-list li').each((listItem, listItemIndex) => {
       cy.wrap(listItem).should('have.text', listItemsText[listItemIndex])
     })
-  }
-
-  shouldHaveStartButton() {
-    this.shouldContainButtonLink('Start now', '#')
   }
 }
