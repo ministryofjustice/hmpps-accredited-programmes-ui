@@ -16,7 +16,7 @@
     "project": ["tsconfig.json", "integration_tests/tsconfig.json", "script/tsconfig.json"]
   },
 
-  "ignorePatterns": ["cypress.config.ts"],
+  "ignorePatterns": ["cypress.config.ts", "cypress-refer-disabled.config.ts"],
 
   "plugins": ["@typescript-eslint", "import", "no-only-tests", "sort-exports"],
 

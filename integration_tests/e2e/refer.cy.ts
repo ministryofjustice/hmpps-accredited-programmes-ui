@@ -34,8 +34,8 @@ context('Refer', () => {
       findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
     )
     referralStartPage.shouldContainOrganisationAndCourseHeading(referralStartPage)
-    referralStartPage.shouldHaveAudience(referralStartPage.course.audienceTags)
+    referralStartPage.shouldContainAudienceTags(referralStartPage.course.audienceTags)
     referralStartPage.shouldHaveProcessInformation()
-    referralStartPage.shouldHaveStartButton()
+    referralStartPage.shouldContainStartButtonLink()
   })
 })

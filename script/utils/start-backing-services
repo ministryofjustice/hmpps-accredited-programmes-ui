@@ -14,8 +14,8 @@ if [ "$MOCK_API" = true ]; then
 
   echo "==> Stubbing API endpoints..."
 
-  npm run api-stubs:reset > /dev/null
-  npm run api-stubs:create > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubApis.ts > /dev/null
 else
   docker compose up --scale=wiremock=0 -d
 fi

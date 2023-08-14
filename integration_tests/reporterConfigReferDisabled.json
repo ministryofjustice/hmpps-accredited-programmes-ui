@@ -1,0 +1,16 @@
+{
+  "reporterEnabled": "cypress-mochawesome-reporter, mocha-junit-reporter",
+  "cypressMochawesomeReporterReporterOptions": {
+    "cdn": true,
+    "inline": true,
+    "reportDir": "test_results/integration/refer_disabled",
+    "reportFilename": "results",
+    "reportPageTitle": "HMPPS Accredited Programmes - Integration Test Report (Refer disabled)",
+    "reportTitle": "HMPPS Accredited Programmes - Integration Test Report (Refer disabled)",
+    "showPassed": false,
+    "videoOnFailOnly": true
+  },
+  "mochaJunitReporterReporterOptions": {
+    "mochaFile": "test_results/integration/refer_disabled/xml/results-for-ci-report-[hash].xml"
+  }
+}
