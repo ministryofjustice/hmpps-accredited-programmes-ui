@@ -35,6 +35,10 @@ export default class CourseOfferingPage extends Page {
     )
   }
 
+  shouldNotHaveMakeAReferralButton() {
+    this.shouldNotContainButtonLink()
+  }
+
   shouldHaveOrganisationWithOfferingEmails() {
     cy.get('.govuk-heading-m').should('have.text', this.organisation.name)
 

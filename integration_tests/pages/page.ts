@@ -70,6 +70,10 @@ export default abstract class Page {
     })
   }
 
+  shouldNotContainButtonLink(): void {
+    cy.get('.govuk-button').should('not.exist')
+  }
+
   shouldContainNavigation(currentPath: string): void {
     const navigationItems = [{ text: 'List of programmes', href: '/programmes' }]
 
