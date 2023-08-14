@@ -82,3 +82,18 @@ You can run them with the Cypress UI with:
 ```bash
   npm run test:integration:ui
 ```
+
+#### Feature flag tests
+
+We currently have a feature flag to prevent Refer pages and functionality from
+being shown in the preproduction and production environments. We have a set of
+separate tests to check that the feature flag works as expected. To run these,
+run either of the following:
+
+```bash
+  npm run test:integration:refer-disabled:cli
+```
+
+```bash
+  npm run test:integration:refer-disabled:ui
+```
