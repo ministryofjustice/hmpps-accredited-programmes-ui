@@ -20,7 +20,7 @@ context('Find', () => {
 
     cy.task('stubCourses', courses)
 
-    const path = findPaths.courses.index({})
+    const path = findPaths.index({})
 
     cy.visit(path)
 
@@ -56,13 +56,13 @@ context('Find', () => {
     cy.task('stubCourse', course)
     cy.task('stubCourseOfferings', { courseId: course.id, courseOfferings })
 
-    const path = findPaths.courses.show({ courseId: course.id })
+    const path = findPaths.show({ courseId: course.id })
 
     cy.visit(path)
 
     const coursePage = Page.verifyOnPage(CoursePage, course)
     coursePage.shouldContainNavigation(path)
-    coursePage.shouldContainBackLink(findPaths.courses.index({}))
+    coursePage.shouldContainBackLink(findPaths.index({}))
     coursePage.shouldHaveCourse()
     coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
   })
@@ -82,15 +82,16 @@ context('Find', () => {
       cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
       cy.task('stubPrison', prison)
 
-      const path = findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
+      const path = findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
       cy.visit(path)
 
-      const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
       courseOfferingPage.shouldContainNavigation(path)
-      courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
-      courseOfferingPage.shouldHaveAudience()
+      courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: course.id }))
+      courseOfferingPage.shouldHaveAudience(courseOfferingPage.course.audienceTags)
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
       courseOfferingPage.shouldNotContainSecondaryContactEmailSummaryListItem()
+      courseOfferingPage.shouldHaveMakeAReferralButton()
     })
 
     it('shows a single offering with a secondary email address', () => {
@@ -107,14 +108,15 @@ context('Find', () => {
       cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
       cy.task('stubPrison', prison)
 
-      const path = findPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
+      const path = findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
       cy.visit(path)
 
-      const courseOfferingPage = CoursePage.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
       courseOfferingPage.shouldContainNavigation(path)
-      courseOfferingPage.shouldContainBackLink(findPaths.courses.show({ courseId: course.id }))
-      courseOfferingPage.shouldHaveAudience()
+      courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: course.id }))
+      courseOfferingPage.shouldHaveAudience(courseOfferingPage.course.audienceTags)
       courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
+      courseOfferingPage.shouldHaveMakeAReferralButton()
     })
   })
 })

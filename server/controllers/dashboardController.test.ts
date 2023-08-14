@@ -24,7 +24,7 @@ describe('DashboardController', () => {
 
       expect(response.render).toHaveBeenCalledWith('dashboard/index', {
         pageHeading: 'Accredited Programmes',
-        findPath: findPaths.courses.index({}),
+        findPath: findPaths.index({}),
       })
     })
   })

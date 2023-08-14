@@ -8,9 +8,9 @@ export default function routes(controllers: Controllers, router: Router): Router
   const { get } = routeUtils.actions(router)
   const { coursesController, courseOfferingsController } = controllers
 
-  get(findPaths.courses.index.pattern, coursesController.index())
-  get(findPaths.courses.show.pattern, coursesController.show())
-  get(findPaths.courses.offerings.show.pattern, courseOfferingsController.show())
+  get(findPaths.index.pattern, coursesController.index())
+  get(findPaths.show.pattern, coursesController.show())
+  get(findPaths.offerings.show.pattern, courseOfferingsController.show())
 
   return router
 }

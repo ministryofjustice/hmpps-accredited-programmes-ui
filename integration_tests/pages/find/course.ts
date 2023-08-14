@@ -9,22 +9,20 @@ export default class CoursePage extends Page {
 
   constructor(course: Course) {
     const coursePresenter = courseUtils.presentCourse(course)
+
     super(coursePresenter.nameAndAlternateName)
+
     this.course = coursePresenter
   }
 
   shouldHaveCourse() {
-    cy.get('.govuk-grid-column-two-thirds').within(() => {
-      cy.get('p:first-of-type').then(tagContainerElement => {
-        this.shouldContainTags(this.course.audienceTags, tagContainerElement)
-      })
+    this.shouldHaveAudience(this.course.audienceTags)
 
-      cy.get('.govuk-summary-list').then(summaryListElement => {
-        this.shouldContainSummaryListRows(this.course.prerequisiteSummaryListRows, summaryListElement)
-      })
-
-      cy.get('p:nth-of-type(2)').should('have.text', this.course.description)
+    cy.get('.govuk-summary-list').then(summaryListElement => {
+      this.shouldContainSummaryListRows(this.course.prerequisiteSummaryListRows, summaryListElement)
     })
+
+    cy.get('p:nth-of-type(2)').should('have.text', this.course.description)
   }
 
   shouldHaveOrganisations(organisationsWithOfferingIds: Array<OrganisationWithOfferingId>) {
@@ -44,7 +42,7 @@ export default class CoursePage extends Page {
           cy.get('.govuk-table__cell:nth-of-type(4) .govuk-link').should(
             'have.attr',
             'href',
-            findPaths.courses.offerings.show({
+            findPaths.offerings.show({
               courseId: this.course.id,
               courseOfferingId: organisation.courseOfferingId,
             }),

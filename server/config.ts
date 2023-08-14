@@ -30,24 +30,6 @@ export interface ApiConfig {
 }
 
 export default {
-  production,
-  https: production,
-  enableApplicationInsights: production,
-  staticResourceCacheDuration: 20,
-  environment: process.env.ENVIRONMENT || 'local',
-  redis: {
-    host: get('REDIS_HOST', 'localhost', requiredInProduction),
-    port: Number(process.env.REDIS_PORT) || 6379,
-    password: process.env.REDIS_AUTH_TOKEN,
-    tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
-  },
-  sentry: {
-    dsn: get('SENTRY_DSN', null, requiredInProduction),
-  },
-  session: {
-    secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
-    expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 120)),
-  },
   apis: {
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
@@ -89,4 +71,25 @@ export default {
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  enableApplicationInsights: production,
+  environment: process.env.ENVIRONMENT || 'local',
+  flags: {
+    referEnabled: get('REFER_ENABLED', 'false') === 'true',
+  },
+  https: production,
+  production,
+  redis: {
+    host: get('REDIS_HOST', 'localhost', requiredInProduction),
+    port: Number(process.env.REDIS_PORT) || 6379,
+    password: process.env.REDIS_AUTH_TOKEN,
+    tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
+  },
+  sentry: {
+    dsn: get('SENTRY_DSN', null, requiredInProduction),
+  },
+  session: {
+    secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
+    expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 120)),
+  },
+  staticResourceCacheDuration: 20,
 }

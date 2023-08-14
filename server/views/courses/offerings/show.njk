@@ -1,9 +1,8 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% from "../_audienceTags.njk" import audienceTags %}
+{% from "../../partials/audienceTags.njk" import audienceTags %}
 
 {% extends "../../partials/layout.njk" %}
 
@@ -12,7 +11,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: paths.find.courses.show({ courseId: course.id })
+    href: paths.find.show({ courseId: course.id })
   }) }}
 {% endblock backLink %}
 
@@ -29,6 +28,13 @@
         classes: 'govuk-summary-list--no-border',
         rows: organisation.summaryListRows
       }) }}
+
+      {% if referEnabled %}
+        {{ govukButton({
+            text: "Make a referral",
+            href: paths.refer.start({ courseId: course.id, courseOfferingId: courseOffering.id })
+        }) }}
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

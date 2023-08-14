@@ -1,3 +1,4 @@
+import { referPaths } from '../../../server/paths'
 import { courseUtils, organisationUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
@@ -13,9 +14,11 @@ export default class CourseOfferingPage extends Page {
   constructor(args: { courseOffering: CourseOffering; course: Course; organisation: Organisation }) {
     const { courseOffering, organisation, course } = args
     const coursePresenter = courseUtils.presentCourse(course)
+
     super(coursePresenter.nameAndAlternateName, {
       customPageTitleEnd: `${coursePresenter.nameAndAlternateName}, ${organisation.name}`,
     })
+
     this.courseOffering = courseOffering
     this.course = coursePresenter
     this.organisation = organisationUtils.presentOrganisationWithOfferingEmails(
@@ -25,12 +28,11 @@ export default class CourseOfferingPage extends Page {
     )
   }
 
-  shouldHaveAudience() {
-    cy.get('.govuk-main-wrapper').within(() => {
-      cy.get('p:first-of-type').then(tagContainerElement => {
-        this.shouldContainTags(this.course.audienceTags, tagContainerElement)
-      })
-    })
+  shouldHaveMakeAReferralButton() {
+    this.shouldContainButtonLink(
+      'Make a referral',
+      referPaths.start({ courseId: this.course.id, courseOfferingId: this.courseOffering.id }),
+    )
   }
 
   shouldHaveOrganisationWithOfferingEmails() {

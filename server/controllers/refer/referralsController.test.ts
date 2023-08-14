@@ -3,13 +3,13 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
-import CourseOfferingsController from './courseOfferingsController'
+import ReferralsController from './referralsController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
-import { courseUtils, organisationUtils } from '../../utils'
+import { courseUtils } from '../../utils'
 
-describe('CoursesOfferingsController', () => {
-  describe('show', () => {
+describe('ReferralsController', () => {
+  describe('start', () => {
     const token = 'SOME_TOKEN'
     const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
     const response: DeepMocked<Response> = createMock<Response>({})
@@ -24,26 +24,22 @@ describe('CoursesOfferingsController', () => {
     const courseOffering = courseOfferingFactory.build()
     courseService.getOffering.mockResolvedValue(courseOffering)
 
-    it('renders the course offering show template', async () => {
+    it('renders the referral start template', async () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
-      const courseOfferingsController = new CourseOfferingsController(courseService, organisationService)
+      const referralsController = new ReferralsController(courseService, organisationService)
 
-      const requestHandler = courseOfferingsController.show()
+      const requestHandler = referralsController.start()
       await requestHandler(request, response, next)
 
       const coursePresenter = courseUtils.presentCourse(course)
 
-      expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
-        pageHeading: coursePresenter.nameAndAlternateName,
+      expect(response.render).toHaveBeenCalledWith('referrals/start', {
+        pageHeading: 'Make a referral',
         course: coursePresenter,
         courseOffering,
-        organisation: organisationUtils.presentOrganisationWithOfferingEmails(
-          organisation,
-          courseOffering,
-          course.name,
-        ),
+        organisation,
       })
     })
 
@@ -51,8 +47,8 @@ describe('CoursesOfferingsController', () => {
       it('responds with a 404', async () => {
         organisationService.getOrganisation.mockResolvedValue(null)
 
-        const courseOfferingsController = new CourseOfferingsController(courseService, organisationService)
-        const requestHandler = courseOfferingsController.show()
+        const referralsController = new ReferralsController(courseService, organisationService)
+        const requestHandler = referralsController.start()
         const expectedError = createError(404)
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)

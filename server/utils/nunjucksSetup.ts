@@ -5,7 +5,7 @@ import type * as pathModule from 'path'
 
 import stringUtils from './stringUtils'
 import config from '../config'
-import { findPaths } from '../paths'
+import { findPaths, referPaths } from '../paths'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -31,6 +31,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   app.use((req, res, next) => {
     res.locals.currentPath = req.originalUrl
+    res.locals.referEnabled = config.flags.referEnabled
     return next()
   })
 
@@ -52,5 +53,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   njkEnv.addGlobal('paths', {
     find: findPaths,
+    refer: referPaths,
   })
 }

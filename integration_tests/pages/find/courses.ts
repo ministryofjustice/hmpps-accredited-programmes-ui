@@ -13,7 +13,7 @@ export default class CoursesPage extends Page {
       cy.wrap(courseElement).within(() => {
         const course = courseUtils.presentCourse(courses[courseElementIndex])
 
-        cy.get('.govuk-link').should('have.attr', 'href', findPaths.courses.show({ courseId: course.id }))
+        cy.get('.govuk-link').should('have.attr', 'href', findPaths.show({ courseId: course.id }))
         cy.get('.govuk-heading-m .govuk-link').should('have.text', course.nameAndAlternateName)
 
         cy.get('p:first-of-type').then(tagContainerElement => {

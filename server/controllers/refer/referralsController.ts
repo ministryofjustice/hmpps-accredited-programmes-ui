@@ -2,15 +2,15 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
 import type { CourseService, OrganisationService } from '../../services'
-import { courseUtils, organisationUtils, typeUtils } from '../../utils'
+import { courseUtils, typeUtils } from '../../utils'
 
-export default class CourseOfferingsController {
+export default class ReferralsController {
   constructor(
     private readonly courseService: CourseService,
     private readonly organisationService: OrganisationService,
   ) {}
 
-  show(): TypedRequestHandler<Request, Response> {
+  start(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       typeUtils.assertHasUser(req)
 
@@ -30,15 +30,11 @@ export default class CourseOfferingsController {
 
       const coursePresenter = courseUtils.presentCourse(course)
 
-      res.render('courses/offerings/show', {
-        pageHeading: coursePresenter.nameAndAlternateName,
+      res.render('referrals/start', {
+        pageHeading: 'Make a referral',
         course: coursePresenter,
         courseOffering,
-        organisation: organisationUtils.presentOrganisationWithOfferingEmails(
-          organisation,
-          courseOffering,
-          course.name,
-        ),
+        organisation,
       })
     }
   }

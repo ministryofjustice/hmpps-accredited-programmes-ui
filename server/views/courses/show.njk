@@ -1,15 +1,14 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% from "./_audienceTags.njk" import audienceTags %}
+{% from "../partials/audienceTags.njk" import audienceTags %}
 
 {% extends "../partials/layout.njk" %}
 
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: paths.find.courses.index({})
+    href: paths.find.index({})
   }) }}
 {% endblock backLink %}
 

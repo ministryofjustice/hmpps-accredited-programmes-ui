@@ -1,5 +1,11 @@
 import helpers from '../support/helpers'
-import type { GovukFrontendSummaryListRowWithValue, HasHtmlString, HasTextString } from '@accredited-programmes/ui'
+import type { Organisation } from '@accredited-programmes/models'
+import type {
+  CoursePresenter,
+  GovukFrontendSummaryListRowWithValue,
+  HasHtmlString,
+  HasTextString,
+} from '@accredited-programmes/ui'
 import type { GovukFrontendTag } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
@@ -52,6 +58,56 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
+  shouldContainBackLink(href: string): void {
+    cy.get('.govuk-back-link').should('have.attr', 'href', href)
+  }
+
+  shouldContainButtonLink(text: string, href: string): void {
+    cy.get('.govuk-button').then(buttonElement => {
+      const { actual, expected } = helpers.parseHtml(buttonElement, text)
+      expect(actual).to.equal(expected)
+      cy.wrap(buttonElement).should('have.attr', 'href', href)
+    })
+  }
+
+  shouldContainNavigation(currentPath: string): void {
+    const navigationItems = [{ text: 'List of programmes', href: '/programmes' }]
+
+    cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
+      const { text, href } = navigationItems[navigationItemElementIndex]
+
+      const { actual, expected } = helpers.parseHtml(navigationItemElement, text)
+      expect(actual).to.equal(expected)
+
+      cy.wrap(navigationItemElement).within(() => {
+        cy.get('a').should('have.attr', 'href', href)
+
+        if (currentPath === href) {
+          cy.get('a').should('have.attr', 'aria-current', 'page')
+        } else {
+          cy.get('a').should('not.have.attr', 'aria-current', 'page')
+        }
+      })
+    })
+  }
+
+  shouldNotContainNavigation(): void {
+    cy.get('.moj-primary-navigation').should('not.exist')
+  }
+
+  shouldContainOrganisationAndCourseHeading(pageWithOrganisationAndCoursePresenter: {
+    organisation: Organisation
+    course: CoursePresenter
+  }): void {
+    const { course, organisation } = pageWithOrganisationAndCoursePresenter
+
+    cy.get('h2:nth-of-type(1)').then(organisationAndCourseHeading => {
+      const expectedText = `${organisation.name} | ${course.nameAndAlternateName}`
+      const { actual, expected } = helpers.parseHtml(organisationAndCourseHeading, expectedText)
+      expect(actual).to.equal(expected)
+    })
+  }
+
   shouldContainSummaryListRows(
     rows: Array<GovukFrontendSummaryListRowWithValue>,
     summaryListElement: JQuery<HTMLElement>,
@@ -88,32 +144,11 @@ export default abstract class Page {
     })
   }
 
-  shouldContainBackLink(href: string): void {
-    cy.get('.govuk-back-link').should('have.attr', 'href', href)
-  }
-
-  shouldContainNavigation(currentPath: string): void {
-    const navigationItems = [{ text: 'List of programmes', href: '/programmes' }]
-
-    cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
-      const { text, href } = navigationItems[navigationItemElementIndex]
-
-      const { actual, expected } = helpers.parseHtml(navigationItemElement, text)
-      expect(actual).to.equal(expected)
-
-      cy.wrap(navigationItemElement).within(() => {
-        cy.get('a').should('have.attr', 'href', href)
-
-        if (currentPath === href) {
-          cy.get('a').should('have.attr', 'aria-current', 'page')
-        } else {
-          cy.get('a').should('not.have.attr', 'aria-current', 'page')
-        }
+  shouldHaveAudience(audienceTags: CoursePresenter['audienceTags']) {
+    cy.get('.govuk-main-wrapper').within(() => {
+      cy.get('p:first-of-type').then(tagContainerElement => {
+        this.shouldContainTags(audienceTags, tagContainerElement)
       })
     })
-  }
-
-  shouldNotContainNavigation(): void {
-    cy.get('.moj-primary-navigation').should('not.exist')
   }
 }
