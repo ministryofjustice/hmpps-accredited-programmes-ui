@@ -1,5 +1,5 @@
 import { referPaths } from '../../server/paths'
-import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
+import { courseFactory, courseOfferingFactory, prisonFactory, prisonerFactory } from '../../server/testutils/factories'
 import NotFoundPage from '../pages/notFound'
 import Page from '../pages/page'
 
@@ -24,6 +24,30 @@ context('Refer', () => {
     cy.task('stubPrison', prison)
 
     const path = referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
+  it("Doesn't show the 'confirm person' page for a new referral", () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+      dateOfBirth: '1980-01-01',
+    })
+
+    cy.task('stubPrisoner', prisoner)
+
+    const path = referPaths.people.show({
+      courseId: course.id,
+      courseOfferingId: courseOffering.id,
+      prisonNumber: prisoner.prisonerNumber,
+    })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
