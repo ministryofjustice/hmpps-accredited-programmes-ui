@@ -9,7 +9,7 @@ import {
 import { organisationUtils } from '../../server/utils'
 import Page from '../pages/page'
 import ConfirmPersonPage from '../pages/refer/confirmPerson'
-import ReferralStartPage from '../pages/refer/referralStart'
+import StartReferralPage from '../pages/refer/startReferral'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -35,15 +35,15 @@ context('Refer', () => {
     const path = referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
     cy.visit(path)
 
-    const referralStartPage = Page.verifyOnPage(ReferralStartPage, { course, organisation })
-    referralStartPage.shouldContainNavigation(path)
-    referralStartPage.shouldContainBackLink(
+    const startReferralPage = Page.verifyOnPage(StartReferralPage, { course, organisation })
+    startReferralPage.shouldContainNavigation(path)
+    startReferralPage.shouldContainBackLink(
       findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
     )
-    referralStartPage.shouldContainOrganisationAndCourseHeading(referralStartPage)
-    referralStartPage.shouldContainAudienceTags(referralStartPage.course.audienceTags)
-    referralStartPage.shouldHaveProcessInformation()
-    referralStartPage.shouldContainStartButtonLink()
+    startReferralPage.shouldContainOrganisationAndCourseHeading(startReferralPage)
+    startReferralPage.shouldContainAudienceTags(startReferralPage.course.audienceTags)
+    startReferralPage.shouldHaveProcessInformation()
+    startReferralPage.shouldContainStartButtonLink()
   })
 
   it('Shows the "confirm person" page when starting a new referral', () => {

@@ -1,11 +1,12 @@
 import findPaths from './find'
 
-const referralStartPath = findPaths.offerings.show.path('refer')
-const peoplePath = referralStartPath.path('people/:prisonNumber')
+const startReferralPath = findPaths.offerings.show.path('refer')
+const peoplePath = startReferralPath.path('people')
+const personPath = peoplePath.path(':prisonNumber')
 
 export default {
-  start: referralStartPath,
+  start: startReferralPath,
   people: {
-    show: peoplePath,
+    show: personPath,
   },
 }

@@ -3,7 +3,7 @@ import Page from '../page'
 import type { Course, Organisation } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
-export default class ReferralStartPage extends Page {
+export default class StartReferralPage extends Page {
   course: CoursePresenter
 
   organisation: Organisation
