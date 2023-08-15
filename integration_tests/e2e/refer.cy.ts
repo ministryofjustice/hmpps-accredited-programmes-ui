@@ -35,7 +35,7 @@ context('Refer', () => {
     const path = referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
     cy.visit(path)
 
-    const startReferralPage = Page.verifyOnPage(StartReferralPage, { course, organisation })
+    const startReferralPage = Page.verifyOnPage(StartReferralPage, { course, courseOffering, organisation })
     startReferralPage.shouldContainNavigation(path)
     startReferralPage.shouldContainBackLink(
       findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
