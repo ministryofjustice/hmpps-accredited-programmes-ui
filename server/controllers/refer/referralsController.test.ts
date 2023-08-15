@@ -9,26 +9,28 @@ import { courseFactory, courseOfferingFactory, organisationFactory } from '../..
 import { courseUtils } from '../../utils'
 
 describe('ReferralsController', () => {
+  const token = 'SOME_TOKEN'
+  const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
+  const response: DeepMocked<Response> = createMock<Response>({})
+  const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
+  const courseService = createMock<CourseService>({})
+  const organisationService = createMock<OrganisationService>({})
+  const course = courseFactory.build()
+  const courseOffering = courseOfferingFactory.build()
+
+  let referralsController: ReferralsController
+
+  courseService.getCourse.mockResolvedValue(course)
+  courseService.getOffering.mockResolvedValue(courseOffering)
+
+  beforeEach(() => {
+    referralsController = new ReferralsController(courseService, organisationService)
+  })
+
   describe('start', () => {
-    const token = 'SOME_TOKEN'
-    const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
-    const response: DeepMocked<Response> = createMock<Response>({})
-    const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
-
-    const courseService = createMock<CourseService>({})
-    const organisationService = createMock<OrganisationService>({})
-
-    const course = courseFactory.build()
-    courseService.getCourse.mockResolvedValue(course)
-
-    const courseOffering = courseOfferingFactory.build()
-    courseService.getOffering.mockResolvedValue(courseOffering)
-
     it('renders the referral start template', async () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
-
-      const referralsController = new ReferralsController(courseService, organisationService)
 
       const requestHandler = referralsController.start()
       await requestHandler(request, response, next)
@@ -47,7 +49,6 @@ describe('ReferralsController', () => {
       it('responds with a 404', async () => {
         organisationService.getOrganisation.mockResolvedValue(null)
 
-        const referralsController = new ReferralsController(courseService, organisationService)
         const requestHandler = referralsController.start()
         const expectedError = createError(404)
 

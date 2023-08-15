@@ -15,7 +15,6 @@ describe('PeopleController', () => {
   const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
-
   const personService = createMock<PersonService>({})
 
   let peopleController: PeopleController
