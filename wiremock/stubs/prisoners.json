@@ -1,0 +1,22 @@
+[
+  {
+    "firstName": "Del",
+    "lastName": "Hatton",
+    "prisonerNumber": "ABC1234",
+    "dateOfBirth": "1980-01-01",
+    "ethnicity": "White",
+    "gender": "Male",
+    "religion": "Christian",
+    "prisonName": "Whatton (HMP)"
+  },
+  {
+    "firstName": "John",
+    "lastName": "Smith",
+    "prisonerNumber": "DEF1234",
+    "dateOfBirth": "1990-10-10",
+    "ethnicity": "White",
+    "gender": "Male",
+    "religion": "Atheist",
+    "prisonName": "Stocken (HMP)"
+  }
+]
