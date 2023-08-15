@@ -7,7 +7,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: paths.refer.start({ courseId: courseId, courseOfferingId: courseOfferingId })
+    href: referPaths.start({ courseId: courseId, courseOfferingId: courseOfferingId })
   }) }}
 {% endblock backLink %}
 
@@ -19,7 +19,7 @@
 
       <p class="govuk-body">Enter the prison number. We'll import their details into your application.</p>
 
-      <form action="{{ paths.refer.people.find({ courseId: courseId, courseOfferingId: courseOfferingId }) }}" method="post">
+      <form action="{{ referPaths.people.find({ courseId: courseId, courseOfferingId: courseOfferingId }) }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukInput({
