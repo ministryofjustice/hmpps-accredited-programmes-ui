@@ -23,6 +23,7 @@ export default class PeopleController {
     return async (req: Request, res: Response) => {
       typeUtils.assertHasUser(req)
 
+      const { courseId, courseOfferingId } = req.params
       const person = await this.personService.getPerson(req.user.token, req.params.prisonNumber)
 
       if (!person) {
@@ -34,6 +35,8 @@ export default class PeopleController {
       res.render('referrals/people/show', {
         pageHeading: `Confirm ${person.name}'s details`,
         personSummaryListRows: personUtils.summaryListRows(person),
+        courseId,
+        courseOfferingId,
       })
     }
   }

@@ -76,10 +76,12 @@ context('Refer', () => {
       prisonNumber: person.prisonNumber,
     })
     cy.visit(path)
-    const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, person)
+    const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
 
     confirmPersonPage.shouldContainNavigation(path)
-    confirmPersonPage.shouldContainBackLink('#')
+    confirmPersonPage.shouldContainBackLink(
+      referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id }),
+    )
     confirmPersonPage.shouldContainContinueButton()
     confirmPersonPage.shouldContainDifferentIdentifierLink()
     confirmPersonPage.shouldHavePersonInformation()
