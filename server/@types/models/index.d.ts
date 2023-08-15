@@ -5,5 +5,15 @@ import type { CoursePrerequisite } from './CoursePrerequisite'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
 import type { Person } from './Person'
+import type { Referral } from './Referral'
 
-export type { Course, CourseAudience, CourseOffering, CoursePrerequisite, Organisation, OrganisationAddress, Person }
+export type {
+  Course,
+  CourseAudience,
+  CourseOffering,
+  CoursePrerequisite,
+  Organisation,
+  OrganisationAddress,
+  Person,
+  Referral,
+}

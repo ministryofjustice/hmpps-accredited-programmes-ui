@@ -8,6 +8,7 @@ import personFactory from './person'
 import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
 import prisonerFactory from './prisoner'
+import referralFactory from './referral'
 
 export {
   courseAudienceFactory,
@@ -20,4 +21,5 @@ export {
   prisonAddressFactory,
   prisonFactory,
   prisonerFactory,
+  referralFactory,
 }
