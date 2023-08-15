@@ -14,9 +14,7 @@ context('Refer', () => {
     cy.signIn()
 
     const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build({
-      secondaryContactEmail: null,
-    })
+    const courseOffering = courseOfferingFactory.build({})
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
 
     cy.task('stubCourse', course)
