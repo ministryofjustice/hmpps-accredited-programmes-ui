@@ -15,6 +15,7 @@ import { serviceCheckFactory } from './healthCheck'
 import type { User } from './hmppsAuthClient'
 import HmppsAuthClient from './hmppsAuthClient'
 import PrisonClient from './prisonClient'
+import PrisonerClient from './prisonerClient'
 import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
@@ -28,16 +29,19 @@ const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = (
   new HmppsAuthClient(new TokenStore(createRedisClient()))
 const courseClientBuilder: RestClientBuilder<CourseClient> = (token: string) => new CourseClient(token)
 const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: string) => new PrisonClient(token)
+const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: string) => new PrisonerClient(token)
 
 export {
   CourseClient,
   HmppsAuthClient,
   PrisonClient,
+  PrisonerClient,
   TokenStore,
   courseClientBuilder,
   createRedisClient,
   hmppsAuthClientBuilder,
   prisonClientBuilder,
+  prisonerClientBuilder,
   serviceCheckFactory,
   verifyToken,
 }

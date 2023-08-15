@@ -79,5 +79,21 @@ describe('OrganisationService', () => {
         expect(prisonClient.getPrison).toHaveBeenCalledWith(notFoundPrisonId)
       })
     })
+
+    describe('when the prison client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(501)
+        prisonClient.getPrison.mockRejectedValue(clientError)
+
+        const prisonId = '04aba287-86ac-4b2c-b98e-048b5eefddbc'
+
+        const expectedError = createError(501)
+
+        expect(() => service.getOrganisation(token, prisonId)).rejects.toThrowError(expectedError)
+
+        expect(prisonClientBuilder).toHaveBeenCalledWith(token)
+        expect(prisonClient.getPrison).toHaveBeenCalledWith(prisonId)
+      })
+    })
   })
 })

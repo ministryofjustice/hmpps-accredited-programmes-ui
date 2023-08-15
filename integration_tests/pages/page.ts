@@ -70,16 +70,22 @@ export default abstract class Page {
     cy.get('.govuk-back-link').should('have.attr', 'href', href)
   }
 
+  shouldContainButton(text: string): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.contains('.govuk-button', text)
+  }
+
   shouldContainButtonLink(text: string, href: string): void {
-    cy.get('.govuk-button').then(buttonElement => {
-      const { actual, expected } = helpers.parseHtml(buttonElement, text)
-      expect(actual).to.equal(expected)
+    this.shouldContainButton(text).then(buttonElement => {
       cy.wrap(buttonElement).should('have.attr', 'href', href)
     })
   }
 
   shouldNotContainButtonLink(): void {
     cy.get('.govuk-button').should('not.exist')
+  }
+
+  shouldContainLink(text: string, href: string): void {
+    cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }
 
   shouldContainNavigation(currentPath: string): void {

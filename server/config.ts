@@ -60,6 +60,14 @@ export default {
       },
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
     },
+    prisonerOffenderSearch: {
+      url: get('PRISONER_OFFENDER_SEARCH_URL', 'http://localhost:9093', requiredInProduction),
+      timeout: {
+        response: Number(get('PRISONER_OFFENDER_SEARCH_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PRISONER_OFFENDER_SEARCH_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
+    },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
       timeout: {

@@ -28,11 +28,13 @@ script/bootstrap
 
 ### With the current API
 
-To start Docker, run all backing services including a local copy of the Accredited Programmes API (port 9091) and the Prison API (port 9092), and then the application itself, run:
+To start Docker, run all backing services including a local copy of the Accredited Programmes API (port 9091) and the Prison Register (port 9092), a mocked version of the Prisoner Offender Search (see below), and then the application itself, run:
 
 ```bash
   script/server
 ```
+
+As the Prisoner Offender Search is a complex API with multiple dependencies, we've opted to mock it when running locally. The above script will generate two mocked people in prison to be served from the Prison Offender Search `/prisoner/:prisonNumber` endpoint with details available in `/wiremock/stubs/prisoners.json`.
 
 ### With a mocked API
 

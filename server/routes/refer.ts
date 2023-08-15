@@ -6,9 +6,10 @@ import { routeUtils } from '../utils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
   const { get } = routeUtils.actions(router)
-  const { referralsController } = controllers
+  const { referralsController, peopleController } = controllers
 
   get(referPaths.start.pattern, referralsController.start())
+  get(referPaths.people.show.pattern, peopleController.show())
 
   return router
 }
