@@ -30,6 +30,19 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
+  it("Doesn't show the 'find person' page for a referral", () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build({})
+
+    const path = referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
   it("Doesn't show the 'confirm person' page for a new referral", () => {
     cy.signIn()
 

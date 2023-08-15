@@ -9,6 +9,7 @@ import {
 import { organisationUtils } from '../../server/utils'
 import Page from '../pages/page'
 import ConfirmPersonPage from '../pages/refer/confirmPerson'
+import FindPersonPage from '../pages/refer/findPerson'
 import StartReferralPage from '../pages/refer/startReferral'
 
 context('Refer', () => {
@@ -46,7 +47,26 @@ context('Refer', () => {
     startReferralPage.shouldContainStartButtonLink()
   })
 
-  it('Shows the "confirm person" page when starting a new referral', () => {
+  it("Shows the 'find person' page for a referral", () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    cy.task('stubCourse', course)
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+
+    const path = referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id })
+    cy.visit(path)
+
+    const findPersonPage = Page.verifyOnPage(FindPersonPage)
+    findPersonPage.shouldContainNavigation(path)
+    findPersonPage.shouldContainBackLink(referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id }))
+    findPersonPage.shouldContainInstructionsParagraph()
+    findPersonPage.shouldContainIdentifierForm()
+  })
+
+  it("Shows the 'confirm person' page when starting a new referral", () => {
     cy.signIn()
 
     const course = courseFactory.build()
