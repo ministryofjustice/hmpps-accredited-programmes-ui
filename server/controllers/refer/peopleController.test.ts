@@ -29,7 +29,7 @@ describe('PeopleController', () => {
       name: 'Del Hatton',
     })
 
-    it('renders the confirmPerson template with the found Person', async () => {
+    it('renders the show template with the found Person', async () => {
       personService.getPerson.mockResolvedValue(person)
 
       const requestHandler = peopleController.show()
@@ -39,7 +39,7 @@ describe('PeopleController', () => {
 
       await requestHandler(request, response, next)
 
-      expect(response.render).toHaveBeenCalledWith('referrals/confirmPerson', {
+      expect(response.render).toHaveBeenCalledWith('referrals/people/show', {
         pageHeading: "Confirm Del Hatton's details",
         personSummaryListRows: mockPersonSummaryList,
       })
