@@ -4,6 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import PeopleController from './peopleController'
+import { referPaths } from '../../paths'
 import type PersonService from '../../services/personService'
 import { personFactory } from '../../testutils/factories'
 import personUtils from '../../utils/personUtils'
@@ -21,6 +22,26 @@ describe('PeopleController', () => {
 
   beforeEach(() => {
     peopleController = new PeopleController(personService)
+  })
+
+  describe('find', () => {
+    it('redirects to the show action with the prisonNumber as a param', async () => {
+      const requestHandler = peopleController.find()
+
+      const courseId = 'A-COURSE-ID'
+      const courseOfferingId = 'A-COURSE-OFFERING-ID'
+      const prisonNumber = 'ANUMB5R'
+
+      request.params.courseId = courseId
+      request.params.courseOfferingId = courseOfferingId
+      request.body.prisonNumber = prisonNumber
+
+      await requestHandler(request, response, next)
+
+      expect(response.redirect).toHaveBeenCalledWith(
+        referPaths.people.show({ courseId, courseOfferingId, prisonNumber }),
+      )
+    })
   })
 
   describe('show', () => {
