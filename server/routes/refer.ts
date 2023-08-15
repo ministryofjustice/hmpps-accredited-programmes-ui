@@ -9,6 +9,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   const { referralsController, peopleController } = controllers
 
   get(referPaths.start.pattern, referralsController.start())
+  get(referPaths.new.pattern, referralsController.new())
   get(referPaths.people.show.pattern, peopleController.show())
 
   return router

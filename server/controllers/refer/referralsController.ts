@@ -38,4 +38,18 @@ export default class ReferralsController {
       })
     }
   }
+
+  new(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      typeUtils.assertHasUser(req)
+
+      const { courseId, courseOfferingId } = req.params
+
+      res.render('referrals/new', {
+        pageHeading: "Enter the person's identifier",
+        courseId,
+        courseOfferingId,
+      })
+    }
+  }
 }

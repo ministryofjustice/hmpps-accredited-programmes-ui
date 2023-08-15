@@ -56,4 +56,23 @@ describe('ReferralsController', () => {
       })
     })
   })
+
+  describe('new', () => {
+    it('renders the referral new template', async () => {
+      const courseId = course.id
+      const courseOfferingId = courseOffering.id
+
+      request.params.courseId = courseId
+      request.params.courseOfferingId = courseOfferingId
+
+      const requestHandler = referralsController.new()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/new', {
+        pageHeading: "Enter the person's identifier",
+        courseId,
+        courseOfferingId,
+      })
+    })
+  })
 })
