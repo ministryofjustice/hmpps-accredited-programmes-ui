@@ -9,7 +9,8 @@ import {
 import { organisationUtils } from '../../server/utils'
 import Page from '../pages/page'
 import ConfirmPersonPage from '../pages/refer/confirmPerson'
-import ReferralStartPage from '../pages/refer/referralStart'
+import FindPersonPage from '../pages/refer/findPerson'
+import StartReferralPage from '../pages/refer/startReferral'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -22,9 +23,7 @@ context('Refer', () => {
     cy.signIn()
 
     const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build({
-      secondaryContactEmail: null,
-    })
+    const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
 
@@ -35,18 +34,37 @@ context('Refer', () => {
     const path = referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
     cy.visit(path)
 
-    const referralStartPage = Page.verifyOnPage(ReferralStartPage, { course, organisation })
-    referralStartPage.shouldContainNavigation(path)
-    referralStartPage.shouldContainBackLink(
+    const startReferralPage = Page.verifyOnPage(StartReferralPage, { course, courseOffering, organisation })
+    startReferralPage.shouldContainNavigation(path)
+    startReferralPage.shouldContainBackLink(
       findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
     )
-    referralStartPage.shouldContainOrganisationAndCourseHeading(referralStartPage)
-    referralStartPage.shouldContainAudienceTags(referralStartPage.course.audienceTags)
-    referralStartPage.shouldHaveProcessInformation()
-    referralStartPage.shouldContainStartButtonLink()
+    startReferralPage.shouldContainOrganisationAndCourseHeading(startReferralPage)
+    startReferralPage.shouldContainAudienceTags(startReferralPage.course.audienceTags)
+    startReferralPage.shouldHaveProcessInformation()
+    startReferralPage.shouldContainStartButtonLink()
   })
 
-  it('Shows the "confirm person" page when starting a new referral', () => {
+  it("Shows the 'find person' page for a referral", () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    cy.task('stubCourse', course)
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+
+    const path = referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id })
+    cy.visit(path)
+
+    const findPersonPage = Page.verifyOnPage(FindPersonPage)
+    findPersonPage.shouldContainNavigation(path)
+    findPersonPage.shouldContainBackLink(referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id }))
+    findPersonPage.shouldContainInstructionsParagraph()
+    findPersonPage.shouldContainIdentifierForm()
+  })
+
+  it("Shows the 'confirm person' page when starting a new referral", () => {
     cy.signIn()
 
     const course = courseFactory.build()
@@ -76,10 +94,12 @@ context('Refer', () => {
       prisonNumber: person.prisonNumber,
     })
     cy.visit(path)
-    const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, person)
+    const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
 
     confirmPersonPage.shouldContainNavigation(path)
-    confirmPersonPage.shouldContainBackLink('#')
+    confirmPersonPage.shouldContainBackLink(
+      referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id }),
+    )
     confirmPersonPage.shouldContainContinueButton()
     confirmPersonPage.shouldContainDifferentIdentifierLink()
     confirmPersonPage.shouldHavePersonInformation()

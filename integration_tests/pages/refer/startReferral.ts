@@ -1,24 +1,30 @@
+import { referPaths } from '../../../server/paths'
 import { courseUtils } from '../../../server/utils'
 import Page from '../page'
-import type { Course, Organisation } from '@accredited-programmes/models'
+import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
-export default class ReferralStartPage extends Page {
+export default class StartReferralPage extends Page {
   course: CoursePresenter
+
+  courseOffering: CourseOffering
 
   organisation: Organisation
 
-  constructor(args: { course: Course; organisation: Organisation }) {
+  constructor(args: { course: Course; courseOffering: CourseOffering; organisation: Organisation }) {
     super('Make a referral')
 
-    const { organisation, course } = args
-    const coursePresenter = courseUtils.presentCourse(course)
-    this.course = coursePresenter
+    const { course, courseOffering, organisation } = args
+    this.course = courseUtils.presentCourse(course)
+    this.courseOffering = courseOffering
     this.organisation = organisation
   }
 
   shouldContainStartButtonLink() {
-    this.shouldContainButtonLink('Start now', '#')
+    this.shouldContainButtonLink(
+      'Start now',
+      referPaths.new({ courseId: this.course.id, courseOfferingId: this.courseOffering.id }),
+    )
   }
 
   shouldHaveProcessInformation() {

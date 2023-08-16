@@ -17,7 +17,7 @@ fi
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 START=origin/HEAD
-TEST="npm run test"
+TEST="npm run test:unit"
 
 for i in "$@"; do
   case $i in

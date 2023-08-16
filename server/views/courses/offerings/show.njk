@@ -11,7 +11,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: paths.find.show({ courseId: course.id })
+    href: findPaths.show({ courseId: course.id })
   }) }}
 {% endblock backLink %}
 
@@ -32,7 +32,7 @@
       {% if referEnabled %}
         {{ govukButton({
             text: "Make a referral",
-            href: paths.refer.start({ courseId: course.id, courseOfferingId: courseOffering.id })
+            href: referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
         }) }}
       {% endif %}
     </div>

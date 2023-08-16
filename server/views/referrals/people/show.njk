@@ -3,14 +3,14 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% set customPageTitleEnd = "Confirm personal details" %}
 
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: ''
+    href: referPaths.new({ courseId: courseId, courseOfferingId: courseOfferingId })
   }) }}
 {% endblock backLink %}
 
@@ -30,7 +30,7 @@
         {{ govukButton({ text: "Continue" }) }}
       </form>
 
-      <a href="" class="govuk-link">
+      <a href="{{ referPaths.new({ courseId: courseId, courseOfferingId: courseOfferingId }) }}" class="govuk-link">
         Enter a different identifier
       </a>
     </div>

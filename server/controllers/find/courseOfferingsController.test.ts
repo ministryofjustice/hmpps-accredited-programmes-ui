@@ -14,21 +14,23 @@ describe('CoursesOfferingsController', () => {
     const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
     const response: DeepMocked<Response> = createMock<Response>({})
     const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
-
     const courseService = createMock<CourseService>({})
     const organisationService = createMock<OrganisationService>({})
-
     const course = courseFactory.build()
-    courseService.getCourse.mockResolvedValue(course)
-
     const courseOffering = courseOfferingFactory.build()
+
+    let courseOfferingsController: CourseOfferingsController
+
+    courseService.getCourse.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
+
+    beforeEach(() => {
+      courseOfferingsController = new CourseOfferingsController(courseService, organisationService)
+    })
 
     it('renders the course offering show template', async () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
-
-      const courseOfferingsController = new CourseOfferingsController(courseService, organisationService)
 
       const requestHandler = courseOfferingsController.show()
       await requestHandler(request, response, next)
@@ -51,7 +53,6 @@ describe('CoursesOfferingsController', () => {
       it('responds with a 404', async () => {
         organisationService.getOrganisation.mockResolvedValue(null)
 
-        const courseOfferingsController = new CourseOfferingsController(courseService, organisationService)
         const requestHandler = courseOfferingsController.show()
         const expectedError = createError(404)
 

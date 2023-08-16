@@ -14,9 +14,7 @@ context('Refer', () => {
     cy.signIn()
 
     const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build({
-      secondaryContactEmail: null,
-    })
+    const courseOffering = courseOfferingFactory.build({})
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
 
     cy.task('stubCourse', course)
@@ -24,6 +22,19 @@ context('Refer', () => {
     cy.task('stubPrison', prison)
 
     const path = referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
+  it("Doesn't show the 'find person' page for a referral", () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build({})
+
+    const path = referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
