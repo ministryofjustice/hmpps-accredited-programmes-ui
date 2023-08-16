@@ -10,6 +10,20 @@ export default class ReferralsController {
     private readonly organisationService: OrganisationService,
   ) {}
 
+  new(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      typeUtils.assertHasUser(req)
+
+      const { courseId, courseOfferingId } = req.params
+
+      res.render('referrals/new', {
+        pageHeading: "Enter the person's identifier",
+        courseId,
+        courseOfferingId,
+      })
+    }
+  }
+
   start(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       typeUtils.assertHasUser(req)
@@ -35,20 +49,6 @@ export default class ReferralsController {
         course: coursePresenter,
         courseOffering,
         organisation,
-      })
-    }
-  }
-
-  new(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
-
-      const { courseId, courseOfferingId } = req.params
-
-      res.render('referrals/new', {
-        pageHeading: "Enter the person's identifier",
-        courseId,
-        courseOfferingId,
       })
     }
   }

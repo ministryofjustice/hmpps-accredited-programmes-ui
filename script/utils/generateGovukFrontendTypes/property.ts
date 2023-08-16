@@ -7,24 +7,6 @@ export default class Property {
     readonly macroOptions: Record<string, unknown>,
   ) {}
 
-  get name(): string {
-    return this.macroOptions.name as string
-  }
-
-  get isIncluded(): boolean {
-    if (['GovukFrontendRadiosItem', 'GovukFrontendCheckboxesItem'].includes(this.containingTypeName)) {
-      // These two components' macro-options.json include a `conditional`
-      // property of boolean type, as well as a `conditional.html` property of
-      // string type. These creates a clash, since they'd both map to a property
-      // named `conditional`. However, looking at the macro.njk for these components,
-      // it looks like the boolean property is an error in the options file, so we
-      // can just ignore it.
-      return this.name !== 'conditional'
-    }
-
-    return true
-  }
-
   get definitionLine(): string {
     let result = ''
 
@@ -44,6 +26,28 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
     return result
   }
 
+  get describesPropertyOfNestedObject(): boolean {
+    return this.nestedObjectProperty !== null
+  }
+
+  get isIncluded(): boolean {
+    if (['GovukFrontendRadiosItem', 'GovukFrontendCheckboxesItem'].includes(this.containingTypeName)) {
+      // These two components' macro-options.json include a `conditional`
+      // property of boolean type, as well as a `conditional.html` property of
+      // string type. These creates a clash, since they'd both map to a property
+      // named `conditional`. However, looking at the macro.njk for these components,
+      // it looks like the boolean property is an error in the options file, so we
+      // can just ignore it.
+      return this.name !== 'conditional'
+    }
+
+    return true
+  }
+
+  get name(): string {
+    return this.macroOptions.name as string
+  }
+
   get nestedObjectProperty(): NestedObjectProperty | null {
     if (NestedObjectProperty.describesPropertyOfNestedObject(this.name)) {
       return new NestedObjectProperty(this.containingTypeName, this.name)
@@ -52,8 +56,45 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
     return null
   }
 
-  get describesPropertyOfNestedObject(): boolean {
-    return this.nestedObjectProperty !== null
+  // This return type dance is to avoid returning a Type directly so that
+  // ESLint doesn't complain about a dependency cycle.
+  get typeIntroduced(): { name: string; macroOptions: Record<string, unknown>[] } | null {
+    switch (this.macroOptions.type) {
+      case 'object':
+        if (this.macroOptions.isComponent || !this.macroOptions.params) {
+          return null
+        }
+        return {
+          name: this.containingTypeName + this.capitalisedName,
+          macroOptions: this.macroOptions.params as Record<string, unknown>[],
+        }
+      case 'array': {
+        if (!this.macroOptions.params) {
+          return null
+        }
+        let typeName = ''
+        if (this.isTableRows) {
+          // See isTableRows
+          typeName = 'GovukFrontendTableCell'
+        } else if (this.name.endsWith('s')) {
+          // Singularise if we can by stripping the final "s"
+          typeName = this.containingTypeName + this.capitalisedName.substring(0, this.capitalisedName.length - 1)
+        } else {
+          typeName = `${this.containingTypeName + this.capitalisedName}Element`
+        }
+        return { name: typeName, macroOptions: this.macroOptions.params as Record<string, unknown>[] }
+      }
+      default:
+        return null
+    }
+  }
+
+  private get capitalisedName(): string {
+    return capitalise(this.name)
+  }
+
+  private get isHtml(): boolean {
+    return this.nameContainsCaseInsensitive('html')
   }
 
   private get isRequired(): boolean {
@@ -77,18 +118,6 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
     return this.macroOptions.required as boolean
   }
 
-  private nameContainsCaseInsensitive(value: string): boolean {
-    return this.name.toLowerCase().includes(value.toLowerCase())
-  }
-
-  private get isHtml(): boolean {
-    return this.nameContainsCaseInsensitive('html')
-  }
-
-  private get isText(): boolean {
-    return this.nameContainsCaseInsensitive('text')
-  }
-
   // The macro-options.json definition of a table's `rows` property is misleading:
   // the `params` property there actually describes an individual table _cell_. But,
   // from looking at the example usage of the table macro, we see that the `rows`
@@ -100,6 +129,10 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
   // - outputs an additional declaration `type GovukFrontendTableRow = GovukFrontendTableCell[]`
   private get isTableRows(): boolean {
     return this.containingTypeName === 'GovukFrontendTable' && this.name === 'rows'
+  }
+
+  private get isText(): boolean {
+    return this.nameContainsCaseInsensitive('text')
   }
 
   private get typeForDefinition(): string {
@@ -161,40 +194,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
     }`
   }
 
-  private get capitalisedName(): string {
-    return capitalise(this.name)
-  }
-
-  // This return type dance is to avoid returning a Type directly so that
-  // ESLint doesn't complain about a dependency cycle.
-  get typeIntroduced(): { name: string; macroOptions: Record<string, unknown>[] } | null {
-    switch (this.macroOptions.type) {
-      case 'object':
-        if (this.macroOptions.isComponent || !this.macroOptions.params) {
-          return null
-        }
-        return {
-          name: this.containingTypeName + this.capitalisedName,
-          macroOptions: this.macroOptions.params as Record<string, unknown>[],
-        }
-      case 'array': {
-        if (!this.macroOptions.params) {
-          return null
-        }
-        let typeName = ''
-        if (this.isTableRows) {
-          // See isTableRows
-          typeName = 'GovukFrontendTableCell'
-        } else if (this.name.endsWith('s')) {
-          // Singularise if we can by stripping the final "s"
-          typeName = this.containingTypeName + this.capitalisedName.substring(0, this.capitalisedName.length - 1)
-        } else {
-          typeName = `${this.containingTypeName + this.capitalisedName}Element`
-        }
-        return { name: typeName, macroOptions: this.macroOptions.params as Record<string, unknown>[] }
-      }
-      default:
-        return null
-    }
+  private nameContainsCaseInsensitive(value: string): boolean {
+    return this.name.toLowerCase().includes(value.toLowerCase())
   }
 }

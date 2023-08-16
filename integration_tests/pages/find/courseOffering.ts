@@ -35,19 +35,19 @@ export default class CourseOfferingPage extends Page {
     )
   }
 
-  shouldNotContainMakeAReferralButtonLink() {
-    this.shouldNotContainButtonLink()
-  }
-
-  shouldNotContainSecondaryContactEmailSummaryListItem() {
-    cy.get('.govuk-summary-list').should('not.contain', 'Secondary email address')
-  }
-
   shouldHaveOrganisationWithOfferingEmails() {
     cy.get('.govuk-heading-m').should('have.text', this.organisation.name)
 
     cy.get('.govuk-summary-list').then(summaryListElement => {
       this.shouldContainSummaryListRows(this.organisation.summaryListRows, summaryListElement)
     })
+  }
+
+  shouldNotContainMakeAReferralButtonLink() {
+    this.shouldNotContainButtonLink()
+  }
+
+  shouldNotContainSecondaryContactEmailSummaryListItem() {
+    cy.get('.govuk-summary-list').should('not.contain', 'Secondary email address')
   }
 }

@@ -6,13 +6,6 @@ export default class FindPersonPage extends Page {
     super("Enter the person's identifier")
   }
 
-  shouldContainInstructionsParagraph() {
-    cy.get('.govuk-main-wrapper .govuk-body').should(
-      'have.text',
-      "Enter the prison number. We'll import their details into your application.",
-    )
-  }
-
   shouldContainIdentifierForm() {
     cy.get('form').within(() => {
       cy.contains('.govuk-label', 'Enter identifier').should('have.attr', 'for', 'prisonNumber')
@@ -26,5 +19,12 @@ export default class FindPersonPage extends Page {
     })
 
     this.shouldContainButton('Continue')
+  }
+
+  shouldContainInstructionsParagraph() {
+    cy.get('.govuk-main-wrapper .govuk-body').should(
+      'have.text',
+      "Enter the prison number. We'll import their details into your application.",
+    )
   }
 }

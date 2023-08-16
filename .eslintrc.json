@@ -37,6 +37,28 @@
   "rules": {
     "@typescript-eslint/consistent-type-exports": "error",
     "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/member-ordering": [
+      "error",
+      {
+        "default": {
+          "memberTypes": [
+            "public-static-method",
+            "protected-static-method",
+            "private-static-method",
+            "static-field",
+            "instance-field",
+            "constructor",
+            ["public-get", "public-set"],
+            "public-instance-method",
+            ["protected-get", "protected-set"],
+            "protected-instance-method",
+            ["private-get", "private-set"],
+            "private-instance-method"
+          ],
+          "order": "natural-case-insensitive"
+        }
+      }
+    ],
     "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/no-unused-vars": [
       1,

@@ -4,19 +4,14 @@ import type { Course, CourseOffering } from '@accredited-programmes/models'
 export default class CourseService {
   constructor(private readonly courseClientBuilder: RestClientBuilder<CourseClient>) {}
 
-  async getCourses(token: string): Promise<Array<Course>> {
-    const courseClient = this.courseClientBuilder(token)
-    return courseClient.all()
-  }
-
   async getCourse(token: string, courseId: Course['id']): Promise<Course> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.find(courseId)
   }
 
-  async getOfferingsByCourse(token: string, courseId: Course['id']): Promise<Array<CourseOffering>> {
+  async getCourses(token: string): Promise<Array<Course>> {
     const courseClient = this.courseClientBuilder(token)
-    return courseClient.findOfferings(courseId)
+    return courseClient.all()
   }
 
   async getOffering(
@@ -26,5 +21,10 @@ export default class CourseService {
   ): Promise<CourseOffering> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.findOffering(courseId, courseOfferingId)
+  }
+
+  async getOfferingsByCourse(token: string, courseId: Course['id']): Promise<Array<CourseOffering>> {
+    const courseClient = this.courseClientBuilder(token)
+    return courseClient.findOfferings(courseId)
   }
 }

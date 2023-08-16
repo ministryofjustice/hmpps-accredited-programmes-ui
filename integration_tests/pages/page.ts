@@ -11,13 +11,13 @@ import type { GovukFrontendTag } from '@govuk-frontend'
 export type PageElement = Cypress.Chainable<JQuery>
 
 export default abstract class Page {
-  customPageTitleEnd: string | undefined
-
-  external: boolean
-
   static verifyOnPage<T, U = unknown>(constructor: new (...args: Array<U>) => T, ...args: Array<U>): T {
     return new constructor(...args)
   }
+
+  customPageTitleEnd: string | undefined
+
+  external: boolean
 
   constructor(
     private readonly pageHeading: string,
@@ -30,31 +30,6 @@ export default abstract class Page {
       cy.checkAccessibility()
     }
   }
-
-  private checkOnPage(): void {
-    if (!this.external) {
-      this.checkTitle()
-    }
-
-    this.checkHeading()
-  }
-
-  private checkTitle(): void {
-    let expectedTitle = 'HMPPS Accredited Programmes'
-    const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
-
-    if (pageTitleEnd) {
-      expectedTitle += ` - ${pageTitleEnd}`
-    }
-
-    cy.title().should('equal', expectedTitle)
-  }
-
-  private checkHeading(): void {
-    cy.get('.govuk-heading-l').contains(this.pageHeading)
-  }
-
-  signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
@@ -78,10 +53,6 @@ export default abstract class Page {
     this.shouldContainButton(text).then(buttonElement => {
       cy.wrap(buttonElement).should('have.attr', 'href', href)
     })
-  }
-
-  shouldNotContainButtonLink(): void {
-    cy.get('.govuk-button').should('not.exist')
   }
 
   shouldContainLink(text: string, href: string): void {
@@ -109,13 +80,9 @@ export default abstract class Page {
     })
   }
 
-  shouldNotContainNavigation(): void {
-    cy.get('.moj-primary-navigation').should('not.exist')
-  }
-
   shouldContainOrganisationAndCourseHeading(pageWithOrganisationAndCoursePresenter: {
-    organisation: Organisation
     course: CoursePresenter
+    organisation: Organisation
   }): void {
     const { course, organisation } = pageWithOrganisationAndCoursePresenter
 
@@ -160,5 +127,38 @@ export default abstract class Page {
         cy.wrap(tagElement).should('have.class', tag.classes)
       })
     })
+  }
+
+  shouldNotContainButtonLink(): void {
+    cy.get('.govuk-button').should('not.exist')
+  }
+
+  shouldNotContainNavigation(): void {
+    cy.get('.moj-primary-navigation').should('not.exist')
+  }
+
+  signOut = (): PageElement => cy.get('[data-qa=signOut]')
+
+  private checkHeading(): void {
+    cy.get('.govuk-heading-l').contains(this.pageHeading)
+  }
+
+  private checkOnPage(): void {
+    if (!this.external) {
+      this.checkTitle()
+    }
+
+    this.checkHeading()
+  }
+
+  private checkTitle(): void {
+    let expectedTitle = 'HMPPS Accredited Programmes'
+    const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
+
+    if (pageTitleEnd) {
+      expectedTitle += ` - ${pageTitleEnd}`
+    }
+
+    cy.title().should('equal', expectedTitle)
   }
 }

@@ -6,7 +6,7 @@ export default class IndexPage extends Page {
     super('Accredited Programmes', { customPageTitleEnd: 'Home' })
   }
 
-  headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
-
   findLink = (): PageElement => cy.get('[href="/programmes"]')
+
+  headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
 }

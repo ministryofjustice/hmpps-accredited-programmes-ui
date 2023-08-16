@@ -7,10 +7,6 @@ export default class Type {
     private readonly macroOptions: Record<string, unknown>[],
   ) {}
 
-  private get properties(): Property[] {
-    return this.macroOptions.map(val => new Property(this.name, val)).filter(prop => prop.isIncluded)
-  }
-
   get definition(): string {
     const handledNestedObjectPropertyNames: string[] = []
     const definitionLines: string[] = []
@@ -34,14 +30,6 @@ export default class Type {
     return `${this.preamble}export interface ${this.name} {
   ${definitionLines.join('\n')}
 }\n`
-  }
-
-  private get preamble(): string {
-    // See Property.prototype.isTableRows
-    if (this.name === 'GovukFrontendTableCell') {
-      return 'type GovukFrontendTableRow = GovukFrontendTableCell[]\n\n'
-    }
-    return ''
   }
 
   get flattenedWithIntroducedTypes(): Type[] {
@@ -72,6 +60,18 @@ export default class Type {
     })
 
     return [this, ...types]
+  }
+
+  private get preamble(): string {
+    // See Property.prototype.isTableRows
+    if (this.name === 'GovukFrontendTableCell') {
+      return 'type GovukFrontendTableRow = GovukFrontendTableCell[]\n\n'
+    }
+    return ''
+  }
+
+  private get properties(): Property[] {
+    return this.macroOptions.map(val => new Property(this.name, val)).filter(prop => prop.isIncluded)
   }
 
   private typeForNestedObjectProperty(nestedObjectProperty: NestedObjectProperty): Type {

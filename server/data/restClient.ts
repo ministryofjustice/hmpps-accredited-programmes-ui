@@ -41,14 +41,6 @@ export default class RestClient {
     this.agent = config.url.startsWith('https') ? new HttpsAgent(config.agent) : new Agent(config.agent)
   }
 
-  private apiUrl() {
-    return this.config.url
-  }
-
-  private timeoutConfig() {
-    return this.config.timeout
-  }
-
   async get({ path = '', query = '', headers = {}, responseType = '', raw = false }: GetRequest): Promise<unknown> {
     logger.info(`Get using user credentials: calling ${this.name}: ${path} ${query}`)
     try {
@@ -135,5 +127,13 @@ export default class RestClient {
           }
         })
     })
+  }
+
+  private apiUrl() {
+    return this.config.url
+  }
+
+  private timeoutConfig() {
+    return this.config.timeout
   }
 }
