@@ -3,6 +3,8 @@ import type { NextFunction, Request, Response, Router } from 'express'
 import express from 'express'
 import helmet from 'helmet'
 
+import config from '../config'
+
 export default function setUpWebSecurity(): Router {
   const router = express.Router()
 
@@ -32,7 +34,7 @@ export default function setUpWebSecurity(): Router {
             'https://dc.services.visualstudio.com/v2/track',
             'https://northeurope-0.in.applicationinsights.azure.com//v2/track',
           ],
-          formAction: ['self'],
+          formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
         },
       },
       crossOriginEmbedderPolicy: true,
