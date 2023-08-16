@@ -32,6 +32,7 @@ export default function setUpWebSecurity(): Router {
             'https://dc.services.visualstudio.com/v2/track',
             'https://northeurope-0.in.applicationinsights.azure.com//v2/track',
           ],
+          formAction: ['self'],
         },
       },
       crossOriginEmbedderPolicy: true,
