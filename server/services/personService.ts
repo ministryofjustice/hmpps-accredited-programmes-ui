@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
 import type { PrisonerClient, RestClientBuilder } from '../data'
-import { personUtils } from '../utils'
+import { PersonUtils } from '../utils'
 import type { Person } from '@accredited-programmes/models'
 
 export default class PersonService {
@@ -14,7 +14,7 @@ export default class PersonService {
     try {
       const prisoner = await prisonerClient.getPrisoner(prisonNumber)
 
-      return personUtils.personFromPrisoner(prisoner)
+      return PersonUtils.personFromPrisoner(prisoner)
     } catch (error) {
       const knownError = error as ResponseError
 

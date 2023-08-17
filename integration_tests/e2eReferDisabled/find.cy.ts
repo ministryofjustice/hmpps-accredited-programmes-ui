@@ -1,6 +1,6 @@
 import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
-import { organisationUtils } from '../../server/utils'
+import { OrganisationUtils } from '../../server/utils'
 import { CourseOfferingPage } from '../pages/find'
 import Page from '../pages/page'
 
@@ -19,7 +19,7 @@ context('Find', () => {
       secondaryContactEmail: null,
     })
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
     cy.task('stubCourse', course)
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })

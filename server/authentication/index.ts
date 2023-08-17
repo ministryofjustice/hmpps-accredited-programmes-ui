@@ -1,4 +1,4 @@
-import auth from './auth'
-import clientCredentials from './clientCredentials'
+import Auth from './auth'
+import ClientCredentials from './clientCredentials'
 
-export { auth, clientCredentials }
+export { Auth, ClientCredentials }

@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
 import type { CourseService, OrganisationService } from '../../services'
-import { courseUtils, organisationUtils, typeUtils } from '../../utils'
+import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
 
 export default class CourseOfferingsController {
   constructor(
@@ -12,7 +12,7 @@ export default class CourseOfferingsController {
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
+      TypeUtils.assertHasUser(req)
 
       const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
       const courseOffering = await this.courseService.getOffering(
@@ -28,12 +28,12 @@ export default class CourseOfferingsController {
         })
       }
 
-      const coursePresenter = courseUtils.presentCourse(course)
+      const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/offerings/show', {
         course: coursePresenter,
         courseOffering,
-        organisation: organisationUtils.presentOrganisationWithOfferingEmails(
+        organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,
           course.name,

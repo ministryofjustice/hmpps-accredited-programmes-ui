@@ -3,13 +3,13 @@ import type { Router } from 'express'
 import express from 'express'
 import passport from 'passport'
 
-import { auth } from '../authentication'
+import { Auth } from '../authentication'
 import config from '../config'
 
 const router = express.Router()
 
 export default function setUpAuth(): Router {
-  auth.init()
+  Auth.init()
 
   router.use(passport.initialize())
   router.use(passport.session())

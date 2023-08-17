@@ -1,4 +1,4 @@
-import helpers from '../../support/helpers'
+import Helpers from '../../support/helpers'
 import Page from '../page'
 
 export default class FindPersonPage extends Page {
@@ -11,7 +11,7 @@ export default class FindPersonPage extends Page {
       cy.contains('.govuk-label', 'Enter identifier').should('have.attr', 'for', 'prisonNumber')
 
       cy.get('.govuk-hint').then(hintElement => {
-        const { actual, expected } = helpers.parseHtml(hintElement, 'For example, a prison number is DO16821')
+        const { actual, expected } = Helpers.parseHtml(hintElement, 'For example, a prison number is DO16821')
         expect(actual).to.equal(expected)
       })
 

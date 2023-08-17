@@ -3,7 +3,7 @@ import type express from 'express'
 import nunjucks from 'nunjucks'
 import type * as pathModule from 'path'
 
-import stringUtils from './stringUtils'
+import StringUtils from './stringUtils'
 import config from '../config'
 import { findPaths, referPaths } from '../paths'
 
@@ -49,7 +49,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     },
   )
 
-  njkEnv.addFilter('initialiseName', stringUtils.initialiseName)
+  njkEnv.addFilter('initialiseName', StringUtils.initialiseName)
 
   njkEnv.addGlobal('findPaths', findPaths)
   njkEnv.addGlobal('referPaths', referPaths)

@@ -4,14 +4,14 @@ import { Factory } from 'fishery'
 import courseAudienceFactory from './courseAudience'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import buildListBetween from './factoryHelpers'
-import { stringUtils } from '../../utils'
+import { StringUtils } from '../../utils'
 import type { Course } from '@accredited-programmes/models'
 
 export default Factory.define<Course>(({ params }) => {
-  const name = `${stringUtils.convertToTitleCase(faker.color.human())} Course`
+  const name = `${StringUtils.convertToTitleCase(faker.color.human())} Course`
 
   return {
-    alternateName: stringUtils.initialiseTitle(params.name || name),
+    alternateName: StringUtils.initialiseTitle(params.name || name),
     audiences: buildListBetween(courseAudienceFactory, { max: 3, min: 1 }),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),

@@ -1,7 +1,7 @@
-import personUtils from './personUtils'
+import PersonUtils from './personUtils'
 import { personFactory, prisonerFactory } from '../testutils/factories'
 
-describe('personUtils', () => {
+describe('PersonUtils', () => {
   describe('personFromPrisoner', () => {
     describe('when all fields are present on a Prison Offender Search "Prisoner"', () => {
       it('returns a "Person" with those fields', () => {
@@ -16,7 +16,7 @@ describe('personUtils', () => {
           religion: 'Christian',
         })
 
-        expect(personUtils.personFromPrisoner(prisoner)).toEqual({
+        expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
           currentPrison: 'HMP Hewell',
           dateOfBirth: '5 July 1971',
           ethnicity: 'White',
@@ -33,7 +33,7 @@ describe('personUtils', () => {
       it("formats the person's name in title case", () => {
         const prisoner = prisonerFactory.build({ firstName: 'DEL', lastName: 'HATTON' })
 
-        expect(personUtils.personFromPrisoner(prisoner).name).toEqual('Del Hatton')
+        expect(PersonUtils.personFromPrisoner(prisoner).name).toEqual('Del Hatton')
       })
     })
 
@@ -50,7 +50,7 @@ describe('personUtils', () => {
           religion: undefined,
         })
 
-        expect(personUtils.personFromPrisoner(prisoner)).toEqual({
+        expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
           currentPrison: 'HMP Hewell',
           dateOfBirth: '5 July 1971',
           ethnicity: 'Not entered',
@@ -77,7 +77,7 @@ describe('personUtils', () => {
         setting: 'Custody',
       })
 
-      expect(personUtils.summaryListRows(person)).toEqual([
+      expect(PersonUtils.summaryListRows(person)).toEqual([
         {
           key: { text: 'Name' },
           value: { text: 'Del Hatton' },

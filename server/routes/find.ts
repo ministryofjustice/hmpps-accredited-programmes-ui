@@ -2,10 +2,10 @@ import type { Router } from 'express'
 
 import type { Controllers } from '../controllers'
 import { findPaths } from '../paths'
-import { routeUtils } from '../utils'
+import { RouteUtils } from '../utils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
-  const { get } = routeUtils.actions(router)
+  const { get } = RouteUtils.actions(router)
   const { coursesController, courseOfferingsController } = controllers
 
   get(findPaths.index.pattern, coursesController.index())

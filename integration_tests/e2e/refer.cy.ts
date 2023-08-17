@@ -6,7 +6,7 @@ import {
   prisonFactory,
   prisonerFactory,
 } from '../../server/testutils/factories'
-import { organisationUtils } from '../../server/utils'
+import { OrganisationUtils } from '../../server/utils'
 import Page from '../pages/page'
 import ConfirmPersonPage from '../pages/refer/confirmPerson'
 import FindPersonPage from '../pages/refer/findPerson'
@@ -25,7 +25,7 @@ context('Refer', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
     cy.task('stubCourse', course)
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })

@@ -1,5 +1,5 @@
 import { referPaths } from '../../../server/paths'
-import { courseUtils, organisationUtils } from '../../../server/utils'
+import { CourseUtils, OrganisationUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { CoursePresenter, OrganisationWithOfferingEmailsPresenter } from '@accredited-programmes/ui'
@@ -13,7 +13,7 @@ export default class CourseOfferingPage extends Page {
 
   constructor(args: { courseOffering: CourseOffering; course: Course; organisation: Organisation }) {
     const { courseOffering, organisation, course } = args
-    const coursePresenter = courseUtils.presentCourse(course)
+    const coursePresenter = CourseUtils.presentCourse(course)
 
     super(coursePresenter.nameAndAlternateName, {
       customPageTitleEnd: `${coursePresenter.nameAndAlternateName}, ${organisation.name}`,
@@ -21,7 +21,7 @@ export default class CourseOfferingPage extends Page {
 
     this.courseOffering = courseOffering
     this.course = coursePresenter
-    this.organisation = organisationUtils.presentOrganisationWithOfferingEmails(
+    this.organisation = OrganisationUtils.presentOrganisationWithOfferingEmails(
       organisation,
       courseOffering,
       course.name,

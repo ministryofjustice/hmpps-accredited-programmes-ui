@@ -1,4 +1,4 @@
-import helpers from '../support/helpers'
+import Helpers from '../support/helpers'
 import type { Organisation } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
@@ -65,7 +65,7 @@ export default abstract class Page {
     cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
       const { href, text } = navigationItems[navigationItemElementIndex]
 
-      const { actual, expected } = helpers.parseHtml(navigationItemElement, text)
+      const { actual, expected } = Helpers.parseHtml(navigationItemElement, text)
       expect(actual).to.equal(expected)
 
       cy.wrap(navigationItemElement).within(() => {
@@ -88,7 +88,7 @@ export default abstract class Page {
 
     cy.get('h2:nth-of-type(1)').then(organisationAndCourseHeading => {
       const expectedText = `${organisation.name} | ${course.nameAndAlternateName}`
-      const { actual, expected } = helpers.parseHtml(organisationAndCourseHeading, expectedText)
+      const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
     })
   }
@@ -103,14 +103,14 @@ export default abstract class Page {
           const row = rows[rowElementIndex]
 
           cy.get('.govuk-summary-list__key').then(summaryListKeyElement => {
-            const { actual, expected } = helpers.parseHtml(summaryListKeyElement, (row.key as HasTextString).text)
+            const { actual, expected } = Helpers.parseHtml(summaryListKeyElement, (row.key as HasTextString).text)
             expect(actual).to.equal(expected)
           })
 
           cy.get('.govuk-summary-list__value').then(summaryListValueElement => {
             const expectedValue =
               'text' in row.value ? (row.value as HasTextString).text : (row.value as HasHtmlString).html
-            const { actual, expected } = helpers.parseHtml(summaryListValueElement, expectedValue)
+            const { actual, expected } = Helpers.parseHtml(summaryListValueElement, expectedValue)
             expect(actual).to.equal(expected)
           })
         })
@@ -122,7 +122,7 @@ export default abstract class Page {
     cy.wrap(tagContainerElement).within(() => {
       cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
         const tag = tags[tagElementIndex]
-        const { actual, expected } = helpers.parseHtml(tagElement, tag.text)
+        const { actual, expected } = Helpers.parseHtml(tagElement, tag.text)
         expect(actual).to.equal(expected)
         cy.wrap(tagElement).should('have.class', tag.classes)
       })

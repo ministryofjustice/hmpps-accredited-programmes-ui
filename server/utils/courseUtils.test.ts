@@ -1,7 +1,7 @@
-import courseUtils from './courseUtils'
+import CourseUtils from './courseUtils'
 import { courseAudienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
 
-describe('courseUtils', () => {
+describe('CourseUtils', () => {
   describe('presentCourse', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
@@ -19,7 +19,7 @@ describe('courseUtils', () => {
         name: 'Lime Course',
       })
 
-      expect(courseUtils.presentCourse(course)).toEqual({
+      expect(CourseUtils.presentCourse(course)).toEqual({
         ...course,
         audienceTags: [
           {
@@ -57,7 +57,7 @@ describe('courseUtils', () => {
       it('combines the descriptions of the matching prerequisites', () => {
         const riskCriteriaPrerequisites = coursePrerequisiteFactory.riskCriteria().buildList(2)
         const course = courseFactory.build({ coursePrerequisites: riskCriteriaPrerequisites })
-        const coursePresenter = courseUtils.presentCourse(course)
+        const coursePresenter = CourseUtils.presentCourse(course)
         const riskCriteriaSummaryListRows = coursePresenter.prerequisiteSummaryListRows[2]
 
         expect(riskCriteriaSummaryListRows).toEqual({
@@ -71,7 +71,7 @@ describe('courseUtils', () => {
       it('just uses the `name` as the `nameAndAlternateName`', () => {
         const course = courseFactory.build({ alternateName: null })
 
-        expect(courseUtils.presentCourse(course).nameAndAlternateName).toEqual(course.name)
+        expect(CourseUtils.presentCourse(course).nameAndAlternateName).toEqual(course.name)
       })
     })
   })
