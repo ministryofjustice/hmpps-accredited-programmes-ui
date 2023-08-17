@@ -1,17 +1,14 @@
 import type { TelemetryClient } from 'applicationinsights'
 import { DistributedTracingModes, defaultClient, setup } from 'applicationinsights'
 
-import applicationVersion from '../applicationVersion'
+import { buildNumber, packageData } from '../applicationVersion'
 
 function defaultName(): string {
-  const {
-    packageData: { name },
-  } = applicationVersion
+  const { name } = packageData
   return name
 }
 
 function version(): string {
-  const { buildNumber } = applicationVersion
   return buildNumber
 }
 
