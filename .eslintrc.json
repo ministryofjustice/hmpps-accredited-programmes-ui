@@ -59,7 +59,6 @@
         }
       }
     ],
-    "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/no-unused-vars": [
       1,
       {
@@ -67,6 +66,7 @@
         "ignoreRestSiblings": true
       }
     ],
+    "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/semi": 0,
     "class-methods-use-this": 0,
     "comma-dangle": ["error", "always-multiline"],
@@ -100,6 +100,12 @@
         "newlines-between": "always"
       }
     ],
+    "no-empty-function": [
+      1,
+      {
+        "allow": ["constructors"]
+      }
+    ],
     "no-only-tests/no-only-tests": "error",
     "no-unused-vars": [
       1,
@@ -108,21 +114,8 @@
         "ignoreRestSiblings": true
       }
     ],
-    "no-empty-function": [
-      1,
-      {
-        "allow": ["constructors"]
-      }
-    ],
     "no-use-before-define": 0,
     "no-useless-constructor": 0,
-    "sort-imports": [
-      "error",
-      {
-        "ignoreDeclarationSort": true
-      }
-    ],
-    "sort-keys": ["error", "asc", { "caseSensitive": true, "natural": false }],
     "prettier/prettier": [
       "error",
       {
@@ -133,6 +126,13 @@
       }
     ],
     "semi": 0,
-    "sort-exports/sort-exports": ["error", { "sortExportKindFirst": "value" }]
+    "sort-exports/sort-exports": ["error", { "sortExportKindFirst": "value" }],
+    "sort-imports": [
+      "error",
+      {
+        "ignoreDeclarationSort": true
+      }
+    ],
+    "sort-keys": ["error", "asc", { "caseSensitive": true, "natural": false }]
   }
 }
