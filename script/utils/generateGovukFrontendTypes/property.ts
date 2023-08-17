@@ -65,8 +65,8 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
           return null
         }
         return {
-          name: this.containingTypeName + this.capitalisedName,
           macroOptions: this.macroOptions.params as Record<string, unknown>[],
+          name: this.containingTypeName + this.capitalisedName,
         }
       case 'array': {
         if (!this.macroOptions.params) {
@@ -82,7 +82,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
         } else {
           typeName = `${this.containingTypeName + this.capitalisedName}Element`
         }
-        return { name: typeName, macroOptions: this.macroOptions.params as Record<string, unknown>[] }
+        return { macroOptions: this.macroOptions.params as Record<string, unknown>[], name: typeName }
       }
       default:
         return null

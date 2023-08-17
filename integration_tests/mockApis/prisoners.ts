@@ -12,9 +12,9 @@ export default {
         url: prisonerOffenderSearchPaths.prisoner.show({ prisonNumber: prisoner.prisonerNumber }),
       },
       response: {
-        status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: prisoner,
+        status: 200,
       },
     }),
 }

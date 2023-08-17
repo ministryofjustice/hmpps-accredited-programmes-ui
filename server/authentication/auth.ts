@@ -32,15 +32,15 @@ function init(): void {
   const strategy = new Strategy(
     {
       authorizationURL: `${config.apis.hmppsAuth.externalUrl}/oauth/authorize`,
-      tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
+      callbackURL: `${config.domain}/sign-in/callback`,
       clientID: config.apis.hmppsAuth.apiClientId,
       clientSecret: config.apis.hmppsAuth.apiClientSecret,
-      callbackURL: `${config.domain}/sign-in/callback`,
-      state: true,
       customHeaders: { Authorization: clientCredentials.generateOauthClientToken() },
+      state: true,
+      tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
     },
     (token, refreshToken, params, profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: params.auth_source })
+      return done(null, { authSource: params.auth_source, token, username: params.user_name })
     },
   )
 

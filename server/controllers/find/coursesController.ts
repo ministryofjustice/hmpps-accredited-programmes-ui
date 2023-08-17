@@ -17,10 +17,10 @@ export default class CoursesController {
       const courses = await this.courseService.getCourses(req.user.token)
 
       res.render('courses/index', {
-        pageHeading: 'List of accredited programmes',
         courses: courses
           .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
           .map(course => courseUtils.presentCourse(course)),
+        pageHeading: 'List of accredited programmes',
       })
     }
   }
@@ -50,9 +50,9 @@ export default class CoursesController {
       const coursePresenter = courseUtils.presentCourse(course)
 
       res.render('courses/show', {
-        pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
         organisationsTableData,
+        pageHeading: coursePresenter.nameAndAlternateName,
       })
     }
   }

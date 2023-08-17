@@ -7,9 +7,9 @@
  * */
 const govukFormattedFullDateString = (datestring: string): string => {
   return new Date(datestring).toLocaleDateString('en-GB', {
-    year: 'numeric',
-    month: 'long',
     day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   })
 }
 

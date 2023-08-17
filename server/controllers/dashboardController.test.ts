@@ -23,8 +23,8 @@ describe('DashboardController', () => {
       requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('dashboard/index', {
-        pageHeading: 'Accredited Programmes',
         findPath: findPaths.index({}),
+        pageHeading: 'Accredited Programmes',
       })
     })
   })

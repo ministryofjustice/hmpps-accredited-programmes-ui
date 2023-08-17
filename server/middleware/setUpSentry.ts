@@ -18,15 +18,23 @@ function setUpSentryRequestHandler(app: express.Express): void {
 
   if (config.sentry.dsn) {
     Sentry.init({
+      beforeSend(event) {
+        if (event.user) {
+          // Don't send username
+          // eslint-disable-next-line no-param-reassign
+          delete event.user.username
+        }
+        return event
+      },
       dsn: config.sentry.dsn,
       environment: config.environment,
-      release: applicationVersion.gitRef,
       integrations: [
         // enable HTTP calls tracing
         new Sentry.Integrations.Http({ tracing: true }),
         // enable Express.js middleware tracing
         new Sentry.Integrations.Express({ app }),
       ],
+      release: applicationVersion.gitRef,
       tracesSampler: samplingContext => {
         const transactionName = samplingContext?.transactionContext?.name
         if (
@@ -43,14 +51,6 @@ function setUpSentryRequestHandler(app: express.Express): void {
 
         // Default sample rate
         return 0.05
-      },
-      beforeSend(event) {
-        if (event.user) {
-          // Don't send username
-          // eslint-disable-next-line no-param-reassign
-          delete event.user.username
-        }
-        return event
       },
     })
     app.use(

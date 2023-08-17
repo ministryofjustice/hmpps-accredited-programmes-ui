@@ -18,10 +18,10 @@ describe('organisationUtils', () => {
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
       expect(organisationUtils.organisationFromPrison('an-ID', prison)).toEqual({
+        address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
+        category: 'A/B',
         id: 'an-ID',
         name: prison.prisonName,
-        category: 'A/B',
-        address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
       })
     })
 
@@ -105,20 +105,20 @@ describe('organisationUtils', () => {
 
     beforeEach(() => {
       organisation = organisationFactory.build({
-        name: 'What (HMP)',
-        category: 'C',
         address: organisationAddressFactory.build({
           addressLine1: '123 Alphabet Street',
           addressLine2: 'Thine District',
-          town: 'That Town Over There',
           county: 'Thisshire',
           postalCode: 'HE3 3TA',
+          town: 'That Town Over There',
         }),
+        category: 'C',
+        name: 'What (HMP)',
       })
 
       offering = courseOfferingFactory.build({
-        organisationId: organisation.id,
         contactEmail: 'nobody-hmp-what@digital.justice.gov.uk',
+        organisationId: organisation.id,
         secondaryContactEmail: 'nobody2-hmp-what@digital.justice.gov.uk',
       })
 

@@ -12,10 +12,10 @@ const services = () => {
   const personService = new PersonService(prisonerClientBuilder)
 
   return {
-    userService,
     courseService,
     organisationService,
     personService,
+    userService,
   }
 }
 

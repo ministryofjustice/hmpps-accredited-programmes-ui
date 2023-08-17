@@ -33,10 +33,10 @@ export default class PeopleController {
       }
 
       res.render('referrals/people/show', {
-        pageHeading: `Confirm ${person.name}'s details`,
-        personSummaryListRows: personUtils.summaryListRows(person),
         courseId,
         courseOfferingId,
+        pageHeading: `Confirm ${person.name}'s details`,
+        personSummaryListRows: personUtils.summaryListRows(person),
       })
     }
   }

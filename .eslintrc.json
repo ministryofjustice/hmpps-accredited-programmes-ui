@@ -122,6 +122,7 @@
         "ignoreDeclarationSort": true
       }
     ],
+    "sort-keys": ["error", "asc", { "caseSensitive": true, "natural": false }],
     "prettier/prettier": [
       "error",
       {

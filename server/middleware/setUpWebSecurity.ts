@@ -19,7 +19,14 @@ export default function setUpWebSecurity(): Router {
     helmet({
       contentSecurityPolicy: {
         directives: {
+          connectSrc: [
+            "'self'",
+            'https://dc.services.visualstudio.com/v2/track',
+            'https://northeurope-0.in.applicationinsights.azure.com//v2/track',
+          ],
           defaultSrc: ["'self'"],
+          fontSrc: ["'self'"],
+          formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
           // This nonce allows us to use scripts with the use of the `cspNonce` local, e.g (in a Nunjucks template):
           // <script nonce="{{ cspNonce }}">
           // or
@@ -28,13 +35,6 @@ export default function setUpWebSecurity(): Router {
           // page by an attacker.
           scriptSrc: ["'self'", (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`, 'js.monitor.azure.com'],
           styleSrc: ["'self'", (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`],
-          fontSrc: ["'self'"],
-          connectSrc: [
-            "'self'",
-            'https://dc.services.visualstudio.com/v2/track',
-            'https://northeurope-0.in.applicationinsights.azure.com//v2/track',
-          ],
-          formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
         },
       },
       crossOriginEmbedderPolicy: true,

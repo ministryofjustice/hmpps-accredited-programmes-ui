@@ -8,12 +8,12 @@ const personFromPrisoner = (prisoner: Prisoner): Person => {
   const unavailable = 'Not entered'
 
   return {
-    name: stringUtils.convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
-    prisonNumber: prisoner.prisonerNumber,
     currentPrison: prisoner.prisonName,
     dateOfBirth: dateUtils.govukFormattedFullDateString(prisoner.dateOfBirth),
     ethnicity: prisoner.ethnicity || unavailable,
     gender: prisoner.gender,
+    name: stringUtils.convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
+    prisonNumber: prisoner.prisonerNumber,
     religionOrBelief: prisoner.religion || unavailable,
     setting: 'Custody',
   }

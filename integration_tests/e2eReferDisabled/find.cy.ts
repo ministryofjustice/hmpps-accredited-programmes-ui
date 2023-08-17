@@ -28,7 +28,7 @@ context('Find', () => {
     const path = findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
     cy.visit(path)
 
-    const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+    const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { course, courseOffering, organisation })
     courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
   })
 })

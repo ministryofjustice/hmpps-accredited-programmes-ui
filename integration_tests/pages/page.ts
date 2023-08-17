@@ -60,10 +60,10 @@ export default abstract class Page {
   }
 
   shouldContainNavigation(currentPath: string): void {
-    const navigationItems = [{ text: 'List of programmes', href: '/programmes' }]
+    const navigationItems = [{ href: '/programmes', text: 'List of programmes' }]
 
     cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
-      const { text, href } = navigationItems[navigationItemElementIndex]
+      const { href, text } = navigationItems[navigationItemElementIndex]
 
       const { actual, expected } = helpers.parseHtml(navigationItemElement, text)
       expect(actual).to.equal(expected)

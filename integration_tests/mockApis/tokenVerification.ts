@@ -10,9 +10,9 @@ export default {
         urlPattern: '/verification/health/ping',
       },
       response: {
-        status,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: { status: 'UP' },
+        status,
       },
     }),
   stubVerifyToken: (active = true): SuperAgentRequest =>
@@ -22,9 +22,9 @@ export default {
         urlPattern: '/verification/token/verify',
       },
       response: {
-        status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: { active },
+        status: 200,
       },
     }),
 }

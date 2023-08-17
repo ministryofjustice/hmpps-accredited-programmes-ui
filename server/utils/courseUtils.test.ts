@@ -5,7 +5,6 @@ describe('courseUtils', () => {
   describe('presentCourse', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
-        name: 'Lime Course',
         alternateName: 'LC',
         audiences: [
           courseAudienceFactory.build({ value: 'Intimate partner violence offence' }),
@@ -17,21 +16,22 @@ describe('courseUtils', () => {
           coursePrerequisiteFactory.riskCriteria().build(),
           coursePrerequisiteFactory.setting().build(),
         ],
+        name: 'Lime Course',
       })
 
       expect(courseUtils.presentCourse(course)).toEqual({
         ...course,
-        nameAndAlternateName: 'Lime Course (LC)',
         audienceTags: [
           {
-            text: 'Intimate partner violence offence',
             classes: 'govuk-tag govuk-tag--green',
+            text: 'Intimate partner violence offence',
           },
           {
-            text: 'General violence offence',
             classes: 'govuk-tag govuk-tag--yellow',
+            text: 'General violence offence',
           },
         ],
+        nameAndAlternateName: 'Lime Course (LC)',
         prerequisiteSummaryListRows: [
           {
             key: { text: 'Setting' },

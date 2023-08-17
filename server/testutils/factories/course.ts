@@ -11,11 +11,8 @@ export default Factory.define<Course>(({ params }) => {
   const name = `${stringUtils.convertToTitleCase(faker.color.human())} Course`
 
   return {
-    id: faker.string.uuid(),
-    name,
     alternateName: stringUtils.initialiseTitle(params.name || name),
-    description: faker.lorem.sentences(),
-    audiences: buildListBetween(courseAudienceFactory, { min: 1, max: 3 }),
+    audiences: buildListBetween(courseAudienceFactory, { max: 3, min: 1 }),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),
@@ -23,5 +20,8 @@ export default Factory.define<Course>(({ params }) => {
       coursePrerequisiteFactory.riskCriteria().build(),
       coursePrerequisiteFactory.setting().build(),
     ],
+    description: faker.lorem.sentences(),
+    id: faker.string.uuid(),
+    name,
   }
 })

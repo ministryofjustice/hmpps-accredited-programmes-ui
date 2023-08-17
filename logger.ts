@@ -3,11 +3,11 @@ import bunyanFormat from 'bunyan-format'
 
 import config from './server/config'
 
-const formatOut = bunyanFormat({ outputMode: 'short', color: !config.production })
+const formatOut = bunyanFormat({ color: !config.production, outputMode: 'short' })
 
 const logger =
   process.env.NODE_ENV !== 'test' && !process.env.INTEGRATION_ENV
-    ? bunyan.createLogger({ name: 'Accredited Programmes UI', stream: formatOut, level: 'debug' })
-    : bunyan.createLogger({ name: 'Accredited Programmes UI', stream: formatOut, level: 'fatal' })
+    ? bunyan.createLogger({ level: 'debug', name: 'Accredited Programmes UI', stream: formatOut })
+    : bunyan.createLogger({ level: 'fatal', name: 'Accredited Programmes UI', stream: formatOut })
 
 export default logger

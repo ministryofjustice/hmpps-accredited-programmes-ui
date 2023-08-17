@@ -13,10 +13,10 @@ const organisationFromPrison = (organisationId: Organisation['id'], prison: Pris
   const categories = prison.categories.sort().join('/')
 
   return {
+    address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
+    category: categories,
     id: organisationId,
     name: prison.prisonName,
-    category: categories,
-    address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
   }
 }
 

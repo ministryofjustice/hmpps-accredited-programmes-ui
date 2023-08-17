@@ -47,9 +47,9 @@ context('Refer', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prisoner = prisonerFactory.build({
+      dateOfBirth: '1980-01-01',
       firstName: 'Del',
       lastName: 'Hatton',
-      dateOfBirth: '1980-01-01',
     })
 
     cy.task('stubPrisoner', prisoner)

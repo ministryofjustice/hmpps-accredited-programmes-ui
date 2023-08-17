@@ -31,7 +31,6 @@ export default class CourseOfferingsController {
       const coursePresenter = courseUtils.presentCourse(course)
 
       res.render('courses/offerings/show', {
-        pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
         courseOffering,
         organisation: organisationUtils.presentOrganisationWithOfferingEmails(
@@ -39,6 +38,7 @@ export default class CourseOfferingsController {
           courseOffering,
           course.name,
         ),
+        pageHeading: coursePresenter.nameAndAlternateName,
       })
     }
   }

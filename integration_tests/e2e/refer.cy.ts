@@ -70,18 +70,18 @@ context('Refer', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prisoner = prisonerFactory.build({
+      dateOfBirth: '1980-01-01',
       firstName: 'Del',
       lastName: 'Hatton',
-      dateOfBirth: '1980-01-01',
     })
 
     const person = personFactory.build({
-      name: 'Del Hatton',
-      prisonNumber: prisoner.prisonerNumber,
       currentPrison: prisoner.prisonName,
       dateOfBirth: '1 January 1980',
       ethnicity: prisoner.ethnicity,
       gender: prisoner.gender,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
       religionOrBelief: prisoner.religion,
       setting: 'Custody',
     })

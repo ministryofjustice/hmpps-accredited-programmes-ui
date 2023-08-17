@@ -4,35 +4,35 @@ import sanitiseError from './sanitisedError'
 describe('sanitiseError', () => {
   it('omits the request headers from the error object ', () => {
     const error = {
+      message: 'Not Found',
       name: '',
-      status: 404,
       response: {
+        body: { content: 'hello' },
+        headers: {
+          date: 'Tue, 19 May 2020 15:16:20 GMT',
+        },
         req: {
-          method: 'GET',
-          url: 'https://test-api/endpoint?active=true',
           headers: {
             property: 'not for logging',
           },
-        },
-        headers: {
-          date: 'Tue, 19 May 2020 15:16:20 GMT',
+          method: 'GET',
+          url: 'https://test-api/endpoint?active=true',
         },
         status: 404,
         statusText: 'Not Found',
         text: { details: 'details' },
-        body: { content: 'hello' },
       },
-      message: 'Not Found',
       stack: 'stack description',
+      status: 404,
     } as unknown as UnsanitisedError
 
     expect(sanitiseError(error)).toEqual({
+      data: { content: 'hello' },
       headers: { date: 'Tue, 19 May 2020 15:16:20 GMT' },
       message: 'Not Found',
       stack: 'stack description',
       status: 404,
       text: { details: 'details' },
-      data: { content: 'hello' },
     })
   })
 

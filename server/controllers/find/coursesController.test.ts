@@ -38,8 +38,8 @@ describe('CoursesController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
-        pageHeading: 'List of accredited programmes',
         courses: sortedCourses.map(course => courseUtils.presentCourse(course)),
+        pageHeading: 'List of accredited programmes',
       })
 
       expect(courseService.getCourses).toHaveBeenCalledWith(token)
@@ -82,9 +82,9 @@ describe('CoursesController', () => {
         const coursePresenter = courseUtils.presentCourse(course)
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          pageHeading: coursePresenter.nameAndAlternateName,
           course: coursePresenter,
           organisationsTableData: organisationUtils.organisationTableRows(course, organisationsWithOfferingIds),
+          pageHeading: coursePresenter.nameAndAlternateName,
         })
       })
     })
@@ -127,9 +127,9 @@ describe('CoursesController', () => {
         const coursePresenter = courseUtils.presentCourse(course)
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          pageHeading: coursePresenter.nameAndAlternateName,
           course: coursePresenter,
           organisationsTableData: organisationUtils.organisationTableRows(course, existingOrganisationsWithOfferingIds),
+          pageHeading: coursePresenter.nameAndAlternateName,
         })
       })
     })

@@ -21,8 +21,8 @@ const audienceTags = (audiences: Array<CourseAudience>): Array<GovukFrontendTag>
     const colour: TagColour = audienceColourMap[audience.value]
 
     return {
-      text: audience.value,
       classes: `govuk-tag govuk-tag--${colour}`,
+      text: audience.value,
     }
   })
 }
@@ -31,10 +31,10 @@ const prerequisiteSummaryListRows = (
   prerequisites: Array<CoursePrerequisite>,
 ): Array<GovukFrontendSummaryListRowWithValue> => {
   const order: { [key: CoursePrerequisite['name']]: number } = {
-    Setting: 0,
     Gender: 1,
-    'Risk criteria': 2,
     'Learning needs': 3,
+    'Risk criteria': 2,
+    Setting: 0,
   }
 
   const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
@@ -64,8 +64,8 @@ const presentCourse = (course: Course): CoursePresenter => {
 
   return {
     ...course,
-    nameAndAlternateName,
     audienceTags: audienceTags(course.audiences),
+    nameAndAlternateName,
     prerequisiteSummaryListRows: prerequisiteSummaryListRows(course.coursePrerequisites),
   }
 }

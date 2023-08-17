@@ -5,8 +5,8 @@ import { AgentConfig } from '../config'
 
 describe('healthCheck', () => {
   const healthcheck = serviceCheckFactory('externalService', 'http://test-service.com/ping', new AgentConfig(), {
-    response: 100,
     deadline: 150,
+    response: 100,
   })
 
   let fakeServiceApi: nock.Scope

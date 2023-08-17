@@ -6,34 +6,34 @@ import type { CoursePrerequisite } from '@accredited-programmes/models'
 class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
   gender(description?: string) {
     return this.params({
-      name: 'Gender',
       description: description || 'Male only',
+      name: 'Gender',
     })
   }
 
   learningNeeds(description?: string) {
     return this.params({
-      name: 'Learning needs',
       description: description || 'Adapted for learning difficulties and challenges (LDC)',
+      name: 'Learning needs',
     })
   }
 
   riskCriteria(description?: string) {
     return this.params({
-      name: 'Risk criteria',
       description: description || 'High ESARA/SARA/OVP, High OGRS',
+      name: 'Risk criteria',
     })
   }
 
   setting(description?: string) {
     return this.params({
-      name: 'Setting',
       description: description || 'Custody',
+      name: 'Setting',
     })
   }
 }
 
 export default CoursePrerequisiteFactory.define(() => ({
-  name: faker.word.words(),
   description: faker.word.words(),
+  name: faker.word.words(),
 }))

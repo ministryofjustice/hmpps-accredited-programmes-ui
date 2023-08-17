@@ -38,10 +38,10 @@ describe('ReferralsController', () => {
       const coursePresenter = courseUtils.presentCourse(course)
 
       expect(response.render).toHaveBeenCalledWith('referrals/start', {
-        pageHeading: 'Make a referral',
         course: coursePresenter,
         courseOffering,
         organisation,
+        pageHeading: 'Make a referral',
       })
     })
 
@@ -69,9 +69,9 @@ describe('ReferralsController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new', {
-        pageHeading: "Enter the person's identifier",
         courseId,
         courseOfferingId,
+        pageHeading: "Enter the person's identifier",
       })
     })
   })

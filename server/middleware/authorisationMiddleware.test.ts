@@ -5,12 +5,12 @@ import authorisationMiddleware from './authorisationMiddleware'
 
 function createToken(authorities: string[]) {
   const payload = {
-    user_name: 'USER1',
-    scope: ['read', 'write'],
     auth_source: 'nomis',
     authorities,
-    jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
     client_id: 'clientid',
+    jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
+    scope: ['read', 'write'],
+    user_name: 'USER1',
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })

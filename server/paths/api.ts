@@ -9,10 +9,10 @@ const courseOfferingPath = courseOfferingsPath.path(':courseOfferingId')
 export default {
   courses: {
     index: coursesPath,
-    show: coursePath,
     offerings: {
       index: courseOfferingsPath,
       show: courseOfferingPath,
     },
+    show: coursePath,
   },
 }

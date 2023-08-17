@@ -15,12 +15,12 @@ export default function setUpWebSession(): Router {
   const router = express.Router()
   router.use(
     session({
-      store: new RedisStore({ client }),
-      cookie: { secure: config.https, sameSite: 'lax', maxAge: config.session.expiryMinutes * 60 * 1000 },
-      secret: config.session.secret,
+      cookie: { maxAge: config.session.expiryMinutes * 60 * 1000, sameSite: 'lax', secure: config.https },
       resave: false, // redis implements touch so shouldn't need this
-      saveUninitialized: false,
       rolling: true,
+      saveUninitialized: false,
+      secret: config.session.secret,
+      store: new RedisStore({ client }),
     }),
   )
 

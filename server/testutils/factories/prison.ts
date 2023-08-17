@@ -9,20 +9,20 @@ export default Factory.define<Prison>(({ params }) => {
   const prisonName = params.prisonName || `${county} (HMP)`
 
   return {
-    prisonId: faker.string.alpha({ length: 3, casing: 'upper' }),
-    prisonName,
     active: true,
-    male: faker.datatype.boolean(),
-    female: faker.datatype.boolean(),
-    contracted: faker.datatype.boolean(),
+    addresses: [prisonAddressFactory.build({ county })],
     categories: [faker.helpers.arrayElement(['A', 'B', 'C'])],
+    contracted: faker.datatype.boolean(),
+    female: faker.datatype.boolean(),
+    male: faker.datatype.boolean(),
+    operators: [{ name: faker.helpers.arrayElement(['H1P', 'WDMilco', 'IJE', 'Dharma Initiative']) }],
+    prisonId: faker.string.alpha({ casing: 'upper', length: 3 }),
+    prisonName,
     types: [
       {
         code: 'HMP',
         description: "Her Majesty's Prison",
       },
     ],
-    addresses: [prisonAddressFactory.build({ county })],
-    operators: [{ name: faker.helpers.arrayElement(['H1P', 'WDMilco', 'IJE', 'Dharma Initiative']) }],
   }
 })

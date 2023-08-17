@@ -17,9 +17,9 @@ export default class ReferralsController {
       const { courseId, courseOfferingId } = req.params
 
       res.render('referrals/new', {
-        pageHeading: "Enter the person's identifier",
         courseId,
         courseOfferingId,
+        pageHeading: "Enter the person's identifier",
       })
     }
   }
@@ -45,10 +45,10 @@ export default class ReferralsController {
       const coursePresenter = courseUtils.presentCourse(course)
 
       res.render('referrals/start', {
-        pageHeading: 'Make a referral',
         course: coursePresenter,
         courseOffering,
         organisation,
+        pageHeading: 'Make a referral',
       })
     }
   }

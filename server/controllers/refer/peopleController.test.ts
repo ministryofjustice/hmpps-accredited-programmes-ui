@@ -63,10 +63,10 @@ describe('PeopleController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/people/show', {
-        pageHeading: "Confirm Del Hatton's details",
-        personSummaryListRows: mockPersonSummaryList,
         courseId,
         courseOfferingId,
+        pageHeading: "Confirm Del Hatton's details",
+        personSummaryListRows: mockPersonSummaryList,
       })
     })
 

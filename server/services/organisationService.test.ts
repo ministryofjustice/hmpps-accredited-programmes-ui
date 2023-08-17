@@ -31,17 +31,17 @@ describe('OrganisationService', () => {
           const result = await service.getOrganisation(token, prison.prisonId)
 
           expect(result).toEqual({
-            id: prison.prisonId,
-            name: prison.prisonName,
-            category: 'A',
             address: {
               addressLine1: prisonAddress.addressLine1,
               addressLine2: prisonAddress.addressLine2,
-              town: prisonAddress.town,
+              country: prisonAddress.country,
               county: prisonAddress.county,
               postalCode: prisonAddress.postcode,
-              country: prisonAddress.country,
+              town: prisonAddress.town,
             },
+            category: 'A',
+            id: prison.prisonId,
+            name: prison.prisonName,
           })
 
           expect(prisonClientBuilder).toHaveBeenCalledWith(token)

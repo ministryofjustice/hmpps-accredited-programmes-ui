@@ -7,8 +7,8 @@ const controllers = (services: Services) => {
   const peopleController = new PeopleController(services.personService)
 
   return {
-    referralsController,
     peopleController,
+    referralsController,
   }
 }
 

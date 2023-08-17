@@ -8,10 +8,10 @@ const findPersonPath = peoplePath.path('search')
 const personPath = peoplePath.path(':prisonNumber')
 
 export default {
-  start: startReferralPath,
   new: newReferralPath,
   people: {
     find: findPersonPath,
     show: personPath,
   },
+  start: startReferralPath,
 }

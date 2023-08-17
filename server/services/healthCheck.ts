@@ -5,9 +5,9 @@ import config from '../config'
 import { serviceCheckFactory } from '../data'
 
 const healthCheckGauge = new promClient.Gauge({
-  name: 'upstream_healthcheck',
   help: 'health of an upstream dependency - 1 = healthy, 0 = not healthy',
   labelNames: ['service'],
+  name: 'upstream_healthcheck',
 })
 
 interface HealthCheckStatus {
@@ -28,15 +28,15 @@ function service(name: string, url: string, agentConfig: AgentConfig): HealthChe
   const check = serviceCheckFactory(name, url, agentConfig)
   return () =>
     check()
-      .then(result => ({ name, status: 'ok', message: result }))
-      .catch(err => ({ name, status: 'ERROR', message: err }))
+      .then(result => ({ message: result, name, status: 'ok' }))
+      .catch(err => ({ message: err, name, status: 'ERROR' }))
 }
 
 function addAppInfo(result: HealthCheckResult): HealthCheckResult {
   const buildInformation = getBuild()
   const buildInfo = {
-    uptime: process.uptime(),
     build: buildInformation,
+    uptime: process.uptime(),
     version: buildInformation && buildInformation.buildNumber,
   }
 
@@ -74,8 +74,8 @@ export default function healthCheck(callback: HealthCheckCallback, checks = apiC
     const allOk = checkResults.every(item => item.status === 'ok')
 
     const result = {
-      healthy: allOk,
       checks: checkResults.reduce(gatherCheckInfo, {}),
+      healthy: allOk,
     }
 
     checkResults.forEach(item => {
