@@ -16,7 +16,7 @@ ${components.map(component => component.definitions).join('\n')}
     await fs.writeFile(outputPath, output)
   }
 
-  private static async componentDirectoryPaths(): Promise<string[]> {
+  private static async componentDirectoryPaths(): Promise<Array<string>> {
     const componentsPath = 'node_modules/govuk-frontend/govuk/components'
     const componentsDirectoryContents = await fs.readdir(componentsPath)
 
@@ -30,7 +30,7 @@ ${components.map(component => component.definitions).join('\n')}
     return componentsDirectoryContentsStats.filter(item => item.stat.isDirectory()).map(item => item.componentPath)
   }
 
-  private static async components(): Promise<Component[]> {
+  private static async components(): Promise<Array<Component>> {
     const componentDirectoryPaths = await this.componentDirectoryPaths()
 
     return Promise.all(

@@ -58,14 +58,14 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
 
   // This return type dance is to avoid returning a Type directly so that
   // ESLint doesn't complain about a dependency cycle.
-  get typeIntroduced(): { name: string; macroOptions: Record<string, unknown>[] } | null {
+  get typeIntroduced(): { name: string; macroOptions: Array<Record<string, unknown>> } | null {
     switch (this.macroOptions.type) {
       case 'object':
         if (this.macroOptions.isComponent || !this.macroOptions.params) {
           return null
         }
         return {
-          macroOptions: this.macroOptions.params as Record<string, unknown>[],
+          macroOptions: this.macroOptions.params as Array<Record<string, unknown>>,
           name: this.containingTypeName + this.capitalisedName,
         }
       case 'array': {
@@ -82,7 +82,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
         } else {
           typeName = `${this.containingTypeName + this.capitalisedName}Element`
         }
-        return { macroOptions: this.macroOptions.params as Record<string, unknown>[], name: typeName }
+        return { macroOptions: this.macroOptions.params as Array<Record<string, unknown>>, name: typeName }
       }
       default:
         return null

@@ -4,12 +4,12 @@ import Property from './property'
 export default class Type {
   constructor(
     private readonly name: string,
-    private readonly macroOptions: Record<string, unknown>[],
+    private readonly macroOptions: Array<Record<string, unknown>>,
   ) {}
 
   get definition(): string {
-    const handledNestedObjectPropertyNames: string[] = []
-    const definitionLines: string[] = []
+    const handledNestedObjectPropertyNames: Array<string> = []
+    const definitionLines: Array<string> = []
 
     this.properties.forEach(property => {
       let include = true
@@ -32,9 +32,9 @@ export default class Type {
 }\n`
   }
 
-  get flattenedWithIntroducedTypes(): Type[] {
-    let types: Type[] = []
-    let handledNestedTypeNames: string[] = []
+  get flattenedWithIntroducedTypes(): Array<Type> {
+    let types: Array<Type> = []
+    let handledNestedTypeNames: Array<string> = []
 
     this.properties.forEach(property => {
       let type: Type | null = null
@@ -70,7 +70,7 @@ export default class Type {
     return ''
   }
 
-  private get properties(): Property[] {
+  private get properties(): Array<Property> {
     return this.macroOptions.map(val => new Property(this.name, val)).filter(prop => prop.isIncluded)
   }
 

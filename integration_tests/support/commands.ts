@@ -5,7 +5,7 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   return cy.task<string>('getSignInUrl').then((url: string) => cy.visit(url, options))
 })
 
-const logAccessibilityViolations = (violations: Result[]) => {
+const logAccessibilityViolations = (violations: Array<Result>) => {
   cy.task(
     'log',
     `${violations.length} accessibility violation${violations.length === 1 ? '' : 's'} ${

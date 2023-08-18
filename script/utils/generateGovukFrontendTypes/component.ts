@@ -4,7 +4,7 @@ import { kebabCaseToUpperCamelCase } from './utils'
 export default class Component {
   constructor(
     private readonly directoryName: string,
-    private readonly macroOptions: Record<string, unknown>[],
+    private readonly macroOptions: Array<Record<string, unknown>>,
   ) {}
 
   get definitions(): string {
@@ -15,7 +15,7 @@ export default class Component {
 ${this.types.map(type => type.definition).join('\n')}`
   }
 
-  private get types(): Type[] {
+  private get types(): Array<Type> {
     return new Type(`GovukFrontend${this.upperCamelCaseComponentName}`, this.macroOptions).flattenedWithIntroducedTypes
   }
 

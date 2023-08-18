@@ -22,7 +22,7 @@ type PrisonOperator = {
 type Prison = {
   prisonId: string
   prisonName: string
-  categories: string[]
+  categories: Array<string>
   active: boolean
   male: boolean
   female: boolean

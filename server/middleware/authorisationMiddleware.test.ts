@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 import authorisationMiddleware from './authorisationMiddleware'
 
-function createToken(authorities: string[]) {
+function createToken(authorities: Array<string>) {
   const payload = {
     auth_source: 'nomis',
     authorities,
@@ -20,7 +20,7 @@ describe('authorisationMiddleware', () => {
   let req: Request
   const next = jest.fn()
 
-  function createResWithToken({ authorities }: { authorities: string[] }): Response {
+  function createResWithToken({ authorities }: { authorities: Array<string> }): Response {
     return {
       locals: {
         user: {
