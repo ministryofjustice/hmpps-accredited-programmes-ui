@@ -21,7 +21,7 @@ declare global {
     }
 
     interface Request {
-      id: string
+      id: string // eslint-disable-next-line @typescript-eslint/member-ordering
       logout(done: (err: unknown) => void): void
       verified?: boolean
     }

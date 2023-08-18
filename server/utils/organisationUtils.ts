@@ -14,9 +14,9 @@ export default class OrganisationUtils {
     const categories = prison.categories.sort().join('/')
 
     return {
+      id: organisationId, // eslint-disable-next-line sort-keys
       address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
       category: categories,
-      id: organisationId,
       name: prison.prisonName,
     }
   }

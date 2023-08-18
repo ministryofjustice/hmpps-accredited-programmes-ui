@@ -31,6 +31,7 @@ describe('OrganisationService', () => {
           const result = await service.getOrganisation(token, prison.prisonId)
 
           expect(result).toEqual({
+            id: prison.prisonId, // eslint-disable-next-line sort-keys
             address: {
               addressLine1: prisonAddress.addressLine1,
               addressLine2: prisonAddress.addressLine2,
@@ -40,7 +41,6 @@ describe('OrganisationService', () => {
               town: prisonAddress.town,
             },
             category: 'A',
-            id: prison.prisonId,
             name: prison.prisonName,
           })
 

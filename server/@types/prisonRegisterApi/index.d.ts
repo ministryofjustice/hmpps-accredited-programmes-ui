@@ -6,11 +6,11 @@ type PrisonType = {
 }
 
 type PrisonAddress = {
+  id: number // eslint-disable-next-line @typescript-eslint/member-ordering
   addressLine1: string | null
   addressLine2: string | null
   country: string
   county: string | null
-  id: number
   postcode: string
   town: string
 }

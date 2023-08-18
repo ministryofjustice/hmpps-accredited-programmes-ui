@@ -18,9 +18,9 @@ describe('OrganisationUtils', () => {
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
       expect(OrganisationUtils.organisationFromPrison('an-ID', prison)).toEqual({
+        id: 'an-ID', // eslint-disable-next-line sort-keys
         address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
         category: 'A/B',
-        id: 'an-ID',
         name: prison.prisonName,
       })
     })

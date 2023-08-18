@@ -4,7 +4,7 @@ import { Factory } from 'fishery'
 import type { CourseAudience } from '@accredited-programmes/models'
 
 export default Factory.define<CourseAudience>(() => ({
-  id: faker.string.uuid(),
+  id: faker.string.uuid(), // eslint-disable-next-line sort-keys
   value: faker.helpers.arrayElement([
     'Extremism offence',
     'Gang offence',

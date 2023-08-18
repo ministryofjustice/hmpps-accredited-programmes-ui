@@ -11,6 +11,7 @@ export default Factory.define<Course>(({ params }) => {
   const name = `${StringUtils.convertToTitleCase(faker.color.human())} Course`
 
   return {
+    id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     alternateName: StringUtils.initialiseTitle(params.name || name),
     audiences: buildListBetween(courseAudienceFactory, { max: 3, min: 1 }),
     coursePrerequisites: [
@@ -21,7 +22,6 @@ export default Factory.define<Course>(({ params }) => {
       coursePrerequisiteFactory.setting().build(),
     ],
     description: faker.lorem.sentences(),
-    id: faker.string.uuid(),
     name,
   }
 })
