@@ -120,7 +120,7 @@
     ],
     "no-only-tests/no-only-tests": "error",
     "no-unused-vars": [
-      "warn",
+      "error",
       {
         "argsIgnorePattern": "res|next|^err|_",
         "ignoreRestSiblings": true
