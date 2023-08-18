@@ -1,32 +1,40 @@
-const properCase = (word: string): string =>
-  word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
+export default class StringUtils {
+  static convertToTitleCase(sentence: string | null): string {
+    return sentence === null || StringUtils.isBlank(sentence)
+      ? ''
+      : sentence.split(' ').map(StringUtils.properCaseName).join(' ')
+  }
 
-const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
+  static initialiseName(fullName?: string): string | null {
+    // this check is for the authError page
+    if (!fullName) return null
 
-/**
- * Converts a name (first name, last name, middle name, etc.) to proper case equivalent, handling double-barreled names
- * correctly (i.e. each part in a double-barreled is converted to proper case).
- * @param name name to be converted.
- * @returns name converted to proper case.
- */
-const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
+    const array = fullName.split(' ')
+    return `${array[0][0]}. ${array.reverse()[0]}`
+  }
 
-const convertToTitleCase = (sentence: string | null): string =>
-  sentence === null || isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
+  static initialiseTitle(sentence: string): string {
+    return sentence
+      .split(' ')
+      .map(word => word[0].toUpperCase())
+      .join('')
+  }
 
-const initialiseName = (fullName?: string): string | null => {
-  // this check is for the authError page
-  if (!fullName) return null
+  private static isBlank(str: string): boolean {
+    return !str || /^\s*$/.test(str)
+  }
 
-  const array = fullName.split(' ')
-  return `${array[0][0]}. ${array.reverse()[0]}`
+  private static properCase(word: string): string {
+    return word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
+  }
+
+  /**
+   * Converts a name (first name, last name, middle name, etc.) to proper case equivalent, handling double-barreled names
+   * correctly (i.e. each part in a double-barreled is converted to proper case).
+   * @param name name to be converted.
+   * @returns name converted to proper case.
+   */
+  private static properCaseName(name: string): string {
+    return StringUtils.isBlank(name) ? '' : name.split('-').map(StringUtils.properCase).join('-')
+  }
 }
-
-const initialiseTitle = (sentence: string): string => {
-  return sentence
-    .split(' ')
-    .map(word => word[0].toUpperCase())
-    .join('')
-}
-
-export default { convertToTitleCase, initialiseName, initialiseTitle }

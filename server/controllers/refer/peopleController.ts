@@ -3,14 +3,14 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { PersonService } from '../../services'
-import { personUtils, typeUtils } from '../../utils'
+import { PersonUtils, TypeUtils } from '../../utils'
 
 export default class PeopleController {
   constructor(private readonly personService: PersonService) {}
 
   find(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
+      TypeUtils.assertHasUser(req)
 
       const { courseId, courseOfferingId } = req.params
       const { prisonNumber } = req.body
@@ -21,7 +21,7 @@ export default class PeopleController {
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
+      TypeUtils.assertHasUser(req)
 
       const { courseId, courseOfferingId } = req.params
       const person = await this.personService.getPerson(req.user.token, req.params.prisonNumber)
@@ -33,10 +33,10 @@ export default class PeopleController {
       }
 
       res.render('referrals/people/show', {
-        pageHeading: `Confirm ${person.name}'s details`,
-        personSummaryListRows: personUtils.summaryListRows(person),
         courseId,
         courseOfferingId,
+        pageHeading: `Confirm ${person.name}'s details`,
+        personSummaryListRows: PersonUtils.summaryListRows(person),
       })
     }
   }

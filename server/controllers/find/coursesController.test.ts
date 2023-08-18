@@ -6,7 +6,7 @@ import { when } from 'jest-when'
 import CoursesController from './coursesController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
-import { courseUtils, organisationUtils } from '../../utils'
+import { CourseUtils, OrganisationUtils } from '../../utils'
 import type { Course, CourseOffering } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
@@ -38,8 +38,8 @@ describe('CoursesController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
+        courses: sortedCourses.map(course => CourseUtils.presentCourse(course)),
         pageHeading: 'List of accredited programmes',
-        courses: sortedCourses.map(course => courseUtils.presentCourse(course)),
       })
 
       expect(courseService.getCourses).toHaveBeenCalledWith(token)
@@ -79,12 +79,12 @@ describe('CoursesController', () => {
           expect(organisationService.getOrganisation).toHaveBeenCalledWith(token, organisation.id),
         )
 
-        const coursePresenter = courseUtils.presentCourse(course)
+        const coursePresenter = CourseUtils.presentCourse(course)
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          pageHeading: coursePresenter.nameAndAlternateName,
           course: coursePresenter,
-          organisationsTableData: organisationUtils.organisationTableRows(course, organisationsWithOfferingIds),
+          organisationsTableData: OrganisationUtils.organisationTableRows(course, organisationsWithOfferingIds),
+          pageHeading: coursePresenter.nameAndAlternateName,
         })
       })
     })
@@ -124,12 +124,12 @@ describe('CoursesController', () => {
           expect(organisationService.getOrganisation).toHaveBeenCalledWith(token, organisation.id),
         )
 
-        const coursePresenter = courseUtils.presentCourse(course)
+        const coursePresenter = CourseUtils.presentCourse(course)
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          pageHeading: coursePresenter.nameAndAlternateName,
           course: coursePresenter,
-          organisationsTableData: organisationUtils.organisationTableRows(course, existingOrganisationsWithOfferingIds),
+          organisationsTableData: OrganisationUtils.organisationTableRows(course, existingOrganisationsWithOfferingIds),
+          pageHeading: coursePresenter.nameAndAlternateName,
         })
       })
     })

@@ -4,18 +4,16 @@ import { Factory } from 'fishery'
 import courseAudienceFactory from './courseAudience'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import buildListBetween from './factoryHelpers'
-import { stringUtils } from '../../utils'
+import { StringUtils } from '../../utils'
 import type { Course } from '@accredited-programmes/models'
 
 export default Factory.define<Course>(({ params }) => {
-  const name = `${stringUtils.convertToTitleCase(faker.color.human())} Course`
+  const name = `${StringUtils.convertToTitleCase(faker.color.human())} Course`
 
   return {
-    id: faker.string.uuid(),
-    name,
-    alternateName: stringUtils.initialiseTitle(params.name || name),
-    description: faker.lorem.sentences(),
-    audiences: buildListBetween(courseAudienceFactory, { min: 1, max: 3 }),
+    id: faker.string.uuid(), // eslint-disable-next-line sort-keys
+    alternateName: StringUtils.initialiseTitle(params.name || name),
+    audiences: buildListBetween(courseAudienceFactory, { max: 3, min: 1 }),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),
@@ -23,5 +21,7 @@ export default Factory.define<Course>(({ params }) => {
       coursePrerequisiteFactory.riskCriteria().build(),
       coursePrerequisiteFactory.setting().build(),
     ],
+    description: faker.lorem.sentences(),
+    name,
   }
 })

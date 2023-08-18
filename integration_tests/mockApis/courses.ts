@@ -12,35 +12,9 @@ export default {
         url: apiPaths.courses.show({ courseId: course.id }),
       },
       response: {
-        status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: course,
-      },
-    }),
-
-  stubCourses: (courses: Array<Course>): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        url: apiPaths.courses.index({}),
-      },
-      response: {
         status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: courses,
-      },
-    }),
-
-  stubCourseOfferings: (args: { courseId: Course['id']; courseOfferings: Array<CourseOffering> }): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        url: apiPaths.courses.offerings.index({ courseId: args.courseId }),
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: args.courseOfferings,
       },
     }),
 
@@ -51,9 +25,35 @@ export default {
         url: apiPaths.courses.offerings.show({ courseId: args.courseId, courseOfferingId: args.courseOffering.id }),
       },
       response: {
-        status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.courseOffering,
+        status: 200,
+      },
+    }),
+
+  stubCourseOfferings: (args: { courseId: Course['id']; courseOfferings: Array<CourseOffering> }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.courses.offerings.index({ courseId: args.courseId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.courseOfferings,
+        status: 200,
+      },
+    }),
+
+  stubCourses: (courses: Array<Course>): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.courses.index({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courses,
+        status: 200,
       },
     }),
 }

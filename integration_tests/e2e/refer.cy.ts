@@ -6,7 +6,7 @@ import {
   prisonFactory,
   prisonerFactory,
 } from '../../server/testutils/factories'
-import { organisationUtils } from '../../server/utils'
+import { OrganisationUtils } from '../../server/utils'
 import Page from '../pages/page'
 import ConfirmPersonPage from '../pages/refer/confirmPerson'
 import FindPersonPage from '../pages/refer/findPerson'
@@ -25,7 +25,7 @@ context('Refer', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
     cy.task('stubCourse', course)
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
@@ -70,18 +70,18 @@ context('Refer', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prisoner = prisonerFactory.build({
+      dateOfBirth: '1980-01-01',
       firstName: 'Del',
       lastName: 'Hatton',
-      dateOfBirth: '1980-01-01',
     })
 
     const person = personFactory.build({
-      name: 'Del Hatton',
-      prisonNumber: prisoner.prisonerNumber,
       currentPrison: prisoner.prisonName,
       dateOfBirth: '1 January 1980',
       ethnicity: prisoner.ethnicity,
       gender: prisoner.gender,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
       religionOrBelief: prisoner.religion,
       setting: 'Custody',
     })

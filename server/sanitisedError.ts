@@ -1,12 +1,12 @@
 import type { ResponseError } from 'superagent'
 
 interface SanitisedError {
-  text?: string
-  status?: number
-  headers?: unknown
-  data?: unknown
-  stack: string | undefined
   message: string
+  stack: string | undefined
+  data?: unknown
+  headers?: unknown
+  status?: number
+  text?: string
 }
 
 export type UnsanitisedError = ResponseError
@@ -14,12 +14,12 @@ export type UnsanitisedError = ResponseError
 export default function sanitiseError(error: UnsanitisedError): SanitisedError {
   if (error.response) {
     return {
-      text: error.response.text,
-      status: error.response.status,
-      headers: error.response.headers,
       data: error.response.body,
+      headers: error.response.headers,
       message: error.message,
       stack: error.stack,
+      status: error.response.status,
+      text: error.response.text,
     }
   }
   return {

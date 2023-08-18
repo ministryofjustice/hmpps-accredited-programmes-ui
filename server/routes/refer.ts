@@ -2,10 +2,10 @@ import type { Router } from 'express'
 
 import type { Controllers } from '../controllers'
 import { referPaths } from '../paths'
-import { routeUtils } from '../utils'
+import { RouteUtils } from '../utils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
-  const { get, post } = routeUtils.actions(router)
+  const { get, post } = RouteUtils.actions(router)
   const { referralsController, peopleController } = controllers
 
   get(referPaths.start.pattern, referralsController.start())

@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService } from '../../services'
-import { courseUtils, organisationUtils, typeUtils } from '../../utils'
+import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
 export default class CoursesController {
@@ -12,22 +12,22 @@ export default class CoursesController {
 
   index(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
+      TypeUtils.assertHasUser(req)
 
       const courses = await this.courseService.getCourses(req.user.token)
 
       res.render('courses/index', {
-        pageHeading: 'List of accredited programmes',
         courses: courses
           .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
-          .map(course => courseUtils.presentCourse(course)),
+          .map(course => CourseUtils.presentCourse(course)),
+        pageHeading: 'List of accredited programmes',
       })
     }
   }
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
+      TypeUtils.assertHasUser(req)
 
       const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
       const offerings = await this.courseService.getOfferingsByCourse(req.user.token, course.id)
@@ -37,7 +37,7 @@ export default class CoursesController {
       })
 
       const organisations: Array<Organisation> = (await Promise.all(unresolvedOrganisationPromises)).filter(
-        typeUtils.isNotNull<Organisation>,
+        TypeUtils.isNotNull<Organisation>,
       )
 
       const organisationsWithOfferingIds = organisations.map(organisation => {
@@ -45,14 +45,14 @@ export default class CoursesController {
         return { ...organisation, courseOfferingId: courseOffering.id }
       })
 
-      const organisationsTableData = organisationUtils.organisationTableRows(course, organisationsWithOfferingIds)
+      const organisationsTableData = OrganisationUtils.organisationTableRows(course, organisationsWithOfferingIds)
 
-      const coursePresenter = courseUtils.presentCourse(course)
+      const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/show', {
-        pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
         organisationsTableData,
+        pageHeading: coursePresenter.nameAndAlternateName,
       })
     }
   }

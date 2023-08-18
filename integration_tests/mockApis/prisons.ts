@@ -12,9 +12,9 @@ export default {
         url: prisonRegisterApiPaths.prisons.show({ prisonId: prison.prisonId }),
       },
       response: {
-        status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: prison,
+        status: 200,
       },
     }),
 }

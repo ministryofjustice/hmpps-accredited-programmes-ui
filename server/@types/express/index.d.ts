@@ -1,8 +1,8 @@
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
-    returnTo: string
     nowInMinutes: number
+    returnTo: string
   }
 }
 
@@ -15,15 +15,15 @@ declare module 'express' {
 declare global {
   namespace Express {
     interface User {
-      username: string
-      token: string
       authSource: string
+      token: string
+      username: string
     }
 
     interface Request {
-      verified?: boolean
-      id: string
+      id: string // eslint-disable-next-line @typescript-eslint/member-ordering
       logout(done: (err: unknown) => void): void
+      verified?: boolean
     }
 
     type RequestWithUser = Request & { user: Express.User }

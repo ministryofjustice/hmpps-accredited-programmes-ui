@@ -10,10 +10,9 @@ export default class TokenStore {
     })
   }
 
-  private async ensureConnected() {
-    if (!this.client.isOpen) {
-      await this.client.connect()
-    }
+  public async getToken(key: string): Promise<string | null> {
+    await this.ensureConnected()
+    return this.client.get(`${this.prefix}${key}`)
   }
 
   public async setToken(key: string, token: string, durationSeconds: number): Promise<void> {
@@ -21,8 +20,9 @@ export default class TokenStore {
     await this.client.set(`${this.prefix}${key}`, token, { EX: durationSeconds })
   }
 
-  public async getToken(key: string): Promise<string | null> {
-    await this.ensureConnected()
-    return this.client.get(`${this.prefix}${key}`)
+  private async ensureConnected() {
+    if (!this.client.isOpen) {
+      await this.client.connect()
+    }
   }
 }

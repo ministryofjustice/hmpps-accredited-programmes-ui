@@ -7,8 +7,8 @@ const courseOfferingPath = coursePath.path('offerings/:courseOfferingId')
 
 export default {
   index: coursesPath,
-  show: coursePath,
   offerings: {
     show: courseOfferingPath,
   },
+  show: coursePath,
 }

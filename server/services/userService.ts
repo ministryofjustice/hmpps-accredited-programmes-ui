@@ -1,9 +1,9 @@
 import type { HmppsAuthClient, RestClientBuilderWithoutToken } from '../data'
-import { stringUtils } from '../utils'
+import { StringUtils } from '../utils'
 
 interface UserDetails {
-  name: string
   displayName: string
+  name: string
 }
 
 export default class UserService {
@@ -12,6 +12,6 @@ export default class UserService {
   async getUser(token: string): Promise<UserDetails> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const user = await hmppsAuthClient.getUser(token)
-    return { ...user, displayName: stringUtils.convertToTitleCase(user.name) }
+    return { ...user, displayName: StringUtils.convertToTitleCase(user.name) }
   }
 }

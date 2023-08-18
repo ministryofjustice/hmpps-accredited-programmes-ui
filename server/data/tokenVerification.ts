@@ -4,7 +4,7 @@ import superagent from 'superagent'
 import logger from '../../logger'
 import config from '../config'
 import sanitiseError from '../sanitisedError'
-import { typeUtils } from '../utils'
+import { TypeUtils } from '../utils'
 
 function getApiClientToken(token: string) {
   return superagent
@@ -20,7 +20,7 @@ function getApiClientToken(token: string) {
 type TokenVerifier = (request: Request) => Promise<boolean | void>
 
 const verifyToken: TokenVerifier = async request => {
-  typeUtils.assertHasUser(request)
+  TypeUtils.assertHasUser(request)
   const { user, verified } = request
 
   if (!config.apis.tokenVerification.enabled) {

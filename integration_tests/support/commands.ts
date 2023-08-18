@@ -5,7 +5,7 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   return cy.task<string>('getSignInUrl').then((url: string) => cy.visit(url, options))
 })
 
-const logAccessibilityViolations = (violations: Result[]) => {
+const logAccessibilityViolations = (violations: Array<Result>) => {
   cy.task(
     'log',
     `${violations.length} accessibility violation${violations.length === 1 ? '' : 's'} ${
@@ -14,9 +14,9 @@ const logAccessibilityViolations = (violations: Result[]) => {
   )
 
   const violationsData = violations.map(({ id, impact, description, nodes }) => ({
+    description,
     id,
     impact,
-    description,
     nodes: nodes.length,
   }))
 
@@ -25,6 +25,6 @@ const logAccessibilityViolations = (violations: Result[]) => {
 
 Cypress.Commands.add('checkAccessibility', () => {
   cy.injectAxe()
-  cy.configureAxe({ rules: [{ id: 'region', selector: '.govuk-phase-banner', enabled: false }] })
+  cy.configureAxe({ rules: [{ enabled: false, id: 'region', selector: '.govuk-phase-banner' }] })
   cy.checkA11y(undefined, undefined, logAccessibilityViolations)
 })

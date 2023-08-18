@@ -14,8 +14,8 @@ type HasHtmlString = {
 type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
 
 type CoursePresenter = Course & {
-  nameAndAlternateName: string
   audienceTags: Array<Tag>
+  nameAndAlternateName: string
   prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithValue>
 }
 

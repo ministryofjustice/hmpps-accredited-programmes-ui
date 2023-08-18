@@ -3,7 +3,7 @@ import createError from 'http-errors'
 import PersonService from './personService'
 import { PrisonerClient } from '../data'
 import { personFactory, prisonerFactory } from '../testutils/factories'
-import { personUtils } from '../utils'
+import { PersonUtils } from '../utils'
 
 jest.mock('../data/prisonerClient')
 jest.mock('../utils/personUtils')
@@ -29,7 +29,7 @@ describe('PersonService', () => {
         const person = personFactory.build()
 
         prisonerClient.getPrisoner.mockResolvedValue(prisoner)
-        ;(personUtils.personFromPrisoner as jest.Mock).mockReturnValue(person)
+        ;(PersonUtils.personFromPrisoner as jest.Mock).mockReturnValue(person)
 
         const result = await service.getPerson(token, prisoner.prisonerNumber)
 

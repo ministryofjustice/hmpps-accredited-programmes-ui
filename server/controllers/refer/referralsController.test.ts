@@ -6,7 +6,7 @@ import createError from 'http-errors'
 import ReferralsController from './referralsController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
-import { courseUtils } from '../../utils'
+import { CourseUtils } from '../../utils'
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -35,13 +35,13 @@ describe('ReferralsController', () => {
       const requestHandler = referralsController.start()
       await requestHandler(request, response, next)
 
-      const coursePresenter = courseUtils.presentCourse(course)
+      const coursePresenter = CourseUtils.presentCourse(course)
 
       expect(response.render).toHaveBeenCalledWith('referrals/start', {
-        pageHeading: 'Make a referral',
         course: coursePresenter,
         courseOffering,
         organisation,
+        pageHeading: 'Make a referral',
       })
     })
 
@@ -69,9 +69,9 @@ describe('ReferralsController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new', {
-        pageHeading: "Enter the person's identifier",
         courseId,
         courseOfferingId,
+        pageHeading: "Enter the person's identifier",
       })
     })
   })

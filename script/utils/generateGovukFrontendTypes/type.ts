@@ -4,16 +4,12 @@ import Property from './property'
 export default class Type {
   constructor(
     private readonly name: string,
-    private readonly macroOptions: Record<string, unknown>[],
+    private readonly macroOptions: Array<Record<string, unknown>>,
   ) {}
 
-  private get properties(): Property[] {
-    return this.macroOptions.map(val => new Property(this.name, val)).filter(prop => prop.isIncluded)
-  }
-
   get definition(): string {
-    const handledNestedObjectPropertyNames: string[] = []
-    const definitionLines: string[] = []
+    const handledNestedObjectPropertyNames: Array<string> = []
+    const definitionLines: Array<string> = []
 
     this.properties.forEach(property => {
       let include = true
@@ -36,17 +32,9 @@ export default class Type {
 }\n`
   }
 
-  private get preamble(): string {
-    // See Property.prototype.isTableRows
-    if (this.name === 'GovukFrontendTableCell') {
-      return 'type GovukFrontendTableRow = GovukFrontendTableCell[]\n\n'
-    }
-    return ''
-  }
-
-  get flattenedWithIntroducedTypes(): Type[] {
-    let types: Type[] = []
-    let handledNestedTypeNames: string[] = []
+  get flattenedWithIntroducedTypes(): Array<Type> {
+    let types: Array<Type> = []
+    let handledNestedTypeNames: Array<string> = []
 
     this.properties.forEach(property => {
       let type: Type | null = null
@@ -72,6 +60,18 @@ export default class Type {
     })
 
     return [this, ...types]
+  }
+
+  private get preamble(): string {
+    // See Property.prototype.isTableRows
+    if (this.name === 'GovukFrontendTableCell') {
+      return 'type GovukFrontendTableRow = GovukFrontendTableCell[]\n\n'
+    }
+    return ''
+  }
+
+  private get properties(): Array<Property> {
+    return this.macroOptions.map(val => new Property(this.name, val)).filter(prop => prop.isIncluded)
   }
 
   private typeForNestedObjectProperty(nestedObjectProperty: NestedObjectProperty): Type {

@@ -9,8 +9,8 @@ describe('healthCheck', () => {
       const callback: HealthCheckCallback = result => {
         expect(result).toEqual(
           expect.objectContaining({
-            healthy: true,
             checks: { check1: 'some message', check2: 'some message' },
+            healthy: true,
           }),
         )
         done()
@@ -27,8 +27,8 @@ describe('healthCheck', () => {
       const callback: HealthCheckCallback = result => {
         expect(result).toEqual(
           expect.objectContaining({
-            healthy: false,
             checks: { check1: 'some message', check2: 'some error' },
+            healthy: false,
           }),
         )
         done()
@@ -42,17 +42,17 @@ describe('healthCheck', () => {
 function successfulCheck(name: string): HealthCheckService {
   return () =>
     Promise.resolve({
+      message: 'some message',
       name: `${name}`,
       status: 'ok',
-      message: 'some message',
     })
 }
 
 function erroredCheck(name: string): HealthCheckService {
   return () =>
     Promise.resolve({
+      message: 'some error',
       name: `${name}`,
       status: 'ERROR',
-      message: 'some error',
     })
 }

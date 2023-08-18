@@ -4,11 +4,11 @@ import findRoutes from './find'
 import referRoutes from './refer'
 import config from '../config'
 import type { Controllers } from '../controllers'
-import { routeUtils } from '../utils'
+import { RouteUtils } from '../utils'
 
 export default function routes(controllers: Controllers): Router {
   const router = Router()
-  const { get } = routeUtils.actions(router)
+  const { get } = RouteUtils.actions(router)
 
   const { dashboardController } = controllers
   get('/', dashboardController.index())

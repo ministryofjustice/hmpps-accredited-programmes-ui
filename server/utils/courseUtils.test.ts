@@ -1,11 +1,10 @@
-import courseUtils from './courseUtils'
+import CourseUtils from './courseUtils'
 import { courseAudienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
 
-describe('courseUtils', () => {
+describe('CourseUtils', () => {
   describe('presentCourse', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
-        name: 'Lime Course',
         alternateName: 'LC',
         audiences: [
           courseAudienceFactory.build({ value: 'Intimate partner violence offence' }),
@@ -17,21 +16,22 @@ describe('courseUtils', () => {
           coursePrerequisiteFactory.riskCriteria().build(),
           coursePrerequisiteFactory.setting().build(),
         ],
+        name: 'Lime Course',
       })
 
-      expect(courseUtils.presentCourse(course)).toEqual({
+      expect(CourseUtils.presentCourse(course)).toEqual({
         ...course,
-        nameAndAlternateName: 'Lime Course (LC)',
         audienceTags: [
           {
-            text: 'Intimate partner violence offence',
             classes: 'govuk-tag govuk-tag--green',
+            text: 'Intimate partner violence offence',
           },
           {
-            text: 'General violence offence',
             classes: 'govuk-tag govuk-tag--yellow',
+            text: 'General violence offence',
           },
         ],
+        nameAndAlternateName: 'Lime Course (LC)',
         prerequisiteSummaryListRows: [
           {
             key: { text: 'Setting' },
@@ -57,7 +57,7 @@ describe('courseUtils', () => {
       it('combines the descriptions of the matching prerequisites', () => {
         const riskCriteriaPrerequisites = coursePrerequisiteFactory.riskCriteria().buildList(2)
         const course = courseFactory.build({ coursePrerequisites: riskCriteriaPrerequisites })
-        const coursePresenter = courseUtils.presentCourse(course)
+        const coursePresenter = CourseUtils.presentCourse(course)
         const riskCriteriaSummaryListRows = coursePresenter.prerequisiteSummaryListRows[2]
 
         expect(riskCriteriaSummaryListRows).toEqual({
@@ -71,7 +71,7 @@ describe('courseUtils', () => {
       it('just uses the `name` as the `nameAndAlternateName`', () => {
         const course = courseFactory.build({ alternateName: null })
 
-        expect(courseUtils.presentCourse(course).nameAndAlternateName).toEqual(course.name)
+        expect(CourseUtils.presentCourse(course).nameAndAlternateName).toEqual(course.name)
       })
     })
   })

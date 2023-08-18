@@ -3,14 +3,14 @@ import jwt from 'jsonwebtoken'
 
 import authorisationMiddleware from './authorisationMiddleware'
 
-function createToken(authorities: string[]) {
+function createToken(authorities: Array<string>) {
   const payload = {
-    user_name: 'USER1',
-    scope: ['read', 'write'],
     auth_source: 'nomis',
     authorities,
-    jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
     client_id: 'clientid',
+    jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
+    scope: ['read', 'write'],
+    user_name: 'USER1',
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })
@@ -20,7 +20,7 @@ describe('authorisationMiddleware', () => {
   let req: Request
   const next = jest.fn()
 
-  function createResWithToken({ authorities }: { authorities: string[] }): Response {
+  function createResWithToken({ authorities }: { authorities: Array<string> }): Response {
     return {
       locals: {
         user: {

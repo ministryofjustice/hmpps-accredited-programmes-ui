@@ -12,11 +12,11 @@ stubs.push(async () =>
       url: apiPaths.courses.index({}),
     },
     response: {
-      status: 200,
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
       jsonBody: courses,
+      status: 200,
     },
   }),
 )
@@ -29,11 +29,11 @@ courses.forEach(course => {
         url: apiPaths.courses.show({ courseId: course.id }),
       },
       response: {
-        status: 200,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: course,
+        status: 200,
       },
     }),
   )
@@ -45,11 +45,11 @@ courses.forEach(course => {
         url: apiPaths.courses.offerings.index({ courseId: course.id }),
       },
       response: {
-        status: 200,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: courseOfferings,
+        status: 200,
       },
     }),
   )
@@ -62,9 +62,9 @@ courses.forEach(course => {
           url: apiPaths.courses.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
         },
         response: {
-          status: 200,
           headers: { 'Content-Type': 'application/json;charset=UTF-8' },
           jsonBody: courseOffering,
+          status: 200,
         },
       }),
     )

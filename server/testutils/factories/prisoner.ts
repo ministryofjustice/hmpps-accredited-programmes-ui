@@ -13,13 +13,13 @@ export default Factory.define<Prisoner>(({ params }) => {
   const day = dateOfBirth.getDate()
 
   return {
-    firstName: faker.person.firstName(),
-    lastName: faker.person.lastName(),
-    prisonerNumber: faker.string.alphanumeric({ length: 7 }),
     dateOfBirth: [year, month, day].join('-'),
     ethnicity: faker.lorem.word(),
+    firstName: faker.person.firstName(),
     gender: faker.person.gender(),
-    religion: faker.lorem.word(),
+    lastName: faker.person.lastName(),
     prisonName,
+    prisonerNumber: faker.string.alphanumeric({ length: 7 }),
+    religion: faker.lorem.word(),
   }
 })

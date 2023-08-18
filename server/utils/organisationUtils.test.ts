@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 
-import organisationUtils from './organisationUtils'
+import OrganisationUtils from './organisationUtils'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -11,24 +11,24 @@ import {
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
-describe('organisationUtils', () => {
+describe('OrganisationUtils', () => {
   describe('organisationFromPrison', () => {
     it('returns an organisation given an ID and a prison, sorting and joining its categories into a string', () => {
       const prison = prisonFactory.build({ categories: ['B', 'A'] })
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
-      expect(organisationUtils.organisationFromPrison('an-ID', prison)).toEqual({
-        id: 'an-ID',
-        name: prison.prisonName,
+      expect(OrganisationUtils.organisationFromPrison('an-ID', prison)).toEqual({
+        id: 'an-ID', // eslint-disable-next-line sort-keys
+        address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
         category: 'A/B',
-        address: { addressLine1, addressLine2, town, county, postalCode: postcode, country },
+        name: prison.prisonName,
       })
     })
 
     it('returns an empty string for the category if one cannot be found', () => {
       const prison = prisonFactory.build({ categories: [] })
 
-      expect(organisationUtils.organisationFromPrison('an-ID', prison).category).toEqual('')
+      expect(OrganisationUtils.organisationFromPrison('an-ID', prison).category).toEqual('')
     })
   })
 
@@ -50,7 +50,7 @@ describe('organisationUtils', () => {
           organisationsWithOfferingIds[organisationIndex].address.county = faker.location.county()
         })
 
-        expect(organisationUtils.organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
+        expect(OrganisationUtils.organisationTableRows(course, organisationsWithOfferingIds)).toEqual([
           [
             { text: organisationsWithOfferingIds[0].name },
             { text: organisationsWithOfferingIds[0].category },
@@ -84,7 +84,7 @@ describe('organisationUtils', () => {
         const organisationWithOfferingId = organisationsWithOfferingIds[0]
         organisationWithOfferingId.address.county = null
 
-        expect(organisationUtils.organisationTableRows(course, [organisationWithOfferingId])).toEqual([
+        expect(OrganisationUtils.organisationTableRows(course, [organisationWithOfferingId])).toEqual([
           [
             { text: organisationWithOfferingId.name },
             { text: organisationWithOfferingId.category },
@@ -105,20 +105,20 @@ describe('organisationUtils', () => {
 
     beforeEach(() => {
       organisation = organisationFactory.build({
-        name: 'What (HMP)',
-        category: 'C',
         address: organisationAddressFactory.build({
           addressLine1: '123 Alphabet Street',
           addressLine2: 'Thine District',
-          town: 'That Town Over There',
           county: 'Thisshire',
           postalCode: 'HE3 3TA',
+          town: 'That Town Over There',
         }),
+        category: 'C',
+        name: 'What (HMP)',
       })
 
       offering = courseOfferingFactory.build({
-        organisationId: organisation.id,
         contactEmail: 'nobody-hmp-what@digital.justice.gov.uk',
+        organisationId: organisation.id,
         secondaryContactEmail: 'nobody2-hmp-what@digital.justice.gov.uk',
       })
 
@@ -127,7 +127,7 @@ describe('organisationUtils', () => {
 
     describe('when all fields are present', () => {
       it("returns UI-formatted data about an organisation and an associated course offering's emails", () => {
-        expect(organisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
+        expect(OrganisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -163,7 +163,7 @@ describe('organisationUtils', () => {
       it('filters the `null` fields from the address and returns `Not found` for the county', () => {
         organisation.address.county = null
 
-        expect(organisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
+        expect(OrganisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {
@@ -203,7 +203,7 @@ describe('organisationUtils', () => {
         })
 
         expect(
-          organisationUtils.presentOrganisationWithOfferingEmails(
+          OrganisationUtils.presentOrganisationWithOfferingEmails(
             organisation,
             offeringWithNoSecondaryContactEmail,
             course.name,
@@ -238,7 +238,7 @@ describe('organisationUtils', () => {
       it('encodes the ampersand in the `mailto` link to keep it as one query parameter', () => {
         organisation.name = 'Wherefore (HMP & YOI)'
 
-        expect(organisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
+        expect(OrganisationUtils.presentOrganisationWithOfferingEmails(organisation, offering, course.name)).toEqual({
           ...organisation,
           summaryListRows: [
             {

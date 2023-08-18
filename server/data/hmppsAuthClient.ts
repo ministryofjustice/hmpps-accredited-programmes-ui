@@ -4,14 +4,14 @@ import { URLSearchParams } from 'url'
 import RestClient from './restClient'
 import type TokenStore from './tokenStore'
 import logger from '../../logger'
-import { clientCredentials } from '../authentication'
+import { ClientCredentials } from '../authentication'
 import config from '../config'
 
 const timeoutSpec = config.apis.hmppsAuth.timeout
 const hmppsAuthUrl = config.apis.hmppsAuth.url
 
 function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagent.Response> {
-  const clientToken = clientCredentials.generateOauthClientToken(
+  const clientToken = ClientCredentials.generateOauthClientToken(
     config.apis.hmppsAuth.systemClientId,
     config.apis.hmppsAuth.systemClientSecret,
   )
@@ -32,8 +32,8 @@ function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagen
 }
 
 interface User {
-  name: string
   activeCaseLoadId: string
+  name: string
 }
 
 interface UserRole {
@@ -41,22 +41,11 @@ interface UserRole {
 }
 
 export default class HmppsAuthClient {
-  constructor(private readonly tokenStore: TokenStore) {}
-
   private static restClient(token: string): RestClient {
     return new RestClient('HMPPS Auth Client', config.apis.hmppsAuth, token)
   }
 
-  getUser(token: string): Promise<User> {
-    logger.info(`Getting user details: calling HMPPS Auth`)
-    return HmppsAuthClient.restClient(token).get({ path: '/api/user/me' }) as Promise<User>
-  }
-
-  getUserRoles(token: string): Promise<string[]> {
-    return HmppsAuthClient.restClient(token)
-      .get({ path: '/api/user/me/roles' })
-      .then(roles => (<UserRole[]>roles).map(role => role.roleCode))
-  }
+  constructor(private readonly tokenStore: TokenStore) {}
 
   async getSystemClientToken(username?: string): Promise<string> {
     const key = username || '%ANONYMOUS%'
@@ -72,6 +61,17 @@ export default class HmppsAuthClient {
     await this.tokenStore.setToken(key, newToken.body.access_token, newToken.body.expires_in - 60)
 
     return newToken.body.access_token
+  }
+
+  getUser(token: string): Promise<User> {
+    logger.info(`Getting user details: calling HMPPS Auth`)
+    return HmppsAuthClient.restClient(token).get({ path: '/api/user/me' }) as Promise<User>
+  }
+
+  getUserRoles(token: string): Promise<Array<string>> {
+    return HmppsAuthClient.restClient(token)
+      .get({ path: '/api/user/me/roles' })
+      .then(roles => (<Array<UserRole>>roles).map(role => role.roleCode))
   }
 }
 

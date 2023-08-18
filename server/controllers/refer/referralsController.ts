@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
 import type { CourseService, OrganisationService } from '../../services'
-import { courseUtils, typeUtils } from '../../utils'
+import { CourseUtils, TypeUtils } from '../../utils'
 
 export default class ReferralsController {
   constructor(
@@ -10,9 +10,23 @@ export default class ReferralsController {
     private readonly organisationService: OrganisationService,
   ) {}
 
+  new(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseId, courseOfferingId } = req.params
+
+      res.render('referrals/new', {
+        courseId,
+        courseOfferingId,
+        pageHeading: "Enter the person's identifier",
+      })
+    }
+  }
+
   start(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
+      TypeUtils.assertHasUser(req)
 
       const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
       const courseOffering = await this.courseService.getOffering(
@@ -28,27 +42,13 @@ export default class ReferralsController {
         })
       }
 
-      const coursePresenter = courseUtils.presentCourse(course)
+      const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('referrals/start', {
-        pageHeading: 'Make a referral',
         course: coursePresenter,
         courseOffering,
         organisation,
-      })
-    }
-  }
-
-  new(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      typeUtils.assertHasUser(req)
-
-      const { courseId, courseOfferingId } = req.params
-
-      res.render('referrals/new', {
-        pageHeading: "Enter the person's identifier",
-        courseId,
-        courseOfferingId,
+        pageHeading: 'Make a referral',
       })
     }
   }

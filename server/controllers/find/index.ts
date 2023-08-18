@@ -7,8 +7,8 @@ const controllers = (services: Services) => {
   const courseOfferingsController = new CourseOfferingsController(services.courseService, services.organisationService)
 
   return {
-    coursesController,
     courseOfferingsController,
+    coursesController,
   }
 }
 

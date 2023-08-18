@@ -6,7 +6,7 @@ import createError from 'http-errors'
 import CourseOfferingsController from './courseOfferingsController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
-import { courseUtils, organisationUtils } from '../../utils'
+import { CourseUtils, OrganisationUtils } from '../../utils'
 
 describe('CoursesOfferingsController', () => {
   describe('show', () => {
@@ -35,17 +35,17 @@ describe('CoursesOfferingsController', () => {
       const requestHandler = courseOfferingsController.show()
       await requestHandler(request, response, next)
 
-      const coursePresenter = courseUtils.presentCourse(course)
+      const coursePresenter = CourseUtils.presentCourse(course)
 
       expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
-        pageHeading: coursePresenter.nameAndAlternateName,
         course: coursePresenter,
         courseOffering,
-        organisation: organisationUtils.presentOrganisationWithOfferingEmails(
+        organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,
           course.name,
         ),
+        pageHeading: coursePresenter.nameAndAlternateName,
       })
     })
 

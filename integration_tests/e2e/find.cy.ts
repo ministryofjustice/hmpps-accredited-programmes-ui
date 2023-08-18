@@ -1,6 +1,6 @@
 import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
-import { organisationUtils } from '../../server/utils'
+import { OrganisationUtils } from '../../server/utils'
 import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
 import Page from '../pages/page'
 import type { CourseOffering } from '@accredited-programmes/models'
@@ -44,7 +44,7 @@ context('Find', () => {
       courseOfferings.push(courseOffering)
 
       organisationsWithOfferingIds.push({
-        ...organisationUtils.organisationFromPrison(`an-ID${prisonIndex}`, prison),
+        ...OrganisationUtils.organisationFromPrison(`an-ID${prisonIndex}`, prison),
         courseOfferingId: courseOffering.id,
       })
 
@@ -76,7 +76,7 @@ context('Find', () => {
         secondaryContactEmail: null,
       })
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
+      const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
       cy.task('stubCourse', course)
       cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
@@ -85,7 +85,7 @@ context('Find', () => {
       const path = findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
       cy.visit(path)
 
-      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { course, courseOffering, organisation })
       courseOfferingPage.shouldContainNavigation(path)
       courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: course.id }))
       courseOfferingPage.shouldContainAudienceTags(courseOfferingPage.course.audienceTags)
@@ -102,7 +102,7 @@ context('Find', () => {
         secondaryContactEmail: 'secondary-contact@nowhere.com',
       })
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = organisationUtils.organisationFromPrison('an-ID', prison)
+      const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
       cy.task('stubCourse', course)
       cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
@@ -111,7 +111,7 @@ context('Find', () => {
       const path = findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
       cy.visit(path)
 
-      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { courseOffering, course, organisation })
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { course, courseOffering, organisation })
       courseOfferingPage.shouldContainNavigation(path)
       courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: course.id }))
       courseOfferingPage.shouldContainAudienceTags(courseOfferingPage.course.audienceTags)

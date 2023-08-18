@@ -1,6 +1,6 @@
 import IndexPage from '../pages'
 import Page from '../pages/page'
-import helpers from '../support/helpers'
+import Helpers from '../support/helpers'
 
 context('App', () => {
   beforeEach(() => {
@@ -14,12 +14,12 @@ context('App', () => {
     cy.visit('/')
 
     cy.get('.govuk-phase-banner__content__tag').then(phaseBannerTagElement => {
-      const { actual, expected } = helpers.parseHtml(phaseBannerTagElement, 'Beta')
+      const { actual, expected } = Helpers.parseHtml(phaseBannerTagElement, 'Beta')
       expect(actual).to.equal(expected)
     })
 
     cy.get('.govuk-phase-banner__text').then(phaseBannerTextElement => {
-      const { actual, expected } = helpers.parseHtml(
+      const { actual, expected } = Helpers.parseHtml(
         phaseBannerTextElement,
         'This is a new service - your feedback will help us to improve it.',
       )

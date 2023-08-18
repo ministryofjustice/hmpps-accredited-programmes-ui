@@ -9,25 +9,25 @@ import type { UnsanitisedError } from '../sanitisedError'
 import sanitiseError from '../sanitisedError'
 
 interface GetRequest {
+  headers?: Record<string, string>
   path?: string
   query?: string
-  headers?: Record<string, string>
-  responseType?: string
   raw?: boolean
+  responseType?: string
 }
 
 interface PostRequest {
-  path?: string
-  headers?: Record<string, string>
-  responseType?: string
   data?: Record<string, unknown>
+  headers?: Record<string, string>
+  path?: string
   raw?: boolean
+  responseType?: string
 }
 
 interface StreamRequest {
-  path?: string
-  headers?: Record<string, string>
   errorLogger?: (e: UnsanitisedError) => void
+  headers?: Record<string, string>
+  path?: string
 }
 
 export default class RestClient {
@@ -39,14 +39,6 @@ export default class RestClient {
     private readonly token: string,
   ) {
     this.agent = config.url.startsWith('https') ? new HttpsAgent(config.agent) : new Agent(config.agent)
-  }
-
-  private apiUrl() {
-    return this.config.url
-  }
-
-  private timeoutConfig() {
-    return this.config.timeout
   }
 
   async get({ path = '', query = '', headers = {}, responseType = '', raw = false }: GetRequest): Promise<unknown> {
@@ -135,5 +127,13 @@ export default class RestClient {
           }
         })
     })
+  }
+
+  private apiUrl() {
+    return this.config.url
+  }
+
+  private timeoutConfig() {
+    return this.config.timeout
   }
 }

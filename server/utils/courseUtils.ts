@@ -7,67 +7,67 @@ import type {
 } from '@accredited-programmes/ui'
 import type { GovukFrontendTag } from '@govuk-frontend'
 
-const audienceTags = (audiences: Array<CourseAudience>): Array<GovukFrontendTag> => {
-  const audienceColourMap: { [key: CourseAudience['value']]: TagColour } = {
-    'Extremism offence': 'turquoise',
-    'Gang offence': 'purple',
-    'General offence': 'pink',
-    'General violence offence': 'yellow',
-    'Intimate partner violence offence': 'green',
-    'Sexual offence': 'orange',
-  }
-
-  return audiences.map(audience => {
-    const colour: TagColour = audienceColourMap[audience.value]
+export default class CourseUtils {
+  static presentCourse(course: Course): CoursePresenter {
+    const nameAndAlternateName = course.alternateName ? `${course.name} (${course.alternateName})` : course.name
 
     return {
-      text: audience.value,
-      classes: `govuk-tag govuk-tag--${colour}`,
+      ...course,
+      audienceTags: CourseUtils.audienceTags(course.audiences),
+      nameAndAlternateName,
+      prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
-  })
-}
-
-const prerequisiteSummaryListRows = (
-  prerequisites: Array<CoursePrerequisite>,
-): Array<GovukFrontendSummaryListRowWithValue> => {
-  const order: { [key: CoursePrerequisite['name']]: number } = {
-    Setting: 0,
-    Gender: 1,
-    'Risk criteria': 2,
-    'Learning needs': 3,
   }
 
-  const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
-
-  prerequisites.forEach(prerequisite => {
-    const index = order[prerequisite.name]
-
-    if (index === undefined) {
-      return
+  private static audienceTags(audiences: Array<CourseAudience>): Array<GovukFrontendTag> {
+    const audienceColourMap: Record<CourseAudience['value'], TagColour> = {
+      'Extremism offence': 'turquoise',
+      'Gang offence': 'purple',
+      'General offence': 'pink',
+      'General violence offence': 'yellow',
+      'Intimate partner violence offence': 'green',
+      'Sexual offence': 'orange',
     }
 
-    if (summaryListRows[index]) {
-      ;(summaryListRows[index].value as HasTextString).text += `, ${prerequisite.description}`
-    } else {
-      summaryListRows[index] = {
-        key: { text: prerequisite.name },
-        value: { text: prerequisite.description },
+    return audiences.map(audience => {
+      const colour: TagColour = audienceColourMap[audience.value]
+
+      return {
+        classes: `govuk-tag govuk-tag--${colour}`,
+        text: audience.value,
       }
+    })
+  }
+
+  private static prerequisiteSummaryListRows(
+    prerequisites: Array<CoursePrerequisite>,
+  ): Array<GovukFrontendSummaryListRowWithValue> {
+    const order: Record<CoursePrerequisite['name'], number> = {
+      Gender: 1,
+      'Learning needs': 3,
+      'Risk criteria': 2,
+      Setting: 0,
     }
-  })
 
-  return summaryListRows
-}
+    const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
 
-const presentCourse = (course: Course): CoursePresenter => {
-  const nameAndAlternateName = course.alternateName ? `${course.name} (${course.alternateName})` : course.name
+    prerequisites.forEach(prerequisite => {
+      const index = order[prerequisite.name]
 
-  return {
-    ...course,
-    nameAndAlternateName,
-    audienceTags: audienceTags(course.audiences),
-    prerequisiteSummaryListRows: prerequisiteSummaryListRows(course.coursePrerequisites),
+      if (index === undefined) {
+        return
+      }
+
+      if (summaryListRows[index]) {
+        ;(summaryListRows[index].value as HasTextString).text += `, ${prerequisite.description}`
+      } else {
+        summaryListRows[index] = {
+          key: { text: prerequisite.name },
+          value: { text: prerequisite.description },
+        }
+      }
+    })
+
+    return summaryListRows
   }
 }
-
-export default { presentCourse }

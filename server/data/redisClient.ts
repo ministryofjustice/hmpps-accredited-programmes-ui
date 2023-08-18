@@ -12,7 +12,6 @@ const url =
 
 const createRedisClient = (): RedisClient => {
   const client = createClient({
-    url,
     password: config.redis.password,
     socket: {
       reconnectStrategy: (attempts: number) => {
@@ -22,6 +21,7 @@ const createRedisClient = (): RedisClient => {
         return nextDelay
       },
     },
+    url,
   })
 
   client.on('error', (e: Error) => logger.error('Redis client error', e))

@@ -14,6 +14,10 @@ There are other components where deeply nested objects are described without the
 dotted notation, for example the footer component's `navigation` property.
 */
 export default class NestedObjectProperty {
+  static describesPropertyOfNestedObject(propertyName: string): boolean {
+    return propertyName.indexOf('.') >= 0
+  }
+
   constructor(
     private readonly containingTypeName: string,
     private readonly combinedPropertyName: string,
@@ -23,24 +27,20 @@ export default class NestedObjectProperty {
     }
   }
 
-  static describesPropertyOfNestedObject(propertyName: string): boolean {
-    return propertyName.indexOf('.') >= 0
-  }
-
   // The name of the object which this property is nested within. For
   // example, for "key.text", this is "key".
   get objectName(): string {
     return this.combinedPropertyName.split('.')[0]
   }
 
-  // The name of the property in the object. For example, for "key.text", this is "text".
-  get propertyName(): string {
-    return this.combinedPropertyName.split('.')[1]
-  }
-
   // The name of the type to be used for the object. For example, for the property
   // "key.text" inside the type GovukFrontendSummaryListRow, this is "GovukFrontendSummaryListRowKey".
   get objectTypeName(): string {
     return `${this.containingTypeName}${capitalise(this.objectName)}`
+  }
+
+  // The name of the property in the object. For example, for "key.text", this is "text".
+  get propertyName(): string {
+    return this.combinedPropertyName.split('.')[1]
   }
 }

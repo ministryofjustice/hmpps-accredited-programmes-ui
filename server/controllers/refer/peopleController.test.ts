@@ -7,7 +7,7 @@ import PeopleController from './peopleController'
 import { referPaths } from '../../paths'
 import type PersonService from '../../services/personService'
 import { personFactory } from '../../testutils/factories'
-import personUtils from '../../utils/personUtils'
+import PersonUtils from '../../utils/personUtils'
 
 jest.mock('../../utils/personUtils')
 
@@ -58,15 +58,15 @@ describe('PeopleController', () => {
       const requestHandler = peopleController.show()
 
       const mockPersonSummaryList = [{ key: { text: 'My Key' }, value: { text: 'My value' } }]
-      ;(personUtils.summaryListRows as jest.Mock).mockReturnValue(mockPersonSummaryList)
+      ;(PersonUtils.summaryListRows as jest.Mock).mockReturnValue(mockPersonSummaryList)
 
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/people/show', {
-        pageHeading: "Confirm Del Hatton's details",
-        personSummaryListRows: mockPersonSummaryList,
         courseId,
         courseOfferingId,
+        pageHeading: "Confirm Del Hatton's details",
+        personSummaryListRows: mockPersonSummaryList,
       })
     })
 
