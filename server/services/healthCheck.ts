@@ -11,14 +11,14 @@ const healthCheckGauge = new promClient.Gauge({
 })
 
 interface HealthCheckStatus {
+  message: unknown
   name: string
   status: string
-  message: unknown
 }
 
 interface HealthCheckResult extends Record<string, unknown> {
-  healthy: boolean
   checks: Record<string, unknown>
+  healthy: boolean
 }
 
 type HealthCheckCallback = (result: HealthCheckResult) => void

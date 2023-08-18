@@ -1,10 +1,10 @@
 export type Prisoner = {
+  dateOfBirth: string
   firstName: string
+  gender: string
   lastName: string
   prisonerNumber: string
-  dateOfBirth: string
-  ethnicity?: string
-  gender: string
-  religion?: string
   prisonName: string
+  ethnicity?: string
+  religion?: string
 }

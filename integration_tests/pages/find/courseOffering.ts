@@ -11,7 +11,7 @@ export default class CourseOfferingPage extends Page {
 
   organisation: OrganisationWithOfferingEmailsPresenter
 
-  constructor(args: { courseOffering: CourseOffering; course: Course; organisation: Organisation }) {
+  constructor(args: { course: Course; courseOffering: CourseOffering; organisation: Organisation }) {
     const { courseOffering, organisation, course } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 

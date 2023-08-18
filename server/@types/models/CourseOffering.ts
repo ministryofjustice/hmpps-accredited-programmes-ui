@@ -1,6 +1,6 @@
 export type CourseOffering = {
+  contactEmail: string
   id: string
   organisationId: string
-  contactEmail: string
   secondaryContactEmail: string | null
 }

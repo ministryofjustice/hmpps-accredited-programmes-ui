@@ -58,6 +58,16 @@
             "private-instance-method"
           ],
           "order": "natural-case-insensitive"
+        },
+        "interfaces": {
+          "memberTypes": ["field", "signature", "constructor", "method"],
+          "optionalityOrder": "required-first",
+          "order": "natural-case-insensitive"
+        },
+        "typeLiterals": {
+          "memberTypes": ["field", "signature", "constructor", "method"],
+          "optionalityOrder": "required-first",
+          "order": "natural-case-insensitive"
         }
       }
     ],

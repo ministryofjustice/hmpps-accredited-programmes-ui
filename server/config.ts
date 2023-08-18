@@ -21,12 +21,12 @@ export class AgentConfig {
 }
 
 export interface ApiConfig {
-  url: string
-  timeout: {
-    response: number
-    deadline: number
-  }
   agent: AgentConfig
+  timeout: {
+    deadline: number
+    response: number
+  }
+  url: string
 }
 
 export default {

@@ -9,25 +9,25 @@ import type { UnsanitisedError } from '../sanitisedError'
 import sanitiseError from '../sanitisedError'
 
 interface GetRequest {
+  headers?: Record<string, string>
   path?: string
   query?: string
-  headers?: Record<string, string>
-  responseType?: string
   raw?: boolean
+  responseType?: string
 }
 
 interface PostRequest {
-  path?: string
-  headers?: Record<string, string>
-  responseType?: string
   data?: Record<string, unknown>
+  headers?: Record<string, string>
+  path?: string
   raw?: boolean
+  responseType?: string
 }
 
 interface StreamRequest {
-  path?: string
-  headers?: Record<string, string>
   errorLogger?: (e: UnsanitisedError) => void
+  headers?: Record<string, string>
+  path?: string
 }
 
 export default class RestClient {

@@ -58,7 +58,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
 
   // This return type dance is to avoid returning a Type directly so that
   // ESLint doesn't complain about a dependency cycle.
-  get typeIntroduced(): { name: string; macroOptions: Array<Record<string, unknown>> } | null {
+  get typeIntroduced(): { macroOptions: Array<Record<string, unknown>>; name: string } | null {
     switch (this.macroOptions.type) {
       case 'object':
         if (this.macroOptions.isComponent || !this.macroOptions.params) {

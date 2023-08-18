@@ -2,8 +2,8 @@ import type { HmppsAuthClient, RestClientBuilderWithoutToken } from '../data'
 import { StringUtils } from '../utils'
 
 interface UserDetails {
-  name: string
   displayName: string
+  name: string
 }
 
 export default class UserService {

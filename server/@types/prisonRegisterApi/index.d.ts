@@ -6,13 +6,13 @@ type PrisonType = {
 }
 
 type PrisonAddress = {
-  id: number
   addressLine1: string | null
   addressLine2: string | null
-  town: string
-  county: string | null
-  postcode: string
   country: string
+  county: string | null
+  id: number
+  postcode: string
+  town: string
 }
 
 type PrisonOperator = {
@@ -20,16 +20,16 @@ type PrisonOperator = {
 }
 
 type Prison = {
+  active: boolean
+  addresses: NonEmptyArray<PrisonAddress>
+  categories: Array<string>
+  contracted: boolean
+  female: boolean
+  male: boolean
+  operators: NonEmptyArray<PrisonOperator>
   prisonId: string
   prisonName: string
-  categories: Array<string>
-  active: boolean
-  male: boolean
-  female: boolean
-  contracted: boolean
   types: NonEmptyArray<PrisonType>
-  addresses: NonEmptyArray<PrisonAddress>
-  operators: NonEmptyArray<PrisonOperator>
 }
 
 export type { Prison, PrisonAddress }
