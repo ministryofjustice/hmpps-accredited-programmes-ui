@@ -29,10 +29,7 @@ export default class CourseOfferingPage extends Page {
   }
 
   shouldContainMakeAReferralButtonLink() {
-    this.shouldContainButtonLink(
-      'Make a referral',
-      referPaths.start({ courseId: this.course.id, courseOfferingId: this.courseOffering.id }),
-    )
+    this.shouldContainButtonLink('Make a referral', referPaths.start({ courseOfferingId: this.courseOffering.id }))
   }
 
   shouldHaveOrganisationWithOfferingEmails() {

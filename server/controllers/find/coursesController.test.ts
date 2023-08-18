@@ -83,7 +83,7 @@ describe('CoursesController', () => {
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           course: coursePresenter,
-          organisationsTableData: OrganisationUtils.organisationTableRows(course, organisationsWithOfferingIds),
+          organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.nameAndAlternateName,
         })
       })
@@ -128,7 +128,7 @@ describe('CoursesController', () => {
 
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           course: coursePresenter,
-          organisationsTableData: OrganisationUtils.organisationTableRows(course, existingOrganisationsWithOfferingIds),
+          organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.nameAndAlternateName,
         })
       })

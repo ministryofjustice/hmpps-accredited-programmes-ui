@@ -17,7 +17,6 @@ describe('PeopleController', () => {
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
   const personService = createMock<PersonService>({})
-  const courseId = 'A-COURSE-ID'
   const courseOfferingId = 'A-COURSE-OFFERING-ID'
 
   let peopleController: PeopleController
@@ -32,15 +31,12 @@ describe('PeopleController', () => {
 
       const prisonNumber = 'ANUMB5R'
 
-      request.params.courseId = courseId
       request.params.courseOfferingId = courseOfferingId
       request.body.prisonNumber = prisonNumber
 
       await requestHandler(request, response, next)
 
-      expect(response.redirect).toHaveBeenCalledWith(
-        referPaths.people.show({ courseId, courseOfferingId, prisonNumber }),
-      )
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.people.show({ courseOfferingId, prisonNumber }))
     })
   })
 
@@ -50,7 +46,6 @@ describe('PeopleController', () => {
     })
 
     it('renders the show template with the found Person', async () => {
-      request.params.courseId = courseId
       request.params.courseOfferingId = courseOfferingId
 
       personService.getPerson.mockResolvedValue(person)
@@ -63,7 +58,6 @@ describe('PeopleController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/people/show', {
-        courseId,
         courseOfferingId,
         pageHeading: "Confirm Del Hatton's details",
         personSummaryListRows: mockPersonSummaryList,

@@ -4,18 +4,15 @@ import Page from '../page'
 import type { Course, CourseOffering, Person } from '@accredited-programmes/models'
 
 export default class ConfirmPersonPage extends Page {
-  course: Course
-
   courseOffering: CourseOffering
 
   person: Person
 
   constructor(args: { course: Course; courseOffering: CourseOffering; person: Person }) {
-    const { course, courseOffering, person } = args
+    const { courseOffering, person } = args
 
     super(`Confirm ${person.name}'s details`, { customPageTitleEnd: 'Confirm personal details' })
 
-    this.course = course
     this.courseOffering = courseOffering
     this.person = person
   }
@@ -25,10 +22,7 @@ export default class ConfirmPersonPage extends Page {
   }
 
   shouldContainDifferentIdentifierLink() {
-    this.shouldContainLink(
-      'Enter a different identifier',
-      referPaths.new({ courseId: this.course.id, courseOfferingId: this.courseOffering.id }),
-    )
+    this.shouldContainLink('Enter a different identifier', referPaths.new({ courseOfferingId: this.courseOffering.id }))
   }
 
   shouldHavePersonInformation() {
