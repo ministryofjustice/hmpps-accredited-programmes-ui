@@ -9,6 +9,11 @@ export default class CourseService {
     return courseClient.find(courseId)
   }
 
+  async getCourseByOffering(token: string, courseOfferingId: CourseOffering['id']) {
+    const courseClient = this.courseClientBuilder(token)
+    return courseClient.findCourseByOffering(courseOfferingId)
+  }
+
   async getCourses(token: string): Promise<Array<Course>> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.all()
