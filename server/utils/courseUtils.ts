@@ -20,7 +20,7 @@ export default class CourseUtils {
   }
 
   private static audienceTags(audiences: Array<CourseAudience>): Array<GovukFrontendTag> {
-    const audienceColourMap: { [key: CourseAudience['value']]: TagColour } = {
+    const audienceColourMap: Record<CourseAudience['value'], TagColour> = {
       'Extremism offence': 'turquoise',
       'Gang offence': 'purple',
       'General offence': 'pink',
@@ -42,7 +42,7 @@ export default class CourseUtils {
   private static prerequisiteSummaryListRows(
     prerequisites: Array<CoursePrerequisite>,
   ): Array<GovukFrontendSummaryListRowWithValue> {
-    const order: { [key: CoursePrerequisite['name']]: number } = {
+    const order: Record<CoursePrerequisite['name'], number> = {
       Gender: 1,
       'Learning needs': 3,
       'Risk criteria': 2,
