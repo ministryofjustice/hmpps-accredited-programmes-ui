@@ -87,6 +87,32 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('findCourseByOffering', () => {
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `An offering with ID ${courseOffering.id} exists and has an associated course`,
+        uponReceiving: `A request for offering "${courseOffering.id}"'s course`,
+        willRespondWith: {
+          body: Matchers.like(course1),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'GET',
+          path: apiPaths.courses.offerings.course({ courseOfferingId: courseOffering.id }),
+        },
+      })
+    })
+
+    it("fetches the given offering's course", async () => {
+      const result = await courseClient.findCourseByOffering(courseOffering.id)
+
+      expect(result).toEqual(course1)
+    })
+  })
+
   describe('findOfferings', () => {
     beforeEach(() => {
       provider.addInteraction({
