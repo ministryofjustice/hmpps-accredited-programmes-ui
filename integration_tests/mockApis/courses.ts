@@ -18,6 +18,19 @@ export default {
       },
     }),
 
+  stubCourseByOffering: (args: { course: Course; courseOfferingId: CourseOffering['id'] }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.courses.offerings.course({ courseOfferingId: args.courseOfferingId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.course,
+        status: 200,
+      },
+    }),
+
   stubCourseOffering: (args: { courseId: Course['id']; courseOffering: CourseOffering }): SuperAgentRequest =>
     stubFor({
       request: {
