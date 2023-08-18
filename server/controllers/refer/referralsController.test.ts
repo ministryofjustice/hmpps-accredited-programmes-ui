@@ -7,6 +7,9 @@ import ReferralsController from './referralsController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils } from '../../utils'
+import type { CoursePresenter } from '@accredited-programmes/ui'
+
+jest.mock('../../utils/courseUtils')
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -72,6 +75,26 @@ describe('ReferralsController', () => {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
+      })
+    })
+  })
+
+  describe('show', () => {
+    it('renders the referral task list page', async () => {
+      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+      organisationService.getOrganisation.mockResolvedValue(organisation)
+
+      const requestHandler = referralsController.show()
+      await requestHandler(request, response, next)
+
+      const coursePresenter = createMock<CoursePresenter>({ name: course.name })
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show', {
+        course: coursePresenter,
+        courseOffering,
+        organisation,
+        pageHeading: 'Make a referral',
       })
     })
   })
