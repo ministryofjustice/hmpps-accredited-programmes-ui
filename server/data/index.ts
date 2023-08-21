@@ -18,6 +18,7 @@ import PrisonClient from './prisonClient'
 import PrisonerClient from './prisonerClient'
 import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
+import ReferralClient from './referralClient'
 import TokenStore from './tokenStore'
 import type { TokenVerifier } from './tokenVerification'
 import verifyToken from './tokenVerification'
@@ -30,18 +31,21 @@ const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = (
 const courseClientBuilder: RestClientBuilder<CourseClient> = (token: string) => new CourseClient(token)
 const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: string) => new PrisonClient(token)
 const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: string) => new PrisonerClient(token)
+const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: string) => new ReferralClient(token)
 
 export {
   CourseClient,
   HmppsAuthClient,
   PrisonClient,
   PrisonerClient,
+  ReferralClient,
   TokenStore,
   courseClientBuilder,
   createRedisClient,
   hmppsAuthClientBuilder,
   prisonClientBuilder,
   prisonerClientBuilder,
+  referralClientBuilder,
   serviceCheckFactory,
   verifyToken,
 }
