@@ -26,7 +26,11 @@
         iconFallbackText: "Warning"
       }) }}
 
-      <form action="">
+      <form action="{{ referPaths.create({}) }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+        <input type="hidden" name="courseOfferingId" value="{{ courseOfferingId }}"/>
+        <input type="hidden" name="prisonNumber" value="{{ prisonNumber }}"/>
+
         {{ govukButton({ text: "Continue" }) }}
       </form>
 

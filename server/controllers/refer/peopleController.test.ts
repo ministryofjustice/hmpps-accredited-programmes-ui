@@ -61,6 +61,7 @@ describe('PeopleController', () => {
         courseOfferingId,
         pageHeading: "Confirm Del Hatton's details",
         personSummaryListRows: mockPersonSummaryList,
+        prisonNumber: person.prisonNumber,
       })
     })
 
