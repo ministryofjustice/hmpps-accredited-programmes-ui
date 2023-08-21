@@ -43,7 +43,8 @@ describe('ReferralsController', () => {
       const requestHandler = referralsController.start()
       await requestHandler(request, response, next)
 
-      const coursePresenter = CourseUtils.presentCourse(course)
+      const coursePresenter = createMock<CoursePresenter>({ name: course.name })
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(response.render).toHaveBeenCalledWith('referrals/start', {
         course: coursePresenter,
