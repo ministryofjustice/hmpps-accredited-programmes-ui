@@ -13,11 +13,11 @@ import {
 } from '../data'
 
 const services = () => {
-  const userService = new UserService(hmppsAuthClientBuilder)
   const courseService = new CourseService(courseClientBuilder)
   const organisationService = new OrganisationService(prisonClientBuilder)
   const personService = new PersonService(prisonerClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
+  const userService = new UserService(hmppsAuthClientBuilder)
 
   return {
     courseService,
