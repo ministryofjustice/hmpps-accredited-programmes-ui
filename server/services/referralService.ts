@@ -1,0 +1,16 @@
+import type { ReferralClient, RestClientBuilder } from '../data'
+import type { CreatedReferralResponse, Referral } from '@accredited-programmes/models'
+
+export default class ReferralService {
+  constructor(private readonly referralClientBuilder: RestClientBuilder<ReferralClient>) {}
+
+  async createReferral(
+    token: Express.User['token'],
+    courseOfferingId: Referral['offeringId'],
+    prisonNumber: Referral['prisonNumber'],
+    referrerId: Referral['referrerId'],
+  ): Promise<CreatedReferralResponse> {
+    const referralClient = this.referralClientBuilder(token)
+    return referralClient.create(courseOfferingId, prisonNumber, referrerId)
+  }
+}
