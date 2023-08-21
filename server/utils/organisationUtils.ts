@@ -21,13 +21,9 @@ export default class OrganisationUtils {
     }
   }
 
-  static organisationTableRows(
-    course: Course,
-    organisations: Array<OrganisationWithOfferingId>,
-  ): Array<GovukFrontendTableRow> {
+  static organisationTableRows(organisations: Array<OrganisationWithOfferingId>): Array<GovukFrontendTableRow> {
     return organisations.map(organisation => {
       const offeringPath = findPaths.offerings.show({
-        courseId: course.id,
         courseOfferingId: organisation.courseOfferingId,
       })
       const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`

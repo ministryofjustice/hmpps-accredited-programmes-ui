@@ -72,15 +72,15 @@
       }
     ],
     "@typescript-eslint/no-unused-vars": [
-      1,
+      "warn",
       {
         "argsIgnorePattern": "res|next|^err|_",
         "ignoreRestSiblings": true
       }
     ],
-    "@typescript-eslint/no-use-before-define": 0,
-    "@typescript-eslint/semi": 0,
-    "class-methods-use-this": 0,
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/semi": "off",
+    "class-methods-use-this": "off",
     "comma-dangle": ["error", "always-multiline"],
     "import/exports-last": "error",
     "import/extensions": [
@@ -113,21 +113,21 @@
       }
     ],
     "no-empty-function": [
-      1,
+      "warn",
       {
         "allow": ["constructors"]
       }
     ],
     "no-only-tests/no-only-tests": "error",
     "no-unused-vars": [
-      1,
+      "error",
       {
         "argsIgnorePattern": "res|next|^err|_",
         "ignoreRestSiblings": true
       }
     ],
-    "no-use-before-define": 0,
-    "no-useless-constructor": 0,
+    "no-use-before-define": "off",
+    "no-useless-constructor": "off",
     "prettier/prettier": [
       "error",
       {
@@ -137,7 +137,7 @@
         "semi": false
       }
     ],
-    "semi": 0,
+    "semi": "off",
     "sort-exports/sort-exports": ["error", { "sortExportKindFirst": "value" }],
     "sort-imports": [
       "error",

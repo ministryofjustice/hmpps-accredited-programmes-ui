@@ -21,7 +21,7 @@ describe('CoursesOfferingsController', () => {
 
     let courseOfferingsController: CourseOfferingsController
 
-    courseService.getCourse.mockResolvedValue(course)
+    courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
 
     beforeEach(() => {

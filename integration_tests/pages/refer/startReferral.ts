@@ -21,10 +21,7 @@ export default class StartReferralPage extends Page {
   }
 
   shouldContainStartButtonLink() {
-    this.shouldContainButtonLink(
-      'Start now',
-      referPaths.new({ courseId: this.course.id, courseOfferingId: this.courseOffering.id }),
-    )
+    this.shouldContainButtonLink('Start now', referPaths.new({ courseOfferingId: this.courseOffering.id }))
   }
 
   shouldHaveProcessInformation() {

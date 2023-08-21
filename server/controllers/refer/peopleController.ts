@@ -12,10 +12,10 @@ export default class PeopleController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { courseId, courseOfferingId } = req.params
+      const { courseOfferingId } = req.params
       const { prisonNumber } = req.body
 
-      res.redirect(referPaths.people.show({ courseId, courseOfferingId, prisonNumber }))
+      res.redirect(referPaths.people.show({ courseOfferingId, prisonNumber }))
     }
   }
 
@@ -23,7 +23,7 @@ export default class PeopleController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { courseId, courseOfferingId } = req.params
+      const { courseOfferingId } = req.params
       const person = await this.personService.getPerson(req.user.token, req.params.prisonNumber)
 
       if (!person) {
@@ -33,7 +33,6 @@ export default class PeopleController {
       }
 
       res.render('referrals/people/show', {
-        courseId,
         courseOfferingId,
         pageHeading: `Confirm ${person.name}'s details`,
         personSummaryListRows: PersonUtils.summaryListRows(person),

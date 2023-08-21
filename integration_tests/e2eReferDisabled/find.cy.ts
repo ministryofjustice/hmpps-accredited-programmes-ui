@@ -21,11 +21,11 @@ context('Find', () => {
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
-    cy.task('stubCourse', course)
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
 
-    const path = findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
+    const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
     cy.visit(path)
 
     const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { course, courseOffering, organisation })

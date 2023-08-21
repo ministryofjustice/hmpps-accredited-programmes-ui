@@ -45,7 +45,7 @@ export default class CoursesController {
         return { ...organisation, courseOfferingId: courseOffering.id }
       })
 
-      const organisationsTableData = OrganisationUtils.organisationTableRows(course, organisationsWithOfferingIds)
+      const organisationsTableData = OrganisationUtils.organisationTableRows(organisationsWithOfferingIds)
 
       const coursePresenter = CourseUtils.presentCourse(course)
 

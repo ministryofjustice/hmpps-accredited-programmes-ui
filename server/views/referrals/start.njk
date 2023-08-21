@@ -8,7 +8,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id })
+    href: findPaths.offerings.show({ courseOfferingId: courseOffering.id })
   }) }}
 {% endblock backLink %}
 
@@ -33,7 +33,7 @@
 
       {{ govukButton({
           text: "Start now",
-          href: referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id })
+          href: referPaths.new({ courseOfferingId: courseOffering.id })
       }) }}
     </div>
   </div>

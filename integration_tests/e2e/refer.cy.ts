@@ -27,18 +27,16 @@ context('Refer', () => {
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
-    cy.task('stubCourse', course)
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
 
-    const path = referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
+    const path = referPaths.start({ courseOfferingId: courseOffering.id })
     cy.visit(path)
 
     const startReferralPage = Page.verifyOnPage(StartReferralPage, { course, courseOffering, organisation })
     startReferralPage.shouldContainNavigation(path)
-    startReferralPage.shouldContainBackLink(
-      findPaths.offerings.show({ courseId: course.id, courseOfferingId: courseOffering.id }),
-    )
+    startReferralPage.shouldContainBackLink(findPaths.offerings.show({ courseOfferingId: courseOffering.id }))
     startReferralPage.shouldContainOrganisationAndCourseHeading(startReferralPage)
     startReferralPage.shouldContainAudienceTags(startReferralPage.course.audienceTags)
     startReferralPage.shouldHaveProcessInformation()
@@ -51,15 +49,15 @@ context('Refer', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
 
-    cy.task('stubCourse', course)
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
 
-    const path = referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id })
+    const path = referPaths.new({ courseOfferingId: courseOffering.id })
     cy.visit(path)
 
     const findPersonPage = Page.verifyOnPage(FindPersonPage)
     findPersonPage.shouldContainNavigation(path)
-    findPersonPage.shouldContainBackLink(referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id }))
+    findPersonPage.shouldContainBackLink(referPaths.start({ courseOfferingId: courseOffering.id }))
     findPersonPage.shouldContainInstructionsParagraph()
     findPersonPage.shouldContainIdentifierForm()
   })
@@ -89,7 +87,6 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
 
     const path = referPaths.people.show({
-      courseId: course.id,
       courseOfferingId: courseOffering.id,
       prisonNumber: person.prisonNumber,
     })
@@ -97,9 +94,7 @@ context('Refer', () => {
     const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
 
     confirmPersonPage.shouldContainNavigation(path)
-    confirmPersonPage.shouldContainBackLink(
-      referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id }),
-    )
+    confirmPersonPage.shouldContainBackLink(referPaths.new({ courseOfferingId: courseOffering.id }))
     confirmPersonPage.shouldContainContinueButton()
     confirmPersonPage.shouldContainDifferentIdentifierLink()
     confirmPersonPage.shouldHavePersonInformation()

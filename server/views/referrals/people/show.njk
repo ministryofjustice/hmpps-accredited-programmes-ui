@@ -10,7 +10,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: referPaths.new({ courseId: courseId, courseOfferingId: courseOfferingId })
+    href: referPaths.new({ courseOfferingId: courseOfferingId })
   }) }}
 {% endblock backLink %}
 
@@ -30,7 +30,7 @@
         {{ govukButton({ text: "Continue" }) }}
       </form>
 
-      <a href="{{ referPaths.new({ courseId: courseId, courseOfferingId: courseOfferingId }) }}" class="govuk-link">
+      <a href="{{ referPaths.new({ courseOfferingId: courseOfferingId }) }}" class="govuk-link">
         Enter a different identifier
       </a>
     </div>

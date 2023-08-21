@@ -17,11 +17,11 @@ context('Refer', () => {
     const courseOffering = courseOfferingFactory.build({})
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
 
-    cy.task('stubCourse', course)
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
 
-    const path = referPaths.start({ courseId: course.id, courseOfferingId: courseOffering.id })
+    const path = referPaths.start({ courseOfferingId: courseOffering.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -31,10 +31,9 @@ context('Refer', () => {
   it("Doesn't show the 'find person' page for a referral", () => {
     cy.signIn()
 
-    const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build({})
 
-    const path = referPaths.new({ courseId: course.id, courseOfferingId: courseOffering.id })
+    const path = referPaths.new({ courseOfferingId: courseOffering.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -44,7 +43,6 @@ context('Refer', () => {
   it("Doesn't show the 'confirm person' page for a new referral", () => {
     cy.signIn()
 
-    const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prisoner = prisonerFactory.build({
       dateOfBirth: '1980-01-01',
@@ -55,7 +53,6 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
 
     const path = referPaths.people.show({
-      courseId: course.id,
       courseOfferingId: courseOffering.id,
       prisonNumber: prisoner.prisonerNumber,
     })
