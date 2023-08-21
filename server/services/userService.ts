@@ -4,6 +4,7 @@ import { StringUtils } from '../utils'
 interface UserDetails {
   displayName: string
   name: string
+  userId: string
 }
 
 export default class UserService {
