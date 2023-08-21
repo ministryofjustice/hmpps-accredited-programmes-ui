@@ -7,7 +7,7 @@ import type { CreatedReferralResponse, Referral } from '@accredited-programmes/m
 export default class ReferralClient {
   restClient: RestClient
 
-  constructor(token: string) {
+  constructor(token: Express.User['token']) {
     this.restClient = new RestClient('referralClient', config.apis.accreditedProgrammesApi as ApiConfig, token)
   }
 

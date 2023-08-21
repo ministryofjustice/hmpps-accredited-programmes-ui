@@ -6,7 +6,7 @@ import config from '../config'
 import sanitiseError from '../sanitisedError'
 import { TypeUtils } from '../utils'
 
-function getApiClientToken(token: string) {
+function getApiClientToken(token: Express.User['token']) {
   return superagent
     .post(`${config.apis.tokenVerification.url}/token/verify`)
     .auth(token, { type: 'bearer' })

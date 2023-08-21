@@ -7,7 +7,7 @@ import type { Prisoner } from '@prisoner-offender-search'
 export default class PrisonerClient {
   restClient: RestClient
 
-  constructor(token: string) {
+  constructor(token: Express.User['token']) {
     this.restClient = new RestClient('prisonerClient', config.apis.prisonerOffenderSearch as ApiConfig, token)
   }
 

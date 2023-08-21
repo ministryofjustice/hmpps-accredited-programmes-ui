@@ -23,15 +23,17 @@ import TokenStore from './tokenStore'
 import type { TokenVerifier } from './tokenVerification'
 import verifyToken from './tokenVerification'
 
-type RestClientBuilder<T> = (token: string) => T
+type RestClientBuilder<T> = (token: Express.User['token']) => T
 type RestClientBuilderWithoutToken<T> = () => T
 
 const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = () =>
   new HmppsAuthClient(new TokenStore(createRedisClient()))
-const courseClientBuilder: RestClientBuilder<CourseClient> = (token: string) => new CourseClient(token)
-const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: string) => new PrisonClient(token)
-const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: string) => new PrisonerClient(token)
-const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: string) => new ReferralClient(token)
+const courseClientBuilder: RestClientBuilder<CourseClient> = (token: Express.User['token']) => new CourseClient(token)
+const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: Express.User['token']) => new PrisonClient(token)
+const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: Express.User['token']) =>
+  new PrisonerClient(token)
+const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: Express.User['token']) =>
+  new ReferralClient(token)
 
 export {
   CourseClient,

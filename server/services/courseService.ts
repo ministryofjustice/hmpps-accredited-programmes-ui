@@ -4,23 +4,23 @@ import type { Course, CourseOffering } from '@accredited-programmes/models'
 export default class CourseService {
   constructor(private readonly courseClientBuilder: RestClientBuilder<CourseClient>) {}
 
-  async getCourse(token: string, courseId: Course['id']): Promise<Course> {
+  async getCourse(token: Express.User['token'], courseId: Course['id']): Promise<Course> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.find(courseId)
   }
 
-  async getCourseByOffering(token: string, courseOfferingId: CourseOffering['id']) {
+  async getCourseByOffering(token: Express.User['token'], courseOfferingId: CourseOffering['id']) {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.findCourseByOffering(courseOfferingId)
   }
 
-  async getCourses(token: string): Promise<Array<Course>> {
+  async getCourses(token: Express.User['token']): Promise<Array<Course>> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.all()
   }
 
   async getOffering(
-    token: string,
+    token: Express.User['token'],
     courseId: Course['id'],
     courseOfferingId: CourseOffering['id'],
   ): Promise<CourseOffering> {
@@ -28,7 +28,7 @@ export default class CourseService {
     return courseClient.findOffering(courseId, courseOfferingId)
   }
 
-  async getOfferingsByCourse(token: string, courseId: Course['id']): Promise<Array<CourseOffering>> {
+  async getOfferingsByCourse(token: Express.User['token'], courseId: Course['id']): Promise<Array<CourseOffering>> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.findOfferings(courseId)
   }
