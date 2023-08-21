@@ -4,9 +4,10 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import ReferralsController from './referralsController'
-import type { CourseService, OrganisationService } from '../../services'
-import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
-import { CourseUtils } from '../../utils'
+import { referPaths } from '../../paths'
+import type { CourseService, OrganisationService, ReferralService } from '../../services'
+import { courseFactory, courseOfferingFactory, organisationFactory, referralFactory } from '../../testutils/factories'
+import { CourseUtils, TypeUtils } from '../../utils'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/courseUtils')
@@ -19,6 +20,7 @@ describe('ReferralsController', () => {
 
   const courseService = createMock<CourseService>({})
   const organisationService = createMock<OrganisationService>({})
+  const referralService = createMock<ReferralService>({})
 
   const course = courseFactory.build()
   const courseOffering = courseOfferingFactory.build()
@@ -26,7 +28,7 @@ describe('ReferralsController', () => {
   let referralsController: ReferralsController
 
   beforeEach(() => {
-    referralsController = new ReferralsController(courseService, organisationService)
+    referralsController = new ReferralsController(courseService, organisationService, referralService)
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
   })
@@ -82,6 +84,33 @@ describe('ReferralsController', () => {
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
       })
+    })
+  })
+
+  describe('create', () => {
+    it('asks the service to create a referral and redirects to the show action', async () => {
+      const referral = referralFactory.build()
+
+      request.body.courseOfferingId = referral.offeringId
+      request.body.prisonNumber = referral.prisonNumber
+
+      TypeUtils.assertHasUser(request)
+      request.user.userId = referral.referrerId
+
+      referralService.createReferral.mockResolvedValue({ referralId: referral.id })
+
+      const requestHandler = referralsController.create()
+      await requestHandler(request, response, next)
+
+      expect(response.redirect).toHaveBeenCalledWith(
+        referPaths.show({ courseOfferingId: referral.offeringId, referralId: referral.id }),
+      )
+      expect(referralService.createReferral).toHaveBeenCalledWith(
+        token,
+        referral.offeringId,
+        referral.prisonNumber,
+        referral.referrerId,
+      )
     })
   })
 
