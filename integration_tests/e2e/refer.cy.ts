@@ -9,10 +9,7 @@ import {
 } from '../../server/testutils/factories'
 import { OrganisationUtils } from '../../server/utils'
 import Page from '../pages/page'
-import ConfirmPersonPage from '../pages/refer/confirmPerson'
-import FindPersonPage from '../pages/refer/findPerson'
-import StartReferralPage from '../pages/refer/startReferral'
-import TaskListPage from '../pages/refer/taskList'
+import { ConfirmPersonPage, FindPersonPage, StartReferralPage, TaskListPage } from '../pages/refer'
 
 context('Refer', () => {
   beforeEach(() => {
