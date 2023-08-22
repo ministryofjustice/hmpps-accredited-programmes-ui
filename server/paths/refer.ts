@@ -2,6 +2,7 @@ import findPaths from './find'
 
 const startReferralPath = findPaths.offerings.show.path('refer')
 const newReferralPath = startReferralPath.path('new')
+const showReferralPath = findPaths.offerings.show.path('referrals/:referralId')
 
 const peoplePath = startReferralPath.path('people')
 const findPersonPath = peoplePath.path('search')
@@ -13,5 +14,6 @@ export default {
     find: findPersonPath,
     show: personPath,
   },
+  show: showReferralPath,
   start: startReferralPath,
 }

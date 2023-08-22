@@ -5,12 +5,11 @@ import {
   personFactory,
   prisonFactory,
   prisonerFactory,
+  referralFactory,
 } from '../../server/testutils/factories'
 import { OrganisationUtils } from '../../server/utils'
 import Page from '../pages/page'
-import ConfirmPersonPage from '../pages/refer/confirmPerson'
-import FindPersonPage from '../pages/refer/findPerson'
-import StartReferralPage from '../pages/refer/startReferral'
+import { ConfirmPersonPage, FindPersonPage, StartReferralPage, TaskListPage } from '../pages/refer'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -98,5 +97,28 @@ context('Refer', () => {
     confirmPersonPage.shouldContainContinueButton()
     confirmPersonPage.shouldContainDifferentIdentifierLink()
     confirmPersonPage.shouldHavePersonInformation()
+  })
+
+  it('Shows the in-progress referral task list', () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const referral = referralFactory.build()
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+
+    const path = referPaths.show({ courseOfferingId: courseOffering.id, referralId: referral.id })
+    cy.visit(path)
+
+    const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation })
+    taskListPage.shouldContainNavigation(path)
+    taskListPage.shouldContainBackLink('#')
+    taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
+    taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
   })
 })

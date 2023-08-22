@@ -7,24 +7,32 @@ import ReferralsController from './referralsController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils } from '../../utils'
+import type { CoursePresenter } from '@accredited-programmes/ui'
+
+jest.mock('../../utils/courseUtils')
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
   const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
+
   const courseService = createMock<CourseService>({})
   const organisationService = createMock<OrganisationService>({})
+
   const course = courseFactory.build()
   const courseOffering = courseOfferingFactory.build()
 
   let referralsController: ReferralsController
 
-  courseService.getCourseByOffering.mockResolvedValue(course)
-  courseService.getOffering.mockResolvedValue(courseOffering)
-
   beforeEach(() => {
     referralsController = new ReferralsController(courseService, organisationService)
+    courseService.getCourseByOffering.mockResolvedValue(course)
+    courseService.getOffering.mockResolvedValue(courseOffering)
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
   })
 
   describe('start', () => {
@@ -35,7 +43,8 @@ describe('ReferralsController', () => {
       const requestHandler = referralsController.start()
       await requestHandler(request, response, next)
 
-      const coursePresenter = CourseUtils.presentCourse(course)
+      const coursePresenter = createMock<CoursePresenter>({ name: course.name })
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(response.render).toHaveBeenCalledWith('referrals/start', {
         course: coursePresenter,
@@ -72,6 +81,26 @@ describe('ReferralsController', () => {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
+      })
+    })
+  })
+
+  describe('show', () => {
+    it('renders the referral task list page', async () => {
+      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+      organisationService.getOrganisation.mockResolvedValue(organisation)
+
+      const requestHandler = referralsController.show()
+      await requestHandler(request, response, next)
+
+      const coursePresenter = createMock<CoursePresenter>({ name: course.name })
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show', {
+        course: coursePresenter,
+        courseOffering,
+        organisation,
+        pageHeading: 'Make a referral',
       })
     })
   })

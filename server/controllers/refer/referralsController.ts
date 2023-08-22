@@ -24,6 +24,35 @@ export default class ReferralsController {
     }
   }
 
+  show(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const course = await this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId)
+      const courseOffering = await this.courseService.getOffering(
+        req.user.token,
+        course.id,
+        req.params.courseOfferingId,
+      )
+      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+
+      if (!organisation) {
+        throw createError(404, {
+          userMessage: 'Organisation not found.',
+        })
+      }
+
+      const coursePresenter = CourseUtils.presentCourse(course)
+
+      res.render('referrals/show', {
+        course: coursePresenter,
+        courseOffering,
+        organisation,
+        pageHeading: 'Make a referral',
+      })
+    }
+  }
+
   start(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
