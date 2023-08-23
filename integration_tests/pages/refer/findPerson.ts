@@ -1,9 +1,16 @@
 import Helpers from '../../support/helpers'
 import Page from '../page'
+import type { Person } from '@accredited-programmes/models'
 
 export default class FindPersonPage extends Page {
   constructor() {
     super("Enter the person's identifier")
+  }
+
+  searchForPerson(prisonNumber: Person['prisonNumber']) {
+    cy.get('input#prisonNumber').type(prisonNumber)
+
+    this.shouldContainButton('Continue').click()
   }
 
   shouldContainIdentifierForm() {
