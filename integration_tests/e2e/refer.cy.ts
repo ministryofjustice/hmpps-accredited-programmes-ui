@@ -88,6 +88,50 @@ context('Refer', () => {
     confirmPersonPage.shouldHavePersonInformation()
   })
 
+  it("On confirming a person's details, creates a referral and redirects to the tasklist", () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      dateOfBirth: '1980-01-01',
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      dateOfBirth: '1 January 1980',
+      ethnicity: prisoner.ethnicity,
+      gender: prisoner.gender,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+      religionOrBelief: prisoner.religion,
+      setting: 'Custody',
+    })
+
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+    const referral = referralFactory.build()
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubCreateReferral', referral)
+
+    const path = referPaths.people.show({
+      courseOfferingId: courseOffering.id,
+      prisonNumber: person.prisonNumber,
+    })
+    cy.visit(path)
+    const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
+    confirmPersonPage.confirmPerson()
+
+    Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation })
+  })
+
   it('Shows the in-progress referral task list', () => {
     cy.signIn()
 

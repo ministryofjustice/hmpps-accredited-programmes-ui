@@ -17,6 +17,10 @@ export default class ConfirmPersonPage extends Page {
     this.person = person
   }
 
+  confirmPerson() {
+    this.shouldContainButton('Continue').click()
+  }
+
   shouldContainContinueButton() {
     this.shouldContainButton('Continue')
   }
