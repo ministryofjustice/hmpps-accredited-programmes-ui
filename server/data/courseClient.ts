@@ -7,7 +7,7 @@ import type { Course, CourseOffering } from '@accredited-programmes/models'
 export default class CourseClient {
   restClient: RestClient
 
-  constructor(token: string) {
+  constructor(token: Express.User['token']) {
     this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, token)
   }
 

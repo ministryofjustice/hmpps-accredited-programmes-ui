@@ -34,6 +34,7 @@ function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagen
 interface User {
   activeCaseLoadId: string
   name: string
+  userId: string
   username: string
 }
 
@@ -42,7 +43,7 @@ interface UserRole {
 }
 
 export default class HmppsAuthClient {
-  private static restClient(token: string): RestClient {
+  private static restClient(token: Express.User['token']): RestClient {
     return new RestClient('HMPPS Auth Client', config.apis.hmppsAuth, token)
   }
 
@@ -64,12 +65,12 @@ export default class HmppsAuthClient {
     return newToken.body.access_token
   }
 
-  getUser(token: string): Promise<User> {
+  getUser(token: Express.User['token']): Promise<User> {
     logger.info(`Getting user details: calling HMPPS Auth`)
     return HmppsAuthClient.restClient(token).get({ path: '/api/user/me' }) as Promise<User>
   }
 
-  getUserRoles(token: string): Promise<Array<string>> {
+  getUserRoles(token: Express.User['token']): Promise<Array<string>> {
     return HmppsAuthClient.restClient(token)
       .get({ path: '/api/user/me/roles' })
       .then(roles => (<Array<UserRole>>roles).map(role => role.roleCode))

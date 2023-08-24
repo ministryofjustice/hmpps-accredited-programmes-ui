@@ -8,7 +8,7 @@ import type { Person } from '@accredited-programmes/models'
 export default class PersonService {
   constructor(private readonly prisonerClientBuilder: RestClientBuilder<PrisonerClient>) {}
 
-  async getPerson(token: string, prisonNumber: string): Promise<Person | null> {
+  async getPerson(token: Express.User['token'], prisonNumber: string): Promise<Person | null> {
     const prisonerClient = this.prisonerClientBuilder(token)
 
     try {

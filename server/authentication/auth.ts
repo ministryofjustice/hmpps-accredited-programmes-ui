@@ -43,7 +43,7 @@ export default class Auth {
         tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
       },
       (token, refreshToken, params, profile, done) => {
-        return done(null, { authSource: params.auth_source, token, username: params.user_name })
+        return done(null, { authSource: params.auth_source, token, userId: params.user_id, username: params.user_name })
       },
     )
 

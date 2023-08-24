@@ -1,14 +1,35 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
-import type { CourseService, OrganisationService } from '../../services'
+import { referPaths } from '../../paths'
+import type { CourseService, OrganisationService, ReferralService } from '../../services'
 import { CourseUtils, TypeUtils } from '../../utils'
+import type { CreatedReferralResponse } from '@accredited-programmes/models'
 
 export default class ReferralsController {
   constructor(
     private readonly courseService: CourseService,
     private readonly organisationService: OrganisationService,
+    private readonly referralService: ReferralService,
   ) {}
+
+  create(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseOfferingId, prisonNumber } = req.body
+      const { token, userId } = req.user
+
+      const createdReferralResponse: CreatedReferralResponse = await this.referralService.createReferral(
+        token,
+        courseOfferingId,
+        prisonNumber,
+        userId,
+      )
+
+      res.redirect(referPaths.show({ courseOfferingId, referralId: createdReferralResponse.referralId }))
+    }
+  }
 
   new(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {

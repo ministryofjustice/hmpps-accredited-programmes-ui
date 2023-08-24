@@ -36,6 +36,7 @@ export default class PeopleController {
         courseOfferingId,
         pageHeading: `Confirm ${person.name}'s details`,
         personSummaryListRows: PersonUtils.summaryListRows(person),
+        prisonNumber: person.prisonNumber,
       })
     }
   }

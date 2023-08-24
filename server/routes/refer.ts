@@ -15,5 +15,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(referPaths.people.find.pattern, peopleController.find())
   get(referPaths.people.show.pattern, peopleController.show())
 
+  post(referPaths.create.pattern, referralsController.create())
+
   return router
 }

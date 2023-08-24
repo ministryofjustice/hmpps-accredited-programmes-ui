@@ -7,7 +7,7 @@ import type { Prison } from '@prison-register-api'
 export default class PrisonClient {
   restClient: RestClient
 
-  constructor(token: string) {
+  constructor(token: Express.User['token']) {
     this.restClient = new RestClient('prisonClient', config.apis.prisonRegisterApi as ApiConfig, token)
   }
 
