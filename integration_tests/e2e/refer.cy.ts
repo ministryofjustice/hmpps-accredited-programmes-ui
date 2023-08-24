@@ -42,26 +42,7 @@ context('Refer', () => {
     startReferralPage.shouldContainStartButtonLink()
   })
 
-  it("Shows the 'find person' page for a referral", () => {
-    cy.signIn()
-
-    const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build()
-
-    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
-
-    const path = referPaths.new({ courseOfferingId: courseOffering.id })
-    cy.visit(path)
-
-    const findPersonPage = Page.verifyOnPage(FindPersonPage)
-    findPersonPage.shouldContainNavigation(path)
-    findPersonPage.shouldContainBackLink(referPaths.start({ courseOfferingId: courseOffering.id }))
-    findPersonPage.shouldContainInstructionsParagraph()
-    findPersonPage.shouldContainIdentifierForm()
-  })
-
-  it("Shows the 'confirm person' page when starting a new referral", () => {
+  it("Allows users to search for a person and confirm that person's details", () => {
     cy.signIn()
 
     const course = courseFactory.build()
@@ -71,6 +52,21 @@ context('Refer', () => {
       firstName: 'Del',
       lastName: 'Hatton',
     })
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrisoner', prisoner)
+
+    const path = referPaths.new({ courseOfferingId: courseOffering.id })
+    cy.visit(path)
+
+    const findPersonPage = Page.verifyOnPage(FindPersonPage)
+    findPersonPage.shouldContainNavigation(path)
+    findPersonPage.shouldContainBackLink(referPaths.start({ courseOfferingId: courseOffering.id }))
+    findPersonPage.shouldContainInstructionsParagraph()
+    findPersonPage.shouldContainIdentifierForm()
+
+    findPersonPage.searchForPerson(prisoner.prisonerNumber)
 
     const person = personFactory.build({
       currentPrison: prisoner.prisonName,
@@ -83,13 +79,6 @@ context('Refer', () => {
       setting: 'Custody',
     })
 
-    cy.task('stubPrisoner', prisoner)
-
-    const path = referPaths.people.show({
-      courseOfferingId: courseOffering.id,
-      prisonNumber: person.prisonNumber,
-    })
-    cy.visit(path)
     const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
 
     confirmPersonPage.shouldContainNavigation(path)
