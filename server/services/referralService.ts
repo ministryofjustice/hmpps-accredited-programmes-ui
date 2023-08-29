@@ -13,4 +13,9 @@ export default class ReferralService {
     const referralClient = this.referralClientBuilder(token)
     return referralClient.create(courseOfferingId, prisonNumber, referrerId)
   }
+
+  async getReferral(token: Express.User['token'], referralId: Referral['id']): Promise<Referral> {
+    const referralClient = this.referralClientBuilder(token)
+    return referralClient.find(referralId)
+  }
 }

@@ -46,4 +46,18 @@ describe('ReferralService', () => {
       )
     })
   })
+
+  describe('getReferral', () => {
+    it('returns a given referral', async () => {
+      const referral = referralFactory.build()
+      when(referralClient.find).calledWith(referral.id).mockResolvedValue(referral)
+
+      const result = await service.getReferral(token, referral.id)
+
+      expect(result).toEqual(referral)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(referralClient.find).toHaveBeenCalledWith(referral.id)
+    })
+  })
 })
