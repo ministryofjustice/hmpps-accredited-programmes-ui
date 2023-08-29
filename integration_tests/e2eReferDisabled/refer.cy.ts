@@ -68,7 +68,7 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
-  it("Doesn't show the the in-progress referral form page", () => {
+  it("Doesn't show the the in-progress referral task list", () => {
     cy.signIn()
 
     const course = courseFactory.build()

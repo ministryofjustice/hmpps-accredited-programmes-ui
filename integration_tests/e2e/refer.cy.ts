@@ -88,7 +88,7 @@ context('Refer', () => {
     confirmPersonPage.shouldHavePersonInformation()
   })
 
-  it("On confirming a person's details, creates a referral and redirects to the tasklist", () => {
+  it("On confirming a person's details, creates a referral and redirects to the task list", () => {
     cy.signIn()
 
     const course = courseFactory.build()
