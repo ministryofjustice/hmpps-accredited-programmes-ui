@@ -9,6 +9,7 @@ const courseOfferingPath = courseOfferingsPath.path(':courseOfferingId')
 const courseByOfferingPath = path('/offerings/:courseOfferingId/course')
 
 const referralsPath = path('/referrals')
+const referralPath = referralsPath.path(':referralId')
 
 export default {
   courses: {
@@ -22,5 +23,6 @@ export default {
   },
   referrals: {
     create: referralsPath,
+    show: referralPath,
   },
 }

@@ -51,4 +51,30 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       expect(result).toEqual(createdReferralResponse)
     })
   })
+
+  describe('find', () => {
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `A referral exists with ID ${referral.id}`,
+        uponReceiving: `A request for referral "${referral.id}"`,
+        willRespondWith: {
+          body: Matchers.like(referral),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'GET',
+          path: apiPaths.referrals.show({ referralId: referral.id }),
+        },
+      })
+    })
+
+    it('fetches the given referral', async () => {
+      const result = await referralClient.find(referral.id)
+
+      expect(result).toEqual(referral)
+    })
+  })
 })
