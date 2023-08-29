@@ -88,7 +88,7 @@ context('Refer', () => {
     confirmPersonPage.shouldHavePersonInformation()
   })
 
-  it("On confirming a person's details, creates a referral and redirects to the tasklist", () => {
+  it("On confirming a person's details, creates a referral and redirects to the task list", () => {
     cy.signIn()
 
     const course = courseFactory.build()
@@ -113,13 +113,14 @@ context('Refer', () => {
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
-    const referral = referralFactory.build()
+    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
     cy.task('stubPrisoner', prisoner)
     cy.task('stubCreateReferral', referral)
+    cy.task('stubReferral', referral)
 
     const path = referPaths.people.show({
       courseOfferingId: courseOffering.id,
@@ -139,13 +140,14 @@ context('Refer', () => {
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
-    const referral = referralFactory.build()
+    const referral = referralFactory.build({ offeringId: courseOffering.id })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
+    cy.task('stubReferral', referral)
 
-    const path = referPaths.show({ courseOfferingId: courseOffering.id, referralId: referral.id })
+    const path = referPaths.show({ referralId: referral.id })
     cy.visit(path)
 
     const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation })

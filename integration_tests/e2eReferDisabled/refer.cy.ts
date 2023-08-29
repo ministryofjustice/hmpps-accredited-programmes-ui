@@ -68,7 +68,7 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
-  it("Doesn't show the the in-progress referral form page", () => {
+  it("Doesn't show the the in-progress referral task list", () => {
     cy.signIn()
 
     const course = courseFactory.build()
@@ -80,7 +80,7 @@ context('Refer', () => {
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
 
-    const path = referPaths.show({ courseOfferingId: courseOffering.id, referralId: referral.id })
+    const path = referPaths.show({ referralId: referral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)

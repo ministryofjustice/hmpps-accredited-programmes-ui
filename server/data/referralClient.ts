@@ -21,4 +21,10 @@ export default class ReferralClient {
       path: apiPaths.referrals.create({}),
     })) as CreatedReferralResponse
   }
+
+  async find(referralId: Referral['id']): Promise<Referral> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.show({ referralId }),
+    })) as Referral
+  }
 }
