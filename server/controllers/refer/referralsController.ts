@@ -27,7 +27,7 @@ export default class ReferralsController {
         userId,
       )
 
-      res.redirect(referPaths.show({ courseOfferingId, referralId: createdReferralResponse.referralId }))
+      res.redirect(referPaths.show({ referralId: createdReferralResponse.referralId }))
     }
   }
 
@@ -49,12 +49,9 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const course = await this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId)
-      const courseOffering = await this.courseService.getOffering(
-        req.user.token,
-        course.id,
-        req.params.courseOfferingId,
-      )
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
+      const courseOffering = await this.courseService.getOffering(req.user.token, course.id, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
 
       if (!organisation) {
@@ -67,7 +64,6 @@ export default class ReferralsController {
 
       res.render('referrals/show', {
         course: coursePresenter,
-        courseOffering,
         organisation,
         pageHeading: 'Make a referral',
       })

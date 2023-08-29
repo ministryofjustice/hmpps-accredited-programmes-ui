@@ -80,7 +80,7 @@ context('Refer', () => {
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
 
-    const path = referPaths.show({ courseOfferingId: courseOffering.id, referralId: referral.id })
+    const path = referPaths.show({ referralId: referral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)

@@ -102,9 +102,7 @@ describe('ReferralsController', () => {
       const requestHandler = referralsController.create()
       await requestHandler(request, response, next)
 
-      expect(response.redirect).toHaveBeenCalledWith(
-        referPaths.show({ courseOfferingId: referral.offeringId, referralId: referral.id }),
-      )
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
       expect(referralService.createReferral).toHaveBeenCalledWith(
         token,
         referral.offeringId,
@@ -127,7 +125,6 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show', {
         course: coursePresenter,
-        courseOffering,
         organisation,
         pageHeading: 'Make a referral',
       })

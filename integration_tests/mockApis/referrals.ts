@@ -17,4 +17,17 @@ export default {
         status: 201,
       },
     }),
+
+  stubReferral: (referral: Referral): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referrals.show({ referralId: referral.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: referral,
+        status: 200,
+      },
+    }),
 }
