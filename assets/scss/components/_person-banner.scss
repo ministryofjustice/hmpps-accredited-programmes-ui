@@ -1,0 +1,39 @@
+.person-details-banner {
+  @include full-width-within-govuk-width-container;
+
+  background-color: govuk-colour('blue');
+
+  .govuk-body,
+  .govuk-body-l {
+    color: govuk-colour('white');
+  }
+
+  span {
+    white-space: nowrap;
+  }
+}
+
+.person-details-banner__content {
+  position: relative;
+  margin-bottom: 0;
+  padding: 1.25rem 0;
+
+  @media (width < 76.875em) {
+    margin: 0;
+  }
+}
+
+.person-details-banner__name {
+  margin-right: 0.625rem;
+  margin-inline-start: 0;
+  line-height: 1.11111; /* stylelint-disable-line number-max-precision */
+
+  @media (width >= 40.0625em) {
+    font-size: 1.675rem;
+  }
+}
+
+.person-details-banner__bottom-block {
+  margin-top: 0.375rem;
+  padding-top: 0.625rem;
+}

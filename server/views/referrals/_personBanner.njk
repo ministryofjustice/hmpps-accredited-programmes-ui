@@ -1,0 +1,21 @@
+<section class="person-details-banner" aria-label="Person details">
+  <div class="person-details-banner__content govuk-width-container govuk-body">
+    <div class="person-details-banner__top-block">
+      <span class="govuk-visually-hidden">Name:</span>
+      <span class="person-details-banner__name govuk-body-l">
+        <strong>{{ person.name }}</strong>
+      </span>
+    </div>
+    <div class="person-details-banner__bottom-block">
+      <span>
+        <strong>Prison number:</strong>
+        {{ person.prisonNumber }}
+      </span>
+      <span>|</span>
+      <span>
+        <strong>Current prison: </strong>
+        {{ person.currentPrison }}
+      </span>
+    </div>
+  </div>
+</section>
