@@ -5,8 +5,14 @@ import createError from 'http-errors'
 
 import ReferralsController from './referralsController'
 import { referPaths } from '../../paths'
-import type { CourseService, OrganisationService, ReferralService } from '../../services'
-import { courseFactory, courseOfferingFactory, organisationFactory, referralFactory } from '../../testutils/factories'
+import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  organisationFactory,
+  personFactory,
+  referralFactory,
+} from '../../testutils/factories'
 import { CourseUtils, TypeUtils } from '../../utils'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
@@ -20,6 +26,7 @@ describe('ReferralsController', () => {
 
   const courseService = createMock<CourseService>({})
   const organisationService = createMock<OrganisationService>({})
+  const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
   const course = courseFactory.build()
@@ -28,7 +35,7 @@ describe('ReferralsController', () => {
   let referralsController: ReferralsController
 
   beforeEach(() => {
-    referralsController = new ReferralsController(courseService, organisationService, referralService)
+    referralsController = new ReferralsController(courseService, organisationService, personService, referralService)
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
   })
@@ -117,6 +124,9 @@ describe('ReferralsController', () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
+      const person = personFactory.build()
+      personService.getPerson.mockResolvedValue(person)
+
       const requestHandler = referralsController.show()
       await requestHandler(request, response, next)
 
@@ -127,6 +137,7 @@ describe('ReferralsController', () => {
         course: coursePresenter,
         organisation,
         pageHeading: 'Make a referral',
+        person,
       })
     })
   })

@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
-import type { CourseService, OrganisationService, ReferralService } from '../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import { CourseUtils, TypeUtils } from '../../utils'
 import type { CreatedReferralResponse } from '@accredited-programmes/models'
 
@@ -10,6 +10,7 @@ export default class ReferralsController {
   constructor(
     private readonly courseService: CourseService,
     private readonly organisationService: OrganisationService,
+    private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
 
@@ -53,6 +54,7 @@ export default class ReferralsController {
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const courseOffering = await this.courseService.getOffering(req.user.token, course.id, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
 
       if (!organisation) {
         throw createError(404, {
@@ -66,6 +68,7 @@ export default class ReferralsController {
         course: coursePresenter,
         organisation,
         pageHeading: 'Make a referral',
+        person,
       })
     }
   }
