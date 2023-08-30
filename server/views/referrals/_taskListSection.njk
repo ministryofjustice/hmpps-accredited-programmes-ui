@@ -1,0 +1,19 @@
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% macro taskListSection(section) %}
+  <li>
+    <h2 class="moj-task-list__section">{{ section.heading }}</h2>
+    <ul class="moj-task-list__items">
+      {% for item in section.items %}
+        <li class="moj-task-list__item">
+          {% if item.url %}
+            <a class="moj-task-list__task-name" href="{{ item.url }}">{{ item.text }}</a>
+          {% else %}
+            <span class="moj-task-list__task-name">{{ item.text }}</span>
+          {% endif %}
+          {{ govukTag(item.statusTag) }}
+        </li>
+      {% endfor %}
+    </ul>
+  </li>
+{% endmacro %}

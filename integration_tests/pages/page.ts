@@ -86,7 +86,7 @@ export default abstract class Page {
   }): void {
     const { course, organisation } = pageWithOrganisationAndCoursePresenter
 
-    cy.get('h2:nth-of-type(1)').then(organisationAndCourseHeading => {
+    cy.get('.govuk-grid-column-two-thirds > h2:first-child').then(organisationAndCourseHeading => {
       const expectedText = `${organisation.name} | ${course.nameAndAlternateName}`
       const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
