@@ -1,5 +1,5 @@
 import Helpers from '../support/helpers'
-import type { Organisation } from '@accredited-programmes/models'
+import type { Organisation, Person } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithValue,
@@ -126,6 +126,21 @@ export default abstract class Page {
         expect(actual).to.equal(expected)
         cy.wrap(tagElement).should('have.class', tag.classes)
       })
+    })
+  }
+
+  shouldHavePersonDetails(person: Person): void {
+    cy.get('.person-details-banner__top-block .govuk-visually-hidden').should('have.text', 'Name:')
+
+    cy.get('.person-details-banner__name').then(nameElement => {
+      const { actual, expected } = Helpers.parseHtml(nameElement, person.name)
+      expect(actual).to.equal(expected)
+    })
+
+    cy.get('.person-details-banner__bottom-block').then(detailsElement => {
+      const detailsText = `Prison number: ${person.prisonNumber} | Current prison: ${person.currentPrison}`
+      const { actual, expected } = Helpers.parseHtml(detailsElement, detailsText)
+      expect(actual).to.equal(expected)
     })
   }
 
