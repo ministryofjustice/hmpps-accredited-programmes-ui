@@ -105,10 +105,7 @@
       "error",
       {
         "alphabetize": { "order": "asc", "orderImportKind": "asc" },
-        "groups": [
-          ["builtin", "external"],
-          ["internal", "parent", "sibling"]
-        ],
+        "groups": [["builtin", "external"]],
         "newlines-between": "always"
       }
     ],
