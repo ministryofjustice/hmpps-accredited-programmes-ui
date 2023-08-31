@@ -138,19 +138,39 @@ context('Refer', () => {
 
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      dateOfBirth: '1980-01-01',
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      dateOfBirth: '1 January 1980',
+      ethnicity: prisoner.ethnicity,
+      gender: prisoner.gender,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+      religionOrBelief: prisoner.religion,
+      setting: 'Custody',
+    })
+
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
-    const referral = referralFactory.build({ offeringId: courseOffering.id })
+
+    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
 
     const path = referPaths.show({ referralId: referral.id })
     cy.visit(path)
 
     const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation })
+    taskListPage.shouldHavePersonDetails(person)
     taskListPage.shouldContainNavigation(path)
     taskListPage.shouldContainBackLink('#')
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)

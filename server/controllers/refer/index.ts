@@ -6,6 +6,7 @@ const controllers = (services: Services) => {
   const referralsController = new ReferralsController(
     services.courseService,
     services.organisationService,
+    services.personService,
     services.referralService,
   )
   const peopleController = new PeopleController(services.personService)
