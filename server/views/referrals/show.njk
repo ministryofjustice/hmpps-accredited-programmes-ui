@@ -1,5 +1,6 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
+{% from "./_taskListSection.njk" import taskListSection %}
 {% from "../partials/audienceTags.njk" import audienceTags %}
 
 {% extends "../partials/layout.njk" %}
@@ -23,6 +24,12 @@
       {% include "../partials/organisationAndCourse.njk" %}
 
       {{ audienceTags(course.audienceTags) }}
+
+      <ol class="moj-task-list">
+        {% for section in taskListSections %}
+          {{ taskListSection(section) }}
+        {% endfor %}
+      </ol>
     </div>
   </div>
 {% endblock content %}

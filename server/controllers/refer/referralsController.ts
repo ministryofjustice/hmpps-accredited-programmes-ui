@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, TypeUtils } from '../../utils'
+import { CourseUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CreatedReferralResponse } from '@accredited-programmes/models'
 
 export default class ReferralsController {
@@ -69,6 +69,7 @@ export default class ReferralsController {
         organisation,
         pageHeading: 'Make a referral',
         person,
+        taskListSections: ReferralUtils.taskListSections(referral),
       })
     }
   }

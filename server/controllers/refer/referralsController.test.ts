@@ -13,7 +13,7 @@ import {
   personFactory,
   referralFactory,
 } from '../../testutils/factories'
-import { CourseUtils, TypeUtils } from '../../utils'
+import { CourseUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/courseUtils')
@@ -127,6 +127,9 @@ describe('ReferralsController', () => {
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
+      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
       const requestHandler = referralsController.show()
       await requestHandler(request, response, next)
 
@@ -138,6 +141,7 @@ describe('ReferralsController', () => {
         organisation,
         pageHeading: 'Make a referral',
         person,
+        taskListSections: ReferralUtils.taskListSections(referral),
       })
     })
   })
