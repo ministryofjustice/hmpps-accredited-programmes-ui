@@ -130,7 +130,7 @@ context('Refer', () => {
     const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
     confirmPersonPage.confirmPerson()
 
-    Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation })
+    Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
   })
 
   it('Shows the in-progress referral task list', () => {
@@ -169,11 +169,12 @@ context('Refer', () => {
     const path = referPaths.show({ referralId: referral.id })
     cy.visit(path)
 
-    const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation })
+    const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
     taskListPage.shouldHavePersonDetails(person)
     taskListPage.shouldContainNavigation(path)
     taskListPage.shouldContainBackLink('#')
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
     taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
+    taskListPage.shouldContainTaskList()
   })
 })
