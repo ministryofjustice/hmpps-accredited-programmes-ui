@@ -15,11 +15,7 @@ export default class CourseOfferingsController {
       TypeUtils.assertHasUser(req)
 
       const course = await this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId)
-      const courseOffering = await this.courseService.getOffering(
-        req.user.token,
-        course.id,
-        req.params.courseOfferingId,
-      )
+      const courseOffering = await this.courseService.getOffering(req.user.token, req.params.courseOfferingId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
 
       if (!organisation) {
