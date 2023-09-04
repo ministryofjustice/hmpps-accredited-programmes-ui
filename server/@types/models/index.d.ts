@@ -5,7 +5,7 @@ import type { CoursePrerequisite } from './CoursePrerequisite'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
 import type { Person } from './Person'
-import type { CreatedReferralResponse, Referral } from './Referral'
+import type { CreatedReferralResponse, Referral, ReferralUpdate } from './Referral'
 
 export type {
   Course,
@@ -17,4 +17,5 @@ export type {
   OrganisationAddress,
   Person,
   Referral,
+  ReferralUpdate,
 }

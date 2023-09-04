@@ -23,5 +23,6 @@ export default {
   referrals: {
     create: referralsPath,
     show: referralPath,
+    update: referralPath,
   },
 }

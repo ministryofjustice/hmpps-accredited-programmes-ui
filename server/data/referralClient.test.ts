@@ -5,7 +5,7 @@ import ReferralClient from './referralClient'
 import config from '../config'
 import { apiPaths } from '../paths'
 import { referralFactory } from '../testutils/factories'
-import type { CreatedReferralResponse } from '@accredited-programmes/models'
+import type { CreatedReferralResponse, ReferralUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let referralClient: ReferralClient
@@ -75,6 +75,34 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await referralClient.find(referral.id)
 
       expect(result).toEqual(referral)
+    })
+  })
+
+  describe('update', () => {
+    const referralUpdate: ReferralUpdate = { oasysConfirmed: true }
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'Referral can be updates',
+        uponReceiving: 'A request to update a referral',
+        willRespondWith: {
+          status: 204,
+        },
+        withRequest: {
+          body: {
+            ...referralUpdate,
+          },
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'PUT',
+          path: apiPaths.referrals.update({ referralId: referral.id }),
+        },
+      })
+    })
+
+    it('updates a referral', async () => {
+      await referralClient.update(referral.id, referralUpdate)
     })
   })
 })
