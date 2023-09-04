@@ -19,13 +19,9 @@ export default class CourseService {
     return courseClient.all()
   }
 
-  async getOffering(
-    token: Express.User['token'],
-    courseId: Course['id'],
-    courseOfferingId: CourseOffering['id'],
-  ): Promise<CourseOffering> {
+  async getOffering(token: Express.User['token'], courseOfferingId: CourseOffering['id']): Promise<CourseOffering> {
     const courseClient = this.courseClientBuilder(token)
-    return courseClient.findOffering(courseId, courseOfferingId)
+    return courseClient.findOffering(courseOfferingId)
   }
 
   async getOfferingsByCourse(token: Express.User['token'], courseId: Course['id']): Promise<Array<CourseOffering>> {

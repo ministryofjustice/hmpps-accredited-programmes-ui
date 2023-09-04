@@ -35,7 +35,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.show({ courseId: args.courseId, courseOfferingId: args.courseOffering.id }),
+        url: apiPaths.courses.offerings.show({ courseOfferingId: args.courseOffering.id }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

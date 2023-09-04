@@ -153,13 +153,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${token}`,
           },
           method: 'GET',
-          path: apiPaths.courses.offerings.show({ courseId: course1.id, courseOfferingId: courseOffering.id }),
+          path: apiPaths.courses.offerings.show({ courseOfferingId: courseOffering.id }),
         },
       })
     })
 
     it('fetches the given course offering', async () => {
-      const result = await courseClient.findOffering(course1.id, courseOffering.id)
+      const result = await courseClient.findOffering(courseOffering.id)
 
       expect(result).toEqual(courseOffering)
     })
