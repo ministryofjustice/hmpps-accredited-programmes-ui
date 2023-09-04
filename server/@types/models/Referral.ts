@@ -12,4 +12,9 @@ type CreatedReferralResponse = {
   referralId: Referral['id']
 }
 
-export type { CreatedReferralResponse, Referral }
+type ReferralUpdate = {
+  oasysConfirmed: boolean
+  reason?: string
+}
+
+export type { CreatedReferralResponse, Referral, ReferralUpdate }

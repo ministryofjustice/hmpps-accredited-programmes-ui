@@ -7,6 +7,7 @@ export default class RouteUtils {
     return {
       get: (path: string | Array<string>, handler: RequestHandler) => router.get(path, asyncMiddleware(handler)),
       post: (path: string | Array<string>, handler: RequestHandler) => router.post(path, asyncMiddleware(handler)),
+      put: (path: string | Array<string>, handler: RequestHandler) => router.put(path, asyncMiddleware(handler)),
     }
   }
 }
