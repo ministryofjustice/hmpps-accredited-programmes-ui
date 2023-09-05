@@ -22,7 +22,7 @@ context('Find', () => {
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubCourseOffering', { courseOffering })
     cy.task('stubPrison', prison)
 
     const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
