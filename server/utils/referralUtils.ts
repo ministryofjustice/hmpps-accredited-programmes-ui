@@ -59,7 +59,7 @@ export default class ReferralUtils {
             url: '#',
           },
           {
-            statusTag: ReferralUtils.taskListStatus('not started'),
+            statusTag: ReferralUtils.taskListStatus(referral.oasysConfirmed ? 'completed' : 'not started'),
             text: 'Confirm the OASys information',
             url: referPaths.confirmOasys({ referralId: referral.id }),
           },

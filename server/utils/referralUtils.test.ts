@@ -107,5 +107,13 @@ describe('ReferralUtils', () => {
         },
       ])
     })
+
+    it('marks completed sections as completed via their status tags', () => {
+      const referralWithOasysConfirmed = referralFactory.build({ oasysConfirmed: true })
+      const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
+      const oasysConfirmedStatusTag = taskListSections[1].items[1].statusTag
+
+      expect(oasysConfirmedStatusTag).toEqual({ classes: 'moj-task-list__task-completed', text: 'completed' })
+    })
   })
 })
