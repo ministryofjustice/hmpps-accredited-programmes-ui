@@ -101,7 +101,7 @@ describe('ReferralUtils', () => {
                 text: 'cannot start yet',
               },
               text: 'Check answers and submit',
-              url: '#',
+              url: `/referrals/${referral.id}/check-answers`,
             },
           ],
         },

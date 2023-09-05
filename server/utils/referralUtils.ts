@@ -1,3 +1,4 @@
+import { referPaths } from '../paths'
 import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
@@ -43,7 +44,6 @@ export default class ReferralUtils {
     ]
   }
 
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
     return [
       {
@@ -69,7 +69,11 @@ export default class ReferralUtils {
       {
         heading: 'Check answers and submit',
         items: [
-          { statusTag: ReferralUtils.taskListStatus('cannot start yet'), text: 'Check answers and submit', url: '#' },
+          {
+            statusTag: ReferralUtils.taskListStatus('cannot start yet'),
+            text: 'Check answers and submit',
+            url: referPaths.checkAnswers({ referralId: referral.id }),
+          },
         ],
       },
     ]
