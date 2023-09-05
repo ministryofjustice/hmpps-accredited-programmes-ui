@@ -83,7 +83,7 @@ describe('ReferralUtils', () => {
             {
               statusTag: { classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
               text: 'Confirm the OASys information',
-              url: '#',
+              url: `/referrals/${referral.id}/oasys-confirmed`,
             },
             {
               statusTag: { classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed', text: 'not started' },

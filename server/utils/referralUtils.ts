@@ -58,7 +58,11 @@ export default class ReferralUtils {
             text: 'Add Accredited Programme history',
             url: '#',
           },
-          { statusTag: ReferralUtils.taskListStatus('not started'), text: 'Confirm the OASys information', url: '#' },
+          {
+            statusTag: ReferralUtils.taskListStatus('not started'),
+            text: 'Confirm the OASys information',
+            url: referPaths.confirmOasys({ referralId: referral.id }),
+          },
           {
             statusTag: ReferralUtils.taskListStatus('not started'),
             text: 'Add reason for referral and any additional information',
