@@ -31,9 +31,9 @@ type ReferralTaskListStatusText = 'completed' | 'not started' | 'cannot start ye
 
 // these are `GovukFrontendTag`s with spefic values
 type ReferralTaskListStatusTag =
-  | { classes: 'govuk-tag moj-task-list__task-completed'; text: 'completed' }
-  | { classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed'; text: 'not started' }
-  | { classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed'; text: 'cannot start yet' }
+  | { classes: 'moj-task-list__task-completed'; text: 'completed' }
+  | { classes: 'govuk-tag--grey moj-task-list__task-completed'; text: 'not started' }
+  | { classes: 'govuk-tag--grey moj-task-list__task-completed'; text: 'cannot start yet' }
 
 type ReferralTaskListItem = {
   statusTag: ReferralTaskListStatusTag

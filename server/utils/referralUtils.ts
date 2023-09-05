@@ -84,10 +84,11 @@ export default class ReferralUtils {
   }
 
   private static taskListStatus(text: ReferralTaskListStatusText): ReferralTaskListStatusTag {
-    const classes =
-      text === 'completed'
-        ? 'govuk-tag moj-task-list__task-completed'
-        : 'govuk-tag govuk-tag--grey moj-task-list__task-completed'
+    let classes = 'moj-task-list__task-completed'
+
+    if (text !== 'completed') {
+      classes = `govuk-tag--grey ${classes}`
+    }
 
     return { classes, text } as ReferralTaskListStatusTag
   }
