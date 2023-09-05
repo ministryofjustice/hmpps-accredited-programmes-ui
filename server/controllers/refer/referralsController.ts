@@ -105,6 +105,12 @@ export default class ReferralsController {
         })
       }
 
+      if (!person) {
+        throw createError(404, {
+          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
+        })
+      }
+
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('referrals/show', {

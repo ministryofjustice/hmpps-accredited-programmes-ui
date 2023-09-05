@@ -145,6 +145,41 @@ describe('ReferralsController', () => {
         taskListSections: ReferralUtils.taskListSections(referral),
       })
     })
+
+    describe('when the organisation service returns `null`', () => {
+      it('responds with a 404', async () => {
+        organisationService.getOrganisation.mockResolvedValue(null)
+
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(person)
+
+        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.show()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+        organisationService.getOrganisation.mockResolvedValue(organisation)
+
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.show()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
   })
 
   describe('checkAnswers', () => {
