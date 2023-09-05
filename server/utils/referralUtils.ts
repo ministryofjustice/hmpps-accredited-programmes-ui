@@ -1,11 +1,48 @@
-import type { Referral } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
+  CoursePresenter,
+  GovukFrontendSummaryListRowWithValue,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
 } from '@accredited-programmes/ui'
 
 export default class ReferralUtils {
+  static applicationSummaryListRows(
+    courseOffering: CourseOffering,
+    coursePresenter: CoursePresenter,
+    organisation: Organisation,
+    person: Person,
+    username: Express.User['username'],
+  ): Array<GovukFrontendSummaryListRowWithValue> {
+    return [
+      {
+        key: { text: 'Applicant name' },
+        value: { text: person.name },
+      },
+      {
+        key: { text: 'Programme name' },
+        value: { text: coursePresenter.nameAndAlternateName },
+      },
+      {
+        key: { text: 'Programme strand' },
+        value: { text: coursePresenter.audiences.map(audience => audience.value).join(', ') },
+      },
+      {
+        key: { text: 'Referrer name' },
+        value: { text: username },
+      },
+      {
+        key: { text: 'Referring prison' },
+        value: { text: organisation.name },
+      },
+      {
+        key: { text: 'Contact email address' },
+        value: { text: courseOffering.contactEmail },
+      },
+    ]
+  }
+
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
     return [
