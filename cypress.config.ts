@@ -20,7 +20,8 @@ export const defaultConfig: Cypress.ConfigOptions = {
   reporterOptions: {
     configFile: 'integration_tests/reporterConfig.json',
   },
-  videoUploadOnPasses: false,
+  video: true,
+  videoCompression: true,
   taskTimeout: 60000,
   e2e: {
     // We've imported your old cypress plugins here.
