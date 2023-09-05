@@ -10,7 +10,14 @@ import {
 import { OrganisationUtils } from '../../server/utils'
 import auth from '../mockApis/auth'
 import Page from '../pages/page'
-import { CheckAnswersPage, ConfirmPersonPage, FindPersonPage, StartReferralPage, TaskListPage } from '../pages/refer'
+import {
+  CheckAnswersPage,
+  ConfirmOasysPage,
+  ConfirmPersonPage,
+  FindPersonPage,
+  StartReferralPage,
+  TaskListPage,
+} from '../pages/refer'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -161,6 +168,37 @@ context('Refer', () => {
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
     taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
     taskListPage.shouldContainTaskList()
+  })
+
+  it('Shows the confirm OASys form page', () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.confirmOasys({ referralId: referral.id })
+    cy.visit(path)
+
+    const confirmOasysPage = Page.verifyOnPage(ConfirmOasysPage, { person, referral })
+    confirmOasysPage.shouldHavePersonDetails(person)
+    confirmOasysPage.shouldContainNavigation(path)
+    confirmOasysPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+    confirmOasysPage.shouldContainImportanceDetails()
+    confirmOasysPage.shouldContainLastUpdatedNotificationBanner()
+    confirmOasysPage.shouldContainConfirmationCheckbox()
+    confirmOasysPage.shouldContainSaveAndContinueButton()
   })
 
   it('Shows the correct information on the Check answers and submit task page', () => {

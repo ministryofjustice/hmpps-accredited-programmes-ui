@@ -31,7 +31,10 @@
 
       {{ govukDetails({
         summaryText: "Why is this important?",
-        html: detailsHtml
+        html: detailsHtml,
+        attributes: {
+          "data-testid": "importance-details"
+        }
       }) }}
 
       {% set notificationBannerHtml %}
@@ -40,7 +43,10 @@
       {% endset %}
 
       {{ govukNotificationBanner({
-        html: notificationBannerHtml
+        html: notificationBannerHtml,
+        attributes: {
+          "data-testid": "last-updated-notification-banner"
+        }
       }) }}
 
       <form action="{{ referPaths.update({ referralId: referral.id }) }}?_method=PUT" method="post">
