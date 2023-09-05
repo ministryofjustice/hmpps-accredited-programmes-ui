@@ -5,7 +5,7 @@ import { referPaths } from '../paths'
 import { RouteUtils } from '../utils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
-  const { get, post } = RouteUtils.actions(router)
+  const { get, post, put } = RouteUtils.actions(router)
   const { referralsController, peopleController } = controllers
 
   get(referPaths.start.pattern, referralsController.start())
@@ -17,6 +17,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.people.show.pattern, peopleController.show())
 
   post(referPaths.create.pattern, referralsController.create())
+  put(referPaths.update.pattern, referralsController.update())
   get(referPaths.confirmOasys.pattern, referralsController.confirmOasys())
 
   return router
