@@ -182,6 +182,40 @@ describe('ReferralsController', () => {
     })
   })
 
+  describe('confirmOasys', () => {
+    it('renders the confirm OASys form page', async () => {
+      const person = personFactory.build()
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      const requestHandler = referralsController.confirmOasys()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/confirmOasys', {
+        pageHeading: 'Confirm the OASys information',
+        person,
+        referral,
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.confirmOasys()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
