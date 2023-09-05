@@ -68,17 +68,20 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
-  it("Doesn't show the the in-progress referral task list", () => {
+  it("Doesn't show the in-progress referral task list", () => {
     cy.signIn()
 
-    const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build()
-    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const referral = referralFactory.build()
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build({ id: referral.offeringId })
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const prisoner = prisonerFactory.build({ prisonerNumber: referral.prisonNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseOffering })
     cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
 
     const path = referPaths.show({ referralId: referral.id })
     cy.visit(path, { failOnStatusCode: false })
