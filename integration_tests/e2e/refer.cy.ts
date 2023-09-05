@@ -201,6 +201,44 @@ context('Refer', () => {
     confirmOasysPage.shouldContainSaveAndContinueButton()
   })
 
+  it('On confirming OASys information, updates the referral and redirects to the task list', () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+    cy.task('stubUpdateReferral', referral.id)
+
+    const path = referPaths.confirmOasys({ referralId: referral.id })
+    cy.visit(path)
+
+    const confirmOasysPage = Page.verifyOnPage(ConfirmOasysPage, { person, referral })
+    confirmOasysPage.confirmOasys()
+
+    const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
+    taskListPage.shouldHaveConfirmedOasys()
+  })
+
   it('Shows the correct information on the Check answers and submit task page', () => {
     cy.signIn()
 

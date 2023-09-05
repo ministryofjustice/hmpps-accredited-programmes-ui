@@ -14,6 +14,14 @@ export default class ConfirmOasysPage extends Page {
     this.referral = referral
   }
 
+  confirmOasys() {
+    cy.get('[name="oasysConfirmed"]').check()
+    this.referral = { ...this.referral, oasysConfirmed: true }
+    // We're stubbing the referral here to make sure the updated referral is available on the task list page
+    cy.task('stubReferral', this.referral)
+    this.shouldContainButton('Save and continue').click()
+  }
+
   shouldContainConfirmationCheckbox() {
     this.shouldContainCheckbox('oasysConfirmed', 'I confirm that the OASys information is up to date.')
   }

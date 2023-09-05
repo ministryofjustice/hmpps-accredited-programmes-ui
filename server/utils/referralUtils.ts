@@ -59,7 +59,10 @@ export default class ReferralUtils {
             url: '#',
           },
           {
-            statusTag: ReferralUtils.taskListStatus(referral.oasysConfirmed ? 'completed' : 'not started'),
+            statusTag: ReferralUtils.taskListStatus(
+              referral.oasysConfirmed ? 'completed' : 'not started',
+              'oasys-confirmed-tag',
+            ),
             text: 'Confirm the OASys information',
             url: referPaths.confirmOasys({ referralId: referral.id }),
           },
@@ -83,13 +86,19 @@ export default class ReferralUtils {
     ]
   }
 
-  private static taskListStatus(text: ReferralTaskListStatusText): ReferralTaskListStatusTag {
+  private static taskListStatus(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {
     let classes = 'moj-task-list__task-completed'
 
     if (text !== 'completed') {
       classes = `govuk-tag--grey ${classes}`
     }
 
-    return { classes, text } as ReferralTaskListStatusTag
+    const tag: ReferralTaskListStatusTag = { classes, text }
+
+    if (dataTestId) {
+      tag.attributes = { 'data-testid': dataTestId }
+    }
+
+    return tag
   }
 }

@@ -81,7 +81,11 @@ describe('ReferralUtils', () => {
               url: '#',
             },
             {
-              statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
+              statusTag: {
+                attributes: { 'data-testid': 'oasys-confirmed-tag' },
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
+                text: 'not started',
+              },
               text: 'Confirm the OASys information',
               url: `/referrals/${referral.id}/oasys-confirmed`,
             },
@@ -113,7 +117,11 @@ describe('ReferralUtils', () => {
       const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
       const oasysConfirmedStatusTag = taskListSections[1].items[1].statusTag
 
-      expect(oasysConfirmedStatusTag).toEqual({ classes: 'moj-task-list__task-completed', text: 'completed' })
+      expect(oasysConfirmedStatusTag).toEqual({
+        attributes: { 'data-testid': 'oasys-confirmed-tag' },
+        classes: 'moj-task-list__task-completed',
+        text: 'completed',
+      })
     })
   })
 })
