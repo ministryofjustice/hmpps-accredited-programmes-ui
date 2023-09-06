@@ -1,12 +1,49 @@
-import type { Referral } from '@accredited-programmes/models'
+import { referPaths } from '../paths'
+import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
+  CoursePresenter,
+  GovukFrontendSummaryListRowWithValue,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
 } from '@accredited-programmes/ui'
 
 export default class ReferralUtils {
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  static applicationSummaryListRows(
+    courseOffering: CourseOffering,
+    coursePresenter: CoursePresenter,
+    organisation: Organisation,
+    person: Person,
+    username: Express.User['username'],
+  ): Array<GovukFrontendSummaryListRowWithValue> {
+    return [
+      {
+        key: { text: 'Applicant name' },
+        value: { text: person.name },
+      },
+      {
+        key: { text: 'Programme name' },
+        value: { text: coursePresenter.nameAndAlternateName },
+      },
+      {
+        key: { text: 'Programme strand' },
+        value: { text: coursePresenter.audiences.map(audience => audience.value).join(', ') },
+      },
+      {
+        key: { text: 'Referrer name' },
+        value: { text: username },
+      },
+      {
+        key: { text: 'Referring prison' },
+        value: { text: organisation.name },
+      },
+      {
+        key: { text: 'Contact email address' },
+        value: { text: courseOffering.contactEmail },
+      },
+    ]
+  }
+
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
     return [
       {
@@ -32,7 +69,11 @@ export default class ReferralUtils {
       {
         heading: 'Check answers and submit',
         items: [
-          { statusTag: ReferralUtils.taskListStatus('cannot start yet'), text: 'Check answers and submit', url: '#' },
+          {
+            statusTag: ReferralUtils.taskListStatus('cannot start yet'),
+            text: 'Check answers and submit',
+            url: referPaths.checkAnswers({ referralId: referral.id }),
+          },
         ],
       },
     ]

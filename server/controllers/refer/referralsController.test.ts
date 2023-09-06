@@ -7,13 +7,14 @@ import ReferralsController from './referralsController'
 import { referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import {
+  courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
   organisationFactory,
   personFactory,
   referralFactory,
 } from '../../testutils/factories'
-import { CourseUtils, ReferralUtils, TypeUtils } from '../../utils'
+import { CourseUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/courseUtils')
@@ -142,6 +143,47 @@ describe('ReferralsController', () => {
         pageHeading: 'Make a referral',
         person,
         taskListSections: ReferralUtils.taskListSections(referral),
+      })
+    })
+  })
+
+  describe('checkAnswers', () => {
+    it('renders the referral check answers page', async () => {
+      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+      organisationService.getOrganisation.mockResolvedValue(organisation)
+
+      const person = personFactory.build()
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      request.params.referralId = referral.id
+
+      TypeUtils.assertHasUser(request)
+      request.user.username = 'BOBBY_BROWN'
+
+      const coursePresenter = createMock<CoursePresenter>({
+        audiences: courseAudienceFactory.buildList(1),
+        nameAndAlternateName: `${course.name} (${course.alternateName})`,
+      })
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
+
+      const requestHandler = referralsController.checkAnswers()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/checkAnswers', {
+        applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
+          courseOffering,
+          coursePresenter,
+          organisation,
+          person,
+          request.user.username,
+        ),
+        pageHeading: 'Check your answers',
+        person,
+        personSummaryListRows: PersonUtils.summaryListRows(person),
+        referralId: referral.id,
       })
     })
   })

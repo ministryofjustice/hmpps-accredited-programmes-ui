@@ -86,4 +86,26 @@ context('Refer', () => {
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
     notFoundPage.shouldContain404H2()
   })
+
+  it("Doesn't show the check answers page for a referral", () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const prisoner = prisonerFactory.build()
+    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonNumber })
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.checkAnswers({ referralId: referral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
 })

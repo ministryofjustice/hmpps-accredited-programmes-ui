@@ -8,8 +8,9 @@ import {
   referralFactory,
 } from '../../server/testutils/factories'
 import { OrganisationUtils } from '../../server/utils'
+import auth from '../mockApis/auth'
 import Page from '../pages/page'
-import { ConfirmPersonPage, FindPersonPage, StartReferralPage, TaskListPage } from '../pages/refer'
+import { CheckAnswersPage, ConfirmPersonPage, FindPersonPage, StartReferralPage, TaskListPage } from '../pages/refer'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -176,5 +177,59 @@ context('Refer', () => {
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
     taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
     taskListPage.shouldContainTaskList()
+  })
+
+  it('Shows the correct information on the Check answers and submit task page', () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      dateOfBirth: '1980-01-01',
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      dateOfBirth: '1 January 1980',
+      ethnicity: prisoner.ethnicity,
+      gender: prisoner.gender,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+      religionOrBelief: prisoner.religion,
+      setting: 'Custody',
+    })
+
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.checkAnswers({ referralId: referral.id })
+    cy.visit(path)
+
+    const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
+      course,
+      courseOffering,
+      organisation,
+      person,
+      username: auth.mockedUsername,
+    })
+
+    checkAnswersPage.shouldHavePersonDetails(person)
+    checkAnswersPage.shouldContainNavigation(path)
+    checkAnswersPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+    checkAnswersPage.shouldHaveApplicationSummary()
+    checkAnswersPage.shouldHavePersonalDetailsSummary()
+    checkAnswersPage.shouldHaveConfirmationCheckbox()
+    checkAnswersPage.shouldContainButton('Submit referral')
+    checkAnswersPage.shouldContainButtonLink('Return to tasklist', referPaths.show({ referralId: referral.id }))
   })
 })
