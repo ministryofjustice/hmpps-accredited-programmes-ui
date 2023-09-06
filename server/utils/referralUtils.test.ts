@@ -69,6 +69,7 @@ describe('ReferralUtils', () => {
             {
               statusTag: { classes: 'moj-task-list__task-completed', text: 'completed' },
               text: 'Confirm personal details',
+              url: `/referrals/${referral.id}/person`,
             },
           ],
         },

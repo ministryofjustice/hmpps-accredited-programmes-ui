@@ -48,7 +48,13 @@ export default class ReferralUtils {
     return [
       {
         heading: 'Personal details',
-        items: [{ statusTag: ReferralUtils.taskListStatus('completed'), text: 'Confirm personal details' }],
+        items: [
+          {
+            statusTag: ReferralUtils.taskListStatus('completed'),
+            text: 'Confirm personal details',
+            url: referPaths.showPerson({ referralId: referral.id }),
+          },
+        ],
       },
       {
         heading: 'Referral information',
