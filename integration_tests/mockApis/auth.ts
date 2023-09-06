@@ -4,6 +4,8 @@ import type { Response } from 'superagent'
 import tokenVerification from './tokenVerification'
 import { getMatchingRequests, stubFor } from '../../wiremock'
 
+const mockedUsername = 'USER1'
+
 const createToken = () => {
   const payload = {
     auth_source: 'nomis',
@@ -11,7 +13,7 @@ const createToken = () => {
     client_id: 'clientid',
     jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
     scope: ['read'],
-    user_name: 'USER1',
+    user_name: mockedUsername,
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })
@@ -112,7 +114,7 @@ const token = () =>
         internalUser: true,
         scope: 'read',
         token_type: 'bearer',
-        user_name: 'USER1',
+        user_name: mockedUsername,
       },
       status: 200,
     },
@@ -132,7 +134,7 @@ const stubUser = (name: string) =>
         active: true,
         name,
         staffId: 231232,
-        username: 'USER1',
+        username: mockedUsername,
       },
       status: 200,
     },
@@ -155,6 +157,7 @@ const stubUserRoles = () =>
 
 export default {
   getSignInUrl,
+  mockedUsername,
   stubAuthPing: ping,
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
