@@ -1,0 +1,28 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "../partials/layout.njk" %}
+
+{% set customPageTitleEnd = "Personal details" %}
+
+{% block personBanner %}
+  {% include "./_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: referPaths.show({ referralId: referralId })
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukSummaryList({ rows: personSummaryListRows }) }}
+    </div>
+  </div>
+
+{% endblock content %}

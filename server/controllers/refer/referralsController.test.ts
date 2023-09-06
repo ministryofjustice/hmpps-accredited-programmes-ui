@@ -182,6 +182,43 @@ describe('ReferralsController', () => {
     })
   })
 
+  describe('showPerson', () => {
+    const person = personFactory.build({
+      name: 'Del Hatton',
+    })
+
+    it("renders the page for viewing a person's details", async () => {
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      const requestHandler = referralsController.showPerson()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/showPerson', {
+        pageHeading: "Del Hatton's details",
+        person,
+        personSummaryListRows: PersonUtils.summaryListRows(person),
+        referralId: referral.id,
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.showPerson()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
   describe('confirmOasys', () => {
     it('renders the confirm OASys form page', async () => {
       const person = personFactory.build()
