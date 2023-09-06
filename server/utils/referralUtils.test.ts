@@ -25,7 +25,7 @@ describe('ReferralUtils', () => {
       const coursePresenter = CourseUtils.presentCourse(course)
       const organisation = organisationFactory.build({ name: 'HMP Hewell' })
       const person = personFactory.build({ name: 'Del Hatton' })
-      const username = 'BOB_SMITH'
+      const username = 'BOBBY_BROWN'
 
       expect(
         ReferralUtils.applicationSummaryListRows(courseOffering, coursePresenter, organisation, person, username),
@@ -44,7 +44,7 @@ describe('ReferralUtils', () => {
         },
         {
           key: { text: 'Referrer name' },
-          value: { text: 'BOB_SMITH' },
+          value: { text: 'BOBBY_BROWN' },
         },
         {
           key: { text: 'Referring prison' },

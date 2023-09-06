@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, ReferralUtils, TypeUtils } from '../../utils'
+import { CourseUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CreatedReferralResponse } from '@accredited-programmes/models'
 
 export default class ReferralsController {
@@ -13,6 +13,49 @@ export default class ReferralsController {
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
+
+  checkAnswers(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { referralId } = req.params
+      const { username } = req.user
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
+      const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
+      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
+
+      if (!organisation) {
+        throw createError(404, {
+          userMessage: 'Organisation not found.',
+        })
+      }
+
+      if (!person) {
+        throw createError(404, {
+          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
+        })
+      }
+
+      const coursePresenter = CourseUtils.presentCourse(course)
+
+      res.render('referrals/checkAnswers', {
+        applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
+          courseOffering,
+          coursePresenter,
+          organisation,
+          person,
+          username,
+        ),
+        pageHeading: 'Check your answers',
+        person,
+        personSummaryListRows: PersonUtils.summaryListRows(person),
+        referralId,
+      })
+    }
+  }
 
   create(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {

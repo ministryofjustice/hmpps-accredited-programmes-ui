@@ -1,0 +1,89 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block personBanner %}
+    {% include "./_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+    {{ govukBackLink({
+        text: "Back",
+        href: referPaths.show({ referralId: referralId })
+    }) }}
+{% endblock backLink %}
+
+{% block content %}
+    <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">Read through this page and check that the information provided for each answer is accurate. When you feel the application is complete, submit it.</p>
+
+            <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
+
+            <h2 class="govuk-heading-m">Application summary</h2>
+
+            {{ govukSummaryList({
+                classes: 'govuk-summary-list--no-border',
+                rows: applicationSummaryListRows,
+                attributes: {
+                    "data-testid": "application-summary-list"
+                }
+            }) }}
+
+            <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
+
+            <h2 class="govuk-heading-m">Referral details</h2>
+
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: "Personal details"
+                    }
+                },
+                rows: personSummaryListRows,
+                attributes: {
+                    "data-testid": "personal-details-summary-list"
+                }
+            }) }}
+
+            <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
+
+            <form action="">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+                {{ govukCheckboxes({
+                    name: "confirmation",
+                    fieldset: {
+                        legend: {
+                            text: "Confirm this information is correct",
+                            classes: "govuk-fieldset__legend--m"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "confirm",
+                            text: "I confirm the information I have provided is complete, accurate and up to date."
+                        }
+                    ]
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Submit referral"
+                    }) }}
+
+                    {{ govukButton({
+                        text: "Return to tasklist",
+                        classes: "govuk-button--secondary",
+                        href: referPaths.show({ referralId: referralId })
+                    }) }}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
