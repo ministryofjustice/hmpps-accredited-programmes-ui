@@ -31,7 +31,7 @@ export default {
       },
     }),
 
-  stubCourseOffering: (args: { courseId: Course['id']; courseOffering: CourseOffering }): SuperAgentRequest =>
+  stubCourseOffering: (args: { courseOffering: CourseOffering }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
