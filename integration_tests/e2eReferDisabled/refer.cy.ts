@@ -113,7 +113,7 @@ context('Refer', () => {
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const prisoner = prisonerFactory.build()
-    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonNumber })
+    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
