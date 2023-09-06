@@ -143,13 +143,17 @@ export default abstract class Page {
     })
   }
 
+  shouldContainTag(tag: GovukFrontendTag & HasTextString, tagElement: JQuery<HTMLElement>): void {
+    const { actual, expected } = Helpers.parseHtml(tagElement, tag.text)
+    expect(actual).to.equal(expected)
+    cy.wrap(tagElement).should('have.class', tag.classes)
+  }
+
   shouldContainTags(tags: Array<GovukFrontendTag & HasTextString>, tagContainerElement: JQuery<HTMLElement>): void {
     cy.wrap(tagContainerElement).within(() => {
       cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
         const tag = tags[tagElementIndex]
-        const { actual, expected } = Helpers.parseHtml(tagElement, tag.text)
-        expect(actual).to.equal(expected)
-        cy.wrap(tagElement).should('have.class', tag.classes)
+        this.shouldContainTag(tag, tagElement)
       })
     })
   }
