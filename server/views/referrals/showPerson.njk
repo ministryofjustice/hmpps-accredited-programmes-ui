@@ -21,7 +21,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{ govukSummaryList({ rows: personSummaryListRows }) }}
+      {{ govukSummaryList({ rows: personSummaryListRows, attributes: { "data-testid": "person-summary-list" } }) }}
     </div>
   </div>
 

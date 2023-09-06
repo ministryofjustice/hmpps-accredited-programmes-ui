@@ -15,6 +15,7 @@ import {
   ConfirmOasysPage,
   ConfirmPersonPage,
   FindPersonPage,
+  ShowPersonPage,
   StartReferralPage,
   TaskListPage,
 } from '../pages/refer'
@@ -168,6 +169,40 @@ context('Refer', () => {
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
     taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
     taskListPage.shouldContainTaskList()
+  })
+
+  it('Shows the person page for a referral', () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build({
+      dateOfBirth: '1980-01-01',
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      dateOfBirth: '1 January 1980',
+      ethnicity: prisoner.ethnicity,
+      gender: prisoner.gender,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+      religionOrBelief: prisoner.religion,
+      setting: 'Custody',
+    })
+
+    const referral = referralFactory.build({ prisonNumber: prisoner.prisonerNumber })
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.showPerson({ referralId: referral.id })
+    cy.visit(path)
+
+    const showPersonPage = Page.verifyOnPage(ShowPersonPage, { person })
+    showPersonPage.shouldHavePersonDetails(person)
+    showPersonPage.shouldContainNavigation(path)
+    showPersonPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+    showPersonPage.shouldContainPersonSummaryList(person)
   })
 
   it('Shows the confirm OASys form page', () => {
