@@ -1,5 +1,4 @@
 import { referPaths } from '../../../server/paths'
-import { PersonUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Person } from '@accredited-programmes/models'
 
@@ -30,9 +29,7 @@ export default class ConfirmPersonPage extends Page {
   }
 
   shouldHavePersonInformation() {
-    cy.get('.govuk-summary-list').then(summaryListElement => {
-      this.shouldContainSummaryListRows(PersonUtils.summaryListRows(this.person), summaryListElement)
-    })
+    this.shouldContainPersonSummaryList(this.person)
 
     cy.get('.govuk-warning-text__text').should(
       'contain.text',

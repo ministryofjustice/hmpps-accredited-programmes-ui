@@ -287,7 +287,7 @@ context('Refer', () => {
     checkAnswersPage.shouldContainNavigation(path)
     checkAnswersPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
     checkAnswersPage.shouldHaveApplicationSummary()
-    checkAnswersPage.shouldHavePersonalDetailsSummary()
+    checkAnswersPage.shouldContainPersonSummaryList(person)
     checkAnswersPage.shouldHaveConfirmationCheckbox()
     checkAnswersPage.shouldContainButton('Submit referral')
     checkAnswersPage.shouldContainButtonLink('Return to tasklist', referPaths.show({ referralId: referral.id }))
