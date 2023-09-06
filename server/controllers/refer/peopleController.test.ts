@@ -65,14 +65,16 @@ describe('PeopleController', () => {
       })
     })
 
-    it('throws an error if the user is not found', async () => {
-      personService.getPerson.mockResolvedValue(null)
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        personService.getPerson.mockResolvedValue(null)
 
-      const requestHandler = peopleController.show()
+        const requestHandler = peopleController.show()
 
-      const expectedError = createError(404)
+        const expectedError = createError(404)
 
-      expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
     })
   })
 })
