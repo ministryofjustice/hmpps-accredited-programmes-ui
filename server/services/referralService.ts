@@ -1,5 +1,5 @@
 import type { ReferralClient, RestClientBuilder } from '../data'
-import type { CreatedReferralResponse, Referral, ReferralUpdate } from '@accredited-programmes/models'
+import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 export default class ReferralService {
   constructor(private readonly referralClientBuilder: RestClientBuilder<ReferralClient>) {}
@@ -26,5 +26,14 @@ export default class ReferralService {
   ): Promise<void> {
     const referralClient = this.referralClientBuilder(token)
     return referralClient.update(referralId, referralUpdate)
+  }
+
+  async updateReferralStatus(
+    token: Express.User['token'],
+    referralId: Referral['id'],
+    status: ReferralStatus,
+  ): Promise<void> {
+    const referralClient = this.referralClientBuilder(token)
+    return referralClient.updateStatus(referralId, status)
   }
 }

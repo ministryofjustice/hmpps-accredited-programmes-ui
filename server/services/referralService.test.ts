@@ -3,7 +3,7 @@ import { when } from 'jest-when'
 import ReferralService from './referralService'
 import { ReferralClient } from '../data'
 import { referralFactory } from '../testutils/factories'
-import type { CreatedReferralResponse, ReferralUpdate } from '@accredited-programmes/models'
+import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/referralClient')
 
@@ -70,6 +70,18 @@ describe('ReferralService', () => {
 
       expect(referralClientBuilder).toHaveBeenCalledWith(token)
       expect(referralClient.update).toHaveBeenCalledWith(referralId, referralUpdate)
+    })
+  })
+
+  describe('updateReferralStatus', () => {
+    it('asks the client to update the referral status', async () => {
+      const referralId = 'an-ID'
+      const status: ReferralStatus = 'referral_submitted'
+
+      await service.updateReferralStatus(token, referralId, status)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(referralClient.updateStatus).toHaveBeenCalledWith(referralId, status)
     })
   })
 })
