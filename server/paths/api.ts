@@ -9,6 +9,7 @@ const courseByOfferingPath = courseOfferingPath.path('course')
 
 const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
+const updateStatusPath = referralPath.path('status')
 
 export default {
   courses: {
@@ -24,5 +25,6 @@ export default {
     create: referralsPath,
     show: referralPath,
     update: referralPath,
+    updateStatus: updateStatusPath,
   },
 }

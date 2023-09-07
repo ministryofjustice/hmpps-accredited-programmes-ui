@@ -105,4 +105,32 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       await referralClient.update(referral.id, referralUpdate)
     })
   })
+
+  describe('updateStatus', () => {
+    const status = 'referral_submitted'
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'Referral status can be updated',
+        uponReceiving: 'A request to update a referral status',
+        willRespondWith: {
+          status: 204,
+        },
+        withRequest: {
+          body: {
+            status,
+          },
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'PUT',
+          path: apiPaths.referrals.updateStatus({ referralId: referral.id }),
+        },
+      })
+    })
+
+    it('updates a referral status', async () => {
+      await referralClient.updateStatus(referral.id, status)
+    })
+  })
 })
