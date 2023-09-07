@@ -18,4 +18,6 @@ type ReferralUpdate = {
   reason?: string
 }
 
-export type { CreatedReferralResponse, Referral, ReferralUpdate }
+type ReferralStatus = 'awaiting_assesment' | 'assessment_started' | 'referral_started' | 'referral_submitted'
+
+export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate }
