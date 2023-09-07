@@ -38,6 +38,8 @@ As the Prisoner Offender Search is a complex API with multiple dependencies, we'
 
 ### With a mocked API
 
+**Warning:** the mocked API currently only covers the Find journey and searching for a person before creating a referral. The rest of the Refer journey will not work with a mocked API at present.
+
 To run the application as above but with a mocked Accredited Programmes API (port 9099), run:
 
 ```bash
