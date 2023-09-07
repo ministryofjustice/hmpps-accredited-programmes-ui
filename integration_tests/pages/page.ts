@@ -1,3 +1,4 @@
+import { PersonUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { Organisation, Person } from '@accredited-programmes/models'
 import type {
@@ -115,6 +116,12 @@ export default abstract class Page {
       const expectedText = `${organisation.name} | ${course.nameAndAlternateName}`
       const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
+    })
+  }
+
+  shouldContainPersonSummaryList(person: Person): void {
+    cy.get('[data-testid="person-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(PersonUtils.summaryListRows(person), summaryListElement)
     })
   }
 

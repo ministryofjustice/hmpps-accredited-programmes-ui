@@ -144,6 +144,28 @@ export default class ReferralsController {
     }
   }
 
+  showPerson(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
+
+      if (!person) {
+        throw createError(404, {
+          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
+        })
+      }
+
+      res.render('referrals/showPerson', {
+        pageHeading: `${person.name}'s details`,
+        person,
+        personSummaryListRows: PersonUtils.summaryListRows(person),
+        referralId: referral.id,
+      })
+    }
+  }
+
   start(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

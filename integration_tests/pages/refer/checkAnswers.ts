@@ -1,4 +1,4 @@
-import { CourseUtils, PersonUtils, ReferralUtils } from '../../../server/utils'
+import { CourseUtils, ReferralUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation, Person } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
@@ -51,11 +51,5 @@ export default class CheckAnswersPage extends Page {
       'confirmation',
       'I confirm the information I have provided is complete, accurate and up to date.',
     )
-  }
-
-  shouldHavePersonalDetailsSummary() {
-    cy.get('[data-testid="personal-details-summary-list"]').then(summaryListElement => {
-      this.shouldContainSummaryListRows(PersonUtils.summaryListRows(this.person), summaryListElement)
-    })
   }
 }
