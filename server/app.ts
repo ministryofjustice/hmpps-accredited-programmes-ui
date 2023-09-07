@@ -1,5 +1,6 @@
 import express from 'express'
 import createError from 'http-errors'
+import methodOverride from 'method-override'
 import path from 'path'
 
 import type { Controllers } from './controllers'
@@ -31,6 +32,8 @@ export default function createApp(controllers: Controllers, services: Services):
 
   // The Sentry request handler must be the first middleware on the app
   setUpSentryRequestHandler(app)
+
+  app.use(methodOverride('_method'))
 
   app.use(metricsMiddleware)
   app.use(setUpHealthChecks())

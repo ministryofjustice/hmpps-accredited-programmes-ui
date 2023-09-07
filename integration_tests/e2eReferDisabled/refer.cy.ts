@@ -68,19 +68,38 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
-  it("Doesn't show the the in-progress referral task list", () => {
+  it("Doesn't show the in-progress referral task list", () => {
     cy.signIn()
 
-    const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build()
-    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const referral = referralFactory.build()
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build({ id: referral.offeringId })
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const prisoner = prisonerFactory.build({ prisonerNumber: referral.prisonNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseOffering })
     cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
 
     const path = referPaths.show({ referralId: referral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
+  it("Doesn't show the confirm OASys form page", () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build()
+    const referral = referralFactory.build({ prisonNumber: prisoner.prisonerNumber })
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.confirmOasys({ referralId: referral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -94,7 +113,7 @@ context('Refer', () => {
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const prisoner = prisonerFactory.build()
-    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonNumber })
+    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })

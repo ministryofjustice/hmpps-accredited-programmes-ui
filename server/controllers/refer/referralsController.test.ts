@@ -145,6 +145,75 @@ describe('ReferralsController', () => {
         taskListSections: ReferralUtils.taskListSections(referral),
       })
     })
+
+    describe('when the organisation service returns `null`', () => {
+      it('responds with a 404', async () => {
+        organisationService.getOrganisation.mockResolvedValue(null)
+
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(person)
+
+        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.show()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+        organisationService.getOrganisation.mockResolvedValue(organisation)
+
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.show()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
+  describe('confirmOasys', () => {
+    it('renders the confirm OASys form page', async () => {
+      const person = personFactory.build()
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      const requestHandler = referralsController.confirmOasys()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/confirmOasys', {
+        pageHeading: 'Confirm the OASys information',
+        person,
+        referral,
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.confirmOasys()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
   })
 
   describe('checkAnswers', () => {
@@ -184,6 +253,23 @@ describe('ReferralsController', () => {
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId: referral.id,
+      })
+    })
+  })
+
+  describe('update', () => {
+    describe('updating `oasysConfirmed`', () => {
+      it('asks the service to update the field and redirects to the show action', async () => {
+        const referral = referralFactory.build({ oasysConfirmed: false })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.body.oasysConfirmed = true
+
+        const requestHandler = referralsController.update()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, { oasysConfirmed: true })
       })
     })
   })

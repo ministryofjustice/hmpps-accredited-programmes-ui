@@ -47,7 +47,10 @@ export default class CheckAnswersPage extends Page {
   }
 
   shouldHaveConfirmationCheckbox() {
-    cy.get('[name="confirmation"]').should('exist')
+    this.shouldContainCheckbox(
+      'confirmation',
+      'I confirm the information I have provided is complete, accurate and up to date.',
+    )
   }
 
   shouldHavePersonalDetailsSummary() {

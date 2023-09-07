@@ -58,7 +58,14 @@ export default class ReferralUtils {
             text: 'Add Accredited Programme history',
             url: '#',
           },
-          { statusTag: ReferralUtils.taskListStatus('not started'), text: 'Confirm the OASys information', url: '#' },
+          {
+            statusTag: ReferralUtils.taskListStatus(
+              referral.oasysConfirmed ? 'completed' : 'not started',
+              'oasys-confirmed-tag',
+            ),
+            text: 'Confirm the OASys information',
+            url: referPaths.confirmOasys({ referralId: referral.id }),
+          },
           {
             statusTag: ReferralUtils.taskListStatus('not started'),
             text: 'Add reason for referral and any additional information',
@@ -79,12 +86,19 @@ export default class ReferralUtils {
     ]
   }
 
-  private static taskListStatus(text: ReferralTaskListStatusText): ReferralTaskListStatusTag {
-    const classes =
-      text === 'completed'
-        ? 'govuk-tag moj-task-list__task-completed'
-        : 'govuk-tag govuk-tag--grey moj-task-list__task-completed'
+  private static taskListStatus(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {
+    let classes = 'moj-task-list__task-completed'
 
-    return { classes, text } as ReferralTaskListStatusTag
+    if (text !== 'completed') {
+      classes = `govuk-tag--grey ${classes}`
+    }
+
+    const tag: ReferralTaskListStatusTag = { classes, text }
+
+    if (dataTestId) {
+      tag.attributes = { 'data-testid': dataTestId }
+    }
+
+    return tag
   }
 }

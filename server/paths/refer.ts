@@ -12,10 +12,12 @@ const personPath = peoplePathBase.path(':prisonNumber')
 
 const referralsPath = path('/referrals')
 const showReferralPath = referralsPath.path(':referralId')
+const confirmOasysPath = showReferralPath.path('oasys-confirmed')
 const checkAnswersPath = showReferralPath.path('check-answers')
 
 export default {
   checkAnswers: checkAnswersPath,
+  confirmOasys: confirmOasysPath,
   create: referralsPath,
   new: newReferralPath,
   people: {
@@ -24,4 +26,5 @@ export default {
   },
   show: showReferralPath,
   start: startReferralPath,
+  update: showReferralPath,
 }

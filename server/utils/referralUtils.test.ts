@@ -67,7 +67,7 @@ describe('ReferralUtils', () => {
           heading: 'Personal details',
           items: [
             {
-              statusTag: { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
+              statusTag: { classes: 'moj-task-list__task-completed', text: 'completed' },
               text: 'Confirm personal details',
             },
           ],
@@ -76,17 +76,21 @@ describe('ReferralUtils', () => {
           heading: 'Referral information',
           items: [
             {
-              statusTag: { classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
+              statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
               text: 'Add Accredited Programme history',
               url: '#',
             },
             {
-              statusTag: { classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
+              statusTag: {
+                attributes: { 'data-testid': 'oasys-confirmed-tag' },
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
+                text: 'not started',
+              },
               text: 'Confirm the OASys information',
-              url: '#',
+              url: `/referrals/${referral.id}/oasys-confirmed`,
             },
             {
-              statusTag: { classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
+              statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
               text: 'Add reason for referral and any additional information',
               url: '#',
             },
@@ -97,7 +101,7 @@ describe('ReferralUtils', () => {
           items: [
             {
               statusTag: {
-                classes: 'govuk-tag govuk-tag--grey moj-task-list__task-completed',
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
                 text: 'cannot start yet',
               },
               text: 'Check answers and submit',
@@ -106,6 +110,18 @@ describe('ReferralUtils', () => {
           ],
         },
       ])
+    })
+
+    it('marks completed sections as completed via their status tags', () => {
+      const referralWithOasysConfirmed = referralFactory.build({ oasysConfirmed: true })
+      const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
+      const oasysConfirmedStatusTag = taskListSections[1].items[1].statusTag
+
+      expect(oasysConfirmedStatusTag).toEqual({
+        attributes: { 'data-testid': 'oasys-confirmed-tag' },
+        classes: 'moj-task-list__task-completed',
+        text: 'completed',
+      })
     })
   })
 })

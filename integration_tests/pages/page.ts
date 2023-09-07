@@ -55,6 +55,22 @@ export default abstract class Page {
     })
   }
 
+  shouldContainCheckbox(name: string, label: string): void {
+    cy.get(`.govuk-checkboxes__input[name="${name}"]`).should('exist')
+    cy.get(`.govuk-checkboxes__label[for="${name}"]`).should('contain.text', label)
+  }
+
+  shouldContainDetails(summaryText: string, detailsText: string, detailsElement: JQuery<HTMLElement>): void {
+    cy.wrap(detailsElement).within(() => {
+      cy.get('.govuk-details__summary-text').should('contain.text', summaryText)
+
+      cy.get('.govuk-details__text').then(detailsTextElement => {
+        const { actual, expected } = Helpers.parseHtml(detailsTextElement, detailsText)
+        expect(actual).to.equal(expected)
+      })
+    })
+  }
+
   shouldContainLink(text: string, href: string): void {
     cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }
@@ -76,6 +92,15 @@ export default abstract class Page {
         } else {
           cy.get('a').should('not.have.attr', 'aria-current', 'page')
         }
+      })
+    })
+  }
+
+  shouldContainNotificationBanner(text: string, notificationBannerElement: JQuery<HTMLElement>): void {
+    cy.wrap(notificationBannerElement).within(() => {
+      cy.get('.govuk-notification-banner__content').then(contentElement => {
+        const { actual, expected } = Helpers.parseHtml(contentElement, text)
+        expect(actual).to.equal(expected)
       })
     })
   }
@@ -118,13 +143,17 @@ export default abstract class Page {
     })
   }
 
+  shouldContainTag(tag: GovukFrontendTag & HasTextString, tagElement: JQuery<HTMLElement>): void {
+    const { actual, expected } = Helpers.parseHtml(tagElement, tag.text)
+    expect(actual).to.equal(expected)
+    cy.wrap(tagElement).should('have.class', tag.classes)
+  }
+
   shouldContainTags(tags: Array<GovukFrontendTag & HasTextString>, tagContainerElement: JQuery<HTMLElement>): void {
     cy.wrap(tagContainerElement).within(() => {
       cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
         const tag = tags[tagElementIndex]
-        const { actual, expected } = Helpers.parseHtml(tagElement, tag.text)
-        expect(actual).to.equal(expected)
-        cy.wrap(tagElement).should('have.class', tag.classes)
+        this.shouldContainTag(tag, tagElement)
       })
     })
   }

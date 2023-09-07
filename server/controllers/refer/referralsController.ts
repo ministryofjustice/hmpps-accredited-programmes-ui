@@ -4,7 +4,7 @@ import createError from 'http-errors'
 import { referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import { CourseUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
-import type { CreatedReferralResponse } from '@accredited-programmes/models'
+import type { CreatedReferralResponse, ReferralUpdate } from '@accredited-programmes/models'
 
 export default class ReferralsController {
   constructor(
@@ -57,6 +57,27 @@ export default class ReferralsController {
     }
   }
 
+  confirmOasys(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
+
+      if (!person) {
+        throw createError(404, {
+          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
+        })
+      }
+
+      res.render('referrals/confirmOasys', {
+        pageHeading: 'Confirm the OASys information',
+        person,
+        referral,
+      })
+    }
+  }
+
   create(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -105,6 +126,12 @@ export default class ReferralsController {
         })
       }
 
+      if (!person) {
+        throw createError(404, {
+          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
+        })
+      }
+
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('referrals/show', {
@@ -139,6 +166,24 @@ export default class ReferralsController {
         organisation,
         pageHeading: 'Make a referral',
       })
+    }
+  }
+
+  update(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const oasysConfirmed =
+        typeof req.body.oasysConfirmed === 'undefined' ? referral.oasysConfirmed : req.body.oasysConfirmed
+
+      const referralUpdate: ReferralUpdate = {
+        oasysConfirmed,
+      }
+
+      await this.referralService.updateReferral(req.user.token, referral.id, referralUpdate)
+
+      res.redirect(referPaths.show({ referralId: referral.id }))
     }
   }
 }
