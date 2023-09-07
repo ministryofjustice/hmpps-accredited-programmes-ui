@@ -6,7 +6,7 @@
 ## Prerequisites
 
 - Docker
-- NodeJS
+- Node.js
 
 ## Setup
 
