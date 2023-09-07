@@ -53,22 +53,36 @@ courses.forEach(course => {
       },
     }),
   )
+})
 
-  courseOfferings.forEach(courseOffering => {
-    stubs.push(async () =>
-      stubFor({
-        request: {
-          method: 'GET',
-          url: apiPaths.courses.offerings.show({ courseOfferingId: courseOffering.id }),
-        },
-        response: {
-          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-          jsonBody: courseOffering,
-          status: 200,
-        },
-      }),
-    )
-  })
+courseOfferings.forEach(courseOffering => {
+  stubs.push(async () =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.courses.offerings.show({ courseOfferingId: courseOffering.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courseOffering,
+        status: 200,
+      },
+    }),
+  )
+
+  stubs.push(async () =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.courses.offerings.course({ courseOfferingId: courseOffering.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courses[0],
+        status: 200,
+      },
+    }),
+  )
 })
 
 console.log('Stubbing APIs')
