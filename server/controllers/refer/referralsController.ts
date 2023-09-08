@@ -18,6 +18,7 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const errors = req.flash('errors')
       const { referralId } = req.params
       const { username } = req.user
 
@@ -49,6 +50,7 @@ export default class ReferralsController {
           person,
           username,
         ),
+        errors,
         pageHeading: 'Check your answers',
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),

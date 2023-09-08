@@ -255,6 +255,8 @@ describe('ReferralsController', () => {
 
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
+      const errors: Array<string> = []
+
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
@@ -265,6 +267,7 @@ describe('ReferralsController', () => {
       referralService.getReferral.mockResolvedValue(referral)
 
       request.params.referralId = referral.id
+      request.flash = jest.fn().mockReturnValue(errors)
 
       TypeUtils.assertHasUser(request)
       request.user.username = 'BOBBY_BROWN'
@@ -286,6 +289,7 @@ describe('ReferralsController', () => {
           person,
           request.user.username,
         ),
+        errors,
         pageHeading: 'Check your answers',
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
