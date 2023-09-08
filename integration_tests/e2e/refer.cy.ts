@@ -109,6 +109,18 @@ context('Refer', () => {
         const findPersonPageWithError = Page.verifyOnPage(FindPersonPage)
         findPersonPageWithError.shouldHaveErrors([{ field: 'prisonNumber', message: 'Please enter a prison number' }])
       })
+
+      it('displays an error when the person cannot be found', () => {
+        const fakeId = 'NOT-A-REAL-ID'
+
+        const findPersonPage = Page.verifyOnPage(FindPersonPage)
+        findPersonPage.searchForPerson(fakeId)
+
+        const findPersonPageWithError = Page.verifyOnPage(FindPersonPage)
+        findPersonPageWithError.shouldHaveErrors([
+          { field: 'prisonNumber', message: `No person with a prison number '${fakeId}' was found` },
+        ])
+      })
     })
   })
 

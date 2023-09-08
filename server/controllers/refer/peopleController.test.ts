@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import PeopleController from './peopleController'
 import { referPaths } from '../../paths'
@@ -82,14 +81,20 @@ describe('PeopleController', () => {
     })
 
     describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
+      it('redirects to the referrals new action with a flashed error message', async () => {
+        const fakeId = 'NOT-A-REAL-ID'
+
+        request.params.prisonNumber = fakeId
         personService.getPerson.mockResolvedValue(null)
 
         const requestHandler = peopleController.show()
+        await requestHandler(request, response, next)
 
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new({ courseOfferingId }))
+        expect(request.flash).toHaveBeenCalledWith(
+          'prisonNumberError',
+          `No person with a prison number '${fakeId}' was found`,
+        )
       })
     })
   })
