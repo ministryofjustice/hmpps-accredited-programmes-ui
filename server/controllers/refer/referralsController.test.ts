@@ -344,4 +344,40 @@ describe('ReferralsController', () => {
       })
     })
   })
+
+  describe('submit', () => {
+    const referral = referralFactory.build({ status: 'referral_started' })
+
+    beforeEach(() => {
+      referralService.getReferral.mockResolvedValue(referral)
+      request.params.referralId = referral.id
+    })
+
+    it('asks the service to update the referral as submitted and redirect to the complete page', async () => {
+      request.body.confirmation = 'true'
+
+      const requestHandler = referralsController.submit()
+      await requestHandler(request, response, next)
+
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId: referral.id }))
+      expect(referralService.updateReferralStatus).toHaveBeenCalledWith(token, referral.id, 'referral_submitted')
+    })
+
+    describe('when the body is invalid', () => {
+      it('calls flash with an appropriate error and redirects to the check answers page', async () => {
+        request.body.confirmation = 'false'
+
+        const requestHandler = referralsController.submit()
+        await requestHandler(request, response, next)
+
+        expect(request.flash).toHaveBeenCalledWith('errors', [
+          {
+            href: '#confirmation',
+            text: 'Please confirm that the information you have provided is complete, accurate and up to date',
+          },
+        ])
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.checkAnswers({ referralId: referral.id }))
+      })
+    })
+  })
 })

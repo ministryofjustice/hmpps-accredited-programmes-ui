@@ -213,6 +213,27 @@ export default class ReferralsController {
     }
   }
 
+  submit(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      if (req.body.confirmation !== 'true') {
+        req.flash('errors', [
+          {
+            href: '#confirmation',
+            text: 'Please confirm that the information you have provided is complete, accurate and up to date',
+          } as unknown as string,
+        ])
+
+        return res.redirect(referPaths.checkAnswers({ referralId: req.params.referralId }))
+      }
+
+      await this.referralService.updateReferralStatus(req.user.token, req.params.referralId, 'referral_submitted')
+
+      return res.redirect(referPaths.complete({ referralId: req.params.referralId }))
+    }
+  }
+
   update(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
