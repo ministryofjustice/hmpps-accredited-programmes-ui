@@ -15,4 +15,10 @@ export default class UserService {
     const user = await hmppsAuthClient.getUser(token)
     return { ...user, displayName: StringUtils.convertToTitleCase(user.name) }
   }
+
+  async getUserRoles(token: Express.User['token']): Promise<Array<string>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const userRoles = await hmppsAuthClient.getUserRoles(token)
+    return userRoles
+  }
 }
