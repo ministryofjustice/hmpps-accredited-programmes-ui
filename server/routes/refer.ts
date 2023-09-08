@@ -20,6 +20,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.showPerson.pattern, referralsController.showPerson())
   get(referPaths.confirmOasys.pattern, referralsController.confirmOasys())
   get(referPaths.checkAnswers.pattern, referralsController.checkAnswers())
+  get(referPaths.complete.pattern, referralsController.complete())
 
   return router
 }

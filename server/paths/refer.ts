@@ -15,9 +15,11 @@ const showReferralPath = referralsPath.path(':referralId')
 const referralPersonPath = showReferralPath.path('person')
 const confirmOasysPath = showReferralPath.path('oasys-confirmed')
 const checkAnswersPath = showReferralPath.path('check-answers')
+const completeReferralPath = showReferralPath.path('complete')
 
 export default {
   checkAnswers: checkAnswersPath,
+  complete: completeReferralPath,
   confirmOasys: confirmOasysPath,
   create: referralsPath,
   new: newReferralPath,
