@@ -15,7 +15,12 @@ export default class PeopleController {
       const { courseOfferingId } = req.params
       const { prisonNumber } = req.body
 
-      res.redirect(referPaths.people.show({ courseOfferingId, prisonNumber }))
+      if (!prisonNumber) {
+        req.flash('prisonNumberError', 'Please enter a prison number')
+        return res.redirect(referPaths.new({ courseOfferingId }))
+      }
+
+      return res.redirect(referPaths.people.show({ courseOfferingId, prisonNumber }))
     }
   }
 

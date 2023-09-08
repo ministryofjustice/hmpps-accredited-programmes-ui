@@ -38,6 +38,22 @@ describe('PeopleController', () => {
 
       expect(response.redirect).toHaveBeenCalledWith(referPaths.people.show({ courseOfferingId, prisonNumber }))
     })
+
+    describe('when the prison number is an empty string', () => {
+      it('redirects to the referrals new action with a flashed error message', async () => {
+        const requestHandler = peopleController.find()
+
+        const prisonNumber = ''
+
+        request.params.courseOfferingId = courseOfferingId
+        request.body.prisonNumber = prisonNumber
+
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new({ courseOfferingId }))
+        expect(request.flash).toHaveBeenCalledWith('prisonNumberError', 'Please enter a prison number')
+      })
+    })
   })
 
   describe('show', () => {

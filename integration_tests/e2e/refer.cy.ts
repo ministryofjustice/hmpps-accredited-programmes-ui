@@ -52,9 +52,7 @@ context('Refer', () => {
     startReferralPage.shouldContainStartButtonLink()
   })
 
-  it("Allows users to search for a person and confirm that person's details", () => {
-    cy.signIn()
-
+  describe('When searching for a person', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prisoner = prisonerFactory.build({
@@ -63,38 +61,55 @@ context('Refer', () => {
       lastName: 'Hatton',
     })
 
-    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubCourseOffering', { courseOffering })
-    cy.task('stubPrisoner', prisoner)
-
     const path = referPaths.new({ courseOfferingId: courseOffering.id })
-    cy.visit(path)
 
-    const findPersonPage = Page.verifyOnPage(FindPersonPage)
-    findPersonPage.shouldContainNavigation(path)
-    findPersonPage.shouldContainBackLink(referPaths.start({ courseOfferingId: courseOffering.id }))
-    findPersonPage.shouldContainIdentifierForm()
+    beforeEach(() => {
+      cy.signIn()
 
-    findPersonPage.searchForPerson(prisoner.prisonerNumber)
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubCourseOffering', { courseOffering })
+      cy.task('stubPrisoner', prisoner)
 
-    const person = personFactory.build({
-      currentPrison: prisoner.prisonName,
-      dateOfBirth: '1 January 1980',
-      ethnicity: prisoner.ethnicity,
-      gender: prisoner.gender,
-      name: 'Del Hatton',
-      prisonNumber: prisoner.prisonerNumber,
-      religionOrBelief: prisoner.religion,
-      setting: 'Custody',
+      cy.visit(path)
     })
 
-    const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
+    it("allows users to search for a person and confirm that person's details", () => {
+      const findPersonPage = Page.verifyOnPage(FindPersonPage)
+      findPersonPage.shouldContainNavigation(path)
+      findPersonPage.shouldContainBackLink(referPaths.start({ courseOfferingId: courseOffering.id }))
+      findPersonPage.shouldContainIdentifierForm()
 
-    confirmPersonPage.shouldContainNavigation(path)
-    confirmPersonPage.shouldContainBackLink(referPaths.new({ courseOfferingId: courseOffering.id }))
-    confirmPersonPage.shouldContainContinueButton()
-    confirmPersonPage.shouldContainDifferentIdentifierLink()
-    confirmPersonPage.shouldHavePersonInformation()
+      findPersonPage.searchForPerson(prisoner.prisonerNumber)
+
+      const person = personFactory.build({
+        currentPrison: prisoner.prisonName,
+        dateOfBirth: '1 January 1980',
+        ethnicity: prisoner.ethnicity,
+        gender: prisoner.gender,
+        name: 'Del Hatton',
+        prisonNumber: prisoner.prisonerNumber,
+        religionOrBelief: prisoner.religion,
+        setting: 'Custody',
+      })
+
+      const confirmPersonPage = Page.verifyOnPage(ConfirmPersonPage, { course, courseOffering, person })
+
+      confirmPersonPage.shouldContainNavigation(path)
+      confirmPersonPage.shouldContainBackLink(referPaths.new({ courseOfferingId: courseOffering.id }))
+      confirmPersonPage.shouldContainContinueButton()
+      confirmPersonPage.shouldContainDifferentIdentifierLink()
+      confirmPersonPage.shouldHavePersonInformation()
+    })
+
+    describe("but the user's input is invalid", () => {
+      it("displays an error when there's no prison number", () => {
+        const findPersonPage = Page.verifyOnPage(FindPersonPage)
+        findPersonPage.shouldContainButton('Continue').click()
+
+        const findPersonPageWithError = Page.verifyOnPage(FindPersonPage)
+        findPersonPageWithError.shouldHaveErrors([{ field: 'prisonNumber', message: 'Please enter a prison number' }])
+      })
+    })
   })
 
   it("On confirming a person's details, creates a referral and redirects to the task list", () => {
