@@ -57,6 +57,26 @@ export default class ReferralsController {
     }
   }
 
+  complete(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_submitted') {
+        throw createError(400, {
+          userMessage: 'Referral has not been submitted.',
+        })
+      }
+
+      res.render('referrals/complete', {
+        pageHeading: 'Referral complete',
+      })
+    }
+  }
+
   confirmOasys(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

@@ -310,4 +310,34 @@ describe('ReferralsController', () => {
       })
     })
   })
+
+  describe('complete', () => {
+    describe('when the referral status is `referral_submitted`', () => {
+      it('renders the referral complete page', async () => {
+        const referral = referralFactory.build({ status: 'referral_submitted' })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.params.referralId = referral.id
+
+        const requestHandler = referralsController.complete()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/complete', { pageHeading: 'Referral complete' })
+      })
+    })
+
+    describe('when the referral status is not `referral_submitted`', () => {
+      it('responds with a 400', async () => {
+        const referral = referralFactory.build({ status: 'referral_started' })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.params.referralId = referral.id
+
+        const requestHandler = referralsController.complete()
+        const expectedError = createError(400)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
 })
