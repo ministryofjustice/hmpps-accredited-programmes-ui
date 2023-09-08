@@ -9,4 +9,10 @@ export default Factory.define<Referral>(() => ({
   offeringId: faker.string.uuid(),
   prisonNumber: faker.string.alphanumeric({ length: 7 }),
   referrerId: faker.string.numeric({ length: 6 }),
+  status: faker.helpers.arrayElement([
+    'awaiting_assesment',
+    'assessment_started',
+    'referral_started',
+    'referral_submitted',
+  ]),
 }))
