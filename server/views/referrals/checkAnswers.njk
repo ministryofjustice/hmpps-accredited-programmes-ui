@@ -52,20 +52,20 @@
       <h2 class="govuk-heading-m">Referral details</h2>
 
       {{ govukSummaryList({
-        card: {
-          title: {
-            text: "Personal details"
-          }
-        },
-        rows: personSummaryListRows,
-        attributes: {
-          "data-testid": "person-summary-list"
+      card: {
+        title: {
+          text: "Personal details"
         }
-      }) }}
+      },
+      rows: personSummaryListRows,
+      attributes: {
+        "data-testid": "person-summary-list"
+      }
+    }) }}
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
-      <form action="">
+      <form action="{{ referPaths.submit({ referralId: referralId }) }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukCheckboxes({
@@ -78,7 +78,7 @@
           },
           items: [
             {
-              value: "confirm",
+              value: "true",
               text: "I confirm the information I have provided is complete, accurate and up to date."
             }
           ]
@@ -97,5 +97,4 @@
         </div>
       </form>
     </div>
-  </div>
-{% endblock content %}
+  {% endblock content %}
