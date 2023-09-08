@@ -1,6 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% extends "../partials/layout.njk" %}
@@ -17,6 +18,17 @@
 {% endblock backLink %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
