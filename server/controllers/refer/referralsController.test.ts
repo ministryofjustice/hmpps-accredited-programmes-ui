@@ -14,10 +14,11 @@ import {
   personFactory,
   referralFactory,
 } from '../../testutils/factories'
-import { CourseUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
+import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/courseUtils')
+jest.mock('../../utils/formUtils')
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -77,12 +78,17 @@ describe('ReferralsController', () => {
   })
 
   describe('new', () => {
-    it('renders the referral new template', async () => {
-      const courseId = course.id
-      const courseOfferingId = courseOffering.id
+    const courseId = course.id
+    const courseOfferingId = courseOffering.id
 
+    it('renders the referral new template', async () => {
       request.params.courseId = courseId
       request.params.courseOfferingId = courseOfferingId
+
+      const emptyErrorsLocal = { list: [], messages: {} }
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
 
       const requestHandler = referralsController.new()
       await requestHandler(request, response, next)
@@ -92,6 +98,8 @@ describe('ReferralsController', () => {
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
       })
+
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['prisonNumber'])
     })
   })
 

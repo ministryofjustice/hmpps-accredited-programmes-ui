@@ -1,5 +1,6 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% extends "../partials/layout.njk" %}
@@ -12,6 +13,17 @@
 {% endblock backLink %}
 
 {% block content %}
+  {% if errors.list.length %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      </div>
+    </div>
+  {% endif %}
+
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
@@ -27,7 +39,8 @@
             text: "For example, a prison number is DO16821"
           },
           id: "prisonNumber",
-          name: "prisonNumber"
+          name: "prisonNumber",
+          errorMessage: errors.messages.prisonNumber
         }) }}
 
         {{ govukButton({ text: "Continue" }) }}

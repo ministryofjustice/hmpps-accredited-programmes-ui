@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
+import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CreatedReferralResponse, ReferralUpdate } from '@accredited-programmes/models'
 
 export default class ReferralsController {
@@ -123,6 +123,8 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const { courseId, courseOfferingId } = req.params
+
+      FormUtils.setFieldErrors(req, res, ['prisonNumber'])
 
       res.render('referrals/new', {
         courseId,
