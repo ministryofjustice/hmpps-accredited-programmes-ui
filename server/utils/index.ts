@@ -8,6 +8,7 @@ import ReferralUtils from './referralUtils'
 import RouteUtils from './routeUtils'
 import StringUtils from './stringUtils'
 import TypeUtils from './typeUtils'
+import UserUtils from './userUtils'
 
 export {
   CourseUtils,
@@ -19,5 +20,6 @@ export {
   RouteUtils,
   StringUtils,
   TypeUtils,
+  UserUtils,
   nunjucksSetup,
 }
