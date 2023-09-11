@@ -1,3 +1,5 @@
+import type { Request as ConnectFlashRequest } from '@types/connect-flash'
+
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
@@ -21,7 +23,7 @@ declare global {
       username: string
     }
 
-    interface Request {
+    interface Request extends ConnectFlashRequest {
       id: string // eslint-disable-next-line @typescript-eslint/member-ordering
       logout(done: (err: unknown) => void): void
       verified?: boolean
