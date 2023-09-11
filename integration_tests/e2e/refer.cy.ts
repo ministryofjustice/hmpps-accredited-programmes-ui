@@ -342,4 +342,82 @@ context('Refer', () => {
     const completePage = Page.verifyOnPage(CompletePage)
     completePage.shouldContainPanel('Referral complete')
   })
+
+  describe('Submitting a referral', () => {
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+    const referral = referralFactory.build({
+      offeringId: courseOffering.id,
+      prisonNumber: person.prisonNumber,
+      status: 'referral_submitted',
+    })
+
+    beforeEach(() => {
+      cy.signIn()
+
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+      cy.task('stubPrison', prison)
+      cy.task('stubPrisoner', prisoner)
+      cy.task('stubReferral', referral)
+
+      const path = referPaths.checkAnswers({ referralId: referral.id })
+      cy.visit(path)
+    })
+
+    it('redirects to the referral complete page when the user confirms the details', () => {
+      cy.task('stubUpdateReferralStatus', referral.id)
+
+      const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
+        course,
+        courseOffering,
+        organisation,
+        person,
+        username: auth.mockedUsername,
+      })
+      checkAnswersPage.confirmDetailsAndSubmitReferral()
+
+      const completePage = Page.verifyOnPage(CompletePage)
+      completePage.shouldContainPanel('Referral complete')
+    })
+
+    it('shows an error when the user tries to submit a referral without confirming the details', () => {
+      const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
+        course,
+        courseOffering,
+        organisation,
+        person,
+        username: auth.mockedUsername,
+      })
+      checkAnswersPage.shouldContainButton('Submit referral').click()
+
+      const checkAnswersPageWithErrors = Page.verifyOnPage(CheckAnswersPage, {
+        course,
+        courseOffering,
+        organisation,
+        person,
+        username: auth.mockedUsername,
+      })
+      checkAnswersPageWithErrors.shouldContainErrorSummary([
+        {
+          href: '#confirmation',
+          text: 'Please confirm that the information you have provided is complete, accurate and up to date',
+        },
+      ])
+    })
+  })
 })
