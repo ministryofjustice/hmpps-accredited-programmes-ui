@@ -191,7 +191,7 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   private checkHeading(): void {
-    cy.get('.govuk-heading-l').contains(this.pageHeading)
+    cy.get('h1').contains(this.pageHeading)
   }
 
   private checkOnPage(): void {
