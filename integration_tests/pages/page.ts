@@ -181,6 +181,28 @@ export default abstract class Page {
     })
   }
 
+  shouldHaveErrors(errors: Array<{ field: string; message: string }>): void {
+    cy.get('.govuk-error-summary').should('exist')
+
+    errors.forEach((error, errorIndex) => {
+      cy.get('.govuk-error-summary__list li')
+        .eq(errorIndex)
+        .within(errorSummaryListItemElement => {
+          const { actual, expected } = Helpers.parseHtml(errorSummaryListItemElement, error.message)
+          expect(actual).to.equal(expected)
+
+          cy.get('a').should('have.attr', 'href', `#${error.field}`)
+        })
+
+      cy.get(`#${error.field}-error`).then(fieldErrorElement => {
+        const { actual, expected } = Helpers.parseHtml(fieldErrorElement, `Error: ${error.message}`)
+        expect(actual).to.equal(expected)
+      })
+
+      cy.get(`[name="${error.field}"]`).should('have.class', 'govuk-input--error')
+    })
+  }
+
   shouldHavePersonDetails(person: Person): void {
     cy.get('.person-details-banner__top-block .govuk-visually-hidden').should('have.text', 'Name:')
 
