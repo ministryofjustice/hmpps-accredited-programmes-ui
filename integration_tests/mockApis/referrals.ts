@@ -42,4 +42,16 @@ export default {
         status: 204,
       },
     }),
+
+  stubUpdateReferralStatus: (referralId: Referral['id']): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'PUT',
+        url: apiPaths.referrals.updateStatus({ referralId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        status: 204,
+      },
+    }),
 }
