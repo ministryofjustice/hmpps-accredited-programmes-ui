@@ -52,16 +52,16 @@
       <h2 class="govuk-heading-m">Referral details</h2>
 
       {{ govukSummaryList({
-      card: {
-        title: {
-          text: "Personal details"
+        card: {
+          title: {
+            text: "Personal details"
+          }
+        },
+        rows: personSummaryListRows,
+        attributes: {
+          "data-testid": "person-summary-list"
         }
-      },
-      rows: personSummaryListRows,
-      attributes: {
-        "data-testid": "person-summary-list"
-      }
-    }) }}
+      }) }}
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
@@ -97,4 +97,5 @@
         </div>
       </form>
     </div>
-  {% endblock content %}
+  </div>
+{% endblock content %}
