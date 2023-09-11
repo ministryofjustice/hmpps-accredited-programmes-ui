@@ -7,6 +7,7 @@ import {
   personFactory,
   referralFactory,
 } from '../testutils/factories'
+import type { ReferralTaskListSection } from '@accredited-programmes/ui'
 
 describe('ReferralUtils', () => {
   describe('applicationSummaryListRows', () => {
@@ -106,7 +107,7 @@ describe('ReferralUtils', () => {
                 text: 'cannot start yet',
               },
               text: 'Check answers and submit',
-              url: `/referrals/${referral.id}/check-answers`,
+              url: '',
             },
           ],
         },
@@ -123,6 +124,17 @@ describe('ReferralUtils', () => {
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })
+    })
+
+    it('updates the check answers task when the referral is ready for submission', () => {
+      const referralWithOasysConfirmed = referralFactory.build({ oasysConfirmed: true })
+      const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
+      const checkAnswersTask = (
+        taskListSections.find(section => section.heading === 'Check answers and submit') as ReferralTaskListSection
+      ).items[0]
+
+      expect(checkAnswersTask.url).toEqual(`/referrals/${referralWithOasysConfirmed.id}/check-answers`)
+      expect(checkAnswersTask.statusTag.text).toEqual('not started')
     })
   })
 })
