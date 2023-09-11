@@ -26,13 +26,12 @@ describe('PeopleController', () => {
 
   describe('find', () => {
     it('redirects to the show action with the prisonNumber as a param', async () => {
-      const requestHandler = peopleController.find()
-
       const prisonNumber = 'ANUMB5R'
 
       request.params.courseOfferingId = courseOfferingId
       request.body.prisonNumber = prisonNumber
 
+      const requestHandler = peopleController.find()
       await requestHandler(request, response, next)
 
       expect(response.redirect).toHaveBeenCalledWith(referPaths.people.show({ courseOfferingId, prisonNumber }))
@@ -40,13 +39,12 @@ describe('PeopleController', () => {
 
     describe('when the prison number is an empty string', () => {
       it('redirects to the referrals new action with a flashed error message', async () => {
-        const requestHandler = peopleController.find()
-
         const prisonNumber = ''
 
         request.params.courseOfferingId = courseOfferingId
         request.body.prisonNumber = prisonNumber
 
+        const requestHandler = peopleController.find()
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new({ courseOfferingId }))
@@ -65,11 +63,10 @@ describe('PeopleController', () => {
 
       personService.getPerson.mockResolvedValue(person)
 
-      const requestHandler = peopleController.show()
-
       const mockPersonSummaryList = [{ key: { text: 'My Key' }, value: { text: 'My value' } }]
       ;(PersonUtils.summaryListRows as jest.Mock).mockReturnValue(mockPersonSummaryList)
 
+      const requestHandler = peopleController.show()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/people/show', {
