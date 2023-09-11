@@ -1,6 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% extends "../partials/layout.njk" %}
@@ -17,6 +18,17 @@
 {% endblock backLink %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
@@ -40,20 +52,20 @@
       <h2 class="govuk-heading-m">Referral details</h2>
 
       {{ govukSummaryList({
-        card: {
-          title: {
-            text: "Personal details"
-          }
-        },
-        rows: personSummaryListRows,
-        attributes: {
-          "data-testid": "person-summary-list"
+      card: {
+        title: {
+          text: "Personal details"
         }
-      }) }}
+      },
+      rows: personSummaryListRows,
+      attributes: {
+        "data-testid": "person-summary-list"
+      }
+    }) }}
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
-      <form action="">
+      <form action="{{ referPaths.submit({ referralId: referralId }) }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukCheckboxes({
@@ -66,7 +78,7 @@
           },
           items: [
             {
-              value: "confirm",
+              value: "true",
               text: "I confirm the information I have provided is complete, accurate and up to date."
             }
           ]
@@ -85,5 +97,4 @@
         </div>
       </form>
     </div>
-  </div>
-{% endblock content %}
+  {% endblock content %}

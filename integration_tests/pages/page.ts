@@ -72,6 +72,18 @@ export default abstract class Page {
     })
   }
 
+  shouldContainErrorSummary(errors: Array<{ href: string; text: string }>): void {
+    cy.get('.govuk-error-summary').should('exist')
+    cy.get('.govuk-error-summary__list').within(() => {
+      cy.get('li').should('have.length', errors.length)
+      cy.get('li').each((errorElement, errorElementIndex) => {
+        const { actual, expected } = Helpers.parseHtml(errorElement, errors[errorElementIndex].text)
+        expect(actual).to.equal(expected)
+        cy.get('a').should('have.attr', 'href', errors[errorElementIndex].href)
+      })
+    })
+  }
+
   shouldContainLink(text: string, href: string): void {
     cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }
@@ -117,6 +129,10 @@ export default abstract class Page {
       const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
     })
+  }
+
+  shouldContainPanel(text: string): void {
+    cy.contains('.govuk-panel', text)
   }
 
   shouldContainPersonSummaryList(person: Person): void {
@@ -191,7 +207,7 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   private checkHeading(): void {
-    cy.get('.govuk-heading-l').contains(this.pageHeading)
+    cy.get('h1').contains(this.pageHeading)
   }
 
   private checkOnPage(): void {

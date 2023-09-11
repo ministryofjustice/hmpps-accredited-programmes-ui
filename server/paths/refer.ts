@@ -16,6 +16,7 @@ const referralPersonPath = showReferralPath.path('person')
 const confirmOasysPath = showReferralPath.path('oasys-confirmed')
 const checkAnswersPath = showReferralPath.path('check-answers')
 const completeReferralPath = showReferralPath.path('complete')
+const submitReferralPath = showReferralPath.path('submit')
 
 export default {
   checkAnswers: checkAnswersPath,
@@ -30,5 +31,6 @@ export default {
   show: showReferralPath,
   showPerson: referralPersonPath,
   start: startReferralPath,
+  submit: submitReferralPath,
   update: showReferralPath,
 }

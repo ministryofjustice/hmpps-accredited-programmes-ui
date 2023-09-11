@@ -31,6 +31,11 @@ export default class CheckAnswersPage extends Page {
     this.username = username
   }
 
+  confirmDetailsAndSubmitReferral() {
+    cy.get('[name="confirmation"]').check()
+    this.shouldContainButton('Submit referral').click()
+  }
+
   shouldHaveApplicationSummary() {
     cy.get('[data-testid="application-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
