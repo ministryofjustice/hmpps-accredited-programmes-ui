@@ -19,6 +19,7 @@ import {
   StartReferralPage,
   TaskListPage,
 } from '../pages/refer'
+import CompletePage from '../pages/refer/complete'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -326,5 +327,19 @@ context('Refer', () => {
     checkAnswersPage.shouldHaveConfirmationCheckbox()
     checkAnswersPage.shouldContainButton('Submit referral')
     checkAnswersPage.shouldContainButtonLink('Return to tasklist', referPaths.show({ referralId: referral.id }))
+  })
+
+  it('Shows the complete page for a completed referral', () => {
+    cy.signIn()
+
+    const referral = referralFactory.build({ status: 'referral_submitted' })
+
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.complete({ referralId: referral.id })
+    cy.visit(path)
+
+    const completePage = Page.verifyOnPage(CompletePage)
+    completePage.shouldContainPanel('Referral complete')
   })
 })

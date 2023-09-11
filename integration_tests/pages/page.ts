@@ -119,6 +119,10 @@ export default abstract class Page {
     })
   }
 
+  shouldContainPanel(text: string): void {
+    cy.contains('.govuk-panel', text)
+  }
+
   shouldContainPersonSummaryList(person: Person): void {
     cy.get('[data-testid="person-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(PersonUtils.summaryListRows(person), summaryListElement)
