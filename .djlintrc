@@ -1,5 +1,4 @@
 {
   "extension": "njk",
-  "ignore": "T001",
   "profile": "nunjucks"
 }
