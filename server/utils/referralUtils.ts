@@ -89,6 +89,7 @@ export default class ReferralUtils {
         items: [
           {
             statusTag: ReferralUtils.taskListStatus(checkAnswersStatus),
+            testIds: ReferralUtils.testIds('check-answers'),
             text: 'Check answers and submit',
             url: checkAnswersUrl,
           },
@@ -115,5 +116,9 @@ export default class ReferralUtils {
     }
 
     return tag
+  }
+
+  private static testIds(base: string): { listItem: string } {
+    return { listItem: `${base}-list-item` }
   }
 }

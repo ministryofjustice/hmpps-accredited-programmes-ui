@@ -5,7 +5,7 @@
     <h2 class="moj-task-list__section">{{ section.heading }}</h2>
     <ul class="moj-task-list__items">
       {% for item in section.items %}
-        <li class="moj-task-list__item">
+        <li class="moj-task-list__item" data-testid="{{ item.testIds.listItem }}">
           {% if item.url %}
             <a class="moj-task-list__task-name" href="{{ item.url }}">{{ item.text }}</a>
           {% else %}

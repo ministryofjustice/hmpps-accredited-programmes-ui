@@ -34,9 +34,14 @@ type ReferralTaskListStatusTag =
   | (GovukFrontendTag & { classes: 'govuk-tag--grey moj-task-list__task-completed'; text: 'not started' })
   | (GovukFrontendTag & { classes: 'govuk-tag--grey moj-task-list__task-completed'; text: 'cannot start yet' })
 
+type ReferralTaskListItemTestIds = {
+  listItem: string
+}
+
 type ReferralTaskListItem = {
   statusTag: ReferralTaskListStatusTag
   text: string
+  testIds?: ReferralTaskListItemTestIds
   url?: string
 }
 

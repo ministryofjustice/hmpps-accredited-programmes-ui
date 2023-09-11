@@ -196,6 +196,7 @@ context('Refer', () => {
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
     taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
     taskListPage.shouldContainTaskList()
+    taskListPage.shouldNotBeReadyForSubmission()
   })
 
   it('Shows the person page for a referral', () => {
@@ -299,6 +300,44 @@ context('Refer', () => {
 
     const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
     taskListPage.shouldHaveConfirmedOasys()
+  })
+
+  it('Links to the check answers page when the referral is ready for submission', () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+    const referral = referralFactory.build({
+      oasysConfirmed: true,
+      offeringId: courseOffering.id,
+      prisonNumber: person.prisonNumber,
+    })
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.show({ referralId: referral.id })
+    cy.visit(path)
+
+    const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
+    taskListPage.shouldBeReadyForSubmission()
   })
 
   it('Shows the correct information on the Check answers and submit task page', () => {

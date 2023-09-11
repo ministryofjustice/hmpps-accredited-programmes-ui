@@ -106,6 +106,7 @@ describe('ReferralUtils', () => {
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
                 text: 'cannot start yet',
               },
+              testIds: { listItem: 'check-answers-list-item' },
               text: 'Check answers and submit',
               url: '',
             },
