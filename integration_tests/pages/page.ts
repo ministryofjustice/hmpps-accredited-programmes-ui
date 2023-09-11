@@ -72,6 +72,18 @@ export default abstract class Page {
     })
   }
 
+  shouldContainErrorSummary(errors: Array<{ href: string; text: string }>): void {
+    cy.get('.govuk-error-summary').should('exist')
+    cy.get('.govuk-error-summary__list').within(() => {
+      cy.get('li').should('have.length', errors.length)
+      cy.get('li').each((errorElement, errorElementIndex) => {
+        const { actual, expected } = Helpers.parseHtml(errorElement, errors[errorElementIndex].text)
+        expect(actual).to.equal(expected)
+        cy.get('a').should('have.attr', 'href', errors[errorElementIndex].href)
+      })
+    })
+  }
+
   shouldContainLink(text: string, href: string): void {
     cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }
