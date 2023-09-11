@@ -73,7 +73,6 @@ context('Refer', () => {
     const findPersonPage = Page.verifyOnPage(FindPersonPage)
     findPersonPage.shouldContainNavigation(path)
     findPersonPage.shouldContainBackLink(referPaths.start({ courseOfferingId: courseOffering.id }))
-    findPersonPage.shouldContainInstructionsParagraph()
     findPersonPage.shouldContainIdentifierForm()
 
     findPersonPage.searchForPerson(prisoner.prisonerNumber)

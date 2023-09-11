@@ -16,15 +16,12 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-      <p class="govuk-body">Enter the prison number. We'll import their details into your application.</p>
-
       <form action="{{ referPaths.people.find({ courseOfferingId: courseOfferingId }) }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukInput({
           label: {
-            text: "Enter identifier"
+            text: "Enter the prison number. We'll import their details into your application."
           },
           hint: {
             text: "For example, a prison number is DO16821"
