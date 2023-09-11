@@ -51,6 +51,7 @@ jobs:
       - run: # Run linter after build because the integration test code depend on compiled typescript...
           name: Linter check
           command: npm run lint:ci
+      - run: npm run typecheck
       - run: npm run typecheck:script
       - persist_to_workspace:
           root: .
