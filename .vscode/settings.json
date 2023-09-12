@@ -4,5 +4,8 @@
     "editor.defaultFormatter": "okitavera.vscode-nunjucks-formatter",
     "editor.formatOnSave": true
   },
+  "files.associations": {
+    "*.njk": "nunjucks"
+  },
   "nunjucksFormat.newline": true
 }
