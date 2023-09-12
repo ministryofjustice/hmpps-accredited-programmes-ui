@@ -78,7 +78,7 @@ describe('ReferralUtils', () => {
 
   describe('taskListSections', () => {
     it('returns task list sections for a given referral', () => {
-      const referral = referralFactory.build()
+      const referral = referralFactory.build({ reason: undefined })
 
       expect(ReferralUtils.taskListSections(referral)).toEqual([
         {
@@ -109,7 +109,11 @@ describe('ReferralUtils', () => {
               url: `/referrals/${referral.id}/oasys-confirmed`,
             },
             {
-              statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
+              statusTag: {
+                attributes: { 'data-testid': 'reason-tag' },
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
+                text: 'not started',
+              },
               text: 'Add reason for referral and any additional information',
               url: `/referrals/${referral.id}/reason`,
             },
@@ -133,12 +137,18 @@ describe('ReferralUtils', () => {
     })
 
     it('marks completed sections as completed via their status tags', () => {
-      const referralWithOasysConfirmed = referralFactory.build({ oasysConfirmed: true })
-      const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
+      const referralWithCompletedInformation = referralFactory.build({ oasysConfirmed: true, reason: 'Some reason' })
+      const taskListSections = ReferralUtils.taskListSections(referralWithCompletedInformation)
       const oasysConfirmedStatusTag = taskListSections[1].items[1].statusTag
+      const reasonConfirmedStatusTag = taskListSections[1].items[2].statusTag
 
       expect(oasysConfirmedStatusTag).toEqual({
         attributes: { 'data-testid': 'oasys-confirmed-tag' },
+        classes: 'moj-task-list__task-completed',
+        text: 'completed',
+      })
+      expect(reasonConfirmedStatusTag).toEqual({
+        attributes: { 'data-testid': 'reason-tag' },
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })
