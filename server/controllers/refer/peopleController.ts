@@ -1,5 +1,4 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
-import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { PersonService } from '../../services'
@@ -15,7 +14,12 @@ export default class PeopleController {
       const { courseOfferingId } = req.params
       const { prisonNumber } = req.body
 
-      res.redirect(referPaths.people.show({ courseOfferingId, prisonNumber }))
+      if (!prisonNumber) {
+        req.flash('prisonNumberError', 'Please enter a prison number')
+        return res.redirect(referPaths.new({ courseOfferingId }))
+      }
+
+      return res.redirect(referPaths.people.show({ courseOfferingId, prisonNumber }))
     }
   }
 
@@ -27,12 +31,11 @@ export default class PeopleController {
       const person = await this.personService.getPerson(req.user.token, req.params.prisonNumber)
 
       if (!person) {
-        throw createError(404, {
-          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
-        })
+        req.flash('prisonNumberError', `No person with a prison number '${req.params.prisonNumber}' was found`)
+        return res.redirect(referPaths.new({ courseOfferingId }))
       }
 
-      res.render('referrals/people/show', {
+      return res.render('referrals/people/show', {
         courseOfferingId,
         pageHeading: `Confirm ${person.name}'s details`,
         personSummaryListRows: PersonUtils.summaryListRows(person),

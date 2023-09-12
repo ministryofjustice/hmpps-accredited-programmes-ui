@@ -34,7 +34,6 @@ describe('CoursesController', () => {
       const sortedCourses = [courseA, courseB, courseC]
 
       const requestHandler = coursesController.index()
-
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
@@ -72,7 +71,6 @@ describe('CoursesController', () => {
         courseService.getOfferingsByCourse.mockResolvedValue(courseOfferings)
 
         const requestHandler = coursesController.show()
-
         await requestHandler(request, response, next)
 
         organisations.forEach(organisation =>
@@ -117,7 +115,6 @@ describe('CoursesController', () => {
         })
 
         const requestHandler = coursesController.show()
-
         await requestHandler(request, response, next)
 
         allOrganisations.forEach(organisation =>

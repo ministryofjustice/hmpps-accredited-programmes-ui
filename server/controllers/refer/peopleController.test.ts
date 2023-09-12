@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import PeopleController from './peopleController'
 import { referPaths } from '../../paths'
@@ -27,16 +26,30 @@ describe('PeopleController', () => {
 
   describe('find', () => {
     it('redirects to the show action with the prisonNumber as a param', async () => {
-      const requestHandler = peopleController.find()
-
       const prisonNumber = 'ANUMB5R'
 
       request.params.courseOfferingId = courseOfferingId
       request.body.prisonNumber = prisonNumber
 
+      const requestHandler = peopleController.find()
       await requestHandler(request, response, next)
 
       expect(response.redirect).toHaveBeenCalledWith(referPaths.people.show({ courseOfferingId, prisonNumber }))
+    })
+
+    describe('when the prison number is an empty string', () => {
+      it('redirects to the referrals new action with a flashed error message', async () => {
+        const prisonNumber = ''
+
+        request.params.courseOfferingId = courseOfferingId
+        request.body.prisonNumber = prisonNumber
+
+        const requestHandler = peopleController.find()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new({ courseOfferingId }))
+        expect(request.flash).toHaveBeenCalledWith('prisonNumberError', 'Please enter a prison number')
+      })
     })
   })
 
@@ -50,11 +63,10 @@ describe('PeopleController', () => {
 
       personService.getPerson.mockResolvedValue(person)
 
-      const requestHandler = peopleController.show()
-
       const mockPersonSummaryList = [{ key: { text: 'My Key' }, value: { text: 'My value' } }]
       ;(PersonUtils.summaryListRows as jest.Mock).mockReturnValue(mockPersonSummaryList)
 
+      const requestHandler = peopleController.show()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/people/show', {
@@ -66,14 +78,20 @@ describe('PeopleController', () => {
     })
 
     describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
+      it('redirects to the referrals new action with a flashed error message', async () => {
+        const fakeId = 'NOT-A-REAL-ID'
+
+        request.params.prisonNumber = fakeId
         personService.getPerson.mockResolvedValue(null)
 
         const requestHandler = peopleController.show()
+        await requestHandler(request, response, next)
 
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new({ courseOfferingId }))
+        expect(request.flash).toHaveBeenCalledWith(
+          'prisonNumberError',
+          `No person with a prison number '${fakeId}' was found`,
+        )
       })
     })
   })
