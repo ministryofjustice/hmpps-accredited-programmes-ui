@@ -84,7 +84,7 @@ export default class ReferralUtils {
           {
             statusTag: ReferralUtils.taskListStatus('not started'),
             text: 'Add reason for referral and any additional information',
-            url: '#',
+            url: referPaths.reason({ referralId: referral.id }),
           },
         ],
       },

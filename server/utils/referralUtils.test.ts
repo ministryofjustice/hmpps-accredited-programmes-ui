@@ -111,7 +111,7 @@ describe('ReferralUtils', () => {
             {
               statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
               text: 'Add reason for referral and any additional information',
-              url: '#',
+              url: `/referrals/${referral.id}/reason`,
             },
           ],
         },
