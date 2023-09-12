@@ -274,9 +274,11 @@ export default class ReferralsController {
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
       const oasysConfirmed =
         typeof req.body.oasysConfirmed === 'undefined' ? referral.oasysConfirmed : req.body.oasysConfirmed
+      const reason = typeof req.body.reason === 'undefined' ? referral.reason : req.body.reason.trim()
 
       const referralUpdate: ReferralUpdate = {
         oasysConfirmed,
+        reason,
       }
 
       await this.referralService.updateReferral(req.user.token, referral.id, referralUpdate)
