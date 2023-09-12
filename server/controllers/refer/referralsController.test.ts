@@ -354,7 +354,7 @@ describe('ReferralsController', () => {
   })
 
   describe('submit', () => {
-    const referral = referralFactory.build({ status: 'referral_started' })
+    const referral = referralFactory.build()
 
     beforeEach(() => {
       referralService.getReferral.mockResolvedValue(referral)
