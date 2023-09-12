@@ -235,6 +235,12 @@ export default class ReferralsController {
         return res.redirect(referPaths.checkAnswers({ referralId: req.params.referralId }))
       }
 
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+
+      if (!ReferralUtils.isReadyForSubmission(referral)) {
+        return res.redirect(referPaths.show({ referralId: referral.id }))
+      }
+
       await this.referralService.updateReferralStatus(req.user.token, req.params.referralId, 'referral_submitted')
 
       return res.redirect(referPaths.complete({ referralId: req.params.referralId }))

@@ -383,8 +383,13 @@ describe('ReferralsController', () => {
       request.params.referralId = referral.id
     })
 
-    it('asks the service to update the referral as submitted and redirect to the complete page', async () => {
+    it('asks the service to update the referral status to submitted and redirects to the complete page', async () => {
       request.body.confirmation = 'true'
+
+      referralService.getReferral.mockResolvedValue(referral)
+
+      request.params.referralId = referral.id
+      ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
 
       const requestHandler = referralsController.submit()
       await requestHandler(request, response, next)
@@ -407,6 +412,22 @@ describe('ReferralsController', () => {
           },
         ])
         expect(response.redirect).toHaveBeenCalledWith(referPaths.checkAnswers({ referralId: referral.id }))
+      })
+    })
+
+    describe('when the referral is not ready for submission', () => {
+      it('redirects to the show referral page', async () => {
+        request.body.confirmation = 'true'
+
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.params.referralId = referral.id
+        ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
+
+        const requestHandler = referralsController.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
       })
     })
   })
