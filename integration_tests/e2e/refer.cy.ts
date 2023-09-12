@@ -342,7 +342,7 @@ context('Refer', () => {
       courseOffering,
       organisation,
       person,
-      username: auth.mockedUsername,
+      username: auth.mockedUsername(),
     })
 
     checkAnswersPage.shouldHavePersonDetails(person)
@@ -413,7 +413,7 @@ context('Refer', () => {
         courseOffering,
         organisation,
         person,
-        username: auth.mockedUsername,
+        username: auth.mockedUsername(),
       })
       checkAnswersPage.confirmDetailsAndSubmitReferral()
 
@@ -427,7 +427,7 @@ context('Refer', () => {
         courseOffering,
         organisation,
         person,
-        username: auth.mockedUsername,
+        username: auth.mockedUsername(),
       })
       checkAnswersPage.shouldContainButton('Submit referral').click()
 
@@ -436,7 +436,7 @@ context('Refer', () => {
         courseOffering,
         organisation,
         person,
-        username: auth.mockedUsername,
+        username: auth.mockedUsername(),
       })
       checkAnswersPageWithErrors.shouldContainErrorSummary([
         {

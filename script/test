@@ -29,7 +29,7 @@ done
 if [ "$UPDATE" = true ]; then
   echo "==> Updating..."
 
-  script/update --skip-backing-service-images
+  script/update
 fi
 
 echo "==> Linting the code..."
@@ -59,7 +59,7 @@ echo "==> Running refer-disabled integration tests..."
 npm run test:integration:refer-disabled:cli
 
 cleanup() {
-  docker-compose -f docker-compose-test.yml down --remove-orphans
+  docker-compose -p hmpps-accredited-programmes-ui_integration-test -f docker-compose-test.yml down
 }
 
 trap cleanup EXIT
