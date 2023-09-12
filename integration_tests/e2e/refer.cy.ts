@@ -398,20 +398,6 @@ context('Refer', () => {
     checkAnswersPage.shouldContainButtonLink('Return to tasklist', referPaths.show({ referralId: referral.id }))
   })
 
-  it('Shows the complete page for a completed referral', () => {
-    cy.signIn()
-
-    const referral = referralFactory.build({ status: 'referral_submitted' })
-
-    cy.task('stubReferral', referral)
-
-    const path = referPaths.complete({ referralId: referral.id })
-    cy.visit(path)
-
-    const completePage = Page.verifyOnPage(CompletePage)
-    completePage.shouldContainPanel('Referral complete')
-  })
-
   describe('Submitting a referral', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
@@ -499,5 +485,19 @@ context('Refer', () => {
         },
       ])
     })
+  })
+
+  it('Shows the complete page for a completed referral', () => {
+    cy.signIn()
+
+    const referral = referralFactory.build({ status: 'referral_submitted' })
+
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.complete({ referralId: referral.id })
+    cy.visit(path)
+
+    const completePage = Page.verifyOnPage(CompletePage)
+    completePage.shouldContainPanel('Referral complete')
   })
 })
