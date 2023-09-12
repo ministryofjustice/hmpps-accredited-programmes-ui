@@ -329,6 +329,60 @@ describe('ReferralsController', () => {
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
       })
     })
+
+    describe('when the organisation service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const errors: Array<string> = []
+        request.flash = jest.fn().mockReturnValue(errors)
+
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(person)
+
+        const referral = referralFactory.build({
+          oasysConfirmed: true,
+          offeringId: courseOffering.id,
+          prisonNumber: person.prisonNumber,
+        })
+        request.params.referralId = referral.id
+        referralService.getReferral.mockResolvedValue(referral)
+        ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
+
+        TypeUtils.assertHasUser(request)
+        request.user.username = 'BOBBY_BROWN'
+
+        organisationService.getOrganisation.mockResolvedValue(null)
+
+        const requestHandler = referralsController.show()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const errors: Array<string> = []
+        request.flash = jest.fn().mockReturnValue(errors)
+
+        const referral = referralFactory.build({
+          oasysConfirmed: true,
+          offeringId: courseOffering.id,
+        })
+        request.params.referralId = referral.id
+        referralService.getReferral.mockResolvedValue(referral)
+        ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
+
+        TypeUtils.assertHasUser(request)
+        request.user.username = 'BOBBY_BROWN'
+
+        personService.getPerson.mockResolvedValue(null)
+
+        const requestHandler = referralsController.show()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
   })
 
   describe('update', () => {
