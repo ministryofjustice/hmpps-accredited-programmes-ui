@@ -20,6 +20,7 @@ import {
   TaskListPage,
 } from '../pages/refer'
 import CompletePage from '../pages/refer/complete'
+import ReasonPage from '../pages/refer/reason'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -300,6 +301,77 @@ context('Refer', () => {
 
     const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
     taskListPage.shouldHaveConfirmedOasys()
+  })
+
+  it('Shows the reason form page', () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const referral = referralFactory.build({ prisonNumber: person.prisonNumber, reason: undefined })
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.reason({ referralId: referral.id })
+    cy.visit(path)
+
+    const reasonPage = Page.verifyOnPage(ReasonPage, { referral })
+    reasonPage.shouldContainNavigation(path)
+    reasonPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+    reasonPage.shouldContainInformationTypeDetails()
+    reasonPage.shouldContainReasonTextArea()
+    reasonPage.shouldContainSaveAndContinueButton()
+  })
+
+  it('On submitting a reason, updates the referral and redirects to the task list', () => {
+    cy.signIn()
+
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+    const referral = referralFactory.build({
+      offeringId: courseOffering.id,
+      prisonNumber: person.prisonNumber,
+      reason: undefined,
+    })
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+    cy.task('stubUpdateReferral', referral.id)
+
+    const path = referPaths.reason({ referralId: referral.id })
+    cy.visit(path)
+
+    const reasonPage = Page.verifyOnPage(ReasonPage, { referral })
+    reasonPage.submitReason()
+
+    const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
+    taskListPage.shouldHaveReason()
   })
 
   it('Links to the check answers page when the referral is ready for submission', () => {

@@ -48,7 +48,10 @@
               }
             }) 
           },
-          value: referral.reason
+          value: referral.reason,
+          attributes: {
+            "data-testid": "reason-text-area"
+          }
         }) }}
 
         {{ govukButton({
