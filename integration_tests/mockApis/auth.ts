@@ -4,7 +4,9 @@ import type { Response } from 'superagent'
 import tokenVerification from './tokenVerification'
 import { getMatchingRequests, stubFor } from '../../wiremock'
 
-const mockedUsername = 'USER1'
+const mockedUsername = () => {
+  return 'USER1'
+}
 
 const createToken = () => {
   const payload = {
@@ -13,7 +15,7 @@ const createToken = () => {
     client_id: 'clientid',
     jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
     scope: ['read'],
-    user_name: mockedUsername,
+    user_name: mockedUsername(),
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })
@@ -114,7 +116,7 @@ const token = () =>
         internalUser: true,
         scope: 'read',
         token_type: 'bearer',
-        user_name: mockedUsername,
+        user_name: mockedUsername(),
       },
       status: 200,
     },
@@ -134,7 +136,7 @@ const stubUser = (name: string) =>
         active: true,
         name,
         staffId: 231232,
-        username: mockedUsername,
+        username: mockedUsername(),
       },
       status: 200,
     },
