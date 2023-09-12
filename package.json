@@ -52,8 +52,8 @@
     "watch:views": "nodemon --watch server/views -e html,njk -x npm run copy-views"
   },
   "engines": {
-    "node": "^v18.16.0",
-    "npm": "^9"
+    "node": "^v18",
+    "npm": "^10.0.0"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.0",
