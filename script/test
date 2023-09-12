@@ -29,7 +29,7 @@ done
 if [ "$UPDATE" = true ]; then
   echo "==> Updating..."
 
-  script/update --skip-backing-service-images
+  script/update
 fi
 
 echo "==> Linting the code..."
