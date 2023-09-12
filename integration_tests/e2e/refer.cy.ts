@@ -398,7 +398,7 @@ context('Refer', () => {
     checkAnswersPage.shouldContainButtonLink('Return to tasklist', referPaths.show({ referralId: referral.id }))
   })
 
-  describe('Submitting a referral', () => {
+  describe('When submitting a referral', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
 
