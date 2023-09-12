@@ -44,6 +44,10 @@ export default class ReferralUtils {
     ]
   }
 
+  static isReadyForSubmission(referral: Referral): boolean {
+    return !!referral.oasysConfirmed
+  }
+
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
     const checkAnswersStatus = ReferralUtils.isReadyForSubmission(referral) ? 'not started' : 'cannot start yet'
     const checkAnswersUrl = ReferralUtils.isReadyForSubmission(referral)
@@ -96,10 +100,6 @@ export default class ReferralUtils {
         ],
       },
     ]
-  }
-
-  private static isReadyForSubmission(referral: Referral): boolean {
-    return !!referral.oasysConfirmed
   }
 
   private static taskListStatus(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {

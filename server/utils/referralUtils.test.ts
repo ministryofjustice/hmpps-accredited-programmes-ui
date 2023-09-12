@@ -59,6 +59,23 @@ describe('ReferralUtils', () => {
     })
   })
 
+  describe('isReadyForSubmission', () => {
+    it('returns false for a new referral', () => {
+      const referral = referralFactory.build()
+
+      expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
+    })
+
+    describe('when OASys is confirmed', () => {
+      // to be updated as the referral model is built out
+      it('returns true', () => {
+        const referral = referralFactory.build({ oasysConfirmed: true })
+
+        expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(true)
+      })
+    })
+  })
+
   describe('taskListSections', () => {
     it('returns task list sections for a given referral', () => {
       const referral = referralFactory.build()
