@@ -28,16 +28,7 @@ export default class ReferralsController {
         return res.redirect(referPaths.show({ referralId: referral.id }))
       }
 
-      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
-      const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
-      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
       const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
-
-      if (!organisation) {
-        throw createError(404, {
-          userMessage: 'Organisation not found.',
-        })
-      }
 
       if (!person) {
         throw createError(404, {
@@ -45,6 +36,16 @@ export default class ReferralsController {
         })
       }
 
+      const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
+      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+
+      if (!organisation) {
+        throw createError(404, {
+          userMessage: 'Organisation not found.',
+        })
+      }
+
+      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const coursePresenter = CourseUtils.presentCourse(course)
 
       return res.render('referrals/checkAnswers', {

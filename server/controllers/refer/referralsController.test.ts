@@ -265,22 +265,25 @@ describe('ReferralsController', () => {
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
       const errors: Array<string> = []
-
-      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
-      organisationService.getOrganisation.mockResolvedValue(organisation)
+      request.flash = jest.fn().mockReturnValue(errors)
 
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
-      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-      referralService.getReferral.mockResolvedValue(referral)
-
+      const referral = referralFactory.build({
+        oasysConfirmed: true,
+        offeringId: courseOffering.id,
+        prisonNumber: person.prisonNumber,
+      })
       request.params.referralId = referral.id
-      request.flash = jest.fn().mockReturnValue(errors)
+      referralService.getReferral.mockResolvedValue(referral)
+      ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
 
       TypeUtils.assertHasUser(request)
       request.user.username = 'BOBBY_BROWN'
-      ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
+
+      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+      organisationService.getOrganisation.mockResolvedValue(organisation)
 
       const coursePresenter = createMock<CoursePresenter>({
         audiences: courseAudienceFactory.buildList(1),
