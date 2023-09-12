@@ -4,14 +4,15 @@ services:
     image: 'redis:6.2'
     networks:
       - hmpps_int
+    container_name: redis_integration-test
     ports:
-      - '6379:6379'
+      - '6380:6379'
 
   wiremock:
     image: wiremock/wiremock
     networks:
       - hmpps_int
-    container_name: wiremock
+    container_name: wiremock_integration-test
     restart: always
     ports:
       - '9199:8080'
