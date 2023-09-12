@@ -365,7 +365,11 @@ context('Refer', () => {
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
-    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    const referral = referralFactory.build({
+      oasysConfirmed: true,
+      offeringId: courseOffering.id,
+      prisonNumber: person.prisonNumber,
+    })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
@@ -425,12 +429,6 @@ context('Refer', () => {
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
-    const referral = referralFactory.build({
-      offeringId: courseOffering.id,
-      prisonNumber: person.prisonNumber,
-      status: 'referral_submitted',
-    })
-
     beforeEach(() => {
       cy.signIn()
 
@@ -438,14 +436,20 @@ context('Refer', () => {
       cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
       cy.task('stubPrison', prison)
       cy.task('stubPrisoner', prisoner)
-      cy.task('stubReferral', referral)
-
-      const path = referPaths.checkAnswers({ referralId: referral.id })
-      cy.visit(path)
     })
 
     it('redirects to the referral complete page when the user confirms the details', () => {
+      const referral = referralFactory.build({
+        oasysConfirmed: true,
+        offeringId: courseOffering.id,
+        prisonNumber: person.prisonNumber,
+      })
+
+      cy.task('stubReferral', referral)
       cy.task('stubUpdateReferralStatus', referral.id)
+
+      const path = referPaths.checkAnswers({ referralId: referral.id })
+      cy.visit(path)
 
       const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
         course,
@@ -454,13 +458,24 @@ context('Refer', () => {
         person,
         username: auth.mockedUsername(),
       })
-      checkAnswersPage.confirmDetailsAndSubmitReferral()
+      checkAnswersPage.confirmDetailsAndSubmitReferral(referral)
 
       const completePage = Page.verifyOnPage(CompletePage)
       completePage.shouldContainPanel('Referral complete')
     })
 
     it('shows an error when the user tries to submit a referral without confirming the details', () => {
+      const referral = referralFactory.build({
+        oasysConfirmed: true,
+        offeringId: courseOffering.id,
+        prisonNumber: person.prisonNumber,
+      })
+
+      cy.task('stubReferral', referral)
+
+      const path = referPaths.checkAnswers({ referralId: referral.id })
+      cy.visit(path)
+
       const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
         course,
         courseOffering,

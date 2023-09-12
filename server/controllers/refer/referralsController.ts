@@ -23,6 +23,11 @@ export default class ReferralsController {
       const { username } = req.user
 
       const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (!ReferralUtils.isReadyForSubmission(referral)) {
+        return res.redirect(referPaths.show({ referralId: referral.id }))
+      }
+
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
@@ -42,7 +47,7 @@ export default class ReferralsController {
 
       const coursePresenter = CourseUtils.presentCourse(course)
 
-      res.render('referrals/checkAnswers', {
+      return res.render('referrals/checkAnswers', {
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
           coursePresenter,

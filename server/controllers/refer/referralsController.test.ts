@@ -19,6 +19,7 @@ import type { CoursePresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/courseUtils')
 jest.mock('../../utils/formUtils')
+jest.mock('../../utils/referralUtils')
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -279,6 +280,7 @@ describe('ReferralsController', () => {
 
       TypeUtils.assertHasUser(request)
       request.user.username = 'BOBBY_BROWN'
+      ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
 
       const coursePresenter = createMock<CoursePresenter>({
         audiences: courseAudienceFactory.buildList(1),
@@ -302,6 +304,26 @@ describe('ReferralsController', () => {
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId: referral.id,
+      })
+    })
+
+    describe('when the referral is not ready for submission', () => {
+      it('redirects to the show referral page', async () => {
+        const errors: Array<string> = []
+        request.flash = jest.fn().mockReturnValue(errors)
+
+        const referral = referralFactory.build()
+        request.params.referralId = referral.id
+        referralService.getReferral.mockResolvedValue(referral)
+        ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
+
+        TypeUtils.assertHasUser(request)
+        request.user.username = 'BOBBY_BROWN'
+
+        const requestHandler = referralsController.checkAnswers()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
       })
     })
   })
