@@ -1,11 +1,11 @@
 {
-  "editor.tabSize": 2,
   "[nj][njk][nunjucks][twig]": {
     "djlint.enableLinting": true,
     "djlint.profile": "nunjucks",
     "editor.defaultFormatter": "okitavera.vscode-nunjucks-formatter",
     "editor.formatOnSave": true
   },
+  "editor.tabSize": 2,
   "files.associations": {
     "*.njk": "nunjucks"
   },
