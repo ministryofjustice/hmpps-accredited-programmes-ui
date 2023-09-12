@@ -1,5 +1,3 @@
 {
-  "recommendations": [
-    "okitavera.vscode-nunjucks-formatter"
-  ]
+  "recommendations": ["ginfuru.better-nunjucks", "okitavera.vscode-nunjucks-formatter", "ronnidc.nunjucks"]
 }
