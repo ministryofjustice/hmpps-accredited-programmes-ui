@@ -44,7 +44,16 @@ export default class ReferralUtils {
     ]
   }
 
+  static isReadyForSubmission(referral: Referral): boolean {
+    return !!referral.oasysConfirmed
+  }
+
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
+    const checkAnswersStatus = ReferralUtils.isReadyForSubmission(referral) ? 'not started' : 'cannot start yet'
+    const checkAnswersUrl = ReferralUtils.isReadyForSubmission(referral)
+      ? referPaths.checkAnswers({ referralId: referral.id })
+      : ''
+
     return [
       {
         heading: 'Personal details',
@@ -83,9 +92,10 @@ export default class ReferralUtils {
         heading: 'Check answers and submit',
         items: [
           {
-            statusTag: ReferralUtils.taskListStatus('cannot start yet'),
+            statusTag: ReferralUtils.taskListStatus(checkAnswersStatus),
+            testIds: ReferralUtils.testIds('check-answers'),
             text: 'Check answers and submit',
-            url: referPaths.checkAnswers({ referralId: referral.id }),
+            url: checkAnswersUrl,
           },
         ],
       },
@@ -106,5 +116,9 @@ export default class ReferralUtils {
     }
 
     return tag
+  }
+
+  private static testIds(base: string): { listItem: string } {
+    return { listItem: `${base}-list-item` }
   }
 }

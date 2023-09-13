@@ -7,6 +7,7 @@ import {
   personFactory,
   referralFactory,
 } from '../testutils/factories'
+import type { ReferralTaskListSection } from '@accredited-programmes/ui'
 
 describe('ReferralUtils', () => {
   describe('applicationSummaryListRows', () => {
@@ -58,6 +59,23 @@ describe('ReferralUtils', () => {
     })
   })
 
+  describe('isReadyForSubmission', () => {
+    it('returns false for a new referral', () => {
+      const referral = referralFactory.build()
+
+      expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
+    })
+
+    describe('when OASys is confirmed', () => {
+      // to be updated as the referral model is built out
+      it('returns true', () => {
+        const referral = referralFactory.build({ oasysConfirmed: true })
+
+        expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(true)
+      })
+    })
+  })
+
   describe('taskListSections', () => {
     it('returns task list sections for a given referral', () => {
       const referral = referralFactory.build()
@@ -105,8 +123,9 @@ describe('ReferralUtils', () => {
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
                 text: 'cannot start yet',
               },
+              testIds: { listItem: 'check-answers-list-item' },
               text: 'Check answers and submit',
-              url: `/referrals/${referral.id}/check-answers`,
+              url: '',
             },
           ],
         },
@@ -123,6 +142,17 @@ describe('ReferralUtils', () => {
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })
+    })
+
+    it('updates the check answers task when the referral is ready for submission', () => {
+      const referralWithOasysConfirmed = referralFactory.build({ oasysConfirmed: true })
+      const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
+      const checkAnswersTask = (
+        taskListSections.find(section => section.heading === 'Check answers and submit') as ReferralTaskListSection
+      ).items[0]
+
+      expect(checkAnswersTask.url).toEqual(`/referrals/${referralWithOasysConfirmed.id}/check-answers`)
+      expect(checkAnswersTask.statusTag.text).toEqual('not started')
     })
   })
 })

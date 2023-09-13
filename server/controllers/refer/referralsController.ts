@@ -23,16 +23,12 @@ export default class ReferralsController {
       const { username } = req.user
 
       const referral = await this.referralService.getReferral(req.user.token, referralId)
-      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
-      const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
-      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
-      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
 
-      if (!organisation) {
-        throw createError(404, {
-          userMessage: 'Organisation not found.',
-        })
+      if (!ReferralUtils.isReadyForSubmission(referral)) {
+        return res.redirect(referPaths.show({ referralId: referral.id }))
       }
+
+      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
 
       if (!person) {
         throw createError(404, {
@@ -40,9 +36,19 @@ export default class ReferralsController {
         })
       }
 
+      const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
+      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+
+      if (!organisation) {
+        throw createError(404, {
+          userMessage: 'Organisation not found.',
+        })
+      }
+
+      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const coursePresenter = CourseUtils.presentCourse(course)
 
-      res.render('referrals/checkAnswers', {
+      return res.render('referrals/checkAnswers', {
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
           coursePresenter,
@@ -228,6 +234,12 @@ export default class ReferralsController {
         ])
 
         return res.redirect(referPaths.checkAnswers({ referralId: req.params.referralId }))
+      }
+
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+
+      if (!ReferralUtils.isReadyForSubmission(referral)) {
+        return res.redirect(referPaths.show({ referralId: referral.id }))
       }
 
       await this.referralService.updateReferralStatus(req.user.token, req.params.referralId, 'referral_submitted')

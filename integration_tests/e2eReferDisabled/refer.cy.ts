@@ -143,4 +143,18 @@ context('Refer', () => {
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
     notFoundPage.shouldContain404H2()
   })
+
+  it("Doesn't show the complete page for a referral", () => {
+    cy.signIn()
+
+    const referral = referralFactory.build({ status: 'referral_submitted' })
+
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.complete({ referralId: referral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
 })

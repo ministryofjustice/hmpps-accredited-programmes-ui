@@ -1,4 +1,5 @@
 import { CourseUtils, ReferralUtils } from '../../../server/utils'
+import Helpers from '../../support/helpers'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation, Referral } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
@@ -25,6 +26,16 @@ export default class TaskListPage extends Page {
     this.courseOffering = courseOffering
     this.organisation = organisation
     this.referral = referral
+  }
+
+  shouldBeReadyForSubmission() {
+    cy.get('[data-testid="check-answers-list-item"]').within(() => {
+      cy.get('a').should('have.attr', 'href', `/referrals/${this.referral.id}/check-answers`)
+      cy.get('.govuk-tag').then(tagElement => {
+        const { actual, expected } = Helpers.parseHtml(tagElement, 'not started')
+        expect(actual).to.equal(expected)
+      })
+    })
   }
 
   shouldContainTaskList() {
@@ -57,6 +68,16 @@ export default class TaskListPage extends Page {
         { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
         oasysConfirmedTagElement,
       )
+    })
+  }
+
+  shouldNotBeReadyForSubmission() {
+    cy.get('[data-testid="check-answers-list-item"]').within(() => {
+      cy.get('a').should('not.exist')
+      cy.get('.govuk-tag').then(tagElement => {
+        const { actual, expected } = Helpers.parseHtml(tagElement, 'cannot start yet')
+        expect(actual).to.equal(expected)
+      })
     })
   }
 }

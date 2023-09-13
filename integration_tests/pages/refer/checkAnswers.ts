@@ -1,6 +1,6 @@
 import { CourseUtils, ReferralUtils } from '../../../server/utils'
 import Page from '../page'
-import type { Course, CourseOffering, Organisation, Person } from '@accredited-programmes/models'
+import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
 export default class CheckAnswersPage extends Page {
@@ -31,8 +31,9 @@ export default class CheckAnswersPage extends Page {
     this.username = username
   }
 
-  confirmDetailsAndSubmitReferral() {
+  confirmDetailsAndSubmitReferral(referral: Referral) {
     cy.get('[name="confirmation"]').check()
+    cy.task('stubReferral', { ...referral, status: 'referral_submitted' })
     this.shouldContainButton('Submit referral').click()
   }
 
