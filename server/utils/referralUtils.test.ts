@@ -139,10 +139,10 @@ describe('ReferralUtils', () => {
     it('marks completed sections as completed via their status tags', () => {
       const referralWithCompletedInformation = referralFactory.build({ oasysConfirmed: true, reason: 'Some reason' })
       const taskListSections = ReferralUtils.taskListSections(referralWithCompletedInformation)
-      const reasonConfirmedStatusTag = taskListSections[1].items[0].statusTag
+      const reasonStatusTag = taskListSections[1].items[0].statusTag
       const oasysConfirmedStatusTag = taskListSections[1].items[2].statusTag
 
-      expect(reasonConfirmedStatusTag).toEqual({
+      expect(reasonStatusTag).toEqual({
         attributes: { 'data-testid': 'reason-tag' },
         classes: 'moj-task-list__task-completed',
         text: 'completed',
