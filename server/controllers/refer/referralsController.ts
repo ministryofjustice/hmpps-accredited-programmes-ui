@@ -18,7 +18,6 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const errors = req.flash('errors')
       const { referralId } = req.params
       const { username } = req.user
 
@@ -48,6 +47,8 @@ export default class ReferralsController {
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const coursePresenter = CourseUtils.presentCourse(course)
 
+      FormUtils.setFieldErrors(req, res, ['confirmation'])
+
       return res.render('referrals/checkAnswers', {
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
@@ -56,7 +57,6 @@ export default class ReferralsController {
           person,
           username,
         ),
-        errors,
         pageHeading: 'Check your answers',
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
@@ -245,12 +245,10 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       if (req.body.confirmation !== 'true') {
-        req.flash('errors', [
-          {
-            href: '#confirmation',
-            text: 'Please confirm that the information you have provided is complete, accurate and up to date',
-          } as unknown as string,
-        ])
+        req.flash(
+          'confirmationError',
+          'Please confirm that the information you have provided is complete, accurate and up to date',
+        )
 
         return res.redirect(referPaths.checkAnswers({ referralId: req.params.referralId }))
       }

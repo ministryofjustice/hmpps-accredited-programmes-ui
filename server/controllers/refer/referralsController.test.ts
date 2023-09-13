@@ -266,9 +266,6 @@ describe('ReferralsController', () => {
 
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
-      const errors: Array<string> = []
-      request.flash = jest.fn().mockReturnValue(errors)
-
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
@@ -296,6 +293,11 @@ describe('ReferralsController', () => {
       const requestHandler = referralsController.checkAnswers()
       await requestHandler(request, response, next)
 
+      const emptyErrorsLocal = { list: [], messages: {} }
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
+
       expect(response.render).toHaveBeenCalledWith('referrals/checkAnswers', {
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
@@ -304,12 +306,13 @@ describe('ReferralsController', () => {
           person,
           request.user.username,
         ),
-        errors,
         pageHeading: 'Check your answers',
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId: referral.id,
       })
+
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
     })
 
     describe('when the referral is not ready for submission', () => {
@@ -519,12 +522,10 @@ describe('ReferralsController', () => {
         const requestHandler = referralsController.submit()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith('errors', [
-          {
-            href: '#confirmation',
-            text: 'Please confirm that the information you have provided is complete, accurate and up to date',
-          },
-        ])
+        expect(request.flash).toHaveBeenCalledWith(
+          'confirmationError',
+          'Please confirm that the information you have provided is complete, accurate and up to date',
+        )
         expect(response.redirect).toHaveBeenCalledWith(referPaths.checkAnswers({ referralId: referral.id }))
       })
     })
