@@ -12,7 +12,7 @@ import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('CoursesController', () => {
   const token = 'SOME_TOKEN'
-  const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
+  let request: DeepMocked<Request>
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
   const courseService = createMock<CourseService>({})
@@ -21,6 +21,7 @@ describe('CoursesController', () => {
   let coursesController: CoursesController
 
   beforeEach(() => {
+    request = createMock<Request>({ user: { token } })
     coursesController = new CoursesController(courseService, organisationService)
   })
 

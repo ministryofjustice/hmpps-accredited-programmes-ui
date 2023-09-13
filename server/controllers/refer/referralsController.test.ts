@@ -23,7 +23,7 @@ jest.mock('../../utils/referralUtils')
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
-  const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
+  let request: DeepMocked<Request>
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
@@ -38,6 +38,7 @@ describe('ReferralsController', () => {
   let referralsController: ReferralsController
 
   beforeEach(() => {
+    request = createMock<Request>({ user: { token } })
     referralsController = new ReferralsController(courseService, organisationService, personService, referralService)
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
