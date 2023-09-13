@@ -45,7 +45,7 @@ export default class ReferralUtils {
   }
 
   static isReadyForSubmission(referral: Referral): boolean {
-    return !!referral.oasysConfirmed
+    return !!referral.oasysConfirmed && !!referral.reason
   }
 
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {

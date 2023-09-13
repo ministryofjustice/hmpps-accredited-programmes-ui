@@ -60,18 +60,18 @@ describe('ReferralUtils', () => {
   })
 
   describe('isReadyForSubmission', () => {
-    it('returns false for a new referral', () => {
-      const referral = referralFactory.build()
+    const referral = referralFactory.build({ reason: undefined })
 
+    it('returns false for a new referral', () => {
       expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
     })
 
-    describe('when OASys is confirmed', () => {
+    describe('when OASys is confirmed and a reason is provided', () => {
       // to be updated as the referral model is built out
       it('returns true', () => {
-        const referral = referralFactory.build({ oasysConfirmed: true })
+        const updatedReferral = referralFactory.build({ ...referral, oasysConfirmed: true, reason: 'Some reason' })
 
-        expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(true)
+        expect(ReferralUtils.isReadyForSubmission(updatedReferral)).toEqual(true)
       })
     })
   })
