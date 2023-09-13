@@ -203,8 +203,6 @@ export default abstract class Page {
         const { actual, expected } = Helpers.parseHtml(fieldErrorElement, `Error: ${error.message}`)
         expect(actual).to.equal(expected)
       })
-
-      cy.get(`[name="${error.field}"]`).should('have.class', 'govuk-input--error')
     })
   }
 

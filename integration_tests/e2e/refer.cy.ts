@@ -550,10 +550,10 @@ context('Refer', () => {
         person,
         username: auth.mockedUsername(),
       })
-      checkAnswersPageWithErrors.shouldContainErrorSummary([
+      checkAnswersPageWithErrors.shouldHaveErrors([
         {
-          href: '#confirmation',
-          text: 'Please confirm that the information you have provided is complete, accurate and up to date',
+          field: 'confirmation',
+          message: 'Please confirm that the information you have provided is complete, accurate and up to date',
         },
       ])
     })
