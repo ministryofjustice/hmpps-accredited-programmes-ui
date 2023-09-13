@@ -13,7 +13,7 @@ jest.mock('../../utils/personUtils')
 describe('PeopleController', () => {
   const token = 'SOME_TOKEN'
   let request: DeepMocked<Request>
-  const response: DeepMocked<Response> = createMock<Response>({})
+  let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
   const personService = createMock<PersonService>({})
   const courseOfferingId = 'A-COURSE-OFFERING-ID'
@@ -22,6 +22,7 @@ describe('PeopleController', () => {
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
+    response = createMock<Response>({})
     peopleController = new PeopleController(personService)
   })
 
