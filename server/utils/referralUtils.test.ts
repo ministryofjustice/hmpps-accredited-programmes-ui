@@ -69,7 +69,7 @@ describe('ReferralUtils', () => {
     describe('when OASys is confirmed and a reason is provided', () => {
       // to be updated as the referral model is built out
       it('returns true', () => {
-        const updatedReferral = referralFactory.build({ ...referral, oasysConfirmed: true, reason: 'Some reason' })
+        const updatedReferral = { ...referral, oasysConfirmed: true, reason: 'Some reason' }
 
         expect(ReferralUtils.isReadyForSubmission(updatedReferral)).toEqual(true)
       })
