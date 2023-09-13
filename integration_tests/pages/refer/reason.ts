@@ -5,7 +5,7 @@ export default class ReasonPage extends Page {
   referral: Referral
 
   constructor(args: { referral: Referral }) {
-    super('Add reason for referral and supporting information')
+    super('Add reason for referral and any additional information')
 
     const { referral } = args
 
@@ -25,7 +25,7 @@ export default class ReasonPage extends Page {
   }
 
   shouldContainReasonTextArea() {
-    this.shouldContainTextArea('reason', 'Add reason for referral and supporting information')
+    this.shouldContainTextArea('reason', 'Add reason for referral and any additional information')
   }
 
   shouldContainSaveAndContinueButton() {

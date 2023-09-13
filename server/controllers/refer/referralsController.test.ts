@@ -398,7 +398,7 @@ describe('ReferralsController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/reason', {
-        pageHeading: 'Add reason for referral and supporting information',
+        pageHeading: 'Add reason for referral and any additional information',
         person,
         referral,
       })
