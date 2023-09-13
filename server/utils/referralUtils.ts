@@ -82,9 +82,9 @@ export default class ReferralUtils {
             url: referPaths.confirmOasys({ referralId: referral.id }),
           },
           {
-            statusTag: ReferralUtils.taskListStatus('not started'),
+            statusTag: ReferralUtils.taskListStatus(referral.reason ? 'completed' : 'not started', 'reason-tag'),
             text: 'Add reason for referral and any additional information',
-            url: '#',
+            url: referPaths.reason({ referralId: referral.id }),
           },
         ],
       },

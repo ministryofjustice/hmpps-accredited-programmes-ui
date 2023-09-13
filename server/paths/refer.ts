@@ -14,6 +14,7 @@ const referralsPath = path('/referrals')
 const showReferralPath = referralsPath.path(':referralId')
 const referralPersonPath = showReferralPath.path('person')
 const confirmOasysPath = showReferralPath.path('oasys-confirmed')
+const reasonForReferralPath = showReferralPath.path('reason')
 const checkAnswersPath = showReferralPath.path('check-answers')
 const completeReferralPath = showReferralPath.path('complete')
 const submitReferralPath = showReferralPath.path('submit')
@@ -28,6 +29,7 @@ export default {
     find: findPersonPath,
     show: personPath,
   },
+  reason: reasonForReferralPath,
   show: showReferralPath,
   showPerson: referralPersonPath,
   start: startReferralPath,

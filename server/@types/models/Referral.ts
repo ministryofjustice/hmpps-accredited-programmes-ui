@@ -6,6 +6,7 @@ type Referral = {
   oasysConfirmed: boolean
   offeringId: CourseOffering['id']
   prisonNumber: Person['prisonNumber']
+  reason: string
   referrerId: Express.User['userId']
   status: ReferralStatus
 }

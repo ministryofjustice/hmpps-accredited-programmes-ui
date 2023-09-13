@@ -1,0 +1,63 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "./_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: referPaths.show({ referralId: referral.id })
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set detailsHtml %}
+      <ul class="govuk-list govuk-list--bullet">
+        <li>you can provide information about why you're referring this person to this programme</li>
+        <li>you can add supporting information that would be useful for the programme team to know</li>
+        <li>you can add any other information that would be useful for the programme team to know</li>
+      </ul>
+      {% endset %}
+
+      <form action="{{ referPaths.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukTextarea({
+          name: "reason",
+          id: "reason",
+          label: {
+            text: pageHeading,
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            html: govukDetails({
+              summaryText: "What type of information can I add?",
+              html: detailsHtml,
+              attributes: {
+                "data-testid": "information-type-details"
+              }
+            }) 
+          },
+          value: referral.reason,
+          attributes: {
+            "data-testid": "reason-text-area"
+          }
+        }) }}
+
+        {{ govukButton({
+          text: "Save and continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

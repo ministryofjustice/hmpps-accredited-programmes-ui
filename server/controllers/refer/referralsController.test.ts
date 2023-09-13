@@ -397,7 +397,28 @@ describe('ReferralsController', () => {
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
-        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, { oasysConfirmed: true })
+        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+          oasysConfirmed: true,
+          reason: referral.reason,
+        })
+      })
+    })
+
+    describe('updating `reason`', () => {
+      it('asks the service to update the field and redirects to the show action', async () => {
+        const referral = referralFactory.build({ oasysConfirmed: true, reason: undefined })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.body.reason = ' Some reason\nAnother paragraph\n '
+
+        const requestHandler = referralsController.update()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+          oasysConfirmed: true,
+          reason: 'Some reason\nAnother paragraph',
+        })
       })
     })
   })
@@ -485,6 +506,40 @@ describe('ReferralsController', () => {
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+      })
+    })
+  })
+
+  describe('reason', () => {
+    it('renders the reason for referral page', async () => {
+      const person = personFactory.build()
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      const requestHandler = referralsController.reason()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/reason', {
+        pageHeading: 'Add reason for referral and supporting information',
+        person,
+        referral,
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.reason()
+        const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
