@@ -60,18 +60,18 @@ describe('ReferralUtils', () => {
   })
 
   describe('isReadyForSubmission', () => {
-    it('returns false for a new referral', () => {
-      const referral = referralFactory.build()
+    const referral = referralFactory.build({ reason: undefined })
 
+    it('returns false for a new referral', () => {
       expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
     })
 
-    describe('when OASys is confirmed', () => {
+    describe('when OASys is confirmed and a reason is provided', () => {
       // to be updated as the referral model is built out
       it('returns true', () => {
-        const referral = referralFactory.build({ oasysConfirmed: true })
+        const updatedReferral = referralFactory.build({ ...referral, oasysConfirmed: true, reason: 'Some reason' })
 
-        expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(true)
+        expect(ReferralUtils.isReadyForSubmission(updatedReferral)).toEqual(true)
       })
     })
   })
@@ -95,6 +95,15 @@ describe('ReferralUtils', () => {
           heading: 'Referral information',
           items: [
             {
+              statusTag: {
+                attributes: { 'data-testid': 'reason-tag' },
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
+                text: 'not started',
+              },
+              text: 'Add reason for referral and any additional information',
+              url: `/referrals/${referral.id}/reason`,
+            },
+            {
               statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
               text: 'Add Accredited Programme history',
               url: '#',
@@ -107,15 +116,6 @@ describe('ReferralUtils', () => {
               },
               text: 'Confirm the OASys information',
               url: `/referrals/${referral.id}/oasys-confirmed`,
-            },
-            {
-              statusTag: {
-                attributes: { 'data-testid': 'reason-tag' },
-                classes: 'govuk-tag--grey moj-task-list__task-completed',
-                text: 'not started',
-              },
-              text: 'Add reason for referral and any additional information',
-              url: `/referrals/${referral.id}/reason`,
             },
           ],
         },
@@ -139,16 +139,16 @@ describe('ReferralUtils', () => {
     it('marks completed sections as completed via their status tags', () => {
       const referralWithCompletedInformation = referralFactory.build({ oasysConfirmed: true, reason: 'Some reason' })
       const taskListSections = ReferralUtils.taskListSections(referralWithCompletedInformation)
-      const oasysConfirmedStatusTag = taskListSections[1].items[1].statusTag
-      const reasonConfirmedStatusTag = taskListSections[1].items[2].statusTag
+      const reasonConfirmedStatusTag = taskListSections[1].items[0].statusTag
+      const oasysConfirmedStatusTag = taskListSections[1].items[2].statusTag
 
-      expect(oasysConfirmedStatusTag).toEqual({
-        attributes: { 'data-testid': 'oasys-confirmed-tag' },
+      expect(reasonConfirmedStatusTag).toEqual({
+        attributes: { 'data-testid': 'reason-tag' },
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })
-      expect(reasonConfirmedStatusTag).toEqual({
-        attributes: { 'data-testid': 'reason-tag' },
+      expect(oasysConfirmedStatusTag).toEqual({
+        attributes: { 'data-testid': 'oasys-confirmed-tag' },
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })
