@@ -152,7 +152,7 @@ export default class ReferralsController {
       }
 
       res.render('referrals/reason', {
-        pageHeading: 'Add reason for referral and supporting information',
+        pageHeading: 'Add reason for referral and any additional information',
         person,
         referral,
       })

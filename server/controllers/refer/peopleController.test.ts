@@ -12,7 +12,7 @@ jest.mock('../../utils/personUtils')
 
 describe('PeopleController', () => {
   const token = 'SOME_TOKEN'
-  const request: DeepMocked<Request> = createMock<Request>({ user: { token } })
+  let request: DeepMocked<Request>
   const response: DeepMocked<Response> = createMock<Response>({})
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
   const personService = createMock<PersonService>({})
@@ -21,6 +21,7 @@ describe('PeopleController', () => {
   let peopleController: PeopleController
 
   beforeEach(() => {
+    request = createMock<Request>({ user: { token } })
     peopleController = new PeopleController(personService)
   })
 
@@ -81,6 +82,7 @@ describe('PeopleController', () => {
       it('redirects to the referrals new action with a flashed error message', async () => {
         const fakeId = 'NOT-A-REAL-ID'
 
+        request.params.courseOfferingId = courseOfferingId
         request.params.prisonNumber = fakeId
         personService.getPerson.mockResolvedValue(null)
 
