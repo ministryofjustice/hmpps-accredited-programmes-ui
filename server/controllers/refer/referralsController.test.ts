@@ -468,7 +468,7 @@ describe('ReferralsController', () => {
       })
     })
 
-    describe('when the referral status is not `referral_submitted`', () => {
+    describe('when the referral status is `referral_started`', () => {
       it('responds with a 400', async () => {
         const referral = referralFactory.build({ status: 'referral_started' })
         referralService.getReferral.mockResolvedValue(referral)
