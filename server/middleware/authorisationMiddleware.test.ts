@@ -1,45 +1,33 @@
+import type { DeepMocked } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-jest'
 import type { Request, Response } from 'express'
-import jwt from 'jsonwebtoken'
 
 import authorisationMiddleware from './authorisationMiddleware'
+import { UserUtils } from '../utils'
 
-function createToken(authorities: Array<string>) {
-  const payload = {
-    auth_source: 'nomis',
-    authorities,
-    client_id: 'clientid',
-    jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
-    scope: ['read', 'write'],
-    user_name: 'USER1',
-  }
-
-  return jwt.sign(payload, 'secret', { expiresIn: '1h' })
-}
+jest.mock('../utils/userUtils')
 
 describe('authorisationMiddleware', () => {
-  let req: Request
   const next = jest.fn()
 
-  function createResWithToken({ authorities }: { authorities: Array<string> }): Response {
-    return {
-      locals: {
-        user: {
-          token: createToken(authorities),
-        },
+  const req: DeepMocked<Request> = createMock<Request>({})
+  const res: DeepMocked<Response> = createMock<Response>({
+    locals: {
+      user: {
+        token: 'SOME-TOKEN',
       },
-      redirect: jest.fn(),
-    } as unknown as Response
-  }
+    },
+  })
 
   beforeEach(() => {
     jest.resetAllMocks()
   })
 
   describe('when there are no required roles', () => {
-    it('calls next', async () => {
-      const res = createResWithToken({ authorities: [] })
+    it('calls next', () => {
+      ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue([])
 
-      await authorisationMiddleware()(req, res, next)
+      authorisationMiddleware()(req, res, next)
 
       expect(next).toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
@@ -47,10 +35,10 @@ describe('authorisationMiddleware', () => {
   })
 
   describe('when user is not authorised with any roles', () => {
-    it('redirects', async () => {
-      const res = createResWithToken({ authorities: [] })
+    it('redirects to the Auth Error page', () => {
+      ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue([])
 
-      await authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+      authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
 
       expect(next).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalledWith('/authError')
@@ -58,13 +46,26 @@ describe('authorisationMiddleware', () => {
   })
 
   describe('when user is authorised with required role', () => {
-    it('calls next', async () => {
-      const res = createResWithToken({ authorities: ['SOME_REQUIRED_ROLE'] })
+    it('calls next', () => {
+      ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
 
-      await authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+      authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
 
       expect(next).toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
+    })
+  })
+
+  describe("when there is no `user` variable set on the response's `locals` object", () => {
+    it('redirects to the Sign In page', () => {
+      const resWithNoUser: DeepMocked<Response> = createMock<Response>({
+        locals: {},
+      })
+
+      authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, resWithNoUser, next)
+
+      expect(next).not.toHaveBeenCalled()
+      expect(resWithNoUser.redirect).toHaveBeenCalled()
     })
   })
 })
