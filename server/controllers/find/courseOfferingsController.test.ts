@@ -12,7 +12,7 @@ describe('CoursesOfferingsController', () => {
   describe('show', () => {
     const token = 'SOME_TOKEN'
     let request: DeepMocked<Request>
-    const response: DeepMocked<Response> = createMock<Response>({})
+    let response: DeepMocked<Response>
     const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
     const courseService = createMock<CourseService>({})
     const organisationService = createMock<OrganisationService>({})
@@ -26,6 +26,7 @@ describe('CoursesOfferingsController', () => {
 
     beforeEach(() => {
       request = createMock<Request>({ user: { token } })
+      response = createMock<Response>({})
       courseOfferingsController = new CourseOfferingsController(courseService, organisationService)
     })
 
