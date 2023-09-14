@@ -17,7 +17,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
   })
 
-  const referral = referralFactory.build()
+  const referral = referralFactory.started().build()
   const { offeringId, prisonNumber, referrerId } = referral
   const createdReferralResponse: CreatedReferralResponse = { referralId: referral.id }
 
@@ -79,11 +79,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('update', () => {
-    const referralUpdate: ReferralUpdate = { oasysConfirmed: true }
+    const referralUpdate: ReferralUpdate = { oasysConfirmed: true, reason: 'A brilliant reason' }
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral can be updates',
+        state: 'Referral can be updated',
         uponReceiving: 'A request to update a referral',
         willRespondWith: {
           status: 204,

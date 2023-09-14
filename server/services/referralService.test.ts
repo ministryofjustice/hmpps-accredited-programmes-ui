@@ -22,7 +22,7 @@ describe('ReferralService', () => {
 
   describe('createReferral', () => {
     it('returns a created referral', async () => {
-      const referral = referralFactory.build()
+      const referral = referralFactory.started().build()
       const createdReferralResponse: CreatedReferralResponse = { referralId: referral.id }
 
       when(referralClient.create)

@@ -60,25 +60,23 @@ describe('ReferralUtils', () => {
   })
 
   describe('isReadyForSubmission', () => {
-    const referral = referralFactory.build({ reason: undefined })
-
     it('returns false for a new referral', () => {
-      expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
+      const newReferral = referralFactory.started().build()
+
+      expect(ReferralUtils.isReadyForSubmission(newReferral)).toEqual(false)
     })
 
-    describe('when OASys is confirmed and a reason is provided', () => {
+    it('returns true when OASys is confirmed and a reason is provided', () => {
       // to be updated as the referral model is built out
-      it('returns true', () => {
-        const updatedReferral = { ...referral, oasysConfirmed: true, reason: 'Some reason' }
+      const submittableReferral = referralFactory.submittable().build()
 
-        expect(ReferralUtils.isReadyForSubmission(updatedReferral)).toEqual(true)
-      })
+      expect(ReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)
     })
   })
 
   describe('taskListSections', () => {
     it('returns task list sections for a given referral', () => {
-      const referral = referralFactory.build({ reason: undefined })
+      const referral = referralFactory.started().build()
 
       expect(ReferralUtils.taskListSections(referral)).toEqual([
         {
@@ -137,7 +135,7 @@ describe('ReferralUtils', () => {
     })
 
     it('marks completed sections as completed via their status tags', () => {
-      const referralWithCompletedInformation = referralFactory.build({ oasysConfirmed: true, reason: 'Some reason' })
+      const referralWithCompletedInformation = referralFactory.submittable().build()
       const taskListSections = ReferralUtils.taskListSections(referralWithCompletedInformation)
       const referralInformationSection = getTaskListSection('Referral information', taskListSections)
       const reasonStatusTag = getTaskListItem(
@@ -162,7 +160,7 @@ describe('ReferralUtils', () => {
     })
 
     it('updates the check answers task when the referral is ready for submission', () => {
-      const referralWithOasysConfirmed = referralFactory.build({ oasysConfirmed: true })
+      const referralWithOasysConfirmed = referralFactory.submittable().build()
       const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
       const checkAnswersSection = getTaskListSection('Check answers and submit', taskListSections)
       const checkAnswersTask = getTaskListItem('Check answers and submit', checkAnswersSection)
