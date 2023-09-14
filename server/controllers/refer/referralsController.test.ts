@@ -274,6 +274,82 @@ describe('ReferralsController', () => {
     })
   })
 
+  describe('reason', () => {
+    it('renders the reason for referral page', async () => {
+      const person = personFactory.build()
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory
+        .started()
+        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      const requestHandler = referralsController.reason()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/reason', {
+        pageHeading: 'Add reason for referral and any additional information',
+        person,
+        referral,
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory
+          .started()
+          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.reason()
+        const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
+  describe('update', () => {
+    describe('updating `oasysConfirmed`', () => {
+      it('asks the service to update the field and redirects to the show action', async () => {
+        const referral = referralFactory.build({ oasysConfirmed: false, status: 'referral_started' })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.body.oasysConfirmed = true
+
+        const requestHandler = referralsController.update()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+          oasysConfirmed: true,
+          reason: referral.reason,
+        })
+      })
+    })
+
+    describe('updating `reason`', () => {
+      it('asks the service to update the field and redirects to the show action', async () => {
+        const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.body.reason = ' Some reason\nAnother paragraph\n '
+
+        const requestHandler = referralsController.update()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+          oasysConfirmed: referral.oasysConfirmed,
+          reason: 'Some reason\nAnother paragraph',
+        })
+      })
+    })
+  })
+
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
       const person = personFactory.build()
@@ -384,112 +460,6 @@ describe('ReferralsController', () => {
     })
   })
 
-  describe('reason', () => {
-    it('renders the reason for referral page', async () => {
-      const person = personFactory.build()
-      personService.getPerson.mockResolvedValue(person)
-
-      const referral = referralFactory
-        .started()
-        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-      referralService.getReferral.mockResolvedValue(referral)
-
-      const requestHandler = referralsController.reason()
-      await requestHandler(request, response, next)
-
-      expect(response.render).toHaveBeenCalledWith('referrals/reason', {
-        pageHeading: 'Add reason for referral and any additional information',
-        person,
-        referral,
-      })
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        const person = personFactory.build()
-        personService.getPerson.mockResolvedValue(null)
-
-        const referral = referralFactory
-          .started()
-          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        const requestHandler = referralsController.reason()
-        const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
-    })
-  })
-
-  describe('update', () => {
-    describe('updating `oasysConfirmed`', () => {
-      it('asks the service to update the field and redirects to the show action', async () => {
-        const referral = referralFactory.build({ oasysConfirmed: false, status: 'referral_started' })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        request.body.oasysConfirmed = true
-
-        const requestHandler = referralsController.update()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
-        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
-          oasysConfirmed: true,
-          reason: referral.reason,
-        })
-      })
-    })
-
-    describe('updating `reason`', () => {
-      it('asks the service to update the field and redirects to the show action', async () => {
-        const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        request.body.reason = ' Some reason\nAnother paragraph\n '
-
-        const requestHandler = referralsController.update()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
-        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
-          oasysConfirmed: referral.oasysConfirmed,
-          reason: 'Some reason\nAnother paragraph',
-        })
-      })
-    })
-  })
-
-  describe('complete', () => {
-    describe('when the referral status is `referral_submitted`', () => {
-      it('renders the referral complete page', async () => {
-        const referral = referralFactory.submitted().build()
-        referralService.getReferral.mockResolvedValue(referral)
-
-        request.params.referralId = referral.id
-
-        const requestHandler = referralsController.complete()
-        await requestHandler(request, response, next)
-
-        expect(response.render).toHaveBeenCalledWith('referrals/complete', { pageHeading: 'Referral complete' })
-      })
-    })
-
-    describe('when the referral status is `referral_started`', () => {
-      it('responds with a 400', async () => {
-        const referral = referralFactory.build({ status: 'referral_started' })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        request.params.referralId = referral.id
-
-        const requestHandler = referralsController.complete()
-        const expectedError = createError(400)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
-    })
-  })
-
   describe('submit', () => {
     const referral = referralFactory.submittable().build()
 
@@ -541,6 +511,36 @@ describe('ReferralsController', () => {
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+      })
+    })
+  })
+
+  describe('complete', () => {
+    describe('when the referral status is `referral_submitted`', () => {
+      it('renders the referral complete page', async () => {
+        const referral = referralFactory.submitted().build()
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.params.referralId = referral.id
+
+        const requestHandler = referralsController.complete()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/complete', { pageHeading: 'Referral complete' })
+      })
+    })
+
+    describe('when the referral status is `referral_started`', () => {
+      it('responds with a 400', async () => {
+        const referral = referralFactory.build({ status: 'referral_started' })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        request.params.referralId = referral.id
+
+        const requestHandler = referralsController.complete()
+        const expectedError = createError(400)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
