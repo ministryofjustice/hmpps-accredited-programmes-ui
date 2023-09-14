@@ -317,9 +317,6 @@ describe('ReferralsController', () => {
 
     describe('when the referral is not ready for submission', () => {
       it('redirects to the show referral page', async () => {
-        const errors: Array<string> = []
-        request.flash = jest.fn().mockReturnValue(errors)
-
         const referral = referralFactory.build()
         request.params.referralId = referral.id
         referralService.getReferral.mockResolvedValue(referral)
@@ -337,9 +334,6 @@ describe('ReferralsController', () => {
 
     describe('when the organisation service returns `null`', () => {
       it('responds with a 404', async () => {
-        const errors: Array<string> = []
-        request.flash = jest.fn().mockReturnValue(errors)
-
         const person = personFactory.build()
         personService.getPerson.mockResolvedValue(person)
 
@@ -366,9 +360,6 @@ describe('ReferralsController', () => {
 
     describe('when the person service returns `null`', () => {
       it('responds with a 404', async () => {
-        const errors: Array<string> = []
-        request.flash = jest.fn().mockReturnValue(errors)
-
         const referral = referralFactory.build({
           oasysConfirmed: true,
           offeringId: courseOffering.id,
