@@ -7,7 +7,7 @@ import {
   personFactory,
   referralFactory,
 } from '../testutils/factories'
-import type { ReferralTaskListSection } from '@accredited-programmes/ui'
+import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
 
 describe('ReferralUtils', () => {
   describe('applicationSummaryListRows', () => {
@@ -139,8 +139,15 @@ describe('ReferralUtils', () => {
     it('marks completed sections as completed via their status tags', () => {
       const referralWithCompletedInformation = referralFactory.build({ oasysConfirmed: true, reason: 'Some reason' })
       const taskListSections = ReferralUtils.taskListSections(referralWithCompletedInformation)
-      const reasonStatusTag = taskListSections[1].items[0].statusTag
-      const oasysConfirmedStatusTag = taskListSections[1].items[2].statusTag
+      const referralInformationSection = getTaskListSection('Referral information', taskListSections)
+      const reasonStatusTag = getTaskListItem(
+        'Add reason for referral and any additional information',
+        referralInformationSection,
+      ).statusTag
+      const oasysConfirmedStatusTag = getTaskListItem(
+        'Confirm the OASys information',
+        referralInformationSection,
+      ).statusTag
 
       expect(reasonStatusTag).toEqual({
         attributes: { 'data-testid': 'reason-tag' },
@@ -157,12 +164,22 @@ describe('ReferralUtils', () => {
     it('updates the check answers task when the referral is ready for submission', () => {
       const referralWithOasysConfirmed = referralFactory.build({ oasysConfirmed: true })
       const taskListSections = ReferralUtils.taskListSections(referralWithOasysConfirmed)
-      const checkAnswersTask = (
-        taskListSections.find(section => section.heading === 'Check answers and submit') as ReferralTaskListSection
-      ).items[0]
+      const checkAnswersSection = getTaskListSection('Check answers and submit', taskListSections)
+      const checkAnswersTask = getTaskListItem('Check answers and submit', checkAnswersSection)
 
       expect(checkAnswersTask.url).toEqual(`/referrals/${referralWithOasysConfirmed.id}/check-answers`)
       expect(checkAnswersTask.statusTag.text).toEqual('not started')
     })
   })
 })
+
+const getTaskListSection = (
+  heading: string,
+  taskListSections: Array<ReferralTaskListSection>,
+): ReferralTaskListSection => {
+  return taskListSections.find(section => section.heading === heading) as ReferralTaskListSection
+}
+
+const getTaskListItem = (text: string, section: ReferralTaskListSection): ReferralTaskListItem => {
+  return section.items.find(item => item.text === text) as ReferralTaskListItem
+}

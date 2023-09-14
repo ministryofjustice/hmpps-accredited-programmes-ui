@@ -58,6 +58,7 @@ export type {
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingEmailsSummaryListRows,
   OrganisationWithOfferingId,
+  ReferralTaskListItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
