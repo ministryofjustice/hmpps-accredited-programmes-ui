@@ -17,7 +17,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
   })
 
-  const referral = referralFactory.build()
+  const referral = referralFactory.started().build()
   const { offeringId, prisonNumber, referrerId } = referral
   const createdReferralResponse: CreatedReferralResponse = { referralId: referral.id }
 

@@ -71,7 +71,7 @@ context('Refer', () => {
   it("Doesn't show the in-progress referral task list", () => {
     cy.signIn()
 
-    const referral = referralFactory.build()
+    const referral = referralFactory.started().build()
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build({ id: referral.offeringId })
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
@@ -94,7 +94,7 @@ context('Refer', () => {
     cy.signIn()
 
     const prisoner = prisonerFactory.build()
-    const referral = referralFactory.build({ prisonNumber: prisoner.prisonerNumber })
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
 
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
@@ -110,7 +110,7 @@ context('Refer', () => {
     cy.signIn()
 
     const prisoner = prisonerFactory.build()
-    const referral = referralFactory.build({ prisonNumber: prisoner.prisonerNumber })
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
 
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
@@ -126,7 +126,7 @@ context('Refer', () => {
     cy.signIn()
 
     const prisoner = prisonerFactory.build()
-    const referral = referralFactory.build({ prisonNumber: prisoner.prisonerNumber })
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
 
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
@@ -145,7 +145,9 @@ context('Refer', () => {
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const prisoner = prisonerFactory.build()
-    const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
+    const referral = referralFactory
+      .submittable()
+      .build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
@@ -163,7 +165,7 @@ context('Refer', () => {
   it("Doesn't show the complete page for a referral", () => {
     cy.signIn()
 
-    const referral = referralFactory.build({ status: 'referral_submitted' })
+    const referral = referralFactory.submitted().build()
 
     cy.task('stubReferral', referral)
 

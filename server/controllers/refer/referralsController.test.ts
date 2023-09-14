@@ -108,7 +108,7 @@ describe('ReferralsController', () => {
 
   describe('create', () => {
     it('asks the service to create a referral and redirects to the show action', async () => {
-      const referral = referralFactory.build()
+      const referral = referralFactory.started().build()
 
       request.body.courseOfferingId = referral.offeringId
       request.body.prisonNumber = referral.prisonNumber
@@ -139,7 +139,9 @@ describe('ReferralsController', () => {
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
-      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      const referral = referralFactory
+        .started()
+        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
 
       const requestHandler = referralsController.show()
@@ -164,7 +166,9 @@ describe('ReferralsController', () => {
         const person = personFactory.build()
         personService.getPerson.mockResolvedValue(person)
 
-        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        const referral = referralFactory
+          .started()
+          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
         referralService.getReferral.mockResolvedValue(referral)
 
         const requestHandler = referralsController.show()
@@ -182,7 +186,9 @@ describe('ReferralsController', () => {
         const person = personFactory.build()
         personService.getPerson.mockResolvedValue(null)
 
-        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        const referral = referralFactory
+          .started()
+          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
         referralService.getReferral.mockResolvedValue(referral)
 
         const requestHandler = referralsController.show()
@@ -201,7 +207,7 @@ describe('ReferralsController', () => {
     it("renders the page for viewing a person's details", async () => {
       personService.getPerson.mockResolvedValue(person)
 
-      const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
+      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
 
       const requestHandler = referralsController.showPerson()
@@ -219,7 +225,7 @@ describe('ReferralsController', () => {
       it('responds with a 404', async () => {
         personService.getPerson.mockResolvedValue(null)
 
-        const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
+        const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
         referralService.getReferral.mockResolvedValue(referral)
 
         const requestHandler = referralsController.showPerson()
@@ -235,7 +241,9 @@ describe('ReferralsController', () => {
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
-      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      const referral = referralFactory
+        .started()
+        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
 
       const requestHandler = referralsController.confirmOasys()
@@ -253,7 +261,9 @@ describe('ReferralsController', () => {
         const person = personFactory.build()
         personService.getPerson.mockResolvedValue(null)
 
-        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        const referral = referralFactory
+          .started()
+          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
         referralService.getReferral.mockResolvedValue(referral)
 
         const requestHandler = referralsController.confirmOasys()
@@ -269,11 +279,9 @@ describe('ReferralsController', () => {
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
-      const referral = referralFactory.build({
-        oasysConfirmed: true,
-        offeringId: courseOffering.id,
-        prisonNumber: person.prisonNumber,
-      })
+      const referral = referralFactory
+        .submittable()
+        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
       request.params.referralId = referral.id
       referralService.getReferral.mockResolvedValue(referral)
       ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
@@ -317,7 +325,7 @@ describe('ReferralsController', () => {
 
     describe('when the referral is not ready for submission', () => {
       it('redirects to the show referral page', async () => {
-        const referral = referralFactory.build()
+        const referral = referralFactory.started().build()
         request.params.referralId = referral.id
         referralService.getReferral.mockResolvedValue(referral)
         ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
@@ -337,11 +345,9 @@ describe('ReferralsController', () => {
         const person = personFactory.build()
         personService.getPerson.mockResolvedValue(person)
 
-        const referral = referralFactory.build({
-          oasysConfirmed: true,
-          offeringId: courseOffering.id,
-          prisonNumber: person.prisonNumber,
-        })
+        const referral = referralFactory
+          .submittable()
+          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
         request.params.referralId = referral.id
         referralService.getReferral.mockResolvedValue(referral)
         ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
@@ -360,10 +366,7 @@ describe('ReferralsController', () => {
 
     describe('when the person service returns `null`', () => {
       it('responds with a 404', async () => {
-        const referral = referralFactory.build({
-          oasysConfirmed: true,
-          offeringId: courseOffering.id,
-        })
+        const referral = referralFactory.submittable().build({ offeringId: courseOffering.id })
         request.params.referralId = referral.id
         referralService.getReferral.mockResolvedValue(referral)
         ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
@@ -386,7 +389,9 @@ describe('ReferralsController', () => {
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
-      const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      const referral = referralFactory
+        .started()
+        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
 
       const requestHandler = referralsController.reason()
@@ -404,7 +409,9 @@ describe('ReferralsController', () => {
         const person = personFactory.build()
         personService.getPerson.mockResolvedValue(null)
 
-        const referral = referralFactory.build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        const referral = referralFactory
+          .started()
+          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
         referralService.getReferral.mockResolvedValue(referral)
 
         const requestHandler = referralsController.reason()
@@ -418,7 +425,7 @@ describe('ReferralsController', () => {
   describe('update', () => {
     describe('updating `oasysConfirmed`', () => {
       it('asks the service to update the field and redirects to the show action', async () => {
-        const referral = referralFactory.build({ oasysConfirmed: false })
+        const referral = referralFactory.build({ oasysConfirmed: false, status: 'referral_started' })
         referralService.getReferral.mockResolvedValue(referral)
 
         request.body.oasysConfirmed = true
@@ -436,7 +443,7 @@ describe('ReferralsController', () => {
 
     describe('updating `reason`', () => {
       it('asks the service to update the field and redirects to the show action', async () => {
-        const referral = referralFactory.build({ reason: undefined })
+        const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
         referralService.getReferral.mockResolvedValue(referral)
 
         request.body.reason = ' Some reason\nAnother paragraph\n '
@@ -456,7 +463,7 @@ describe('ReferralsController', () => {
   describe('complete', () => {
     describe('when the referral status is `referral_submitted`', () => {
       it('renders the referral complete page', async () => {
-        const referral = referralFactory.build({ status: 'referral_submitted' })
+        const referral = referralFactory.submitted().build()
         referralService.getReferral.mockResolvedValue(referral)
 
         request.params.referralId = referral.id
@@ -484,7 +491,7 @@ describe('ReferralsController', () => {
   })
 
   describe('submit', () => {
-    const referral = referralFactory.build()
+    const referral = referralFactory.submittable().build()
 
     beforeEach(() => {
       referralService.getReferral.mockResolvedValue(referral)
