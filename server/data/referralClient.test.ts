@@ -79,7 +79,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('update', () => {
-    const referralUpdate: ReferralUpdate = { oasysConfirmed: true }
+    const referralUpdate: ReferralUpdate = { oasysConfirmed: true, reason: 'A brilliant reason' }
 
     beforeEach(() => {
       provider.addInteraction({
