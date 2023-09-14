@@ -24,7 +24,7 @@ jest.mock('../../utils/referralUtils')
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
   let request: DeepMocked<Request>
-  const response: DeepMocked<Response> = createMock<Response>({})
+  let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
   const courseService = createMock<CourseService>({})
@@ -39,6 +39,7 @@ describe('ReferralsController', () => {
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
+    response = createMock<Response>({})
     referralsController = new ReferralsController(courseService, organisationService, personService, referralService)
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
@@ -265,9 +266,6 @@ describe('ReferralsController', () => {
 
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
-      const errors: Array<string> = []
-      request.flash = jest.fn().mockReturnValue(errors)
-
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
@@ -295,6 +293,11 @@ describe('ReferralsController', () => {
       const requestHandler = referralsController.checkAnswers()
       await requestHandler(request, response, next)
 
+      const emptyErrorsLocal = { list: [], messages: {} }
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
+
       expect(response.render).toHaveBeenCalledWith('referrals/checkAnswers', {
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
@@ -303,19 +306,17 @@ describe('ReferralsController', () => {
           person,
           request.user.username,
         ),
-        errors,
         pageHeading: 'Check your answers',
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId: referral.id,
       })
+
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
     })
 
     describe('when the referral is not ready for submission', () => {
       it('redirects to the show referral page', async () => {
-        const errors: Array<string> = []
-        request.flash = jest.fn().mockReturnValue(errors)
-
         const referral = referralFactory.build()
         request.params.referralId = referral.id
         referralService.getReferral.mockResolvedValue(referral)
@@ -333,9 +334,6 @@ describe('ReferralsController', () => {
 
     describe('when the organisation service returns `null`', () => {
       it('responds with a 404', async () => {
-        const errors: Array<string> = []
-        request.flash = jest.fn().mockReturnValue(errors)
-
         const person = personFactory.build()
         personService.getPerson.mockResolvedValue(person)
 
@@ -362,9 +360,6 @@ describe('ReferralsController', () => {
 
     describe('when the person service returns `null`', () => {
       it('responds with a 404', async () => {
-        const errors: Array<string> = []
-        request.flash = jest.fn().mockReturnValue(errors)
-
         const referral = referralFactory.build({
           oasysConfirmed: true,
           offeringId: courseOffering.id,
@@ -518,12 +513,10 @@ describe('ReferralsController', () => {
         const requestHandler = referralsController.submit()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith('errors', [
-          {
-            href: '#confirmation',
-            text: 'Please confirm that the information you have provided is complete, accurate and up to date',
-          },
-        ])
+        expect(request.flash).toHaveBeenCalledWith(
+          'confirmationError',
+          'Confirm that the information you have provided is complete, accurate and up to date',
+        )
         expect(response.redirect).toHaveBeenCalledWith(referPaths.checkAnswers({ referralId: referral.id }))
       })
     })
