@@ -83,7 +83,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral can be updates',
+        state: 'Referral can be updated',
         uponReceiving: 'A request to update a referral',
         willRespondWith: {
           status: 204,
