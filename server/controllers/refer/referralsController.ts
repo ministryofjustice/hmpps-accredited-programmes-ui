@@ -247,7 +247,7 @@ export default class ReferralsController {
       if (req.body.confirmation !== 'true') {
         req.flash(
           'confirmationError',
-          'Please confirm that the information you have provided is complete, accurate and up to date',
+          'Confirm that the information you have provided is complete, accurate and up to date',
         )
 
         return res.redirect(referPaths.checkAnswers({ referralId: req.params.referralId }))

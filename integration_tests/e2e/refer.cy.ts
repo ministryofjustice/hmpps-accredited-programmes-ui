@@ -553,7 +553,7 @@ context('Refer', () => {
       checkAnswersPageWithErrors.shouldHaveErrors([
         {
           field: 'confirmation',
-          message: 'Please confirm that the information you have provided is complete, accurate and up to date',
+          message: 'Confirm that the information you have provided is complete, accurate and up to date',
         },
       ])
     })
