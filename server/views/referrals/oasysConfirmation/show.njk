@@ -1,0 +1,70 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% extends "../../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include ".././_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: referPaths.show({ referralId: referral.id })
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set detailsHtml %}
+      <p class="govuk-body">A referral to an Accredited Programme requires up to date information about someone's risk, need, and responsivity.</p>
+      <p class="govuk-body">The information in OASys will be shared with the programme team to assess this referral. The information includes risk scores, screenings, and health information.</p>
+      <p class="govuk-body">If the information is out of date or incomplete, this will delay your referral.</p>
+      {% endset %}
+
+      {{ govukDetails({
+        summaryText: "Why is this important?",
+        html: detailsHtml,
+        attributes: {
+          "data-testid": "importance-details"
+        }
+      }) }}
+
+      {% set notificationBannerHtml %}
+      <p class="govuk-notification-banner__heading">Del Hatton's OASys was last updated on 23 January 2022 by Chanelle Duffy.</p>
+      <p class="govuk-body">If you believe anything has changed since this date, you must update OASys.</p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: notificationBannerHtml,
+        attributes: {
+          "data-testid": "last-updated-notification-banner"
+        }
+      }) }}
+
+      <form action="{{ referPaths.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukCheckboxes({
+          name: "oasysConfirmed",
+          items: [
+            {
+              value: "true",
+              text: "I confirm that the OASys information is up to date.",
+              checked: referral.oasysConfirmed
+            }
+          ]
+        }) }}
+
+        {{ govukButton({ text: "Save and continue" }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}
