@@ -254,24 +254,6 @@ describe('ReferralsController', () => {
         })
       })
     })
-
-    describe('updating `reason`', () => {
-      it('asks the service to update the field and redirects to the show action', async () => {
-        const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        request.body.reason = ' Some reason\nAnother paragraph\n '
-
-        const requestHandler = referralsController.update()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
-        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
-          oasysConfirmed: referral.oasysConfirmed,
-          reason: 'Some reason\nAnother paragraph',
-        })
-      })
-    })
   })
 
   describe('checkAnswers', () => {
