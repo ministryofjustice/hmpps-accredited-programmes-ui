@@ -119,25 +119,6 @@ export default class ReferralsController {
     }
   }
 
-  reason(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      TypeUtils.assertHasUser(req)
-
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
-      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
-
-      if (!person) {
-        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-      }
-
-      res.render('referrals/reason', {
-        pageHeading: 'Add reason for referral and any additional information',
-        person,
-        referral,
-      })
-    }
-  }
-
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
