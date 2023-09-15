@@ -4,6 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import ReasonController from './reasonController'
+import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 
@@ -65,6 +66,53 @@ describe('ReasonController', () => {
         const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
+  describe('update', () => {
+    const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
+
+    beforeEach(() => {
+      referralService.getReferral.mockResolvedValue(referral)
+    })
+
+    it('updates the referral and redirects to the referral show page', async () => {
+      request.body.reason = ' Some reason\nAnother paragraph\n '
+
+      const requestHandler = reasonController.update()
+      await requestHandler(request, response, next)
+
+      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+        oasysConfirmed: referral.oasysConfirmed,
+        reason: 'Some reason\nAnother paragraph',
+      })
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+    })
+
+    describe('when the reason is not provided', () => {
+      it('redirects to the reason show page with an error', async () => {
+        request.params.referralId = referral.id
+
+        const requestHandler = reasonController.update()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId: referral.id }))
+        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
+      })
+    })
+
+    describe('when the provided reason is just spaces and new lines', () => {
+      it('redirects to the reason show page with an error', async () => {
+        request.params.referralId = referral.id
+
+        request.body.reason = ' \n \n '
+
+        const requestHandler = reasonController.update()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId: referral.id }))
+        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
       })
     })
   })
