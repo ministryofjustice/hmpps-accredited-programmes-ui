@@ -32,7 +32,9 @@ export default {
     find: findPersonPath,
     show: personPath,
   },
-  reason: reasonForReferralPath,
+  reason: {
+    show: reasonForReferralPath,
+  },
   show: showReferralPath,
   showPerson: referralPersonPath,
   start: startReferralPath,

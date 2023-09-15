@@ -327,7 +327,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
 
-    const path = referPaths.reason({ referralId: referral.id })
+    const path = referPaths.reason.show({ referralId: referral.id })
     cy.visit(path)
 
     const reasonPage = Page.verifyOnPage(ReasonPage, { referral })
@@ -368,7 +368,7 @@ context('Refer', () => {
     cy.task('stubReferral', referral)
     cy.task('stubUpdateReferral', referral.id)
 
-    const path = referPaths.reason({ referralId: referral.id })
+    const path = referPaths.reason.show({ referralId: referral.id })
     cy.visit(path)
 
     const reasonPage = Page.verifyOnPage(ReasonPage, { referral })
