@@ -34,6 +34,7 @@ export default {
   },
   reason: {
     show: reasonForReferralPath,
+    update: reasonForReferralPath,
   },
   show: showReferralPath,
   showPerson: referralPersonPath,
