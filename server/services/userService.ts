@@ -1,7 +1,7 @@
 import type { HmppsAuthClient, RestClientBuilderWithoutToken } from '../data'
 import { StringUtils } from '../utils'
 
-interface UserDetails {
+export interface UserDetails {
   displayName: string
   name: string
   userId: string
