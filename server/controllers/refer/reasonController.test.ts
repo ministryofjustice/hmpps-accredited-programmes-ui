@@ -53,7 +53,7 @@ describe('ReasonController', () => {
       const requestHandler = reasonController.show()
       await requestHandler(request, response, next)
 
-      expect(response.render).toHaveBeenCalledWith('referrals/reason', {
+      expect(response.render).toHaveBeenCalledWith('referrals/reason/show', {
         pageHeading: 'Add reason for referral and any additional information',
         person,
         referral,

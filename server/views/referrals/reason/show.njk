@@ -4,10 +4,10 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% block personBanner %}
-  {% include "./_personBanner.njk" %}
+  {% include "../_personBanner.njk" %}
 {% endblock personBanner %}
 
 {% block backLink %}

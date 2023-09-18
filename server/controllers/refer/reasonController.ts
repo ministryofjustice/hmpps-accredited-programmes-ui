@@ -25,7 +25,7 @@ export default class ReasonController {
 
       FormUtils.setFieldErrors(req, res, ['reason'])
 
-      res.render('referrals/reason', {
+      res.render('referrals/reason/show', {
         pageHeading: 'Add reason for referral and any additional information',
         person,
         referral,
