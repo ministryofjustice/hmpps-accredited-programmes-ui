@@ -6,6 +6,7 @@ import type { Referral, ReferralStatus } from '@accredited-programmes/models'
 class ReferralFactory extends Factory<Referral> {
   started() {
     return this.params({
+      hasCourseHistory: true,
       oasysConfirmed: false,
       reason: undefined,
       status: 'referral_started',
@@ -14,6 +15,7 @@ class ReferralFactory extends Factory<Referral> {
 
   submittable() {
     return this.params({
+      hasCourseHistory: true,
       oasysConfirmed: true,
       reason: faker.lorem.paragraph({ max: 5, min: 1 }),
       status: 'referral_started',
@@ -22,6 +24,7 @@ class ReferralFactory extends Factory<Referral> {
 
   submitted() {
     return this.params({
+      hasCourseHistory: true,
       oasysConfirmed: true,
       reason: faker.lorem.paragraph({ max: 5, min: 1 }),
       status: 'referral_submitted',
@@ -31,6 +34,7 @@ class ReferralFactory extends Factory<Referral> {
 
 export default ReferralFactory.define(() => ({
   id: faker.string.uuid(), // eslint-disable-next-line sort-keys
+  hasCourseHistory: faker.datatype.boolean(),
   oasysConfirmed: faker.datatype.boolean(),
   offeringId: faker.string.uuid(),
   prisonNumber: faker.string.alphanumeric({ length: 7 }),

@@ -4,6 +4,7 @@
     "offeringId": "e78237cd-8244-4256-a1e8-8fb29b1f2f76",
     "prisonNumber": "DEF1234",
     "referrerId": "5105a589-75b3-4ca0-9433-b96228c1c8f3",
+    "hasCourseHistory": true,
     "oasysConfirmed": false,
     "reason": ""
   }
