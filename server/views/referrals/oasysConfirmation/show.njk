@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% extends "../../partials/layout.njk" %}
@@ -18,6 +19,17 @@
 {% endblock backLink %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
@@ -60,7 +72,8 @@
               text: "I confirm that the OASys information is up to date.",
               checked: referral.oasysConfirmed
             }
-          ]
+          ],
+          errorMessage: errors.messages.oasysConfirmed
         }) }}
 
         {{ govukButton({ text: "Save and continue" }) }}

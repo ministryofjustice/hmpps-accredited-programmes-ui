@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
-import { TypeUtils } from '../../utils'
+import { FormUtils, TypeUtils } from '../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
 export default class OasysConfirmationController {
@@ -24,6 +24,8 @@ export default class OasysConfirmationController {
           userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
         })
       }
+
+      FormUtils.setFieldErrors(req, res, ['oasysConfirmed'])
 
       res.render('referrals/oasysConfirmation/show', {
         pageHeading: 'Confirm the OASys information',

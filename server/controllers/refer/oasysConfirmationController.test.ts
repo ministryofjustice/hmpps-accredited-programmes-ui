@@ -7,6 +7,9 @@ import OasysConfirmationController from './oasysConfirmationController'
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
+import { FormUtils } from '../../utils'
+
+jest.mock('../../utils/formUtils')
 
 describe('OasysConfirmationController', () => {
   const token = 'SOME_TOKEN'
@@ -41,6 +44,11 @@ describe('OasysConfirmationController', () => {
         .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
 
+      const emptyErrorsLocal = { list: [], messages: {} }
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
+
       const requestHandler = oasysConfirmationController.show()
       await requestHandler(request, response, next)
 
@@ -49,6 +57,7 @@ describe('OasysConfirmationController', () => {
         person,
         referral,
       })
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['oasysConfirmed'])
     })
 
     describe('when the person service returns `null`', () => {
