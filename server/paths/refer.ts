@@ -13,7 +13,7 @@ const personPath = peoplePathBase.path(':prisonNumber')
 const referralsPath = path('/referrals')
 const showReferralPath = referralsPath.path(':referralId')
 const referralPersonPath = showReferralPath.path('person')
-const confirmOasysPath = showReferralPath.path('oasys-confirmed')
+const confirmOasysPath = showReferralPath.path('confirm-oasys')
 const reasonForReferralPath = showReferralPath.path('reason')
 const checkAnswersPath = showReferralPath.path('check-answers')
 const completeReferralPath = showReferralPath.path('complete')
@@ -22,7 +22,10 @@ const submitReferralPath = showReferralPath.path('submit')
 export default {
   checkAnswers: checkAnswersPath,
   complete: completeReferralPath,
-  confirmOasys: confirmOasysPath,
+  confirmOasys: {
+    show: confirmOasysPath,
+    update: confirmOasysPath,
+  },
   create: referralsPath,
   new: newReferralPath,
   people: {

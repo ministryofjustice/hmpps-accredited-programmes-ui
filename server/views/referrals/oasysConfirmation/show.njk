@@ -4,10 +4,10 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% block personBanner %}
-  {% include "./_personBanner.njk" %}
+  {% include ".././_personBanner.njk" %}
 {% endblock personBanner %}
 
 {% block backLink %}
@@ -49,7 +49,7 @@
         }
       }) }}
 
-      <form action="{{ referPaths.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+      <form action="{{ referPaths.confirmOasys.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukCheckboxes({

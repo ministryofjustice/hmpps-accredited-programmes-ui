@@ -85,27 +85,6 @@ export default class ReferralsController {
     }
   }
 
-  confirmOasys(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      TypeUtils.assertHasUser(req)
-
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
-      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
-
-      if (!person) {
-        throw createError(404, {
-          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
-        })
-      }
-
-      res.render('referrals/confirmOasys', {
-        pageHeading: 'Confirm the OASys information',
-        person,
-        referral,
-      })
-    }
-  }
-
   create(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

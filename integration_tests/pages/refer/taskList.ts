@@ -63,10 +63,10 @@ export default class TaskListPage extends Page {
   }
 
   shouldHaveConfirmedOasys() {
-    cy.get('[data-testid="oasys-confirmed-tag"]').then(oasysConfirmedTagElement => {
+    cy.get('[data-testid="confirm-oasys-tag"]').then(confirmOasysTagElement => {
       this.shouldContainTag(
         { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
-        oasysConfirmedTagElement,
+        confirmOasysTagElement,
       )
     })
   }
