@@ -4,8 +4,7 @@ import type { Request, Response } from 'express'
 
 import populateCurrentUser from './populateCurrentUser'
 import logger from '../../logger'
-import type { UserService } from '../services'
-import type { UserDetails } from '../services/userService'
+import type { UserDetails, UserService } from '../services'
 import { UserUtils } from '../utils'
 
 jest.mock('../utils/userUtils')
