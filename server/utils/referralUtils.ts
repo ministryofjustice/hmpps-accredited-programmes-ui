@@ -45,7 +45,7 @@ export default class ReferralUtils {
   }
 
   static isReadyForSubmission(referral: Referral): boolean {
-    return !!referral.oasysConfirmed && !!referral.reason
+    return referral.oasysConfirmed && !!referral.reason && referral.hasCourseHistory
   }
 
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
@@ -74,9 +74,9 @@ export default class ReferralUtils {
             url: referPaths.reason.show({ referralId: referral.id }),
           },
           {
-            statusTag: ReferralUtils.taskListStatus('not started'),
+            statusTag: ReferralUtils.taskListStatus('completed'),
             text: 'Add Accredited Programme history',
-            url: '#',
+            url: referPaths.hasCourseHistory({ referralId: referral.id }),
           },
           {
             statusTag: ReferralUtils.taskListStatus(

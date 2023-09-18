@@ -102,9 +102,9 @@ describe('ReferralUtils', () => {
               url: `/referrals/${referral.id}/reason`,
             },
             {
-              statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
+              statusTag: { classes: 'moj-task-list__task-completed', text: 'completed' },
               text: 'Add Accredited Programme history',
-              url: '#',
+              url: `/referrals/${referral.id}/has-programme-history`,
             },
             {
               statusTag: {
@@ -146,6 +146,10 @@ describe('ReferralUtils', () => {
         'Confirm the OASys information',
         referralInformationSection,
       ).statusTag
+      const hasCourseHistoryStatusTag = getTaskListItem(
+        'Add Accredited Programme history',
+        referralInformationSection,
+      ).statusTag
 
       expect(reasonStatusTag).toEqual({
         attributes: { 'data-testid': 'reason-tag' },
@@ -154,6 +158,10 @@ describe('ReferralUtils', () => {
       })
       expect(confirmOasysStatusTag).toEqual({
         attributes: { 'data-testid': 'confirm-oasys-tag' },
+        classes: 'moj-task-list__task-completed',
+        text: 'completed',
+      })
+      expect(hasCourseHistoryStatusTag).toEqual({
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })

@@ -1,0 +1,53 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "./_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: referPaths.show({ referralId: referralId })
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">The programme team may use information about a person's Accredited Programme history to assess whether a person is suitable for the referred programme.</p>
+
+      <form action="{{ referPaths.updateHasCourseHistory({ referralId: referralId }) }}?_method=PUT" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukRadios({
+          name: "hasCourseHistory",
+          fieldset: {
+            legend: {
+              text: fieldLabel,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          classes: "govuk-radios--inline",
+          items: [
+            {
+              value: "true",
+              text: "Yes"
+            },
+            {
+              value: "false",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({ text: "Continue" }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}

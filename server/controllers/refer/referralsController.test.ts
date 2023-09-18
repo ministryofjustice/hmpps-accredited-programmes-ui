@@ -236,6 +236,45 @@ describe('ReferralsController', () => {
     })
   })
 
+  describe('hasCourseHistory', () => {
+    it('renders the `hasCourseHistory` template for confirming whether there is known course history for a person', async () => {
+      const person = personFactory.build({ name: 'Del Hatton' })
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory
+        .started()
+        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      const requestHandler = referralsController.hasCourseHistory()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/hasCourseHistory', {
+        fieldLabel: 'Are you aware of Del Hatton previously completing or starting an Accredited Programme?',
+        pageHeading: 'Add Accredited Programme history',
+        person,
+        referralId: referral.id,
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory
+          .started()
+          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = referralsController.hasCourseHistory()
+        const expectedError = createError(404)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
   describe('updateCourseHistory', () => {
     it('updates the referral and redirects to the referral show page', async () => {
       const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })

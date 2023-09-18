@@ -103,6 +103,30 @@ export default class ReferralsController {
     }
   }
 
+  hasCourseHistory(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
+
+      if (!person) {
+        throw createError(404, {
+          userMessage: `Person with prison number ${referral.prisonNumber} not found.`,
+        })
+      }
+
+      const fieldLabel = `Are you aware of ${person.name} previously completing or starting an Accredited Programme?`
+
+      res.render('referrals/hasCourseHistory', {
+        fieldLabel,
+        pageHeading: 'Add Accredited Programme history',
+        person,
+        referralId: referral.id,
+      })
+    }
+  }
+
   new(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

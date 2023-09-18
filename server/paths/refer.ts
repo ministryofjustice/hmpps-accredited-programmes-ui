@@ -28,6 +28,7 @@ export default {
     update: confirmOasysPath,
   },
   create: referralsPath,
+  hasCourseHistory: hasCourseHistoryPath,
   new: newReferralPath,
   people: {
     find: findPersonPath,
