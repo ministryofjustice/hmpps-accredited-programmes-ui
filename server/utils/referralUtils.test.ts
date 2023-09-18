@@ -113,7 +113,7 @@ describe('ReferralUtils', () => {
                 text: 'not started',
               },
               text: 'Confirm the OASys information',
-              url: `/referrals/${referral.id}/oasys-confirmed`,
+              url: `/referrals/${referral.id}/confirm-oasys`,
             },
           ],
         },
