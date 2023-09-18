@@ -16,8 +16,8 @@ type CreatedReferralResponse = {
 }
 
 type ReferralUpdate = {
-  oasysConfirmed: boolean
-  reason?: string
+  oasysConfirmed: Referral['oasysConfirmed']
+  reason?: Referral['reason']
 }
 
 type ReferralStatus = 'awaiting_assesment' | 'assessment_started' | 'referral_started' | 'referral_submitted'
