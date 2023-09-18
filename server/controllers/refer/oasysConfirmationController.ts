@@ -50,6 +50,7 @@ export default class OasysConfirmationController {
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
 
       const referralUpdate: ReferralUpdate = {
+        hasCourseHistory: referral.hasCourseHistory,
         oasysConfirmed,
         reason: referral.reason,
       }

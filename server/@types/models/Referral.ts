@@ -18,6 +18,7 @@ type CreatedReferralResponse = {
 
 type ReferralUpdate = {
   oasysConfirmed: Referral['oasysConfirmed']
+  hasCourseHistory?: Referral['hasCourseHistory']
   reason?: Referral['reason']
 }
 

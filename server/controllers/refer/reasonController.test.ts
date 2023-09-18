@@ -94,6 +94,7 @@ describe('ReasonController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+        hasCourseHistory: referral.hasCourseHistory,
         oasysConfirmed: referral.oasysConfirmed,
         reason: 'Some reason\nAnother paragraph',
       })
