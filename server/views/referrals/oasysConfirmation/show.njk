@@ -49,7 +49,7 @@
         }
       }) }}
 
-      <form action="{{ referPaths.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+      <form action="{{ referPaths.confirmOasys.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukCheckboxes({

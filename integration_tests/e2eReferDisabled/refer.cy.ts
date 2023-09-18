@@ -115,7 +115,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
 
-    const path = referPaths.confirmOasys({ referralId: referral.id })
+    const path = referPaths.confirmOasys.show({ referralId: referral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)

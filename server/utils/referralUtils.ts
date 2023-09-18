@@ -84,7 +84,7 @@ export default class ReferralUtils {
               'oasys-confirmed-tag',
             ),
             text: 'Confirm the OASys information',
-            url: referPaths.confirmOasys({ referralId: referral.id }),
+            url: referPaths.confirmOasys.show({ referralId: referral.id }),
           },
         ],
       },

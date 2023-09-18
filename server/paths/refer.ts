@@ -22,7 +22,10 @@ const submitReferralPath = showReferralPath.path('submit')
 export default {
   checkAnswers: checkAnswersPath,
   complete: completeReferralPath,
-  confirmOasys: confirmOasysPath,
+  confirmOasys: {
+    show: confirmOasysPath,
+    update: confirmOasysPath,
+  },
   create: referralsPath,
   new: newReferralPath,
   people: {
