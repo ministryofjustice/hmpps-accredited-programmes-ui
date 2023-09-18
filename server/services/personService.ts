@@ -1,15 +1,20 @@
 import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
-import type { PrisonerClient, RestClientBuilder } from '../data'
+import type { HmppsAuthClient, PrisonerClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import { PersonUtils } from '../utils'
 import type { Person } from '@accredited-programmes/models'
 
 export default class PersonService {
-  constructor(private readonly prisonerClientBuilder: RestClientBuilder<PrisonerClient>) {}
+  constructor(
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly prisonerClientBuilder: RestClientBuilder<PrisonerClient>,
+  ) {}
 
-  async getPerson(token: Express.User['token'], prisonNumber: string): Promise<Person | null> {
-    const prisonerClient = this.prisonerClientBuilder(token)
+  async getPerson(username: Express.User['username'], prisonNumber: string): Promise<Person | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const prisonerClient = this.prisonerClientBuilder(systemToken)
 
     try {
       const prisoner = await prisonerClient.find(prisonNumber)

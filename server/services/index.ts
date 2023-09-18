@@ -18,7 +18,7 @@ import {
 const services = () => {
   const courseService = new CourseService(courseClientBuilder)
   const organisationService = new OrganisationService(prisonClientBuilder)
-  const personService = new PersonService(prisonerClientBuilder)
+  const personService = new PersonService(hmppsAuthClientBuilder, prisonerClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
   const userService = new UserService(hmppsAuthClientBuilder)
 
