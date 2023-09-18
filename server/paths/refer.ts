@@ -15,6 +15,7 @@ const showReferralPath = referralsPath.path(':referralId')
 const referralPersonPath = showReferralPath.path('person')
 const confirmOasysPath = showReferralPath.path('confirm-oasys')
 const reasonForReferralPath = showReferralPath.path('reason')
+const hasCourseHistoryPath = showReferralPath.path('has-programme-history')
 const checkAnswersPath = showReferralPath.path('check-answers')
 const completeReferralPath = showReferralPath.path('complete')
 const submitReferralPath = showReferralPath.path('submit')
@@ -41,4 +42,5 @@ export default {
   start: startReferralPath,
   submit: submitReferralPath,
   update: showReferralPath,
+  updateHasCourseHistory: hasCourseHistoryPath,
 }

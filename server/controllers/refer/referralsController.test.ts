@@ -236,6 +236,25 @@ describe('ReferralsController', () => {
     })
   })
 
+  describe('updateCourseHistory', () => {
+    it('updates the referral and redirects to the referral show page', async () => {
+      const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
+      referralService.getReferral.mockResolvedValue(referral)
+
+      request.body.hasCourseHistory = true
+
+      const requestHandler = referralsController.updateHasCourseHistory()
+      await requestHandler(request, response, next)
+
+      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+        hasCourseHistory: true,
+        oasysConfirmed: referral.oasysConfirmed,
+        reason: referral.reason,
+      })
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+    })
+  })
+
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
       const person = personFactory.build()
