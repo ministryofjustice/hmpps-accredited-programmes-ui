@@ -236,26 +236,6 @@ describe('ReferralsController', () => {
     })
   })
 
-  describe('update', () => {
-    describe('updating `oasysConfirmed`', () => {
-      it('asks the service to update the field and redirects to the show action', async () => {
-        const referral = referralFactory.build({ oasysConfirmed: false, status: 'referral_started' })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        request.body.oasysConfirmed = true
-
-        const requestHandler = referralsController.update()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
-        expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
-          oasysConfirmed: true,
-          reason: referral.reason,
-        })
-      })
-    })
-  })
-
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
       const person = personFactory.build()
