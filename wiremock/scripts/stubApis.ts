@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../index'
-import { courseOfferings, courses } from '../stubs'
+import { courseOfferings, courses, referrals } from '../stubs'
 
 const stubs = []
 
@@ -80,6 +80,35 @@ courseOfferings.forEach(courseOffering => {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: courses[0],
         status: 200,
+      },
+    }),
+  )
+})
+
+referrals.forEach(referral => {
+  stubs.push(async () =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referrals.show({ referralId: referral.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: referral,
+        status: 200,
+      },
+    }),
+  )
+
+  stubs.push(async () =>
+    stubFor({
+      request: {
+        method: 'PUT',
+        url: apiPaths.referrals.update({ referralId: referral.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        status: 204,
       },
     }),
   )
