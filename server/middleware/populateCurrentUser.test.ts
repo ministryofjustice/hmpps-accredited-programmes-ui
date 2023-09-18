@@ -32,7 +32,7 @@ describe('populateCurrentUser', () => {
     })
 
     describe('and they are found by the user service', () => {
-      it('populates the user with its token, details from the userService and its roles, then calls next', async () => {
+      it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
         userService.getUser.mockResolvedValue({
           displayName: 'DEL_HATTON',
           name: 'Del Hatton',
