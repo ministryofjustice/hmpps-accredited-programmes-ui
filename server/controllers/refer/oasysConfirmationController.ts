@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
-import { TypeUtils } from '../../utils'
+import { FormUtils, TypeUtils } from '../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
 export default class OasysConfirmationController {
@@ -25,6 +25,8 @@ export default class OasysConfirmationController {
         })
       }
 
+      FormUtils.setFieldErrors(req, res, ['oasysConfirmed'])
+
       res.render('referrals/oasysConfirmation/show', {
         pageHeading: 'Confirm the OASys information',
         person,
@@ -37,9 +39,15 @@ export default class OasysConfirmationController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { oasysConfirmed } = req.body
+
+      if (!oasysConfirmed) {
+        req.flash('oasysConfirmedError', 'Confirm the OASys information is up to date')
+
+        return res.redirect(referPaths.confirmOasys.show({ referralId: req.params.referralId }))
+      }
+
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
-      const oasysConfirmed =
-        typeof req.body.oasysConfirmed === 'undefined' ? referral.oasysConfirmed : req.body.oasysConfirmed
 
       const referralUpdate: ReferralUpdate = {
         oasysConfirmed,
@@ -48,7 +56,7 @@ export default class OasysConfirmationController {
 
       await this.referralService.updateReferral(req.user.token, referral.id, referralUpdate)
 
-      res.redirect(referPaths.show({ referralId: referral.id }))
+      return res.redirect(referPaths.show({ referralId: referral.id }))
     }
   }
 }
