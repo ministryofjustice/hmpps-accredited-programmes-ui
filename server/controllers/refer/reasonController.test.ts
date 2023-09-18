@@ -7,6 +7,9 @@ import ReasonController from './reasonController'
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
+import { FormUtils } from '../../utils'
+
+jest.mock('../../utils/formUtils')
 
 describe('ReasonController', () => {
   const token = 'SOME_TOKEN'
@@ -42,6 +45,11 @@ describe('ReasonController', () => {
         .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
 
+      const emptyErrorsLocal = { list: [], messages: {} }
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
+
       const requestHandler = reasonController.show()
       await requestHandler(request, response, next)
 
@@ -50,6 +58,8 @@ describe('ReasonController', () => {
         person,
         referral,
       })
+
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reason'])
     })
 
     describe('when the person service returns `null`', () => {

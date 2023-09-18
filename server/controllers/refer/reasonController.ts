@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
-import { TypeUtils } from '../../utils'
+import { FormUtils, TypeUtils } from '../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
 export default class ReasonController {
@@ -22,6 +22,8 @@ export default class ReasonController {
       if (!person) {
         throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
       }
+
+      FormUtils.setFieldErrors(req, res, ['reason'])
 
       res.render('referrals/reason', {
         pageHeading: 'Add reason for referral and any additional information',
