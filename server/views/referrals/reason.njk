@@ -19,7 +19,6 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
       {% set detailsHtml %}
       <ul class="govuk-list govuk-list--bullet">
         <li>you can provide information about why you're referring this person to this programme</li>
@@ -28,7 +27,7 @@
       </ul>
       {% endset %}
 
-      <form action="{{ referPaths.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+      <form action="{{ referPaths.reason.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukTextarea({
