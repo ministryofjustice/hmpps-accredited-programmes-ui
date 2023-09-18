@@ -1,5 +1,6 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% extends "../partials/layout.njk" %}
@@ -16,6 +17,17 @@
 {% endblock backLink %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
@@ -43,7 +55,8 @@
               value: "false",
               text: "No"
             }
-          ]
+          ],
+          errorMessage: errors.messages.hasCourseHistory
         }) }}
 
         {{ govukButton({ text: "Continue" }) }}

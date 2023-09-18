@@ -246,6 +246,11 @@ describe('ReferralsController', () => {
         .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
 
+      const emptyErrorsLocal = { list: [], messages: {} }
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
+
       const requestHandler = referralsController.hasCourseHistory()
       await requestHandler(request, response, next)
 
@@ -255,6 +260,7 @@ describe('ReferralsController', () => {
         person,
         referralId: referral.id,
       })
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['hasCourseHistory'])
     })
 
     describe('when the person service returns `null`', () => {
@@ -276,10 +282,13 @@ describe('ReferralsController', () => {
   })
 
   describe('updateCourseHistory', () => {
-    it('updates the referral and redirects to the referral show page', async () => {
-      const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
-      referralService.getReferral.mockResolvedValue(referral)
+    const referral = referralFactory.build({ reason: undefined, status: 'referral_started' })
 
+    beforeEach(() => {
+      referralService.getReferral.mockResolvedValue(referral)
+    })
+
+    it("asks the service to update the field and redirects to the ReferralController's show action", async () => {
       request.body.hasCourseHistory = true
 
       const requestHandler = referralsController.updateHasCourseHistory()
@@ -291,6 +300,21 @@ describe('ReferralsController', () => {
         reason: referral.reason,
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+    })
+
+    describe('when the `hasCourseHistory` field is not set', () => {
+      it('redirects back to the `hasCourseHistory` page with an error', async () => {
+        request.params.referralId = referral.id
+
+        const requestHandler = referralsController.updateHasCourseHistory()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.hasCourseHistory({ referralId: referral.id }))
+        expect(request.flash).toHaveBeenCalledWith(
+          'hasCourseHistoryError',
+          'Confirm whether there is known programme history',
+        )
+      })
     })
   })
 

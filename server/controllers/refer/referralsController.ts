@@ -116,6 +116,8 @@ export default class ReferralsController {
         })
       }
 
+      FormUtils.setFieldErrors(req, res, ['hasCourseHistory'])
+
       const fieldLabel = `Are you aware of ${person.name} previously completing or starting an Accredited Programme?`
 
       res.render('referrals/hasCourseHistory', {
@@ -256,6 +258,12 @@ export default class ReferralsController {
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
       const { hasCourseHistory } = req.body
 
+      if (typeof hasCourseHistory === 'undefined') {
+        req.flash('hasCourseHistoryError', 'Confirm whether there is known programme history')
+
+        return res.redirect(referPaths.hasCourseHistory({ referralId: req.params.referralId }))
+      }
+
       const referralUpdate: ReferralUpdate = {
         hasCourseHistory,
         oasysConfirmed: referral.oasysConfirmed,
@@ -264,7 +272,7 @@ export default class ReferralsController {
 
       await this.referralService.updateReferral(req.user.token, referral.id, referralUpdate)
 
-      res.redirect(referPaths.show({ referralId: referral.id }))
+      return res.redirect(referPaths.show({ referralId: referral.id }))
     }
   }
 }
