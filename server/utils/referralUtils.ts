@@ -54,14 +54,16 @@ export default class ReferralUtils {
       ? referPaths.checkAnswers({ referralId: referral.id })
       : ''
 
+    const referralId = referral.id
+
     return [
       {
         heading: 'Personal details',
         items: [
           {
-            statusTag: ReferralUtils.taskListStatus('completed'),
+            statusTag: ReferralUtils.taskListStatusTag('completed'),
             text: 'Confirm personal details',
-            url: referPaths.showPerson({ referralId: referral.id }),
+            url: referPaths.showPerson({ referralId }),
           },
         ],
       },
@@ -69,22 +71,22 @@ export default class ReferralUtils {
         heading: 'Referral information',
         items: [
           {
-            statusTag: ReferralUtils.taskListStatus(referral.reason ? 'completed' : 'not started', 'reason-tag'),
+            statusTag: ReferralUtils.taskListStatusTag(referral.reason ? 'completed' : 'not started', 'reason-tag'),
             text: 'Add reason for referral and any additional information',
-            url: referPaths.reason.show({ referralId: referral.id }),
+            url: referPaths.reason.show({ referralId }),
           },
           {
-            statusTag: ReferralUtils.taskListStatus('completed'),
+            statusTag: ReferralUtils.taskListStatusTag('completed'),
             text: 'Add Accredited Programme history',
-            url: referPaths.hasCourseHistory({ referralId: referral.id }),
+            url: referPaths.hasCourseHistory({ referralId }),
           },
           {
-            statusTag: ReferralUtils.taskListStatus(
+            statusTag: ReferralUtils.taskListStatusTag(
               referral.oasysConfirmed ? 'completed' : 'not started',
               'confirm-oasys-tag',
             ),
             text: 'Confirm the OASys information',
-            url: referPaths.confirmOasys.show({ referralId: referral.id }),
+            url: referPaths.confirmOasys.show({ referralId }),
           },
         ],
       },
@@ -92,8 +94,8 @@ export default class ReferralUtils {
         heading: 'Check answers and submit',
         items: [
           {
-            statusTag: ReferralUtils.taskListStatus(checkAnswersStatus),
-            testIds: ReferralUtils.testIds('check-answers'),
+            statusTag: ReferralUtils.taskListStatusTag(checkAnswersStatus),
+            testIds: ReferralUtils.taskListTestIds('check-answers'),
             text: 'Check answers and submit',
             url: checkAnswersUrl,
           },
@@ -102,7 +104,7 @@ export default class ReferralUtils {
     ]
   }
 
-  private static taskListStatus(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {
+  private static taskListStatusTag(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {
     let classes = 'moj-task-list__task-completed'
 
     if (text !== 'completed') {
@@ -118,7 +120,7 @@ export default class ReferralUtils {
     return tag
   }
 
-  private static testIds(base: string): { listItem: string } {
+  private static taskListTestIds(base: string): { listItem: string } {
     return { listItem: `${base}-list-item` }
   }
 }
