@@ -1,6 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
 {% extends "../partials/layout.njk" %}
@@ -19,6 +20,12 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
 
       {% set detailsHtml %}
       <ul class="govuk-list govuk-list--bullet">
@@ -28,7 +35,7 @@
       </ul>
       {% endset %}
 
-      <form action="{{ referPaths.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+      <form action="{{ referPaths.reason.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukTextarea({
@@ -51,7 +58,8 @@
           value: referral.reason,
           attributes: {
             "data-testid": "reason-text-area"
-          }
+          },
+          errorMessage: errors.messages.reason
         }) }}
 
         {{ govukButton({

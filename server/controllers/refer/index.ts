@@ -1,9 +1,11 @@
 import OasysConfirmationController from './oasysConfirmationController'
 import PeopleController from './peopleController'
+import ReasonController from './reasonController'
 import ReferralsController from './referralsController'
 import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
+  const reasonController = new ReasonController(services.personService, services.referralService)
   const referralsController = new ReferralsController(
     services.courseService,
     services.organisationService,
@@ -16,6 +18,7 @@ const controllers = (services: Services) => {
   return {
     oasysConfirmationController,
     peopleController,
+    reasonController,
     referralsController,
   }
 }
