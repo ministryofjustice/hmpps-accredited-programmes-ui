@@ -16,7 +16,6 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   post(referPaths.create.pattern, referralsController.create())
   get(referPaths.show.pattern, referralsController.show())
-  put(referPaths.update.pattern, referralsController.update())
   get(referPaths.showPerson.pattern, referralsController.showPerson())
   get(referPaths.confirmOasys.show.pattern, oasysConfirmationController.show())
   put(referPaths.confirmOasys.update.pattern, oasysConfirmationController.update())

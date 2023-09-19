@@ -9,7 +9,7 @@ export default function populateCurrentUser(userService: UserService): RequestHa
     try {
       if (res.locals.user) {
         const { token } = res.locals.user
-        const user = res.locals.user && (await userService.getUser(res.locals.user.token))
+        const user = res.locals.user && (await userService.getUser(token))
         if (user) {
           const roles = UserUtils.getUserRolesFromToken(token)
           res.locals.user = { ...user, ...res.locals.user, roles }

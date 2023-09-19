@@ -4,8 +4,7 @@ import type { Request, Response } from 'express'
 
 import populateCurrentUser from './populateCurrentUser'
 import logger from '../../logger'
-import type { UserService } from '../services'
-import type { UserDetails } from '../services/userService'
+import type { UserDetails, UserService } from '../services'
 import { UserUtils } from '../utils'
 
 jest.mock('../utils/userUtils')
@@ -32,7 +31,7 @@ describe('populateCurrentUser', () => {
     })
 
     describe('and they are found by the user service', () => {
-      it('populates the user with its token, details from the userService and its roles, then calls next', async () => {
+      it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
         userService.getUser.mockResolvedValue({
           displayName: 'DEL_HATTON',
           name: 'Del Hatton',

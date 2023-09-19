@@ -365,7 +365,8 @@ context('Refer', () => {
     const path = referPaths.reason.show({ referralId: referral.id })
     cy.visit(path)
 
-    const reasonPage = Page.verifyOnPage(ReasonPage, { referral })
+    const reasonPage = Page.verifyOnPage(ReasonPage, { person, referral })
+    reasonPage.shouldHavePersonDetails(person)
     reasonPage.shouldContainNavigation(path)
     reasonPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
     reasonPage.shouldContainInformationTypeDetails()
@@ -407,7 +408,7 @@ context('Refer', () => {
       const path = referPaths.reason.show({ referralId: referral.id })
       cy.visit(path)
 
-      const reasonPage = Page.verifyOnPage(ReasonPage, { referral })
+      const reasonPage = Page.verifyOnPage(ReasonPage, { person, referral })
       reasonPage.submitReason()
 
       const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
@@ -435,10 +436,10 @@ context('Refer', () => {
       const path = referPaths.reason.show({ referralId: referral.id })
       cy.visit(path)
 
-      const reasonPage = Page.verifyOnPage(ReasonPage, { referral })
+      const reasonPage = Page.verifyOnPage(ReasonPage, { person, referral })
       reasonPage.shouldContainButton('Save and continue').click()
 
-      const reasonPageWithError = Page.verifyOnPage(ReasonPage, { referral })
+      const reasonPageWithError = Page.verifyOnPage(ReasonPage, { person, referral })
       reasonPageWithError.shouldHaveErrors([
         {
           field: 'reason',
