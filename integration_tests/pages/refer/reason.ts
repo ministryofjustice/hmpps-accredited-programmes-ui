@@ -1,14 +1,17 @@
 import Page from '../page'
-import type { Referral } from '@accredited-programmes/models'
+import type { Person, Referral } from '@accredited-programmes/models'
 
 export default class ReasonPage extends Page {
+  person: Person
+
   referral: Referral
 
-  constructor(args: { referral: Referral }) {
+  constructor(args: { person: Person; referral: Referral }) {
     super('Add reason for referral and any additional information')
 
-    const { referral } = args
+    const { person, referral } = args
 
+    this.person = person
     this.referral = referral
   }
 
