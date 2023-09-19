@@ -6,3 +6,4 @@ reporter-config.json
 dist/
 script/build/
 server/@types/govukFrontend/index.d.ts
+test_results

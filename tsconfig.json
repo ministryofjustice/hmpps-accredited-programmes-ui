@@ -32,7 +32,8 @@
     "dist",
     "integration_tests",
     "node_modules",
-    "script"
+    "script",
+    "test_results"
   ],
   "include": ["**/*.js", "**/*.ts"]
 }
