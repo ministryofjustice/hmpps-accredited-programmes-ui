@@ -269,6 +269,7 @@ describe('ReferralsController', () => {
       })
 
       expect(response.render).toHaveBeenCalledWith('referrals/checkAnswers', {
+        additionalInformation: referral.reason,
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
           coursePresenter,
