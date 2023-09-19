@@ -1,7 +1,13 @@
 import type { Config } from 'jest'
 
 const config: Config = {
-  collectCoverageFrom: ['server/**/*.{ts,js,jsx,mjs}'],
+  collectCoverageFrom: [
+    'server/**/*.{ts,js,jsx,mjs}',
+    '!server/authentication/*.ts',
+    '!server/middleware/*.ts',
+    '!server/routes/*.ts',
+    '!server/testutils/factories/*.ts',
+  ],
   moduleFileExtensions: ['web.js', 'js', 'json', 'node', 'ts'],
   reporters: [
     'default',

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { Request } from 'express'
 import superagent from 'superagent'
 

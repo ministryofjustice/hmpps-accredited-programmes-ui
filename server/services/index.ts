@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import CourseService from './courseService'
 import healthCheck from './healthCheck'
 import OrganisationService from './organisationService'

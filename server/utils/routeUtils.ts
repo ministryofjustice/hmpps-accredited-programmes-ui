@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { RequestHandler, Router } from 'express'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
