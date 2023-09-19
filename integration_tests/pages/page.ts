@@ -7,7 +7,7 @@ import type {
   HasHtmlString,
   HasTextString,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendTag } from '@govuk-frontend'
+import type { GovukFrontendRadiosItem, GovukFrontendTag } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -126,6 +126,44 @@ export default abstract class Page {
   shouldContainPersonSummaryList(person: Person): void {
     cy.get('[data-testid="person-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(PersonUtils.summaryListRows(person), summaryListElement)
+    })
+  }
+
+  shouldContainRadios(
+    field: string,
+    label: string,
+    items: Array<GovukFrontendRadiosItem>,
+    radiosElement: JQuery<HTMLElement>,
+  ) {
+    cy.wrap(radiosElement)
+      .parent()
+      .within(() => {
+        cy.get('.govuk-fieldset__legend').then(legendElement => {
+          const { actual, expected } = Helpers.parseHtml(legendElement, label)
+          expect(actual).to.equal(expected)
+        })
+      })
+
+    items.forEach((item, itemIndex) => {
+      cy.wrap(radiosElement).within(() => {
+        cy.get('.govuk-radios__item')
+          .eq(itemIndex)
+          .within(() => {
+            const id = itemIndex === 0 ? field : `${field}-${itemIndex + 1}`
+
+            cy.get('.govuk-radios__input')
+              .should('have.attr', 'id', id)
+              .should('have.attr', 'name', field)
+              .should('have.attr', 'value', item.value)
+
+            cy.get('.govuk-label')
+              .should('have.attr', 'for', id)
+              .then(labelElement => {
+                const { actual, expected } = Helpers.parseHtml(labelElement, item.text as string)
+                expect(actual).to.equal(expected)
+              })
+          })
+      })
     })
   }
 
