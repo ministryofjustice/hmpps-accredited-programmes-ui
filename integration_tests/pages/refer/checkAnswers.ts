@@ -37,6 +37,11 @@ export default class CheckAnswersPage extends Page {
     this.shouldContainButton('Submit referral').click()
   }
 
+  shouldHaveAdditionalInformation(referral: Referral): void {
+    this.shouldContainLink('Change additional information', `/referrals/${referral.id}/reason`)
+    cy.get('[data-testid="additional-information"]').should('have.text', referral.reason)
+  }
+
   shouldHaveApplicationSummary() {
     cy.get('[data-testid="application-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
@@ -57,5 +62,9 @@ export default class CheckAnswersPage extends Page {
       'confirmation',
       'I confirm the information I have provided is complete, accurate and up to date.',
     )
+  }
+
+  shouldHaveOasysConfirmation(): void {
+    cy.get('[data-testid="oasys-confirmation"]').should('have.text', 'I confirm that the information is up to date.')
   }
 }

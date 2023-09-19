@@ -50,6 +50,7 @@ export default class ReferralsController {
       FormUtils.setFieldErrors(req, res, ['confirmation'])
 
       return res.render('referrals/checkAnswers', {
+        additionalInformation: referral.reason,
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
           coursePresenter,
