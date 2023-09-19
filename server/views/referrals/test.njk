@@ -1,0 +1,58 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back to the tasklist",
+    href: '#'
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">Del Hatton's Accredited Programme history</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">We have no record of any hisorical Accredited Programmes for Del Hatton.</p>
+
+      <p class="govuk-body">If you are aware of any Accredited Programmes Del Hatton has completed, you can add them here.</p>
+
+      {{ govukButton({
+        text: "Add Accredited Programme",
+        classes: "govuk-button--secondary"
+      }) }}
+
+      <p class="govuk-body">If you are not aware of Del Hatton completing any previous Accredited Programmes, confirm this below.</p>
+
+      <form action="#" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukCheckboxes({
+          name: "confirmation",
+          items: [
+            {
+              value: "true",
+              text: "Del Hatton has no known course history"
+            }
+          ],
+          errorMessage: errors.messages.confirmation
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Mark as complete"
+          }) }}
+
+          {{ govukButton({
+            text: "Return to tasklist",
+            classes: "govuk-button--secondary",
+            href: '#'
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

@@ -224,4 +224,28 @@ export default class ReferralsController {
       return res.redirect(referPaths.complete({ referralId: req.params.referralId }))
     }
   }
+
+  test(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      return res.render('referrals/test')
+    }
+  }
+
+  test2(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      return res.render('referrals/test2')
+    }
+  }
+
+  test2WithHistory(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      return res.render('referrals/test2WithHistory')
+    }
+  }
+
+  testWithHistory(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      return res.render('referrals/testWithHistory')
+    }
+  }
 }

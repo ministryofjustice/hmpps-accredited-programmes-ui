@@ -40,5 +40,9 @@ export default {
   showPerson: referralPersonPath,
   start: startReferralPath,
   submit: submitReferralPath,
+  test: path('/test'),
+  test2: path('/test2'),
+  test2WithHistory: path('/test2-with-history'),
+  testWithHistory: path('/test-with-history'),
   update: showReferralPath,
 }

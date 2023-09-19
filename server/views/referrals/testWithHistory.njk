@@ -1,0 +1,46 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back to the tasklist",
+    href: '#'
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">Del Hatton's Accredited Programme history</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">If you are aware of any Accredited Programmes Del Hatton has completed, you can add them here.</p>
+
+      {% include "./_history.njk" %}
+
+      {{ govukButton({
+        text: "Add another Accredited Programme",
+        classes: "govuk-button--secondary"
+      }) }}
+
+      <form action="#" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Mark as complete"
+          }) }}
+
+          {{ govukButton({
+            text: "Return to tasklist",
+            classes: "govuk-button--secondary",
+            href: '#'
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

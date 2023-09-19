@@ -25,5 +25,10 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.complete.pattern, referralsController.complete())
   post(referPaths.submit.pattern, referralsController.submit())
 
+  get(referPaths.test.pattern, referralsController.test())
+  get(referPaths.testWithHistory.pattern, referralsController.testWithHistory())
+  get(referPaths.test2.pattern, referralsController.test2())
+  get(referPaths.test2WithHistory.pattern, referralsController.test2WithHistory())
+
   return router
 }
