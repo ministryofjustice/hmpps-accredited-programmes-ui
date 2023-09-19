@@ -102,7 +102,11 @@ describe('ReferralUtils', () => {
               url: `/referrals/${referral.id}/reason`,
             },
             {
-              statusTag: { classes: 'moj-task-list__task-completed', text: 'completed' },
+              statusTag: {
+                attributes: { 'data-testid': 'course-history-tag' },
+                classes: 'moj-task-list__task-completed',
+                text: 'completed',
+              },
               text: 'Add Accredited Programme history',
               url: `/referrals/${referral.id}/has-programme-history`,
             },
@@ -162,6 +166,7 @@ describe('ReferralUtils', () => {
         text: 'completed',
       })
       expect(hasCourseHistoryStatusTag).toEqual({
+        attributes: { 'data-testid': 'course-history-tag' },
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })

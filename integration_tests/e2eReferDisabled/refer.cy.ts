@@ -138,6 +138,22 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
+  it("Doesn't show the has programme history form page", () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build()
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.hasCourseHistory({ referralId: referral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
   it("Doesn't show the check answers page for a referral", () => {
     cy.signIn()
 

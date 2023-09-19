@@ -32,7 +32,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <p class="govuk-body">The programme team may use information about a person's Accredited Programme history to assess whether a person is suitable for the referred programme.</p>
+      <p class="govuk-body" data-testid="explanation-paragraph">The programme team may use information about a person's Accredited Programme history to assess whether a person is suitable for the referred programme.</p>
 
       <form action="{{ referPaths.updateHasCourseHistory({ referralId: referralId }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
@@ -56,6 +56,9 @@
               text: "No"
             }
           ],
+          attributes: {
+            "data-testid": "has-course-history-radios"
+          },
           errorMessage: errors.messages.hasCourseHistory
         }) }}
 

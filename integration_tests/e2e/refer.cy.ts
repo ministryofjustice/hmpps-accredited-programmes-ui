@@ -15,6 +15,7 @@ import {
   ConfirmOasysPage,
   ConfirmPersonPage,
   FindPersonPage,
+  HasProgrammeHistoryPage,
   ShowPersonPage,
   StartReferralPage,
   TaskListPage,
@@ -446,6 +447,116 @@ context('Refer', () => {
           message: 'Enter a reason for the referral',
         },
       ])
+    })
+  })
+
+  it('Shows the has programme history form page', () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.hasCourseHistory({ referralId: referral.id })
+    cy.visit(path)
+
+    const hasProgrammeHistoryPage = Page.verifyOnPage(HasProgrammeHistoryPage, { person, referral })
+    hasProgrammeHistoryPage.shouldContainNavigation(path)
+    hasProgrammeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+    hasProgrammeHistoryPage.shouldContainExplanationParagraph()
+    hasProgrammeHistoryPage.shouldContainHasProgrammeHistoryRadios()
+    hasProgrammeHistoryPage.shouldContainContinueButton()
+  })
+
+  describe('When updating `hasProgrammeHistory`', () => {
+    const course = courseFactory.build()
+    const courseOffering = courseOfferingFactory.build()
+
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+    const referral = referralFactory
+      .started()
+      .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+
+    beforeEach(() => {
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+      cy.task('stubPrison', prison)
+      cy.task('stubPrisoner', prisoner)
+      cy.task('stubReferral', referral)
+      cy.task('stubUpdateReferral', referral.id)
+    })
+
+    describe('to `true`', () => {
+      it('updates the referral to `true` and redirects to the task list', () => {
+        cy.signIn()
+
+        const path = referPaths.hasCourseHistory({ referralId: referral.id })
+        cy.visit(path)
+
+        const hasProgrammeHistoryPage = Page.verifyOnPage(HasProgrammeHistoryPage, { person, referral })
+        hasProgrammeHistoryPage.confirmHasProgrammeHistory()
+
+        const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
+        taskListPage.shouldHaveCompletedProgrammeHistory()
+      })
+    })
+
+    describe('to `false`', () => {
+      it('updates the referral and redirects to the task list', () => {
+        cy.signIn()
+
+        const path = referPaths.hasCourseHistory({ referralId: referral.id })
+        cy.visit(path)
+
+        const hasProgrammeHistoryPage = Page.verifyOnPage(HasProgrammeHistoryPage, { person, referral })
+        hasProgrammeHistoryPage.confirmHasProgrammeHistory(false)
+
+        const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
+        taskListPage.shouldHaveCompletedProgrammeHistory()
+      })
+    })
+
+    describe('displays an error when a value is not provided', () => {
+      it('displays an error', () => {
+        cy.signIn()
+
+        const path = referPaths.hasCourseHistory({ referralId: referral.id })
+        cy.visit(path)
+
+        const hasProgrammeHistoryPage = Page.verifyOnPage(HasProgrammeHistoryPage, { person, referral })
+        hasProgrammeHistoryPage.shouldContainButton('Continue').click()
+
+        const hasProgrammeHistoryPageWithError = Page.verifyOnPage(HasProgrammeHistoryPage, { person, referral })
+        hasProgrammeHistoryPageWithError.shouldHaveErrors([
+          {
+            field: 'hasCourseHistory',
+            message: 'Confirm whether there is known programme history',
+          },
+        ])
+      })
     })
   })
 

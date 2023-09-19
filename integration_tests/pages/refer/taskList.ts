@@ -62,6 +62,15 @@ export default class TaskListPage extends Page {
     })
   }
 
+  shouldHaveCompletedProgrammeHistory() {
+    cy.get('[data-testid="course-history-tag"]').then(programmeHistoryTagElement => {
+      this.shouldContainTag(
+        { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
+        programmeHistoryTagElement,
+      )
+    })
+  }
+
   shouldHaveConfirmedOasys() {
     cy.get('[data-testid="confirm-oasys-tag"]').then(confirmOasysTagElement => {
       this.shouldContainTag(

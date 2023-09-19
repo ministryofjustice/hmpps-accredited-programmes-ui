@@ -76,7 +76,7 @@ export default class ReferralUtils {
             url: referPaths.reason.show({ referralId }),
           },
           {
-            statusTag: ReferralUtils.taskListStatusTag('completed'),
+            statusTag: ReferralUtils.taskListStatusTag('completed', 'course-history-tag'),
             text: 'Add Accredited Programme history',
             url: referPaths.hasCourseHistory({ referralId }),
           },
