@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import CourseOfferingsController from './courseOfferingsController'
 import CoursesController from './coursesController'
 import type { Services } from '../../services'

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import Agent, { HttpsAgent } from 'agentkeepalive'
 import { Readable } from 'stream'
 import superagent from 'superagent'

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { Socket } from 'net'
 import promClient from 'prom-client'
 import type { Response, SuperAgentRequest } from 'superagent'

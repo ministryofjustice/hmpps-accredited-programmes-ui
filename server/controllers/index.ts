@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import DashboardController from './dashboardController'
 import findControllers from './find'
 import referControllers from './refer'

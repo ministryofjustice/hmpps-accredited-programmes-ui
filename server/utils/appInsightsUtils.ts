@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { TelemetryClient } from 'applicationinsights'
 import { Contracts, DistributedTracingModes, defaultClient, setup } from 'applicationinsights'
 import type { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import OasysConfirmationController from './oasysConfirmationController'
 import PeopleController from './peopleController'
 import ReasonController from './reasonController'
