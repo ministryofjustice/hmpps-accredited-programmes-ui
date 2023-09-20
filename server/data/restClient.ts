@@ -13,7 +13,7 @@ import sanitiseError from '../sanitisedError'
 interface GetRequest {
   headers?: Record<string, string>
   path?: string
-  query?: string
+  query?: Record<string, string> | string
   raw?: boolean
   responseType?: string
 }
