@@ -8,7 +8,7 @@ const user = {
   username: 'TEST_USER',
 }
 
-const createEnvelope = (properties: Record<string, string | boolean> | undefined, baseType = 'RequestData') =>
+const createEnvelope = (properties: Record<string, boolean | string> | undefined, baseType = 'RequestData') =>
   ({
     data: {
       baseData: { properties },
