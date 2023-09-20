@@ -13,3 +13,7 @@ $govuk-page-width: $moj-page-width;
 @import './components/person-banner';
 @import './components/task-list';
 @import './local';
+
+.i-lost-my-keys dt {
+  display: none;
+}
