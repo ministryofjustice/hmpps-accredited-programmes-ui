@@ -2,25 +2,18 @@ import { Router } from 'express'
 
 import findRoutes from './find'
 import referRoutes from './refer'
-import config from '../config'
 import type { Controllers } from '../controllers'
-import { RouteUtils } from '../utils'
+import Routes from '../utils/routeBuilder'
 
 export default function routes(controllers: Controllers): Router {
   const router = Router()
-  const { get } = RouteUtils.actions(router)
 
-  const { dashboardController } = controllers
-  get('/', dashboardController.index())
-
-  findRoutes(controllers, router)
-  if (config.flags.referEnabled) {
-    referRoutes(controllers, router)
-  }
-
-  get('/debug-sentry', (_req, res) => {
-    throw new Error('My first Sentry error!')
-  })
-
-  return router
+  return Routes.forAnyRole()
+    .get('/', controllers.dashboardController.index())
+    .use(findRoutes(controllers, router))
+    .use(referRoutes(controllers))
+    .get('/debug-sentry', (_req, res) => {
+      throw new Error('My first Sentry error!')
+    })
+    .build()
 }
