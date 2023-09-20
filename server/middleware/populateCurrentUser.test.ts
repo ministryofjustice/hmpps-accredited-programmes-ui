@@ -43,6 +43,7 @@ describe('populateCurrentUser', () => {
 
         expect(res.locals.user).toEqual({
           displayName: 'DEL_HATTON',
+          hasReferrerAuthority: false,
           name: 'Del Hatton',
           roles: ['SOME_REQUIRED_ROLE'],
           token: 'SOME-TOKEN',
