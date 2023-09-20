@@ -2,7 +2,7 @@ import { when } from 'jest-when'
 
 import CourseService from './courseService'
 import { CourseClient } from '../data'
-import { courseFactory, courseOfferingFactory } from '../testutils/factories'
+import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
 
 jest.mock('../data/courseClient')
 
@@ -89,6 +89,41 @@ describe('CourseService', () => {
 
       expect(courseClientBuilder).toHaveBeenCalledWith(token)
       expect(courseClient.findOffering).toHaveBeenCalledWith(courseOffering.id)
+    })
+  })
+
+  describe('getParticipationsByPerson', () => {
+    const person = personFactory.build()
+
+    it('returns a list of participations for a given person', async () => {
+      const courseParticipations = [
+        courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
+        courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
+      ]
+
+      when(courseClient.findParticipationsByPerson)
+        .calledWith(person.prisonNumber)
+        .mockResolvedValue(courseParticipations)
+
+      const result = await service.getParticipationsByPerson(token, person.prisonNumber)
+
+      expect(result).toEqual(courseParticipations)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
+      expect(courseClient.findParticipationsByPerson).toHaveBeenCalledWith(person.prisonNumber)
+    })
+
+    describe('when the person has no previous course participations', () => {
+      it('returns an empty array', async () => {
+        when(courseClient.findParticipationsByPerson).calledWith(person.prisonNumber).mockResolvedValue([])
+
+        const result = await service.getParticipationsByPerson(token, person.prisonNumber)
+
+        expect(result).toEqual([])
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(token)
+        expect(courseClient.findParticipationsByPerson).toHaveBeenCalledWith(person.prisonNumber)
+      })
     })
   })
 })
