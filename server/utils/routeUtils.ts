@@ -7,9 +7,14 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 export default class RouteUtils {
   static actions(router: Router) {
     return {
-      get: (path: string | Array<string>, handler: RequestHandler) => router.get(path, asyncMiddleware(handler)),
+      get: (path: string | Array<string>, ...handlers: Array<RequestHandler>) =>
+        router.get(path, this.wrapHandlers(handlers)),
       post: (path: string | Array<string>, handler: RequestHandler) => router.post(path, asyncMiddleware(handler)),
       put: (path: string | Array<string>, handler: RequestHandler) => router.put(path, asyncMiddleware(handler)),
     }
+  }
+
+  private static wrapHandlers(handlers: Array<RequestHandler>) {
+    return handlers.map(handler => asyncMiddleware(handler))
   }
 }
