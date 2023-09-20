@@ -28,7 +28,7 @@ describe('PersonService', () => {
 
         const person = personFactory.build()
 
-        prisonerClient.getPrisoner.mockResolvedValue(prisoner)
+        prisonerClient.find.mockResolvedValue(prisoner)
         ;(PersonUtils.personFromPrisoner as jest.Mock).mockReturnValue(person)
 
         const result = await service.getPerson(token, prisoner.prisonerNumber)
@@ -36,14 +36,14 @@ describe('PersonService', () => {
         expect(result).toEqual(person)
 
         expect(prisonerClientBuilder).toHaveBeenCalledWith(token)
-        expect(prisonerClient.getPrisoner).toHaveBeenCalledWith(prisoner.prisonerNumber)
+        expect(prisonerClient.find).toHaveBeenCalledWith(prisoner.prisonerNumber)
       })
     })
 
     describe('when the prisoner client throws a 404 error', () => {
       it('returns `null`', async () => {
         const clientError = createError(404)
-        prisonerClient.getPrisoner.mockRejectedValue(clientError)
+        prisonerClient.find.mockRejectedValue(clientError)
 
         const notFoundPrisonNumber = 'NOT-FOUND'
 
@@ -52,14 +52,14 @@ describe('PersonService', () => {
         expect(result).toEqual(null)
 
         expect(prisonerClientBuilder).toHaveBeenCalledWith(token)
-        expect(prisonerClient.getPrisoner).toHaveBeenCalledWith(notFoundPrisonNumber)
+        expect(prisonerClient.find).toHaveBeenCalledWith(notFoundPrisonNumber)
       })
     })
 
     describe('when the prisoner client throws any other error', () => {
       it('re-throws the error', async () => {
         const clientError = createError(501)
-        prisonerClient.getPrisoner.mockRejectedValue(clientError)
+        prisonerClient.find.mockRejectedValue(clientError)
 
         const prisonNumber = 'ABC123'
 
@@ -68,7 +68,7 @@ describe('PersonService', () => {
         expect(() => service.getPerson(token, prisonNumber)).rejects.toThrowError(expectedError)
 
         expect(prisonerClientBuilder).toHaveBeenCalledWith(token)
-        expect(prisonerClient.getPrisoner).toHaveBeenCalledWith(prisonNumber)
+        expect(prisonerClient.find).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })

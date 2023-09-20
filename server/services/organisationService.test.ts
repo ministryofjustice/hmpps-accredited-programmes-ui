@@ -26,7 +26,7 @@ describe('OrganisationService', () => {
           const prison = prisonFactory.build({ categories: ['A'] })
           const prisonAddress = prison.addresses[0]
 
-          prisonClient.getPrison.mockResolvedValue(prison)
+          prisonClient.find.mockResolvedValue(prison)
 
           const result = await service.getOrganisation(token, prison.prisonId)
 
@@ -45,21 +45,21 @@ describe('OrganisationService', () => {
           })
 
           expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-          expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.prisonId)
+          expect(prisonClient.find).toHaveBeenCalledWith(prison.prisonId)
         })
       })
 
       describe("and it's inactive", () => {
         it('returns `null`', async () => {
           const prison = prisonFactory.build({ active: false })
-          prisonClient.getPrison.mockResolvedValue(prison)
+          prisonClient.find.mockResolvedValue(prison)
 
           const result = await service.getOrganisation(token, prison.prisonId)
 
           expect(result).toEqual(null)
 
           expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-          expect(prisonClient.getPrison).toHaveBeenCalledWith(prison.prisonId)
+          expect(prisonClient.find).toHaveBeenCalledWith(prison.prisonId)
         })
       })
     })
@@ -67,7 +67,7 @@ describe('OrganisationService', () => {
     describe('when the prison client throws a 404 error', () => {
       it('returns `null`', async () => {
         const clientError = createError(404)
-        prisonClient.getPrison.mockRejectedValue(clientError)
+        prisonClient.find.mockRejectedValue(clientError)
 
         const notFoundPrisonId = 'NOT-FOUND'
 
@@ -76,14 +76,14 @@ describe('OrganisationService', () => {
         expect(result).toEqual(null)
 
         expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-        expect(prisonClient.getPrison).toHaveBeenCalledWith(notFoundPrisonId)
+        expect(prisonClient.find).toHaveBeenCalledWith(notFoundPrisonId)
       })
     })
 
     describe('when the prison client throws any other error', () => {
       it('re-throws the error', async () => {
         const clientError = createError(501)
-        prisonClient.getPrison.mockRejectedValue(clientError)
+        prisonClient.find.mockRejectedValue(clientError)
 
         const prisonId = '04aba287-86ac-4b2c-b98e-048b5eefddbc'
 
@@ -92,7 +92,7 @@ describe('OrganisationService', () => {
         expect(() => service.getOrganisation(token, prisonId)).rejects.toThrowError(expectedError)
 
         expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-        expect(prisonClient.getPrison).toHaveBeenCalledWith(prisonId)
+        expect(prisonClient.find).toHaveBeenCalledWith(prisonId)
       })
     })
   })

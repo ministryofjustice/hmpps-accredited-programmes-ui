@@ -12,7 +12,7 @@ export default class OrganisationService {
     const prisonClient = this.prisonClientBuilder(token)
 
     try {
-      const prison = await prisonClient.getPrison(organisationId)
+      const prison = await prisonClient.find(organisationId)
 
       if (!prison.active) {
         return null

@@ -26,7 +26,7 @@ describe('PrisonerClient', () => {
     nock.cleanAll()
   })
 
-  describe('getPrisoner', () => {
+  describe('find', () => {
     const prisoner: Prisoner = prisonerFactory.build()
 
     it('fetches the given prisoner', async () => {
@@ -35,7 +35,7 @@ describe('PrisonerClient', () => {
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, prisoner)
 
-      const output = await prisonerClient.getPrisoner(prisoner.prisonerNumber)
+      const output = await prisonerClient.find(prisoner.prisonerNumber)
       expect(output).toEqual(prisoner)
     })
   })
