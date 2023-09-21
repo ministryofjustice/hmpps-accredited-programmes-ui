@@ -12,7 +12,7 @@ export default class PersonService {
     const prisonerClient = this.prisonerClientBuilder(token)
 
     try {
-      const prisoner = await prisonerClient.getPrisoner(prisonNumber)
+      const prisoner = await prisonerClient.find(prisonNumber)
 
       return PersonUtils.personFromPrisoner(prisoner)
     } catch (error) {

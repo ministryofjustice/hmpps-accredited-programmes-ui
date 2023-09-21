@@ -7,9 +7,9 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 export default class RouteUtils {
   static actions(router: Router) {
     return {
-      get: (path: string | Array<string>, handler: RequestHandler) => router.get(path, asyncMiddleware(handler)),
-      post: (path: string | Array<string>, handler: RequestHandler) => router.post(path, asyncMiddleware(handler)),
-      put: (path: string | Array<string>, handler: RequestHandler) => router.put(path, asyncMiddleware(handler)),
+      get: (path: Array<string> | string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler)),
+      post: (path: Array<string> | string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler)),
+      put: (path: Array<string> | string, handler: RequestHandler) => router.put(path, asyncMiddleware(handler)),
     }
   }
 }

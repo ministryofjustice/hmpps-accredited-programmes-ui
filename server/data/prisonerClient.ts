@@ -11,7 +11,7 @@ export default class PrisonerClient {
     this.restClient = new RestClient('prisonerClient', config.apis.prisonerOffenderSearch as ApiConfig, token)
   }
 
-  async getPrisoner(prisonNumber: string): Promise<Prisoner> {
+  async find(prisonNumber: string): Promise<Prisoner> {
     return (await this.restClient.get({
       path: prisonerOffenderSearchPaths.prisoner.show({ prisonNumber }),
     })) as Prisoner

@@ -13,7 +13,7 @@ import sanitiseError from '../sanitisedError'
 interface GetRequest {
   headers?: Record<string, string>
   path?: string
-  query?: string
+  query?: Record<string, string> | string
   raw?: boolean
   responseType?: string
 }
@@ -116,7 +116,7 @@ export default class RestClient {
 
   private async postOrPut(
     method: 'post' | 'put',
-    { path = '', headers = {}, responseType = '', data = {}, raw = false }: PutRequest | PostRequest = {},
+    { path = '', headers = {}, responseType = '', data = {}, raw = false }: PostRequest | PutRequest = {},
   ): Promise<unknown> {
     logger.info(`${method} using user credentials: calling ${this.name}: ${path}`)
     try {

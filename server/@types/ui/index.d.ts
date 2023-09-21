@@ -27,12 +27,12 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
   summaryListRows: Array<GovukFrontendSummaryListRowWithValue>
 }
 
-type ReferralTaskListStatusText = 'completed' | 'not started' | 'cannot start yet'
+type ReferralTaskListStatusText = 'cannot start yet' | 'completed' | 'not started'
 
 type ReferralTaskListStatusTag =
-  | (GovukFrontendTag & { classes: 'moj-task-list__task-completed'; text: 'completed' })
-  | (GovukFrontendTag & { classes: 'govuk-tag--grey moj-task-list__task-completed'; text: 'not started' })
   | (GovukFrontendTag & { classes: 'govuk-tag--grey moj-task-list__task-completed'; text: 'cannot start yet' })
+  | (GovukFrontendTag & { classes: 'govuk-tag--grey moj-task-list__task-completed'; text: 'not started' })
+  | (GovukFrontendTag & { classes: 'moj-task-list__task-completed'; text: 'completed' })
 
 type ReferralTaskListItemTestIds = {
   listItem: string

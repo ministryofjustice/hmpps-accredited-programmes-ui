@@ -3,7 +3,7 @@ import { Factory } from 'fishery'
 
 import courseAudienceFactory from './courseAudience'
 import coursePrerequisiteFactory from './coursePrerequisite'
-import buildListBetween from './factoryHelpers'
+import FactoryHelpers from './factoryHelpers'
 import { StringUtils } from '../../utils'
 import type { Course } from '@accredited-programmes/models'
 
@@ -13,7 +13,7 @@ export default Factory.define<Course>(({ params }) => {
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     alternateName: StringUtils.initialiseTitle(params.name || name),
-    audiences: buildListBetween(courseAudienceFactory, { max: 3, min: 1 }),
+    audiences: FactoryHelpers.buildListBetween(courseAudienceFactory, { max: 3, min: 1 }),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),

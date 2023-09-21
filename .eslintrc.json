@@ -80,6 +80,7 @@
     ],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/semi": "off",
+    "@typescript-eslint/sort-type-constituents": "error",
     "class-methods-use-this": "off",
     "comma-dangle": ["error", "always-multiline"],
     "import/exports-last": "error",
