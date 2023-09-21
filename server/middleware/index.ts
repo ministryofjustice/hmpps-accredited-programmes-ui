@@ -1,4 +1,3 @@
-import asyncMiddleware from './asyncMiddleware'
 import authorisationMiddleware from './authorisationMiddleware'
 import setUpAuthentication from './setUpAuthentication'
 import setUpCsrf from './setUpCsrf'
@@ -11,7 +10,6 @@ import setUpWebSecurity from './setUpWebSecurity'
 import setUpWebSession from './setUpWebSession'
 
 export {
-  asyncMiddleware,
   authorisationMiddleware,
   setUpAuthentication,
   setUpCsrf,
