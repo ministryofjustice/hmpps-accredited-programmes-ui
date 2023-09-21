@@ -6,7 +6,6 @@
     "lib": ["es5", "dom", "es2015.promise"],
     "types": ["cypress", "cypress-axe", "express", "express-session"],
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "paths": {
       "@accredited-programmes/models": ["../server/@types/models/index.d.ts"],
       "@accredited-programmes/ui": ["../server/@types/ui/index.d.ts"],
@@ -15,5 +14,5 @@
       "@prisoner-offender-search": ["../server/@types/prisonerOffenderSearch/index.d.ts"]
     }
   },
-  "include": ["**/*.ts", "../node_modules/cypress"]
+  "include": ["**/*.ts"]
 }

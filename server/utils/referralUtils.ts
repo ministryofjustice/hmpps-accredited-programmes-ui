@@ -103,13 +103,19 @@ export default class ReferralUtils {
   }
 
   private static taskListStatus(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {
-    let classes = 'moj-task-list__task-completed'
+    const baseClasses = 'moj-task-list__task-completed'
+    const incompleteClasses = `govuk-tag--grey ${baseClasses}`
 
-    if (text !== 'completed') {
-      classes = `govuk-tag--grey ${classes}`
+    let tag: ReferralTaskListStatusTag
+
+    switch (text) {
+      case 'completed':
+        tag = { classes: baseClasses, text }
+        break
+      default:
+        tag = { classes: incompleteClasses, text }
+        break
     }
-
-    const tag: ReferralTaskListStatusTag = { classes, text }
 
     if (dataTestId) {
       tag.attributes = { 'data-testid': dataTestId }

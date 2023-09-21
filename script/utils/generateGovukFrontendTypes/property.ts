@@ -181,7 +181,7 @@ ${indentString((this.macroOptions.description ?? '') as string, 4)}
               typeWithoutNullability = `${this.typeIntroduced!.name}[]`
             }
           } else {
-            typeWithoutNullability = 'Array'
+            typeWithoutNullability = 'Array<string>'
           }
           break
         default:

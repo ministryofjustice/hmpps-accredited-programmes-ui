@@ -425,7 +425,7 @@ export interface GovukFrontendCheckboxes {
   /*
     Array of values for checkboxes which should be checked when the page loads. Use this as an alternative to setting the `checked` option on each individual item.
   */
-  values?: Array | null
+  values?: Array<string> | null
 
   /*
     Classes to add to the checkboxes container.
