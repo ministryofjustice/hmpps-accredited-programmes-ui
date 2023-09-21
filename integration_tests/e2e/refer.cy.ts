@@ -1,3 +1,4 @@
+import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { findPaths, referPaths } from '../../server/paths'
 import {
   courseFactory,
@@ -25,7 +26,7 @@ import ReasonPage from '../pages/refer/reason'
 context('Refer', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
   })
 

@@ -1,3 +1,4 @@
+import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
 import { OrganisationUtils } from '../../server/utils'
@@ -9,7 +10,7 @@ import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 context('Find', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
   })
 
