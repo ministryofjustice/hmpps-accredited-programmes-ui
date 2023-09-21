@@ -78,6 +78,7 @@
         "ignoreRestSiblings": true
       }
     ],
+    "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/semi": "off",
     "@typescript-eslint/sort-type-constituents": "error",
@@ -117,6 +118,7 @@
       }
     ],
     "no-only-tests/no-only-tests": "error",
+    "no-shadow": "off",
     "no-unused-vars": [
       "error",
       {
