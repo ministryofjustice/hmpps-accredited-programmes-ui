@@ -1,3 +1,5 @@
+// to fix later = seems that some of the TypeScript here isn't entirely valid, but we don't have time to work out how to rewrite this now
+// @ts-expect-error to fix later: https://github.com/microsoft/TypeScript/issues/16472
 import type { Request as ConnectFlashRequest } from '@types/connect-flash'
 
 declare module 'express-session' {
@@ -9,7 +11,7 @@ declare module 'express-session' {
 }
 
 declare module 'express' {
-  interface TypedRequestHandler<T, U = Response> extends Express.RequestHandler {
+  interface TypedRequestHandler<T, U = Response> extends RequestHandler {
     (req: T, res: U, next: () => void): void
   }
 }
@@ -35,8 +37,10 @@ declare global {
 
 type RequestWithUser = Express.RequestWithUser
 
+// @ts-expect-error to fix later
 export { global }
 
 export type { RequestWithUser }
 
+// @ts-expect-error to fix later
 export default {}

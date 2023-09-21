@@ -2,10 +2,10 @@ import type { Course, CourseAudience, CoursePrerequisite } from '@accredited-pro
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithValue,
+  GovukFrontendTagWithText,
   HasTextString,
   TagColour,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendTag } from '@govuk-frontend'
 
 export default class CourseUtils {
   static presentCourse(course: Course): CoursePresenter {
@@ -19,7 +19,7 @@ export default class CourseUtils {
     }
   }
 
-  private static audienceTags(audiences: Array<CourseAudience>): Array<GovukFrontendTag> {
+  private static audienceTags(audiences: Array<CourseAudience>): Array<GovukFrontendTagWithText> {
     const audienceColourMap: Record<CourseAudience['value'], TagColour> = {
       'Extremism offence': 'turquoise',
       'Gang offence': 'purple',

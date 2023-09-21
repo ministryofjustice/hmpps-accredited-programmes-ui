@@ -4,10 +4,10 @@ import type { Organisation, Person } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithValue,
+  GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendTag } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -154,13 +154,13 @@ export default abstract class Page {
     })
   }
 
-  shouldContainTag(tag: GovukFrontendTag & HasTextString, tagElement: JQuery<HTMLElement>): void {
+  shouldContainTag(tag: GovukFrontendTagWithText, tagElement: JQuery<HTMLElement>): void {
     const { actual, expected } = Helpers.parseHtml(tagElement, tag.text)
     expect(actual).to.equal(expected)
     cy.wrap(tagElement).should('have.class', tag.classes)
   }
 
-  shouldContainTags(tags: Array<GovukFrontendTag & HasTextString>, tagContainerElement: JQuery<HTMLElement>): void {
+  shouldContainTags(tags: Array<GovukFrontendTagWithText>, tagContainerElement: JQuery<HTMLElement>): void {
     cy.wrap(tagContainerElement).within(() => {
       cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
         const tag = tags[tagElementIndex]
