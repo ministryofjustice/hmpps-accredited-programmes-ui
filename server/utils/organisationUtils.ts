@@ -53,7 +53,7 @@ export default class OrganisationUtils {
     }
   }
 
-  private static concatenatedOrganisationAddress = (address: OrganisationAddress): string => {
+  private static concatenatedOrganisationAddress(address: OrganisationAddress): string {
     return [address.addressLine1, address.addressLine2, address.town, address.county, address.postalCode]
       .filter(Boolean)
       .join(', ')
