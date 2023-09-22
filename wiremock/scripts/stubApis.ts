@@ -42,7 +42,7 @@ courses.forEach(course => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.index({ courseId: course.id }),
+        url: apiPaths.courses.offerings({ courseId: course.id }),
       },
       response: {
         headers: {
@@ -60,7 +60,7 @@ courseOfferings.forEach(courseOffering => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.show({ courseOfferingId: courseOffering.id }),
+        url: apiPaths.offerings.show({ courseOfferingId: courseOffering.id }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
@@ -74,7 +74,7 @@ courseOfferings.forEach(courseOffering => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.course({ courseOfferingId: courseOffering.id }),
+        url: apiPaths.offerings.course({ courseOfferingId: courseOffering.id }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

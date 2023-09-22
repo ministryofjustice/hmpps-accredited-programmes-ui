@@ -2,10 +2,10 @@ import { path } from 'static-path'
 
 const coursesPath = path('/courses')
 const coursePath = coursesPath.path(':courseId')
-const courseOfferingsPath = coursePath.path('offerings')
+const offeringsByCoursePath = coursePath.path('offerings')
 
-const courseOfferingPath = path('/offerings/:courseOfferingId')
-const courseByOfferingPath = courseOfferingPath.path('course')
+const offeringPath = path('/offerings/:courseOfferingId')
+const courseByOfferingPath = offeringPath.path('course')
 
 const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
@@ -14,12 +14,12 @@ const updateStatusPath = referralPath.path('status')
 export default {
   courses: {
     index: coursesPath,
-    offerings: {
-      course: courseByOfferingPath,
-      index: courseOfferingsPath,
-      show: courseOfferingPath,
-    },
+    offerings: offeringsByCoursePath,
     show: coursePath,
+  },
+  offerings: {
+    course: courseByOfferingPath,
+    show: offeringPath,
   },
   referrals: {
     create: referralsPath,
