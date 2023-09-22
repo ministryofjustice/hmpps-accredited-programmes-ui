@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../index'
-import { courseOfferings, courses } from '../stubs'
+import { courseOfferings, courseParticipations, courses, prisoners } from '../stubs'
 
 const stubs = []
 
@@ -84,6 +84,20 @@ courseOfferings.forEach(courseOffering => {
     }),
   )
 })
+
+stubs.push(async () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      url: apiPaths.people.participations({ prisonNumber: prisoners[1].prisonerNumber }),
+    },
+    response: {
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: courseParticipations,
+      status: 200,
+    },
+  }),
+)
 
 console.log('Stubbing APIs')
 
