@@ -2,7 +2,7 @@ import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
 import { apiPaths } from '../paths'
-import type { Course, CourseOffering } from '@accredited-programmes/models'
+import type { Course, CourseOffering, CourseParticipation, Person } from '@accredited-programmes/models'
 
 export default class CourseClient {
   restClient: RestClient
@@ -35,5 +35,11 @@ export default class CourseClient {
     return (await this.restClient.get({
       path: apiPaths.courses.offerings({ courseId }),
     })) as Array<CourseOffering>
+  }
+
+  async findParticipationsByPerson(prisonNumber: Person['prisonNumber']): Promise<Array<CourseParticipation>> {
+    return (await this.restClient.get({
+      path: apiPaths.people.participations({ prisonNumber }),
+    })) as Array<CourseParticipation>
   }
 }

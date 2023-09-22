@@ -4,7 +4,7 @@ import { pactWith } from 'jest-pact'
 import CourseClient from './courseClient'
 import config from '../config'
 import { apiPaths } from '../paths'
-import { courseFactory, courseOfferingFactory } from '../testutils/factories'
+import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -34,6 +34,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     id: '20f3abc8-dd92-43ae-b88e-5797a0ad3f4b', // eslint-disable-next-line sort-keys
     secondaryContactEmail: 'nobody2-iry@digital.justice.gov.uk',
   })
+  const person = personFactory.build()
+  const courseParticipations = [
+    courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
+    courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
+    courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
+  ]
 
   describe('all', () => {
     beforeEach(() => {
@@ -162,6 +168,32 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await courseClient.findOffering(courseOffering.id)
 
       expect(result).toEqual(courseOffering)
+    })
+  })
+
+  describe('findParticipationsByPerson', () => {
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `Participations exist for a person with prison number ${person.prisonNumber}`,
+        uponReceiving: `A request for person "${person.prisonNumber}"'s participations`,
+        willRespondWith: {
+          body: Matchers.like(courseParticipations),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'GET',
+          path: apiPaths.people.participations({ prisonNumber: person.prisonNumber }),
+        },
+      })
+    })
+
+    it("fetches the given person's course participations", async () => {
+      const result = await courseClient.findParticipationsByPerson(person.prisonNumber)
+
+      expect(result).toEqual(courseParticipations)
     })
   })
 })
