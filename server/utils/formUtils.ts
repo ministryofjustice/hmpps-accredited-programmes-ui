@@ -3,7 +3,7 @@ import type { Request, Response } from 'express'
 import type { GovukFrontendErrorMessage, GovukFrontendErrorSummaryErrorListElement } from '@govuk-frontend'
 
 export default class FormUtils {
-  static setFieldErrors = (req: Request, res: Response, fields: Array<string>): void => {
+  static setFieldErrors(req: Request, res: Response, fields: Array<string>): void {
     const list: Array<GovukFrontendErrorSummaryErrorListElement> = []
     const messages: Record<string, GovukFrontendErrorMessage> = {}
 

@@ -1,6 +1,7 @@
 import courseFactory from './course'
 import courseAudienceFactory from './courseAudience'
 import courseOfferingFactory from './courseOffering'
+import courseParticipationFactory from './courseParticipation'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import organisationFactory from './organisation'
 import organisationAddressFactory from './organisationAddress'
@@ -14,6 +15,7 @@ export {
   courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   coursePrerequisiteFactory,
   organisationAddressFactory,
   organisationFactory,

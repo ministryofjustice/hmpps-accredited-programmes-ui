@@ -22,7 +22,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.course({ courseOfferingId: args.courseOfferingId }),
+        url: apiPaths.offerings.course({ courseOfferingId: args.courseOfferingId }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
@@ -35,7 +35,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.show({ courseOfferingId: args.courseOffering.id }),
+        url: apiPaths.offerings.show({ courseOfferingId: args.courseOffering.id }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
@@ -48,7 +48,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings.index({ courseId: args.courseId }),
+        url: apiPaths.courses.offerings({ courseId: args.courseId }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
