@@ -11,6 +11,10 @@ const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
 const updateStatusPath = referralPath.path('status')
 
+const participationsByPersonPath = path('/person/:prisonNumber/course-participations')
+const participationsPath = path('/course-participations')
+const participationPath = participationsPath.path(':courseParticipationId')
+
 export default {
   courses: {
     index: coursesPath,
@@ -20,6 +24,15 @@ export default {
   offerings: {
     course: courseByOfferingPath,
     show: offeringPath,
+  },
+  participations: {
+    create: participationsPath,
+    delete: participationPath,
+    show: participationPath,
+    update: participationPath,
+  },
+  people: {
+    participations: participationsByPersonPath,
   },
   referrals: {
     create: referralsPath,
