@@ -120,4 +120,33 @@ context('Find', () => {
       courseOfferingPage.shouldContainMakeAReferralButtonLink()
     })
   })
+
+  describe('When the user does not have the `ROLE_ACP_REFERRER` role', () => {
+    beforeEach(() => {
+      cy.task('reset')
+      cy.task('stubSignIn', { authorities: [] })
+      cy.task('stubAuthUser')
+    })
+
+    it("doesn't show the 'Make a referral' button on an offering", () => {
+      cy.signIn()
+
+      const course = courseFactory.build()
+      const courseOffering = courseOfferingFactory.build({
+        secondaryContactEmail: null,
+      })
+      const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+      const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubOffering', { courseOffering })
+      cy.task('stubPrison', prison)
+
+      const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
+      cy.visit(path)
+
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, { course, courseOffering, organisation })
+      courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
+    })
+  })
 })
