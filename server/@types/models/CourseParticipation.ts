@@ -27,9 +27,14 @@ type CourseParticipation = {
   source?: string
 }
 
+type CourseParticipationWithName = CourseParticipation & {
+  name: string
+}
+
 export type {
   CourseParticipation,
   CourseParticipationOutcome,
   CourseParticipationOutcomeStatus,
   CourseParticipationSetting,
+  CourseParticipationWithName,
 }
