@@ -7,7 +7,7 @@
     "courseId": "986d6256-5e2c-4792-b93a-568d923cf50c",
     "outcome": {
       "detail": "Simply the best outcome",
-      "status": "completed",
+      "status": "complete",
       "yearCompleted": 2022
     },
     "setting": {
@@ -26,9 +26,9 @@
   {
     "id": "57ac20a6-a660-405e-8210-43cb5b4cfc8d",
     "addedBy": "Roland Pryzbylewski",
+    "courseId": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
     "createdAt": "2023-09-14T12:31:57.002Z",
     "prisonNumber": "DEF1234",
-    "courseId": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
     "outcome": {
       "status": "incomplete"
     },
