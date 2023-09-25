@@ -76,7 +76,7 @@ export default class ReferralUtils {
           {
             statusTag: ReferralUtils.taskListStatus('not started'),
             text: 'Add Accredited Programme history',
-            url: '#',
+            url: referPaths.programmeHistory.index({ referralId: referral.id }),
           },
           {
             statusTag: ReferralUtils.taskListStatus(
