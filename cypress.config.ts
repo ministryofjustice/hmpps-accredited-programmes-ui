@@ -4,6 +4,7 @@ import fs from 'fs'
 
 import auth from './integration_tests/mockApis/auth'
 import courses from './integration_tests/mockApis/courses'
+import courseParticipations from './integration_tests/mockApis/courseParticipations'
 import prisons from './integration_tests/mockApis/prisons'
 import prisoners from './integration_tests/mockApis/prisoners'
 import referrals from './integration_tests/mockApis/referrals'
@@ -33,6 +34,7 @@ export const defaultConfig: Cypress.ConfigOptions = {
         reset: resetStubs,
         ...auth,
         ...courses,
+        ...courseParticipations,
         ...prisons,
         ...prisoners,
         ...referrals,
