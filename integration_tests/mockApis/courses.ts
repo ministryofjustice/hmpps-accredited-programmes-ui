@@ -31,7 +31,20 @@ export default {
       },
     }),
 
-  stubCourseOffering: (args: { courseOffering: CourseOffering }): SuperAgentRequest =>
+  stubCourses: (courses: Array<Course>): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.courses.index({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courses,
+        status: 200,
+      },
+    }),
+
+  stubOffering: (args: { courseOffering: CourseOffering }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -44,7 +57,10 @@ export default {
       },
     }),
 
-  stubCourseOfferings: (args: { courseId: Course['id']; courseOfferings: Array<CourseOffering> }): SuperAgentRequest =>
+  stubOfferingsByCourse: (args: {
+    courseId: Course['id']
+    courseOfferings: Array<CourseOffering>
+  }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -53,19 +69,6 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.courseOfferings,
-        status: 200,
-      },
-    }),
-
-  stubCourses: (courses: Array<Course>): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        url: apiPaths.courses.index({}),
-      },
-      response: {
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: courses,
         status: 200,
       },
     }),
