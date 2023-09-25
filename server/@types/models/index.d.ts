@@ -1,7 +1,12 @@
 import type { Course } from './Course'
 import type { CourseAudience } from './CourseAudience'
 import type { CourseOffering } from './CourseOffering'
-import type { CourseParticipation, CourseParticipationOutcome, CourseParticipationSetting } from './CourseParticipation'
+import type {
+  CourseParticipation,
+  CourseParticipationOutcome,
+  CourseParticipationSetting,
+  CourseParticipationWithName,
+} from './CourseParticipation'
 import type { CoursePrerequisite } from './CoursePrerequisite'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
@@ -15,6 +20,7 @@ export type {
   CourseParticipation,
   CourseParticipationOutcome,
   CourseParticipationSetting,
+  CourseParticipationWithName,
   CoursePrerequisite,
   CreatedReferralResponse,
   Organisation,
