@@ -8,8 +8,6 @@ import ReferralsController from './referralsController'
 import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
-  const courseParticipationsController = new CourseParticipationsController(services.courseService)
-  const reasonController = new ReasonController(services.personService, services.referralService)
   const referralsController = new ReferralsController(
     services.courseService,
     services.organisationService,
@@ -17,7 +15,13 @@ const controllers = (services: Services) => {
     services.referralService,
   )
   const peopleController = new PeopleController(services.personService)
+  const reasonController = new ReasonController(services.personService, services.referralService)
   const oasysConfirmationController = new OasysConfirmationController(services.personService, services.referralService)
+  const courseParticipationsController = new CourseParticipationsController(
+    services.courseService,
+    services.personService,
+    services.referralService,
+  )
 
   return {
     courseParticipationsController,
