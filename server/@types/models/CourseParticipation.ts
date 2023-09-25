@@ -1,11 +1,9 @@
 import type { Course } from './Course'
 import type { Person } from './Person'
 
-type CourseParticipationOutcomeStatus = 'complete' | 'incomplete'
-
 type CourseParticipationOutcome = {
   detail?: string
-  status?: CourseParticipationOutcomeStatus
+  status?: 'complete' | 'incomplete'
   yearCompleted?: number
   yearStarted?: number
 }
@@ -31,10 +29,4 @@ type CourseParticipationWithName = CourseParticipation & {
   name: string
 }
 
-export type {
-  CourseParticipation,
-  CourseParticipationOutcome,
-  CourseParticipationOutcomeStatus,
-  CourseParticipationSetting,
-  CourseParticipationWithName,
-}
+export type { CourseParticipation, CourseParticipationOutcome, CourseParticipationSetting, CourseParticipationWithName }

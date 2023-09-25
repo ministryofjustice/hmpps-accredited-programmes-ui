@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { CourseParticipationOutcome, CourseParticipationOutcomeStatus } from '@accredited-programmes/models'
+import type { CourseParticipationOutcome } from '@accredited-programmes/models'
 
 const randomNonFutureYearFrom = (minimumYear: number): number => {
   const currentYear = new Date().getFullYear()
@@ -13,7 +13,7 @@ const outcomeTypes = {
   complete() {
     return {
       detail: faker.lorem.paragraph({ max: 5, min: 0 }),
-      status: 'complete' as CourseParticipationOutcomeStatus,
+      status: 'complete' as CourseParticipationOutcome['status'],
       yearCompleted: FactoryHelpers.optionalArrayElement(randomNonFutureYearFrom(1980)),
     }
   },
@@ -21,7 +21,7 @@ const outcomeTypes = {
   incomplete() {
     return {
       detail: faker.lorem.paragraph({ max: 5, min: 0 }),
-      status: 'incomplete' as CourseParticipationOutcomeStatus,
+      status: 'incomplete' as CourseParticipationOutcome['status'],
       yearStarted: FactoryHelpers.optionalArrayElement(randomNonFutureYearFrom(1980)),
     }
   },

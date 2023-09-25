@@ -4,7 +4,6 @@ import type { CourseOffering } from './CourseOffering'
 import type {
   CourseParticipation,
   CourseParticipationOutcome,
-  CourseParticipationOutcomeStatus,
   CourseParticipationSetting,
   CourseParticipationWithName,
 } from './CourseParticipation'
@@ -20,7 +19,6 @@ export type {
   CourseOffering,
   CourseParticipation,
   CourseParticipationOutcome,
-  CourseParticipationOutcomeStatus,
   CourseParticipationSetting,
   CourseParticipationWithName,
   CoursePrerequisite,
