@@ -54,7 +54,7 @@ context('Find', () => {
     const course = courseFactory.build()
 
     cy.task('stubCourse', course)
-    cy.task('stubCourseOfferings', { courseId: course.id, courseOfferings })
+    cy.task('stubOfferingsByCourse', { courseId: course.id, courseOfferings })
 
     const path = findPaths.show({ courseId: course.id })
 
@@ -79,7 +79,7 @@ context('Find', () => {
       const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-      cy.task('stubCourseOffering', { courseOffering })
+      cy.task('stubOffering', { courseOffering })
       cy.task('stubPrison', prison)
 
       const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
@@ -105,7 +105,7 @@ context('Find', () => {
       const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
 
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-      cy.task('stubCourseOffering', { courseOffering })
+      cy.task('stubOffering', { courseOffering })
       cy.task('stubPrison', prison)
 
       const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })

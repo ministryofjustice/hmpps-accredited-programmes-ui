@@ -24,7 +24,7 @@ context('Refer', () => {
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubCourseOffering', { courseOffering })
+    cy.task('stubOffering', { courseOffering })
     cy.task('stubPrison', prison)
 
     const path = referPaths.start({ courseOfferingId: courseOffering.id })
@@ -78,7 +78,7 @@ context('Refer', () => {
     const prisoner = prisonerFactory.build({ prisonerNumber: referral.prisonNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubCourseOffering', { courseOffering })
+    cy.task('stubOffering', { courseOffering })
     cy.task('stubPrison', prison)
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
@@ -150,7 +150,7 @@ context('Refer', () => {
       .build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubCourseOffering', { courseId: course.id, courseOffering })
+    cy.task('stubOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
