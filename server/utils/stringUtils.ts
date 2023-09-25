@@ -20,12 +20,12 @@ export default class StringUtils {
       .join('')
   }
 
-  private static isBlank(str: string): boolean {
-    return !str || /^\s*$/.test(str)
+  static properCase(word: string): string {
+    return word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
   }
 
-  private static properCase(word: string): string {
-    return word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
+  private static isBlank(str: string): boolean {
+    return !str || /^\s*$/.test(str)
   }
 
   /**
