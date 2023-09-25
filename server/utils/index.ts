@@ -1,3 +1,4 @@
+import CourseParticipationUtils from './courseParticipationUtils'
 import CourseUtils from './courseUtils'
 import DateUtils from './dateUtils'
 import FormUtils from './formUtils'
@@ -11,6 +12,7 @@ import TypeUtils from './typeUtils'
 import UserUtils from './userUtils'
 
 export {
+  CourseParticipationUtils,
   CourseUtils,
   DateUtils,
   FormUtils,
