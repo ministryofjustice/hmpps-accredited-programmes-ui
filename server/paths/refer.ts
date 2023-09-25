@@ -13,8 +13,8 @@ const personPath = peoplePathBase.path(':prisonNumber')
 const referralsPath = path('/referrals')
 const showReferralPath = referralsPath.path(':referralId')
 const referralPersonPath = showReferralPath.path('person')
-const programmeHistoryBasePath = showReferralPath.path('programme-history')
-const newProgrammeHistoryPath = programmeHistoryBasePath.path('new')
+const programmeHistoryPath = showReferralPath.path('programme-history')
+const newProgrammeHistoryPath = programmeHistoryPath.path('new')
 const confirmOasysPath = showReferralPath.path('confirm-oasys')
 const reasonForReferralPath = showReferralPath.path('reason')
 const checkAnswersPath = showReferralPath.path('check-answers')
@@ -35,6 +35,7 @@ export default {
     show: personPath,
   },
   programmeHistory: {
+    index: programmeHistoryPath,
     new: newProgrammeHistoryPath,
   },
   reason: {
