@@ -8,6 +8,15 @@ import type {
 } from '@accredited-programmes/ui'
 
 export default class CourseUtils {
+  static courseRadioOptions(courses: Array<Course>): Array<GovukFrontendTagWithText> {
+    return courses.map(course => {
+      return {
+        text: course.name,
+        value: course.id,
+      }
+    })
+  }
+
   static presentCourse(course: Course): CoursePresenter {
     const nameAndAlternateName = course.alternateName ? `${course.name} (${course.alternateName})` : course.name
 

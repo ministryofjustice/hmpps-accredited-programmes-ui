@@ -2,6 +2,17 @@ import CourseUtils from './courseUtils'
 import { courseAudienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
 
 describe('CourseUtils', () => {
+  describe('courseRadioOptions', () => {
+    it('returns a formatted array of courses to use with UI radios', () => {
+      const courses = courseFactory.buildList(2)
+
+      expect(CourseUtils.courseRadioOptions(courses)).toEqual([
+        { text: courses[0].name, value: courses[0].id },
+        { text: courses[1].name, value: courses[1].id },
+      ])
+    })
+  })
+
   describe('presentCourse', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
