@@ -84,6 +84,7 @@ export default class CourseParticipationsController {
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
         pageHeading: 'Add Accredited Programme history',
         person,
+        referralId: referral.id,
       })
     }
   }
