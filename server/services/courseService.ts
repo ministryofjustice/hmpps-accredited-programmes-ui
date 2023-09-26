@@ -4,6 +4,16 @@ import type { Course, CourseOffering, CourseParticipation, Person } from '@accre
 export default class CourseService {
   constructor(private readonly courseClientBuilder: RestClientBuilder<CourseClient>) {}
 
+  async createParticipation(
+    token: Express.User['token'],
+    prisonNumber: CourseParticipation['prisonNumber'],
+    courseId?: CourseParticipation['id'],
+    otherCourseName?: CourseParticipation['otherCourseName'],
+  ): Promise<CourseParticipation> {
+    const courseClient = this.courseClientBuilder(token)
+    return courseClient.createParticipation(prisonNumber, courseId, otherCourseName)
+  }
+
   async getCourse(token: Express.User['token'], courseId: Course['id']): Promise<Course> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.find(courseId)
