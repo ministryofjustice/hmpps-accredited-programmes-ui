@@ -8,6 +8,7 @@ import type {
   HasHtmlString,
   HasTextString,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListCardTitle } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -126,6 +127,20 @@ export default abstract class Page {
   shouldContainPersonSummaryList(person: Person): void {
     cy.get('[data-testid="person-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(PersonUtils.summaryListRows(person), summaryListElement)
+    })
+  }
+
+  shouldContainSummaryCard(
+    title: GovukFrontendSummaryListCardTitle['text'],
+    rows: Array<GovukFrontendSummaryListRowWithValue>,
+    summaryCardElement: JQuery<HTMLElement>,
+  ): void {
+    cy.wrap(summaryCardElement).within(() => {
+      cy.get('.govuk-summary-card__title').should('have.text', title)
+
+      cy.get('.govuk-summary-list').then(summaryListElement => {
+        this.shouldContainSummaryListRows(rows, summaryListElement)
+      })
     })
   }
 
