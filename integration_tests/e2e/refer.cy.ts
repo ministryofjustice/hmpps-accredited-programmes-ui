@@ -357,7 +357,7 @@ context('Refer', () => {
       prisonNumber: prisoner.prisonerNumber,
     })
 
-    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber, reason: undefined })
+    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
 
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
