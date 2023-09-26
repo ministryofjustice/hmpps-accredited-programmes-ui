@@ -36,7 +36,7 @@ export default {
     show: personPath,
   },
   programmeHistory: {
-    create: newProgrammeHistoryPath,
+    create: programmeHistoryPath,
     details: programmeHistoryDetailsPath,
     index: programmeHistoryPath,
     new: newProgrammeHistoryPath,
