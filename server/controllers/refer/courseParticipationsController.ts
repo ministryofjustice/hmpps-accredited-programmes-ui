@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
-import { CourseParticipationUtils, CourseUtils, TypeUtils } from '../../utils'
+import { CourseParticipationUtils, CourseUtils, FormUtils, TypeUtils } from '../../utils'
 import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
 
 export default class CourseParticipationsController {
@@ -14,18 +14,32 @@ export default class CourseParticipationsController {
   ) {}
 
   create(): TypedRequestHandler<Request, Response> {
-    return async (req, res) => {
+    return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
 
       const { courseId, otherCourseName } = req.body
 
+      const formattedOtherCourseName = otherCourseName?.trim()
+
+      if (!courseId) {
+        req.flash('courseIdError', 'Select a programme')
+
+        return res.redirect(referPaths.programmeHistory.new({ referralId: req.params.referralId }))
+      }
+
+      if (courseId === 'other' && !formattedOtherCourseName) {
+        req.flash('otherCourseNameError', 'Enter the programme name')
+
+        return res.redirect(referPaths.programmeHistory.new({ referralId: req.params.referralId }))
+      }
+
       const courseParticipation = await this.courseService.createParticipation(
         req.user.token,
         referral.prisonNumber,
         courseId === 'other' ? undefined : courseId,
-        courseId === 'other' ? otherCourseName : undefined,
+        courseId === 'other' ? formattedOtherCourseName : undefined,
       )
 
       return res.redirect(
@@ -79,6 +93,8 @@ export default class CourseParticipationsController {
       if (!person) {
         throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
       }
+
+      FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
 
       res.render('referrals/courseParticipations/new', {
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
