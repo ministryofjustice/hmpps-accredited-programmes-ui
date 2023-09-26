@@ -1,11 +1,15 @@
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
 import type { CourseParticipationWithName } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRowWithValue } from '@accredited-programmes/ui'
-import type { GovukFrontendSummaryList } from '@govuk-frontend'
+import type {
+  GovukFrontendSummaryListRowWithValue,
+  GovukFrontendSummaryListWithRowsWithValues,
+} from '@accredited-programmes/ui'
 
 export default class CourseParticipationUtils {
-  static summaryListOptions(courseParticipationWithName: CourseParticipationWithName): GovukFrontendSummaryList {
+  static summaryListOptions(
+    courseParticipationWithName: CourseParticipationWithName,
+  ): GovukFrontendSummaryListWithRowsWithValues {
     return {
       card: {
         title: {

@@ -2,6 +2,7 @@ import { referPaths } from '../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   prisonFactory,
   prisonerFactory,
   referralFactory,
@@ -132,6 +133,26 @@ context('Refer', () => {
     cy.task('stubReferral', referral)
 
     const path = referPaths.reason.show({ referralId: referral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
+  it("Doesn't show the programme history index page", () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build()
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
+    const participations = courseParticipationFactory.buildList(3)
+    const course = courseFactory.build()
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+    cy.task('stubParticipationsByPerson', { participations, prisonNumber: prisoner.prisonerNumber })
+    cy.task('stubCourse', course)
+
+    const path = referPaths.programmeHistory.index({ referralId: referral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
