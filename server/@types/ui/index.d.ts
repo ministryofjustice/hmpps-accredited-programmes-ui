@@ -1,7 +1,16 @@
-import type { GovukFrontendSummaryListRow, GovukFrontendSummaryListRowValue, GovukFrontendTag } from '../govukFrontend'
+import type {
+  GovukFrontendSummaryList,
+  GovukFrontendSummaryListRow,
+  GovukFrontendSummaryListRowValue,
+  GovukFrontendTag,
+} from '../govukFrontend'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 
 type GovukFrontendSummaryListRowWithValue = GovukFrontendSummaryListRow & { value: GovukFrontendSummaryListRowValue }
+
+type GovukFrontendSummaryListWithRowsWithValues = GovukFrontendSummaryList & {
+  rows: Array<GovukFrontendSummaryListRowWithValue>
+}
 
 type GovukFrontendTagWithText = GovukFrontendTag & { text: string }
 
@@ -70,6 +79,7 @@ type ReferralTaskListSection = {
 export type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithValue,
+  GovukFrontendSummaryListWithRowsWithValues,
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,

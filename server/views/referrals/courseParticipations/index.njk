@@ -21,7 +21,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {% if summaryListsOptions.length %}
-        <p class="govuk-body">The history below shows {{ person.name }}'s history of Accredited Programmes. Add another programme if you know that they started or completed a programme which is not listed below.</p>
+        <p class="govuk-body" data-testid="pre-history-paragraph">The history below shows {{ person.name }}'s history of Accredited Programmes. Add another programme if you know that they started or completed a programme which is not listed below.</p>
 
         {% for summaryListOptions in summaryListsOptions %}
           {{ govukSummaryList(summaryListOptions) }}
@@ -39,9 +39,9 @@
           }) }}
         </div>
       {% else %}
-        <h2 class="govuk-heading-m">There is no record of Accredited Programmes for {{ person.name }}.</h2>
+        <h2 class="govuk-heading-m" data-testid="no-history-heading">There is no record of Accredited Programmes for {{ person.name }}.</h2>
 
-        <p class="govuk-body">The programme team may use information about a person's Accredited Programme history to assess whether they are suitable. You can add a programme to this history or continue with the referral if the {{ person.name }}'s history is unknown.</p>
+        <p class="govuk-body" data-testid="no-history-paragraph">The programme team may use information about a person's Accredited Programme history to assess whether they are suitable. You can add a programme to this history or continue with the referral if the {{ person.name }}'s history is unknown.</p>
 
         <div class="govuk-button-group">
           {{ govukButton({
