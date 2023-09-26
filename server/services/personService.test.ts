@@ -1,24 +1,38 @@
+import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 
 import PersonService from './personService'
-import { PrisonerClient } from '../data'
+import type { RedisClient } from '../data'
+import { HmppsAuthClient, PrisonerClient, TokenStore } from '../data'
 import { personFactory, prisonerFactory } from '../testutils/factories'
 import { PersonUtils } from '../utils'
 
 jest.mock('../data/prisonerClient')
+jest.mock('../data/hmppsAuthClient')
 jest.mock('../utils/personUtils')
 
+const redisClient = createMock<RedisClient>({})
+const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const systemToken = 'some system token'
+const username = 'USERNAME'
+
 describe('PersonService', () => {
-  const prisonerClient = new PrisonerClient('token') as jest.Mocked<PrisonerClient>
+  const prisonerClient = new PrisonerClient(systemToken) as jest.Mocked<PrisonerClient>
   const prisonerClientBuilder = jest.fn()
 
-  const service = new PersonService(prisonerClientBuilder)
+  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClientBuilder = jest.fn()
 
-  const token = 'token'
+  let service: PersonService
 
   beforeEach(() => {
     jest.resetAllMocks()
+
     prisonerClientBuilder.mockReturnValue(prisonerClient)
+    hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
+    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+
+    service = new PersonService(hmppsAuthClientBuilder, prisonerClientBuilder)
   })
 
   describe('getPerson', () => {
@@ -31,11 +45,13 @@ describe('PersonService', () => {
         prisonerClient.find.mockResolvedValue(prisoner)
         ;(PersonUtils.personFromPrisoner as jest.Mock).mockReturnValue(person)
 
-        const result = await service.getPerson(token, prisoner.prisonerNumber)
+        const result = await service.getPerson(username, prisoner.prisonerNumber)
 
         expect(result).toEqual(person)
 
-        expect(prisonerClientBuilder).toHaveBeenCalledWith(token)
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(prisonerClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonerClient.find).toHaveBeenCalledWith(prisoner.prisonerNumber)
       })
     })
@@ -47,11 +63,13 @@ describe('PersonService', () => {
 
         const notFoundPrisonNumber = 'NOT-FOUND'
 
-        const result = await service.getPerson(token, notFoundPrisonNumber)
+        const result = await service.getPerson(username, notFoundPrisonNumber)
 
         expect(result).toEqual(null)
 
-        expect(prisonerClientBuilder).toHaveBeenCalledWith(token)
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(prisonerClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonerClient.find).toHaveBeenCalledWith(notFoundPrisonNumber)
       })
     })
@@ -65,9 +83,11 @@ describe('PersonService', () => {
 
         const expectedError = createError(501)
 
-        expect(() => service.getPerson(token, prisonNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getPerson(username, prisonNumber)).rejects.toThrowError(expectedError)
 
-        expect(prisonerClientBuilder).toHaveBeenCalledWith(token)
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(prisonerClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonerClient.find).toHaveBeenCalledWith(prisonNumber)
       })
     })
