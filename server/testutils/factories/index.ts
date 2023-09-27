@@ -1,3 +1,4 @@
+import caseloadFactory from './caseload'
 import courseFactory from './course'
 import courseAudienceFactory from './courseAudience'
 import courseOfferingFactory from './courseOffering'
@@ -12,6 +13,7 @@ import prisonerFactory from './prisoner'
 import referralFactory from './referral'
 
 export {
+  caseloadFactory,
   courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
