@@ -43,4 +43,19 @@ describe('utils', () => {
       expect(StringUtils.initialiseTitle(input)).toEqual(expectedOutput)
     })
   })
+
+  describe('properCase', () => {
+    it.each([
+      ['an empty string', '', ''],
+      ['a single lower case letter', 'a', 'A'],
+      ['a single upper case letter', 'A', 'A'],
+      ['a lower case word', 'rosa', 'Rosa'],
+      ['an upper case word', 'ROSA', 'Rosa'],
+      ['a proper case word', 'Rosa', 'Rosa'],
+      ['a mixed case word', 'RoSa', 'Rosa'],
+      ['multiple words', 'the fish swam', 'The fish swam'],
+    ])('handles %s: %s -> %s', (_inputType: string, input: string, expectedOutput: string) => {
+      expect(StringUtils.properCase(input)).toEqual(expectedOutput)
+    })
+  })
 })

@@ -12,7 +12,9 @@ const courseParticipationTypes = {
     return {
       id: faker.string.uuid(), // eslint-disable-next-line sort-keys
       addedBy: `${faker.person.firstName()} ${faker.person.lastName()}`,
+      courseId: undefined,
       createdAt: `${faker.date.between({ from: '2023-09-20T00:00:00.000Z', to: new Date() })}`,
+      otherCourseName: undefined,
       outcome: FactoryHelpers.optionalArrayElement(courseParticipationOutcomeFactory.build()),
       prisonNumber: faker.string.alphanumeric({ length: 7 }),
       setting: FactoryHelpers.optionalArrayElement(courseParticipationSettingFactory.build()),
@@ -31,16 +33,14 @@ const courseParticipationTypes = {
   withCourseId() {
     return {
       ...this.base(),
-      courseId: FactoryHelpers.optionalArrayElement(faker.string.uuid()),
+      courseId: faker.string.uuid(),
     }
   },
 
   withOtherCourseName() {
     return {
       ...this.base(),
-      otherCourseName: FactoryHelpers.optionalArrayElement(
-        `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
-      ),
+      otherCourseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
     }
   },
 }

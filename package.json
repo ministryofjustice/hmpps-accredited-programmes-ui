@@ -38,7 +38,7 @@
     "test:integration:ui:server": "npm run start:integration",
     "test:integration:ui": "npm run test:integration:start-backing-services && start-server-and-test test:integration:ui:server http://localhost:3007/ping test:integration:ui:run",
     "test:unit:ci": "jest --runInBand",
-    "test:unit:no-coverage": "jest --collectCoverage=false",
+    "test:unit:debug": "jest --collectCoverage=false",
     "test:unit": "jest",
     "test-history": "script/test-history --test=\"script/test\"",
     "test-history:integration": "script/test-history --test=\"npm run build && npm run test:integration:cli && npm run test:integration:refer-disabled:cli\"",
