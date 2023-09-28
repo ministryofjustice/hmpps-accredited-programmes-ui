@@ -2,16 +2,17 @@ import jwt from 'jsonwebtoken'
 import type { Response } from 'superagent'
 
 import tokenVerification from './tokenVerification'
+import type { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { getMatchingRequests, stubFor } from '../../wiremock'
 
 const mockedUsername = () => {
   return 'USER1'
 }
 
-const createToken = () => {
+const createToken = ({ authorities = [] }: { authorities?: Array<ApplicationRoles> }) => {
   const payload = {
     auth_source: 'nomis',
-    authorities: [],
+    authorities,
     client_id: 'clientid',
     jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
     scope: ['read'],
@@ -99,7 +100,7 @@ const manageDetails = () =>
     },
   })
 
-const token = () =>
+const token = ({ authorities }: { authorities?: Array<ApplicationRoles> }) =>
   stubFor({
     request: {
       method: 'POST',
@@ -111,7 +112,7 @@ const token = () =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(),
+        access_token: createToken({ authorities }),
         expires_in: 599,
         internalUser: true,
         scope: 'read',
@@ -162,6 +163,17 @@ export default {
   mockedUsername,
   stubAuthPing: ping,
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
-  stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
+  stubSignIn: (
+    args = {
+      authorities: [],
+    },
+  ): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([
+      favicon(),
+      redirect(),
+      signOut(),
+      manageDetails(),
+      token({ authorities: args.authorities }),
+      tokenVerification.stubVerifyToken(),
+    ]),
 }

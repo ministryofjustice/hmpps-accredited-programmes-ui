@@ -31,18 +31,22 @@ describe('populateCurrentUser', () => {
     })
 
     describe('and they are found by the user service', () => {
-      it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
+      beforeEach(() => {
         userService.getUser.mockResolvedValue({
           displayName: 'DEL_HATTON',
           name: 'Del Hatton',
           userId: 'random-uuid',
         })
+      })
+
+      it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
         ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
 
         await populateCurrentUser(userService)(req, res, next)
 
         expect(res.locals.user).toEqual({
           displayName: 'DEL_HATTON',
+          hasReferrerRole: false,
           name: 'Del Hatton',
           roles: ['SOME_REQUIRED_ROLE'],
           token: 'SOME-TOKEN',
@@ -50,6 +54,21 @@ describe('populateCurrentUser', () => {
         })
 
         expect(next).toHaveBeenCalled()
+      })
+
+      describe('and they have the `ROLE_ACP_REFERRER` role', () => {
+        it('sets the `hasReferrerRole` property to true', async () => {
+          ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['ROLE_ACP_REFERRER'])
+
+          await populateCurrentUser(userService)(req, res, next)
+
+          expect(res.locals.user).toEqual(
+            expect.objectContaining({
+              hasReferrerRole: true,
+              roles: ['ROLE_ACP_REFERRER'],
+            }),
+          )
+        })
       })
     })
 

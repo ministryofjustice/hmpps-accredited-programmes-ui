@@ -1,3 +1,4 @@
+import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { findPaths, referPaths } from '../../server/paths'
 import {
   courseFactory,
@@ -9,6 +10,7 @@ import {
 } from '../../server/testutils/factories'
 import { OrganisationUtils } from '../../server/utils'
 import auth from '../mockApis/auth'
+import AuthErrorPage from '../pages/authError'
 import Page from '../pages/page'
 import {
   CheckAnswersPage,
@@ -25,7 +27,7 @@ import ReasonPage from '../pages/refer/reason'
 context('Refer', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
   })
 
@@ -640,5 +642,30 @@ context('Refer', () => {
 
     const completePage = Page.verifyOnPage(CompletePage)
     completePage.shouldContainPanel('Referral complete')
+  })
+
+  describe('When the user does not have the `ROLE_ACP_REFERRER` role', () => {
+    beforeEach(() => {
+      cy.task('reset')
+      cy.task('stubSignIn', { authorities: [] })
+      cy.task('stubAuthUser')
+    })
+
+    it('shows the authentication error page', () => {
+      cy.signIn()
+
+      const course = courseFactory.build()
+      const courseOffering = courseOfferingFactory.build()
+      const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubPrison', prison)
+
+      const path = referPaths.start({ courseOfferingId: courseOffering.id })
+      cy.visit(path, { failOnStatusCode: false })
+
+      const authErrorPage = Page.verifyOnPage(AuthErrorPage)
+      authErrorPage.shouldContainAuthErrorMessage()
+    })
   })
 })
