@@ -1,3 +1,5 @@
+import type { AxeRules } from '@accredited-programmes/integration-tests'
+
 import { PersonUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { Organisation, Person } from '@accredited-programmes/models'
@@ -16,19 +18,26 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
+  accessibilityRules: AxeRules | undefined
+
   customPageTitleEnd: string | undefined
 
   external: boolean
 
   constructor(
     private readonly pageHeading: string,
-    options?: { customPageTitleEnd?: string; external?: boolean },
+    options?: {
+      accessibilityRules?: AxeRules
+      customPageTitleEnd?: string
+      external?: boolean
+    },
   ) {
+    this.accessibilityRules = options?.accessibilityRules
     this.customPageTitleEnd = options?.customPageTitleEnd
     this.external = options?.external || false
     this.checkOnPage()
     if (!this.external) {
-      cy.checkAccessibility()
+      cy.checkAccessibility(this.accessibilityRules)
     }
   }
 
