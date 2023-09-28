@@ -40,6 +40,9 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.programmeHistory.new.pattern, courseParticipationsController.new(), {
     allowedRoles: [ApplicationRoles.ACP_REFERRER],
   })
+  get(referPaths.programmeHistory.index.pattern, courseParticipationsController.index(), {
+    allowedRoles: [ApplicationRoles.ACP_REFERRER],
+  })
 
   get(referPaths.checkAnswers.pattern, referralsController.checkAnswers(), {
     allowedRoles: [ApplicationRoles.ACP_REFERRER],

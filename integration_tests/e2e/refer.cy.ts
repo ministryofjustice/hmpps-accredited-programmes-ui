@@ -3,6 +3,7 @@ import { findPaths, referPaths } from '../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   personFactory,
   prisonFactory,
   prisonerFactory,
@@ -17,12 +18,14 @@ import {
   ConfirmOasysPage,
   ConfirmPersonPage,
   FindPersonPage,
+  ProgrammeHistoryPage,
   ShowPersonPage,
   StartReferralPage,
   TaskListPage,
 } from '../pages/refer'
 import CompletePage from '../pages/refer/complete'
 import ReasonPage from '../pages/refer/reason'
+import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
 
 context('Refer', () => {
   beforeEach(() => {
@@ -448,6 +451,90 @@ context('Refer', () => {
           message: 'Enter a reason for the referral',
         },
       ])
+    })
+  })
+
+  describe('Showing the programme history page', () => {
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+
+    const course = courseFactory.build()
+
+    const courseParticipations = [
+      courseParticipationFactory.withCourseId().build({ courseId: course.id }),
+      courseParticipationFactory.withOtherCourseName().build({ otherCourseName: 'A great course name' }),
+    ]
+    const courseParticipationsWithNames: Array<CourseParticipationWithName> = [
+      { ...courseParticipations[0], name: course.name },
+      {
+        ...courseParticipations[1],
+        name: courseParticipations[1].otherCourseName as CourseParticipationWithName['name'],
+      },
+    ]
+
+    const path = referPaths.programmeHistory.index({ referralId: referral.id })
+
+    beforeEach(() => {
+      cy.signIn()
+
+      cy.task('stubPrisoner', prisoner)
+      cy.task('stubReferral', referral)
+      cy.task('stubCourse', course)
+    })
+
+    it('shows the page with an existing programme history', () => {
+      cy.task('stubParticipationsByPerson', { courseParticipations, prisonNumber: prisoner.prisonerNumber })
+
+      cy.visit(path)
+
+      const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
+        participationsWithNames: courseParticipationsWithNames,
+        person,
+      })
+      programmeHistoryPage.shouldHavePersonDetails(person)
+      programmeHistoryPage.shouldContainNavigation(path)
+      programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+      programmeHistoryPage.shouldContainPreHistoryParagraph()
+      programmeHistoryPage.shouldContainHistorySummaryCards()
+      programmeHistoryPage.shouldContainButton('Continue')
+      programmeHistoryPage.shouldContainButtonLink(
+        'Add another',
+        referPaths.programmeHistory.new({ referralId: referral.id }),
+      )
+    })
+
+    it('shows the page without an existing programme history', () => {
+      const emptyCourseParticipations: Array<CourseParticipation> = []
+      cy.task('stubParticipationsByPerson', {
+        courseParticipations: emptyCourseParticipations,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      cy.visit(path)
+
+      const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
+        participationsWithNames: emptyCourseParticipations as Array<CourseParticipationWithName>,
+        person,
+      })
+      programmeHistoryPage.shouldHavePersonDetails(person)
+      programmeHistoryPage.shouldContainNavigation(path)
+      programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+      programmeHistoryPage.shouldContainNoHistoryHeading()
+      programmeHistoryPage.shouldContainNoHistoryParagraph()
+      programmeHistoryPage.shouldContainButton('Continue')
+      programmeHistoryPage.shouldContainButtonLink(
+        'Add a programme',
+        referPaths.programmeHistory.new({ referralId: referral.id }),
+      )
     })
   })
 

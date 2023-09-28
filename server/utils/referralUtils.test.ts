@@ -104,7 +104,7 @@ describe('ReferralUtils', () => {
             {
               statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
               text: 'Add Accredited Programme history',
-              url: '#',
+              url: `/referrals/${referral.id}/programme-history`,
             },
             {
               statusTag: {
