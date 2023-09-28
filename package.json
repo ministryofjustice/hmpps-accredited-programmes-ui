@@ -105,7 +105,7 @@
     "@types/jest-when": "^3.5.2",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/lodash": "^4.14.194",
-    "@types/method-override": "^0.0.32",
+    "@types/method-override": "^0.0.33",
     "@types/node": "^18.16.3",
     "@types/nunjucks": "^3.2.2",
     "@types/passport": "^1.0.12",
