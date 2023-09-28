@@ -1,11 +1,11 @@
 import { path } from 'static-path'
 
-const caseloadsPath = path('/api/staff/:staffId/caseloads')
+const caseloadsPath = path('/api/users/me/caseLoads')
 
 export default {
-  staff: {
-    caseloads: {
-      index: caseloadsPath,
+  users: {
+    current: {
+      caseloads: caseloadsPath,
     },
   },
 }

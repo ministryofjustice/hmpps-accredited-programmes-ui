@@ -26,17 +26,16 @@ describe('caseloadClient', () => {
     nock.cleanAll()
   })
 
-  describe('findAll', () => {
-    const staffId = '123123'
+  describe('allByCurrentUser', () => {
     const caseloads: Array<Caseload> = [caseloadFactory.active().build(), caseloadFactory.inactive().build()]
 
-    it('fetches all Caseloads for the given staff ID', async () => {
+    it('fetches all Caseloads for the logged in user', async () => {
       fakePrisonApi
-        .get(prisonApiPaths.staff.caseloads.index({ staffId }))
+        .get(prisonApiPaths.users.current.caseloads({}))
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, caseloads)
 
-      const output = await caseloadClient.findAll(staffId)
+      const output = await caseloadClient.allByCurrentUser()
       expect(output).toEqual(caseloads)
     })
   })

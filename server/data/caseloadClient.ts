@@ -11,9 +11,9 @@ export default class CaseloadClient {
     this.restClient = new RestClient('caseloadClient', config.apis.prisonApi as ApiConfig, token)
   }
 
-  async findAll(staffId: string): Promise<Array<Caseload>> {
+  async allByCurrentUser(): Promise<Array<Caseload>> {
     return (await this.restClient.get({
-      path: prisonApiPaths.staff.caseloads.index({ staffId }),
+      path: prisonApiPaths.users.current.caseloads({}),
     })) as Array<Caseload>
   }
 }
