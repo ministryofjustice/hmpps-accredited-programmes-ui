@@ -18,7 +18,7 @@ export default class SelectProgrammePage extends Page {
   }
 
   shouldContainCourseOptions() {
-    this.shouldContainRadioButtons([
+    this.shouldContainRadioItems([
       ...this.courses.map(course => ({ label: course.name, value: course.id })),
       { label: 'Other', value: 'other' },
     ])

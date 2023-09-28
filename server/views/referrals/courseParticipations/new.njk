@@ -61,7 +61,10 @@
             conditional: {
               html: otherCourseHtml
             },
-            checked: errors.messages.otherCourseName
+            checked: errors.messages.otherCourseName,
+            attributes: {
+              "data-testid": "other-course-option"
+            }
           }),
           errorMessage: errors.messages.courseId
         }) }}
