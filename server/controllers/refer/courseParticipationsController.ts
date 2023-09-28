@@ -51,10 +51,17 @@ export default class CourseParticipationsController {
       TypeUtils.assertHasUser(req)
 
       const courses = await this.courseService.getCourses(req.user.token)
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+
+      if (!person) {
+        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
+      }
 
       res.render('referrals/courseParticipations/new', {
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
         pageHeading: 'Add Accredited Programme history',
+        person,
       })
     }
   }

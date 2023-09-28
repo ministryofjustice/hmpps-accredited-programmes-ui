@@ -83,12 +83,34 @@ describe('CourseParticipationsController', () => {
       const courses = courseFactory.buildList(2)
       courseService.getCourses.mockResolvedValue(courses)
 
+      const person = personFactory.build()
+      personService.getPerson.mockResolvedValue(person)
+
+      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+      referralService.getReferral.mockResolvedValue(referral)
+
       const requestHandler = courseParticipationsController.new()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/new', {
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
         pageHeading: 'Add Accredited Programme history',
+        person,
+      })
+    })
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        const person = personFactory.build()
+        personService.getPerson.mockResolvedValue(null)
+
+        const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+        referralService.getReferral.mockResolvedValue(referral)
+
+        const requestHandler = courseParticipationsController.new()
+        const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
