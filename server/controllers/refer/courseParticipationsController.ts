@@ -1,6 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
+import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { CourseParticipationUtils, CourseUtils, TypeUtils } from '../../utils'
 import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
@@ -11,6 +12,27 @@ export default class CourseParticipationsController {
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
+
+  create(): TypedRequestHandler<Request, Response> {
+    return async (req, res) => {
+      TypeUtils.assertHasUser(req)
+
+      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+
+      const { courseId, otherCourseName } = req.body
+
+      const courseParticipation = await this.courseService.createParticipation(
+        req.user.token,
+        referral.prisonNumber,
+        courseId === 'other' ? undefined : courseId,
+        courseId === 'other' ? otherCourseName : undefined,
+      )
+
+      return res.redirect(
+        referPaths.programmeHistory.details({ courseParticipationId: courseParticipation.id, referralId: referral.id }),
+      )
+    }
+  }
 
   index(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
