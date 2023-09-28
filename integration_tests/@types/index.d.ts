@@ -1,1 +1,1 @@
-export type AxeRules = Record<string, { enabled: boolean }> | undefined
+export type AxeRules = Record<string, { enabled: boolean }>
