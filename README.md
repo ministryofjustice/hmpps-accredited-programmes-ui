@@ -48,6 +48,17 @@ script/server --mock-api
 
 API endpoint stubbing is set up in `/wiremock/scripts/stubApis.ts`.
 
+
+### Local user accounts
+
+There are three user accounts with different roles that can be used when running the application locally:
+
+| Username | Description | Roles | Password |
+| ---- | ---- | ---- | ---- |
+| `ACP_POM_USER` | Prisoner Offender Manager user - responsible for making referrals and viewing the progress of a referral  | `POM`, `ACP_REFERRER` | `password123456` |
+| `ACP_PT_USER`  | Programme Team user - responsible for assessing the suitability of a person to an Accredited Programme and updating the status of referrals | `ACP_PROGRAMME_TEAM` | `password123456` |
+| `ACP_PT_REFERRER_USER` | Programme Team user - all the responsibilities of a Programme Team user above, but with the ability to also make referrals | `ACP_PROGRAMME_TEAM`, `ACP_REFERRER` | `password123456` |
+
 ### Seeded resources
 
 The local copy of the Accredited Programmes API has various seeds in place providing data to work with in local development. These include courses, course offerings, and associated data, as well as one referral. This referral is at the stage of having just been created, and can be used to jump to the task list part of the Refer journey.
