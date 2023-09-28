@@ -7,6 +7,7 @@
     "types": ["cypress", "cypress-axe", "express", "express-session"],
     "esModuleInterop": true,
     "paths": {
+      "@accredited-programmes/integration-tests": ["./@types/index.d.ts"],
       "@accredited-programmes/models": ["../server/@types/models/index.d.ts"],
       "@accredited-programmes/ui": ["../server/@types/ui/index.d.ts"],
       "@govuk-frontend": ["../server/@types/govukFrontend/index.d.ts"],

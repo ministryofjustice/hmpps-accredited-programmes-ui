@@ -1,3 +1,4 @@
+import type { AxeRules } from '@accredited-programmes/integration-tests'
 import type { Result } from 'axe-core'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
@@ -23,8 +24,8 @@ const logAccessibilityViolations = (violations: Array<Result>) => {
   cy.task('table', violationsData)
 }
 
-Cypress.Commands.add('checkAccessibility', () => {
+Cypress.Commands.add('checkAccessibility', (rules: AxeRules = undefined) => {
   cy.injectAxe()
   cy.configureAxe({ rules: [{ enabled: false, id: 'region', selector: '.govuk-phase-banner' }] })
-  cy.checkA11y(undefined, undefined, logAccessibilityViolations)
+  cy.checkA11y(undefined, { rules }, logAccessibilityViolations)
 })
