@@ -5,6 +5,7 @@ import Helpers from '../support/helpers'
 import type { Organisation, Person } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
+  GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendTagWithText,
   HasHtmlString,
@@ -43,6 +44,10 @@ export default abstract class Page {
   }
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+
+  selectRadioButton(name: string, value: string): void {
+    cy.get(`.govuk-radios__input[name="${name}"][value="${value}"]`).check()
+  }
 
   shouldContainAudienceTags(audienceTags: CoursePresenter['audienceTags']) {
     cy.get('.govuk-main-wrapper').within(() => {
@@ -136,6 +141,20 @@ export default abstract class Page {
   shouldContainPersonSummaryList(person: Person): void {
     cy.get('[data-testid="person-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(PersonUtils.summaryListRows(person), summaryListElement)
+    })
+  }
+
+  shouldContainRadioItems(options: Array<GovukFrontendRadiosItemWithLabel>): void {
+    options.forEach((option, optionIndex) => {
+      cy.get('.govuk-radios__item')
+        .eq(optionIndex)
+        .within(() => {
+          cy.get('.govuk-radios__label').then(radioButtonLabelElement => {
+            const { actual, expected } = Helpers.parseHtml(radioButtonLabelElement, option.label)
+            expect(actual).to.equal(expected)
+          })
+          cy.get('.govuk-radios__input').should('have.attr', 'value', option.value)
+        })
     })
   }
 
