@@ -5,6 +5,7 @@ import type { Request, Response } from 'express'
 import populateCurrentUser from './populateCurrentUser'
 import logger from '../../logger'
 import type { UserService } from '../services'
+import { caseloadFactory } from '../testutils/factories'
 import { UserUtils } from '../utils'
 import type { UserDetails } from '@accredited-programmes/users'
 
@@ -40,7 +41,10 @@ describe('populateCurrentUser', () => {
     describe('and the user is not already present in the session', () => {
       describe('and they are found by the user service', () => {
         it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
+          const caseloads = [caseloadFactory.build()]
+
           userService.getUser.mockResolvedValue({
+            caseloads,
             displayName: 'DEL_HATTON',
             name: 'Del Hatton',
             userId: 'random-uuid',
@@ -52,6 +56,7 @@ describe('populateCurrentUser', () => {
           expect(userService.getUser).toHaveBeenCalledWith('SOME-TOKEN')
 
           expect(res.locals.user).toEqual({
+            caseloads,
             displayName: 'DEL_HATTON',
             hasReferrerRole: false,
             name: 'Del Hatton',
@@ -83,6 +88,7 @@ describe('populateCurrentUser', () => {
         req = createMock<Request>({
           session: {
             user: {
+              caseloads: [caseloadFactory.build()],
               displayName: 'DEL_HATTON',
               hasReferrerRole: false,
               name: 'Del Hatton',
@@ -105,6 +111,7 @@ describe('populateCurrentUser', () => {
     describe('and they have the `ROLE_ACP_REFERRER` role', () => {
       it('sets the `hasReferrerRole` property to true', async () => {
         userService.getUser.mockResolvedValue({
+          caseloads: [caseloadFactory.build()],
           displayName: 'DEL_HATTON',
           name: 'Del Hatton',
           userId: 'random-uuid',
