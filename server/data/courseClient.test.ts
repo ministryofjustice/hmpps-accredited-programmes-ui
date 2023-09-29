@@ -5,7 +5,7 @@ import CourseClient from './courseClient'
 import config from '../config'
 import { apiPaths } from '../paths'
 import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
-import type { CourseParticipation } from '@accredited-programmes/models'
+import type { CourseParticipation, CourseParticipationUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -257,6 +257,48 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await courseClient.findParticipationsByPerson(person.prisonNumber)
 
       expect(result).toEqual(courseParticipations)
+    })
+  })
+
+  describe('updateParticipation', () => {
+    const courseId = 'course-id'
+    const courseParticipation = courseParticipationFactory.withCourseId().build({ courseId })
+    const courseParticipationUpdate: CourseParticipationUpdate = {
+      courseId,
+      outcome: {
+        status: 'complete',
+        yearCompleted: 2023,
+      },
+      setting: {
+        location: 'somewhere',
+        type: 'community',
+      },
+      source: 'somewhere',
+    }
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `A course participation exists with ID ${courseParticipation.id}`,
+        uponReceiving: `A request to update course participation "${courseParticipation.id}"`,
+        willRespondWith: {
+          body: Matchers.like(courseParticipation),
+          status: 200,
+        },
+        withRequest: {
+          body: courseParticipationUpdate,
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'PUT',
+          path: apiPaths.participations.update({ courseParticipationId: courseParticipation.id }),
+        },
+      })
+    })
+
+    it('updates the given course participation', async () => {
+      const result = await courseClient.updateParticipation(courseParticipation.id, courseParticipationUpdate)
+
+      expect(result).toEqual(courseParticipation)
     })
   })
 })
