@@ -37,10 +37,13 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.reason.show.pattern, reasonController.show(), { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   put(referPaths.reason.update.pattern, reasonController.update(), { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
 
+  get(referPaths.programmeHistory.index.pattern, courseParticipationsController.index(), {
+    allowedRoles: [ApplicationRoles.ACP_REFERRER],
+  })
   get(referPaths.programmeHistory.new.pattern, courseParticipationsController.new(), {
     allowedRoles: [ApplicationRoles.ACP_REFERRER],
   })
-  get(referPaths.programmeHistory.index.pattern, courseParticipationsController.index(), {
+  post(referPaths.programmeHistory.create.pattern, courseParticipationsController.create(), {
     allowedRoles: [ApplicationRoles.ACP_REFERRER],
   })
 

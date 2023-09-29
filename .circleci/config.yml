@@ -112,6 +112,9 @@ jobs:
           command: java -jar wiremock.jar --port 9199
           background: true
       - run:
+          name: Compile sass
+          command: npm run compile-sass
+      - run:
           name: Run the node app
           command: npm run test:integration:ci:server
           background: true
@@ -155,6 +158,9 @@ jobs:
           name: Run wiremock
           command: java -jar wiremock.jar --port 9199
           background: true
+      - run:
+          name: Compile sass
+          command: npm run compile-sass
       - run:
           name: Run the node app
           command: npm run test:integration:refer-disabled:ci:server
