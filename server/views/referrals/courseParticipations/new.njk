@@ -1,14 +1,19 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% extends "../../partials/layout.njk" %}
 
+{% block personBanner %}
+  {% include "../_personBanner.njk" %}
+{% endblock personBanner %}
+
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: "#"
+    href: referPaths.programmeHistory.index({ referralId: referralId })
   }) }}
 {% endblock backLink %}
 
@@ -21,13 +26,23 @@
     classes: "govuk-!-width-one-third",
     label: {
       text: "Enter the programme"
-    }
+    },
+    errorMessage: errors.messages.otherCourseName
   }) }}
   {% endset %}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form action="#" method="post">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+
+      <form action="{{ referPaths.programmeHistory.create({ referralId: referralId }) }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
         {{ govukRadios({
           name: "courseId",
           fieldset: {
@@ -45,8 +60,13 @@
             text: "Other",
             conditional: {
               html: otherCourseHtml
+            },
+            checked: errors.messages.otherCourseName,
+            attributes: {
+              "data-testid": "other-course-option"
             }
-          })
+          }),
+          errorMessage: errors.messages.courseId
         }) }}
 
         {{ govukButton({

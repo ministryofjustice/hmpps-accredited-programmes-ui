@@ -15,6 +15,17 @@ export default class CourseClient {
     return (await this.restClient.get({ path: apiPaths.courses.index({}) })) as Array<Course>
   }
 
+  async createParticipation(
+    prisonNumber: CourseParticipation['prisonNumber'],
+    courseId?: CourseParticipation['id'],
+    otherCourseName?: CourseParticipation['otherCourseName'],
+  ): Promise<CourseParticipation> {
+    return (await this.restClient.post({
+      data: { courseId, otherCourseName, prisonNumber },
+      path: apiPaths.participations.create({}),
+    })) as CourseParticipation
+  }
+
   async find(courseId: Course['id']): Promise<Course> {
     return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
   }

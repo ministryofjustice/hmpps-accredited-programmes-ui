@@ -5,6 +5,7 @@ import CourseClient from './courseClient'
 import config from '../config'
 import { apiPaths } from '../paths'
 import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
+import type { CourseParticipation } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -64,6 +65,68 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await courseClient.all()
 
       expect(result).toEqual(allCourses)
+    })
+  })
+
+  describe('createParticipation', () => {
+    describe('when `courseId` is provided', () => {
+      const courseParticipation = courseParticipationFactory.withCourseId().build()
+      const { courseId, prisonNumber } = courseParticipation
+
+      beforeEach(() => {
+        provider.addInteraction({
+          state: `A person exists with prison number ${prisonNumber}`,
+          uponReceiving: `A request to create a course participation for person "${prisonNumber}"`,
+          willRespondWith: {
+            body: Matchers.like(courseParticipation),
+            status: 201,
+          },
+          withRequest: {
+            body: { courseId, prisonNumber } as CourseParticipation & { courseId: string },
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+            method: 'POST',
+            path: apiPaths.participations.create({}),
+          },
+        })
+      })
+
+      it('creates a course participation using the `courseId` value', async () => {
+        const result = await courseClient.createParticipation(prisonNumber, courseId)
+
+        expect(result).toEqual(courseParticipation)
+      })
+    })
+
+    describe('when `otherCourseName` is provided and `courseId` is not', () => {
+      const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
+      const { otherCourseName, prisonNumber } = courseParticipation
+
+      beforeEach(() => {
+        provider.addInteraction({
+          state: `A person exists with prison number ${prisonNumber}`,
+          uponReceiving: `A request to create a course participation for person "${prisonNumber}"`,
+          willRespondWith: {
+            body: Matchers.like(courseParticipation),
+            status: 201,
+          },
+          withRequest: {
+            body: { otherCourseName, prisonNumber } as CourseParticipation & { otherCourseName: string },
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+            method: 'POST',
+            path: apiPaths.participations.create({}),
+          },
+        })
+      })
+
+      it('creates a course participation using the `otherCourseName` value', async () => {
+        const result = await courseClient.createParticipation(prisonNumber, undefined, otherCourseName)
+
+        expect(result).toEqual(courseParticipation)
+      })
     })
   })
 

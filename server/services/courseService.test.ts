@@ -19,6 +19,46 @@ describe('CourseService', () => {
     courseClientBuilder.mockReturnValue(courseClient)
   })
 
+  describe('createParticipation', () => {
+    const person = personFactory.build()
+
+    describe('when `courseId` is provided', () => {
+      it('creates a course participation using the `courseId` value', async () => {
+        const courseParticipation = courseParticipationFactory.withCourseId().build()
+        const { courseId } = courseParticipation
+
+        when(courseClient.createParticipation)
+          .calledWith(person.prisonNumber, courseId, undefined)
+          .mockResolvedValue(courseParticipation)
+
+        const result = await service.createParticipation(token, person.prisonNumber, courseId)
+
+        expect(result).toEqual(courseParticipation)
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(token)
+        expect(courseClient.createParticipation).toHaveBeenCalledWith(person.prisonNumber, courseId, undefined)
+      })
+    })
+
+    describe('when `otherCourseName` is provided and `courseId` is not', () => {
+      it('creates a course participation using the `otherCourseName` value', async () => {
+        const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
+        const { otherCourseName } = courseParticipation
+
+        when(courseClient.createParticipation)
+          .calledWith(person.prisonNumber, undefined, otherCourseName)
+          .mockResolvedValue(courseParticipation)
+
+        const result = await service.createParticipation(token, person.prisonNumber, undefined, otherCourseName)
+
+        expect(result).toEqual(courseParticipation)
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(token)
+        expect(courseClient.createParticipation).toHaveBeenCalledWith(person.prisonNumber, undefined, otherCourseName)
+      })
+    })
+  })
+
   describe('getCourses', () => {
     it('returns a list of all courses', async () => {
       const courses = courseFactory.buildList(3)

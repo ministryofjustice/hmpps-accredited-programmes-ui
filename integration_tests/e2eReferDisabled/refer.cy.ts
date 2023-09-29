@@ -139,6 +139,29 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
+  it("Doesn't show the select programme page", () => {
+    cy.signIn()
+
+    const courses = courseFactory.buildList(4)
+    const prisoner = prisonerFactory.build()
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
+
+    cy.task('stubCourses', courses)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.programmeHistory.create({ referralId: referral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage2 = Page.verifyOnPage(NotFoundPage)
+    notFoundPage2.shouldContain404H2()
+  })
+
   it("Doesn't show the programme history index page", () => {
     cy.signIn()
 
