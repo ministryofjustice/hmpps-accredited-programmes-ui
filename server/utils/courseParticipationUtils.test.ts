@@ -20,6 +20,7 @@ describe('CourseParticipationUtils', () => {
           detail: 'Motivation level over 9000!',
           status: 'complete',
           yearCompleted: 2019,
+          yearStarted: undefined,
         },
         setting: {
           location: 'Greater Tharfoot',
