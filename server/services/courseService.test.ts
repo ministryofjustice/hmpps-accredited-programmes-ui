@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker'
+import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import CourseService from './courseService'
@@ -130,6 +132,54 @@ describe('CourseService', () => {
 
       expect(courseClientBuilder).toHaveBeenCalledWith(token)
       expect(courseClient.findOffering).toHaveBeenCalledWith(courseOffering.id)
+    })
+  })
+
+  describe('getParticipation', () => {
+    it('returns a given course participation', async () => {
+      const courseParticipation = courseParticipationFactory.build()
+
+      when(courseClient.findParticipation).calledWith(courseParticipation.id).mockResolvedValue(courseParticipation)
+
+      const result = await service.getParticipation(token, courseParticipation.id)
+
+      expect(result).toEqual(courseParticipation)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
+      expect(courseClient.findParticipation).toHaveBeenCalledWith(courseParticipation.id)
+    })
+
+    describe('when the course client throws a 404 error', () => {
+      it('returns `null`', async () => {
+        const clientError = createError(404)
+        courseClient.findParticipation.mockRejectedValue(clientError)
+
+        const notFoundCourseParticipationId = 'NOT-FOUND'
+
+        const result = await service.getParticipation(token, notFoundCourseParticipationId)
+
+        expect(result).toEqual(null)
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(token)
+        expect(courseClient.findParticipation).toHaveBeenCalledWith(notFoundCourseParticipationId)
+      })
+    })
+
+    describe('when the course client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(501)
+        courseClient.findParticipation.mockRejectedValue(clientError)
+
+        const courseParticipationId = faker.string.uuid()
+
+        await expect(() => service.getParticipation(token, courseParticipationId)).rejects.toHaveProperty(
+          'userMessage',
+          `Error fetching course participation with ID ${courseParticipationId}.`,
+        )
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(token)
+        expect(courseClient.findParticipation).toHaveBeenCalledWith(courseParticipationId)
+      })
     })
   })
 

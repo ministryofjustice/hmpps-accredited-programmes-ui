@@ -1,3 +1,6 @@
+import createError from 'http-errors'
+import type { ResponseError } from 'superagent'
+
 import type { CourseClient, RestClientBuilder } from '../data'
 import type {
   Course,
@@ -43,6 +46,29 @@ export default class CourseService {
   async getOfferingsByCourse(token: Express.User['token'], courseId: Course['id']): Promise<Array<CourseOffering>> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.findOfferings(courseId)
+  }
+
+  async getParticipation(
+    token: Express.User['token'],
+    courseParticipationId: CourseParticipation['id'],
+  ): Promise<CourseParticipation | null> {
+    const courseClient = this.courseClientBuilder(token)
+
+    try {
+      const courseParticipation = await courseClient.findParticipation(courseParticipationId)
+
+      return courseParticipation
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, knownError, {
+        userMessage: `Error fetching course participation with ID ${courseParticipationId}.`,
+      })
+    }
   }
 
   async getParticipationsByPerson(
