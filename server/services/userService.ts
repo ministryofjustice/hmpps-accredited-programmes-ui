@@ -1,11 +1,6 @@
 import type { HmppsAuthClient, RestClientBuilderWithoutToken } from '../data'
 import { StringUtils } from '../utils'
-
-export interface UserDetails {
-  displayName: string
-  name: string
-  userId: string
-}
+import type { UserDetails } from '@accredited-programmes/users'
 
 export default class UserService {
   constructor(private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>) {}

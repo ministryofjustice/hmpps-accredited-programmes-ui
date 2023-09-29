@@ -11,6 +11,7 @@
       "@accredited-programmes/models": ["../server/@types/models/index.d.ts"],
       "@accredited-programmes/server": ["../server/@types/server/index.d.ts"],
       "@accredited-programmes/ui": ["../server/@types/ui/index.d.ts"],
+      "@accredited-programmes/users": ["./server/@types/users/index.d.ts"],
       "@govuk-frontend": ["../server/@types/govukFrontend/index.d.ts"],
       "@prison-api": ["../server/@types/prisonApi/index.d.ts"],
       "@prison-register-api": ["../server/@types/prisonRegisterApi/index.d.ts"],

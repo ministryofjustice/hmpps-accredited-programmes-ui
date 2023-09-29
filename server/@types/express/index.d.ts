@@ -2,11 +2,14 @@
 // @ts-expect-error to fix later: https://github.com/microsoft/TypeScript/issues/16472
 import type { Request as ConnectFlashRequest } from '@types/connect-flash'
 
+import type { UserDetails } from '../users'
+
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
     nowInMinutes: number
     returnTo: string
+    user: UserDetails
   }
 }
 

@@ -5,7 +5,6 @@ import healthCheck from './healthCheck'
 import OrganisationService from './organisationService'
 import PersonService from './personService'
 import ReferralService from './referralService'
-import type { UserDetails } from './userService'
 import UserService from './userService'
 import {
   courseClientBuilder,
@@ -35,4 +34,4 @@ type Services = ReturnType<typeof services>
 
 export { CourseService, OrganisationService, PersonService, ReferralService, UserService, healthCheck, services }
 
-export type { Services, UserDetails }
+export type { Services }

@@ -4,8 +4,9 @@ import type { Request, Response } from 'express'
 
 import populateCurrentUser from './populateCurrentUser'
 import logger from '../../logger'
-import type { UserDetails, UserService } from '../services'
+import type { UserService } from '../services'
 import { UserUtils } from '../utils'
+import type { UserDetails } from '@accredited-programmes/users'
 
 jest.mock('../utils/userUtils')
 jest.mock('../../logger')
@@ -15,10 +16,16 @@ describe('populateCurrentUser', () => {
 
   const next = jest.fn()
 
-  const req: DeepMocked<Request> = createMock<Request>({})
+  let req: DeepMocked<Request>
 
   beforeEach(() => {
     jest.resetAllMocks()
+
+    req = createMock<Request>({
+      session: {
+        user: undefined,
+      },
+    })
   })
 
   describe('when the user variable is set', () => {
@@ -30,58 +37,88 @@ describe('populateCurrentUser', () => {
       },
     })
 
-    describe('and they are found by the user service', () => {
-      beforeEach(() => {
+    describe('and the user is not already present in the session', () => {
+      describe('and they are found by the user service', () => {
+        it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
+          userService.getUser.mockResolvedValue({
+            displayName: 'DEL_HATTON',
+            name: 'Del Hatton',
+            userId: 'random-uuid',
+          })
+          ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
+
+          await populateCurrentUser(userService)(req, res, next)
+
+          expect(userService.getUser).toHaveBeenCalledWith('SOME-TOKEN')
+
+          expect(res.locals.user).toEqual({
+            displayName: 'DEL_HATTON',
+            hasReferrerRole: false,
+            name: 'Del Hatton',
+            roles: ['SOME_REQUIRED_ROLE'],
+            token: 'SOME-TOKEN',
+            userId: 'random-uuid',
+          })
+
+          expect(next).toHaveBeenCalled()
+        })
+      })
+
+      describe('and they are not found by the user service', () => {
+        it('logs that no user was found and calls next', async () => {
+          userService.getUser.mockResolvedValue(null as unknown as UserDetails)
+          ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
+
+          await populateCurrentUser(userService)(req, res, next)
+
+          expect(logger.info).toHaveBeenCalledWith('No user available')
+
+          expect(next).toHaveBeenCalled()
+        })
+      })
+    })
+
+    describe('and the user is already present in the session', () => {
+      it('does not make a new request to the user service', async () => {
+        req = createMock<Request>({
+          session: {
+            user: {
+              displayName: 'DEL_HATTON',
+              hasReferrerRole: false,
+              name: 'Del Hatton',
+              roles: ['SOME_REQUIRED_ROLE'],
+              token: 'SOME-TOKEN',
+              userId: 'random-uuid',
+            } as UserDetails,
+          },
+        })
+        ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
+
+        await populateCurrentUser(userService)(req, res, next)
+
+        expect(userService.getUser).not.toHaveBeenCalled()
+
+        expect(next).toHaveBeenCalled()
+      })
+    })
+
+    describe('and they have the `ROLE_ACP_REFERRER` role', () => {
+      it('sets the `hasReferrerRole` property to true', async () => {
         userService.getUser.mockResolvedValue({
           displayName: 'DEL_HATTON',
           name: 'Del Hatton',
           userId: 'random-uuid',
         })
-      })
-
-      it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
-        ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
+        ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['ROLE_ACP_REFERRER'])
 
         await populateCurrentUser(userService)(req, res, next)
 
-        expect(res.locals.user).toEqual({
-          displayName: 'DEL_HATTON',
-          hasReferrerRole: false,
-          name: 'Del Hatton',
-          roles: ['SOME_REQUIRED_ROLE'],
-          token: 'SOME-TOKEN',
-          userId: 'random-uuid',
-        })
-
-        expect(next).toHaveBeenCalled()
-      })
-
-      describe('and they have the `ROLE_ACP_REFERRER` role', () => {
-        it('sets the `hasReferrerRole` property to true', async () => {
-          ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['ROLE_ACP_REFERRER'])
-
-          await populateCurrentUser(userService)(req, res, next)
-
-          expect(res.locals.user).toEqual(
-            expect.objectContaining({
-              hasReferrerRole: true,
-              roles: ['ROLE_ACP_REFERRER'],
-            }),
-          )
-        })
-      })
-    })
-
-    describe('and they are not found by the user service', () => {
-      it('logs that no user was found and calls next', async () => {
-        userService.getUser.mockResolvedValue(null as unknown as UserDetails)
-        ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
-
-        await populateCurrentUser(userService)(req, res, next)
-
-        expect(logger.info).toHaveBeenCalledWith('No user available')
-
-        expect(next).toHaveBeenCalled()
+        expect(res.locals.user).toEqual(
+          expect.objectContaining({
+            hasReferrerRole: true,
+            roles: ['ROLE_ACP_REFERRER'],
+          }),
+        )
       })
     })
   })
