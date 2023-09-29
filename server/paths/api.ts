@@ -11,7 +11,7 @@ const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
 const updateStatusPath = referralPath.path('status')
 
-const participationsByPersonPath = path('/person/:prisonNumber/course-participations')
+const participationsByPersonPath = path('/people/:prisonNumber/course-participations')
 const participationsPath = path('/course-participations')
 const participationPath = participationsPath.path(':courseParticipationId')
 
