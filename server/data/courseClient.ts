@@ -54,6 +54,12 @@ export default class CourseClient {
     })) as Array<CourseOffering>
   }
 
+  async findParticipation(courseParticipationId: CourseParticipation['id']): Promise<CourseParticipation> {
+    return (await this.restClient.get({
+      path: apiPaths.participations.show({ courseParticipationId }),
+    })) as CourseParticipation
+  }
+
   async findParticipationsByPerson(prisonNumber: Person['prisonNumber']): Promise<Array<CourseParticipation>> {
     return (await this.restClient.get({
       path: apiPaths.people.participations({ prisonNumber }),

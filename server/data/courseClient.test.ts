@@ -234,6 +234,34 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('findParticipation', () => {
+    const courseParticipation = courseParticipations[0]
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `A course participation exists with ID ${courseParticipation.id}`,
+        uponReceiving: `A request for course participation "${courseParticipation.id}"`,
+        willRespondWith: {
+          body: Matchers.like(courseParticipation),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'GET',
+          path: apiPaths.participations.show({ courseParticipationId: courseParticipation.id }),
+        },
+      })
+    })
+
+    it('fetches the given course participation', async () => {
+      const result = await courseClient.findParticipation(courseParticipation.id)
+
+      expect(result).toEqual(courseParticipations[0])
+    })
+  })
+
   describe('findParticipationsByPerson', () => {
     beforeEach(() => {
       provider.addInteraction({
