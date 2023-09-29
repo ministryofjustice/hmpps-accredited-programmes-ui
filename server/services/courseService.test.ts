@@ -3,6 +3,7 @@ import { when } from 'jest-when'
 import CourseService from './courseService'
 import { CourseClient } from '../data'
 import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
+import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/courseClient')
 
@@ -164,6 +165,36 @@ describe('CourseService', () => {
         expect(courseClientBuilder).toHaveBeenCalledWith(token)
         expect(courseClient.findParticipationsByPerson).toHaveBeenCalledWith(person.prisonNumber)
       })
+    })
+  })
+
+  describe('updateParticipation', () => {
+    it('asks the client to update a course participation', async () => {
+      const courseId = 'course-id'
+      const courseParticipation = courseParticipationFactory.withCourseId().build({ courseId })
+      const courseParticipationUpdate: CourseParticipationUpdate = {
+        courseId,
+        outcome: {
+          status: 'complete',
+          yearCompleted: 2023,
+        },
+        setting: {
+          location: 'somewhere',
+          type: 'community',
+        },
+        source: 'somewhere',
+      }
+
+      when(courseClient.updateParticipation)
+        .calledWith(courseParticipation.id, courseParticipationUpdate)
+        .mockResolvedValue(courseParticipation)
+
+      const result = await service.updateParticipation(token, courseParticipation.id, courseParticipationUpdate)
+
+      expect(result).toEqual(courseParticipation)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
+      expect(courseClient.updateParticipation).toHaveBeenCalledWith(courseParticipation.id, courseParticipationUpdate)
     })
   })
 })

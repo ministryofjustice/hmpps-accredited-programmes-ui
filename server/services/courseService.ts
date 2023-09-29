@@ -1,5 +1,11 @@
 import type { CourseClient, RestClientBuilder } from '../data'
-import type { Course, CourseOffering, CourseParticipation, Person } from '@accredited-programmes/models'
+import type {
+  Course,
+  CourseOffering,
+  CourseParticipation,
+  CourseParticipationUpdate,
+  Person,
+} from '@accredited-programmes/models'
 
 export default class CourseService {
   constructor(private readonly courseClientBuilder: RestClientBuilder<CourseClient>) {}
@@ -45,5 +51,14 @@ export default class CourseService {
   ): Promise<Array<CourseParticipation>> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.findParticipationsByPerson(prisonNumber)
+  }
+
+  async updateParticipation(
+    token: Express.User['token'],
+    courseParticipationId: CourseParticipation['id'],
+    courseParticipationUpdate: CourseParticipationUpdate,
+  ): Promise<CourseParticipation> {
+    const courseClient = this.courseClientBuilder(token)
+    return courseClient.updateParticipation(courseParticipationId, courseParticipationUpdate)
   }
 }
