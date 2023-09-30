@@ -3,6 +3,7 @@ import cypressMochawesomeReportPlugin from 'cypress-mochawesome-reporter/plugin'
 import fs from 'fs'
 
 import auth from './integration_tests/mockApis/auth'
+import caseloads from './integration_tests/mockApis/caseloads'
 import courses from './integration_tests/mockApis/courses'
 import courseParticipations from './integration_tests/mockApis/courseParticipations'
 import prisons from './integration_tests/mockApis/prisons'
@@ -33,6 +34,7 @@ export const defaultConfig: Cypress.ConfigOptions = {
       on('task', {
         reset: resetStubs,
         ...auth,
+        ...caseloads,
         ...courses,
         ...courseParticipations,
         ...prisons,

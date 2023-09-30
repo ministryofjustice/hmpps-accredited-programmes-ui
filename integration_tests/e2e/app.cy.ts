@@ -7,6 +7,7 @@ context('App', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
   })
 
   it('Shows the phase banner with a link to the feedback form', () => {

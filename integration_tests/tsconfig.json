@@ -6,6 +6,7 @@
     "lib": ["es5", "dom", "es2015.promise"],
     "types": ["cypress", "cypress-axe", "express", "express-session"],
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "paths": {
       "@accredited-programmes/integration-tests": ["./@types/index.d.ts"],
       "@accredited-programmes/models": ["../server/@types/models/index.d.ts"],

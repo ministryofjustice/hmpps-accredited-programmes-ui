@@ -12,6 +12,7 @@ context('Find', () => {
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
   })
 
   it('Shows a list of all courses sorted alphabetically', () => {
