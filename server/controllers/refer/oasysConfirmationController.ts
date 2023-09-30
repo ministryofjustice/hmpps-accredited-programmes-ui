@@ -17,7 +17,11 @@ export default class OasysConfirmationController {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
 
       if (!person) {
         throw createError(404, {

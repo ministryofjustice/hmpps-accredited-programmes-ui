@@ -27,7 +27,11 @@ export default class ReferralsController {
         return res.redirect(referPaths.show({ referralId: referral.id }))
       }
 
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
 
       if (!person) {
         throw createError(404, {
@@ -128,7 +132,11 @@ export default class ReferralsController {
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
 
       if (!organisation) {
         throw createError(404, {
@@ -159,7 +167,11 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
 
       if (!person) {
         throw createError(404, {

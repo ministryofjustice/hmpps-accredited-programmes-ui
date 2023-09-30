@@ -53,7 +53,11 @@ export default class CourseParticipationsController {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
-      const person = await this.personService.getPerson(req.user.token, referral.prisonNumber)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
 
       if (!person) {
         throw createError(404, {
@@ -88,7 +92,11 @@ export default class CourseParticipationsController {
 
       const courses = await this.courseService.getCourses(req.user.token)
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
 
       if (!person) {
         throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)

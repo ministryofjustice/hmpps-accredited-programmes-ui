@@ -14,6 +14,7 @@ import {
   personFactory,
   referralFactory,
 } from '../../testutils/factories'
+import Helpers from '../../testutils/helpers'
 import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
@@ -39,7 +40,7 @@ describe('ReferralsController', () => {
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
-    response = createMock<Response>({})
+    response = Helpers.createMockResponseWithCaseloads()
     referralsController = new ReferralsController(courseService, organisationService, personService, referralService)
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
