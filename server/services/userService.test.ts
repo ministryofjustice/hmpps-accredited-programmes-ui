@@ -15,32 +15,35 @@ const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
 const token = 'some token'
 
 describe('UserService', () => {
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
   const hmppsAuthClientBuilder = jest.fn()
-  let caseloadClient: jest.Mocked<CaseloadClient>
+
+  const caseloadClient = new CaseloadClient(token) as jest.Mocked<CaseloadClient>
   const caseloadClientBuilder = jest.fn()
+
   let userService: UserService
+
+  beforeEach(() => {
+    jest.resetAllMocks()
+
+    hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
+    caseloadClientBuilder.mockReturnValue(caseloadClient)
+
+    userService = new UserService(hmppsAuthClientBuilder, caseloadClientBuilder)
+  })
 
   describe('getUser', () => {
     beforeEach(() => {
-      hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
-      hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
-      caseloadClient = new CaseloadClient(token) as jest.Mocked<CaseloadClient>
-      caseloadClientBuilder.mockReturnValue(caseloadClient)
-      userService = new UserService(hmppsAuthClientBuilder, caseloadClientBuilder)
+      hmppsAuthClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
     })
 
     it('retrieves user and formats name', async () => {
-      hmppsAuthClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
-
       const result = await userService.getUser(token)
 
       expect(result.displayName).toEqual('John Smith')
     })
 
     it('fetches caseloads for the current user', async () => {
-      hmppsAuthClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
-
       const caseloads = [caseloadFactory.active().build(), caseloadFactory.inactive().build()]
       caseloadClient.allByCurrentUser.mockResolvedValue(caseloads)
 
@@ -59,10 +62,7 @@ describe('UserService', () => {
 
     describe('when the caseloads client throws an error', () => {
       it("logs the error but sets the user's caseloads to an empty array so the user can still access the service", async () => {
-        hmppsAuthClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
-
         const caseloadError = new Error('some caseload error')
-
         caseloadClient.allByCurrentUser.mockRejectedValue(caseloadError)
 
         const result = await userService.getUser(token)
