@@ -29,14 +29,26 @@ describe('PrisonerClient', () => {
   describe('find', () => {
     const prisoner: Prisoner = prisonerFactory.build()
 
-    it('fetches the given prisoner', async () => {
+    it('searches for a prisoner by prison number and caseload IDs and returns the first match on the assumption that there will never be multiple matches', async () => {
       fakePrisonerOffenderSearch
-        .get(prisonerOffenderSearchPaths.prisoner.show({ prisonNumber: prisoner.prisonerNumber }))
+        .post(prisonerOffenderSearchPaths.prisoner.search({}))
         .matchHeader('authorization', `Bearer ${token}`)
-        .reply(200, prisoner)
+        .reply(200, [prisoner])
 
-      const output = await prisonerClient.find(prisoner.prisonerNumber)
+      const output = await prisonerClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
       expect(output).toEqual(prisoner)
+    })
+
+    describe('when no prisoner is found', () => {
+      it('returns null', async () => {
+        fakePrisonerOffenderSearch
+          .post(prisonerOffenderSearchPaths.prisoner.search({}))
+          .matchHeader('authorization', `Bearer ${token}`)
+          .reply(200, [])
+
+        const output = await prisonerClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
+        expect(output).toEqual(null)
+      })
     })
   })
 })

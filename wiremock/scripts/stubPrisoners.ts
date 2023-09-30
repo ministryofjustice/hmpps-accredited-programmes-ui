@@ -7,14 +7,15 @@ import { prisoners } from '../stubs'
 prisoners.forEach(async prisoner => {
   const response = await stubFor({
     request: {
-      method: 'GET',
-      url: prisonerOffenderSearchPaths.prisoner.show({ prisonNumber: prisoner.prisonerNumber }),
+      method: 'POST',
+      url: prisonerOffenderSearchPaths.prisoner.search({}),
     },
+
     response: {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: prisoner,
+      jsonBody: [prisoner],
       status: 200,
     },
   })
