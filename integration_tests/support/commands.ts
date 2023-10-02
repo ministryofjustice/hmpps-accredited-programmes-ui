@@ -24,7 +24,7 @@ const logAccessibilityViolations = (violations: Array<Result>) => {
   cy.task('table', violationsData)
 }
 
-Cypress.Commands.add('checkAccessibility', (rules: AxeRules = undefined) => {
+Cypress.Commands.add('checkAccessibility', (rules?: AxeRules) => {
   cy.injectAxe()
   cy.configureAxe({ rules: [{ enabled: false, id: 'region', selector: '.govuk-phase-banner' }] })
   cy.checkA11y(undefined, { rules }, logAccessibilityViolations)

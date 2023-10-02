@@ -20,8 +20,6 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
-  accessibilityRules: AxeRules | undefined
-
   customPageTitleEnd: string | undefined
 
   external: boolean
@@ -34,12 +32,11 @@ export default abstract class Page {
       external?: boolean
     },
   ) {
-    this.accessibilityRules = options?.accessibilityRules
     this.customPageTitleEnd = options?.customPageTitleEnd
     this.external = options?.external || false
     this.checkOnPage()
     if (!this.external) {
-      cy.checkAccessibility(this.accessibilityRules)
+      cy.checkAccessibility(options?.accessibilityRules)
     }
   }
 
