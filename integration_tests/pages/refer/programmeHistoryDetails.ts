@@ -8,7 +8,7 @@ export default class ProgrammeHistoryDetailsPage extends Page {
   }
 
   shouldContainOutcomeDetailTextArea() {
-    this.shouldContainTextArea('outcomeDetail', 'Can you provide additional detail? (if known)')
+    this.shouldContainTextArea('outcomeDetail', 'Provide additional detail (if known)')
   }
 
   shouldContainOutcomeRadioItems() {
