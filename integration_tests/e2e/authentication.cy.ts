@@ -8,6 +8,7 @@ context('Authentication', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
   })
 
   it('Unauthenticated user directed to auth', () => {

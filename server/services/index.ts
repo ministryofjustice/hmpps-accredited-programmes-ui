@@ -5,9 +5,9 @@ import healthCheck from './healthCheck'
 import OrganisationService from './organisationService'
 import PersonService from './personService'
 import ReferralService from './referralService'
-import type { UserDetails } from './userService'
 import UserService from './userService'
 import {
+  caseloadClientBuilder,
   courseClientBuilder,
   hmppsAuthClientBuilder,
   prisonClientBuilder,
@@ -20,7 +20,7 @@ const services = () => {
   const organisationService = new OrganisationService(prisonClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonerClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
-  const userService = new UserService(hmppsAuthClientBuilder)
+  const userService = new UserService(hmppsAuthClientBuilder, caseloadClientBuilder)
 
   return {
     courseService,
@@ -35,4 +35,4 @@ type Services = ReturnType<typeof services>
 
 export { CourseService, OrganisationService, PersonService, ReferralService, UserService, healthCheck, services }
 
-export type { Services, UserDetails }
+export type { Services }

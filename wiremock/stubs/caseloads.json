@@ -1,0 +1,23 @@
+[
+  {
+    "caseLoadId": "MRI",
+    "caseloadFunction": "GENERAL",
+    "currentlyActive": true,
+    "description": "Manchester (HMP & YOI)",
+    "type": "INST"
+  },
+  {
+    "caseLoadId": "BXI",
+    "caseloadFunction": "GENERAL",
+    "currentlyActive": false,
+    "description": "Brixton (HMP & YOI)",
+    "type": "INST"
+  },
+  {
+    "caseLoadId": "MDI",
+    "caseloadFunction": "GENERAL",
+    "currentlyActive": false,
+    "description": "Moorland (HMP & YOI)",
+    "type": "INST"
+  }
+]

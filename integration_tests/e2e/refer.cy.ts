@@ -33,6 +33,7 @@ context('Refer', () => {
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
   })
 
   it('Shows the start page for a referral', () => {
@@ -823,6 +824,7 @@ context('Refer', () => {
       cy.task('reset')
       cy.task('stubSignIn', { authorities: [] })
       cy.task('stubAuthUser')
+      cy.task('stubDefaultCaseloads')
     })
 
     it('shows the authentication error page', () => {
