@@ -27,7 +27,7 @@ export default class CourseClient {
     otherCourseName?: CourseParticipation['otherCourseName'],
   ): Promise<CourseParticipation> {
     return (await this.restClient.post({
-      data: { courseId, otherCourseName, prisonNumber },
+      data: { courseId, otherCourseName, outcome: {}, prisonNumber, setting: {} },
       path: apiPaths.participations.create({}),
     })) as CourseParticipation
   }
