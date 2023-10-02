@@ -1,5 +1,14 @@
+import createError from 'http-errors'
+import type { ResponseError } from 'superagent'
+
 import type { CourseClient, RestClientBuilder } from '../data'
-import type { Course, CourseOffering, CourseParticipation, Person } from '@accredited-programmes/models'
+import type {
+  Course,
+  CourseOffering,
+  CourseParticipation,
+  CourseParticipationUpdate,
+  Person,
+} from '@accredited-programmes/models'
 
 export default class CourseService {
   constructor(private readonly courseClientBuilder: RestClientBuilder<CourseClient>) {}
@@ -39,11 +48,43 @@ export default class CourseService {
     return courseClient.findOfferings(courseId)
   }
 
+  async getParticipation(
+    token: Express.User['token'],
+    courseParticipationId: CourseParticipation['id'],
+  ): Promise<CourseParticipation | null> {
+    const courseClient = this.courseClientBuilder(token)
+
+    try {
+      const courseParticipation = await courseClient.findParticipation(courseParticipationId)
+
+      return courseParticipation
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, knownError, {
+        userMessage: `Error fetching course participation with ID ${courseParticipationId}.`,
+      })
+    }
+  }
+
   async getParticipationsByPerson(
     token: Express.User['token'],
     prisonNumber: Person['prisonNumber'],
   ): Promise<Array<CourseParticipation>> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.findParticipationsByPerson(prisonNumber)
+  }
+
+  async updateParticipation(
+    token: Express.User['token'],
+    courseParticipationId: CourseParticipation['id'],
+    courseParticipationUpdate: CourseParticipationUpdate,
+  ): Promise<CourseParticipation> {
+    const courseClient = this.courseClientBuilder(token)
+    return courseClient.updateParticipation(courseParticipationId, courseParticipationUpdate)
   }
 }

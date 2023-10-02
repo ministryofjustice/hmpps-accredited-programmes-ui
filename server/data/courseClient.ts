@@ -2,7 +2,13 @@ import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
 import { apiPaths } from '../paths'
-import type { Course, CourseOffering, CourseParticipation, Person } from '@accredited-programmes/models'
+import type {
+  Course,
+  CourseOffering,
+  CourseParticipation,
+  CourseParticipationUpdate,
+  Person,
+} from '@accredited-programmes/models'
 
 export default class CourseClient {
   restClient: RestClient
@@ -48,9 +54,25 @@ export default class CourseClient {
     })) as Array<CourseOffering>
   }
 
+  async findParticipation(courseParticipationId: CourseParticipation['id']): Promise<CourseParticipation> {
+    return (await this.restClient.get({
+      path: apiPaths.participations.show({ courseParticipationId }),
+    })) as CourseParticipation
+  }
+
   async findParticipationsByPerson(prisonNumber: Person['prisonNumber']): Promise<Array<CourseParticipation>> {
     return (await this.restClient.get({
       path: apiPaths.people.participations({ prisonNumber }),
     })) as Array<CourseParticipation>
+  }
+
+  async updateParticipation(
+    courseParticipationId: CourseParticipation['id'],
+    courseParticipationUpdate: CourseParticipationUpdate,
+  ): Promise<CourseParticipation> {
+    return (await this.restClient.put({
+      data: courseParticipationUpdate,
+      path: apiPaths.participations.update({ courseParticipationId }),
+    })) as CourseParticipation
   }
 }

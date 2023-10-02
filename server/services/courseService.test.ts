@@ -1,8 +1,11 @@
+import { faker } from '@faker-js/faker'
+import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import CourseService from './courseService'
 import { CourseClient } from '../data'
 import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
+import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/courseClient')
 
@@ -132,6 +135,54 @@ describe('CourseService', () => {
     })
   })
 
+  describe('getParticipation', () => {
+    it('returns a given course participation', async () => {
+      const courseParticipation = courseParticipationFactory.build()
+
+      when(courseClient.findParticipation).calledWith(courseParticipation.id).mockResolvedValue(courseParticipation)
+
+      const result = await service.getParticipation(token, courseParticipation.id)
+
+      expect(result).toEqual(courseParticipation)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
+      expect(courseClient.findParticipation).toHaveBeenCalledWith(courseParticipation.id)
+    })
+
+    describe('when the course client throws a 404 error', () => {
+      it('returns `null`', async () => {
+        const clientError = createError(404)
+        courseClient.findParticipation.mockRejectedValue(clientError)
+
+        const notFoundCourseParticipationId = 'NOT-FOUND'
+
+        const result = await service.getParticipation(token, notFoundCourseParticipationId)
+
+        expect(result).toEqual(null)
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(token)
+        expect(courseClient.findParticipation).toHaveBeenCalledWith(notFoundCourseParticipationId)
+      })
+    })
+
+    describe('when the course client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(501)
+        courseClient.findParticipation.mockRejectedValue(clientError)
+
+        const courseParticipationId = faker.string.uuid()
+
+        await expect(() => service.getParticipation(token, courseParticipationId)).rejects.toHaveProperty(
+          'userMessage',
+          `Error fetching course participation with ID ${courseParticipationId}.`,
+        )
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(token)
+        expect(courseClient.findParticipation).toHaveBeenCalledWith(courseParticipationId)
+      })
+    })
+  })
+
   describe('getParticipationsByPerson', () => {
     const person = personFactory.build()
 
@@ -164,6 +215,36 @@ describe('CourseService', () => {
         expect(courseClientBuilder).toHaveBeenCalledWith(token)
         expect(courseClient.findParticipationsByPerson).toHaveBeenCalledWith(person.prisonNumber)
       })
+    })
+  })
+
+  describe('updateParticipation', () => {
+    it('asks the client to update a course participation', async () => {
+      const courseId = 'course-id'
+      const courseParticipation = courseParticipationFactory.withCourseId().build({ courseId })
+      const courseParticipationUpdate: CourseParticipationUpdate = {
+        courseId,
+        outcome: {
+          status: 'complete',
+          yearCompleted: 2023,
+        },
+        setting: {
+          location: 'somewhere',
+          type: 'community',
+        },
+        source: 'somewhere',
+      }
+
+      when(courseClient.updateParticipation)
+        .calledWith(courseParticipation.id, courseParticipationUpdate)
+        .mockResolvedValue(courseParticipation)
+
+      const result = await service.updateParticipation(token, courseParticipation.id, courseParticipationUpdate)
+
+      expect(result).toEqual(courseParticipation)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
+      expect(courseClient.updateParticipation).toHaveBeenCalledWith(courseParticipation.id, courseParticipationUpdate)
     })
   })
 })
