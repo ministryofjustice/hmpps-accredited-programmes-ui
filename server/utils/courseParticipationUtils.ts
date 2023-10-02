@@ -31,22 +31,30 @@ export default class CourseParticipationUtils {
     })
 
     if (courseParticipationWithName.setting) {
-      let valueText = StringUtils.properCase(courseParticipationWithName.setting.type)
+      const valueTextItems: Array<string> = []
 
-      if (courseParticipationWithName.setting.location) {
-        valueText += `, ${courseParticipationWithName.setting.location}`
+      if (courseParticipationWithName.setting.type) {
+        valueTextItems.push(StringUtils.properCase(courseParticipationWithName.setting.type))
       }
 
-      summaryListRows.push({
-        key: { text: 'Setting' },
-        value: { text: valueText },
-      })
+      if (courseParticipationWithName.setting.location) {
+        valueTextItems.push(`${courseParticipationWithName.setting.location}`)
+      }
+
+      const valueText = valueTextItems.join(', ')
+
+      if (valueText) {
+        summaryListRows.push({
+          key: { text: 'Setting' },
+          value: { text: valueText },
+        })
+      }
     }
 
     if (courseParticipationWithName.outcome) {
-      let valueText = ''
-
       if (courseParticipationWithName.outcome.status) {
+        let valueText = ''
+
         valueText += StringUtils.properCase(courseParticipationWithName.outcome.status)
 
         if (courseParticipationWithName.outcome.yearStarted) {

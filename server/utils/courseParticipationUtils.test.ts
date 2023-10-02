@@ -83,6 +83,18 @@ describe('CourseParticipationUtils', () => {
         expect(fieldRow).toBeUndefined()
       })
 
+      it('only shows the location in the Setting row when setting location is undefined', () => {
+        const withoutSettingType = {
+          ...courseParticipationWithName,
+          setting: { location: 'Stockport', type: undefined },
+        }
+
+        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingType)
+        const settingRow = getRow(rows, 'Setting')
+
+        expect(settingRow).toEqual({ key: { text: 'Setting' }, value: { text: 'Stockport' } })
+      })
+
       it('only shows the type in the Setting row when setting location is undefined', () => {
         const withoutSettingLocation = {
           ...courseParticipationWithName,

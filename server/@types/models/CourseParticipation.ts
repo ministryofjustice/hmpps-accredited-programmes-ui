@@ -9,19 +9,19 @@ type CourseParticipationOutcome = {
 }
 
 type CourseParticipationSetting = {
-  type: 'community' | 'custody'
   location?: string
+  type?: 'community' | 'custody'
 }
 
 type CourseParticipation = {
   id: string // eslint-disable-next-line @typescript-eslint/member-ordering
   addedBy: string
   createdAt: string
+  outcome: CourseParticipationOutcome
   prisonNumber: Person['prisonNumber']
+  setting: CourseParticipationSetting
   courseId?: Course['id']
   otherCourseName?: string
-  outcome?: CourseParticipationOutcome
-  setting?: CourseParticipationSetting
   source?: string
 }
 
