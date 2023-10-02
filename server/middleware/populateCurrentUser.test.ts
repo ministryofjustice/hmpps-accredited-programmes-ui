@@ -34,20 +34,21 @@ describe('populateCurrentUser', () => {
       locals: {
         user: {
           token: 'SOME-TOKEN',
+          userId: 'some-uuid-value',
         },
       },
     })
 
     describe('and the user is not already present in the session', () => {
       describe('and they are found by the user service', () => {
-        it('populates the user with its token, details from the user service and its roles, then calls next', async () => {
+        it('populates the user with its token, details from the user service and its roles, overriding any duplicate keys, then calls next', async () => {
           const caseloads = [caseloadFactory.build()]
 
           userService.getUser.mockResolvedValue({
             caseloads,
             displayName: 'DEL_HATTON',
             name: 'Del Hatton',
-            userId: 'random-uuid',
+            userId: 'new-uuid-value',
           })
           ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
 
@@ -62,7 +63,7 @@ describe('populateCurrentUser', () => {
             name: 'Del Hatton',
             roles: ['SOME_REQUIRED_ROLE'],
             token: 'SOME-TOKEN',
-            userId: 'random-uuid',
+            userId: 'new-uuid-value',
           })
 
           expect(next).toHaveBeenCalled()

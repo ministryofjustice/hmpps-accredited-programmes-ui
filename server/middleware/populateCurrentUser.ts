@@ -15,8 +15,8 @@ export default function populateCurrentUser(userService: UserService): RequestHa
         if (req.session.user) {
           const roles = UserUtils.getUserRolesFromToken(token)
           res.locals.user = {
-            ...req.session.user,
             ...res.locals.user,
+            ...req.session.user,
             hasReferrerRole: roles?.includes(ApplicationRoles.ACP_REFERRER),
             roles,
           }
