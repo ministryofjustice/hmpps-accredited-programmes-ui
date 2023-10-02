@@ -70,7 +70,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('createParticipation', () => {
     describe('when `courseId` is provided', () => {
-      const courseParticipation = courseParticipationFactory.withCourseId().build()
+      const courseParticipation = courseParticipationFactory.withCourseId().build() as CourseParticipation & {
+        courseId: string
+      }
       const { courseId, prisonNumber } = courseParticipation
 
       beforeEach(() => {
@@ -82,7 +84,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             status: 201,
           },
           withRequest: {
-            body: { courseId, prisonNumber } as CourseParticipation & { courseId: string },
+            body: { courseId, prisonNumber },
             headers: {
               authorization: `Bearer ${token}`,
             },
@@ -100,7 +102,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     describe('when `otherCourseName` is provided and `courseId` is not', () => {
-      const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
+      const courseParticipation = courseParticipationFactory.withOtherCourseName().build() as CourseParticipation & {
+        otherCourseName: string
+      }
       const { otherCourseName, prisonNumber } = courseParticipation
 
       beforeEach(() => {
@@ -112,7 +116,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             status: 201,
           },
           withRequest: {
-            body: { otherCourseName, prisonNumber } as CourseParticipation & { otherCourseName: string },
+            body: { otherCourseName, prisonNumber },
             headers: {
               authorization: `Bearer ${token}`,
             },
