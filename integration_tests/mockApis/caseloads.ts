@@ -27,9 +27,7 @@ export default {
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          caseloads: defaultCaseloads,
-        },
+        jsonBody: defaultCaseloads,
         status: 200,
       },
     }),
