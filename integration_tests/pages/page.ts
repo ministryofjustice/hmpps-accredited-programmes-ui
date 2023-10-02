@@ -209,9 +209,9 @@ export default abstract class Page {
     })
   }
 
-  shouldContainTextArea(name: string, label: string): void {
-    cy.get(`.govuk-label[for="${name}"]`).should('contain.text', label)
-    cy.get(`.govuk-textarea[name="${name}"]`).should('exist')
+  shouldContainTextArea(id: string, label: string): void {
+    cy.get(`.govuk-label[for="${id}"]`).should('contain.text', label)
+    cy.get(`.govuk-textarea[id="${id}"]`).should('exist')
   }
 
   shouldHaveErrors(errors: Array<{ field: string; message: string }>): void {
