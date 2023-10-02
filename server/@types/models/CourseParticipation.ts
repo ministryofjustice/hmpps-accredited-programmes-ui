@@ -9,8 +9,8 @@ type CourseParticipationOutcome = {
 }
 
 type CourseParticipationSetting = {
-  type: 'community' | 'custody'
   location?: string
+  type?: 'community' | 'custody'
 }
 
 type CourseParticipation = {
