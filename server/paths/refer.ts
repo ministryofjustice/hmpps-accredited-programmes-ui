@@ -15,7 +15,9 @@ const showReferralPath = referralsPath.path(':referralId')
 const referralPersonPath = showReferralPath.path('person')
 const programmeHistoryPath = showReferralPath.path('programme-history')
 const newProgrammeHistoryPath = programmeHistoryPath.path('new')
-const programmeHistoryDetailsPath = programmeHistoryPath.path(':courseParticipationId/details')
+const showProgrammeHistoryPath = programmeHistoryPath.path(':courseParticipationId')
+const programmeHistoryProgrammePath = showProgrammeHistoryPath.path('programme')
+const programmeHistoryDetailsPath = showProgrammeHistoryPath.path('details')
 const confirmOasysPath = showReferralPath.path('confirm-oasys')
 const reasonForReferralPath = showReferralPath.path('reason')
 const checkAnswersPath = showReferralPath.path('check-answers')
@@ -38,6 +40,7 @@ export default {
   programmeHistory: {
     create: programmeHistoryPath,
     details: programmeHistoryDetailsPath,
+    editProgramme: programmeHistoryProgrammePath,
     index: programmeHistoryPath,
     new: newProgrammeHistoryPath,
   },

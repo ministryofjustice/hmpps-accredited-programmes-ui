@@ -48,6 +48,51 @@ export default class CourseParticipationsController {
     }
   }
 
+  editCourse(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseParticipationId, referralId } = req.params
+
+      const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+
+      if (!courseParticipation) {
+        throw createError(404, `Programme history with ID ${courseParticipationId} not found.`)
+      }
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
+
+      if (!person) {
+        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
+      }
+
+      const courses = await this.courseService.getCourses(req.user.token)
+
+      FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
+
+      const isOtherCourse = !courseParticipation?.courseId && !!courseParticipation?.otherCourseName
+      const hasOtherCourseNameError = !!res.locals.errors.messages.otherCourseName
+
+      res.render('referrals/courseParticipations/course', {
+        action: '#',
+        courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        otherCourseNameChecked: isOtherCourse || hasOtherCourseNameError,
+        pageHeading: 'Add Accredited Programme history',
+        person,
+        referralId: referral.id,
+        values: {
+          courseId: courseParticipation?.courseId,
+          otherCourseName: courseParticipation?.otherCourseName,
+        },
+      })
+    }
+  }
+
   index(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
