@@ -9,6 +9,7 @@ import type { CourseService, PersonService, ReferralService } from '../../servic
 import { courseFactory, courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../utils'
+import type { CourseParticipation } from '@accredited-programmes/models'
 
 jest.mock('../../utils/formUtils')
 
@@ -134,6 +135,76 @@ describe('CourseParticipationsController', () => {
           referPaths.programmeHistory.new({ referralId: request.params.referralId }),
         )
         expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
+      })
+    })
+  })
+
+  describe('editCourse', () => {
+    const courses = courseFactory.buildList(2)
+    const person = personFactory.build()
+    const courseParticipationWithCourseId = courseParticipationFactory.withCourseId().build({
+      courseId: courses[0].id,
+      prisonNumber: person.prisonNumber,
+    })
+    const courseParticipationWithOtherCourseName = courseParticipationFactory.withOtherCourseName().build({
+      prisonNumber: person.prisonNumber,
+    })
+    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+
+    beforeEach(() => {
+      request.params.referralId = referral.id
+    })
+
+    type CourseIdentifierType = 'a courseId' | 'an otherCourseName'
+
+    describe.each<[CourseIdentifierType, CourseParticipation]>([
+      ['a courseId', courseParticipationWithCourseId],
+      ['an otherCourseName', courseParticipationWithOtherCourseName],
+    ])(
+      'when the participation has `%s`',
+      (courseIdentifierType: CourseIdentifierType, courseParticipation: CourseParticipation) => {
+        it('renders the edit template for selecting a course', async () => {
+          request.params.courseParticipationId = courseParticipation.id
+          courseService.getParticipation.mockResolvedValue(courseParticipation)
+          referralService.getReferral.mockResolvedValue(referral)
+          personService.getPerson.mockResolvedValue(person)
+          courseService.getCourses.mockResolvedValue(courses)
+
+          const emptyErrorsLocal = { list: [], messages: {} }
+          ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+            response.locals.errors = emptyErrorsLocal
+          })
+
+          const requestHandler = courseParticipationsController.editCourse()
+          await requestHandler(request, response, next)
+
+          const { courseId, otherCourseName } = courseParticipation
+
+          expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/course', {
+            action: '#',
+            courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+            otherCourseNameChecked: courseIdentifierType === 'an otherCourseName',
+            pageHeading: 'Add Accredited Programme history',
+            person,
+            referralId: referral.id,
+            values: { courseId, otherCourseName },
+          })
+          expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
+        })
+      },
+    )
+
+    describe('when the person service returns `null`', () => {
+      it('responds with a 404', async () => {
+        request.params.courseParticipationId = courseParticipationWithCourseId.id
+        courseService.getParticipation.mockResolvedValue(courseParticipationWithCourseId)
+        referralService.getReferral.mockResolvedValue(referral)
+        personService.getPerson.mockResolvedValue(null)
+
+        const requestHandler = courseParticipationsController.editCourse()
+        const expectedError = createError(404, `Person with prison number ${person.prisonNumber} not found.`)
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
