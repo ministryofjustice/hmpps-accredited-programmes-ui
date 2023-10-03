@@ -7,6 +7,9 @@ import CourseParticipationDetailsController from './courseParticipationDetailsCo
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
+import { FormUtils } from '../../utils'
+
+jest.mock('../../utils/formUtils')
 
 describe('CourseParticipationDetailsController', () => {
   const token = 'SOME_TOKEN'
@@ -53,6 +56,14 @@ describe('CourseParticipationDetailsController', () => {
       const courseParticipation = courseParticipationFactory.build()
       courseService.getParticipation.mockResolvedValue(courseParticipation)
 
+      const emptyErrorsLocal = { list: [], messages: {} }
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
+      ;(FormUtils.setFormValues as jest.Mock).mockImplementation((_request, _response) => {
+        response.locals.formValues = {}
+      })
+
       const requestHandler = courseParticipationDetailsController.show()
       await requestHandler(request, response, next)
 
@@ -62,6 +73,8 @@ describe('CourseParticipationDetailsController', () => {
         person,
         referralId,
       })
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['yearCompleted', 'yearStarted'])
+      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
     })
   })
 })

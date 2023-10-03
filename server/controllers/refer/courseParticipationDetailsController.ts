@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, PersonService, ReferralService } from '../../services'
-import { TypeUtils } from '../../utils'
+import { FormUtils, TypeUtils } from '../../utils'
 
 export default class CourseParticipationDetailsController {
   constructor(
@@ -23,6 +23,9 @@ export default class CourseParticipationDetailsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
+
+      FormUtils.setFieldErrors(req, res, ['yearCompleted', 'yearStarted'])
+      FormUtils.setFormValues(req, res)
 
       res.render('referrals/courseParticipations/details/show', {
         courseParticipationId,
