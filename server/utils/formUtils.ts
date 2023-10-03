@@ -18,4 +18,12 @@ export default class FormUtils {
 
     res.locals.errors = { list, messages }
   }
+
+  static setFormValues(req: Request, res: Response): void {
+    const formValuesAsString = req.flash('formValues')[0]
+
+    const formValues = formValuesAsString ? JSON.parse(formValuesAsString) : {}
+
+    res.locals.formValues = formValues
+  }
 }
