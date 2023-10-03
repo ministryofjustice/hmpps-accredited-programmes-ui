@@ -18,6 +18,19 @@ export default {
       },
     }),
 
+  stubParticipation: (courseParticipation: CourseParticipation): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.participations.show({ courseParticipationId: courseParticipation.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courseParticipation,
+        status: 200,
+      },
+    }),
+
   stubParticipationsByPerson: (args: {
     courseParticipations: Array<CourseParticipation>
     prisonNumber: Person['prisonNumber']

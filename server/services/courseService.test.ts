@@ -150,15 +150,15 @@ describe('CourseService', () => {
     })
 
     describe('when the course client throws a 404 error', () => {
-      it('returns `null`', async () => {
+      it('throws a not found error message`', async () => {
         const clientError = createError(404)
         courseClient.findParticipation.mockRejectedValue(clientError)
 
         const notFoundCourseParticipationId = 'NOT-FOUND'
 
-        const result = await service.getParticipation(token, notFoundCourseParticipationId)
-
-        expect(result).toEqual(null)
+        await expect(() => service.getParticipation(token, notFoundCourseParticipationId)).rejects.toThrowError(
+          `Course participation with ID ${notFoundCourseParticipationId} not found.`,
+        )
 
         expect(courseClientBuilder).toHaveBeenCalledWith(token)
         expect(courseClient.findParticipation).toHaveBeenCalledWith(notFoundCourseParticipationId)
@@ -166,14 +166,13 @@ describe('CourseService', () => {
     })
 
     describe('when the course client throws any other error', () => {
-      it('re-throws the error', async () => {
+      it('throws a generic error message', async () => {
         const clientError = createError(501)
         courseClient.findParticipation.mockRejectedValue(clientError)
 
         const courseParticipationId = faker.string.uuid()
 
-        await expect(() => service.getParticipation(token, courseParticipationId)).rejects.toHaveProperty(
-          'userMessage',
+        await expect(() => service.getParticipation(token, courseParticipationId)).rejects.toThrowError(
           `Error fetching course participation with ID ${courseParticipationId}.`,
         )
 

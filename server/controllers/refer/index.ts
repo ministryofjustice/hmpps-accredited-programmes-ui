@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import CourseParticipationDetailsController from './courseParticipationDetailsController'
 import CourseParticipationsController from './courseParticipationsController'
 import OasysConfirmationController from './oasysConfirmationController'
 import PeopleController from './peopleController'
@@ -22,8 +23,14 @@ const controllers = (services: Services) => {
     services.personService,
     services.referralService,
   )
+  const courseParticipationDetailsController = new CourseParticipationDetailsController(
+    services.courseService,
+    services.personService,
+    services.referralService,
+  )
 
   return {
+    courseParticipationDetailsController,
     courseParticipationsController,
     oasysConfirmationController,
     peopleController,

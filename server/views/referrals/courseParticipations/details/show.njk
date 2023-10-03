@@ -1,0 +1,172 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "../../_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: referPaths.programmeHistory.index({ referralId: referralId })
+  }) }}
+{% endblock backLink %}
+
+{% set communityLocationHtml %}
+{{ govukInput({
+  id: "communityLocation",
+  name: "setting[location]",
+  classes: "govuk-!-width-one-third",
+  label: {
+    text: "Enter the location (if known)"
+  }
+}) }}
+{% endset %}
+
+{% set custodyLocationHtml %}
+{{ govukInput({
+  id: "custodyLocation",
+  name: "setting[location]",
+  classes: "govuk-!-width-one-third",
+  label: {
+    text: "Enter the prison (if known)"
+  }
+}) }}
+{% endset %}
+
+{% set yearCompletedHtml %}
+{{ govukInput({
+  id: "yearCompleted",
+  name: "outcome[yearCompleted]",
+  inputmode: "numeric",
+  spellcheck: false,
+  classes: "govuk-!-width-one-third",
+  label: {
+    text: "Enter the year completed (if known)"
+  }
+}) }}
+{% endset %}
+
+{% set yearStartedHtml %}
+{{ govukInput({
+  id: "yearStarted",
+  name: "outcome[yearStarted]",
+  inputmode: "numeric",
+  spellcheck: false,
+  classes: "govuk-!-width-one-third",
+  label: {
+    text: "Enter the year started (if known)"
+  }
+}) }}
+{% endset %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="#" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukRadios({
+          name: "setting[type]",
+          fieldset: {
+            legend: {
+              text: "Select the setting"
+            }
+          },
+          items: [
+            {
+              value: "community",
+              text: "Community",
+              conditional: {
+                html: communityLocationHtml
+              },
+              attributes: {
+                "data-testid": "community-setting-option"
+              }
+            },
+            {
+              value: "custody",
+              text: "Custody",
+              conditional: {
+                html: custodyLocationHtml
+              },
+              attributes: {
+                "data-testid": "custody-setting-option"
+              }
+            }
+          ],
+          attributes: {
+            "data-testid": "setting-options"
+          }
+        }) }}
+
+        {{ govukRadios({
+          name: "outcome[status]",
+          fieldset: {
+            legend: {
+              text: "Select the outcome (if known)"
+            }
+          },
+          items: [
+            {
+              value: "complete",
+              text: "Complete",
+              conditional: {
+                html: yearCompletedHtml
+              },
+              attributes: {
+                "data-testid": "complete-outcome-option"
+              }
+            },
+            {
+              value: "incomplete",
+              text: "Incomplete",
+              conditional: {
+                html: yearStartedHtml
+              },
+              attributes: {
+                "data-testid": "incomplete-outcome-option"
+              }
+            }
+          ],
+          attributes: {
+            "data-testid": "outcome-options"
+          }
+        }) }}
+
+        {{ govukTextarea({
+          name: "outcome[detail]",
+          id: "outcomeDetail",
+          label: {
+            text: "Provide additional detail (if known)"
+          },
+          hint: {
+            text: "Include information about the outcome"
+          }
+        }) }}
+
+        {{ govukTextarea({
+          name: "source",
+          id: "source",
+          label: {
+            text: "Provide the source"
+          },
+          hint: {
+            text: "Include where you got this information from"
+          }
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}

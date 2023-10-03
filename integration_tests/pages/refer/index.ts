@@ -3,6 +3,7 @@ import ConfirmOasysPage from './confirmOasys'
 import ConfirmPersonPage from './confirmPerson'
 import FindPersonPage from './findPerson'
 import ProgrammeHistoryPage from './programmeHistory'
+import ProgrammeHistoryDetailsPage from './programmeHistoryDetails'
 import SelectProgrammePage from './selectProgramme'
 import ShowPersonPage from './showPerson'
 import StartReferralPage from './startReferral'
@@ -13,6 +14,7 @@ export {
   ConfirmOasysPage,
   ConfirmPersonPage,
   FindPersonPage,
+  ProgrammeHistoryDetailsPage,
   ProgrammeHistoryPage,
   SelectProgrammePage,
   ShowPersonPage,

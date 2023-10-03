@@ -18,6 +18,7 @@ import {
   ConfirmOasysPage,
   ConfirmPersonPage,
   FindPersonPage,
+  ProgrammeHistoryDetailsPage,
   ProgrammeHistoryPage,
   SelectProgrammePage,
   ShowPersonPage,
@@ -542,18 +543,19 @@ context('Refer', () => {
   })
 
   describe('When adding programme history', () => {
+    const courses = courseFactory.buildList(4)
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+
     describe('and selecting a programme', () => {
-      const courses = courseFactory.buildList(4)
-      const prisoner = prisonerFactory.build({
-        firstName: 'Del',
-        lastName: 'Hatton',
-      })
-      const person = personFactory.build({
-        currentPrison: prisoner.prisonName,
-        name: 'Del Hatton',
-        prisonNumber: prisoner.prisonerNumber,
-      })
-      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
       const path = referPaths.programmeHistory.new({ referralId: referral.id })
 
       beforeEach(() => {
@@ -586,16 +588,9 @@ context('Refer', () => {
 
         const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
         selectProgrammePage.selectCourse(courses[0].id)
-        selectProgrammePage.shouldContainButton('Continue').click()
+        selectProgrammePage.submitSelection(courseParticipation, courses[0].id)
 
-        // Change when we have a details page
-        cy.url().should(
-          'include',
-          referPaths.programmeHistory.details({
-            courseParticipationId: courseParticipation.id,
-            referralId: referral.id,
-          }),
-        )
+        Page.verifyOnPage(ProgrammeHistoryDetailsPage)
       })
 
       it('displays an error when no programme is selected', () => {
@@ -623,6 +618,48 @@ context('Refer', () => {
             message: 'Enter the programme name',
           },
         ])
+      })
+    })
+
+    describe('and a programme has been selected', () => {
+      const courseParticipation = courseParticipationFactory
+        .withCourseId()
+        .build({ courseId: courses[0].id, prisonNumber: person.prisonNumber })
+      const path = referPaths.programmeHistory.details({
+        courseParticipationId: courseParticipation.id,
+        referralId: referral.id,
+      })
+
+      beforeEach(() => {
+        cy.task('stubParticipation', courseParticipation)
+        cy.task('stubPrisoner', prisoner)
+        cy.task('stubReferral', referral)
+
+        cy.signIn()
+
+        cy.visit(path)
+      })
+
+      it('shows the details form page', () => {
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        programmeHistoryDetailsPage.shouldContainNavigation(path)
+        programmeHistoryDetailsPage.shouldHavePersonDetails(person)
+        programmeHistoryDetailsPage.shouldContainBackLink(
+          referPaths.programmeHistory.index({ referralId: referral.id }),
+        )
+        programmeHistoryDetailsPage.shouldContainSettingRadioItems()
+        programmeHistoryDetailsPage.shouldNotDisplayCommunityLocationInput()
+        programmeHistoryDetailsPage.shouldDisplayCommunityLocationInput()
+        programmeHistoryDetailsPage.shouldNotDisplayCustodyLocationInput()
+        programmeHistoryDetailsPage.shouldDisplayCustodyLocationInput()
+        programmeHistoryDetailsPage.shouldContainOutcomeRadioItems()
+        programmeHistoryDetailsPage.shouldNotDisplayYearCompletedInput()
+        programmeHistoryDetailsPage.shouldDisplayYearCompletedInput()
+        programmeHistoryDetailsPage.shouldNotDisplayYearStartedInput()
+        programmeHistoryDetailsPage.shouldDisplayYearStartedInput()
+        programmeHistoryDetailsPage.shouldContainOutcomeDetailTextArea()
+        programmeHistoryDetailsPage.shouldContainSourceTextArea()
+        programmeHistoryDetailsPage.shouldContainButton('Continue')
       })
     })
   })

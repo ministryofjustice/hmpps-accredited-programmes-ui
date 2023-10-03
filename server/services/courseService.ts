@@ -62,12 +62,13 @@ export default class CourseService {
       const knownError = error as ResponseError
 
       if (knownError.status === 404) {
-        return null
+        throw createError(knownError.status, `Course participation with ID ${courseParticipationId} not found.`)
       }
 
-      throw createError(knownError.status || 500, knownError, {
-        userMessage: `Error fetching course participation with ID ${courseParticipationId}.`,
-      })
+      throw createError(
+        knownError.status || 500,
+        `Error fetching course participation with ID ${courseParticipationId}.`,
+      )
     }
   }
 

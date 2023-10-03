@@ -1,5 +1,5 @@
 import Page from '../page'
-import type { Course } from '@accredited-programmes/models'
+import type { Course, CourseParticipation } from '@accredited-programmes/models'
 
 export default class SelectProgrammePage extends Page {
   courses: Array<Course>
@@ -31,5 +31,10 @@ export default class SelectProgrammePage extends Page {
 
   shouldNotDisplayOtherCourseInput() {
     cy.get(`input[name="otherCourseName"]`).should('not.be.visible')
+  }
+
+  submitSelection(courseParticipation: CourseParticipation, selectedCourseId: Course['id']) {
+    cy.task('stubParticipation', { ...courseParticipation, courseId: selectedCourseId })
+    this.shouldContainButton('Continue').click()
   }
 }

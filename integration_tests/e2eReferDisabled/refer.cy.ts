@@ -182,6 +182,32 @@ context('Refer', () => {
     notFoundPage2.shouldContain404H2()
   })
 
+  it("Doesn't show the update programme history details page", () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build()
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
+    const courseParticipation = courseParticipationFactory.build()
+
+    cy.task('stubParticipation', courseParticipation)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.programmeHistory.details({
+      courseParticipationId: courseParticipation.id,
+      referralId: referral.id,
+    })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage2 = Page.verifyOnPage(NotFoundPage)
+    notFoundPage2.shouldContain404H2()
+  })
+
   it("Doesn't show the check answers page for a referral", () => {
     cy.signIn()
 

@@ -8,6 +8,7 @@ import { RouteUtils } from '../utils'
 export default function routes(controllers: Controllers, router: Router): Router {
   const { get, post, put } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
+    courseParticipationDetailsController,
     courseParticipationsController,
     reasonController,
     referralsController,
@@ -34,6 +35,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.programmeHistory.index.pattern, courseParticipationsController.index())
   get(referPaths.programmeHistory.new.pattern, courseParticipationsController.new())
   post(referPaths.programmeHistory.create.pattern, courseParticipationsController.create())
+
+  get(referPaths.programmeHistory.details.pattern, courseParticipationDetailsController.show())
 
   get(referPaths.checkAnswers.pattern, referralsController.checkAnswers())
   get(referPaths.complete.pattern, referralsController.complete())
