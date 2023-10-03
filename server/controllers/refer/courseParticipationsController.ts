@@ -36,7 +36,10 @@ export default class CourseParticipationsController {
       )
 
       return res.redirect(
-        referPaths.programmeHistory.details({ courseParticipationId: courseParticipation.id, referralId: referral.id }),
+        referPaths.programmeHistory.details.show({
+          courseParticipationId: courseParticipation.id,
+          referralId: referral.id,
+        }),
       )
     }
   }
@@ -196,7 +199,7 @@ export default class CourseParticipationsController {
       })
 
       return res.redirect(
-        referPaths.programmeHistory.details({
+        referPaths.programmeHistory.details.show({
           courseParticipationId: req.params.courseParticipationId,
           referralId: req.params.referralId,
         }),

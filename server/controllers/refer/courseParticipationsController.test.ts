@@ -72,7 +72,7 @@ describe('CourseParticipationsController', () => {
           undefined,
         )
         expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.details({
+          referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
             referralId: referral.id,
           }),
@@ -109,7 +109,7 @@ describe('CourseParticipationsController', () => {
           otherCourseName,
         )
         expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.details({
+          referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
             referralId: referral.id,
           }),
@@ -353,7 +353,7 @@ describe('CourseParticipationsController', () => {
           updatedCourseParticipation,
         )
         expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.details({
+          referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
             referralId: referral.id,
           }),

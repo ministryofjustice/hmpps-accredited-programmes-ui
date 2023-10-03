@@ -283,7 +283,7 @@ context('Programme history', () => {
       const courseParticipation = courseParticipationFactory
         .withCourseId()
         .build({ courseId: courses[0].id, prisonNumber: person.prisonNumber })
-      const path = referPaths.programmeHistory.details({
+      const path = referPaths.programmeHistory.details.show({
         courseParticipationId: courseParticipation.id,
         referralId: referral.id,
       })
