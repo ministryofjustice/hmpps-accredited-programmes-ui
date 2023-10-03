@@ -29,6 +29,17 @@ export default class SelectProgrammePage extends Page {
     cy.get(`input[name="otherCourseName"]`).should('be.visible')
   }
 
+  shouldHaveSelectedCourse(
+    courseId: CourseParticipation['courseId'],
+    otherCourseName?: CourseParticipation['otherCourseName'],
+  ) {
+    cy.get(`.govuk-radios__input[value="${courseId}"]`).should('be.checked')
+
+    if (otherCourseName) {
+      cy.get('#otherCourseName').should('have.value', otherCourseName)
+    }
+  }
+
   shouldNotDisplayOtherCourseInput() {
     cy.get(`input[name="otherCourseName"]`).should('not.be.visible')
   }
