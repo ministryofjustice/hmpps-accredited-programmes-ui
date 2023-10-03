@@ -42,8 +42,8 @@ describe('CourseParticipationsController', () => {
       request.params.referralId = referral.id
     })
 
-    describe('when the `courseId` value is not `other`', () => {
-      it('creates a course participation using the `courseId` value', async () => {
+    describe('when the `courseId` is a string with length', () => {
+      it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withCourseId().build()
         const { courseId } = courseParticipation
 
@@ -70,8 +70,8 @@ describe('CourseParticipationsController', () => {
       })
     })
 
-    describe('when the `courseId` value is `other`', () => {
-      it('creates a course participation using the `otherCourseName` value', async () => {
+    describe('when the `courseId` is `other` and `otherCourseName` is a string with length when trimmed', () => {
+      it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
         const { otherCourseName } = courseParticipation
 
