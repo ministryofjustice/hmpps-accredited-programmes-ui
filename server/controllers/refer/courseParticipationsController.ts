@@ -19,27 +19,21 @@ export default class CourseParticipationsController {
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
 
-      const { courseId, otherCourseName } = req.body
+      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processedCourseFormData(
+        req.body.courseId,
+        req.body.otherCourseName,
+        req,
+      )
 
-      const formattedOtherCourseName = otherCourseName?.trim()
-
-      if (!courseId) {
-        req.flash('courseIdError', 'Select a programme')
-
-        return res.redirect(referPaths.programmeHistory.new({ referralId: req.params.referralId }))
-      }
-
-      if (courseId === 'other' && !formattedOtherCourseName) {
-        req.flash('otherCourseNameError', 'Enter the programme name')
-
+      if (hasFormErrors) {
         return res.redirect(referPaths.programmeHistory.new({ referralId: req.params.referralId }))
       }
 
       const courseParticipation = await this.courseService.createParticipation(
         req.user.token,
         referral.prisonNumber,
-        courseId === 'other' ? undefined : courseId,
-        courseId === 'other' ? formattedOtherCourseName : undefined,
+        courseId,
+        otherCourseName,
       )
 
       return res.redirect(
