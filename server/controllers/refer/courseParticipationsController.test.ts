@@ -238,7 +238,9 @@ describe('CourseParticipationsController', () => {
         { ...courseParticipations[0], name: course.name },
         { ...courseParticipations[1], name: 'Another course' },
       ]
-      const summaryListsOptions = courseParticipationsWithNames.map(CourseParticipationUtils.summaryListOptions)
+      const summaryListsOptions = courseParticipationsWithNames.map(courseParticipation =>
+        CourseParticipationUtils.summaryListOptions(courseParticipation, referral.id),
+      )
 
       const requestHandler = courseParticipationsController.index()
       await requestHandler(request, response, next)

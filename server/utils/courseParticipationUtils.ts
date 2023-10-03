@@ -2,7 +2,8 @@ import type { Request } from 'express'
 
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
-import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
+import { referPaths } from '../paths'
+import type { CourseParticipation, CourseParticipationWithName, Referral } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
@@ -42,9 +43,22 @@ export default class CourseParticipationUtils {
 
   static summaryListOptions(
     courseParticipationWithName: CourseParticipationWithName,
+    referralId: Referral['id'],
   ): GovukFrontendSummaryListWithRowsWithValues {
     return {
       card: {
+        actions: {
+          items: [
+            {
+              href: referPaths.programmeHistory.editProgramme({
+                courseParticipationId: courseParticipationWithName.id,
+                referralId,
+              }),
+              text: 'Change',
+              visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+            },
+          ],
+        },
         title: {
           text: courseParticipationWithName.name,
         },
