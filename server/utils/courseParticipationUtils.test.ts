@@ -1,3 +1,7 @@
+import type { DeepMocked } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-jest'
+import type { Request } from 'express'
+
 import CourseParticipationUtils from './courseParticipationUtils'
 import { courseParticipationFactory } from '../testutils/factories'
 import type { CourseParticipationOutcome, CourseParticipationSetting } from '@accredited-programmes/models'
@@ -11,6 +15,68 @@ const getRow = (
 }
 
 describe('CourseParticipationUtils', () => {
+  describe('processedCourseFormData', () => {
+    let request: DeepMocked<Request>
+
+    beforeEach(() => {
+      request = createMock<Request>({})
+    })
+
+    describe('when the `courseId` is a string with length', () => {
+      it('returns the course ID and reports no errors', () => {
+        const validId = 'AN-ID'
+
+        expect(CourseParticipationUtils.processedCourseFormData(validId, undefined, request)).toEqual({
+          courseId: validId,
+          hasFormErrors: false,
+        })
+      })
+    })
+
+    describe("when the `courseId` is `'other'`", () => {
+      const otherId = 'other'
+
+      describe('and `otherCourseName` is a string with length when trimmed', () => {
+        it('returns the other course name and reports no errors', () => {
+          const otherCourseName = 'Another course'
+
+          expect(CourseParticipationUtils.processedCourseFormData(otherId, otherCourseName, request)).toEqual({
+            hasFormErrors: false,
+            otherCourseName,
+          })
+        })
+      })
+
+      describe('and `otherCourseName` is `undefined`', () => {
+        it('flashes an appropriate error message and reports an error', () => {
+          expect(CourseParticipationUtils.processedCourseFormData(otherId, undefined, request)).toEqual({
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
+        })
+      })
+
+      describe('and `otherCourseName` is an empty string when trimmed', () => {
+        it('flashes an appropriate error message and reports an error', () => {
+          expect(CourseParticipationUtils.processedCourseFormData(otherId, '  ', request)).toEqual({
+            hasFormErrors: true,
+            otherCourseName: '',
+          })
+          expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
+        })
+      })
+    })
+
+    describe('when the `courseId` is `undefined``', () => {
+      it('flashes an appropriate error message and reports an error', () => {
+        expect(CourseParticipationUtils.processedCourseFormData(undefined, undefined, request)).toEqual({
+          hasFormErrors: true,
+        })
+        expect(request.flash).toHaveBeenCalledWith('courseIdError', 'Select a programme')
+      })
+    })
+  })
+
   describe('summaryListOptions', () => {
     const courseParticipationWithName = {
       ...courseParticipationFactory.build({
