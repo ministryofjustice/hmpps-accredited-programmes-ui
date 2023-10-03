@@ -12,6 +12,7 @@ import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../utils'
 import type { CourseParticipation } from '@accredited-programmes/models'
 
 jest.mock('../../utils/formUtils')
+jest.mock('../../utils/courseParticipationUtils')
 
 describe('CourseParticipationsController', () => {
   const token = 'SOME_TOKEN'
@@ -43,19 +44,28 @@ describe('CourseParticipationsController', () => {
       request.params.referralId = referral.id
     })
 
-    describe('when the `courseId` value is not `other`', () => {
-      it('creates a course participation using the `courseId` value', async () => {
+    describe('when the `courseId` is a string with length', () => {
+      it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withCourseId().build()
         const { courseId } = courseParticipation
 
-        courseService.createParticipation.mockResolvedValue(courseParticipation)
-
         request.body = { courseId }
+        courseService.createParticipation.mockResolvedValue(courseParticipation)
+        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+          (_courseId, _otherCourseName, _request) => {
+            return { courseId, hasFormErrors: false }
+          },
+        )
 
         const requestHandler = courseParticipationsController.create()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+          request.body.courseId,
+          request.body.otherCourseName,
+          request,
+        )
         expect(courseService.createParticipation).toHaveBeenCalledWith(
           token,
           referral.prisonNumber,
@@ -71,18 +81,28 @@ describe('CourseParticipationsController', () => {
       })
     })
 
-    describe('when the `courseId` value is `other`', () => {
-      it('creates a course participation using the `otherCourseName` value', async () => {
+    describe('when the `courseId` value is `other` and `otherCourseName` is a string with length when trimmed', () => {
+      it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
         const { otherCourseName } = courseParticipation
 
-        courseService.createParticipation.mockResolvedValue(courseParticipation)
-
         request.body = { courseId: 'other', otherCourseName }
+        courseService.createParticipation.mockResolvedValue(courseParticipation)
+        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+          (_courseId, _otherCourseName, _request) => {
+            return { hasFormErrors: false, otherCourseName }
+          },
+        )
 
         const requestHandler = courseParticipationsController.create()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+          request.body.courseId,
+          request.body.otherCourseName,
+          request,
+        )
         expect(courseService.createParticipation).toHaveBeenCalledWith(
           token,
           referral.prisonNumber,
@@ -98,43 +118,27 @@ describe('CourseParticipationsController', () => {
       })
     })
 
-    describe('when the `courseId` value is not provided', () => {
-      it('redirects to the course participation new page with an error', async () => {
-        const requestHandler = courseParticipationsController.create()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.new({ referralId: request.params.referralId }),
+    describe('when there are form errors', () => {
+      it('redirects back to the `new` action', async () => {
+        request.body = { courseId: 'something', otherCourseName: 'something else' }
+        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+          (_courseId, _otherCourseName, _request) => {
+            return { hasFormErrors: true }
+          },
         )
-        expect(request.flash).toHaveBeenCalledWith('courseIdError', 'Select a programme')
-      })
-    })
-
-    describe('when the `courseId` value is `other` and the `otherCourseName` value is not provided', () => {
-      it('redirects to the course participation new page with an error', async () => {
-        request.body = { courseId: 'other' }
 
         const requestHandler = courseParticipationsController.create()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+          request.body.courseId,
+          request.body.otherCourseName,
+          request,
+        )
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.new({ referralId: request.params.referralId }),
         )
-        expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
-      })
-    })
-
-    describe('when the provided `otherCourseName` value is just spaces', () => {
-      it('redirects to the course participation new page with an error', async () => {
-        request.body = { courseId: 'other', otherCourseName: ' \n \n ' }
-
-        const requestHandler = courseParticipationsController.create()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.new({ referralId: request.params.referralId }),
-        )
-        expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
       })
     })
   })
