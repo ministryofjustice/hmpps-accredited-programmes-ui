@@ -36,6 +36,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.programmeHistory.new.pattern, courseParticipationsController.new())
   post(referPaths.programmeHistory.create.pattern, courseParticipationsController.create())
   get(referPaths.programmeHistory.editProgramme.pattern, courseParticipationsController.editCourse())
+  put(referPaths.programmeHistory.updateProgramme.pattern, courseParticipationsController.updateCourse())
 
   get(referPaths.programmeHistory.details.pattern, courseParticipationDetailsController.show())
 
