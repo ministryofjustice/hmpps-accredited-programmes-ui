@@ -22,6 +22,7 @@
   {{ govukInput({
     id: "otherCourseName",
     name: "otherCourseName",
+    value: values.otherCourseName,
     type: "text",
     classes: "govuk-!-width-one-third",
     label: {
@@ -40,7 +41,7 @@
         }) }}
       {% endif %}
 
-      <form action="{{ referPaths.programmeHistory.create({ referralId: referralId }) }}" method="post">
+      <form action="{{ action }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukRadios({
@@ -61,11 +62,12 @@
             conditional: {
               html: otherCourseHtml
             },
-            checked: errors.messages.otherCourseName,
+            checked: otherCourseNameChecked,
             attributes: {
               "data-testid": "other-course-option"
             }
           }),
+          value: values.courseId,
           errorMessage: errors.messages.courseId
         }) }}
 

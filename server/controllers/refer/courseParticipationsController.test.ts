@@ -205,11 +205,14 @@ describe('CourseParticipationsController', () => {
       const requestHandler = courseParticipationsController.new()
       await requestHandler(request, response, next)
 
-      expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/new', {
+      expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/course', {
+        action: referPaths.programmeHistory.create({ referralId: referral.id }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        otherCourseNameChecked: false,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
+        values: {},
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
     })

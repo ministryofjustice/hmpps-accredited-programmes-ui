@@ -104,11 +104,14 @@ export default class CourseParticipationsController {
 
       FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
 
-      res.render('referrals/courseParticipations/new', {
+      res.render('referrals/courseParticipations/course', {
+        action: referPaths.programmeHistory.create({ referralId: referral.id }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
+        values: {},
       })
     }
   }
