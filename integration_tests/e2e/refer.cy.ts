@@ -352,92 +352,6 @@ context('Refer', () => {
     })
   })
 
-  describe('When adding programme history', () => {
-    describe('and selecting a programme', () => {
-      const courses = courseFactory.buildList(4)
-      const prisoner = prisonerFactory.build({
-        firstName: 'Del',
-        lastName: 'Hatton',
-      })
-      const person = personFactory.build({
-        currentPrison: prisoner.prisonName,
-        name: 'Del Hatton',
-        prisonNumber: prisoner.prisonerNumber,
-      })
-      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
-      const path = referPaths.programmeHistory.new({ referralId: referral.id })
-
-      beforeEach(() => {
-        cy.task('stubCourses', courses)
-        cy.task('stubPrisoner', prisoner)
-        cy.task('stubReferral', referral)
-
-        cy.signIn()
-
-        cy.visit(path)
-      })
-
-      it('shows the select programme form page', () => {
-        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-        selectProgrammePage.shouldHavePersonDetails(person)
-        selectProgrammePage.shouldContainNavigation(path)
-        selectProgrammePage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
-        selectProgrammePage.shouldContainCourseOptions()
-        selectProgrammePage.shouldNotDisplayOtherCourseInput()
-        selectProgrammePage.shouldDisplayOtherCourseInput()
-        selectProgrammePage.shouldContainButton('Continue')
-      })
-
-      it('creates a course participation and redirects to the details page', () => {
-        const courseParticipation = courseParticipationFactory
-          .withCourseId()
-          .build({ courseId: courses[0].id, prisonNumber: person.prisonNumber })
-
-        cy.task('stubCreateParticipation', courseParticipation)
-
-        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-        selectProgrammePage.selectCourse(courses[0].id)
-        selectProgrammePage.shouldContainButton('Continue').click()
-
-        // Change when we have a details page
-        cy.url().should(
-          'include',
-          referPaths.programmeHistory.details({
-            courseParticipationId: courseParticipation.id,
-            referralId: referral.id,
-          }),
-        )
-      })
-
-      it('displays an error when no programme is selected', () => {
-        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-        selectProgrammePage.shouldContainButton('Continue').click()
-
-        const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
-        selectProgrammePageWithError.shouldHaveErrors([
-          {
-            field: 'courseId',
-            message: 'Select a programme',
-          },
-        ])
-      })
-
-      it('displays an error when the other programme name is not provided', () => {
-        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-        selectProgrammePage.selectCourse('other')
-        selectProgrammePage.shouldContainButton('Continue').click()
-
-        const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
-        selectProgrammePageWithError.shouldHaveErrors([
-          {
-            field: 'otherCourseName',
-            message: 'Enter the programme name',
-          },
-        ])
-      })
-    })
-  })
-
   it('Shows the reason form page', () => {
     cy.signIn()
 
@@ -624,6 +538,92 @@ context('Refer', () => {
         'Add a programme',
         referPaths.programmeHistory.new({ referralId: referral.id }),
       )
+    })
+  })
+
+  describe('When adding programme history', () => {
+    describe('and selecting a programme', () => {
+      const courses = courseFactory.buildList(4)
+      const prisoner = prisonerFactory.build({
+        firstName: 'Del',
+        lastName: 'Hatton',
+      })
+      const person = personFactory.build({
+        currentPrison: prisoner.prisonName,
+        name: 'Del Hatton',
+        prisonNumber: prisoner.prisonerNumber,
+      })
+      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+      const path = referPaths.programmeHistory.new({ referralId: referral.id })
+
+      beforeEach(() => {
+        cy.task('stubCourses', courses)
+        cy.task('stubPrisoner', prisoner)
+        cy.task('stubReferral', referral)
+
+        cy.signIn()
+
+        cy.visit(path)
+      })
+
+      it('shows the select programme form page', () => {
+        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+        selectProgrammePage.shouldHavePersonDetails(person)
+        selectProgrammePage.shouldContainNavigation(path)
+        selectProgrammePage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
+        selectProgrammePage.shouldContainCourseOptions()
+        selectProgrammePage.shouldNotDisplayOtherCourseInput()
+        selectProgrammePage.shouldDisplayOtherCourseInput()
+        selectProgrammePage.shouldContainButton('Continue')
+      })
+
+      it('creates a course participation and redirects to the details page', () => {
+        const courseParticipation = courseParticipationFactory
+          .withCourseId()
+          .build({ courseId: courses[0].id, prisonNumber: person.prisonNumber })
+
+        cy.task('stubCreateParticipation', courseParticipation)
+
+        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+        selectProgrammePage.selectCourse(courses[0].id)
+        selectProgrammePage.shouldContainButton('Continue').click()
+
+        // Change when we have a details page
+        cy.url().should(
+          'include',
+          referPaths.programmeHistory.details({
+            courseParticipationId: courseParticipation.id,
+            referralId: referral.id,
+          }),
+        )
+      })
+
+      it('displays an error when no programme is selected', () => {
+        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+        selectProgrammePage.shouldContainButton('Continue').click()
+
+        const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
+        selectProgrammePageWithError.shouldHaveErrors([
+          {
+            field: 'courseId',
+            message: 'Select a programme',
+          },
+        ])
+      })
+
+      it('displays an error when the other programme name is not provided', () => {
+        const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+        selectProgrammePage.selectCourse('other')
+        selectProgrammePage.shouldContainButton('Continue').click()
+
+        const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
+        selectProgrammePageWithError.shouldHaveErrors([
+          {
+            field: 'otherCourseName',
+            message: 'Enter the programme name',
+          },
+        ])
+      })
     })
   })
 
