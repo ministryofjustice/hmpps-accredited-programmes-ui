@@ -186,6 +186,92 @@ context('Programme history', () => {
           ])
         })
       })
+
+      describe('for an existing entry', () => {
+        const courseParticipationWithCourseId = courseParticipationFactory
+          .withCourseId()
+          .build({ courseId: courses[0].id, prisonNumber: person.prisonNumber })
+        const courseParticipationWithCourseIdPath = referPaths.programmeHistory.editProgramme({
+          courseParticipationId: courseParticipationWithCourseId.id,
+          referralId: referral.id,
+        })
+        const courseParticipationWithOtherCourseName = courseParticipationFactory
+          .withOtherCourseName()
+          .build({ otherCourseName: 'A great course name', prisonNumber: person.prisonNumber })
+        const courseParticipationWithOtherCourseNamePath = referPaths.programmeHistory.editProgramme({
+          courseParticipationId: courseParticipationWithOtherCourseName.id,
+          referralId: referral.id,
+        })
+
+        beforeEach(() => {
+          cy.task('stubCourses', courses)
+          cy.task('stubPrisoner', prisoner)
+          cy.task('stubReferral', referral)
+
+          cy.signIn()
+        })
+
+        it('shows the select programme page for a history with a known programme', () => {
+          cy.task('stubParticipation', courseParticipationWithCourseId)
+          cy.visit(courseParticipationWithCourseIdPath)
+
+          const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+          selectProgrammePage.shouldHavePersonDetails(person)
+          selectProgrammePage.shouldContainNavigation(courseParticipationWithCourseIdPath)
+          selectProgrammePage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
+          selectProgrammePage.shouldContainCourseOptions()
+          selectProgrammePage.shouldHaveSelectedCourse(courseParticipationWithCourseId.courseId)
+          selectProgrammePage.shouldNotDisplayOtherCourseInput()
+          selectProgrammePage.shouldContainButton('Continue')
+        })
+
+        it('shows the select programme page for a history with an other programme', () => {
+          cy.task('stubParticipation', courseParticipationWithOtherCourseName)
+          cy.visit(courseParticipationWithOtherCourseNamePath)
+
+          const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+          selectProgrammePage.shouldHavePersonDetails(person)
+          selectProgrammePage.shouldContainNavigation(courseParticipationWithOtherCourseNamePath)
+          selectProgrammePage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
+          selectProgrammePage.shouldContainCourseOptions()
+          selectProgrammePage.shouldDisplayOtherCourseInput()
+          selectProgrammePage.shouldHaveSelectedCourse('other', courseParticipationWithOtherCourseName.otherCourseName)
+          selectProgrammePage.shouldContainButton('Continue')
+        })
+
+        it('updates the entry and redirects to the details page', () => {
+          const newCourseId = courses[2].id
+          const updatedParticipation = { ...courseParticipationWithCourseId, courseId: newCourseId }
+
+          cy.task('stubParticipation', courseParticipationWithCourseId)
+          cy.task('stubUpdateParticipation', updatedParticipation)
+
+          cy.visit(courseParticipationWithCourseIdPath)
+
+          const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+          selectProgrammePage.selectCourse(newCourseId)
+          selectProgrammePage.submitSelection(courseParticipationWithCourseId, newCourseId)
+
+          Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        })
+
+        it('displays an error when "Other" is selected but a programme name is not provided', () => {
+          cy.task('stubParticipation', courseParticipationWithCourseId)
+          cy.visit(courseParticipationWithCourseIdPath)
+
+          const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
+          selectProgrammePage.selectCourse('other')
+          selectProgrammePage.shouldContainButton('Continue').click()
+
+          const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
+          selectProgrammePageWithError.shouldHaveErrors([
+            {
+              field: 'otherCourseName',
+              message: 'Enter the programme name',
+            },
+          ])
+        })
+      })
     })
 
     describe('and adding details', () => {
