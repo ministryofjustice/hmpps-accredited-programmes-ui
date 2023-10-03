@@ -503,6 +503,7 @@ context('Refer', () => {
       const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
         participationsWithNames: courseParticipationsWithNames,
         person,
+        referral,
       })
       programmeHistoryPage.shouldHavePersonDetails(person)
       programmeHistoryPage.shouldContainNavigation(path)
@@ -528,6 +529,7 @@ context('Refer', () => {
       const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
         participationsWithNames: emptyCourseParticipations as Array<CourseParticipationWithName>,
         person,
+        referral,
       })
       programmeHistoryPage.shouldHavePersonDetails(person)
       programmeHistoryPage.shouldContainNavigation(path)

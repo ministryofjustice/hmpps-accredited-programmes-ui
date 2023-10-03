@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker/locale/en_GB'
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { Request } from 'express'
@@ -78,6 +79,7 @@ describe('CourseParticipationUtils', () => {
   })
 
   describe('summaryListOptions', () => {
+    const referralId = faker.string.uuid()
     const courseParticipationWithName = {
       ...courseParticipationFactory.build({
         addedBy: 'Eric McNally',
@@ -98,8 +100,17 @@ describe('CourseParticipationUtils', () => {
     }
 
     it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
-      expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName)).toEqual({
+      expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId)).toEqual({
         card: {
+          actions: {
+            items: [
+              {
+                href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/programme`,
+                text: 'Change',
+                visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+              },
+            ],
+          },
           title: {
             text: 'A mediocre course name (aMCN)',
           },
@@ -143,7 +154,7 @@ describe('CourseParticipationUtils', () => {
       ])('omits the %s row when %s is %s', (keyText: GovukFrontendSummaryListRowKey['text'], field: string, value) => {
         const withoutField = { ...courseParticipationWithName, [field]: value }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutField)
+        const { rows } = CourseParticipationUtils.summaryListOptions(withoutField, referralId)
         const fieldRow = getRow(rows, keyText)
 
         expect(fieldRow).toBeUndefined()
@@ -155,7 +166,7 @@ describe('CourseParticipationUtils', () => {
           setting: { location: 'Stockport', type: undefined },
         }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingType)
+        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingType, referralId)
         const settingRow = getRow(rows, 'Setting')
 
         expect(settingRow).toEqual({ key: { text: 'Setting' }, value: { text: 'Stockport' } })
@@ -167,7 +178,7 @@ describe('CourseParticipationUtils', () => {
           setting: { location: undefined, type: 'community' as CourseParticipationSetting['type'] },
         }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingLocation)
+        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingLocation, referralId)
         const settingRow = getRow(rows, 'Setting')
 
         expect(settingRow).toEqual({ key: { text: 'Setting' }, value: { text: 'Community' } })
@@ -179,7 +190,7 @@ describe('CourseParticipationUtils', () => {
           outcome: { status: 'incomplete' as CourseParticipationOutcome['status'], yearStarted: undefined },
         }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearStarted)
+        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearStarted, referralId)
         const outcomeRow = getRow(rows, 'Outcome')
 
         expect(outcomeRow).toEqual({ key: { text: 'Outcome' }, value: { text: 'Incomplete' } })
@@ -191,7 +202,7 @@ describe('CourseParticipationUtils', () => {
           outcome: { status: 'complete' as CourseParticipationOutcome['status'], yearCompleted: undefined },
         }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearCompleted)
+        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearCompleted, referralId)
         const outcomeRow = getRow(rows, 'Outcome')
 
         expect(outcomeRow).toEqual({ key: { text: 'Outcome' }, value: { text: 'Complete' } })

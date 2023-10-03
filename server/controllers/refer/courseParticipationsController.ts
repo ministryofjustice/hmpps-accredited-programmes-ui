@@ -114,7 +114,9 @@ export default class CourseParticipationsController {
         req.user.token,
       )
 
-      const summaryListsOptions = courseParticipationsWithNames.map(CourseParticipationUtils.summaryListOptions)
+      const summaryListsOptions = courseParticipationsWithNames.map(courseParticipationWithName =>
+        CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referral.id),
+      )
 
       res.render('referrals/courseParticipations/index', {
         pageHeading: 'Accredited Programme history',
