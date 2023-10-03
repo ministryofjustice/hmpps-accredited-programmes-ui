@@ -187,7 +187,7 @@ describe('CourseParticipationsController', () => {
   })
 
   describe('new', () => {
-    it('renders the new template for selecting a course/programme', async () => {
+    it('renders the new template for selecting a course', async () => {
       const courses = courseFactory.buildList(2)
       courseService.getCourses.mockResolvedValue(courses)
 
