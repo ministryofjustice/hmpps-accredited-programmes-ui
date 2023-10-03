@@ -46,4 +46,17 @@ export default {
         status: 200,
       },
     }),
+
+  stubUpdateParticipation: (courseParticipation: CourseParticipation): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'PUT',
+        url: apiPaths.participations.update({ courseParticipationId: courseParticipation.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courseParticipation,
+        status: 204,
+      },
+    }),
 }
