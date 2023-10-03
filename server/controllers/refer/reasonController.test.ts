@@ -88,7 +88,7 @@ describe('ReasonController', () => {
       referralService.getReferral.mockResolvedValue(referral)
     })
 
-    it('updates the referral and redirects to the referral show page', async () => {
+    it('ask the service to update the referral and redirects to the referral show action', async () => {
       request.body.reason = ' Some reason\nAnother paragraph\n '
 
       const requestHandler = reasonController.update()
@@ -102,7 +102,7 @@ describe('ReasonController', () => {
     })
 
     describe('when the reason is not provided', () => {
-      it('redirects to the reason show page with an error', async () => {
+      it('redirects to the reason show action with an error', async () => {
         request.params.referralId = referral.id
 
         const requestHandler = reasonController.update()
@@ -114,7 +114,7 @@ describe('ReasonController', () => {
     })
 
     describe('when the provided reason is just spaces and new lines', () => {
-      it('redirects to the reason show page with an error', async () => {
+      it('redirects to the reason show action with an error', async () => {
         request.params.referralId = referral.id
 
         request.body.reason = ' \n \n '
