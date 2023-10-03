@@ -87,7 +87,7 @@ export default class CourseParticipationsController {
   }
 
   new(): TypedRequestHandler<Request, Response> {
-    return async (req, res) => {
+    return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
       const courses = await this.courseService.getCourses(req.user.token)

@@ -13,7 +13,7 @@ export default class ReasonController {
   ) {}
 
   show(): TypedRequestHandler<Request, Response> {
-    return async (req, res) => {
+    return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
@@ -38,7 +38,7 @@ export default class ReasonController {
   }
 
   update(): TypedRequestHandler<Request, Response> {
-    return async (req, res) => {
+    return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
       const formattedReason = req.body.reason?.trim()
