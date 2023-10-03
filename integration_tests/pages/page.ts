@@ -2,16 +2,16 @@ import type { AxeRules } from '@accredited-programmes/integration-tests'
 
 import { PersonUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { Organisation, Person } from '@accredited-programmes/models'
+import type { CourseParticipationWithName, Organisation, Person } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
+  GovukFrontendSummaryListCardActionsItemWithText,
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendSummaryListCardTitle } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -156,12 +156,34 @@ export default abstract class Page {
   }
 
   shouldContainSummaryCard(
-    title: GovukFrontendSummaryListCardTitle['text'],
+    courseName: CourseParticipationWithName['name'],
+    actions: Array<GovukFrontendSummaryListCardActionsItemWithText>,
     rows: Array<GovukFrontendSummaryListRowWithValue>,
     summaryCardElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryCardElement).within(() => {
-      cy.get('.govuk-summary-card__title').should('have.text', title)
+      cy.get('.govuk-summary-card__title').should('have.text', courseName)
+
+      actions.forEach((action, actionIndex) => {
+        cy.get('.govuk-summary-card__actions .govuk-link')
+          .eq(actionIndex)
+          .then(actionElement => {
+            let { text } = action
+
+            if (action.visuallyHiddenText) {
+              text += ` ${action.visuallyHiddenText}`
+
+              cy.wrap(actionElement).within(() => {
+                cy.get('.govuk-visually-hidden').should('have.text', action.visuallyHiddenText)
+              })
+            }
+
+            const { actual, expected } = Helpers.parseHtml(actionElement, text)
+            expect(actual).to.equal(expected)
+
+            cy.wrap(actionElement).should('have.attr', 'href', action.href)
+          })
+      })
 
       cy.get('.govuk-summary-list').then(summaryListElement => {
         this.shouldContainSummaryListRows(rows, summaryListElement)
