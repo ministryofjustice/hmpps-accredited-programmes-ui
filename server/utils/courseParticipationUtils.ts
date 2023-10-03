@@ -1,12 +1,45 @@
+import type { Request } from 'express'
+
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
-import type { CourseParticipationWithName } from '@accredited-programmes/models'
+import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
 } from '@accredited-programmes/ui'
 
 export default class CourseParticipationUtils {
+  static processedCourseFormData(
+    courseId: CourseParticipation['courseId'] | 'other' | undefined,
+    otherCourseName: CourseParticipation['otherCourseName'] | undefined,
+    request: Request,
+  ): {
+    hasFormErrors: boolean
+    courseId?: CourseParticipation['courseId']
+    otherCourseName?: CourseParticipation['otherCourseName']
+  } {
+    let hasFormErrors = false
+    const formattedOtherCourseName = otherCourseName?.trim()
+
+    if (!courseId) {
+      request.flash('courseIdError', 'Select a programme')
+
+      hasFormErrors = true
+    }
+
+    if (courseId === 'other' && !formattedOtherCourseName) {
+      request.flash('otherCourseNameError', 'Enter the programme name')
+
+      hasFormErrors = true
+    }
+
+    return {
+      courseId: courseId === 'other' ? undefined : courseId,
+      hasFormErrors,
+      otherCourseName: courseId === 'other' ? formattedOtherCourseName : undefined,
+    }
+  }
+
   static summaryListOptions(
     courseParticipationWithName: CourseParticipationWithName,
   ): GovukFrontendSummaryListWithRowsWithValues {
