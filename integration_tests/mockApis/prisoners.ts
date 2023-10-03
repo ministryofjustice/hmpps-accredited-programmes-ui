@@ -5,15 +5,23 @@ import { stubFor } from '../../wiremock'
 import type { Prisoner } from '@prisoner-offender-search'
 
 export default {
-  stubPrisoner: (prisoner: Prisoner): SuperAgentRequest =>
+  stubPrisoner: (prisoner: Prisoner | undefined): SuperAgentRequest =>
     stubFor({
       request: {
-        method: 'GET',
-        url: prisonerOffenderSearchPaths.prisoner.show({ prisonNumber: prisoner.prisonerNumber }),
+        bodyPatterns: [
+          {
+            equalToJson: {
+              prisonerIdentifier: prisoner?.prisonerNumber,
+            },
+            ignoreExtraElements: true,
+          },
+        ],
+        method: 'POST',
+        url: prisonerOffenderSearchPaths.prisoner.search({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: prisoner,
+        jsonBody: prisoner ? [prisoner] : [],
         status: 200,
       },
     }),

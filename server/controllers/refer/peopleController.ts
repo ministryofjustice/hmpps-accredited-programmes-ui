@@ -28,7 +28,11 @@ export default class PeopleController {
       TypeUtils.assertHasUser(req)
 
       const { courseOfferingId } = req.params
-      const person = await this.personService.getPerson(req.user.username, req.params.prisonNumber)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        req.params.prisonNumber,
+        res.locals.user.caseloads,
+      )
 
       if (!person) {
         req.flash('prisonNumberError', `No person with a prison number '${req.params.prisonNumber}' was found`)

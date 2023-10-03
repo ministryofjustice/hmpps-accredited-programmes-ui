@@ -7,6 +7,7 @@ import CourseParticipationsController from './courseParticipationsController'
 import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { courseFactory, courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
+import Helpers from '../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
@@ -25,7 +26,7 @@ describe('CourseParticipationsController', () => {
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
-    response = createMock<Response>({})
+    response = Helpers.createMockResponseWithCaseloads()
     courseParticipationsController = new CourseParticipationsController(courseService, personService, referralService)
   })
 

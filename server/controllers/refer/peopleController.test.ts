@@ -6,6 +6,7 @@ import PeopleController from './peopleController'
 import { referPaths } from '../../paths'
 import type PersonService from '../../services/personService'
 import { personFactory } from '../../testutils/factories'
+import Helpers from '../../testutils/helpers'
 import PersonUtils from '../../utils/personUtils'
 
 jest.mock('../../utils/personUtils')
@@ -22,7 +23,7 @@ describe('PeopleController', () => {
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
-    response = createMock<Response>({})
+    response = Helpers.createMockResponseWithCaseloads()
     peopleController = new PeopleController(personService)
   })
 

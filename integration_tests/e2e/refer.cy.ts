@@ -119,6 +119,7 @@ context('Refer', () => {
       })
 
       it('displays an error when the person cannot be found', () => {
+        cy.task('stubPrisoner', undefined)
         const fakeId = 'NOT-A-REAL-ID'
 
         const findPersonPage = Page.verifyOnPage(FindPersonPage)

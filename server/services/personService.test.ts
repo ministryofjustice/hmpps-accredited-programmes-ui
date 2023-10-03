@@ -4,7 +4,7 @@ import createError from 'http-errors'
 import PersonService from './personService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, PrisonerClient, TokenStore } from '../data'
-import { personFactory, prisonerFactory } from '../testutils/factories'
+import { caseloadFactory, personFactory, prisonerFactory } from '../testutils/factories'
 import { PersonUtils } from '../utils'
 
 jest.mock('../data/prisonerClient')
@@ -15,6 +15,10 @@ const redisClient = createMock<RedisClient>({})
 const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
 const systemToken = 'some system token'
 const username = 'USERNAME'
+
+const mdiCaseload = caseloadFactory.active().build({ caseLoadId: 'MDI' })
+const bxiCaseload = caseloadFactory.inactive().build({ caseLoadId: 'BXI' })
+const caseloads = [mdiCaseload, bxiCaseload]
 
 describe('PersonService', () => {
   const prisonerClient = new PrisonerClient(systemToken) as jest.Mocked<PrisonerClient>
@@ -45,32 +49,37 @@ describe('PersonService', () => {
         prisonerClient.find.mockResolvedValue(prisoner)
         ;(PersonUtils.personFromPrisoner as jest.Mock).mockReturnValue(person)
 
-        const result = await service.getPerson(username, prisoner.prisonerNumber)
+        const result = await service.getPerson(username, prisoner.prisonerNumber, caseloads)
 
         expect(result).toEqual(person)
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(prisonerClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(prisonerClient.find).toHaveBeenCalledWith(prisoner.prisonerNumber)
+        expect(prisonerClient.find).toHaveBeenCalledWith(prisoner.prisonerNumber, [
+          mdiCaseload.caseLoadId,
+          bxiCaseload.caseLoadId,
+        ])
       })
     })
 
-    describe('when the prisoner client throws a 404 error', () => {
+    describe('when the prisoner client does not find a person in prison', () => {
       it('returns `null`', async () => {
-        const clientError = createError(404)
-        prisonerClient.find.mockRejectedValue(clientError)
+        prisonerClient.find.mockResolvedValue(null)
 
         const notFoundPrisonNumber = 'NOT-FOUND'
 
-        const result = await service.getPerson(username, notFoundPrisonNumber)
+        const result = await service.getPerson(username, notFoundPrisonNumber, caseloads)
 
         expect(result).toEqual(null)
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(prisonerClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(prisonerClient.find).toHaveBeenCalledWith(notFoundPrisonNumber)
+        expect(prisonerClient.find).toHaveBeenCalledWith(notFoundPrisonNumber, [
+          mdiCaseload.caseLoadId,
+          bxiCaseload.caseLoadId,
+        ])
       })
     })
 
@@ -83,12 +92,12 @@ describe('PersonService', () => {
 
         const expectedError = createError(501)
 
-        await expect(() => service.getPerson(username, prisonNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getPerson(username, prisonNumber, caseloads)).rejects.toThrowError(expectedError)
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(prisonerClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(prisonerClient.find).toHaveBeenCalledWith(prisonNumber)
+        expect(prisonerClient.find).toHaveBeenCalledWith(prisonNumber, [mdiCaseload.caseLoadId, bxiCaseload.caseLoadId])
       })
     })
   })

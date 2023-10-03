@@ -7,6 +7,7 @@ import OasysConfirmationController from './oasysConfirmationController'
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
+import Helpers from '../../testutils/helpers'
 import { FormUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
@@ -26,7 +27,7 @@ describe('OasysConfirmationController', () => {
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
-    response = createMock<Response>({})
+    response = Helpers.createMockResponseWithCaseloads()
     oasysConfirmationController = new OasysConfirmationController(personService, referralService)
   })
 

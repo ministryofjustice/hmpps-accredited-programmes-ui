@@ -1,9 +1,9 @@
 import { path } from 'static-path'
 
-const prisonerPath = path('/prisoner/:prisonNumber')
+const prisonerSearchPath = path('/prisoner-search/match-prisoners')
 
 export default {
   prisoner: {
-    show: prisonerPath,
+    search: prisonerSearchPath,
   },
 }
