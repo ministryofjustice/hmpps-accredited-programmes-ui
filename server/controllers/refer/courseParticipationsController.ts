@@ -70,7 +70,7 @@ export default class CourseParticipationsController {
       const hasOtherCourseNameError = !!res.locals.errors.messages.otherCourseName
 
       res.render('referrals/courseParticipations/course', {
-        action: '#',
+        action: `${referPaths.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
         otherCourseNameChecked: isOtherCourse || hasOtherCourseNameError,
         pageHeading: 'Add Accredited Programme history',
@@ -146,6 +146,45 @@ export default class CourseParticipationsController {
         referralId: referral.id,
         values: {},
       })
+    }
+  }
+
+  updateCourse(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const currentCourseParticipation = await this.courseService.getParticipation(
+        req.user.token,
+        req.params.courseParticipationId,
+      )
+
+      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processedCourseFormData(
+        req.body.courseId,
+        req.body.otherCourseName,
+        req,
+      )
+
+      if (hasFormErrors) {
+        return res.redirect(
+          referPaths.programmeHistory.editProgramme({
+            courseParticipationId: currentCourseParticipation.id,
+            referralId: req.params.referralId,
+          }),
+        )
+      }
+
+      await this.courseService.updateParticipation(req.user.token, currentCourseParticipation.id, {
+        ...currentCourseParticipation,
+        courseId,
+        otherCourseName,
+      })
+
+      return res.redirect(
+        referPaths.programmeHistory.details({
+          courseParticipationId: req.params.courseParticipationId,
+          referralId: req.params.referralId,
+        }),
+      )
     }
   }
 

@@ -43,6 +43,7 @@ export default {
     editProgramme: programmeHistoryProgrammePath,
     index: programmeHistoryPath,
     new: newProgrammeHistoryPath,
+    updateProgramme: programmeHistoryProgrammePath,
   },
   reason: {
     show: reasonForReferralPath,

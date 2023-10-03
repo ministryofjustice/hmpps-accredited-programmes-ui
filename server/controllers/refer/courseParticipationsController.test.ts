@@ -185,7 +185,10 @@ describe('CourseParticipationsController', () => {
           const { courseId, otherCourseName } = courseParticipation
 
           expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/course', {
-            action: '#',
+            action: `${referPaths.programmeHistory.updateProgramme({
+              courseParticipationId: courseParticipation.id,
+              referralId: referral.id,
+            })}?_method=PUT`,
             courseRadioOptions: CourseUtils.courseRadioOptions(courses),
             otherCourseNameChecked: courseIdentifierType === 'an otherCourseName',
             pageHeading: 'Add Accredited Programme history',
@@ -304,6 +307,94 @@ describe('CourseParticipationsController', () => {
         const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
+  describe('updateCourse', () => {
+    const referral = referralFactory.build()
+
+    beforeEach(() => {
+      referralService.getReferral.mockResolvedValue(referral)
+      request.params.referralId = referral.id
+    })
+
+    describe.each<[string, string]>([
+      ['when the `courseId` is a non-empty string', `courseId`],
+      ['when the `courseId` is `other` and `otherCourseName` is a non-empty string when trimmed', 'otherCourseName'],
+    ])('%s', (_description: string, truthyField: string) => {
+      it('asks the service to update the course data and redirects to the details action', async () => {
+        const courseParticipation = courseParticipationFactory.build()
+        request.params.courseParticipationId = courseParticipation.id
+        courseService.getParticipation.mockResolvedValue(courseParticipation)
+
+        const newValue = 'A NEW VALUE'
+        request.body = { [truthyField]: newValue }
+        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+          (_courseId, _otherCourseName, _request) => {
+            return { hasFormErrors: false, [truthyField]: newValue }
+          },
+        )
+
+        const undefinedField = truthyField === 'courseId' ? 'otherCourseName' : 'courseId'
+        const updatedCourseParticipation = {
+          ...courseParticipation,
+          [truthyField]: newValue,
+          [undefinedField]: undefined,
+        }
+        courseService.updateParticipation.mockResolvedValue(updatedCourseParticipation)
+
+        const requestHandler = courseParticipationsController.updateCourse()
+        await requestHandler(request, response, next)
+
+        expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
+        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+          request.body.courseId,
+          request.body.otherCourseName,
+          request,
+        )
+        expect(courseService.updateParticipation).toHaveBeenCalledWith(
+          token,
+          courseParticipation.id,
+          updatedCourseParticipation,
+        )
+        expect(response.redirect).toHaveBeenCalledWith(
+          referPaths.programmeHistory.details({
+            courseParticipationId: courseParticipation.id,
+            referralId: referral.id,
+          }),
+        )
+      })
+    })
+
+    describe('when there are form errors', () => {
+      it('redirects back to the `editCourse` action', async () => {
+        const courseParticipation = courseParticipationFactory.build()
+        request.params.courseParticipationId = courseParticipation.id
+        courseService.getParticipation.mockResolvedValue(courseParticipation)
+
+        request.body = { courseId: 'something', otherCourseName: 'something else' }
+        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+          (_courseId, _otherCourseName, _request) => {
+            return { hasFormErrors: true }
+          },
+        )
+
+        const requestHandler = courseParticipationsController.updateCourse()
+        await requestHandler(request, response, next)
+
+        expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
+        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+          request.body.courseId,
+          request.body.otherCourseName,
+          request,
+        )
+        expect(response.redirect).toHaveBeenCalledWith(
+          referPaths.programmeHistory.editProgramme({
+            courseParticipationId: courseParticipation.id,
+            referralId: request.params.referralId,
+          }),
+        )
       })
     })
   })
