@@ -18,6 +18,7 @@ const newProgrammeHistoryPath = programmeHistoryPath.path('new')
 const showProgrammeHistoryPath = programmeHistoryPath.path(':courseParticipationId')
 const programmeHistoryProgrammePath = showProgrammeHistoryPath.path('programme')
 const programmeHistoryDetailsPath = showProgrammeHistoryPath.path('details')
+const deleteProgrammeHistoryPath = showProgrammeHistoryPath.path('delete')
 const confirmOasysPath = showReferralPath.path('confirm-oasys')
 const reasonForReferralPath = showReferralPath.path('reason')
 const checkAnswersPath = showReferralPath.path('check-answers')
@@ -39,6 +40,7 @@ export default {
   },
   programmeHistory: {
     create: programmeHistoryPath,
+    delete: deleteProgrammeHistoryPath,
     details: programmeHistoryDetailsPath,
     editProgramme: programmeHistoryProgrammePath,
     index: programmeHistoryPath,
