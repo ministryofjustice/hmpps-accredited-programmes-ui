@@ -1,10 +1,39 @@
 import Page from '../page'
+import type { Course, CourseParticipation, Person } from '@accredited-programmes/models'
 
 export default class ProgrammeHistoryDetailsPage extends Page {
   constructor() {
     // Conditional radio buttons add an additional `aria-expanded` field,
     // so ignore that rule on this page
     super('Add Accredited Programme details', { accessibilityRules: { 'aria-allowed-attr': { enabled: false } } })
+  }
+
+  inputCommunityLocation(value: string) {
+    cy.get('input[id="communityLocation"]').type(value)
+  }
+
+  inputOutcomeDetail(value: string) {
+    cy.get('textarea[id="outcomeDetail"]').type(value)
+  }
+
+  inputOutcomeYearCompleted(value: string) {
+    cy.get('input[id="yearCompleted"]').type(value)
+  }
+
+  inputOutcomeYearStarted(value: string) {
+    cy.get('input[id="yearStarted"]').type(value)
+  }
+
+  inputSource(value: string) {
+    cy.get('textarea[id="source"]').type(value)
+  }
+
+  selectOutcome(value: string) {
+    this.selectRadioButton('outcome[status]', value)
+  }
+
+  selectSetting(value: string) {
+    this.selectRadioButton('setting[type]', value)
   }
 
   shouldContainOutcomeDetailTextArea() {
@@ -67,5 +96,15 @@ export default class ProgrammeHistoryDetailsPage extends Page {
 
   shouldNotDisplayYearStartedInput() {
     cy.get('input[id="yearStarted"]').should('not.be.visible')
+  }
+
+  submitDetails(courseParticipation: CourseParticipation, course: Course, person: Person) {
+    cy.task('stubUpdateParticipation', courseParticipation)
+    cy.task('stubCourse', course)
+    cy.task('stubParticipationsByPerson', {
+      courseParticipations: [courseParticipation],
+      prisonNumber: person.prisonNumber,
+    })
+    this.shouldContainButton('Continue').click()
   }
 }
