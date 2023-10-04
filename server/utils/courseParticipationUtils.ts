@@ -57,6 +57,14 @@ export default class CourseParticipationUtils {
               text: 'Change',
               visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
             },
+            {
+              href: referPaths.programmeHistory.delete({
+                courseParticipationId: courseParticipationWithName.id,
+                referralId,
+              }),
+              text: 'Remove',
+              visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+            },
           ],
         }
       : undefined

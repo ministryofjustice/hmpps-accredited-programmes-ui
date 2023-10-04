@@ -30,16 +30,26 @@ export default class ProgrammeHistoryPage extends Page {
       cy.get('.govuk-summary-card')
         .eq(participationsIndex)
         .then(summaryCardElement => {
-          const action = {
-            href: referPaths.programmeHistory.editProgramme({
-              courseParticipationId: participation.id,
-              referralId: this.referral.id,
-            }),
-            text: 'Change',
-            visuallyHiddenText: ` participation for ${participation.name}`,
-          }
+          const actions = [
+            {
+              href: referPaths.programmeHistory.editProgramme({
+                courseParticipationId: participation.id,
+                referralId: this.referral.id,
+              }),
+              text: 'Change',
+              visuallyHiddenText: ` participation for ${participation.name}`,
+            },
+            {
+              href: referPaths.programmeHistory.delete({
+                courseParticipationId: participation.id,
+                referralId: this.referral.id,
+              }),
+              text: 'Remove',
+              visuallyHiddenText: ` participation for ${participation.name}`,
+            },
+          ]
 
-          this.shouldContainSummaryCard(participation.name, [action], rows, summaryCardElement)
+          this.shouldContainSummaryCard(participation.name, actions, rows, summaryCardElement)
         })
     })
   }

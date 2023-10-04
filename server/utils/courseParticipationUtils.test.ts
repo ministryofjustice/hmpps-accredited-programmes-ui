@@ -109,6 +109,11 @@ describe('CourseParticipationUtils', () => {
                 text: 'Change',
                 visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
               },
+              {
+                href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
+                text: 'Remove',
+                visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+              },
             ],
           },
           title: {
