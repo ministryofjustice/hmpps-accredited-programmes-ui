@@ -288,7 +288,7 @@ describe('ReferralsController', () => {
     })
 
     describe('when the referral is not ready for submission', () => {
-      it('redirects to the show referral page', async () => {
+      it('redirects to the show referral action', async () => {
         const referral = referralFactory.started().build()
         request.params.referralId = referral.id
         referralService.getReferral.mockResolvedValue(referral)
@@ -356,7 +356,7 @@ describe('ReferralsController', () => {
       request.params.referralId = referral.id
     })
 
-    it('asks the service to update the referral status to submitted and redirects to the complete page', async () => {
+    it('asks the service to update the referral status to submitted and redirects to the complete action', async () => {
       request.body.confirmation = 'true'
 
       referralService.getReferral.mockResolvedValue(referral)
@@ -372,7 +372,7 @@ describe('ReferralsController', () => {
     })
 
     describe('when the body is invalid', () => {
-      it('calls flash with an appropriate error and redirects to the check answers page', async () => {
+      it('calls flash with an appropriate error and redirects to the check answers action', async () => {
         request.body.confirmation = 'false'
 
         const requestHandler = referralsController.submit()
@@ -387,7 +387,7 @@ describe('ReferralsController', () => {
     })
 
     describe('when the referral is not ready for submission', () => {
-      it('redirects to the show referral page', async () => {
+      it('redirects to the show referral action', async () => {
         request.body.confirmation = 'true'
 
         referralService.getReferral.mockResolvedValue(referral)

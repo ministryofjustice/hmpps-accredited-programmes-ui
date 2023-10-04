@@ -42,8 +42,8 @@ describe('CourseParticipationsController', () => {
       request.params.referralId = referral.id
     })
 
-    describe('when the `courseId` value is not `other`', () => {
-      it('creates a course participation using the `courseId` value', async () => {
+    describe('when the `courseId` is a string with length', () => {
+      it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withCourseId().build()
         const { courseId } = courseParticipation
 
@@ -70,8 +70,8 @@ describe('CourseParticipationsController', () => {
       })
     })
 
-    describe('when the `courseId` value is `other`', () => {
-      it('creates a course participation using the `otherCourseName` value', async () => {
+    describe('when the `courseId` is `other` and `otherCourseName` is a string with length when trimmed', () => {
+      it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
         const { otherCourseName } = courseParticipation
 
@@ -186,56 +186,8 @@ describe('CourseParticipationsController', () => {
     })
   })
 
-  describe('index', () => {
-    const referral = referralFactory.build()
-
-    it("renders the index template for a person's programme history", async () => {
-      referralService.getReferral.mockResolvedValue(referral)
-
-      const person = personFactory.build()
-      personService.getPerson.mockResolvedValue(person)
-
-      const courseParticipations = [
-        courseParticipationFactory.build({ courseId: 'an-ID' }),
-        courseParticipationFactory.build({ courseId: undefined, otherCourseName: 'Another course' }),
-      ]
-      courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
-
-      const course = courseFactory.build()
-      courseService.getCourse.mockResolvedValue(course)
-
-      const courseParticipationsWithNames = [
-        { ...courseParticipations[0], name: course.name },
-        { ...courseParticipations[1], name: 'Another course' },
-      ]
-      const summaryListsOptions = courseParticipationsWithNames.map(CourseParticipationUtils.summaryListOptions)
-
-      const requestHandler = courseParticipationsController.index()
-      await requestHandler(request, response, next)
-
-      expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/index', {
-        pageHeading: 'Accredited Programme history',
-        person,
-        referralId: referral.id,
-        summaryListsOptions,
-      })
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        referralService.getReferral.mockResolvedValue(referral)
-        personService.getPerson.mockResolvedValue(null)
-
-        const requestHandler = courseParticipationsController.index()
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
-    })
-  })
-
   describe('new', () => {
-    it('renders the new template for selecting a course/programme', async () => {
+    it('renders the new template for selecting a course', async () => {
       const courses = courseFactory.buildList(2)
       courseService.getCourses.mockResolvedValue(courses)
 
