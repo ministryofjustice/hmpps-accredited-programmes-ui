@@ -144,6 +144,17 @@ describe('CourseParticipationUtils', () => {
       })
     })
 
+    describe('when `withActions` is `false`', () => {
+      it('omits the actions', () => {
+        const summaryListOptions = CourseParticipationUtils.summaryListOptions(
+          courseParticipationWithName,
+          referralId,
+          false,
+        )
+        expect(summaryListOptions.card?.actions).toBeUndefined()
+      })
+    })
+
     describe('when rows are missing required data', () => {
       it.each([
         ['Setting', 'setting', undefined],
