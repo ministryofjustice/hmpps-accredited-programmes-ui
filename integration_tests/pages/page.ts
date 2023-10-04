@@ -1,8 +1,9 @@
 import type { AxeRules } from '@accredited-programmes/integration-tests'
 
-import { PersonUtils } from '../../server/utils'
+import { referPaths } from '../../server/paths'
+import { CourseParticipationUtils, PersonUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { CourseParticipationWithName, Organisation, Person } from '@accredited-programmes/models'
+import type { CourseParticipationWithName, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
@@ -12,6 +13,7 @@ import type {
   HasHtmlString,
   HasTextString,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendWarningText } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -81,6 +83,43 @@ export default abstract class Page {
         const { actual, expected } = Helpers.parseHtml(detailsTextElement, detailsText)
         expect(actual).to.equal(expected)
       })
+    })
+  }
+
+  shouldContainHistorySummaryCards(
+    participations: Array<CourseParticipationWithName>,
+    referralId: Referral['id'],
+    withActions = true,
+  ) {
+    participations.forEach((participation, participationsIndex) => {
+      const { rows } = CourseParticipationUtils.summaryListOptions(participation, referralId)
+
+      cy.get('.govuk-summary-card')
+        .eq(participationsIndex)
+        .then(summaryCardElement => {
+          const actions = withActions
+            ? [
+                {
+                  href: referPaths.programmeHistory.editProgramme({
+                    courseParticipationId: participation.id,
+                    referralId,
+                  }),
+                  text: 'Change',
+                  visuallyHiddenText: ` participation for ${participation.name}`,
+                },
+                {
+                  href: referPaths.programmeHistory.delete({
+                    courseParticipationId: participation.id,
+                    referralId,
+                  }),
+                  text: 'Remove',
+                  visuallyHiddenText: ` participation for ${participation.name}`,
+                },
+              ]
+            : []
+
+          this.shouldContainSummaryCard(participation.name, actions, rows, summaryCardElement)
+        })
     })
   }
 

@@ -70,7 +70,7 @@ context('Programme history', () => {
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
       programmeHistoryPage.shouldContainPreHistoryParagraph()
-      programmeHistoryPage.shouldContainHistorySummaryCards()
+      programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsWithNames, referral.id)
       programmeHistoryPage.shouldContainButton('Continue')
       programmeHistoryPage.shouldContainButtonLink(
         'Add another',
