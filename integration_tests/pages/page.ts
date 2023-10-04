@@ -236,6 +236,10 @@ export default abstract class Page {
     cy.get(`.govuk-textarea[id="${id}"]`).should('exist')
   }
 
+  shouldContainWarningText(text: GovukFrontendWarningText['text']): void {
+    cy.get('.govuk-warning-text__text').should('contain.text', text)
+  }
+
   shouldHaveErrors(errors: Array<{ field: string; message: string }>): void {
     cy.get('.govuk-error-summary').should('exist')
 
