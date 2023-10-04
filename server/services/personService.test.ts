@@ -85,12 +85,12 @@ describe('PersonService', () => {
 
     describe('when the prisoner client throws any other error', () => {
       it('re-throws the error', async () => {
-        const clientError = createError(501)
+        const clientError = createError(500)
         prisonerClient.find.mockRejectedValue(clientError)
 
         const prisonNumber = 'ABC123'
 
-        const expectedError = createError(501)
+        const expectedError = createError(500)
 
         await expect(() => service.getPerson(username, prisonNumber, caseloads)).rejects.toThrowError(expectedError)
 
