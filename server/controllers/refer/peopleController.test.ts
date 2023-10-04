@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import createError from 'http-errors'
 
 import PeopleController from './peopleController'
 import { referPaths } from '../../paths'
@@ -86,7 +87,9 @@ describe('PeopleController', () => {
 
         request.params.courseOfferingId = courseOfferingId
         request.params.prisonNumber = fakeId
-        personService.getPerson.mockResolvedValue(null)
+
+        const serviceError = createError(404)
+        personService.getPerson.mockRejectedValue(serviceError)
 
         const requestHandler = peopleController.show()
         await requestHandler(request, response, next)

@@ -16,7 +16,7 @@ export default class OrganisationService {
       const prison = await prisonClient.find(organisationId)
 
       if (!prison.active) {
-        throw createError(500, `Organisation with ID ${organisationId} not active.`)
+        throw createError(404)
       }
 
       return OrganisationUtils.organisationFromPrison(prison)
@@ -24,7 +24,7 @@ export default class OrganisationService {
       const knownError = error as ResponseError
 
       if (knownError.status === 404) {
-        throw createError(knownError.status, `Organisation with ID ${organisationId} not found.`)
+        throw createError(knownError.status, `Active organisation with ID ${organisationId} not found.`)
       }
 
       const errorMessage =

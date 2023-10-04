@@ -2,7 +2,6 @@ import { faker } from '@faker-js/faker'
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import CourseParticipationDetailsController from './courseParticipationDetailsController'
 import type { CourseService, PersonService, ReferralService } from '../../services'
@@ -62,18 +61,6 @@ describe('CourseParticipationDetailsController', () => {
         pageHeading: 'Add Accredited Programme details',
         person,
         referralId,
-      })
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        personService.getPerson.mockResolvedValue(null)
-        courseService.getParticipation.mockResolvedValue(courseParticipationFactory.build())
-
-        const requestHandler = courseParticipationDetailsController.show()
-        const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-
-        await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
   })

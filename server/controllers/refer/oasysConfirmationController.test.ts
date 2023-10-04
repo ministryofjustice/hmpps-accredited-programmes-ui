@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import OasysConfirmationController from './oasysConfirmationController'
 import { referPaths } from '../../paths'
@@ -59,23 +58,6 @@ describe('OasysConfirmationController', () => {
         referral,
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['oasysConfirmed'])
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        const person = personFactory.build()
-        personService.getPerson.mockResolvedValue(null)
-
-        const referral = referralFactory
-          .started()
-          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        const requestHandler = oasysConfirmationController.show()
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
     })
   })
 

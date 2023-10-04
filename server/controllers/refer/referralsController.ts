@@ -33,12 +33,6 @@ export default class ReferralsController {
         res.locals.user.caseloads,
       )
 
-      if (!person) {
-        throw createError(404, {
-          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
-        })
-      }
-
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
@@ -130,13 +124,6 @@ export default class ReferralsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      if (!person) {
-        throw createError(404, {
-          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
-        })
-      }
-
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('referrals/show', {
@@ -159,12 +146,6 @@ export default class ReferralsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      if (!person) {
-        throw createError(404, {
-          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
-        })
-      }
 
       res.render('referrals/showPerson', {
         pageHeading: `${person.name}'s details`,

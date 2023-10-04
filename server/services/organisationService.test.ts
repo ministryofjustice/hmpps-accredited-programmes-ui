@@ -52,11 +52,11 @@ describe('OrganisationService', () => {
       })
 
       describe("and it's inactive", () => {
-        it('throws an 500 error', async () => {
+        it('throws an 404 error', async () => {
           const prison = prisonFactory.build({ active: false })
           prisonClient.find.mockResolvedValue(prison)
 
-          const expectedError = createError(500, `Organisation with ID ${prison.prisonId} not active.`)
+          const expectedError = createError(404, `Active organisation with ID ${prison.prisonId} not found.`)
           expect(() => service.getOrganisation(token, prison.prisonId)).rejects.toThrowError(expectedError)
 
           expect(prisonClientBuilder).toHaveBeenCalledWith(token)
@@ -72,7 +72,7 @@ describe('OrganisationService', () => {
 
         const notFoundPrisonId = 'NOT-FOUND'
 
-        const expectedError = createError(404, `Organisation with ID ${notFoundPrisonId} not found.`)
+        const expectedError = createError(404, `Active organisation with ID ${notFoundPrisonId} not found.`)
         expect(() => service.getOrganisation(token, notFoundPrisonId)).rejects.toThrowError(expectedError)
 
         expect(prisonClientBuilder).toHaveBeenCalledWith(token)

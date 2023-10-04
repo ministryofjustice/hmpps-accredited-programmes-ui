@@ -148,26 +148,6 @@ describe('ReferralsController', () => {
         taskListSections: ReferralUtils.taskListSections(referral),
       })
     })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        const organisation = organisationFactory.build({ id: courseOffering.organisationId })
-        organisationService.getOrganisation.mockResolvedValue(organisation)
-
-        const person = personFactory.build()
-        personService.getPerson.mockResolvedValue(null)
-
-        const referral = referralFactory
-          .started()
-          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        const requestHandler = referralsController.show()
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
-    })
   })
 
   describe('showPerson', () => {
@@ -189,20 +169,6 @@ describe('ReferralsController', () => {
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId: referral.id,
-      })
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        personService.getPerson.mockResolvedValue(null)
-
-        const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        const requestHandler = referralsController.showPerson()
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
@@ -271,25 +237,6 @@ describe('ReferralsController', () => {
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
-      })
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        const referral = referralFactory.submittable().build({ offeringId: courseOffering.id })
-        request.params.referralId = referral.id
-        referralService.getReferral.mockResolvedValue(referral)
-        ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
-
-        TypeUtils.assertHasUser(request)
-        request.user.username = 'BOBBY_BROWN'
-
-        personService.getPerson.mockResolvedValue(null)
-
-        const requestHandler = referralsController.show()
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })

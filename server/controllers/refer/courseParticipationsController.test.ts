@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import CourseParticipationsController from './courseParticipationsController'
 import { referPaths } from '../../paths'
@@ -200,20 +199,6 @@ describe('CourseParticipationsController', () => {
         })
       },
     )
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        request.params.courseParticipationId = courseParticipationWithCourseId.id
-        courseService.getParticipation.mockResolvedValue(courseParticipationWithCourseId)
-        referralService.getReferral.mockResolvedValue(referral)
-        personService.getPerson.mockResolvedValue(null)
-
-        const requestHandler = courseParticipationsController.editCourse()
-        const expectedError = createError(404, `Person with prison number ${person.prisonNumber} not found.`)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
-    })
   })
 
   describe('index', () => {
@@ -252,18 +237,6 @@ describe('CourseParticipationsController', () => {
         summaryListsOptions,
       })
     })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        referralService.getReferral.mockResolvedValue(referral)
-        personService.getPerson.mockResolvedValue(null)
-
-        const requestHandler = courseParticipationsController.index()
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
-    })
   })
 
   describe('new', () => {
@@ -295,21 +268,6 @@ describe('CourseParticipationsController', () => {
         values: {},
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        const person = personFactory.build()
-        personService.getPerson.mockResolvedValue(null)
-
-        const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        const requestHandler = courseParticipationsController.new()
-        const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
     })
   })
 

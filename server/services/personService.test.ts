@@ -64,14 +64,15 @@ describe('PersonService', () => {
     })
 
     describe('when the prisoner client does not find a person in prison', () => {
-      it('returns `null`', async () => {
+      it('throws a 404', async () => {
         prisonerClient.find.mockResolvedValue(null)
 
         const notFoundPrisonNumber = 'NOT-FOUND'
 
-        const result = await service.getPerson(username, notFoundPrisonNumber, caseloads)
-
-        expect(result).toEqual(null)
+        const expectedError = createError(404, `Person with prison number ${notFoundPrisonNumber} not found.`)
+        await expect(() => service.getPerson(username, notFoundPrisonNumber, caseloads)).rejects.toThrowError(
+          expectedError,
+        )
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)

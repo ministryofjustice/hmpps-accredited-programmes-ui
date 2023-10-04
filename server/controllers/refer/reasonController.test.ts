@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import ReasonController from './reasonController'
 import { referPaths } from '../../paths'
@@ -61,23 +60,6 @@ describe('ReasonController', () => {
       })
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reason'])
-    })
-
-    describe('when the person service returns `null`', () => {
-      it('responds with a 404', async () => {
-        const person = personFactory.build()
-        personService.getPerson.mockResolvedValue(null)
-
-        const referral = referralFactory
-          .started()
-          .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-        referralService.getReferral.mockResolvedValue(referral)
-
-        const requestHandler = reasonController.show()
-        const expectedError = createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-      })
     })
   })
 

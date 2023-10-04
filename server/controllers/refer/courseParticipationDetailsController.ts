@@ -1,5 +1,4 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
-import createError from 'http-errors'
 
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { TypeUtils } from '../../utils'
@@ -24,10 +23,6 @@ export default class CourseParticipationDetailsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      if (!person) {
-        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-      }
 
       res.render('referrals/courseParticipations/details/show', {
         courseParticipationId,

@@ -16,7 +16,7 @@ export default class PersonService {
     username: Express.User['username'],
     prisonNumber: Person['prisonNumber'],
     caseloads: Array<Caseload>,
-  ): Promise<Person | null> {
+  ): Promise<Person> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const prisonerClient = this.prisonerClientBuilder(systemToken)
@@ -27,12 +27,16 @@ export default class PersonService {
       const prisoner = await prisonerClient.find(prisonNumber, caseloadIds)
 
       if (!prisoner) {
-        return null
+        throw createError(404, `Person with prison number ${prisonNumber} not found.`)
       }
 
       return PersonUtils.personFromPrisoner(prisoner)
     } catch (error) {
       const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        throw knownError
+      }
 
       throw createError(knownError.status || 500, knownError, {
         userMessage: `Error fetching prisoner ${prisonNumber}.`,
