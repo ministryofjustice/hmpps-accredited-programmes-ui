@@ -9,12 +9,12 @@ import type { GovukFrontendTableRow } from '@govuk-frontend'
 import type { Prison } from '@prison-register-api'
 
 export default class OrganisationUtils {
-  static organisationFromPrison(organisationId: Organisation['id'], prison: Prison): Organisation {
+  static organisationFromPrison(prison: Prison): Organisation {
     const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
     const categories = prison.categories.sort().join('/')
 
     return {
-      id: organisationId, // eslint-disable-next-line sort-keys
+      id: prison.prisonId, // eslint-disable-next-line sort-keys
       address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
       category: categories,
       name: prison.prisonName,

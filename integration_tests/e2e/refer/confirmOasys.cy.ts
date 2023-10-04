@@ -69,7 +69,7 @@ context('OASys confirmation', () => {
       })
 
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+      const organisation = OrganisationUtils.organisationFromPrison(prison)
 
       const referral = referralFactory
         .started()

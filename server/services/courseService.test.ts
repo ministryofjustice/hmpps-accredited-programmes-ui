@@ -167,7 +167,7 @@ describe('CourseService', () => {
 
     describe('when the course client throws any other error', () => {
       it('throws a generic error message', async () => {
-        const clientError = createError(501)
+        const clientError = createError(500)
         courseClient.findParticipation.mockRejectedValue(clientError)
 
         const courseParticipationId = faker.string.uuid()

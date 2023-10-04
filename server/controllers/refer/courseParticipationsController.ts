@@ -1,5 +1,4 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
-import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
@@ -56,11 +55,6 @@ export default class CourseParticipationsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      if (!person) {
-        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-      }
-
       const courses = await this.courseService.getCourses(req.user.token)
 
       FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
@@ -91,23 +85,14 @@ export default class CourseParticipationsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      if (!person) {
-        throw createError(404, {
-          userMessage: `Person with prison number ${req.params.prisonNumber} not found.`,
-        })
-      }
-
       const courseParticipations = await this.courseService.getParticipationsByPerson(
         req.user.token,
         person.prisonNumber,
       )
-
       const courseParticipationsWithNames = await this.courseParticipationsWithNames(
         courseParticipations,
         req.user.token,
       )
-
       const summaryListsOptions = courseParticipationsWithNames.map(courseParticipationWithName =>
         CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referral.id),
       )
@@ -132,10 +117,6 @@ export default class CourseParticipationsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      if (!person) {
-        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-      }
 
       FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
 

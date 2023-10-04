@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import CourseOfferingsController from './courseOfferingsController'
 import type { CourseService, OrganisationService } from '../../services'
@@ -48,17 +47,6 @@ describe('CoursesOfferingsController', () => {
           course.name,
         ),
         pageHeading: coursePresenter.nameAndAlternateName,
-      })
-    })
-
-    describe('when the organisation service returns `null`', () => {
-      it('responds with a 404', async () => {
-        organisationService.getOrganisation.mockResolvedValue(null)
-
-        const requestHandler = courseOfferingsController.show()
-        const expectedError = createError(404)
-
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })

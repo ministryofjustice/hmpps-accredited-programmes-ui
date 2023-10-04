@@ -1,5 +1,4 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
-import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
@@ -22,10 +21,6 @@ export default class ReasonController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      if (!person) {
-        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
-      }
 
       FormUtils.setFieldErrors(req, res, ['reason'])
 

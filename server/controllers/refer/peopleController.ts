@@ -1,8 +1,11 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
+import createError from 'http-errors'
+import type { ResponseError } from 'superagent'
 
 import { referPaths } from '../../paths'
 import type { PersonService } from '../../services'
 import { PersonUtils, TypeUtils } from '../../utils'
+import type { Person } from '@accredited-programmes/models'
 
 export default class PeopleController {
   constructor(private readonly personService: PersonService) {}
@@ -28,15 +31,24 @@ export default class PeopleController {
       TypeUtils.assertHasUser(req)
 
       const { courseOfferingId } = req.params
-      const person = await this.personService.getPerson(
-        req.user.username,
-        req.params.prisonNumber,
-        res.locals.user.caseloads,
-      )
 
-      if (!person) {
-        req.flash('prisonNumberError', `No person with a prison number '${req.params.prisonNumber}' was found`)
-        return res.redirect(referPaths.new({ courseOfferingId }))
+      let person: Person
+
+      try {
+        person = await this.personService.getPerson(
+          req.user.username,
+          req.params.prisonNumber,
+          res.locals.user.caseloads,
+        )
+      } catch (error) {
+        const knownError = error as ResponseError
+
+        if (knownError.status === 404) {
+          req.flash('prisonNumberError', `No person with a prison number '${req.params.prisonNumber}' was found`)
+          return res.redirect(referPaths.new({ courseOfferingId }))
+        }
+
+        throw createError(knownError)
       }
 
       return res.render('referrals/people/show', {
