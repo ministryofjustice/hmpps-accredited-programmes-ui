@@ -37,7 +37,7 @@ context('Showing the referral task list and person page', () => {
     })
 
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     const referral = referralFactory
       .started()

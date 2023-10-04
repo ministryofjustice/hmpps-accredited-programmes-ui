@@ -26,7 +26,7 @@ context('Searching for a person and creating a referral', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubOffering', { courseOffering })
@@ -130,7 +130,7 @@ context('Searching for a person and creating a referral', () => {
     const person = personFactory.build({ name: 'Del Hatton', prisonNumber: prisoner.prisonerNumber })
 
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     const referral = referralFactory
       .started()

@@ -19,7 +19,7 @@ context('Find', () => {
       secondaryContactEmail: null,
     })
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubOffering', { courseOffering })

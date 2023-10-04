@@ -41,12 +41,12 @@ context('Find', () => {
     const courseOfferings: Array<CourseOffering> = []
     const organisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
 
-    prisons.forEach((prison, prisonIndex) => {
+    prisons.forEach(prison => {
       const courseOffering = courseOfferingFactory.build({ organisationId: prison.prisonId })
       courseOfferings.push(courseOffering)
 
       organisationsWithOfferingIds.push({
-        ...OrganisationUtils.organisationFromPrison(`an-ID${prisonIndex}`, prison),
+        ...OrganisationUtils.organisationFromPrison(prison),
         courseOfferingId: courseOffering.id,
       })
 
@@ -78,7 +78,7 @@ context('Find', () => {
         secondaryContactEmail: null,
       })
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+      const organisation = OrganisationUtils.organisationFromPrison(prison)
 
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
       cy.task('stubOffering', { courseOffering })
@@ -104,7 +104,7 @@ context('Find', () => {
         secondaryContactEmail: 'secondary-contact@nowhere.com',
       })
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+      const organisation = OrganisationUtils.organisationFromPrison(prison)
 
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
       cy.task('stubOffering', { courseOffering })
@@ -137,7 +137,7 @@ context('Find', () => {
         secondaryContactEmail: null,
       })
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+      const organisation = OrganisationUtils.organisationFromPrison(prison)
 
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
       cy.task('stubOffering', { courseOffering })

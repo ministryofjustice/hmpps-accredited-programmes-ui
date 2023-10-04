@@ -14,10 +14,10 @@ import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 describe('OrganisationUtils', () => {
   describe('organisationFromPrison', () => {
     it('returns an organisation given an ID and a prison, sorting and joining its categories into a string', () => {
-      const prison = prisonFactory.build({ categories: ['B', 'A'] })
+      const prison = prisonFactory.build({ categories: ['B', 'A'], prisonId: 'an-ID' })
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
-      expect(OrganisationUtils.organisationFromPrison('an-ID', prison)).toEqual({
+      expect(OrganisationUtils.organisationFromPrison(prison)).toEqual({
         id: 'an-ID', // eslint-disable-next-line sort-keys
         address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
         category: 'A/B',
@@ -28,7 +28,7 @@ describe('OrganisationUtils', () => {
     it('returns an empty string for the category if one cannot be found', () => {
       const prison = prisonFactory.build({ categories: [] })
 
-      expect(OrganisationUtils.organisationFromPrison('an-ID', prison).category).toEqual('')
+      expect(OrganisationUtils.organisationFromPrison(prison).category).toEqual('')
     })
   })
 

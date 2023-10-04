@@ -38,7 +38,7 @@ context('Submitting a referral', () => {
     })
 
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     const referral = referralFactory
       .submittable()
@@ -80,7 +80,7 @@ context('Submitting a referral', () => {
     })
 
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     const referral = referralFactory
       .submittable()
@@ -130,7 +130,7 @@ context('Submitting a referral', () => {
     })
 
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison('an-ID', prison)
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     beforeEach(() => {
       cy.signIn()

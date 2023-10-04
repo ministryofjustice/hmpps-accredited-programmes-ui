@@ -18,7 +18,7 @@ export default class OrganisationService {
         return null
       }
 
-      return OrganisationUtils.organisationFromPrison(organisationId, prison)
+      return OrganisationUtils.organisationFromPrison(prison)
     } catch (error) {
       const knownError = error as ResponseError
 
