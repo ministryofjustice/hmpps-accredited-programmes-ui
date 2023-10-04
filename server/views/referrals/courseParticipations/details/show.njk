@@ -1,5 +1,6 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
@@ -20,22 +21,24 @@
 {% set communityLocationHtml %}
 {{ govukInput({
   id: "communityLocation",
-  name: "setting[location]",
+  name: "setting[communityLocation]",
   classes: "govuk-!-width-one-third",
   label: {
     text: "Enter the location (if known)"
-  }
+  },
+  value: formValues.setting.communityLocation
 }) }}
 {% endset %}
 
 {% set custodyLocationHtml %}
 {{ govukInput({
   id: "custodyLocation",
-  name: "setting[location]",
+  name: "setting[custodyLocation]",
   classes: "govuk-!-width-one-third",
   label: {
     text: "Enter the prison (if known)"
-  }
+  },
+  value: formValues.setting.custodyLocation
 }) }}
 {% endset %}
 
@@ -48,7 +51,9 @@
   classes: "govuk-!-width-one-third",
   label: {
     text: "Enter the year completed (if known)"
-  }
+  },
+  errorMessage: errors.messages.yearCompleted,
+  value: formValues.outcome.yearCompleted
 }) }}
 {% endset %}
 
@@ -61,11 +66,24 @@
   classes: "govuk-!-width-one-third",
   label: {
     text: "Enter the year started (if known)"
-  }
+  },
+  errorMessage: errors.messages.yearStarted,
+  value: formValues.outcome.yearStarted
 }) }}
 {% endset %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
   <div class="govuk-grid-row">
@@ -87,6 +105,7 @@
               conditional: {
                 html: communityLocationHtml
               },
+              checked: formValues.setting.type === "community",
               attributes: {
                 "data-testid": "community-setting-option"
               }
@@ -97,6 +116,7 @@
               conditional: {
                 html: custodyLocationHtml
               },
+              checked: formValues.setting.type === "custody",
               attributes: {
                 "data-testid": "custody-setting-option"
               }
@@ -121,6 +141,7 @@
               conditional: {
                 html: yearCompletedHtml
               },
+              checked: formValues.outcome.status === "complete",
               attributes: {
                 "data-testid": "complete-outcome-option"
               }
@@ -131,6 +152,7 @@
               conditional: {
                 html: yearStartedHtml
               },
+              checked: formValues.outcome.status === "incomplete",
               attributes: {
                 "data-testid": "incomplete-outcome-option"
               }
@@ -149,7 +171,8 @@
           },
           hint: {
             text: "Include information about the outcome"
-          }
+          },
+          value: formValues.outcome.detail
         }) }}
 
         {{ govukTextarea({
@@ -160,7 +183,8 @@
           },
           hint: {
             text: "Include where you got this information from"
-          }
+          },
+          value: formValues.source
         }) }}
 
         {{ govukButton({
