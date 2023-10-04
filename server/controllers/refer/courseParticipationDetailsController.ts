@@ -29,6 +29,7 @@ export default class CourseParticipationDetailsController {
       FormUtils.setFormValues(req, res)
 
       res.render('referrals/courseParticipations/details/show', {
+        action: `${referPaths.programmeHistory.details.update({ courseParticipationId, referralId })}?_method=PUT`,
         courseParticipationId,
         pageHeading: 'Add Accredited Programme details',
         person,

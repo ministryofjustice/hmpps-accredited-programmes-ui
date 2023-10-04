@@ -73,6 +73,7 @@ describe('CourseParticipationDetailsController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/details/show', {
+        action: `${referPaths.programmeHistory.details.update({ courseParticipationId, referralId })}?_method=PUT`,
         courseParticipationId,
         pageHeading: 'Add Accredited Programme details',
         person,
