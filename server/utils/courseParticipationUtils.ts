@@ -90,26 +90,7 @@ export default class CourseParticipationUtils {
       value: { text: courseParticipationWithName.name },
     })
 
-    if (courseParticipationWithName.setting) {
-      const valueTextItems: Array<string> = []
-
-      if (courseParticipationWithName.setting.type) {
-        valueTextItems.push(StringUtils.properCase(courseParticipationWithName.setting.type))
-      }
-
-      if (courseParticipationWithName.setting.location) {
-        valueTextItems.push(`${courseParticipationWithName.setting.location}`)
-      }
-
-      const valueText = valueTextItems.join(', ')
-
-      if (valueText) {
-        summaryListRows.push({
-          key: { text: 'Setting' },
-          value: { text: valueText },
-        })
-      }
-    }
+    summaryListRows.push(CourseParticipationUtils.settingSummaryListRow(courseParticipationWithName))
 
     if (courseParticipationWithName.outcome) {
       if (courseParticipationWithName.outcome.status) {
@@ -157,5 +138,25 @@ export default class CourseParticipationUtils {
     })
 
     return summaryListRows
+  }
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  private static settingSummaryListRow(
+    courseParticipationWithName: CourseParticipationWithName,
+  ): GovukFrontendSummaryListRowWithValue {
+    const valueTextItems: Array<string> = []
+
+    if (courseParticipationWithName.setting.type) {
+      valueTextItems.push(StringUtils.properCase(courseParticipationWithName.setting.type))
+    }
+
+    if (courseParticipationWithName.setting.location) {
+      valueTextItems.push(`${courseParticipationWithName.setting.location}`)
+    }
+
+    return {
+      key: { text: 'Setting' },
+      value: { text: valueTextItems.join(', ') || 'Not known' },
+    }
   }
 }

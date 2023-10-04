@@ -5,7 +5,7 @@ import type { Request } from 'express'
 
 import CourseParticipationUtils from './courseParticipationUtils'
 import { courseParticipationFactory } from '../testutils/factories'
-import type { CourseParticipationOutcome, CourseParticipationSetting } from '@accredited-programmes/models'
+import type { CourseParticipationOutcome, CourseParticipationWithName } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRow, GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
 const getRow = (
@@ -13,6 +13,13 @@ const getRow = (
   keyText: GovukFrontendSummaryListRowKey['text'],
 ): GovukFrontendSummaryListRow | undefined => {
   return rows.find(row => (row.key as GovukFrontendSummaryListRowKey).text === keyText)
+}
+
+const getRowValueText = (
+  rows: Array<GovukFrontendSummaryListRow>,
+  keyText: GovukFrontendSummaryListRowKey['text'],
+): string => {
+  return getRow(rows, keyText)!.value!.text!
 }
 
 describe('CourseParticipationUtils', () => {
@@ -162,7 +169,6 @@ describe('CourseParticipationUtils', () => {
 
     describe('when rows are missing required data', () => {
       it.each([
-        ['Setting', 'setting', undefined],
         ['Outcome', 'outcome', undefined],
         ['Outcome', 'outcome', { status: undefined }],
         ['Additional detail', 'outcome', { detail: undefined }],
@@ -176,28 +182,33 @@ describe('CourseParticipationUtils', () => {
         expect(fieldRow).toBeUndefined()
       })
 
-      it('only shows the location in the Setting row when setting location is undefined', () => {
-        const withoutSettingType = {
-          ...courseParticipationWithName,
-          setting: { location: 'Stockport', type: undefined },
-        }
+      describe('setting', () => {
+        describe('when the setting has no location', () => {
+          const withoutSettingLocation: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            setting: {
+              location: undefined,
+              type: 'community',
+            },
+          }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingType, referralId)
-        const settingRow = getRow(rows, 'Setting')
+          it("only displays the setting's type", () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingLocation, referralId)
+            expect(getRowValueText(rows, 'Setting')).toEqual('Community')
+          })
+        })
 
-        expect(settingRow).toEqual({ key: { text: 'Setting' }, value: { text: 'Stockport' } })
-      })
+        describe('when there is no setting', () => {
+          const withoutSetting: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            setting: {},
+          }
 
-      it('only shows the type in the Setting row when setting location is undefined', () => {
-        const withoutSettingLocation = {
-          ...courseParticipationWithName,
-          setting: { location: undefined, type: 'community' as CourseParticipationSetting['type'] },
-        }
-
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingLocation, referralId)
-        const settingRow = getRow(rows, 'Setting')
-
-        expect(settingRow).toEqual({ key: { text: 'Setting' }, value: { text: 'Community' } })
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutSetting, referralId)
+            expect(getRowValueText(rows, 'Setting')).toEqual('Not known')
+          })
+        })
       })
 
       it('only shows the status in the Outcome row when yearStarted is undefined on an incomplete outcome', () => {
