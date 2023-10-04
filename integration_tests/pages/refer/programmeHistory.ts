@@ -1,27 +1,45 @@
+import { referPaths } from '../../../server/paths'
 import { CourseParticipationUtils } from '../../../server/utils'
 import Page from '../page'
-import type { CourseParticipationWithName, Person } from '@accredited-programmes/models'
+import type { CourseParticipationWithName, Person, Referral } from '@accredited-programmes/models'
 
 export default class ProgrammeHistoryPage extends Page {
   participations: Array<CourseParticipationWithName>
 
   person: Person
 
-  constructor(args: { participationsWithNames: Array<CourseParticipationWithName>; person: Person }) {
+  referral: Referral
+
+  constructor(args: {
+    participationsWithNames: Array<CourseParticipationWithName>
+    person: Person
+    referral: Referral
+  }) {
     super('Accredited Programme history')
 
-    const { participationsWithNames, person } = args
+    const { participationsWithNames, person, referral } = args
     this.participations = participationsWithNames
     this.person = person
+    this.referral = referral
   }
 
   shouldContainHistorySummaryCards() {
     this.participations.forEach((participation, participationsIndex) => {
-      const { rows } = CourseParticipationUtils.summaryListOptions(participation)
+      const { rows } = CourseParticipationUtils.summaryListOptions(participation, this.referral.id)
+
       cy.get('.govuk-summary-card')
         .eq(participationsIndex)
         .then(summaryCardElement => {
-          this.shouldContainSummaryCard(participation.name, rows, summaryCardElement)
+          const action = {
+            href: referPaths.programmeHistory.editProgramme({
+              courseParticipationId: participation.id,
+              referralId: this.referral.id,
+            }),
+            text: 'Change',
+            visuallyHiddenText: ` participation for ${participation.name}`,
+          }
+
+          this.shouldContainSummaryCard(participation.name, [action], rows, summaryCardElement)
         })
     })
   }

@@ -51,7 +51,7 @@ export default class CourseService {
   async getParticipation(
     token: Express.User['token'],
     courseParticipationId: CourseParticipation['id'],
-  ): Promise<CourseParticipation | null> {
+  ): Promise<CourseParticipation> {
     const courseClient = this.courseClientBuilder(token)
 
     try {

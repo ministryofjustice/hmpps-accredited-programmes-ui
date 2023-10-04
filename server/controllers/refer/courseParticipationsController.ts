@@ -19,32 +19,65 @@ export default class CourseParticipationsController {
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
 
-      const { courseId, otherCourseName } = req.body
+      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processedCourseFormData(
+        req.body.courseId,
+        req.body.otherCourseName,
+        req,
+      )
 
-      const formattedOtherCourseName = otherCourseName?.trim()
-
-      if (!courseId) {
-        req.flash('courseIdError', 'Select a programme')
-
-        return res.redirect(referPaths.programmeHistory.new({ referralId: req.params.referralId }))
-      }
-
-      if (courseId === 'other' && !formattedOtherCourseName) {
-        req.flash('otherCourseNameError', 'Enter the programme name')
-
+      if (hasFormErrors) {
         return res.redirect(referPaths.programmeHistory.new({ referralId: req.params.referralId }))
       }
 
       const courseParticipation = await this.courseService.createParticipation(
         req.user.token,
         referral.prisonNumber,
-        courseId === 'other' ? undefined : courseId,
-        courseId === 'other' ? formattedOtherCourseName : undefined,
+        courseId,
+        otherCourseName,
       )
 
       return res.redirect(
         referPaths.programmeHistory.details({ courseParticipationId: courseParticipation.id, referralId: referral.id }),
       )
+    }
+  }
+
+  editCourse(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseParticipationId, referralId } = req.params
+
+      const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
+
+      if (!person) {
+        throw createError(404, `Person with prison number ${referral.prisonNumber} not found.`)
+      }
+
+      const courses = await this.courseService.getCourses(req.user.token)
+
+      FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
+
+      const { courseId, otherCourseName } = courseParticipation
+      const isOtherCourse = !courseId && !!otherCourseName
+      const hasOtherCourseNameError = !!res.locals.errors.messages.otherCourseName
+
+      res.render('referrals/courseParticipations/course', {
+        action: `${referPaths.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
+        courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        otherCourseNameChecked: isOtherCourse || hasOtherCourseNameError,
+        pageHeading: 'Add Accredited Programme history',
+        person,
+        referralId: referral.id,
+        values: { courseId, otherCourseName },
+      })
     }
   }
 
@@ -75,7 +108,9 @@ export default class CourseParticipationsController {
         req.user.token,
       )
 
-      const summaryListsOptions = courseParticipationsWithNames.map(CourseParticipationUtils.summaryListOptions)
+      const summaryListsOptions = courseParticipationsWithNames.map(courseParticipationWithName =>
+        CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referral.id),
+      )
 
       res.render('referrals/courseParticipations/index', {
         pageHeading: 'Accredited Programme history',
@@ -104,12 +139,54 @@ export default class CourseParticipationsController {
 
       FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
 
-      res.render('referrals/courseParticipations/new', {
+      res.render('referrals/courseParticipations/course', {
+        action: referPaths.programmeHistory.create({ referralId: referral.id }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
+        values: {},
       })
+    }
+  }
+
+  updateCourse(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const currentCourseParticipation = await this.courseService.getParticipation(
+        req.user.token,
+        req.params.courseParticipationId,
+      )
+
+      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processedCourseFormData(
+        req.body.courseId,
+        req.body.otherCourseName,
+        req,
+      )
+
+      if (hasFormErrors) {
+        return res.redirect(
+          referPaths.programmeHistory.editProgramme({
+            courseParticipationId: currentCourseParticipation.id,
+            referralId: req.params.referralId,
+          }),
+        )
+      }
+
+      await this.courseService.updateParticipation(req.user.token, currentCourseParticipation.id, {
+        ...currentCourseParticipation,
+        courseId,
+        otherCourseName,
+      })
+
+      return res.redirect(
+        referPaths.programmeHistory.details({
+          courseParticipationId: req.params.courseParticipationId,
+          referralId: req.params.referralId,
+        }),
+      )
     }
   }
 

@@ -1,6 +1,7 @@
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryList,
+  GovukFrontendSummaryListCardActionsItem,
   GovukFrontendSummaryListRow,
   GovukFrontendSummaryListRowValue,
   GovukFrontendTag,
@@ -8,6 +9,8 @@ import type {
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 
 type GovukFrontendRadiosItemWithLabel = GovukFrontendRadiosItem & { label: string }
+
+type GovukFrontendSummaryListCardActionsItemWithText = GovukFrontendSummaryListCardActionsItem & { text: string }
 
 type GovukFrontendSummaryListRowWithValue = GovukFrontendSummaryListRow & { value: GovukFrontendSummaryListRowValue }
 
@@ -82,6 +85,7 @@ type ReferralTaskListSection = {
 export type {
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
+  GovukFrontendSummaryListCardActionsItemWithText,
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
   GovukFrontendTagWithText,
