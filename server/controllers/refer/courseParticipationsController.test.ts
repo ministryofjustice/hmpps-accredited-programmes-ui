@@ -44,7 +44,7 @@ describe('CourseParticipationsController', () => {
       request.params.referralId = referral.id
     })
 
-    describe('when the `courseId` is a string with length', () => {
+    describe('when the `courseId` is a non-empty string', () => {
       it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withCourseId().build()
         const { courseId } = courseParticipation
@@ -81,7 +81,7 @@ describe('CourseParticipationsController', () => {
       })
     })
 
-    describe('when the `courseId` is `other` and `otherCourseName` is a string with length when trimmed', () => {
+    describe('when the `courseId` is `other` and `otherCourseName` is a non-empty string when trimmed', () => {
       it('asks the service to create a course participation and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
         const { otherCourseName } = courseParticipation
