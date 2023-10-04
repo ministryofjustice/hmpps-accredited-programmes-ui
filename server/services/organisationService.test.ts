@@ -1,8 +1,10 @@
 import createError from 'http-errors'
+import { when } from 'jest-when'
 
 import OrganisationService from './organisationService'
 import { PrisonClient } from '../data'
 import { prisonFactory } from '../testutils/factories'
+import { OrganisationUtils } from '../utils'
 
 jest.mock('../data/prisonClient')
 
@@ -50,13 +52,12 @@ describe('OrganisationService', () => {
       })
 
       describe("and it's inactive", () => {
-        it('returns `null`', async () => {
+        it('throws an 500 error', async () => {
           const prison = prisonFactory.build({ active: false })
           prisonClient.find.mockResolvedValue(prison)
 
-          const result = await service.getOrganisation(token, prison.prisonId)
-
-          expect(result).toEqual(null)
+          const expectedError = createError(500, `Organisation with ID ${prison.prisonId} not active.`)
+          expect(() => service.getOrganisation(token, prison.prisonId)).rejects.toThrowError(expectedError)
 
           expect(prisonClientBuilder).toHaveBeenCalledWith(token)
           expect(prisonClient.find).toHaveBeenCalledWith(prison.prisonId)
@@ -65,15 +66,14 @@ describe('OrganisationService', () => {
     })
 
     describe('when the prison client throws a 404 error', () => {
-      it('returns `null`', async () => {
+      it('re-throws the error', async () => {
         const clientError = createError(404)
         prisonClient.find.mockRejectedValue(clientError)
 
         const notFoundPrisonId = 'NOT-FOUND'
 
-        const result = await service.getOrganisation(token, notFoundPrisonId)
-
-        expect(result).toEqual(null)
+        const expectedError = createError(404, `Organisation with ID ${notFoundPrisonId} not found.`)
+        expect(() => service.getOrganisation(token, notFoundPrisonId)).rejects.toThrowError(expectedError)
 
         expect(prisonClientBuilder).toHaveBeenCalledWith(token)
         expect(prisonClient.find).toHaveBeenCalledWith(notFoundPrisonId)
@@ -82,17 +82,61 @@ describe('OrganisationService', () => {
 
     describe('when the prison client throws any other error', () => {
       it('re-throws the error', async () => {
-        const clientError = createError(501)
+        const clientError = createError(500)
         prisonClient.find.mockRejectedValue(clientError)
 
         const prisonId = '04aba287-86ac-4b2c-b98e-048b5eefddbc'
 
-        const expectedError = createError(501)
-
+        const expectedError = createError(500, `Error fetching organisation ${prisonId}.`)
         expect(() => service.getOrganisation(token, prisonId)).rejects.toThrowError(expectedError)
 
         expect(prisonClientBuilder).toHaveBeenCalledWith(token)
         expect(prisonClient.find).toHaveBeenCalledWith(prisonId)
+      })
+    })
+  })
+
+  describe('getOrganisations', () => {
+    const activePrisonIds = ['found-it', 'yep-got-this-one', 'and-this-one-too']
+    const activePrisons = activePrisonIds.map(id => prisonFactory.build({ prisonId: id }))
+    const inactivePrisonId = 'got-this-one-but-it-is-inactive'
+    const inactivePrison = prisonFactory.build({ active: false, prisonId: inactivePrisonId })
+    const foundPrisons = [...activePrisons, inactivePrison]
+
+    beforeEach(() => {
+      foundPrisons.forEach(prison => {
+        when(prisonClient.find).calledWith(prison.prisonId).mockResolvedValue(prison)
+      })
+    })
+
+    it('returns all found active prisons', async () => {
+      const notFoundPrisonId = 'who-is-she'
+      const notFoundClientError = createError(404)
+      when(prisonClient.find).calledWith(notFoundPrisonId).mockRejectedValue(notFoundClientError)
+
+      const allIds = [...activePrisonIds, inactivePrisonId, notFoundPrisonId]
+
+      const result = await service.getOrganisations(token, allIds)
+
+      const activeOrganisations = activePrisons.map(prison => OrganisationUtils.organisationFromPrison(prison))
+      expect(result).toEqual(activeOrganisations)
+
+      allIds.forEach(id => {
+        expect(prisonClient.find).toHaveBeenCalledWith(id)
+      })
+    })
+
+    describe('when the prison client throws a non-404 error', () => {
+      it('re-throws the error', () => {
+        const otherErrorPrisonId = 'lo-siento-no-entiendo'
+        const otherError = createError(500)
+        when(prisonClient.find).calledWith(otherErrorPrisonId).mockRejectedValue(otherError)
+
+        // const allIds = [...activePrisonIds, inactivePrisonId, otherErrorPrisonId]
+        const allIds = [otherErrorPrisonId]
+
+        const expectedError = createError(500, `Error fetching organisation ${otherErrorPrisonId}.`)
+        expect(() => service.getOrganisations(token, allIds)).rejects.toThrowError(expectedError)
       })
     })
   })

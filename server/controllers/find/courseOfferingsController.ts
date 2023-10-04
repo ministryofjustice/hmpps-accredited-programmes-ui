@@ -1,5 +1,4 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
-import createError from 'http-errors'
 
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
@@ -17,13 +16,6 @@ export default class CourseOfferingsController {
       const course = await this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId)
       const courseOffering = await this.courseService.getOffering(req.user.token, req.params.courseOfferingId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
-
-      if (!organisation) {
-        throw createError(404, {
-          userMessage: 'Organisation not found.',
-        })
-      }
-
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/offerings/show', {

@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import { when } from 'jest-when'
 
 import CoursesController from './coursesController'
 import type { CourseService, OrganisationService } from '../../services'
@@ -58,13 +57,12 @@ describe('CoursesController', () => {
     describe('when all organisations are returned by the organisation service', () => {
       it('renders the course show template with all organisations', async () => {
         const organisations = organisationFactory.buildList(3)
+        organisationService.getOrganisations.mockResolvedValue(organisations)
 
         const courseOfferings: Array<CourseOffering> = []
         const organisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
 
         organisations.forEach(organisation => {
-          when(organisationService.getOrganisation).calledWith(token, organisation.id).mockResolvedValue(organisation)
-
           const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
           courseOfferings.push(courseOffering)
           organisationsWithOfferingIds.push({ ...organisation, courseOfferingId: courseOffering.id })
@@ -75,12 +73,10 @@ describe('CoursesController', () => {
         const requestHandler = coursesController.show()
         await requestHandler(request, response, next)
 
-        organisations.forEach(organisation =>
-          expect(organisationService.getOrganisation).toHaveBeenCalledWith(token, organisation.id),
-        )
+        const organisationIds = organisations.map(organisation => organisation.id)
+        expect(organisationService.getOrganisations).toHaveBeenCalledWith(token, organisationIds)
 
         const coursePresenter = CourseUtils.presentCourse(course)
-
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           course: coursePresenter,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
@@ -92,6 +88,8 @@ describe('CoursesController', () => {
     describe('when some but not all organisations are returned by the organisation service', () => {
       it('renders the course show template with the returned organisations', async () => {
         const existingOrganisations = organisationFactory.buildList(2)
+        organisationService.getOrganisations.mockResolvedValue(existingOrganisations)
+
         const nonexistentOrganisation = organisationFactory.build({ id: 'NOTFOUND' })
         const allOrganisations = [...existingOrganisations, nonexistentOrganisation]
 
@@ -111,20 +109,13 @@ describe('CoursesController', () => {
 
         courseService.getOfferingsByCourse.mockResolvedValue(courseOfferingsForAllOrganisations)
 
-        allOrganisations.forEach(organisation => {
-          const resolvedValue = organisation === nonexistentOrganisation ? null : organisation
-          when(organisationService.getOrganisation).calledWith(token, organisation.id).mockResolvedValue(resolvedValue)
-        })
-
         const requestHandler = coursesController.show()
         await requestHandler(request, response, next)
 
-        allOrganisations.forEach(organisation =>
-          expect(organisationService.getOrganisation).toHaveBeenCalledWith(token, organisation.id),
-        )
+        const allOrganisationIds = allOrganisations.map(organisation => organisation.id)
+        expect(organisationService.getOrganisations).toHaveBeenCalledWith(token, allOrganisationIds)
 
         const coursePresenter = CourseUtils.presentCourse(course)
-
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           course: coursePresenter,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
