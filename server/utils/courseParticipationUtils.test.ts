@@ -138,7 +138,7 @@ describe('CourseParticipationUtils', () => {
           },
           {
             key: { text: 'Outcome' },
-            value: { text: 'Complete - completed in 2019' },
+            value: { text: 'Complete, year completed 2019' },
           },
           {
             key: { text: 'Additional detail' },
@@ -169,8 +169,6 @@ describe('CourseParticipationUtils', () => {
 
     describe('when rows are missing required data', () => {
       it.each([
-        ['Outcome', 'outcome', undefined],
-        ['Outcome', 'outcome', { status: undefined }],
         ['Additional detail', 'outcome', { detail: undefined }],
         ['Source of information', 'source', undefined],
       ])('omits the %s row when %s is %s', (keyText: GovukFrontendSummaryListRowKey['text'], field: string, value) => {
@@ -211,28 +209,70 @@ describe('CourseParticipationUtils', () => {
         })
       })
 
-      it('only shows the status in the Outcome row when yearStarted is undefined on an incomplete outcome', () => {
-        const withoutOutcomeYearStarted = {
-          ...courseParticipationWithName,
-          outcome: { status: 'incomplete' as CourseParticipationOutcome['status'], yearStarted: undefined },
-        }
+      describe('outcome', () => {
+        describe('when the outcome is incomplete', () => {
+          describe('and there is a yearStarted value', () => {
+            const withOutcomeYearStarted = {
+              ...courseParticipationWithName,
+              outcome: { status: 'incomplete' as CourseParticipationOutcome['status'], yearStarted: 2019 },
+            }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearStarted, referralId)
-        const outcomeRow = getRow(rows, 'Outcome')
+            it('displays the outcome and yearStarted value', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withOutcomeYearStarted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Incomplete, year started 2019')
+            })
+          })
 
-        expect(outcomeRow).toEqual({ key: { text: 'Outcome' }, value: { text: 'Incomplete' } })
-      })
+          describe('and there is no yearStarted value', () => {
+            const withoutOutcomeYearStarted = {
+              ...courseParticipationWithName,
+              outcome: { status: 'incomplete' as CourseParticipationOutcome['status'], yearStarted: undefined },
+            }
 
-      it('only shows the status in the Outcome row when yearCompleted is undefined on a complete outcome', () => {
-        const withoutOutcomeYearCompleted = {
-          ...courseParticipationWithName,
-          outcome: { status: 'complete' as CourseParticipationOutcome['status'], yearCompleted: undefined },
-        }
+            it('displays the outcome on its own', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearStarted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Incomplete')
+            })
+          })
+        })
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearCompleted, referralId)
-        const outcomeRow = getRow(rows, 'Outcome')
+        describe('when the outcome is complete', () => {
+          describe('and there is a yearCompleted value', () => {
+            const withOutcomeYearCompleted = {
+              ...courseParticipationWithName,
+              outcome: { status: 'complete' as CourseParticipationOutcome['status'], yearCompleted: 2019 },
+            }
 
-        expect(outcomeRow).toEqual({ key: { text: 'Outcome' }, value: { text: 'Complete' } })
+            it('displays the outcome and yearCompleted value', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withOutcomeYearCompleted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Complete, year completed 2019')
+            })
+          })
+
+          describe('and there is no yearCompleted value', () => {
+            const withoutOutcomeYearCompleted = {
+              ...courseParticipationWithName,
+              outcome: { status: 'complete' as CourseParticipationOutcome['status'], yearCompleted: undefined },
+            }
+
+            it('displays the outcome and yearStarted value', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearCompleted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Complete')
+            })
+          })
+        })
+
+        describe('when there is no outcome', () => {
+          const withoutOutcome: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            outcome: {},
+          }
+
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcome, referralId)
+            expect(getRowValueText(rows, 'Outcome')).toEqual('Not known')
+          })
+        })
       })
     })
   })

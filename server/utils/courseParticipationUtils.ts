@@ -91,27 +91,9 @@ export default class CourseParticipationUtils {
     })
 
     summaryListRows.push(CourseParticipationUtils.settingSummaryListRow(courseParticipationWithName))
+    summaryListRows.push(CourseParticipationUtils.outcomeSummaryListRow(courseParticipationWithName))
 
     if (courseParticipationWithName.outcome) {
-      if (courseParticipationWithName.outcome.status) {
-        let valueText = ''
-
-        valueText += StringUtils.properCase(courseParticipationWithName.outcome.status)
-
-        if (courseParticipationWithName.outcome.yearStarted) {
-          valueText += ` - started ${courseParticipationWithName.outcome.yearStarted}`
-        }
-
-        if (courseParticipationWithName.outcome.yearCompleted) {
-          valueText += ` - completed in ${courseParticipationWithName.outcome.yearCompleted}`
-        }
-
-        summaryListRows.push({
-          key: { text: 'Outcome' },
-          value: { text: valueText },
-        })
-      }
-
       if (courseParticipationWithName.outcome.detail) {
         summaryListRows.push({
           key: { text: 'Additional detail' },
@@ -156,6 +138,30 @@ export default class CourseParticipationUtils {
 
     return {
       key: { text: 'Setting' },
+      value: { text: valueTextItems.join(', ') || 'Not known' },
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  private static outcomeSummaryListRow(
+    courseParticipationWithName: CourseParticipationWithName,
+  ): GovukFrontendSummaryListRowWithValue {
+    const valueTextItems: Array<string> = []
+
+    if (courseParticipationWithName.outcome?.status) {
+      valueTextItems.push(StringUtils.properCase(courseParticipationWithName.outcome.status))
+    }
+
+    if (courseParticipationWithName.outcome?.yearStarted) {
+      valueTextItems.push(`year started ${courseParticipationWithName.outcome.yearStarted}`)
+    }
+
+    if (courseParticipationWithName.outcome?.yearCompleted) {
+      valueTextItems.push(`year completed ${courseParticipationWithName.outcome.yearCompleted}`)
+    }
+
+    return {
+      key: { text: 'Outcome' },
       value: { text: valueTextItems.join(', ') || 'Not known' },
     }
   }
