@@ -8,18 +8,11 @@ import { courseParticipationFactory } from '../testutils/factories'
 import type { CourseParticipationOutcome, CourseParticipationWithName } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRow, GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
-const getRow = (
-  rows: Array<GovukFrontendSummaryListRow>,
-  keyText: GovukFrontendSummaryListRowKey['text'],
-): GovukFrontendSummaryListRow | undefined => {
-  return rows.find(row => (row.key as GovukFrontendSummaryListRowKey).text === keyText)
-}
-
 const getRowValueText = (
   rows: Array<GovukFrontendSummaryListRow>,
   keyText: GovukFrontendSummaryListRowKey['text'],
 ): string => {
-  return getRow(rows, keyText)!.value!.text!
+  return rows.find(row => (row.key as GovukFrontendSummaryListRowKey).text === keyText)!.value!.text!
 }
 
 describe('CourseParticipationUtils', () => {
