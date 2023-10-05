@@ -287,15 +287,20 @@ context('Programme history', () => {
     })
 
     describe('and adding details', () => {
-      const courseParticipation = courseParticipationFactory
-        .withCourseId()
-        .build({ courseId: courses[0].id, prisonNumber: person.prisonNumber })
-      const path = referPaths.programmeHistory.details.show({
-        courseParticipationId: courseParticipation.id,
-        referralId: referral.id,
-      })
+      let courseParticipation: CourseParticipation
+      let path: string
 
       beforeEach(() => {
+        courseParticipation = courseParticipationFactory.new().build({
+          courseId: courses[0].id,
+          otherCourseName: undefined,
+          prisonNumber: person.prisonNumber,
+        })
+        path = referPaths.programmeHistory.details.show({
+          courseParticipationId: courseParticipation.id,
+          referralId: referral.id,
+        })
+
         cy.task('stubParticipation', courseParticipation)
         cy.task('stubPrisoner', prisoner)
         cy.task('stubReferral', referral)
@@ -316,6 +321,7 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.shouldContainBackLink(
           referPaths.programmeHistory.index({ referralId: referral.id }),
         )
+        programmeHistoryDetailsPage.shouldHaveCorrectFormValues()
         programmeHistoryDetailsPage.shouldContainSettingRadioItems()
         programmeHistoryDetailsPage.shouldNotDisplayCommunityLocationInput()
         programmeHistoryDetailsPage.shouldDisplayCommunityLocationInput()
@@ -426,6 +432,32 @@ context('Programme history', () => {
             message: 'Enter a year using numbers only',
           },
         ])
+      })
+
+      describe('for a participation with existing details', () => {
+        beforeEach(() => {
+          courseParticipation = courseParticipationFactory.withCourseId().build()
+          path = referPaths.programmeHistory.details.show({
+            courseParticipationId: courseParticipation.id,
+            referralId: referral.id,
+          })
+
+          cy.task('stubParticipation', courseParticipation)
+          cy.task('stubPrisoner', prisoner)
+          cy.task('stubReferral', referral)
+
+          cy.visit(path)
+        })
+
+        it('shows the details page with the form fields pre-populated', () => {
+          const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+            course: courses[0],
+            courseParticipation,
+            person,
+          })
+
+          programmeHistoryDetailsPage.shouldHaveCorrectFormValues()
+        })
       })
     })
   })
