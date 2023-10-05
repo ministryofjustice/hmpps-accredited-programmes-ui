@@ -28,7 +28,7 @@ describe('CourseParticipationDetailsController', () => {
   const referralId = faker.string.uuid()
 
   const referral = referralFactory.build({ id: referralId })
-  const courseParticipation = courseParticipationFactory.build()
+  const courseParticipation = courseParticipationFactory.new().build()
 
   let courseParticipationDetailsController: CourseParticipationDetailsController
 
@@ -57,7 +57,7 @@ describe('CourseParticipationDetailsController', () => {
   })
 
   describe('show', () => {
-    it('renders the update details form page for a course participation', async () => {
+    it('renders the details show page and calls `FormUtils.setFieldErrors` and `FormUtils.setFormValues` with the correct param values', async () => {
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
@@ -80,7 +80,63 @@ describe('CourseParticipationDetailsController', () => {
         referralId,
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['yearCompleted', 'yearStarted'])
-      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
+      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+        outcome: courseParticipation.outcome,
+        setting: {
+          ...courseParticipation.setting,
+          communityLocation: '',
+          custodyLocation: '',
+        },
+        source: courseParticipation.source,
+      })
+    })
+
+    describe('when the course participation has existing data', () => {
+      describe('and has a `setting.type` of `community` and a `setting.location`', () => {
+        it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
+          const courseParticipationWithCommunitySetting = courseParticipationFactory.build({
+            setting: { location: 'Somewhere', type: 'community' },
+          })
+
+          courseService.getParticipation.mockResolvedValue(courseParticipationWithCommunitySetting)
+
+          const requestHandler = courseParticipationDetailsController.show()
+          await requestHandler(request, response, next)
+
+          expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+            outcome: courseParticipationWithCommunitySetting.outcome,
+            setting: {
+              ...courseParticipationWithCommunitySetting.setting,
+              communityLocation: courseParticipationWithCommunitySetting.setting.location,
+              custodyLocation: '',
+            },
+            source: courseParticipationWithCommunitySetting.source,
+          })
+        })
+      })
+
+      describe('and has a `setting.type` of `custody` and a `setting.location`', () => {
+        it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
+          const courseParticipationWithCustodySetting = courseParticipationFactory.build({
+            setting: { location: 'Somewhere', type: 'custody' },
+          })
+
+          courseService.getParticipation.mockResolvedValue(courseParticipationWithCustodySetting)
+
+          const requestHandler = courseParticipationDetailsController.show()
+          await requestHandler(request, response, next)
+
+          expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+            outcome: courseParticipationWithCustodySetting.outcome,
+            setting: {
+              ...courseParticipationWithCustodySetting.setting,
+              communityLocation: '',
+              custodyLocation: courseParticipationWithCustodySetting.setting.location,
+            },
+            source: courseParticipationWithCustodySetting.source,
+          })
+        })
+      })
     })
   })
 
