@@ -168,17 +168,17 @@ describe('CourseParticipationUtils', () => {
     })
 
     describe('when rows are missing required data', () => {
-      it.each([
-        ['Additional detail', 'outcome', { detail: undefined }],
-        ['Source of information', 'source', undefined],
-      ])('omits the %s row when %s is %s', (keyText: GovukFrontendSummaryListRowKey['text'], field: string, value) => {
-        const withoutField = { ...courseParticipationWithName, [field]: value }
+      it.each([['Source of information', 'source', undefined]])(
+        'omits the %s row when %s is %s',
+        (keyText: GovukFrontendSummaryListRowKey['text'], field: string, value) => {
+          const withoutField = { ...courseParticipationWithName, [field]: value }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutField, referralId)
-        const fieldRow = getRow(rows, keyText)
+          const { rows } = CourseParticipationUtils.summaryListOptions(withoutField, referralId)
+          const fieldRow = getRow(rows, keyText)
 
-        expect(fieldRow).toBeUndefined()
-      })
+          expect(fieldRow).toBeUndefined()
+        },
+      )
 
       describe('setting', () => {
         describe('when the setting has no location', () => {
@@ -271,6 +271,37 @@ describe('CourseParticipationUtils', () => {
           it('displays "Not known"', () => {
             const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcome, referralId)
             expect(getRowValueText(rows, 'Outcome')).toEqual('Not known')
+          })
+        })
+      })
+
+      describe('additional detail', () => {
+        describe('when there is no outcome', () => {
+          const withoutOutcome: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            outcome: {},
+          }
+
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcome, referralId)
+            expect(getRowValueText(rows, 'Additional detail')).toEqual('Not known')
+          })
+        })
+
+        describe('when there is no additional detail set on the outcome', () => {
+          const withoutOutcomeAdditionalDetail: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            outcome: {
+              detail: undefined,
+              status: 'complete',
+              yearCompleted: 2019,
+              yearStarted: undefined,
+            },
+          }
+
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeAdditionalDetail, referralId)
+            expect(getRowValueText(rows, 'Additional detail')).toEqual('Not known')
           })
         })
       })

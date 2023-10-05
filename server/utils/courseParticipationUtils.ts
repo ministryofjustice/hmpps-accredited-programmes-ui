@@ -92,15 +92,7 @@ export default class CourseParticipationUtils {
 
     summaryListRows.push(CourseParticipationUtils.settingSummaryListRow(courseParticipationWithName))
     summaryListRows.push(CourseParticipationUtils.outcomeSummaryListRow(courseParticipationWithName))
-
-    if (courseParticipationWithName.outcome) {
-      if (courseParticipationWithName.outcome.detail) {
-        summaryListRows.push({
-          key: { text: 'Additional detail' },
-          value: { text: courseParticipationWithName.outcome.detail },
-        })
-      }
-    }
+    summaryListRows.push(CourseParticipationUtils.outcomeAdditionalDetailSummaryListRow(courseParticipationWithName))
 
     if (courseParticipationWithName.source) {
       summaryListRows.push({
@@ -163,6 +155,16 @@ export default class CourseParticipationUtils {
     return {
       key: { text: 'Outcome' },
       value: { text: valueTextItems.join(', ') || 'Not known' },
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  private static outcomeAdditionalDetailSummaryListRow(
+    courseParticipationWithName: CourseParticipationWithName,
+  ): GovukFrontendSummaryListRowWithValue {
+    return {
+      key: { text: 'Additional detail' },
+      value: { text: courseParticipationWithName.outcome.detail || 'Not known' },
     }
   }
 }
