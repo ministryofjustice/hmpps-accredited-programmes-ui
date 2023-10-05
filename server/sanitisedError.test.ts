@@ -1,8 +1,8 @@
-import type { UnsanitisedError } from './sanitisedError'
+import type { SanitisedError, UnsanitisedError } from './sanitisedError'
 import sanitiseError from './sanitisedError'
 
 describe('sanitiseError', () => {
-  it('omits the request headers from the error object ', () => {
+  it('returns an error without the request headers', () => {
     const error = {
       message: 'Not Found',
       name: '',
@@ -26,29 +26,31 @@ describe('sanitiseError', () => {
       status: 404,
     } as unknown as UnsanitisedError
 
-    expect(sanitiseError(error)).toEqual({
-      data: { content: 'hello' },
-      headers: { date: 'Tue, 19 May 2020 15:16:20 GMT' },
-      message: 'Not Found',
-      stack: 'stack description',
-      status: 404,
-      text: { details: 'details' },
-    })
+    const sanitisedError = new Error() as SanitisedError
+    sanitisedError.data = { content: error.response?.body.content }
+    sanitisedError.headers = { date: error.response?.headers.date }
+    sanitisedError.message = error.message
+    sanitisedError.stack = error.stack
+    sanitisedError.status = error.status
+    sanitisedError.text = error.response?.text
+
+    expect(sanitiseError(error)).toEqual(sanitisedError)
   })
 
-  it('returns the error message', () => {
-    const error = {
-      message: 'error description',
-    } as unknown as UnsanitisedError
-    expect(sanitiseError(error)).toEqual({
-      message: 'error description',
-    })
-  })
+  describe("when there's no response", () => {
+    it('returns an error with just the message and stack', () => {
+      const error = {
+        message: 'error description',
+        name: '',
+        stack: 'stack description',
+        status: 404,
+      } as unknown as UnsanitisedError
 
-  it('returns an empty object for an unknown error structure', () => {
-    const error = {
-      property: 'unknown',
-    } as unknown as UnsanitisedError
-    expect(sanitiseError(error)).toEqual({})
+      const sanitisedError = new Error() as SanitisedError
+      sanitisedError.message = error.message
+      sanitisedError.stack = error.stack
+
+      expect(sanitiseError(error)).toEqual(sanitisedError)
+    })
   })
 })
