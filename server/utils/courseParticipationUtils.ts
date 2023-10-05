@@ -83,20 +83,17 @@ export default class CourseParticipationUtils {
   private static summaryListRows(
     courseParticipationWithName: CourseParticipationWithName,
   ): Array<GovukFrontendSummaryListRowWithValue> {
-    const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
-
-    summaryListRows.push({
-      key: { text: 'Programme name' },
-      value: { text: courseParticipationWithName.name },
-    })
-
-    summaryListRows.push(CourseParticipationUtils.settingSummaryListRow(courseParticipationWithName))
-    summaryListRows.push(CourseParticipationUtils.outcomeSummaryListRow(courseParticipationWithName))
-    summaryListRows.push(CourseParticipationUtils.outcomeAdditionalDetailSummaryListRow(courseParticipationWithName))
-    summaryListRows.push(CourseParticipationUtils.sourceSummaryListRow(courseParticipationWithName))
-    summaryListRows.push(CourseParticipationUtils.addedBySummaryListRow(courseParticipationWithName))
-
-    return summaryListRows
+    return [
+      {
+        key: { text: 'Programme name' },
+        value: { text: courseParticipationWithName.name },
+      },
+      CourseParticipationUtils.settingSummaryListRow(courseParticipationWithName),
+      CourseParticipationUtils.outcomeSummaryListRow(courseParticipationWithName),
+      CourseParticipationUtils.outcomeAdditionalDetailSummaryListRow(courseParticipationWithName),
+      CourseParticipationUtils.sourceSummaryListRow(courseParticipationWithName),
+      CourseParticipationUtils.addedBySummaryListRow(courseParticipationWithName),
+    ]
   }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
