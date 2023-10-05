@@ -19,11 +19,11 @@ export default class FormUtils {
     res.locals.errors = { list, messages }
   }
 
-  static setFormValues(req: Request, res: Response): void {
-    const formValuesAsString = req.flash('formValues')[0]
+  static setFormValues(req: Request, res: Response, defaultValues = {}): void {
+    const flashedValuesAsString = req.flash('formValues')[0]
 
-    const formValues = formValuesAsString ? JSON.parse(formValuesAsString) : {}
+    const flashedValues = flashedValuesAsString ? JSON.parse(flashedValuesAsString) : {}
 
-    res.locals.formValues = formValues
+    res.locals.formValues = { ...defaultValues, ...flashedValues }
   }
 }

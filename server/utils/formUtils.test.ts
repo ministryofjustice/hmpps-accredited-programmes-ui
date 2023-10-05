@@ -60,17 +60,30 @@ describe('FormUtils', () => {
   })
 
   describe('setFormValues', () => {
-    it("adds form values to a response's locals for displaying in the UI", () => {
-      const formValues = { someField: 'some value', someOtherField: 'some other value' }
-      ;(request.flash as jest.Mock).mockImplementation(() => [JSON.stringify(formValues)])
+    describe('when there are default values', () => {
+      const defaultFormValues = { someField: 'some original value', someOtherField: 'some other original value' }
 
-      FormUtils.setFormValues(request, response)
+      it('adds the default values to response locals', () => {
+        ;(request.flash as jest.Mock).mockImplementation(() => [])
+        FormUtils.setFormValues(request, response, defaultFormValues)
 
-      expect(response.locals.formValues).toEqual(formValues)
+        expect(response.locals.formValues).toEqual(defaultFormValues)
+      })
+
+      describe('but there are also flashed form values', () => {
+        it('adds the flashed form values instead of the default values to the response locals', () => {
+          const formValues = { someField: 'some updated value', someOtherField: 'some other updated value' }
+          ;(request.flash as jest.Mock).mockImplementation(() => [JSON.stringify(formValues)])
+
+          FormUtils.setFormValues(request, response, defaultFormValues)
+
+          expect(response.locals.formValues).toEqual(formValues)
+        })
+      })
     })
 
-    describe('when there are no flashed form values', () => {
-      it("doesn't add any form values to a response's locals", () => {
+    describe('when there are no flashed form or default values', () => {
+      it("doesn't add any form values to the response locals", () => {
         ;(request.flash as jest.Mock).mockImplementation(() => [])
 
         FormUtils.setFormValues(request, response)
