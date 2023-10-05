@@ -18,7 +18,7 @@ export default class CourseParticipationsController {
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
 
-      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processedCourseFormData(
+      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processCourseFormData(
         req.body.courseId,
         req.body.otherCourseName,
         req,
@@ -179,7 +179,7 @@ export default class CourseParticipationsController {
         req.params.courseParticipationId,
       )
 
-      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processedCourseFormData(
+      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processCourseFormData(
         req.body.courseId,
         req.body.otherCourseName,
         req,
