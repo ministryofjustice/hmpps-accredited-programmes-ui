@@ -8,7 +8,12 @@ import {
   referralFactory,
 } from '../../../server/testutils/factories'
 import Page from '../../pages/page'
-import { ProgrammeHistoryDetailsPage, ProgrammeHistoryPage, SelectProgrammePage } from '../../pages/refer'
+import {
+  DeleteProgrammeHistoryPage,
+  ProgrammeHistoryDetailsPage,
+  ProgrammeHistoryPage,
+  SelectProgrammePage,
+} from '../../pages/refer'
 import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
 
 context('Programme history', () => {
@@ -70,7 +75,7 @@ context('Programme history', () => {
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
       programmeHistoryPage.shouldContainPreHistoryParagraph()
-      programmeHistoryPage.shouldContainHistorySummaryCards()
+      programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsWithNames, referral.id)
       programmeHistoryPage.shouldContainButton('Continue')
       programmeHistoryPage.shouldContainButtonLink(
         'Add another',
@@ -314,6 +319,54 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.shouldContainSourceTextArea()
         programmeHistoryDetailsPage.shouldContainButton('Continue')
       })
+    })
+  })
+
+  describe('When removing from the programme history', () => {
+    it('shows the delete page', () => {
+      const prisoner = prisonerFactory.build({
+        firstName: 'Del',
+        lastName: 'Hatton',
+      })
+      const person = personFactory.build({
+        currentPrison: prisoner.prisonName,
+        name: 'Del Hatton',
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+      const course = courseFactory.build()
+      const courseParticipation = courseParticipationFactory
+        .withCourseId()
+        .build({ courseId: course.id, prisonNumber: person.prisonNumber })
+      const courseParticipationWithName = { ...courseParticipation, name: course.name }
+
+      cy.task('stubPrisoner', prisoner)
+      cy.task('stubReferral', referral)
+      cy.task('stubParticipation', courseParticipation)
+      cy.task('stubCourse', course)
+
+      cy.signIn()
+
+      const path = referPaths.programmeHistory.delete({
+        courseParticipationId: courseParticipation.id,
+        referralId: referral.id,
+      })
+      cy.visit(path)
+
+      const deleteProgrammeHistoryPage = Page.verifyOnPage(DeleteProgrammeHistoryPage, {
+        participationWithName: courseParticipationWithName,
+        person,
+        referral,
+      })
+      deleteProgrammeHistoryPage.shouldHavePersonDetails(person)
+      deleteProgrammeHistoryPage.shouldContainNavigation(path)
+      deleteProgrammeHistoryPage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
+      deleteProgrammeHistoryPage.shouldContainHistorySummaryCards([courseParticipationWithName], referral.id, false)
+      deleteProgrammeHistoryPage.shouldContainWarningText(
+        'You are removing this programme. Once a programme has been removed, it cannot be undone.',
+      )
+      deleteProgrammeHistoryPage.shouldContainButton('Confirm')
     })
   })
 })

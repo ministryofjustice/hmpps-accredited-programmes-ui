@@ -109,6 +109,11 @@ describe('CourseParticipationUtils', () => {
                 text: 'Change',
                 visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
               },
+              {
+                href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
+                text: 'Remove',
+                visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+              },
             ],
           },
           title: {
@@ -141,6 +146,17 @@ describe('CourseParticipationUtils', () => {
             value: { text: 'Eric McNally, 20 April 2023' },
           },
         ],
+      })
+    })
+
+    describe('when `withActions` is `false`', () => {
+      it('omits the actions', () => {
+        const summaryListOptions = CourseParticipationUtils.summaryListOptions(
+          courseParticipationWithName,
+          referralId,
+          false,
+        )
+        expect(summaryListOptions.card?.actions).toBeUndefined()
       })
     })
 

@@ -41,6 +41,39 @@ export default class CourseParticipationsController {
     }
   }
 
+  delete(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseParticipationId, referralId } = req.params
+
+      const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const person = await this.personService.getPerson(
+        req.user.username,
+        referral.prisonNumber,
+        res.locals.user.caseloads,
+      )
+
+      const courseParticipationWithName = (
+        await this.courseParticipationsWithNames([courseParticipation], req.user.token)
+      )[0]
+
+      const summaryListOptions = CourseParticipationUtils.summaryListOptions(
+        courseParticipationWithName,
+        referralId,
+        false,
+      )
+
+      res.render('referrals/courseParticipations/delete', {
+        pageHeading: 'Remove programme',
+        person,
+        referralId: referral.id,
+        summaryListOptions,
+      })
+    }
+  }
+
   editCourse(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

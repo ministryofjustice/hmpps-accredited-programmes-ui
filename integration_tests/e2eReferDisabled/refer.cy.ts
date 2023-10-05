@@ -208,6 +208,32 @@ context('Refer', () => {
     notFoundPage2.shouldContain404H2()
   })
 
+  it("Doesn't show the delete programme history page", () => {
+    cy.signIn()
+
+    const prisoner = prisonerFactory.build()
+    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
+    const course = courseFactory.build()
+    const participation = courseParticipationFactory.build({
+      courseId: course.id,
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+    cy.task('stubParticipation', participation)
+    cy.task('stubCourse', course)
+
+    const path = referPaths.programmeHistory.delete({
+      courseParticipationId: participation.id,
+      referralId: referral.id,
+    })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
   it("Doesn't show the check answers page for a referral", () => {
     cy.signIn()
 

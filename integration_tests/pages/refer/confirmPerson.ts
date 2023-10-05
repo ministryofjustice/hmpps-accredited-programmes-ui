@@ -31,8 +31,7 @@ export default class ConfirmPersonPage extends Page {
   shouldHavePersonInformation() {
     this.shouldContainPersonSummaryList(this.person)
 
-    cy.get('.govuk-warning-text__text').should(
-      'contain.text',
+    this.shouldContainWarningText(
       'If this information is out of date or incorrect, you must update the information in NOMIS.',
     )
   }

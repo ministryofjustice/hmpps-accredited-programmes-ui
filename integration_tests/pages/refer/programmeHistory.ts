@@ -1,5 +1,3 @@
-import { referPaths } from '../../../server/paths'
-import { CourseParticipationUtils } from '../../../server/utils'
 import Page from '../page'
 import type { CourseParticipationWithName, Person, Referral } from '@accredited-programmes/models'
 
@@ -21,27 +19,6 @@ export default class ProgrammeHistoryPage extends Page {
     this.participations = participationsWithNames
     this.person = person
     this.referral = referral
-  }
-
-  shouldContainHistorySummaryCards() {
-    this.participations.forEach((participation, participationsIndex) => {
-      const { rows } = CourseParticipationUtils.summaryListOptions(participation, this.referral.id)
-
-      cy.get('.govuk-summary-card')
-        .eq(participationsIndex)
-        .then(summaryCardElement => {
-          const action = {
-            href: referPaths.programmeHistory.editProgramme({
-              courseParticipationId: participation.id,
-              referralId: this.referral.id,
-            }),
-            text: 'Change',
-            visuallyHiddenText: ` participation for ${participation.name}`,
-          }
-
-          this.shouldContainSummaryCard(participation.name, [action], rows, summaryCardElement)
-        })
-    })
   }
 
   shouldContainNoHistoryHeading() {

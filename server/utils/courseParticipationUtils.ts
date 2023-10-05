@@ -44,10 +44,10 @@ export default class CourseParticipationUtils {
   static summaryListOptions(
     courseParticipationWithName: CourseParticipationWithName,
     referralId: Referral['id'],
+    withActions = true,
   ): GovukFrontendSummaryListWithRowsWithValues {
-    return {
-      card: {
-        actions: {
+    const actions = withActions
+      ? {
           items: [
             {
               href: referPaths.programmeHistory.editProgramme({
@@ -57,8 +57,21 @@ export default class CourseParticipationUtils {
               text: 'Change',
               visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
             },
+            {
+              href: referPaths.programmeHistory.delete({
+                courseParticipationId: courseParticipationWithName.id,
+                referralId,
+              }),
+              text: 'Remove',
+              visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+            },
           ],
-        },
+        }
+      : undefined
+
+    return {
+      card: {
+        actions,
         title: {
           text: courseParticipationWithName.name,
         },

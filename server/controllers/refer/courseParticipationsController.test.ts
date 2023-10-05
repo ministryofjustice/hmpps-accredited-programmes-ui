@@ -142,6 +142,40 @@ describe('CourseParticipationsController', () => {
     })
   })
 
+  describe('delete', () => {
+    it('renders the delete template for a specific course participation', async () => {
+      const person = personFactory.build()
+      const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
+      const course = courseFactory.build()
+      const courseParticipation = courseParticipationFactory.withCourseId().build({
+        courseId: course.id,
+        prisonNumber: person.prisonNumber,
+      })
+
+      personService.getPerson.mockResolvedValue(person)
+      referralService.getReferral.mockResolvedValue(referral)
+      courseService.getCourse.mockResolvedValue(course)
+      courseService.getParticipation.mockResolvedValue(courseParticipation)
+
+      const courseParticipationWithName = { ...courseParticipation, name: course.name }
+      const summaryListsOptions = CourseParticipationUtils.summaryListOptions(
+        courseParticipationWithName,
+        referral.id,
+        false,
+      )
+
+      const requestHandler = courseParticipationsController.delete()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/delete', {
+        pageHeading: 'Remove programme',
+        person,
+        referralId: referral.id,
+        summaryListsOptions,
+      })
+    })
+  })
+
   describe('editCourse', () => {
     const courses = courseFactory.buildList(2)
     const person = personFactory.build()
