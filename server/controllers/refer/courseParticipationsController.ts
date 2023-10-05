@@ -115,6 +115,7 @@ export default class CourseParticipationsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const successMessage = req.flash('successMessage')[0]
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
       const person = await this.personService.getPerson(
         req.user.username,
@@ -137,6 +138,7 @@ export default class CourseParticipationsController {
         pageHeading: 'Accredited Programme history',
         person,
         referralId: referral.id,
+        successMessage,
         summaryListsOptions,
       })
     }
