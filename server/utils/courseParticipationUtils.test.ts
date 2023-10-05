@@ -3,9 +3,13 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { Request } from 'express'
 
-import CourseParticipationUtils from './courseParticipationUtils'
+import CourseParticipationUtils, { type RequestWithDetailsBody } from './courseParticipationUtils'
 import { courseParticipationFactory } from '../testutils/factories'
-import type { CourseParticipationOutcome, CourseParticipationSetting } from '@accredited-programmes/models'
+import type {
+  CourseParticipationOutcome,
+  CourseParticipationSetting,
+  CourseParticipationUpdate,
+} from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRow, GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
 const getRow = (
@@ -16,6 +20,196 @@ const getRow = (
 }
 
 describe('CourseParticipationUtils', () => {
+  describe('processDetailsFormData', () => {
+    let request: DeepMocked<RequestWithDetailsBody>
+    let expectedCourseParticipationUpdate: CourseParticipationUpdate
+
+    beforeEach(() => {
+      request = createMock<RequestWithDetailsBody>({})
+
+      request.body = {
+        outcome: {
+          detail: 'Some additional detail',
+          status: 'complete',
+          yearCompleted: '2019',
+          yearStarted: '',
+        },
+        setting: {
+          communityLocation: 'Somewhere',
+          custodyLocation: '',
+          type: 'community',
+        },
+        source: 'The source',
+      }
+
+      expectedCourseParticipationUpdate = {
+        outcome: {
+          detail: request.body.outcome.detail,
+          status: request.body.outcome.status,
+          yearCompleted: Number(request.body.outcome.yearCompleted),
+          yearStarted: undefined,
+        },
+        setting: {
+          location: request.body.setting.communityLocation,
+          type: request.body.setting.type,
+        },
+        source: request.body.source,
+      }
+    })
+
+    describe('when the `request.body` is valid', () => {
+      it('returns the `courseParticipationUpdate` and reports no errors', () => {
+        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          courseParticipationUpdate: expectedCourseParticipationUpdate,
+          hasFormErrors: false,
+        })
+      })
+    })
+
+    describe('when `request.body.outcome.detail` is an empty string when trimmed', () => {
+      it('returns `courseParticipationUpdate.outcome.detail` as undefined and reports no errors', () => {
+        request.body.outcome.detail = ' \n \n '
+        expectedCourseParticipationUpdate.outcome.detail = undefined
+
+        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          courseParticipationUpdate: expectedCourseParticipationUpdate,
+          hasFormErrors: false,
+        })
+      })
+    })
+
+    describe('when `request.body.outcome.status` is `complete`', () => {
+      describe('and `request.body.outcome.yearCompleted` is an empty string', () => {
+        it('returns `courseParticipationUpdate.outcome.yearCompleted` as undefined and reports no errors', () => {
+          request.body.outcome.yearCompleted = ''
+          expectedCourseParticipationUpdate.outcome.yearCompleted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: false,
+          })
+        })
+      })
+
+      describe('and `request.body.outcome.yearCompleted` is not a number', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearCompleted` as undefined', () => {
+          request.body.outcome.yearCompleted = 'not a number'
+          expectedCourseParticipationUpdate.outcome.yearCompleted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith('yearCompletedError', 'Enter a year using numbers only')
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
+    })
+
+    describe('when `request.body.outcome.status` is `incomplete`', () => {
+      beforeEach(() => {
+        request.body.outcome.status = 'incomplete'
+        expectedCourseParticipationUpdate.outcome.status = request.body.outcome.status
+        expectedCourseParticipationUpdate.outcome.yearCompleted = undefined
+      })
+
+      describe('and `request.body.outcome.yearCompleted` is a valid `string` value', () => {
+        it('returns `courseParticipationUpdate.outcome.yearStarted` as `number` and reports no errors', () => {
+          request.body.outcome.yearStarted = '2019'
+          expectedCourseParticipationUpdate.outcome.yearStarted = 2019
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: false,
+          })
+        })
+      })
+
+      describe('and `request.body.outcome.yearStarted` is an empty string', () => {
+        it('returns `courseParticipationUpdate.outcome.yearStarted` as undefined and reports no errors', () => {
+          request.body.outcome.yearStarted = ''
+          expectedCourseParticipationUpdate.outcome.yearStarted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: false,
+          })
+        })
+      })
+
+      describe('and `request.body.outcome.yearStarted` is not a number', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearStarted` as undefined', () => {
+          request.body.outcome.yearStarted = 'not a number'
+          expectedCourseParticipationUpdate.outcome.yearStarted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith('yearStartedError', 'Enter a year using numbers only')
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
+    })
+
+    describe('when `request.body.setting.type` is `community`', () => {
+      describe('and `request.body.setting.communityLocation` is an empty string', () => {
+        it('returns `courseParticipationUpdate.setting.location` as undefined and reports no errors', () => {
+          request.body.setting.communityLocation = ''
+          expectedCourseParticipationUpdate.setting.location = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: false,
+          })
+        })
+      })
+    })
+
+    describe('when `request.body.setting.type` is `custody`', () => {
+      beforeEach(() => {
+        request.body.setting.type = 'custody'
+        expectedCourseParticipationUpdate.setting.type = request.body.setting.type
+      })
+
+      describe('and `request.body.setting.custodyLocation` is an empty string', () => {
+        it('returns `courseParticipationUpdate.setting.location` as undefined and reports no errors', () => {
+          request.body.setting.custodyLocation = ''
+          expectedCourseParticipationUpdate.setting.location = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: false,
+          })
+        })
+      })
+
+      describe('and `request.body.setting.custodyLocation` is not an empty string', () => {
+        it('returns `courseParticipationUpdate.setting.location` as the custody location and reports no errors', () => {
+          request.body.setting.custodyLocation = 'A custody location'
+          expectedCourseParticipationUpdate.setting.location = request.body.setting.custodyLocation
+
+          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: false,
+          })
+        })
+      })
+    })
+
+    describe('when `request.body.source` is an empty string when trimmed', () => {
+      it('returns `courseParticipationUpdate.source` as undefined and reports no errors', () => {
+        request.body.source = ' \n \n '
+        expectedCourseParticipationUpdate.source = undefined
+
+        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          courseParticipationUpdate: expectedCourseParticipationUpdate,
+          hasFormErrors: false,
+        })
+      })
+    })
+  })
+
   describe('processedCourseFormData', () => {
     let request: DeepMocked<Request>
 

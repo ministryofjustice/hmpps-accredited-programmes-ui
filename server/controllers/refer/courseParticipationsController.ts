@@ -36,7 +36,10 @@ export default class CourseParticipationsController {
       )
 
       return res.redirect(
-        referPaths.programmeHistory.details({ courseParticipationId: courseParticipation.id, referralId: referral.id }),
+        referPaths.programmeHistory.details.show({
+          courseParticipationId: courseParticipation.id,
+          referralId: referral.id,
+        }),
       )
     }
   }
@@ -99,11 +102,11 @@ export default class CourseParticipationsController {
       res.render('referrals/courseParticipations/course', {
         action: `${referPaths.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        formValues: { courseId, otherCourseName },
         otherCourseNameChecked: isOtherCourse || hasOtherCourseNameError,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
-        values: { courseId, otherCourseName },
       })
     }
   }
@@ -112,6 +115,7 @@ export default class CourseParticipationsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const successMessage = req.flash('successMessage')[0]
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
       const person = await this.personService.getPerson(
         req.user.username,
@@ -134,6 +138,7 @@ export default class CourseParticipationsController {
         pageHeading: 'Accredited Programme history',
         person,
         referralId: referral.id,
+        successMessage,
         summaryListsOptions,
       })
     }
@@ -156,11 +161,11 @@ export default class CourseParticipationsController {
       res.render('referrals/courseParticipations/course', {
         action: referPaths.programmeHistory.create({ referralId: referral.id }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        formValues: {},
         otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
-        values: {},
       })
     }
   }
@@ -196,7 +201,7 @@ export default class CourseParticipationsController {
       })
 
       return res.redirect(
-        referPaths.programmeHistory.details({
+        referPaths.programmeHistory.details.show({
           courseParticipationId: req.params.courseParticipationId,
           referralId: req.params.referralId,
         }),

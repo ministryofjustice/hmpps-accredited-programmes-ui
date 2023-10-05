@@ -1,6 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "moj/components/banner/macro.njk" import mojBanner %}
 
 {% extends "../../partials/layout.njk" %}
 
@@ -20,6 +21,17 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% if successMessage %}
+        {{ mojBanner({
+          type: "success",
+          text: successMessage,
+          iconFallbackText: "Success",
+          attributes: {
+            "data-testid": "success-banner"
+          }
+        }) }}
+      {% endif %}
+
       {% if summaryListsOptions.length %}
         <p class="govuk-body" data-testid="pre-history-paragraph">The history below shows {{ person.name }}'s history of Accredited Programmes. Add another programme if you know that they started or completed a programme which is not listed below.</p>
 

@@ -193,7 +193,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
 
-    const path = referPaths.programmeHistory.details({
+    const path = referPaths.programmeHistory.details.show({
       courseParticipationId: courseParticipation.id,
       referralId: referral.id,
     })

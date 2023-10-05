@@ -41,4 +41,12 @@ export default class ProgrammeHistoryPage extends Page {
       `The history below shows ${this.person.name}'s history of Accredited Programmes. Add another programme if you know that they started or completed a programme which is not listed below.`,
     )
   }
+
+  shouldContainSuccessMessage() {
+    cy.get('[data-testid="success-banner"]').should('contain.text', 'You have successfully added a programme.')
+  }
+
+  shouldNotContainSuccessMessage() {
+    cy.get('[data-testid="success-banner"]').should('not.exist')
+  }
 }

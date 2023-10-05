@@ -72,7 +72,7 @@ describe('CourseParticipationsController', () => {
           undefined,
         )
         expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.details({
+          referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
             referralId: referral.id,
           }),
@@ -109,7 +109,7 @@ describe('CourseParticipationsController', () => {
           otherCourseName,
         )
         expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.details({
+          referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
             referralId: referral.id,
           }),
@@ -223,11 +223,11 @@ describe('CourseParticipationsController', () => {
               referralId: referral.id,
             })}?_method=PUT`,
             courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+            formValues: { courseId, otherCourseName },
             otherCourseNameChecked: courseIdentifierType === 'an otherCourseName',
             pageHeading: 'Add Accredited Programme history',
             person,
             referralId: referral.id,
-            values: { courseId, otherCourseName },
           })
           expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
         })
@@ -237,30 +237,29 @@ describe('CourseParticipationsController', () => {
 
   describe('index', () => {
     const referral = referralFactory.build()
+    const person = personFactory.build()
+    const courseParticipations = [
+      courseParticipationFactory.build({ courseId: 'an-ID' }),
+      courseParticipationFactory.build({ courseId: undefined, otherCourseName: 'Another course' }),
+    ]
+    const course = courseFactory.build()
+    const courseParticipationsWithNames = [
+      { ...courseParticipations[0], name: course.name },
+      { ...courseParticipations[1], name: 'Another course' },
+    ]
+    const summaryListsOptions = courseParticipationsWithNames.map(courseParticipation =>
+      CourseParticipationUtils.summaryListOptions(courseParticipation, referral.id),
+    )
+
+    beforeEach(() => {
+      referralService.getReferral.mockResolvedValue(referral)
+      personService.getPerson.mockResolvedValue(person)
+      courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
+      courseService.getCourse.mockResolvedValue(course)
+      ;(request.flash as jest.Mock).mockImplementation(() => [])
+    })
 
     it("renders the index template for a person's programme history", async () => {
-      referralService.getReferral.mockResolvedValue(referral)
-
-      const person = personFactory.build()
-      personService.getPerson.mockResolvedValue(person)
-
-      const courseParticipations = [
-        courseParticipationFactory.build({ courseId: 'an-ID' }),
-        courseParticipationFactory.build({ courseId: undefined, otherCourseName: 'Another course' }),
-      ]
-      courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
-
-      const course = courseFactory.build()
-      courseService.getCourse.mockResolvedValue(course)
-
-      const courseParticipationsWithNames = [
-        { ...courseParticipations[0], name: course.name },
-        { ...courseParticipations[1], name: 'Another course' },
-      ]
-      const summaryListsOptions = courseParticipationsWithNames.map(courseParticipation =>
-        CourseParticipationUtils.summaryListOptions(courseParticipation, referral.id),
-      )
-
       const requestHandler = courseParticipationsController.index()
       await requestHandler(request, response, next)
 
@@ -268,7 +267,25 @@ describe('CourseParticipationsController', () => {
         pageHeading: 'Accredited Programme history',
         person,
         referralId: referral.id,
+        successMessage: undefined,
         summaryListsOptions,
+      })
+    })
+
+    describe('when there is a success message', () => {
+      it('passes the message to the template', async () => {
+        const successMessage = 'A success message'
+        ;(request.flash as jest.Mock).mockImplementation(() => [successMessage])
+
+        const requestHandler = courseParticipationsController.index()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/courseParticipations/index',
+          expect.objectContaining({
+            successMessage,
+          }),
+        )
       })
     })
   })
@@ -295,11 +312,11 @@ describe('CourseParticipationsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/course', {
         action: referPaths.programmeHistory.create({ referralId: referral.id }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        formValues: {},
         otherCourseNameChecked: false,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
-        values: {},
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
     })
@@ -353,7 +370,7 @@ describe('CourseParticipationsController', () => {
           updatedCourseParticipation,
         )
         expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.programmeHistory.details({
+          referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
             referralId: referral.id,
           }),
