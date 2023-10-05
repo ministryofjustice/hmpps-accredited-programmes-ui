@@ -2,10 +2,21 @@ import Page from '../page'
 import type { Course, CourseParticipation, Person } from '@accredited-programmes/models'
 
 export default class ProgrammeHistoryDetailsPage extends Page {
-  constructor() {
+  course: Course
+
+  courseParticipation: CourseParticipation
+
+  person: Person
+
+  constructor(args: { course: Course; courseParticipation: CourseParticipation; person: Person }) {
     // Conditional radio buttons add an additional `aria-expanded` field,
     // so ignore that rule on this page
     super('Add Accredited Programme details', { accessibilityRules: { 'aria-allowed-attr': { enabled: false } } })
+
+    const { course, courseParticipation, person } = args
+    this.course = course
+    this.courseParticipation = courseParticipation
+    this.person = person
   }
 
   inputCommunityLocation(value: string) {
@@ -82,6 +93,50 @@ export default class ProgrammeHistoryDetailsPage extends Page {
     cy.get('input[id="yearStarted"]').should('be.visible')
   }
 
+  shouldHaveCorrectFormValues() {
+    const { setting, outcome, source } = this.courseParticipation
+
+    if (setting.type === 'community') {
+      cy.get('[data-testid="community-setting-option"]').should('be.checked')
+
+      if (setting.location) {
+        cy.get('input[id="communityLocation"]').should('have.value', setting.location)
+      }
+    }
+
+    if (setting.type === 'custody') {
+      cy.get('[data-testid="custody-setting-option"]').should('be.checked')
+
+      if (setting.location) {
+        cy.get('input[id="custodyLocation"]').should('have.value', setting.location)
+      }
+    }
+
+    if (outcome.status === 'complete') {
+      cy.get('[data-testid="complete-outcome-option"]').should('be.checked')
+
+      if (outcome.yearCompleted) {
+        cy.get('input[id="yearCompleted"]').should('have.value', outcome.yearCompleted)
+      }
+    }
+
+    if (outcome.status === 'incomplete') {
+      cy.get('[data-testid="incomplete-outcome-option"]').should('be.checked')
+
+      if (outcome.yearStarted) {
+        cy.get('input[id="yearStarted"]').should('have.value', outcome.yearStarted)
+      }
+    }
+
+    if (outcome.detail) {
+      cy.get('textarea[id="outcomeDetail"]').should('have.value', outcome.detail)
+    }
+
+    if (source) {
+      cy.get('textarea[id="source"]').should('have.value', source)
+    }
+  }
+
   shouldNotDisplayCommunityLocationInput() {
     cy.get('input[id="communityLocation"]').should('not.be.visible')
   }
@@ -98,12 +153,12 @@ export default class ProgrammeHistoryDetailsPage extends Page {
     cy.get('input[id="yearStarted"]').should('not.be.visible')
   }
 
-  submitDetails(courseParticipation: CourseParticipation, course: Course, person: Person) {
-    cy.task('stubUpdateParticipation', courseParticipation)
-    cy.task('stubCourse', course)
+  submitDetails() {
+    cy.task('stubUpdateParticipation', this.courseParticipation)
+    cy.task('stubCourse', this.course)
     cy.task('stubParticipationsByPerson', {
-      courseParticipations: [courseParticipation],
-      prisonNumber: person.prisonNumber,
+      courseParticipations: [this.courseParticipation],
+      prisonNumber: this.person.prisonNumber,
     })
     this.shouldContainButton('Continue').click()
   }
