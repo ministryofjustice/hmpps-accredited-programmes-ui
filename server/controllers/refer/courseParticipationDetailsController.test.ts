@@ -4,12 +4,15 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import CourseParticipationDetailsController from './courseParticipationDetailsController'
+import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { FormUtils } from '../../utils'
+import { CourseParticipationUtils, FormUtils } from '../../utils'
+import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../../utils/formUtils')
+jest.mock('../../utils/courseParticipationUtils')
 
 describe('CourseParticipationDetailsController', () => {
   const token = 'SOME_TOKEN'
@@ -21,16 +24,32 @@ describe('CourseParticipationDetailsController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
+  const courseParticipationId = faker.string.uuid()
+  const referralId = faker.string.uuid()
+
+  const referral = referralFactory.build({ id: referralId })
+  const courseParticipation = courseParticipationFactory.build()
+
   let courseParticipationDetailsController: CourseParticipationDetailsController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token } })
+    request = createMock<Request>({
+      params: {
+        courseParticipationId,
+        referralId,
+      },
+      user: { token },
+    })
     response = Helpers.createMockResponseWithCaseloads()
+
     courseParticipationDetailsController = new CourseParticipationDetailsController(
       courseService,
       personService,
       referralService,
     )
+
+    referralService.getReferral.mockResolvedValue(referral)
+    courseService.getParticipation.mockResolvedValue(courseParticipation)
   })
 
   afterEach(() => {
@@ -38,23 +57,9 @@ describe('CourseParticipationDetailsController', () => {
   })
 
   describe('show', () => {
-    const courseParticipationId = faker.string.uuid()
-    const referralId = faker.string.uuid()
-    const referral = referralFactory.build({ id: referralId })
-
-    beforeEach(() => {
-      request.params.courseParticipationId = courseParticipationId
-      request.params.referralId = referralId
-
-      referralService.getReferral.mockResolvedValue(referral)
-    })
-
     it('renders the update details form page for a course participation', async () => {
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
-
-      const courseParticipation = courseParticipationFactory.build()
-      courseService.getParticipation.mockResolvedValue(courseParticipation)
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
@@ -75,6 +80,59 @@ describe('CourseParticipationDetailsController', () => {
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['yearCompleted', 'yearStarted'])
       expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
+    })
+  })
+
+  describe('update', () => {
+    it('asks the service to update the given course participation details and redirects to the `CourseParticipationsController` `index` action', async () => {
+      const courseParticipationUpdate: CourseParticipationUpdate = {
+        outcome: {
+          detail: 'Some additional detail',
+          status: 'complete',
+          yearCompleted: 2019,
+        },
+        setting: {
+          location: 'Somewhere',
+          type: 'community',
+        },
+        source: 'The source',
+      }
+
+      ;(CourseParticipationUtils.processDetailsFormData as jest.Mock).mockImplementation(_request => {
+        return {
+          courseParticipationUpdate,
+          hasFormErrors: false,
+        }
+      })
+
+      const requestHandler = courseParticipationDetailsController.update()
+      await requestHandler(request, response, next)
+
+      expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
+      expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(request)
+      expect(courseService.updateParticipation).toHaveBeenCalledWith(token, courseParticipationId, {
+        courseId: courseParticipation.courseId,
+        otherCourseName: courseParticipation.otherCourseName,
+        ...courseParticipationUpdate,
+      })
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
+    })
+
+    describe('when the form has errors', () => {
+      it('redirects back to the `show` action', async () => {
+        ;(CourseParticipationUtils.processDetailsFormData as jest.Mock).mockImplementation(_request => {
+          return { hasFormErrors: true }
+        })
+
+        const requestHandler = courseParticipationDetailsController.update()
+        await requestHandler(request, response, next)
+
+        expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
+        expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(request)
+        expect(response.redirect).toHaveBeenCalledWith(
+          referPaths.programmeHistory.details.show({ courseParticipationId, referralId }),
+        )
+      })
     })
   })
 })

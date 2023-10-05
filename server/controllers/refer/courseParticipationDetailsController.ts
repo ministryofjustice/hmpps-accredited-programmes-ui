@@ -1,7 +1,8 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
-import { FormUtils, TypeUtils } from '../../utils'
+import { CourseParticipationUtils, FormUtils, TypeUtils } from '../../utils'
 
 export default class CourseParticipationDetailsController {
   constructor(
@@ -33,6 +34,32 @@ export default class CourseParticipationDetailsController {
         person,
         referralId,
       })
+    }
+  }
+
+  update(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseParticipationId, referralId } = req.params
+
+      const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+
+      const processedFormData = CourseParticipationUtils.processDetailsFormData(req)
+
+      if (processedFormData.hasFormErrors) {
+        return res.redirect(referPaths.programmeHistory.details.show({ courseParticipationId, referralId }))
+      }
+
+      await this.courseService.updateParticipation(req.user.token, courseParticipationId, {
+        courseId: courseParticipation.courseId,
+        otherCourseName: courseParticipation.otherCourseName,
+        ...processedFormData.courseParticipationUpdate,
+      })
+
+      req.flash('successMessage', 'You have successfully added a programme.')
+
+      return res.redirect(referPaths.programmeHistory.index({ referralId }))
     }
   }
 }
