@@ -94,16 +94,7 @@ export default class CourseParticipationUtils {
     summaryListRows.push(CourseParticipationUtils.outcomeSummaryListRow(courseParticipationWithName))
     summaryListRows.push(CourseParticipationUtils.outcomeAdditionalDetailSummaryListRow(courseParticipationWithName))
     summaryListRows.push(CourseParticipationUtils.sourceSummaryListRow(courseParticipationWithName))
-
-    const addedByValueText = [
-      courseParticipationWithName.addedBy,
-      DateUtils.govukFormattedFullDateString(courseParticipationWithName.createdAt),
-    ].join(', ')
-
-    summaryListRows.push({
-      key: { text: 'Added by' },
-      value: { text: addedByValueText },
-    })
+    summaryListRows.push(CourseParticipationUtils.addedBySummaryListRow(courseParticipationWithName))
 
     return summaryListRows
   }
@@ -169,6 +160,21 @@ export default class CourseParticipationUtils {
     return {
       key: { text: 'Source of information' },
       value: { text: courseParticipationWithName.source || 'Not known' },
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  private static addedBySummaryListRow(
+    courseParticipationWithName: CourseParticipationWithName,
+  ): GovukFrontendSummaryListRowWithValue {
+    const addedByValueText = [
+      courseParticipationWithName.addedBy,
+      DateUtils.govukFormattedFullDateString(courseParticipationWithName.createdAt),
+    ].join(', ')
+
+    return {
+      key: { text: 'Added by' },
+      value: { text: addedByValueText },
     }
   }
 }
