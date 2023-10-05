@@ -7,6 +7,7 @@ import {
   prisonerFactory,
   referralFactory,
 } from '../../../server/testutils/factories'
+import type { DetailsBody } from '../../../server/utils/courseParticipationUtils'
 import Page from '../../pages/page'
 import {
   DeleteProgrammeHistoryPage,
@@ -74,6 +75,7 @@ context('Programme history', () => {
       programmeHistoryPage.shouldHavePersonDetails(person)
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+      programmeHistoryPage.shouldNotContainSuccessMessage()
       programmeHistoryPage.shouldContainPreHistoryParagraph()
       programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsWithNames, referral.id)
       programmeHistoryPage.shouldContainButton('Continue')
@@ -100,6 +102,7 @@ context('Programme history', () => {
       programmeHistoryPage.shouldHavePersonDetails(person)
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+      programmeHistoryPage.shouldNotContainSuccessMessage()
       programmeHistoryPage.shouldContainNoHistoryHeading()
       programmeHistoryPage.shouldContainNoHistoryParagraph()
       programmeHistoryPage.shouldContainButton('Continue')
@@ -318,6 +321,83 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.shouldContainOutcomeDetailTextArea()
         programmeHistoryDetailsPage.shouldContainSourceTextArea()
         programmeHistoryDetailsPage.shouldContainButton('Continue')
+      })
+
+      it('updates the entry and redirects to the programme history page', () => {
+        const formValues: DetailsBody = {
+          outcome: {
+            detail: 'Some outcome details',
+            status: 'complete',
+            yearCompleted: '2023',
+            yearStarted: '',
+          },
+          setting: {
+            communityLocation: 'A community location',
+            custodyLocation: '',
+            type: 'community',
+          },
+          source: 'The source',
+        }
+
+        const updatedCourseParticipation = courseParticipationFactory.build({
+          ...courseParticipation,
+          outcome: {
+            detail: formValues.outcome.detail,
+            status: formValues.outcome.status,
+            yearCompleted: Number(formValues.outcome),
+          },
+          setting: {
+            location: formValues.setting.communityLocation,
+            type: formValues.setting.type,
+          },
+          source: formValues.source,
+        })
+
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        programmeHistoryDetailsPage.selectSetting(formValues.setting.type as string)
+        programmeHistoryDetailsPage.inputCommunityLocation(formValues.setting.communityLocation)
+        programmeHistoryDetailsPage.selectOutcome(formValues.outcome.status as string)
+        programmeHistoryDetailsPage.inputOutcomeYearCompleted(formValues.outcome.yearCompleted)
+        programmeHistoryDetailsPage.inputOutcomeDetail(formValues.outcome.detail)
+        programmeHistoryDetailsPage.inputSource(formValues.source)
+        programmeHistoryDetailsPage.submitDetails(updatedCourseParticipation, courses[0], person)
+
+        const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
+          participationsWithNames: [{ ...updatedCourseParticipation, name: courses[0].name }],
+          person,
+          referral,
+        })
+        programmeHistoryPage.shouldContainSuccessMessage()
+      })
+
+      it('displays an error when inputting a non numeric value for `yearCompleted`', () => {
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        programmeHistoryDetailsPage.selectOutcome('complete')
+        programmeHistoryDetailsPage.inputOutcomeYearCompleted('not a number')
+        programmeHistoryDetailsPage.shouldContainButton('Continue').click()
+
+        const programmeHistoryDetailsPageWithError = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        programmeHistoryDetailsPageWithError.shouldHaveErrors([
+          {
+            field: 'yearCompleted',
+            message: 'Enter a year using numbers only',
+          },
+        ])
+      })
+
+      it('displays an error when inputting a non numeric value for `yearStarted`', () => {
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        programmeHistoryDetailsPage.selectOutcome('incomplete')
+        programmeHistoryDetailsPage.inputOutcomeYearStarted('not a number')
+        programmeHistoryDetailsPage.shouldContainButton('Continue').click()
+
+        const programmeHistoryDetailsPageWithError = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        programmeHistoryDetailsPageWithError.shouldHaveErrors([
+          {
+            field: 'yearStarted',
+            message: 'Enter a year using numbers only',
+          },
+        ])
       })
     })
   })
