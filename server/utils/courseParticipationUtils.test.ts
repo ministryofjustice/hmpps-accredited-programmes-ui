@@ -168,18 +168,6 @@ describe('CourseParticipationUtils', () => {
     })
 
     describe('when rows are missing required data', () => {
-      it.each([['Source of information', 'source', undefined]])(
-        'omits the %s row when %s is %s',
-        (keyText: GovukFrontendSummaryListRowKey['text'], field: string, value) => {
-          const withoutField = { ...courseParticipationWithName, [field]: value }
-
-          const { rows } = CourseParticipationUtils.summaryListOptions(withoutField, referralId)
-          const fieldRow = getRow(rows, keyText)
-
-          expect(fieldRow).toBeUndefined()
-        },
-      )
-
       describe('setting', () => {
         describe('when the setting has no location', () => {
           const withoutSettingLocation: CourseParticipationWithName = {
@@ -302,6 +290,20 @@ describe('CourseParticipationUtils', () => {
           it('displays "Not known"', () => {
             const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeAdditionalDetail, referralId)
             expect(getRowValueText(rows, 'Additional detail')).toEqual('Not known')
+          })
+        })
+      })
+
+      describe('source of information', () => {
+        describe('when there is no source of information set', () => {
+          const withoutSource: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            source: undefined,
+          }
+
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutSource, referralId)
+            expect(getRowValueText(rows, 'Source of information')).toEqual('Not known')
           })
         })
       })
