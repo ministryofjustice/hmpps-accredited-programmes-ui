@@ -9,6 +9,8 @@ import type { MiddlewareOptions } from '@accredited-programmes/server'
 export default class RouteUtils {
   static actions(router: Router, defaultMiddlewareOptions?: MiddlewareOptions) {
     return {
+      delete: (path: Array<string> | string, handler: RequestHandler, middlewareOptions = defaultMiddlewareOptions) =>
+        router.delete(path, asyncMiddleware(roleBasedAccessMiddleware(handler, middlewareOptions))),
       get: (path: Array<string> | string, handler: RequestHandler, middlewareOptions = defaultMiddlewareOptions) =>
         router.get(path, asyncMiddleware(roleBasedAccessMiddleware(handler, middlewareOptions))),
       post: (path: Array<string> | string, handler: RequestHandler, middlewareOptions = defaultMiddlewareOptions) =>
