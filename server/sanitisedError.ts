@@ -1,6 +1,8 @@
 import type { ResponseError } from 'superagent'
 
-interface SanitisedError {
+type UnsanitisedError = ResponseError
+
+type SanitisedError = Error & {
   message: string
   stack: string | undefined
   data?: unknown
@@ -9,21 +11,19 @@ interface SanitisedError {
   text?: string
 }
 
-export type UnsanitisedError = ResponseError
-
 export default function sanitiseError(error: UnsanitisedError): SanitisedError {
+  const sanitisedError = new Error() as SanitisedError
+  sanitisedError.message = error.message
+  sanitisedError.stack = error.stack
+
   if (error.response) {
-    return {
-      data: error.response.body,
-      headers: error.response.headers,
-      message: error.message,
-      stack: error.stack,
-      status: error.response.status,
-      text: error.response.text,
-    }
+    sanitisedError.data = error.response.body
+    sanitisedError.headers = error.response.headers
+    sanitisedError.status = error.response.status
+    sanitisedError.text = error.response.text
   }
-  return {
-    message: error.message,
-    stack: error.stack,
-  }
+
+  return sanitisedError
 }
+
+export type { SanitisedError, UnsanitisedError }

@@ -18,6 +18,8 @@ interface GetRequest {
   responseType?: string
 }
 
+interface DeleteRequest extends GetRequest {}
+
 interface PostRequest {
   data?: Record<string, unknown>
   headers?: Record<string, string>
@@ -43,6 +45,37 @@ export default class RestClient {
     private readonly token: Express.User['token'],
   ) {
     this.agent = config.url.startsWith('https') ? new HttpsAgent(config.agent) : new Agent(config.agent)
+  }
+
+  async delete({
+    path = '',
+    query = '',
+    headers = {},
+    responseType = '',
+    raw = false,
+  }: DeleteRequest): Promise<unknown> {
+    logger.info(`Delete using user credentials: calling ${this.name}: ${path} ${query}`)
+    try {
+      const result = await superagent
+        .delete(`${this.apiUrl()}${path}`)
+        .agent(this.agent)
+        .use(restClientMetricsMiddleware)
+        .retry(2, (err, res) => {
+          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+          return undefined // retry handler only for logging retries, not to influence retry logic
+        })
+        .query(query)
+        .auth(this.token, { type: 'bearer' })
+        .set(headers)
+        .responseType(responseType)
+        .timeout(this.timeoutConfig())
+
+      return raw ? result : result.body
+    } catch (error) {
+      const sanitisedError = sanitiseError(error as UnsanitisedError)
+      logger.warn({ ...sanitisedError, query }, `Error calling ${this.name}, path: '${path}', verb: 'DELETE'`)
+      throw sanitisedError
+    }
   }
 
   async get({ path = '', query = '', headers = {}, responseType = '', raw = false }: GetRequest): Promise<unknown> {
@@ -127,10 +160,6 @@ export default class RestClient {
         .send(data)
         .agent(this.agent)
         .use(restClientMetricsMiddleware)
-        .retry(2, (err, res) => {
-          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
-          return undefined // retry handler only for logging retries, not to influence retry logic
-        })
         .auth(this.token, { type: 'bearer' })
         .set(headers)
         .responseType(responseType)
