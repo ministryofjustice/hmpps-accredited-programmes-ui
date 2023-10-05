@@ -22,7 +22,7 @@
   {{ govukInput({
     id: "otherCourseName",
     name: "otherCourseName",
-    value: values.otherCourseName,
+    value: formValues.otherCourseName,
     type: "text",
     classes: "govuk-!-width-one-third",
     label: {
@@ -67,7 +67,7 @@
               "data-testid": "other-course-option"
             }
           }),
-          value: values.courseId,
+          value: formValues.courseId,
           errorMessage: errors.messages.courseId
         }) }}
 

@@ -102,11 +102,11 @@ export default class CourseParticipationsController {
       res.render('referrals/courseParticipations/course', {
         action: `${referPaths.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        formValues: { courseId, otherCourseName },
         otherCourseNameChecked: isOtherCourse || hasOtherCourseNameError,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
-        values: { courseId, otherCourseName },
       })
     }
   }
@@ -161,11 +161,11 @@ export default class CourseParticipationsController {
       res.render('referrals/courseParticipations/course', {
         action: referPaths.programmeHistory.create({ referralId: referral.id }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        formValues: {},
         otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
-        values: {},
       })
     }
   }

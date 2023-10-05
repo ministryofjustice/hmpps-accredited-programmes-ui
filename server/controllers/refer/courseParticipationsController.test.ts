@@ -223,11 +223,11 @@ describe('CourseParticipationsController', () => {
               referralId: referral.id,
             })}?_method=PUT`,
             courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+            formValues: { courseId, otherCourseName },
             otherCourseNameChecked: courseIdentifierType === 'an otherCourseName',
             pageHeading: 'Add Accredited Programme history',
             person,
             referralId: referral.id,
-            values: { courseId, otherCourseName },
           })
           expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
         })
@@ -312,11 +312,11 @@ describe('CourseParticipationsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/course', {
         action: referPaths.programmeHistory.create({ referralId: referral.id }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        formValues: {},
         otherCourseNameChecked: false,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
-        values: {},
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
     })
