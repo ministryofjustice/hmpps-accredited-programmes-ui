@@ -99,53 +99,55 @@ describe('CourseParticipationUtils', () => {
       name: 'A mediocre course name (aMCN)',
     }
 
-    it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
-      expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId)).toEqual({
-        card: {
-          actions: {
-            items: [
-              {
-                href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/programme`,
-                text: 'Change',
-                visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
-              },
-              {
-                href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
-                text: 'Remove',
-                visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
-              },
-            ],
+    describe('when all fields are present on the CourseParticipationWithName', () => {
+      it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
+        expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId)).toEqual({
+          card: {
+            actions: {
+              items: [
+                {
+                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/programme`,
+                  text: 'Change',
+                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                },
+                {
+                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
+                  text: 'Remove',
+                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                },
+              ],
+            },
+            title: {
+              text: 'A mediocre course name (aMCN)',
+            },
           },
-          title: {
-            text: 'A mediocre course name (aMCN)',
-          },
-        },
-        rows: [
-          {
-            key: { text: 'Programme name' },
-            value: { text: 'A mediocre course name (aMCN)' },
-          },
-          {
-            key: { text: 'Setting' },
-            value: { text: 'Community, Greater Tharfoot' },
-          },
-          {
-            key: { text: 'Outcome' },
-            value: { text: 'Complete, year completed 2019' },
-          },
-          {
-            key: { text: 'Additional detail' },
-            value: { text: 'Motivation level over 9000!' },
-          },
-          {
-            key: { text: 'Source of information' },
-            value: { text: 'Word of mouth' },
-          },
-          {
-            key: { text: 'Added by' },
-            value: { text: 'Eric McNally, 20 April 2023' },
-          },
-        ],
+          rows: [
+            {
+              key: { text: 'Programme name' },
+              value: { text: 'A mediocre course name (aMCN)' },
+            },
+            {
+              key: { text: 'Setting' },
+              value: { text: 'Community, Greater Tharfoot' },
+            },
+            {
+              key: { text: 'Outcome' },
+              value: { text: 'Complete, year completed 2019' },
+            },
+            {
+              key: { text: 'Additional detail' },
+              value: { text: 'Motivation level over 9000!' },
+            },
+            {
+              key: { text: 'Source of information' },
+              value: { text: 'Word of mouth' },
+            },
+            {
+              key: { text: 'Added by' },
+              value: { text: 'Eric McNally, 20 April 2023' },
+            },
+          ],
+        })
       })
     })
 
@@ -160,7 +162,7 @@ describe('CourseParticipationUtils', () => {
       })
     })
 
-    describe('when rows are missing required data', () => {
+    describe('rows with optional values', () => {
       describe('setting', () => {
         describe('when the setting has no location', () => {
           const withoutSettingLocation: CourseParticipationWithName = {
