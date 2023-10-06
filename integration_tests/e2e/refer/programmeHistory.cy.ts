@@ -164,7 +164,7 @@ context('Programme history', () => {
           selectProgrammePage.selectCourse(courses[0].id)
           selectProgrammePage.submitSelection(courseParticipation, courses[0].id)
 
-          Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+          Page.verifyOnPage(ProgrammeHistoryDetailsPage, { course: courses[0], courseParticipation, person })
         })
 
         it('displays an error when no programme is selected', () => {
@@ -260,7 +260,11 @@ context('Programme history', () => {
           selectProgrammePage.selectCourse(newCourseId)
           selectProgrammePage.submitSelection(courseParticipationWithCourseId, newCourseId)
 
-          Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+          Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+            course: courses[0],
+            courseParticipation: updatedParticipation,
+            person,
+          })
         })
 
         it('displays an error when "Other" is selected but a programme name is not provided', () => {
@@ -283,15 +287,20 @@ context('Programme history', () => {
     })
 
     describe('and adding details', () => {
-      const courseParticipation = courseParticipationFactory
-        .withCourseId()
-        .build({ courseId: courses[0].id, prisonNumber: person.prisonNumber })
-      const path = referPaths.programmeHistory.details.show({
-        courseParticipationId: courseParticipation.id,
-        referralId: referral.id,
-      })
+      let courseParticipation: CourseParticipation
+      let path: string
 
       beforeEach(() => {
+        courseParticipation = courseParticipationFactory.new().build({
+          courseId: courses[0].id,
+          otherCourseName: undefined,
+          prisonNumber: person.prisonNumber,
+        })
+        path = referPaths.programmeHistory.details.show({
+          courseParticipationId: courseParticipation.id,
+          referralId: referral.id,
+        })
+
         cy.task('stubParticipation', courseParticipation)
         cy.task('stubPrisoner', prisoner)
         cy.task('stubReferral', referral)
@@ -302,12 +311,17 @@ context('Programme history', () => {
       })
 
       it('shows the details page', () => {
-        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+          course: courses[0],
+          courseParticipation,
+          person,
+        })
         programmeHistoryDetailsPage.shouldContainNavigation(path)
         programmeHistoryDetailsPage.shouldHavePersonDetails(person)
         programmeHistoryDetailsPage.shouldContainBackLink(
           referPaths.programmeHistory.index({ referralId: referral.id }),
         )
+        programmeHistoryDetailsPage.shouldHaveCorrectFormValues()
         programmeHistoryDetailsPage.shouldContainSettingRadioItems()
         programmeHistoryDetailsPage.shouldNotDisplayCommunityLocationInput()
         programmeHistoryDetailsPage.shouldDisplayCommunityLocationInput()
@@ -353,14 +367,18 @@ context('Programme history', () => {
           source: formValues.source,
         })
 
-        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+          course: courses[0],
+          courseParticipation: updatedCourseParticipation,
+          person,
+        })
         programmeHistoryDetailsPage.selectSetting(formValues.setting.type as string)
         programmeHistoryDetailsPage.inputCommunityLocation(formValues.setting.communityLocation)
         programmeHistoryDetailsPage.selectOutcome(formValues.outcome.status as string)
         programmeHistoryDetailsPage.inputOutcomeYearCompleted(formValues.outcome.yearCompleted)
         programmeHistoryDetailsPage.inputOutcomeDetail(formValues.outcome.detail)
         programmeHistoryDetailsPage.inputSource(formValues.source)
-        programmeHistoryDetailsPage.submitDetails(updatedCourseParticipation, courses[0], person)
+        programmeHistoryDetailsPage.submitDetails()
 
         const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
           participationsWithNames: [{ ...updatedCourseParticipation, name: courses[0].name }],
@@ -371,12 +389,20 @@ context('Programme history', () => {
       })
 
       it('displays an error when inputting a non numeric value for `yearCompleted`', () => {
-        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+          course: courses[0],
+          courseParticipation,
+          person,
+        })
         programmeHistoryDetailsPage.selectOutcome('complete')
         programmeHistoryDetailsPage.inputOutcomeYearCompleted('not a number')
         programmeHistoryDetailsPage.shouldContainButton('Continue').click()
 
-        const programmeHistoryDetailsPageWithError = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        const programmeHistoryDetailsPageWithError = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+          course: courses[0],
+          courseParticipation,
+          person,
+        })
         programmeHistoryDetailsPageWithError.shouldHaveErrors([
           {
             field: 'yearCompleted',
@@ -386,18 +412,52 @@ context('Programme history', () => {
       })
 
       it('displays an error when inputting a non numeric value for `yearStarted`', () => {
-        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+          course: courses[0],
+          courseParticipation,
+          person,
+        })
         programmeHistoryDetailsPage.selectOutcome('incomplete')
         programmeHistoryDetailsPage.inputOutcomeYearStarted('not a number')
         programmeHistoryDetailsPage.shouldContainButton('Continue').click()
 
-        const programmeHistoryDetailsPageWithError = Page.verifyOnPage(ProgrammeHistoryDetailsPage)
+        const programmeHistoryDetailsPageWithError = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+          course: courses[0],
+          courseParticipation,
+          person,
+        })
         programmeHistoryDetailsPageWithError.shouldHaveErrors([
           {
             field: 'yearStarted',
             message: 'Enter a year using numbers only',
           },
         ])
+      })
+
+      describe('for a participation with existing details', () => {
+        beforeEach(() => {
+          courseParticipation = courseParticipationFactory.withCourseId().build()
+          path = referPaths.programmeHistory.details.show({
+            courseParticipationId: courseParticipation.id,
+            referralId: referral.id,
+          })
+
+          cy.task('stubParticipation', courseParticipation)
+          cy.task('stubPrisoner', prisoner)
+          cy.task('stubReferral', referral)
+
+          cy.visit(path)
+        })
+
+        it('shows the details page with the form fields pre-populated', () => {
+          const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
+            course: courses[0],
+            courseParticipation,
+            person,
+          })
+
+          programmeHistoryDetailsPage.shouldHaveCorrectFormValues()
+        })
       })
     })
   })

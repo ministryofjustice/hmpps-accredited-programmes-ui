@@ -16,7 +16,10 @@ export default class CourseParticipationDetailsController {
       TypeUtils.assertHasUser(req)
       const { courseParticipationId, referralId } = req.params
 
-      await this.courseService.getParticipation(req.user.token, courseParticipationId)
+      const { outcome, setting, source } = await this.courseService.getParticipation(
+        req.user.token,
+        courseParticipationId,
+      )
 
       const referral = await this.referralService.getReferral(req.user.token, referralId)
       const person = await this.personService.getPerson(
@@ -26,7 +29,15 @@ export default class CourseParticipationDetailsController {
       )
 
       FormUtils.setFieldErrors(req, res, ['yearCompleted', 'yearStarted'])
-      FormUtils.setFormValues(req, res)
+      FormUtils.setFormValues(req, res, {
+        outcome,
+        setting: {
+          ...setting,
+          communityLocation: setting.type === 'community' ? setting.location : '',
+          custodyLocation: setting.type === 'custody' ? setting.location : '',
+        },
+        source,
+      })
 
       res.render('referrals/courseParticipations/details/show', {
         action: `${referPaths.programmeHistory.details.update({ courseParticipationId, referralId })}?_method=PUT`,

@@ -22,6 +22,23 @@ const courseParticipationTypes = {
     }
   },
 
+  new() {
+    return {
+      ...this.random(),
+      outcome: {
+        detail: undefined,
+        status: undefined,
+        yearCompleted: undefined,
+        yearStarted: undefined,
+      },
+      setting: {
+        location: undefined,
+        type: undefined,
+      },
+      source: undefined,
+    }
+  },
+
   random() {
     const type = faker.helpers.arrayElement<'withCourseId' | 'withOtherCourseName'>([
       'withCourseId',
@@ -46,6 +63,10 @@ const courseParticipationTypes = {
 }
 
 class CourseParticipationFactory extends Factory<CourseParticipation> {
+  new() {
+    return this.params(courseParticipationTypes.new())
+  }
+
   withCourseId() {
     return this.params(courseParticipationTypes.withCourseId())
   }
