@@ -210,7 +210,7 @@ describe('CourseParticipationUtils', () => {
     })
   })
 
-  describe('processedCourseFormData', () => {
+  describe('processCourseFormData', () => {
     let request: DeepMocked<Request>
 
     beforeEach(() => {
@@ -221,7 +221,7 @@ describe('CourseParticipationUtils', () => {
       it('returns the course ID and reports no errors', () => {
         const validId = 'AN-ID'
 
-        expect(CourseParticipationUtils.processedCourseFormData(validId, undefined, request)).toEqual({
+        expect(CourseParticipationUtils.processCourseFormData(validId, undefined, request)).toEqual({
           courseId: validId,
           hasFormErrors: false,
         })
@@ -235,7 +235,7 @@ describe('CourseParticipationUtils', () => {
         it('returns the other course name and reports no errors', () => {
           const otherCourseName = 'Another course'
 
-          expect(CourseParticipationUtils.processedCourseFormData(otherId, otherCourseName, request)).toEqual({
+          expect(CourseParticipationUtils.processCourseFormData(otherId, otherCourseName, request)).toEqual({
             hasFormErrors: false,
             otherCourseName,
           })
@@ -244,7 +244,7 @@ describe('CourseParticipationUtils', () => {
 
       describe('and `otherCourseName` is `undefined`', () => {
         it('flashes an appropriate error message and reports an error', () => {
-          expect(CourseParticipationUtils.processedCourseFormData(otherId, undefined, request)).toEqual({
+          expect(CourseParticipationUtils.processCourseFormData(otherId, undefined, request)).toEqual({
             hasFormErrors: true,
           })
           expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
@@ -253,7 +253,7 @@ describe('CourseParticipationUtils', () => {
 
       describe('and `otherCourseName` is an empty string when trimmed', () => {
         it('flashes an appropriate error message and reports an error', () => {
-          expect(CourseParticipationUtils.processedCourseFormData(otherId, '  ', request)).toEqual({
+          expect(CourseParticipationUtils.processCourseFormData(otherId, '  ', request)).toEqual({
             hasFormErrors: true,
             otherCourseName: '',
           })
@@ -264,7 +264,7 @@ describe('CourseParticipationUtils', () => {
 
     describe('when the `courseId` is `undefined`', () => {
       it('flashes an appropriate error message and reports an error', () => {
-        expect(CourseParticipationUtils.processedCourseFormData(undefined, undefined, request)).toEqual({
+        expect(CourseParticipationUtils.processCourseFormData(undefined, undefined, request)).toEqual({
           hasFormErrors: true,
         })
         expect(request.flash).toHaveBeenCalledWith('courseIdError', 'Select a programme')

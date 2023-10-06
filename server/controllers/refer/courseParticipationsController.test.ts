@@ -50,7 +50,7 @@ describe('CourseParticipationsController', () => {
 
         request.body = { courseId }
         courseService.createParticipation.mockResolvedValue(courseParticipation)
-        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+        ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
           (_courseId, _otherCourseName, _request) => {
             return { courseId, hasFormErrors: false }
           },
@@ -60,7 +60,7 @@ describe('CourseParticipationsController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
-        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+        expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseId,
           request.body.otherCourseName,
           request,
@@ -87,7 +87,7 @@ describe('CourseParticipationsController', () => {
 
         request.body = { courseId: 'other', otherCourseName }
         courseService.createParticipation.mockResolvedValue(courseParticipation)
-        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+        ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
           (_courseId, _otherCourseName, _request) => {
             return { hasFormErrors: false, otherCourseName }
           },
@@ -97,7 +97,7 @@ describe('CourseParticipationsController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
-        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+        expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseId,
           request.body.otherCourseName,
           request,
@@ -120,7 +120,7 @@ describe('CourseParticipationsController', () => {
     describe('when there are form errors', () => {
       it('redirects back to the `new` action', async () => {
         request.body = { courseId: 'something', otherCourseName: 'something else' }
-        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+        ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
           (_courseId, _otherCourseName, _request) => {
             return { hasFormErrors: true }
           },
@@ -130,7 +130,7 @@ describe('CourseParticipationsController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
-        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+        expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseId,
           request.body.otherCourseName,
           request,
@@ -341,7 +341,7 @@ describe('CourseParticipationsController', () => {
 
         const newValue = 'A NEW VALUE'
         request.body = { [truthyField]: newValue }
-        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+        ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
           (_courseId, _otherCourseName, _request) => {
             return { hasFormErrors: false, [truthyField]: newValue }
           },
@@ -359,7 +359,7 @@ describe('CourseParticipationsController', () => {
         await requestHandler(request, response, next)
 
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
-        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+        expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseId,
           request.body.otherCourseName,
           request,
@@ -385,7 +385,7 @@ describe('CourseParticipationsController', () => {
         courseService.getParticipation.mockResolvedValue(courseParticipation)
 
         request.body = { courseId: 'something', otherCourseName: 'something else' }
-        ;(CourseParticipationUtils.processedCourseFormData as jest.Mock).mockImplementation(
+        ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
           (_courseId, _otherCourseName, _request) => {
             return { hasFormErrors: true }
           },
@@ -395,7 +395,7 @@ describe('CourseParticipationsController', () => {
         await requestHandler(request, response, next)
 
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
-        expect(CourseParticipationUtils.processedCourseFormData).toHaveBeenCalledWith(
+        expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseId,
           request.body.otherCourseName,
           request,

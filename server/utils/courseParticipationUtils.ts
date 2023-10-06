@@ -35,6 +35,37 @@ interface RequestWithDetailsBody extends Request {
 }
 
 export default class CourseParticipationUtils {
+  static processCourseFormData(
+    courseId: CourseParticipation['courseId'] | 'other' | undefined,
+    otherCourseName: CourseParticipation['otherCourseName'] | undefined,
+    request: Request,
+  ): {
+    hasFormErrors: boolean
+    courseId?: CourseParticipation['courseId']
+    otherCourseName?: CourseParticipation['otherCourseName']
+  } {
+    let hasFormErrors = false
+    const formattedOtherCourseName = otherCourseName?.trim()
+
+    if (!courseId) {
+      request.flash('courseIdError', 'Select a programme')
+
+      hasFormErrors = true
+    }
+
+    if (courseId === 'other' && !formattedOtherCourseName) {
+      request.flash('otherCourseNameError', 'Enter the programme name')
+
+      hasFormErrors = true
+    }
+
+    return {
+      courseId: courseId === 'other' ? undefined : courseId,
+      hasFormErrors,
+      otherCourseName: courseId === 'other' ? formattedOtherCourseName : undefined,
+    }
+  }
+
   static processDetailsFormData(request: RequestWithDetailsBody): {
     courseParticipationUpdate: CourseParticipationUpdate
     hasFormErrors: boolean
@@ -76,37 +107,6 @@ export default class CourseParticipationUtils {
     return {
       courseParticipationUpdate,
       hasFormErrors,
-    }
-  }
-
-  static processedCourseFormData(
-    courseId: CourseParticipation['courseId'] | 'other' | undefined,
-    otherCourseName: CourseParticipation['otherCourseName'] | undefined,
-    request: Request,
-  ): {
-    hasFormErrors: boolean
-    courseId?: CourseParticipation['courseId']
-    otherCourseName?: CourseParticipation['otherCourseName']
-  } {
-    let hasFormErrors = false
-    const formattedOtherCourseName = otherCourseName?.trim()
-
-    if (!courseId) {
-      request.flash('courseIdError', 'Select a programme')
-
-      hasFormErrors = true
-    }
-
-    if (courseId === 'other' && !formattedOtherCourseName) {
-      request.flash('otherCourseNameError', 'Enter the programme name')
-
-      hasFormErrors = true
-    }
-
-    return {
-      courseId: courseId === 'other' ? undefined : courseId,
-      hasFormErrors,
-      otherCourseName: courseId === 'other' ? formattedOtherCourseName : undefined,
     }
   }
 
