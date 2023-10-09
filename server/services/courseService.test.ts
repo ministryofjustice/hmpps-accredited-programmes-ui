@@ -62,6 +62,17 @@ describe('CourseService', () => {
     })
   })
 
+  describe('deleteParticipation', () => {
+    it('asks the client to delete a course participation', async () => {
+      const courseParticipation = courseParticipationFactory.build()
+
+      await service.deleteParticipation(token, courseParticipation.id)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
+      expect(courseClient.destroyParticipation).toHaveBeenCalledWith(courseParticipation.id)
+    })
+  })
+
   describe('getCourses', () => {
     it('returns a list of all courses', async () => {
       const courses = courseFactory.buildList(3)
