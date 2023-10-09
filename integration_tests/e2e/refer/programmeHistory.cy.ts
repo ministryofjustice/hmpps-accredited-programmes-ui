@@ -388,7 +388,7 @@ context('Programme history', () => {
           person,
           referral,
         })
-        programmeHistoryPage.shouldContainSuccessMessage()
+        programmeHistoryPage.shouldContainSuccessMessage('You have successfully added a programme.')
       })
 
       it('displays an error when inputting a non numeric value for `yearCompleted`', () => {
