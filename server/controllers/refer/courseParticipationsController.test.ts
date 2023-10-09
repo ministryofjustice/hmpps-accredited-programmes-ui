@@ -158,7 +158,7 @@ describe('CourseParticipationsController', () => {
       courseService.getParticipation.mockResolvedValue(courseParticipation)
 
       const courseParticipationWithName = { ...courseParticipation, name: course.name }
-      const summaryListsOptions = CourseParticipationUtils.summaryListOptions(
+      const summaryListOptions = CourseParticipationUtils.summaryListOptions(
         courseParticipationWithName,
         referral.id,
         false,
@@ -171,7 +171,7 @@ describe('CourseParticipationsController', () => {
         pageHeading: 'Remove programme',
         person,
         referralId: referral.id,
-        summaryListsOptions,
+        summaryListOptions,
       })
     })
   })
