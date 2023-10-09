@@ -335,15 +335,15 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.shouldDisplayYearCompletedInput()
         programmeHistoryDetailsPage.shouldNotDisplayYearStartedInput()
         programmeHistoryDetailsPage.shouldDisplayYearStartedInput()
-        programmeHistoryDetailsPage.shouldContainOutcomeDetailTextArea()
+        programmeHistoryDetailsPage.shouldContainDetailTextArea()
         programmeHistoryDetailsPage.shouldContainSourceTextArea()
         programmeHistoryDetailsPage.shouldContainButton('Continue')
       })
 
       it('updates the entry and redirects to the programme history page', () => {
         const formValues: DetailsBody = {
+          detail: 'Some outcome details',
           outcome: {
-            detail: 'Some outcome details',
             status: 'complete',
             yearCompleted: '2023',
             yearStarted: '',
@@ -358,8 +358,8 @@ context('Programme history', () => {
 
         const updatedCourseParticipation = courseParticipationFactory.build({
           ...courseParticipation,
+          detail: formValues.detail,
           outcome: {
-            detail: formValues.outcome.detail,
             status: formValues.outcome.status,
             yearCompleted: Number(formValues.outcome),
           },
@@ -379,7 +379,7 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.inputCommunityLocation(formValues.setting.communityLocation)
         programmeHistoryDetailsPage.selectOutcome(formValues.outcome.status as string)
         programmeHistoryDetailsPage.inputOutcomeYearCompleted(formValues.outcome.yearCompleted)
-        programmeHistoryDetailsPage.inputOutcomeDetail(formValues.outcome.detail)
+        programmeHistoryDetailsPage.inputDetail(formValues.detail)
         programmeHistoryDetailsPage.inputSource(formValues.source)
         programmeHistoryDetailsPage.submitDetails()
 

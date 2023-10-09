@@ -14,6 +14,7 @@ const courseParticipationTypes = {
       addedBy: `${faker.person.firstName()} ${faker.person.lastName()}`,
       courseId: undefined,
       createdAt: `${faker.date.between({ from: '2023-09-20T00:00:00.000Z', to: new Date() })}`,
+      detail: faker.lorem.paragraph({ max: 5, min: 0 }),
       otherCourseName: undefined,
       outcome: courseParticipationOutcomeFactory.build(),
       prisonNumber: faker.string.alphanumeric({ length: 7 }),
@@ -25,8 +26,8 @@ const courseParticipationTypes = {
   new() {
     return {
       ...this.random(),
+      detail: undefined,
       outcome: {
-        detail: undefined,
         status: undefined,
         yearCompleted: undefined,
         yearStarted: undefined,

@@ -28,8 +28,8 @@ describe('CourseParticipationUtils', () => {
       request = createMock<RequestWithDetailsBody>({})
 
       request.body = {
+        detail: 'Some additional detail',
         outcome: {
-          detail: 'Some additional detail',
           status: 'complete',
           yearCompleted: '2019',
           yearStarted: '',
@@ -43,8 +43,8 @@ describe('CourseParticipationUtils', () => {
       }
 
       expectedCourseParticipationUpdate = {
+        detail: request.body.detail,
         outcome: {
-          detail: request.body.outcome.detail,
           status: request.body.outcome.status,
           yearCompleted: Number(request.body.outcome.yearCompleted),
           yearStarted: undefined,
@@ -66,10 +66,10 @@ describe('CourseParticipationUtils', () => {
       })
     })
 
-    describe('when `request.body.outcome.detail` is an empty string when trimmed', () => {
-      it('returns `courseParticipationUpdate.outcome.detail` as undefined and reports no errors', () => {
-        request.body.outcome.detail = ' \n \n '
-        expectedCourseParticipationUpdate.outcome.detail = undefined
+    describe('when `request.body.detail` is an empty string when trimmed', () => {
+      it('returns `courseParticipationUpdate.detail` as undefined and reports no errors', () => {
+        request.body.detail = ' \n \n '
+        expectedCourseParticipationUpdate.detail = undefined
 
         expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
           courseParticipationUpdate: expectedCourseParticipationUpdate,
@@ -278,8 +278,8 @@ describe('CourseParticipationUtils', () => {
       ...courseParticipationFactory.build({
         addedBy: 'Eric McNally',
         createdAt: '2023-04-20T16:20:00.000Z',
+        detail: 'Motivation level over 9000!',
         outcome: {
-          detail: 'Motivation level over 9000!',
           status: 'complete',
           yearCompleted: 2019,
           yearStarted: undefined,
@@ -453,27 +453,10 @@ describe('CourseParticipationUtils', () => {
       })
 
       describe('additional detail', () => {
-        describe('when there is no outcome', () => {
-          const withoutOutcome: CourseParticipationWithName = {
-            ...courseParticipationWithName,
-            outcome: {},
-          }
-
-          it('displays "Not known"', () => {
-            const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcome, referralId)
-            expect(getRowValueText(rows, 'Additional detail')).toEqual('Not known')
-          })
-        })
-
-        describe('when there is no additional detail set on the outcome', () => {
+        describe('when there is no additional detail set', () => {
           const withoutOutcomeAdditionalDetail: CourseParticipationWithName = {
             ...courseParticipationWithName,
-            outcome: {
-              detail: undefined,
-              status: 'complete',
-              yearCompleted: 2019,
-              yearStarted: undefined,
-            },
+            detail: undefined,
           }
 
           it('displays "Not known"', () => {

@@ -18,8 +18,8 @@ import type {
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
 interface DetailsBody {
+  detail: string
   outcome: {
-    detail: string
     yearCompleted: string
     yearStarted: string
     status?: CourseParticipationOutcome['status']
@@ -89,11 +89,11 @@ export default class CourseParticipationUtils {
       return validatedYear
     }
 
-    const { outcome, setting, source } = body
+    const { detail, outcome, setting, source } = body
 
     const courseParticipationUpdate: CourseParticipationUpdate = {
+      detail: detail?.trim() || undefined,
       outcome: {
-        detail: outcome.detail?.trim() || undefined,
         status: outcome.status,
         yearCompleted: outcome.status === 'complete' ? validateYear('yearCompleted', outcome.yearCompleted) : undefined,
         yearStarted: outcome.status === 'incomplete' ? validateYear('yearStarted', outcome.yearStarted) : undefined,
@@ -157,7 +157,7 @@ export default class CourseParticipationUtils {
       CourseParticipationUtils.summaryListRow('Programme name', [courseParticipationWithName.name]),
       CourseParticipationUtils.summaryListRowSetting(courseParticipationWithName.setting),
       CourseParticipationUtils.summaryListRowOutcome(courseParticipationWithName.outcome),
-      CourseParticipationUtils.summaryListRow('Additional detail', [courseParticipationWithName.outcome.detail]),
+      CourseParticipationUtils.summaryListRow('Additional detail', [courseParticipationWithName.detail]),
       CourseParticipationUtils.summaryListRow('Source of information', [courseParticipationWithName.source]),
       CourseParticipationUtils.summaryListRow('Added by', [
         courseParticipationWithName.addedBy,

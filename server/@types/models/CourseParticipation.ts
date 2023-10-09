@@ -2,7 +2,6 @@ import type { Course } from './Course'
 import type { Person } from './Person'
 
 type CourseParticipationOutcome = {
-  detail?: string
   status?: 'complete' | 'incomplete'
   yearCompleted?: number
   yearStarted?: number
@@ -21,6 +20,7 @@ type CourseParticipation = {
   prisonNumber: Person['prisonNumber']
   setting: CourseParticipationSetting
   courseId?: Course['id']
+  detail?: string
   otherCourseName?: string
   source?: string
 }
@@ -29,6 +29,7 @@ type CourseParticipationUpdate = {
   outcome: CourseParticipationOutcome
   setting: CourseParticipationSetting
   courseId?: CourseParticipation['courseId']
+  detail?: CourseParticipation['detail']
   otherCourseName?: CourseParticipation['otherCourseName']
   source?: CourseParticipation['source']
 }

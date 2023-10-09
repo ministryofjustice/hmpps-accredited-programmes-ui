@@ -16,7 +16,7 @@ export default class CourseParticipationDetailsController {
       TypeUtils.assertHasUser(req)
       const { courseParticipationId, referralId } = req.params
 
-      const { outcome, setting, source } = await this.courseService.getParticipation(
+      const { detail, outcome, setting, source } = await this.courseService.getParticipation(
         req.user.token,
         courseParticipationId,
       )
@@ -30,6 +30,7 @@ export default class CourseParticipationDetailsController {
 
       FormUtils.setFieldErrors(req, res, ['yearCompleted', 'yearStarted'])
       FormUtils.setFormValues(req, res, {
+        detail,
         outcome,
         setting: {
           ...setting,

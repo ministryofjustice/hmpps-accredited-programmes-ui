@@ -12,7 +12,6 @@ const randomNonFutureYearFrom = (minimumYear: number): number => {
 const outcomeTypes = {
   complete(): CourseParticipationOutcome {
     return {
-      detail: faker.lorem.paragraph({ max: 5, min: 0 }),
       status: 'complete',
       yearCompleted: FactoryHelpers.optionalArrayElement(randomNonFutureYearFrom(1980)),
     }
@@ -20,7 +19,6 @@ const outcomeTypes = {
 
   incomplete(): CourseParticipationOutcome {
     return {
-      detail: faker.lorem.paragraph({ max: 5, min: 0 }),
       status: 'incomplete',
       yearStarted: FactoryHelpers.optionalArrayElement(randomNonFutureYearFrom(1980)),
     }
@@ -36,7 +34,7 @@ const outcomeTypes = {
   },
 
   unknown() {
-    return { detail: faker.lorem.paragraph({ max: 5, min: 0 }) }
+    return {}
   },
 }
 
