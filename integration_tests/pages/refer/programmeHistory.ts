@@ -42,8 +42,8 @@ export default class ProgrammeHistoryPage extends Page {
     )
   }
 
-  shouldContainSuccessMessage() {
-    cy.get('[data-testid="success-banner"]').should('contain.text', 'You have successfully added a programme.')
+  shouldContainSuccessMessage(message: string) {
+    cy.get('[data-testid="success-banner"]').should('contain.text', message)
   }
 
   shouldNotContainSuccessMessage() {
