@@ -319,7 +319,10 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.shouldContainNavigation(path)
         programmeHistoryDetailsPage.shouldHavePersonDetails(person)
         programmeHistoryDetailsPage.shouldContainBackLink(
-          referPaths.programmeHistory.index({ referralId: referral.id }),
+          referPaths.programmeHistory.editProgramme({
+            courseParticipationId: courseParticipation.id,
+            referralId: referral.id,
+          }),
         )
         programmeHistoryDetailsPage.shouldHaveCorrectFormValues()
         programmeHistoryDetailsPage.shouldContainSettingRadioItems()
