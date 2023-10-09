@@ -176,6 +176,22 @@ describe('CourseParticipationsController', () => {
     })
   })
 
+  describe('destroy', () => {
+    it('asks the service to delete the participation and redirects to the index action', async () => {
+      const courseParticipationId = 'aCourseParticipationId'
+      const referralId = 'aReferralId'
+
+      request.params.courseParticipationId = courseParticipationId
+      request.params.referralId = referralId
+
+      const requestHandler = courseParticipationsController.destroy()
+      await requestHandler(request, response, next)
+
+      expect(courseService.deleteParticipation).toHaveBeenCalledWith(token, courseParticipationId)
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
+    })
+  })
+
   describe('editCourse', () => {
     const courses = courseFactory.buildList(2)
     const person = personFactory.build()

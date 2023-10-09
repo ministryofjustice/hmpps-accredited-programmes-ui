@@ -77,6 +77,22 @@ export default class CourseParticipationsController {
     }
   }
 
+  destroy(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseParticipationId, referralId } = req.params
+
+      await this.courseService.deleteParticipation(req.user.token, courseParticipationId)
+
+      return res.redirect(
+        referPaths.programmeHistory.index({
+          referralId,
+        }),
+      )
+    }
+  }
+
   editCourse(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

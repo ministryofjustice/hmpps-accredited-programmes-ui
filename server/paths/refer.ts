@@ -41,6 +41,7 @@ export default {
   programmeHistory: {
     create: programmeHistoryPath,
     delete: deleteProgrammeHistoryPath,
+    destroy: showProgrammeHistoryPath,
     details: {
       show: programmeHistoryDetailsPath,
       update: programmeHistoryDetailsPath,
