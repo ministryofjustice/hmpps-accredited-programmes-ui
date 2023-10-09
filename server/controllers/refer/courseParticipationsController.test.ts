@@ -194,6 +194,7 @@ describe('CourseParticipationsController', () => {
       await requestHandler(request, response, next)
 
       expect(courseService.deleteParticipation).toHaveBeenCalledWith(token, courseParticipationId)
+      expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully removed a programme.')
       expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
     })
   })
