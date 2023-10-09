@@ -69,6 +69,7 @@ export default class CourseParticipationsController {
       )
 
       res.render('referrals/courseParticipations/delete', {
+        action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
         person,
         referralId: referral.id,

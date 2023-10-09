@@ -151,6 +151,11 @@ describe('CourseParticipationsController', () => {
         courseId: course.id,
         prisonNumber: person.prisonNumber,
       })
+      const courseParticipationId = courseParticipation.id
+      const referralId = referral.id
+
+      request.params.courseParticipationId = courseParticipationId
+      request.params.referralId = referralId
 
       personService.getPerson.mockResolvedValue(person)
       referralService.getReferral.mockResolvedValue(referral)
@@ -168,6 +173,7 @@ describe('CourseParticipationsController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/delete', {
+        action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
         person,
         referralId: referral.id,
