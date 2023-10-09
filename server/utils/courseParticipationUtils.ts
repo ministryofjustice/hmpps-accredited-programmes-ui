@@ -15,6 +15,7 @@ import type {
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
 interface DetailsBody {
   outcome: {
@@ -152,80 +153,62 @@ export default class CourseParticipationUtils {
   private static summaryListRows(
     courseParticipationWithName: CourseParticipationWithName,
   ): Array<GovukFrontendSummaryListRowWithValue> {
-    const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
+    return [
+      CourseParticipationUtils.summaryListRow('Programme name', [courseParticipationWithName.name]),
+      CourseParticipationUtils.summaryListRowSetting(courseParticipationWithName.setting),
+      CourseParticipationUtils.summaryListRowOutcome(courseParticipationWithName.outcome),
+      CourseParticipationUtils.summaryListRow('Additional detail', [courseParticipationWithName.outcome.detail]),
+      CourseParticipationUtils.summaryListRow('Source of information', [courseParticipationWithName.source]),
+      CourseParticipationUtils.summaryListRow('Added by', [
+        courseParticipationWithName.addedBy,
+        DateUtils.govukFormattedFullDateString(courseParticipationWithName.createdAt),
+      ]),
+    ]
+  }
 
-    summaryListRows.push({
-      key: { text: 'Programme name' },
-      value: { text: courseParticipationWithName.name },
-    })
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  private static summaryListRow(
+    keyText: GovukFrontendSummaryListRowKey['text'],
+    valueTextItems: Array<string | undefined>,
+  ): GovukFrontendSummaryListRowWithValue {
+    const valueTextItemsWithoutBlanks = valueTextItems.filter(Boolean)
 
-    if (courseParticipationWithName.setting) {
-      const valueTextItems: Array<string> = []
+    return {
+      key: { text: keyText },
+      value: { text: valueTextItemsWithoutBlanks.join(', ') || 'Not known' },
+    }
+  }
 
-      if (courseParticipationWithName.setting.type) {
-        valueTextItems.push(StringUtils.properCase(courseParticipationWithName.setting.type))
-      }
+  private static summaryListRowOutcome(outcome: CourseParticipationOutcome): GovukFrontendSummaryListRowWithValue {
+    const valueTextItems: Array<string> = []
 
-      if (courseParticipationWithName.setting.location) {
-        valueTextItems.push(`${courseParticipationWithName.setting.location}`)
-      }
-
-      const valueText = valueTextItems.join(', ')
-
-      if (valueText) {
-        summaryListRows.push({
-          key: { text: 'Setting' },
-          value: { text: valueText },
-        })
-      }
+    if (outcome.status) {
+      valueTextItems.push(StringUtils.properCase(outcome.status))
     }
 
-    if (courseParticipationWithName.outcome) {
-      if (courseParticipationWithName.outcome.status) {
-        let valueText = ''
-
-        valueText += StringUtils.properCase(courseParticipationWithName.outcome.status)
-
-        if (courseParticipationWithName.outcome.yearStarted) {
-          valueText += ` - started ${courseParticipationWithName.outcome.yearStarted}`
-        }
-
-        if (courseParticipationWithName.outcome.yearCompleted) {
-          valueText += ` - completed in ${courseParticipationWithName.outcome.yearCompleted}`
-        }
-
-        summaryListRows.push({
-          key: { text: 'Outcome' },
-          value: { text: valueText },
-        })
-      }
-
-      if (courseParticipationWithName.outcome.detail) {
-        summaryListRows.push({
-          key: { text: 'Additional detail' },
-          value: { text: courseParticipationWithName.outcome.detail },
-        })
-      }
+    if (outcome.yearStarted) {
+      valueTextItems.push(`Year started ${outcome.yearStarted}`)
     }
 
-    if (courseParticipationWithName.source) {
-      summaryListRows.push({
-        key: { text: 'Source of information' },
-        value: { text: courseParticipationWithName.source },
-      })
+    if (outcome.yearCompleted) {
+      valueTextItems.push(`Year complete ${outcome.yearCompleted}`)
     }
 
-    const addedByValueText = [
-      courseParticipationWithName.addedBy,
-      DateUtils.govukFormattedFullDateString(courseParticipationWithName.createdAt),
-    ].join(', ')
+    return this.summaryListRow('Outcome', valueTextItems)
+  }
 
-    summaryListRows.push({
-      key: { text: 'Added by' },
-      value: { text: addedByValueText },
-    })
+  private static summaryListRowSetting(setting: CourseParticipationSetting): GovukFrontendSummaryListRowWithValue {
+    const valueTextItems: Array<string> = []
 
-    return summaryListRows
+    if (setting.type) {
+      valueTextItems.push(StringUtils.properCase(setting.type))
+    }
+
+    if (setting.location) {
+      valueTextItems.push(`${setting.location}`)
+    }
+
+    return this.summaryListRow('Setting', valueTextItems)
   }
 }
 

@@ -5,18 +5,18 @@ import type { Request } from 'express'
 
 import CourseParticipationUtils, { type RequestWithDetailsBody } from './courseParticipationUtils'
 import { courseParticipationFactory } from '../testutils/factories'
+import type { CourseParticipationUpdate, CourseParticipationWithName } from '@accredited-programmes/models'
 import type {
-  CourseParticipationOutcome,
-  CourseParticipationSetting,
-  CourseParticipationUpdate,
-} from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRow, GovukFrontendSummaryListRowKey } from '@govuk-frontend'
+  GovukFrontendSummaryListRow,
+  GovukFrontendSummaryListRowKey,
+  GovukFrontendSummaryListRowValue,
+} from '@govuk-frontend'
 
-const getRow = (
+const getRowValueText = (
   rows: Array<GovukFrontendSummaryListRow>,
   keyText: GovukFrontendSummaryListRowKey['text'],
-): GovukFrontendSummaryListRow | undefined => {
-  return rows.find(row => (row.key as GovukFrontendSummaryListRowKey).text === keyText)
+): GovukFrontendSummaryListRowValue['text'] => {
+  return rows.find(row => (row.key as GovukFrontendSummaryListRowKey).text === keyText)!.value!.text!
 }
 
 describe('CourseParticipationUtils', () => {
@@ -293,53 +293,55 @@ describe('CourseParticipationUtils', () => {
       name: 'A mediocre course name (aMCN)',
     }
 
-    it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
-      expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId)).toEqual({
-        card: {
-          actions: {
-            items: [
-              {
-                href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/programme`,
-                text: 'Change',
-                visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
-              },
-              {
-                href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
-                text: 'Remove',
-                visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
-              },
-            ],
+    describe('when all fields are present on the CourseParticipationWithName', () => {
+      it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
+        expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId)).toEqual({
+          card: {
+            actions: {
+              items: [
+                {
+                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/programme`,
+                  text: 'Change',
+                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                },
+                {
+                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
+                  text: 'Remove',
+                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                },
+              ],
+            },
+            title: {
+              text: 'A mediocre course name (aMCN)',
+            },
           },
-          title: {
-            text: 'A mediocre course name (aMCN)',
-          },
-        },
-        rows: [
-          {
-            key: { text: 'Programme name' },
-            value: { text: 'A mediocre course name (aMCN)' },
-          },
-          {
-            key: { text: 'Setting' },
-            value: { text: 'Community, Greater Tharfoot' },
-          },
-          {
-            key: { text: 'Outcome' },
-            value: { text: 'Complete - completed in 2019' },
-          },
-          {
-            key: { text: 'Additional detail' },
-            value: { text: 'Motivation level over 9000!' },
-          },
-          {
-            key: { text: 'Source of information' },
-            value: { text: 'Word of mouth' },
-          },
-          {
-            key: { text: 'Added by' },
-            value: { text: 'Eric McNally, 20 April 2023' },
-          },
-        ],
+          rows: [
+            {
+              key: { text: 'Programme name' },
+              value: { text: 'A mediocre course name (aMCN)' },
+            },
+            {
+              key: { text: 'Setting' },
+              value: { text: 'Community, Greater Tharfoot' },
+            },
+            {
+              key: { text: 'Outcome' },
+              value: { text: 'Complete, Year complete 2019' },
+            },
+            {
+              key: { text: 'Additional detail' },
+              value: { text: 'Motivation level over 9000!' },
+            },
+            {
+              key: { text: 'Source of information' },
+              value: { text: 'Word of mouth' },
+            },
+            {
+              key: { text: 'Added by' },
+              value: { text: 'Eric McNally, 20 April 2023' },
+            },
+          ],
+        })
       })
     })
 
@@ -354,68 +356,145 @@ describe('CourseParticipationUtils', () => {
       })
     })
 
-    describe('when rows are missing required data', () => {
-      it.each([
-        ['Setting', 'setting', undefined],
-        ['Outcome', 'outcome', undefined],
-        ['Outcome', 'outcome', { status: undefined }],
-        ['Additional detail', 'outcome', { detail: undefined }],
-        ['Source of information', 'source', undefined],
-      ])('omits the %s row when %s is %s', (keyText: GovukFrontendSummaryListRowKey['text'], field: string, value) => {
-        const withoutField = { ...courseParticipationWithName, [field]: value }
+    describe('rows with optional values', () => {
+      describe('setting', () => {
+        describe('when the setting has no location', () => {
+          const withoutSettingLocation: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            setting: {
+              location: undefined,
+              type: 'community',
+            },
+          }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutField, referralId)
-        const fieldRow = getRow(rows, keyText)
+          it("only displays the setting's type", () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingLocation, referralId)
+            expect(getRowValueText(rows, 'Setting')).toEqual('Community')
+          })
+        })
 
-        expect(fieldRow).toBeUndefined()
+        describe('when there is no setting', () => {
+          const withoutSetting: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            setting: {},
+          }
+
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutSetting, referralId)
+            expect(getRowValueText(rows, 'Setting')).toEqual('Not known')
+          })
+        })
       })
 
-      it('only shows the location in the Setting row when setting location is undefined', () => {
-        const withoutSettingType = {
-          ...courseParticipationWithName,
-          setting: { location: 'Stockport', type: undefined },
-        }
+      describe('outcome', () => {
+        describe('when the outcome is incomplete', () => {
+          describe('and there is a yearStarted value', () => {
+            const withOutcomeYearStarted: CourseParticipationWithName = {
+              ...courseParticipationWithName,
+              outcome: { status: 'incomplete', yearStarted: 2019 },
+            }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingType, referralId)
-        const settingRow = getRow(rows, 'Setting')
+            it('displays the outcome and yearStarted value', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withOutcomeYearStarted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Incomplete, Year started 2019')
+            })
+          })
 
-        expect(settingRow).toEqual({ key: { text: 'Setting' }, value: { text: 'Stockport' } })
+          describe('and there is no yearStarted value', () => {
+            const withoutOutcomeYearStarted: CourseParticipationWithName = {
+              ...courseParticipationWithName,
+              outcome: { status: 'incomplete', yearStarted: undefined },
+            }
+
+            it('displays the status on its own', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearStarted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Incomplete')
+            })
+          })
+        })
+
+        describe('when the outcome is complete', () => {
+          describe('and there is a yearCompleted value', () => {
+            const withOutcomeYearCompleted: CourseParticipationWithName = {
+              ...courseParticipationWithName,
+              outcome: { status: 'complete', yearCompleted: 2019 },
+            }
+
+            it('displays the outcome and yearCompleted value', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withOutcomeYearCompleted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Complete, Year complete 2019')
+            })
+          })
+
+          describe('and there is no yearCompleted value', () => {
+            const withoutOutcomeYearCompleted: CourseParticipationWithName = {
+              ...courseParticipationWithName,
+              outcome: { status: 'complete', yearCompleted: undefined },
+            }
+
+            it('displays the status on its own', () => {
+              const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearCompleted, referralId)
+              expect(getRowValueText(rows, 'Outcome')).toEqual('Complete')
+            })
+          })
+        })
+
+        describe('when there is no outcome', () => {
+          const withoutOutcome: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            outcome: {},
+          }
+
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcome, referralId)
+            expect(getRowValueText(rows, 'Outcome')).toEqual('Not known')
+          })
+        })
       })
 
-      it('only shows the type in the Setting row when setting location is undefined', () => {
-        const withoutSettingLocation = {
-          ...courseParticipationWithName,
-          setting: { location: undefined, type: 'community' as CourseParticipationSetting['type'] },
-        }
+      describe('additional detail', () => {
+        describe('when there is no outcome', () => {
+          const withoutOutcome: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            outcome: {},
+          }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutSettingLocation, referralId)
-        const settingRow = getRow(rows, 'Setting')
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcome, referralId)
+            expect(getRowValueText(rows, 'Additional detail')).toEqual('Not known')
+          })
+        })
 
-        expect(settingRow).toEqual({ key: { text: 'Setting' }, value: { text: 'Community' } })
+        describe('when there is no additional detail set on the outcome', () => {
+          const withoutOutcomeAdditionalDetail: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            outcome: {
+              detail: undefined,
+              status: 'complete',
+              yearCompleted: 2019,
+              yearStarted: undefined,
+            },
+          }
+
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeAdditionalDetail, referralId)
+            expect(getRowValueText(rows, 'Additional detail')).toEqual('Not known')
+          })
+        })
       })
 
-      it('only shows the status in the Outcome row when yearStarted is undefined on an incomplete outcome', () => {
-        const withoutOutcomeYearStarted = {
-          ...courseParticipationWithName,
-          outcome: { status: 'incomplete' as CourseParticipationOutcome['status'], yearStarted: undefined },
-        }
+      describe('source of information', () => {
+        describe('when there is no source of information set', () => {
+          const withoutSource: CourseParticipationWithName = {
+            ...courseParticipationWithName,
+            source: undefined,
+          }
 
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearStarted, referralId)
-        const outcomeRow = getRow(rows, 'Outcome')
-
-        expect(outcomeRow).toEqual({ key: { text: 'Outcome' }, value: { text: 'Incomplete' } })
-      })
-
-      it('only shows the status in the Outcome row when yearCompleted is undefined on a complete outcome', () => {
-        const withoutOutcomeYearCompleted = {
-          ...courseParticipationWithName,
-          outcome: { status: 'complete' as CourseParticipationOutcome['status'], yearCompleted: undefined },
-        }
-
-        const { rows } = CourseParticipationUtils.summaryListOptions(withoutOutcomeYearCompleted, referralId)
-        const outcomeRow = getRow(rows, 'Outcome')
-
-        expect(outcomeRow).toEqual({ key: { text: 'Outcome' }, value: { text: 'Complete' } })
+          it('displays "Not known"', () => {
+            const { rows } = CourseParticipationUtils.summaryListOptions(withoutSource, referralId)
+            expect(getRowValueText(rows, 'Source of information')).toEqual('Not known')
+          })
+        })
       })
     })
   })
