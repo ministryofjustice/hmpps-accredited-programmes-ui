@@ -164,15 +164,12 @@
         }) }}
 
         {{ govukTextarea({
-          name: "outcome[detail]",
-          id: "outcomeDetail",
+          name: "detail",
+          id: "detail",
           label: {
             text: "Provide additional detail (if known)"
           },
-          hint: {
-            text: "Include information about the outcome"
-          },
-          value: formValues.outcome.detail
+          value: formValues.detail
         }) }}
 
         {{ govukTextarea({

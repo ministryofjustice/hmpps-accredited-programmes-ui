@@ -82,6 +82,7 @@ describe('CourseParticipationDetailsController', () => {
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['yearCompleted', 'yearStarted'])
       expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+        detail: courseParticipation.detail,
         outcome: courseParticipation.outcome,
         setting: {
           ...courseParticipation.setting,
@@ -105,6 +106,7 @@ describe('CourseParticipationDetailsController', () => {
           await requestHandler(request, response, next)
 
           expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+            detail: courseParticipationWithCommunitySetting.detail,
             outcome: courseParticipationWithCommunitySetting.outcome,
             setting: {
               ...courseParticipationWithCommunitySetting.setting,
@@ -128,6 +130,7 @@ describe('CourseParticipationDetailsController', () => {
           await requestHandler(request, response, next)
 
           expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+            detail: courseParticipationWithCustodySetting.detail,
             outcome: courseParticipationWithCustodySetting.outcome,
             setting: {
               ...courseParticipationWithCustodySetting.setting,
@@ -144,8 +147,8 @@ describe('CourseParticipationDetailsController', () => {
   describe('update', () => {
     it('asks the service to update the given course participation details and redirects to the `CourseParticipationsController` `index` action', async () => {
       const courseParticipationUpdate: CourseParticipationUpdate = {
+        detail: 'Some additional detail',
         outcome: {
-          detail: 'Some additional detail',
           status: 'complete',
           yearCompleted: 2019,
         },

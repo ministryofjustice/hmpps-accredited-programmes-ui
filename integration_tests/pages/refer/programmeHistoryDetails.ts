@@ -23,8 +23,8 @@ export default class ProgrammeHistoryDetailsPage extends Page {
     cy.get('input[id="communityLocation"]').type(value)
   }
 
-  inputOutcomeDetail(value: string) {
-    cy.get('textarea[id="outcomeDetail"]').type(value)
+  inputDetail(value: string) {
+    cy.get('textarea[id="detail"]').type(value)
   }
 
   inputOutcomeYearCompleted(value: string) {
@@ -47,8 +47,8 @@ export default class ProgrammeHistoryDetailsPage extends Page {
     this.selectRadioButton('setting[type]', value)
   }
 
-  shouldContainOutcomeDetailTextArea() {
-    this.shouldContainTextArea('outcomeDetail', 'Provide additional detail (if known)')
+  shouldContainDetailTextArea() {
+    this.shouldContainTextArea('detail', 'Provide additional detail (if known)')
   }
 
   shouldContainOutcomeRadioItems() {
@@ -94,7 +94,7 @@ export default class ProgrammeHistoryDetailsPage extends Page {
   }
 
   shouldHaveCorrectFormValues() {
-    const { setting, outcome, source } = this.courseParticipation
+    const { detail, setting, outcome, source } = this.courseParticipation
 
     if (setting.type === 'community') {
       cy.get('[data-testid="community-setting-option"]').should('be.checked')
@@ -128,8 +128,8 @@ export default class ProgrammeHistoryDetailsPage extends Page {
       }
     }
 
-    if (outcome.detail) {
-      cy.get('textarea[id="outcomeDetail"]').should('have.value', outcome.detail)
+    if (detail) {
+      cy.get('textarea[id="detail"]').should('have.value', detail)
     }
 
     if (source) {

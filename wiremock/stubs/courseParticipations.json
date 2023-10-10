@@ -5,8 +5,8 @@
     "createdAt": "2023-09-14T10:14:32.047Z",
     "prisonNumber": "DEF1234",
     "courseId": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "detail": "Simply the best",
     "outcome": {
-      "detail": "Simply the best outcome",
       "status": "complete",
       "yearCompleted": 2022
     },
