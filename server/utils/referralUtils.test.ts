@@ -93,15 +93,6 @@ describe('ReferralUtils', () => {
           heading: 'Referral information',
           items: [
             {
-              statusTag: {
-                attributes: { 'data-testid': 'reason-tag' },
-                classes: 'govuk-tag--grey moj-task-list__task-completed',
-                text: 'not started',
-              },
-              text: 'Add reason for referral and any additional information',
-              url: `/referrals/${referral.id}/reason`,
-            },
-            {
               statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
               text: 'Add Accredited Programme history',
               url: `/referrals/${referral.id}/programme-history`,
@@ -114,6 +105,15 @@ describe('ReferralUtils', () => {
               },
               text: 'Confirm the OASys information',
               url: `/referrals/${referral.id}/confirm-oasys`,
+            },
+            {
+              statusTag: {
+                attributes: { 'data-testid': 'reason-tag' },
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
+                text: 'not started',
+              },
+              text: 'Add reason for referral and any additional information',
+              url: `/referrals/${referral.id}/reason`,
             },
           ],
         },
