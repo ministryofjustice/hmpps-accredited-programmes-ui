@@ -1,38 +1,26 @@
-version: '3.1'
-services:
-  redis:
-    image: 'redis:6.2'
-    networks:
-      - hmpps
-    container_name: redis
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - '6379:6379'
+networks:
+  hmpps: null
 
-  hmpps-auth:
-    image: quay.io/hmpps/hmpps-auth:latest
+services:
+  accredited-programmes-db:
+    container_name: accredited-programmes-db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin_password
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test: ['CMD', 'pg_isready', '--username=admin', '--dbname=postgres']
+      timeout: 5s
+    image: postgres
     networks:
       - hmpps
-    container_name: hmpps-auth
     ports:
-      - '9090:8080'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
+      - '5432:5432'
+    restart: always
 
   hmpps-accredited-programmes-api:
-    image: quay.io/hmpps/hmpps-accredited-programmes-api:latest
-    restart: always
-    networks:
-      - hmpps
     container_name: accredited-programmes-api
-    ports:
-      - '9091:8080'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
     depends_on:
       accredited-programmes-db:
         condition: service_healthy
@@ -42,35 +30,32 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://accredited-programmes-db:5432/postgres
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin_password
-
-  accredited-programmes-db:
-    image: postgres
-    container_name: accredited-programmes-db
-    networks:
-      - hmpps
-    restart: always
-    ports:
-      - '5432:5432'
-    healthcheck:
-      test: ['CMD', 'pg_isready', '--username=admin', '--dbname=postgres']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin_password
-
-  prison-register-api:
-    depends_on:
-      - prison-register-db
-    image: quay.io/hmpps/prison-register:latest
-    networks:
-      - hmpps
-    container_name: prison-register-api
-    ports:
-      - '9092:8080'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+    image: quay.io/hmpps/hmpps-accredited-programmes-api:latest
+    networks:
+      - hmpps
+    ports:
+      - '9091:8080'
+    restart: always
+
+  hmpps-auth:
+    container_name: hmpps-auth
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
+    image: quay.io/hmpps/hmpps-auth:latest
+    networks:
+      - hmpps
+    ports:
+      - '9090:8080'
+
+  prison-register-api:
+    container_name: prison-register-api
+    depends_on:
+      - prison-register-db
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - OAUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
@@ -78,28 +63,44 @@ services:
       - SPRING_DATASOURCE_USERNAME=prison-register
       - SPRING_DATASOURCE_PASSWORD=prison-register
       - SPRING_DATASOURCE_URL=jdbc:postgresql://prison-register-db:5432/postgres
-
-  prison-register-db:
-    image: postgres:15
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+    image: quay.io/hmpps/prison-register:latest
     networks:
       - hmpps
-    container_name: prison-register-db
-    restart: always
     ports:
-      - '5433:5432'
+      - '9092:8080'
+
+  prison-register-db:
+    container_name: prison-register-db
     environment:
       - POSTGRES_PASSWORD=prison-register
       - POSTGRES_USER=prison-register
       - POSTGRES_DB=prison-register
+    image: postgres:15
+    networks:
+      - hmpps
+    ports:
+      - '5433:5432'
+    restart: always
+
+  redis:
+    container_name: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    image: redis:6.2
+    networks:
+      - hmpps
+    ports:
+      - '6379:6379'
 
   wiremock:
+    container_name: wiremock
     image: wiremock/wiremock
     networks:
       - hmpps
-    container_name: wiremock
-    restart: always
     ports:
       - '9099:8080'
+    restart: always
 
-networks:
-  hmpps:
+version: '3.1'
