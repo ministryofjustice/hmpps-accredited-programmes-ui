@@ -47,7 +47,10 @@
           {{ govukButton({
             text: "Add another",
             classes: "govuk-button--secondary",
-            href: referPaths.programmeHistory.new({ referralId: referralId })
+            href: referPaths.programmeHistory.new({ referralId: referralId }),
+            attributes: {
+              "data-testid": "add-history-button"
+            }
           }) }}
         </div>
       {% else %}
@@ -63,7 +66,10 @@
           {{ govukButton({
             text: "Add a programme",
             classes: "govuk-button--secondary",
-            href: referPaths.programmeHistory.new({ referralId: referralId })
+            href: referPaths.programmeHistory.new({ referralId: referralId }),
+            attributes: {
+              "data-testid": "add-history-button"
+            }
           }) }}
         </div>
       {% endif %}
