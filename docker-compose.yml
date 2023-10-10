@@ -23,23 +23,6 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
 
-  postgresql:
-    image: postgres
-    container_name: postgres
-    networks:
-      - hmpps
-    restart: always
-    ports:
-      - '5432:5432'
-    healthcheck:
-      test: [ "CMD", "pg_isready", "--username=admin", "--dbname=postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin_password
-
   hmpps-accredited-programmes-api:
     image: quay.io/hmpps/hmpps-accredited-programmes-api:latest
     restart: always
@@ -51,16 +34,35 @@ services:
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
     depends_on:
-      postgresql:
+      accredited-programmes-db:
         condition: service_healthy
     environment:
       - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
       - SPRING_PROFILES_ACTIVE=dev,local,seed
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://accredited-programmes-db:5432/postgres
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin_password
 
+  accredited-programmes-db:
+    image: postgres
+    container_name: accredited-programmes-db
+    networks:
+      - hmpps
+    restart: always
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD', 'pg_isready', '--username=admin', '--dbname=postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin_password
+
   prison-register-api:
+    depends_on:
+      - prison-register-db
     image: quay.io/hmpps/prison-register:latest
     networks:
       - hmpps
@@ -72,6 +74,23 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - OAUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
+      - DATABASE_NAME=prison-register
+      - SPRING_DATASOURCE_USERNAME=prison-register
+      - SPRING_DATASOURCE_PASSWORD=prison-register
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://prison-register-db:5432/postgres
+
+  prison-register-db:
+    image: postgres:15
+    networks:
+      - hmpps
+    container_name: prison-register-db
+    restart: always
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_PASSWORD=prison-register
+      - POSTGRES_USER=prison-register
+      - POSTGRES_DB=prison-register
 
   wiremock:
     image: wiremock/wiremock
