@@ -134,6 +134,31 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('destroyParticipation', () => {
+    const courseParticipation = courseParticipations[0]
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `A course exists with ID ${course1.id}`,
+        uponReceiving: `A request to destroy course participation "${courseParticipation.id}"`,
+        willRespondWith: {
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'DELETE',
+          path: apiPaths.participations.delete({ courseParticipationId: courseParticipation.id }),
+        },
+      })
+    })
+
+    it('destroys a course participation', async () => {
+      await courseClient.destroyParticipation(courseParticipation.id)
+    })
+  })
+
   describe('find', () => {
     beforeEach(() => {
       provider.addInteraction({
@@ -262,7 +287,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     it('fetches the given course participation', async () => {
       const result = await courseClient.findParticipation(courseParticipation.id)
 
-      expect(result).toEqual(courseParticipations[0])
+      expect(result).toEqual(courseParticipation)
     })
   })
 

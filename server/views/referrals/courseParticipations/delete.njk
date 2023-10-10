@@ -28,7 +28,7 @@
         iconFallbackText: "Warning"
       }) }}
 
-      <form action="#?_method=PUT" method="post">
+      <form action="{{ action }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukButton({

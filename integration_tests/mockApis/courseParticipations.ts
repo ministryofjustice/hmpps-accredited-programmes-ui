@@ -18,6 +18,18 @@ export default {
       },
     }),
 
+  stubDeleteParticipation: (courseParticipationId: CourseParticipation['id']): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'DELETE',
+        url: apiPaths.participations.delete({ courseParticipationId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        status: 200,
+      },
+    }),
+
   stubParticipation: (courseParticipation: CourseParticipation): SuperAgentRequest =>
     stubFor({
       request: {

@@ -6,7 +6,12 @@ import { referPaths } from '../paths'
 import { RouteUtils } from '../utils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
-  const { get, post, put } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
+  const {
+    get,
+    delete: deleteAction,
+    post,
+    put,
+  } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
     courseParticipationDetailsController,
     courseParticipationsController,
@@ -38,6 +43,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.programmeHistory.editProgramme.pattern, courseParticipationsController.editCourse())
   put(referPaths.programmeHistory.updateProgramme.pattern, courseParticipationsController.updateCourse())
   get(referPaths.programmeHistory.delete.pattern, courseParticipationsController.delete())
+  deleteAction(referPaths.programmeHistory.destroy.pattern, courseParticipationsController.destroy())
 
   get(referPaths.programmeHistory.details.show.pattern, courseParticipationDetailsController.show())
   put(referPaths.programmeHistory.details.update.pattern, courseParticipationDetailsController.update())

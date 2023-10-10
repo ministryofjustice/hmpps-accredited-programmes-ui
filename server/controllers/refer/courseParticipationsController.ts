@@ -69,11 +69,30 @@ export default class CourseParticipationsController {
       )
 
       res.render('referrals/courseParticipations/delete', {
+        action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
         person,
         referralId: referral.id,
         summaryListOptions,
       })
+    }
+  }
+
+  destroy(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseParticipationId, referralId } = req.params
+
+      await this.courseService.deleteParticipation(req.user.token, courseParticipationId)
+
+      req.flash('successMessage', 'You have successfully removed a programme.')
+
+      return res.redirect(
+        referPaths.programmeHistory.index({
+          referralId,
+        }),
+      )
     }
   }
 

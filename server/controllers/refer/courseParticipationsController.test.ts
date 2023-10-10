@@ -151,6 +151,11 @@ describe('CourseParticipationsController', () => {
         courseId: course.id,
         prisonNumber: person.prisonNumber,
       })
+      const courseParticipationId = courseParticipation.id
+      const referralId = referral.id
+
+      request.params.courseParticipationId = courseParticipationId
+      request.params.referralId = referralId
 
       personService.getPerson.mockResolvedValue(person)
       referralService.getReferral.mockResolvedValue(referral)
@@ -168,11 +173,29 @@ describe('CourseParticipationsController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/delete', {
+        action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
         person,
         referralId: referral.id,
         summaryListOptions,
       })
+    })
+  })
+
+  describe('destroy', () => {
+    it('asks the service to delete the participation and redirects to the index action', async () => {
+      const courseParticipationId = 'aCourseParticipationId'
+      const referralId = 'aReferralId'
+
+      request.params.courseParticipationId = courseParticipationId
+      request.params.referralId = referralId
+
+      const requestHandler = courseParticipationsController.destroy()
+      await requestHandler(request, response, next)
+
+      expect(courseService.deleteParticipation).toHaveBeenCalledWith(token, courseParticipationId)
+      expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully removed a programme.')
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
     })
   })
 

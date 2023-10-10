@@ -16,4 +16,9 @@ export default class DeleteProgrammeHistoryPage extends Page {
     this.person = person
     this.referral = referral
   }
+
+  confirm() {
+    cy.task('stubParticipationsByPerson', { courseParticipations: [], prisonNumber: this.person.prisonNumber })
+    this.shouldContainButton('Confirm').click()
+  }
 }

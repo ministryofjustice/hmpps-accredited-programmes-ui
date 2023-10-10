@@ -466,23 +466,31 @@ context('Programme history', () => {
   })
 
   describe('When removing from the programme history', () => {
-    it('shows the delete page', () => {
-      const prisoner = prisonerFactory.build({
-        firstName: 'Del',
-        lastName: 'Hatton',
-      })
-      const person = personFactory.build({
-        currentPrison: prisoner.prisonName,
-        name: 'Del Hatton',
-        prisonNumber: prisoner.prisonerNumber,
-      })
+    const prisoner = prisonerFactory.build({
+      firstName: 'Del',
+      lastName: 'Hatton',
+    })
+    const person = personFactory.build({
+      currentPrison: prisoner.prisonName,
+      name: 'Del Hatton',
+      prisonNumber: prisoner.prisonerNumber,
+    })
+    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
+    const course = courseFactory.build()
 
-      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
-      const course = courseFactory.build()
-      const courseParticipation = courseParticipationFactory
+    let courseParticipation: CourseParticipation
+    let courseParticipationWithName: CourseParticipationWithName
+    let path: string
+
+    beforeEach(() => {
+      courseParticipation = courseParticipationFactory
         .withCourseId()
         .build({ courseId: course.id, prisonNumber: person.prisonNumber })
-      const courseParticipationWithName = { ...courseParticipation, name: course.name }
+      courseParticipationWithName = { ...courseParticipation, name: course.name }
+      path = referPaths.programmeHistory.delete({
+        courseParticipationId: courseParticipation.id,
+        referralId: referral.id,
+      })
 
       cy.task('stubPrisoner', prisoner)
       cy.task('stubReferral', referral)
@@ -490,13 +498,10 @@ context('Programme history', () => {
       cy.task('stubCourse', course)
 
       cy.signIn()
-
-      const path = referPaths.programmeHistory.delete({
-        courseParticipationId: courseParticipation.id,
-        referralId: referral.id,
-      })
       cy.visit(path)
+    })
 
+    it('shows the delete page', () => {
       const deleteProgrammeHistoryPage = Page.verifyOnPage(DeleteProgrammeHistoryPage, {
         participationWithName: courseParticipationWithName,
         person,
@@ -510,6 +515,25 @@ context('Programme history', () => {
         'You are removing this programme. Once a programme has been removed, it cannot be undone.',
       )
       deleteProgrammeHistoryPage.shouldContainButton('Confirm')
+    })
+
+    it('deletes the entry and redirects to the programme history page', () => {
+      cy.task('stubDeleteParticipation', courseParticipation.id)
+
+      const deleteProgrammeHistoryPage = Page.verifyOnPage(DeleteProgrammeHistoryPage, {
+        participationWithName: courseParticipationWithName,
+        person,
+        referral,
+      })
+
+      deleteProgrammeHistoryPage.confirm()
+
+      const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
+        participationsWithNames: [],
+        person,
+        referral,
+      })
+      programmeHistoryPage.shouldContainSuccessMessage('You have successfully removed a programme.')
     })
   })
 })

@@ -32,6 +32,12 @@ export default class CourseClient {
     })) as CourseParticipation
   }
 
+  async destroyParticipation(courseParticipationId: CourseParticipation['id']): Promise<void> {
+    await this.restClient.delete({
+      path: apiPaths.participations.delete({ courseParticipationId }),
+    })
+  }
+
   async find(courseId: Course['id']): Promise<Course> {
     return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
   }

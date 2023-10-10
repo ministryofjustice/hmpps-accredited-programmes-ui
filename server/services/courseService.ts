@@ -23,6 +23,14 @@ export default class CourseService {
     return courseClient.createParticipation(prisonNumber, courseId, otherCourseName)
   }
 
+  async deleteParticipation(
+    token: Express.User['token'],
+    courseParticipationId: CourseParticipation['id'],
+  ): Promise<void> {
+    const courseClient = this.courseClientBuilder(token)
+    return courseClient.destroyParticipation(courseParticipationId)
+  }
+
   async getCourse(token: Express.User['token'], courseId: Course['id']): Promise<Course> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.find(courseId)
