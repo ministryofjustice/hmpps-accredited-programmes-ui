@@ -2,27 +2,10 @@ networks:
   hmpps: null
 
 services:
-  accredited-programmes-db:
-    container_name: accredited-programmes-db
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin_password
-    healthcheck:
-      interval: 10s
-      retries: 5
-      test: ['CMD', 'pg_isready', '--username=admin', '--dbname=postgres']
-      timeout: 5s
-    image: postgres
-    networks:
-      - hmpps
-    ports:
-      - '5432:5432'
-    restart: always
-
   hmpps-accredited-programmes-api:
     container_name: accredited-programmes-api
     depends_on:
-      accredited-programmes-db:
+      hmpps-accredited-programmes-db:
         condition: service_healthy
     environment:
       - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
@@ -37,6 +20,23 @@ services:
       - hmpps
     ports:
       - '9091:8080'
+    restart: always
+
+  hmpps-accredited-programmes-db:
+    container_name: accredited-programmes-db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin_password
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test: ['CMD', 'pg_isready', '--username=admin', '--dbname=postgres']
+      timeout: 5s
+    image: postgres
+    networks:
+      - hmpps
+    ports:
+      - '5432:5432'
     restart: always
 
   hmpps-auth:
