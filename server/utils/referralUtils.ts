@@ -68,13 +68,8 @@ export default class ReferralUtils {
         heading: 'Referral information',
         items: [
           {
-            statusTag: ReferralUtils.taskListStatusTag(referral.reason ? 'completed' : 'not started', 'reason-tag'),
-            text: 'Add reason for referral and any additional information',
-            url: referPaths.reason.show({ referralId }),
-          },
-          {
             statusTag: ReferralUtils.taskListStatusTag('not started'),
-            text: 'Add Accredited Programme history',
+            text: 'Review Accredited Programme history',
             url: referPaths.programmeHistory.index({ referralId: referral.id }),
           },
           {
@@ -84,6 +79,11 @@ export default class ReferralUtils {
             ),
             text: 'Confirm the OASys information',
             url: referPaths.confirmOasys.show({ referralId }),
+          },
+          {
+            statusTag: ReferralUtils.taskListStatusTag(referral.reason ? 'completed' : 'not started', 'reason-tag'),
+            text: 'Add additional information',
+            url: referPaths.reason.show({ referralId }),
           },
         ],
       },

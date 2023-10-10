@@ -93,17 +93,8 @@ describe('ReferralUtils', () => {
           heading: 'Referral information',
           items: [
             {
-              statusTag: {
-                attributes: { 'data-testid': 'reason-tag' },
-                classes: 'govuk-tag--grey moj-task-list__task-completed',
-                text: 'not started',
-              },
-              text: 'Add reason for referral and any additional information',
-              url: `/referrals/${referral.id}/reason`,
-            },
-            {
               statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
-              text: 'Add Accredited Programme history',
+              text: 'Review Accredited Programme history',
               url: `/referrals/${referral.id}/programme-history`,
             },
             {
@@ -114,6 +105,15 @@ describe('ReferralUtils', () => {
               },
               text: 'Confirm the OASys information',
               url: `/referrals/${referral.id}/confirm-oasys`,
+            },
+            {
+              statusTag: {
+                attributes: { 'data-testid': 'reason-tag' },
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
+                text: 'not started',
+              },
+              text: 'Add additional information',
+              url: `/referrals/${referral.id}/reason`,
             },
           ],
         },
@@ -138,10 +138,7 @@ describe('ReferralUtils', () => {
       const referralWithCompletedInformation = referralFactory.submittable().build()
       const taskListSections = ReferralUtils.taskListSections(referralWithCompletedInformation)
       const referralInformationSection = getTaskListSection('Referral information', taskListSections)
-      const reasonStatusTag = getTaskListItem(
-        'Add reason for referral and any additional information',
-        referralInformationSection,
-      ).statusTag
+      const reasonStatusTag = getTaskListItem('Add additional information', referralInformationSection).statusTag
       const confirmOasysStatusTag = getTaskListItem(
         'Confirm the OASys information',
         referralInformationSection,
