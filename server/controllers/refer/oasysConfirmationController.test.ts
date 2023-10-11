@@ -76,6 +76,7 @@ describe('OasysConfirmationController', () => {
 
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
       expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+        hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: true,
         reason: referral.reason,
       })

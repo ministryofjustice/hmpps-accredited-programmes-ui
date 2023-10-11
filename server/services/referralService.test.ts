@@ -64,7 +64,10 @@ describe('ReferralService', () => {
   describe('updateReferral', () => {
     it('asks the client to update a referral', async () => {
       const referralId = 'an-ID'
-      const referralUpdate: ReferralUpdate = { oasysConfirmed: true }
+      const referralUpdate: ReferralUpdate = {
+        hasReviewedProgrammeHistory: false,
+        oasysConfirmed: true,
+      }
 
       await service.updateReferral(token, referralId, referralUpdate)
 

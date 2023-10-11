@@ -47,6 +47,7 @@ export default class ReasonController {
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
 
       const referralUpdate: ReferralUpdate = {
+        hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: referral.oasysConfirmed,
         reason: formattedReason,
       }
