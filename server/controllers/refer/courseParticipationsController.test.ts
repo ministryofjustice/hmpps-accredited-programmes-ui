@@ -450,4 +450,26 @@ describe('CourseParticipationsController', () => {
       })
     })
   })
+
+  describe('updateHasReviewedProgrammeHistory', () => {
+    it('asks the service to update the referral and redirects to the index action', async () => {
+      const referral = referralFactory.started().build()
+
+      referralService.getReferral.mockResolvedValue(referral)
+      request.params.referralId = referral.id
+
+      const hasReviewedProgrammeHistory = true
+      request.body = { hasReviewedProgrammeHistory: hasReviewedProgrammeHistory.toString() }
+
+      const requestHandler = courseParticipationsController.updateHasReviewedProgrammeHistory()
+      await requestHandler(request, response, next)
+
+      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
+        hasReviewedProgrammeHistory,
+        oasysConfirmed: referral.oasysConfirmed,
+        reason: referral.reason,
+      })
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+    })
+  })
 })
