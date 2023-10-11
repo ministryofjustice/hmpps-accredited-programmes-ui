@@ -93,15 +93,20 @@ export default class CourseParticipationUtils {
 
     const courseParticipationUpdate: CourseParticipationUpdate = {
       detail: detail?.trim() || undefined,
-      outcome: {
-        status: outcome.status,
-        yearCompleted: outcome.status === 'complete' ? validateYear('yearCompleted', outcome.yearCompleted) : undefined,
-        yearStarted: outcome.status === 'incomplete' ? validateYear('yearStarted', outcome.yearStarted) : undefined,
-      },
-      setting: {
-        location: (setting.type === 'community' ? setting.communityLocation : setting.custodyLocation) || undefined,
-        type: setting.type,
-      },
+      outcome: outcome.status
+        ? {
+            status: outcome.status,
+            yearCompleted:
+              outcome.status === 'complete' ? validateYear('yearCompleted', outcome.yearCompleted) : undefined,
+            yearStarted: outcome.status === 'incomplete' ? validateYear('yearStarted', outcome.yearStarted) : undefined,
+          }
+        : undefined,
+      setting: setting.type
+        ? {
+            location: (setting.type === 'community' ? setting.communityLocation : setting.custodyLocation) || undefined,
+            type: setting.type,
+          }
+        : undefined,
       source: source.trim() || undefined,
     }
 
@@ -179,32 +184,32 @@ export default class CourseParticipationUtils {
     }
   }
 
-  private static summaryListRowOutcome(outcome: CourseParticipationOutcome): GovukFrontendSummaryListRowWithValue {
+  private static summaryListRowOutcome(outcome?: CourseParticipationOutcome): GovukFrontendSummaryListRowWithValue {
     const valueTextItems: Array<string> = []
 
-    if (outcome.status) {
+    if (outcome?.status) {
       valueTextItems.push(StringUtils.properCase(outcome.status))
     }
 
-    if (outcome.yearStarted) {
+    if (outcome?.yearStarted) {
       valueTextItems.push(`Year started ${outcome.yearStarted}`)
     }
 
-    if (outcome.yearCompleted) {
+    if (outcome?.yearCompleted) {
       valueTextItems.push(`Year complete ${outcome.yearCompleted}`)
     }
 
     return this.summaryListRow('Outcome', valueTextItems)
   }
 
-  private static summaryListRowSetting(setting: CourseParticipationSetting): GovukFrontendSummaryListRowWithValue {
+  private static summaryListRowSetting(setting?: CourseParticipationSetting): GovukFrontendSummaryListRowWithValue {
     const valueTextItems: Array<string> = []
 
-    if (setting.type) {
+    if (setting?.type) {
       valueTextItems.push(StringUtils.properCase(setting.type))
     }
 
-    if (setting.location) {
+    if (setting?.location) {
       valueTextItems.push(`${setting.location}`)
     }
 

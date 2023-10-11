@@ -16,9 +16,9 @@ const courseParticipationTypes = {
       createdAt: `${faker.date.between({ from: '2023-09-20T00:00:00.000Z', to: new Date() })}`,
       detail: faker.lorem.paragraph({ max: 5, min: 0 }),
       otherCourseName: undefined,
-      outcome: courseParticipationOutcomeFactory.build(),
+      outcome: FactoryHelpers.optionalArrayElement([courseParticipationOutcomeFactory.build()]),
       prisonNumber: faker.string.alphanumeric({ length: 7 }),
-      setting: courseParticipationSettingFactory.build(),
+      setting: FactoryHelpers.optionalArrayElement([courseParticipationSettingFactory.build()]),
       source: FactoryHelpers.optionalArrayElement(faker.word.words()),
     }
   },
@@ -27,15 +27,8 @@ const courseParticipationTypes = {
     return {
       ...this.random(),
       detail: undefined,
-      outcome: {
-        status: undefined,
-        yearCompleted: undefined,
-        yearStarted: undefined,
-      },
-      setting: {
-        location: undefined,
-        type: undefined,
-      },
+      outcome: undefined,
+      setting: undefined,
       source: undefined,
     }
   },

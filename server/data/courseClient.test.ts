@@ -84,7 +84,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             status: 201,
           },
           withRequest: {
-            body: { courseId, outcome: {}, prisonNumber, setting: {} },
+            body: { courseId, prisonNumber },
             headers: {
               authorization: `Bearer ${token}`,
             },
@@ -116,7 +116,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             status: 201,
           },
           withRequest: {
-            body: { otherCourseName, outcome: {}, prisonNumber, setting: {} },
+            body: { otherCourseName, prisonNumber },
             headers: {
               authorization: `Bearer ${token}`,
             },
