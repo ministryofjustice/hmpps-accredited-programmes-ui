@@ -77,6 +77,12 @@ export default class TaskListPage extends Page {
     })
   }
 
+  shouldHaveReviewedProgrammeHistory() {
+    cy.get('[data-testid="programme-history-tag"]').then(tagElement => {
+      this.shouldContainTag({ classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' }, tagElement)
+    })
+  }
+
   shouldNotBeReadyForSubmission() {
     cy.get('[data-testid="check-answers-list-item"]').within(() => {
       cy.get('a').should('not.exist')
