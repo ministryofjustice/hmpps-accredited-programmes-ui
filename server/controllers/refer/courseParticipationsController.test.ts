@@ -269,8 +269,12 @@ describe('CourseParticipationsController', () => {
     const referral = referralFactory.build()
     const person = personFactory.build()
     const courseParticipations = [
-      courseParticipationFactory.build({ courseId: 'an-ID' }),
-      courseParticipationFactory.build({ courseId: undefined, otherCourseName: 'Another course' }),
+      courseParticipationFactory.build({ courseId: 'an-ID', createdAt: '2023-01-01T12:00:00.000Z' }),
+      courseParticipationFactory.build({
+        courseId: undefined,
+        createdAt: '2022-01-01T12:00:00.000Z',
+        otherCourseName: 'Another course',
+      }),
     ]
     const course = courseFactory.build()
     const courseParticipationsWithNames = [
@@ -290,6 +294,16 @@ describe('CourseParticipationsController', () => {
       const requestHandler = courseParticipationsController.index()
       await requestHandler(request, response, next)
 
+      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
+        1,
+        courseParticipationsWithNames[1],
+        referral.id,
+      )
+      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
+        2,
+        courseParticipationsWithNames[0],
+        referral.id,
+      )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/index', {
         pageHeading: 'Accredited Programme history',
         person,
