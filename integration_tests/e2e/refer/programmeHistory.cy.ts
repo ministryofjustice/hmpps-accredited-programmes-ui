@@ -41,8 +41,10 @@ context('Programme history', () => {
     const course = courseFactory.build()
 
     const courseParticipations = [
-      courseParticipationFactory.withCourseId().build({ courseId: course.id }),
-      courseParticipationFactory.withOtherCourseName().build({ otherCourseName: 'A great course name' }),
+      courseParticipationFactory.withCourseId().build({ courseId: course.id, createdAt: '2023-01-01T12:00:00.000Z' }),
+      courseParticipationFactory
+        .withOtherCourseName()
+        .build({ createdAt: '2022-01-01T12:00:00.000Z', otherCourseName: 'A great course name' }),
     ]
     const courseParticipationsWithNames: Array<CourseParticipationWithName> = [
       { ...courseParticipations[0], name: course.name },

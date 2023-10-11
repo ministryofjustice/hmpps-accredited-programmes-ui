@@ -91,36 +91,38 @@ export default abstract class Page {
     referralId: Referral['id'],
     withActions = true,
   ) {
-    participations.forEach((participation, participationsIndex) => {
-      const { rows } = CourseParticipationUtils.summaryListOptions(participation, referralId)
+    participations
+      .sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
+      .forEach((participation, participationsIndex) => {
+        const { rows } = CourseParticipationUtils.summaryListOptions(participation, referralId)
 
-      cy.get('.govuk-summary-card')
-        .eq(participationsIndex)
-        .then(summaryCardElement => {
-          const actions = withActions
-            ? [
-                {
-                  href: referPaths.programmeHistory.editProgramme({
-                    courseParticipationId: participation.id,
-                    referralId,
-                  }),
-                  text: 'Change',
-                  visuallyHiddenText: ` participation for ${participation.name}`,
-                },
-                {
-                  href: referPaths.programmeHistory.delete({
-                    courseParticipationId: participation.id,
-                    referralId,
-                  }),
-                  text: 'Remove',
-                  visuallyHiddenText: ` participation for ${participation.name}`,
-                },
-              ]
-            : []
+        cy.get('.govuk-summary-card')
+          .eq(participationsIndex)
+          .then(summaryCardElement => {
+            const actions = withActions
+              ? [
+                  {
+                    href: referPaths.programmeHistory.editProgramme({
+                      courseParticipationId: participation.id,
+                      referralId,
+                    }),
+                    text: 'Change',
+                    visuallyHiddenText: ` participation for ${participation.name}`,
+                  },
+                  {
+                    href: referPaths.programmeHistory.delete({
+                      courseParticipationId: participation.id,
+                      referralId,
+                    }),
+                    text: 'Remove',
+                    visuallyHiddenText: ` participation for ${participation.name}`,
+                  },
+                ]
+              : []
 
-          this.shouldContainSummaryCard(participation.name, actions, rows, summaryCardElement)
-        })
-    })
+            this.shouldContainSummaryCard(participation.name, actions, rows, summaryCardElement)
+          })
+      })
   }
 
   shouldContainLink(text: string, href: string): void {
