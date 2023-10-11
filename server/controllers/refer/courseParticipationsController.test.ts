@@ -305,6 +305,7 @@ describe('CourseParticipationsController', () => {
         referral.id,
       )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/index', {
+        action: `${referPaths.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
         pageHeading: 'Accredited Programme history',
         person,
         referralId: referral.id,
