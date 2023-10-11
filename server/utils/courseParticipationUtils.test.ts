@@ -3,7 +3,8 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { Request } from 'express'
 
-import CourseParticipationUtils, { type RequestWithDetailsBody } from './courseParticipationUtils'
+import type { RequestWithCourseParticipationDetailsBody } from './courseParticipationUtils'
+import CourseParticipationUtils from './courseParticipationUtils'
 import { courseParticipationFactory } from '../testutils/factories'
 import type {
   CourseParticipationOutcome,
@@ -26,11 +27,11 @@ const getRowValueText = (
 
 describe('CourseParticipationUtils', () => {
   describe('processDetailsFormData', () => {
-    let request: DeepMocked<RequestWithDetailsBody>
+    let request: DeepMocked<RequestWithCourseParticipationDetailsBody>
     let expectedCourseParticipationUpdate: CourseParticipationUpdate
 
     beforeEach(() => {
-      request = createMock<RequestWithDetailsBody>({})
+      request = createMock<RequestWithCourseParticipationDetailsBody>({})
 
       request.body = {
         detail: 'Some additional detail',
