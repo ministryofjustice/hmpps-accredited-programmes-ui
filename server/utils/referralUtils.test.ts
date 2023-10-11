@@ -93,7 +93,11 @@ describe('ReferralUtils', () => {
           heading: 'Referral information',
           items: [
             {
-              statusTag: { classes: 'govuk-tag--grey moj-task-list__task-completed', text: 'not started' },
+              statusTag: {
+                attributes: { 'data-testid': 'programme-history-tag' },
+                classes: 'govuk-tag--grey moj-task-list__task-completed',
+                text: 'not started',
+              },
               text: 'Review Accredited Programme history',
               url: `/referrals/${referral.id}/programme-history`,
             },
@@ -138,12 +142,21 @@ describe('ReferralUtils', () => {
       const referralWithCompletedInformation = referralFactory.submittable().build()
       const taskListSections = ReferralUtils.taskListSections(referralWithCompletedInformation)
       const referralInformationSection = getTaskListSection('Referral information', taskListSections)
+      const accreditedProgrammeHistoryStatusTag = getTaskListItem(
+        'Review Accredited Programme history',
+        referralInformationSection,
+      ).statusTag
       const reasonStatusTag = getTaskListItem('Add additional information', referralInformationSection).statusTag
       const confirmOasysStatusTag = getTaskListItem(
         'Confirm the OASys information',
         referralInformationSection,
       ).statusTag
 
+      expect(accreditedProgrammeHistoryStatusTag).toEqual({
+        attributes: { 'data-testid': 'programme-history-tag' },
+        classes: 'moj-task-list__task-completed',
+        text: 'completed',
+      })
       expect(reasonStatusTag).toEqual({
         attributes: { 'data-testid': 'reason-tag' },
         classes: 'moj-task-list__task-completed',

@@ -68,7 +68,10 @@ export default class ReferralUtils {
         heading: 'Referral information',
         items: [
           {
-            statusTag: ReferralUtils.taskListStatusTag('not started'),
+            statusTag: ReferralUtils.taskListStatusTag(
+              referral.hasReviewedProgrammeHistory ? 'completed' : 'not started',
+              'programme-history-tag',
+            ),
             text: 'Review Accredited Programme history',
             url: referPaths.programmeHistory.index({ referralId: referral.id }),
           },
