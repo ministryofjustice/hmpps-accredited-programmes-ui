@@ -25,10 +25,17 @@ describe('CourseParticipationsController', () => {
 
   let courseParticipationsController: CourseParticipationsController
 
+  const summaryListOptions = 'summary list options'
+
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
     courseParticipationsController = new CourseParticipationsController(courseService, personService, referralService)
+    ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
+      (_courseParticipationWithName, _referralId, _withActions = true) => {
+        return summaryListOptions
+      },
+    )
   })
 
   afterEach(() => {
@@ -163,15 +170,15 @@ describe('CourseParticipationsController', () => {
       courseService.getParticipation.mockResolvedValue(courseParticipation)
 
       const courseParticipationWithName = { ...courseParticipation, name: course.name }
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(
-        courseParticipationWithName,
-        referral.id,
-        false,
-      )
 
       const requestHandler = courseParticipationsController.delete()
       await requestHandler(request, response, next)
 
+      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenCalledWith(
+        courseParticipationWithName,
+        referral.id,
+        false,
+      )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
@@ -270,9 +277,6 @@ describe('CourseParticipationsController', () => {
       { ...courseParticipations[0], name: course.name },
       { ...courseParticipations[1], name: 'Another course' },
     ]
-    const summaryListsOptions = courseParticipationsWithNames.map(courseParticipation =>
-      CourseParticipationUtils.summaryListOptions(courseParticipation, referral.id),
-    )
 
     beforeEach(() => {
       referralService.getReferral.mockResolvedValue(referral)
@@ -291,7 +295,7 @@ describe('CourseParticipationsController', () => {
         person,
         referralId: referral.id,
         successMessage: undefined,
-        summaryListsOptions,
+        summaryListsOptions: [summaryListOptions, summaryListOptions],
       })
     })
 
