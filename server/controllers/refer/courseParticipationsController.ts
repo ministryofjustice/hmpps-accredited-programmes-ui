@@ -3,7 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { CourseParticipationUtils, CourseUtils, FormUtils, TypeUtils } from '../../utils'
-import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
+import type { CourseParticipation, CourseParticipationWithName, ReferralUpdate } from '@accredited-programmes/models'
 
 export default class CourseParticipationsController {
   constructor(
@@ -157,6 +157,7 @@ export default class CourseParticipationsController {
       )
 
       res.render('referrals/courseParticipations/index', {
+        action: `${referPaths.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
         pageHeading: 'Accredited Programme history',
         person,
         referralId: referral.id,
@@ -228,6 +229,28 @@ export default class CourseParticipationsController {
           referralId: req.params.referralId,
         }),
       )
+    }
+  }
+
+  updateHasReviewedProgrammeHistory(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { referralId } = req.params
+
+      const hasReviewedProgrammeHistory = req.body.hasReviewedProgrammeHistory === 'true'
+
+      const { oasysConfirmed, reason } = await this.referralService.getReferral(req.user.token, referralId)
+
+      const referralUpdate: ReferralUpdate = {
+        hasReviewedProgrammeHistory,
+        oasysConfirmed,
+        reason,
+      }
+
+      await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)
+
+      return res.redirect(referPaths.show({ referralId }))
     }
   }
 

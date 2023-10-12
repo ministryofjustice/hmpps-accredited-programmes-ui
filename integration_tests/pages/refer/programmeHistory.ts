@@ -21,6 +21,13 @@ export default class ProgrammeHistoryPage extends Page {
     this.referral = referral
   }
 
+  reviewProgrammeHistory() {
+    this.referral = { ...this.referral, hasReviewedProgrammeHistory: true }
+    // We're stubbing the referral here to make sure the updated referral is available on the task list page
+    cy.task('stubReferral', this.referral)
+    this.shouldContainButton('Continue').click()
+  }
+
   shouldContainNoHistoryHeading() {
     cy.get('[data-testid="no-history-heading"]').should(
       'have.text',

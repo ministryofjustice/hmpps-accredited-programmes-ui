@@ -3,6 +3,7 @@ import type { Person } from './Person'
 
 type Referral = {
   id: string // eslint-disable-next-line @typescript-eslint/member-ordering
+  hasReviewedProgrammeHistory: boolean
   oasysConfirmed: boolean
   offeringId: CourseOffering['id']
   prisonNumber: Person['prisonNumber']
@@ -16,6 +17,7 @@ type CreatedReferralResponse = {
 }
 
 type ReferralUpdate = {
+  hasReviewedProgrammeHistory: Referral['hasReviewedProgrammeHistory']
   oasysConfirmed: Referral['oasysConfirmed']
   reason?: Referral['reason']
 }

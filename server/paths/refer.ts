@@ -50,6 +50,7 @@ export default {
     index: programmeHistoryPath,
     new: newProgrammeHistoryPath,
     updateProgramme: programmeHistoryProgrammePath,
+    updateReviewedStatus: programmeHistoryPath,
   },
   reason: {
     show: reasonForReferralPath,
