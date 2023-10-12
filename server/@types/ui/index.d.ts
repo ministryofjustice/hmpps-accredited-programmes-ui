@@ -2,6 +2,7 @@ import type { Course, CourseOffering, Organisation } from '@accredited-programme
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryList,
+  GovukFrontendSummaryListCardActions,
   GovukFrontendSummaryListCardActionsItem,
   GovukFrontendSummaryListRow,
   GovukFrontendSummaryListRowValue,
@@ -11,6 +12,10 @@ import type {
 type GovukFrontendRadiosItemWithLabel = GovukFrontendRadiosItem & { label: string }
 
 type GovukFrontendSummaryListCardActionsItemWithText = GovukFrontendSummaryListCardActionsItem & { text: string }
+
+type GovukFrontendSummaryListCardActionsWithItems = GovukFrontendSummaryListCardActions & {
+  items: Array<GovukFrontendSummaryListCardActionsItem>
+}
 
 type GovukFrontendSummaryListRowWithValue = GovukFrontendSummaryListRow & { value: GovukFrontendSummaryListRowValue }
 
@@ -86,6 +91,7 @@ export type {
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
+  GovukFrontendSummaryListCardActionsWithItems,
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
   GovukFrontendTagWithText,

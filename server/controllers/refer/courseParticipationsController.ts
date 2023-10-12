@@ -62,11 +62,10 @@ export default class CourseParticipationsController {
         await this.courseParticipationsWithNames([courseParticipation], req.user.token)
       )[0]
 
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(
-        courseParticipationWithName,
-        referralId,
-        false,
-      )
+      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId, {
+        change: false,
+        remove: false,
+      })
 
       res.render('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,

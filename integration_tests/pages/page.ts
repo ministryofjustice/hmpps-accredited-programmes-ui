@@ -89,7 +89,7 @@ export default abstract class Page {
   shouldContainHistorySummaryCards(
     participations: Array<CourseParticipationWithName>,
     referralId: Referral['id'],
-    withActions = true,
+    withActions = { change: true, remove: true },
   ) {
     participations
       .sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
@@ -99,26 +99,29 @@ export default abstract class Page {
         cy.get('.govuk-summary-card')
           .eq(participationsIndex)
           .then(summaryCardElement => {
-            const actions = withActions
-              ? [
-                  {
-                    href: referPaths.programmeHistory.editProgramme({
-                      courseParticipationId: participation.id,
-                      referralId,
-                    }),
-                    text: 'Change',
-                    visuallyHiddenText: ` participation for ${participation.name}`,
-                  },
-                  {
-                    href: referPaths.programmeHistory.delete({
-                      courseParticipationId: participation.id,
-                      referralId,
-                    }),
-                    text: 'Remove',
-                    visuallyHiddenText: ` participation for ${participation.name}`,
-                  },
-                ]
-              : []
+            const actions = []
+
+            if (withActions.change) {
+              actions.push({
+                href: referPaths.programmeHistory.editProgramme({
+                  courseParticipationId: participation.id,
+                  referralId,
+                }),
+                text: 'Change',
+                visuallyHiddenText: ` participation for ${participation.name}`,
+              })
+            }
+
+            if (withActions.remove) {
+              actions.push({
+                href: referPaths.programmeHistory.delete({
+                  courseParticipationId: participation.id,
+                  referralId,
+                }),
+                text: 'Remove',
+                visuallyHiddenText: ` participation for ${participation.name}`,
+              })
+            }
 
             this.shouldContainSummaryCard(participation.name, actions, rows, summaryCardElement)
           })

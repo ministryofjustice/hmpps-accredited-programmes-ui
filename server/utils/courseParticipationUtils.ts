@@ -12,6 +12,7 @@ import type {
   Referral,
 } from '@accredited-programmes/models'
 import type {
+  GovukFrontendSummaryListCardActionsWithItems,
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
 } from '@accredited-programmes/ui'
@@ -120,30 +121,31 @@ export default class CourseParticipationUtils {
   static summaryListOptions(
     courseParticipationWithName: CourseParticipationWithName,
     referralId: Referral['id'],
-    withActions = true,
+    withActions = { change: true, remove: true },
   ): GovukFrontendSummaryListWithRowsWithValues {
-    const actions = withActions
-      ? {
-          items: [
-            {
-              href: referPaths.programmeHistory.editProgramme({
-                courseParticipationId: courseParticipationWithName.id,
-                referralId,
-              }),
-              text: 'Change',
-              visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
-            },
-            {
-              href: referPaths.programmeHistory.delete({
-                courseParticipationId: courseParticipationWithName.id,
-                referralId,
-              }),
-              text: 'Remove',
-              visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
-            },
-          ],
-        }
-      : undefined
+    const actions: GovukFrontendSummaryListCardActionsWithItems = { items: [] }
+
+    if (withActions.change) {
+      actions.items.push({
+        href: referPaths.programmeHistory.editProgramme({
+          courseParticipationId: courseParticipationWithName.id,
+          referralId,
+        }),
+        text: 'Change',
+        visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+      })
+    }
+
+    if (withActions.remove) {
+      actions.items.push({
+        href: referPaths.programmeHistory.delete({
+          courseParticipationId: courseParticipationWithName.id,
+          referralId,
+        }),
+        text: 'Remove',
+        visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+      })
+    }
 
     return {
       card: {

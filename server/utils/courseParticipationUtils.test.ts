@@ -376,14 +376,22 @@ describe('CourseParticipationUtils', () => {
       })
     })
 
-    describe('when `withActions` is `false`', () => {
-      it('omits the actions', () => {
+    describe.each([
+      [{ change: false, remove: true }, 'the change action', 'Remove'],
+      [{ change: true, remove: false }, 'the remove action', 'Change'],
+      [{ change: false, remove: false }, 'both actions', null],
+    ])('when `withActions` is %s', (withActions, omits, actionText) => {
+      it(`omits ${omits}`, () => {
         const summaryListOptions = CourseParticipationUtils.summaryListOptions(
           courseParticipationWithName,
           referralId,
-          false,
+          withActions,
         )
-        expect(summaryListOptions.card?.actions).toBeUndefined()
+
+        expect(summaryListOptions.card?.actions?.items?.length).toEqual(actionText ? 1 : 0)
+        if (actionText) {
+          expect(summaryListOptions.card?.actions?.items?.[0].text).toEqual(actionText)
+        }
       })
     })
 
