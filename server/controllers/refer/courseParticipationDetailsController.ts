@@ -34,8 +34,8 @@ export default class CourseParticipationDetailsController {
         outcome,
         setting: {
           ...setting,
-          communityLocation: setting.type === 'community' ? setting.location : '',
-          custodyLocation: setting.type === 'custody' ? setting.location : '',
+          communityLocation: setting?.type === 'community' ? setting.location : '',
+          custodyLocation: setting?.type === 'custody' ? setting.location : '',
         },
         source,
       })

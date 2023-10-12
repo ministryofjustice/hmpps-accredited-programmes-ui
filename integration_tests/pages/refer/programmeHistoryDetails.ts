@@ -96,7 +96,7 @@ export default class ProgrammeHistoryDetailsPage extends Page {
   shouldHaveCorrectFormValues() {
     const { detail, setting, outcome, source } = this.courseParticipation
 
-    if (setting.type === 'community') {
+    if (setting?.type === 'community') {
       cy.get('[data-testid="community-setting-option"]').should('be.checked')
 
       if (setting.location) {
@@ -104,7 +104,7 @@ export default class ProgrammeHistoryDetailsPage extends Page {
       }
     }
 
-    if (setting.type === 'custody') {
+    if (setting?.type === 'custody') {
       cy.get('[data-testid="custody-setting-option"]').should('be.checked')
 
       if (setting.location) {
@@ -112,7 +112,7 @@ export default class ProgrammeHistoryDetailsPage extends Page {
       }
     }
 
-    if (outcome.status === 'complete') {
+    if (outcome?.status === 'complete') {
       cy.get('[data-testid="complete-outcome-option"]').should('be.checked')
 
       if (outcome.yearCompleted) {
@@ -120,7 +120,7 @@ export default class ProgrammeHistoryDetailsPage extends Page {
       }
     }
 
-    if (outcome.status === 'incomplete') {
+    if (outcome?.status === 'incomplete') {
       cy.get('[data-testid="incomplete-outcome-option"]').should('be.checked')
 
       if (outcome.yearStarted) {

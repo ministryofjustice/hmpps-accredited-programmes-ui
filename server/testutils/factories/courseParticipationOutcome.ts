@@ -25,16 +25,8 @@ const outcomeTypes = {
   },
 
   random() {
-    const type = faker.helpers.arrayElement<'complete' | 'incomplete' | 'unknown'>([
-      'complete',
-      'incomplete',
-      'unknown',
-    ])
+    const type = faker.helpers.arrayElement<'complete' | 'incomplete'>(['complete', 'incomplete'])
     return this[type]()
-  },
-
-  unknown() {
-    return {}
   },
 }
 
@@ -45,10 +37,6 @@ class CourseParticipationOutcomeFactory extends Factory<CourseParticipationOutco
 
   incomplete() {
     return this.params(outcomeTypes.incomplete())
-  }
-
-  unknown() {
-    return this.params(outcomeTypes.unknown())
   }
 }
 

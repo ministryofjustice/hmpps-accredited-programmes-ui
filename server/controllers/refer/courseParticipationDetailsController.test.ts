@@ -9,7 +9,11 @@ import type { CourseService, PersonService, ReferralService } from '../../servic
 import { courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseParticipationUtils, FormUtils } from '../../utils'
-import type { CourseParticipationUpdate } from '@accredited-programmes/models'
+import type {
+  CourseParticipation,
+  CourseParticipationSetting,
+  CourseParticipationUpdate,
+} from '@accredited-programmes/models'
 
 jest.mock('../../utils/formUtils')
 jest.mock('../../utils/courseParticipationUtils')
@@ -98,7 +102,7 @@ describe('CourseParticipationDetailsController', () => {
         it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
           const courseParticipationWithCommunitySetting = courseParticipationFactory.build({
             setting: { location: 'Somewhere', type: 'community' },
-          })
+          }) as CourseParticipation & { setting: CourseParticipationSetting }
 
           courseService.getParticipation.mockResolvedValue(courseParticipationWithCommunitySetting)
 
@@ -122,7 +126,7 @@ describe('CourseParticipationDetailsController', () => {
         it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
           const courseParticipationWithCustodySetting = courseParticipationFactory.build({
             setting: { location: 'Somewhere', type: 'custody' },
-          })
+          }) as CourseParticipation & { setting: CourseParticipationSetting }
 
           courseService.getParticipation.mockResolvedValue(courseParticipationWithCustodySetting)
 
