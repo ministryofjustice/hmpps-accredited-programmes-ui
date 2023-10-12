@@ -149,8 +149,11 @@ export default class CourseParticipationsController {
         courseParticipations,
         req.user.token,
       )
-      const summaryListsOptions = courseParticipationsWithNames.map(courseParticipationWithName =>
-        CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referral.id),
+      const sortedCourseParticipationsWithNames = courseParticipationsWithNames.sort((participationA, participationB) =>
+        participationA.createdAt.localeCompare(participationB.createdAt),
+      )
+      const summaryListsOptions = sortedCourseParticipationsWithNames.map(participation =>
+        CourseParticipationUtils.summaryListOptions(participation, referral.id),
       )
 
       res.render('referrals/courseParticipations/index', {
