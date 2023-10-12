@@ -7,7 +7,7 @@ import {
   prisonerFactory,
   referralFactory,
 } from '../../../server/testutils/factories'
-import type { DetailsBody } from '../../../server/utils/courseParticipationUtils'
+import type { CourseParticipationDetailsBody } from '../../../server/utils'
 import Page from '../../pages/page'
 import {
   DeleteProgrammeHistoryPage,
@@ -343,7 +343,7 @@ context('Programme history', () => {
       })
 
       it('updates the entry and redirects to the programme history page', () => {
-        const formValues: DetailsBody = {
+        const formValues: CourseParticipationDetailsBody = {
           detail: 'Some outcome details',
           outcome: {
             status: 'complete',

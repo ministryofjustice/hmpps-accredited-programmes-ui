@@ -17,7 +17,7 @@ import type {
 } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
-interface DetailsBody {
+interface CourseParticipationDetailsBody {
   detail: string
   outcome: {
     yearCompleted: string
@@ -31,8 +31,9 @@ interface DetailsBody {
   }
   source: string
 }
-interface RequestWithDetailsBody extends Request {
-  body: DetailsBody
+
+interface RequestWithCourseParticipationDetailsBody extends Request {
+  body: CourseParticipationDetailsBody
 }
 
 export default class CourseParticipationUtils {
@@ -67,7 +68,7 @@ export default class CourseParticipationUtils {
     }
   }
 
-  static processDetailsFormData(request: RequestWithDetailsBody): {
+  static processDetailsFormData(request: RequestWithCourseParticipationDetailsBody): {
     courseParticipationUpdate: CourseParticipationUpdate
     hasFormErrors: boolean
   } {
@@ -217,4 +218,4 @@ export default class CourseParticipationUtils {
   }
 }
 
-export type { DetailsBody, RequestWithDetailsBody }
+export type { CourseParticipationDetailsBody, RequestWithCourseParticipationDetailsBody }

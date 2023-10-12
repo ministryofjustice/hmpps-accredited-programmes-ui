@@ -1,3 +1,4 @@
+import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryList,
@@ -5,8 +6,7 @@ import type {
   GovukFrontendSummaryListRow,
   GovukFrontendSummaryListRowValue,
   GovukFrontendTag,
-} from '../govukFrontend'
-import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
+} from '@govuk-frontend'
 
 type GovukFrontendRadiosItemWithLabel = GovukFrontendRadiosItem & { label: string }
 

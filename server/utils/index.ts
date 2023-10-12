@@ -1,3 +1,7 @@
+import type {
+  CourseParticipationDetailsBody,
+  RequestWithCourseParticipationDetailsBody,
+} from './courseParticipationUtils'
 import CourseParticipationUtils from './courseParticipationUtils'
 import CourseUtils from './courseUtils'
 import DateUtils from './dateUtils'
@@ -25,3 +29,5 @@ export {
   UserUtils,
   nunjucksSetup,
 }
+
+export type { CourseParticipationDetailsBody, RequestWithCourseParticipationDetailsBody }
