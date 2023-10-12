@@ -10,7 +10,6 @@
     "paths": {
       "@accredited-programmes/integration-tests": ["./@types/index.d.ts"],
       "@accredited-programmes/models": ["../server/@types/models/index.d.ts"],
-      "@accredited-programmes/server": ["../server/@types/server/index.d.ts"],
       "@accredited-programmes/ui": ["../server/@types/ui/index.d.ts"],
       "@accredited-programmes/users": ["../server/@types/users/index.d.ts"],
       "@govuk-frontend": ["../server/@types/govukFrontend/index.d.ts"],

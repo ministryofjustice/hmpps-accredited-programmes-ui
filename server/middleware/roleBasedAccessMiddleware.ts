@@ -1,7 +1,7 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express'
 
 import logger from '../../logger'
-import type { MiddlewareOptions } from '@accredited-programmes/server'
+import type { MiddlewareOptions } from '@accredited-programmes/users'
 
 export enum ApplicationRoles {
   ACP_REFERRER = 'ROLE_ACP_REFERRER',

@@ -4,7 +4,7 @@ import type { RequestHandler, Router } from 'express'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import roleBasedAccessMiddleware from '../middleware/roleBasedAccessMiddleware'
-import type { MiddlewareOptions } from '@accredited-programmes/server'
+import type { MiddlewareOptions } from '@accredited-programmes/users'
 
 export default class RouteUtils {
   static actions(router: Router, defaultMiddlewareOptions?: MiddlewareOptions) {
