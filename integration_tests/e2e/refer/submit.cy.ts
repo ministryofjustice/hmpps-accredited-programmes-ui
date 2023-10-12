@@ -42,7 +42,7 @@ context('Submitting a referral', () => {
 
     const referral = referralFactory
       .submittable()
-      .build({ oasysConfirmed: true, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubOffering', { courseId: course.id, courseOffering })
