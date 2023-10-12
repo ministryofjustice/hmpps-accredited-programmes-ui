@@ -63,15 +63,17 @@
         }
       }) }}
 
-      <h2 class="govuk-heading-m">Accredited Programme history</h2>
+      <section data-testid="programme-history">
+        <h2 class="govuk-heading-m">Accredited Programme history</h2>
 
-      {% if participationSummaryListsOptions.length %}
-        {% for summaryListOptions in participationSummaryListsOptions %}
-          {{ govukSummaryList(summaryListOptions) }}
-        {% endfor %}
-      {% else %}
-        <p class="govuk-body">There is no record of Accredited Programmes for {{ person.name }}.</p>
-      {% endif %}
+        {% if participationSummaryListsOptions.length %}
+          {% for summaryListOptions in participationSummaryListsOptions %}
+            {{ govukSummaryList(summaryListOptions) }}
+          {% endfor %}
+        {% else %}
+          <p class="govuk-body">There is no record of Accredited Programmes for {{ person.name }}.</p>
+        {% endif %}
+      </section>
 
       <h2 class="govuk-heading-m">OASys information</h2>
 
