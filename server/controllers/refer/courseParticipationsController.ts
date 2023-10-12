@@ -144,14 +144,10 @@ export default class CourseParticipationsController {
         req.user.token,
         person.prisonNumber,
       )
-      const courseParticipationsWithNames = await this.courseParticipationsWithNames(
-        courseParticipations,
-        req.user.token,
-      )
-      const sortedCourseParticipationsWithNames = courseParticipationsWithNames.sort((participationA, participationB) =>
-        participationA.createdAt.localeCompare(participationB.createdAt),
-      )
-      const summaryListsOptions = sortedCourseParticipationsWithNames.map(participation =>
+      const courseParticipationsWithNames = (
+        await this.courseParticipationsWithNames(courseParticipations, req.user.token)
+      ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
+      const summaryListsOptions = courseParticipationsWithNames.map(participation =>
         CourseParticipationUtils.summaryListOptions(participation, referral.id),
       )
 
