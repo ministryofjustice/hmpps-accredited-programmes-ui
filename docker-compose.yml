@@ -41,9 +41,13 @@ services:
 
   hmpps-auth:
     container_name: hmpps-auth
+    depends_on:
+      - hmpps-auth-db
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=dev,local-postgres
+      - SPRING_H2_CONSOLE_SETTINGS_WEBALLOWOTHERS=true
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
     image: quay.io/hmpps/hmpps-auth:latest
@@ -51,6 +55,77 @@ services:
       - hmpps
     ports:
       - '9090:8080'
+
+  hmpps-auth-db:
+    container_name: hmpps-auth-db
+    environment:
+      - POSTGRES_PASSWORD=admin_password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=hmpps-auth-db
+    healthcheck:
+      test: ['CMD', 'pg_isready', '--username=admin', '--dbname=hmpps-auth-db']
+    image: postgres:15
+    networks:
+      - hmpps
+    ports:
+      - '5434:5432'
+    restart: always
+
+  hmpps-external-users-api:
+    container_name: hmpps-external-users-api
+    depends_on:
+      - hmpps-auth-db
+      - hmpps-auth
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev,local-postgres
+      - SPRING_R2DBC_URL=r2dbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db?sslmode=prefer
+      - SPRING_FLYWAY_URL=jdbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db?sslmode=prefer
+      - API_BASE_URL_OAUTH=http://hmpps-auth:8080/auth
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
+    image: quay.io/hmpps/hmpps-external-users-api:latest
+    networks:
+      - hmpps
+    ports:
+      - '9097:8080'
+
+  hmpps-manage-users-api:
+    container_name: hmpps-manage-users-api
+    depends_on:
+      - hmpps-auth
+      - hmpps-external-users-api
+    environment:
+      - SERVER_PORT=8080
+      - HMPPS_AUTH_ENDPOINT_URL=http://hmpps-auth:8080/auth
+      - API_BASE_URL_OAUTH=http://hmpps-auth:8080/auth
+      - SPRING_PROFILES_ACTIVE=dev
+      - EXTERNAL_USERS_ENDPOINT_URL=http://hmpps-external-users-api:8080
+      - AUTHORIZATION_SERVER_TOKEN_ENDPOINT_URL=http://hmpps-auth:8080/auth/oauth/token
+      - NOMIS_ENDPOINT_URL=http://nomis-user-roles-api:8080
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+    image: quay.io/hmpps/hmpps-manage-users-api:latest
+    networks:
+      - hmpps
+    ports:
+      - '9095:8080'
+
+  nomis-user-roles-api:
+    container_name: nomis-user-roles-api
+    depends_on:
+      - hmpps-auth
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev
+      - API_BASE_URL_OAUTH=http://hmpps-auth:8080/auth
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+    image: quay.io/hmpps/nomis-user-roles-api:latest
+    networks:
+      - hmpps
+    ports:
+      - '9096:8080'
 
   prison-register-api:
     container_name: prison-register-api

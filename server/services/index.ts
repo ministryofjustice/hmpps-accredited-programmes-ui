@@ -10,6 +10,7 @@ import {
   caseloadClientBuilder,
   courseClientBuilder,
   hmppsAuthClientBuilder,
+  hmppsManageUsersClientBuilder,
   prisonClientBuilder,
   prisonerClientBuilder,
   referralClientBuilder,
@@ -20,7 +21,7 @@ const services = () => {
   const organisationService = new OrganisationService(prisonClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonerClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
-  const userService = new UserService(hmppsAuthClientBuilder, caseloadClientBuilder)
+  const userService = new UserService(hmppsManageUsersClientBuilder, caseloadClientBuilder)
 
   return {
     courseService,
