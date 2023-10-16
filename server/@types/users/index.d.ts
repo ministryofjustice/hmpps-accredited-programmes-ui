@@ -5,11 +5,20 @@ type MiddlewareOptions = {
   allowedRoles?: Array<ApplicationRoles>
 }
 
-type UserDetails = {
-  caseloads: Array<Caseload>
-  displayName: string
+type User = {
+  active: boolean
+  authSource: string
   name: string
   userId: string
+  username: string
+  activeCaseLoadId?: string
+  staffId?: number
+  uuid?: string
 }
 
-export type { MiddlewareOptions, UserDetails }
+type UserDetails = User & {
+  caseloads: Array<Caseload>
+  displayName: string
+}
+
+export type { MiddlewareOptions, User, UserDetails }

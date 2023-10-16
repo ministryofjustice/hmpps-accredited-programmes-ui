@@ -5,12 +5,12 @@ import { Contracts, DistributedTracingModes, defaultClient, setup } from 'applic
 import type { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
 
 import { buildNumber, packageData } from '../applicationVersion'
-import type { User } from '../data'
+import type { UserDetails } from '@accredited-programmes/users'
 
 type ContextObjectWithUser = {
   res?: {
     locals?: {
-      user: Partial<User>
+      user: Partial<UserDetails>
     }
   }
 }

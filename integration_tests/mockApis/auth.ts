@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import type { Response } from 'superagent'
 
+import manageUserStubs from './manageUsers'
 import tokenVerification from './tokenVerification'
 import type { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { getMatchingRequests, stubFor } from '../../wiremock'
@@ -123,46 +124,15 @@ const token = ({ authorities }: { authorities?: Array<ApplicationRoles> }) =>
     },
   })
 
-const stubUser = (name: string) =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/api/user/me',
-    },
-    response: {
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: {
-        active: true,
-        name,
-        staffId: 231232,
-        username: mockedUsername(),
-      },
-      status: 200,
-    },
-  })
-
-const stubUserRoles = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/api/user/me/roles',
-    },
-    response: {
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: [{ roleCode: 'SOME_USER_ROLE' }],
-      status: 200,
-    },
-  })
-
 export default {
   getSignInUrl,
   mockedUsername,
   stubAuthPing: ping,
-  stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
+  stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> =>
+    Promise.all([
+      manageUserStubs.stubCurrentUser(mockedUsername()),
+      manageUserStubs.stubUserDetails({ name, username: mockedUsername() }),
+    ]),
   stubSignIn: (
     args = {
       authorities: [],

@@ -30,6 +30,7 @@ describe('populateCurrentUser', () => {
   })
 
   describe('when the user variable is set', () => {
+    const caseloads = [caseloadFactory.build()]
     const res: DeepMocked<Response> = createMock<Response>({
       locals: {
         user: {
@@ -42,28 +43,32 @@ describe('populateCurrentUser', () => {
     describe('and the user is not already present in the session', () => {
       describe('and they are found by the user service', () => {
         it('populates the user with its token, details from the user service and its roles, overriding any duplicate keys, then calls next', async () => {
-          const caseloads = [caseloadFactory.build()]
-
-          userService.getUser.mockResolvedValue({
+          userService.getCurrentUserWithDetails.mockResolvedValue({
+            active: true,
+            authSource: 'nomis',
             caseloads,
-            displayName: 'DEL_HATTON',
-            name: 'Del Hatton',
+            displayName: 'Del Hatton',
+            name: 'del hatton',
             userId: 'new-uuid-value',
+            username: 'DEL_HATTON',
           })
           ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
 
           await populateCurrentUser(userService)(req, res, next)
 
-          expect(userService.getUser).toHaveBeenCalledWith('SOME-TOKEN')
+          expect(userService.getCurrentUserWithDetails).toHaveBeenCalledWith('SOME-TOKEN')
 
           expect(res.locals.user).toEqual({
+            active: true,
+            authSource: 'nomis',
             caseloads,
-            displayName: 'DEL_HATTON',
+            displayName: 'Del Hatton',
             hasReferrerRole: false,
-            name: 'Del Hatton',
+            name: 'del hatton',
             roles: ['SOME_REQUIRED_ROLE'],
             token: 'SOME-TOKEN',
             userId: 'new-uuid-value',
+            username: 'DEL_HATTON',
           })
 
           expect(next).toHaveBeenCalled()
@@ -72,7 +77,7 @@ describe('populateCurrentUser', () => {
 
       describe('and they are not found by the user service', () => {
         it('logs that no user was found and calls next', async () => {
-          userService.getUser.mockResolvedValue(null as unknown as UserDetails)
+          userService.getCurrentUserWithDetails.mockResolvedValue(null as unknown as UserDetails)
           ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
 
           await populateCurrentUser(userService)(req, res, next)
@@ -89,13 +94,16 @@ describe('populateCurrentUser', () => {
         req = createMock<Request>({
           session: {
             user: {
-              caseloads: [caseloadFactory.build()],
-              displayName: 'DEL_HATTON',
+              active: true,
+              authSource: 'nomis',
+              caseloads,
+              displayName: 'Del Hatton',
               hasReferrerRole: false,
-              name: 'Del Hatton',
+              name: 'del hatton',
               roles: ['SOME_REQUIRED_ROLE'],
               token: 'SOME-TOKEN',
               userId: 'random-uuid',
+              username: 'DEL_HATTON',
             } as UserDetails,
           },
         })
@@ -103,7 +111,7 @@ describe('populateCurrentUser', () => {
 
         await populateCurrentUser(userService)(req, res, next)
 
-        expect(userService.getUser).not.toHaveBeenCalled()
+        expect(userService.getCurrentUserWithDetails).not.toHaveBeenCalled()
 
         expect(next).toHaveBeenCalled()
       })
@@ -111,11 +119,14 @@ describe('populateCurrentUser', () => {
 
     describe('and they have the `ROLE_ACP_REFERRER` role', () => {
       it('sets the `hasReferrerRole` property to true', async () => {
-        userService.getUser.mockResolvedValue({
-          caseloads: [caseloadFactory.build()],
-          displayName: 'DEL_HATTON',
-          name: 'Del Hatton',
-          userId: 'random-uuid',
+        userService.getCurrentUserWithDetails.mockResolvedValue({
+          active: true,
+          authSource: 'nomis',
+          caseloads,
+          displayName: 'Del Hatton',
+          name: 'del hatton',
+          userId: 'new-uuid-value',
+          username: 'DEL_HATTON',
         })
         ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['ROLE_ACP_REFERRER'])
 
@@ -155,7 +166,7 @@ describe('populateCurrentUser', () => {
       })
       const error = new Error('error message')
 
-      userService.getUser.mockRejectedValue(error)
+      userService.getCurrentUserWithDetails.mockRejectedValue(error)
       await populateCurrentUser(userService)(req, res, next)
 
       expect(logger.error).toBeCalledWith(error, `Failed to retrieve user for: MY_USERNAME`)
