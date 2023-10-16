@@ -10,15 +10,17 @@ import {
   courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   organisationFactory,
   personFactory,
   referralFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
+import { CourseParticipationUtils, CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/courseUtils')
+jest.mock('../../utils/courseParticipationUtils')
 jest.mock('../../utils/formUtils')
 jest.mock('../../utils/referralUtils')
 
@@ -195,7 +197,28 @@ describe('ReferralsController', () => {
         audiences: courseAudienceFactory.buildList(1),
         nameAndAlternateName: `${course.name} (${course.alternateName})`,
       })
+      courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
+
+      const courseParticipations = [
+        courseParticipationFactory.build({ courseId: 'an-ID', createdAt: '2023-01-01T12:00:00.000Z' }),
+        courseParticipationFactory.build({
+          courseId: undefined,
+          createdAt: '2022-01-01T12:00:00.000Z',
+          otherCourseName: 'Another course',
+        }),
+      ]
+      const courseParticipationsWithNames = [
+        { ...courseParticipations[0], name: course.name },
+        { ...courseParticipations[1], name: 'Another course' },
+      ]
+      const summaryListOptions = 'summary list options'
+      courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
+      ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
+        (_courseParticipationWithName, _referralId, _withActions = { change: true, remove: true }) => {
+          return summaryListOptions
+        },
+      )
 
       const requestHandler = referralsController.checkAnswers()
       await requestHandler(request, response, next)
@@ -205,6 +228,19 @@ describe('ReferralsController', () => {
         response.locals.errors = emptyErrorsLocal
       })
 
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
+      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
+        1,
+        courseParticipationsWithNames[1],
+        referral.id,
+        { change: true, remove: false },
+      )
+      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
+        2,
+        courseParticipationsWithNames[0],
+        referral.id,
+        { change: true, remove: false },
+      )
       expect(response.render).toHaveBeenCalledWith('referrals/checkAnswers', {
         additionalInformation: referral.reason,
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
@@ -215,12 +251,11 @@ describe('ReferralsController', () => {
           request.user.username,
         ),
         pageHeading: 'Check your answers',
+        participationSummaryListsOptions: [summaryListOptions, summaryListOptions],
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId: referral.id,
       })
-
-      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
     })
 
     describe('when the referral is not ready for submission', () => {

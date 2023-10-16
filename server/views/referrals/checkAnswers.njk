@@ -63,6 +63,16 @@
         }
       }) }}
 
+      <h2 class="govuk-heading-m">Accredited Programme history</h2>
+
+      {% if participationSummaryListsOptions.length %}
+        {% for summaryListOptions in participationSummaryListsOptions %}
+          {{ govukSummaryList(summaryListOptions) }}
+        {% endfor %}
+      {% else %}
+        <p class="govuk-body">There is no record of Accredited Programmes for {{ person.name }}.</p>
+      {% endif %}
+
       <h2 class="govuk-heading-m">OASys information</h2>
 
       <div class="govuk-summary-card">
