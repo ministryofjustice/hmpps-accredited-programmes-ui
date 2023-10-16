@@ -52,6 +52,14 @@ export default {
       },
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
     },
+    hmppsManageUsers: {
+      agent: new AgentConfig(Number(get('HMPPS_MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000))),
+      timeout: {
+        deadline: Number(get('HMPPS_MANAGE_USERS_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('HMPPS_MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000)),
+      },
+      url: get('HMPPS_MANAGE_USERS_API_URL', 'http://localhost:9095', requiredInProduction),
+    },
     prisonApi: {
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
       timeout: {
