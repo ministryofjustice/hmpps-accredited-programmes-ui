@@ -13,31 +13,30 @@ import Page from '../../pages/page'
 import { ConfirmOasysPage, TaskListPage } from '../../pages/refer'
 
 context('OASys confirmation', () => {
+  const courseOffering = courseOfferingFactory.build()
+  const prisoner = prisonerFactory.build({
+    firstName: 'Del',
+    lastName: 'Hatton',
+  })
+  const person = personFactory.build({
+    currentPrison: prisoner.prisonName,
+    name: 'Del Hatton',
+    prisonNumber: prisoner.prisonerNumber,
+  })
+  const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
     cy.task('stubDefaultCaseloads')
-  })
-
-  it('Shows the confirm OASys form page', () => {
     cy.signIn()
-
-    const prisoner = prisonerFactory.build({
-      firstName: 'Del',
-      lastName: 'Hatton',
-    })
-    const person = personFactory.build({
-      currentPrison: prisoner.prisonName,
-      name: 'Del Hatton',
-      prisonNumber: prisoner.prisonerNumber,
-    })
-
-    const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
 
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
+  })
 
+  it('Shows the confirm OASys form page', () => {
     const path = referPaths.confirmOasys.show({ referralId: referral.id })
     cy.visit(path)
 
@@ -53,34 +52,15 @@ context('OASys confirmation', () => {
 
   describe('When confirming OASys information', () => {
     it('updates the referral and redirects to the task list', () => {
-      cy.signIn()
+      cy.task('stubUpdateReferral', referral.id)
 
       const course = courseFactory.build()
-      const courseOffering = courseOfferingFactory.build()
-
-      const prisoner = prisonerFactory.build({
-        firstName: 'Del',
-        lastName: 'Hatton',
-      })
-      const person = personFactory.build({
-        currentPrison: prisoner.prisonName,
-        name: 'Del Hatton',
-        prisonNumber: prisoner.prisonerNumber,
-      })
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubOffering', { courseId: course.id, courseOffering })
 
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
       const organisation = OrganisationUtils.organisationFromPrison(prison)
-
-      const referral = referralFactory
-        .started()
-        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-
-      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-      cy.task('stubOffering', { courseId: course.id, courseOffering })
       cy.task('stubPrison', prison)
-      cy.task('stubPrisoner', prisoner)
-      cy.task('stubReferral', referral)
-      cy.task('stubUpdateReferral', referral.id)
 
       const path = referPaths.confirmOasys.show({ referralId: referral.id })
       cy.visit(path)
@@ -93,23 +73,6 @@ context('OASys confirmation', () => {
     })
 
     it('displays an error when the checkbox is not checked', () => {
-      cy.signIn()
-
-      const prisoner = prisonerFactory.build({
-        firstName: 'Del',
-        lastName: 'Hatton',
-      })
-      const person = personFactory.build({
-        currentPrison: prisoner.prisonName,
-        name: 'Del Hatton',
-        prisonNumber: prisoner.prisonerNumber,
-      })
-
-      const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
-
-      cy.task('stubPrisoner', prisoner)
-      cy.task('stubReferral', referral)
-
       const path = referPaths.confirmOasys.show({ referralId: referral.id })
       cy.visit(path)
 

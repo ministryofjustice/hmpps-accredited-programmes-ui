@@ -1,8 +1,11 @@
 context('Health', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubAuthPing')
+  })
+
   context('All healthy', () => {
     beforeEach(() => {
-      cy.task('reset')
-      cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing')
     })
 
@@ -17,8 +20,6 @@ context('Health', () => {
 
   context('Some unhealthy', () => {
     it('Reports correctly when token verification down', () => {
-      cy.task('reset')
-      cy.task('stubAuthPing')
       cy.task('stubTokenVerificationPing', 500)
 
       cy.request({ failOnStatusCode: false, method: 'GET', url: '/health' }).then(response => {

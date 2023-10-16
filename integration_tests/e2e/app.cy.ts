@@ -8,12 +8,12 @@ context('App', () => {
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
     cy.task('stubDefaultCaseloads')
+    cy.signIn()
+
+    cy.visit('/')
   })
 
   it('Shows the phase banner with a link to the feedback form', () => {
-    cy.signIn()
-    cy.visit('/')
-
     cy.get('.govuk-phase-banner__content__tag').then(phaseBannerTagElement => {
       const { actual, expected } = Helpers.parseHtml(phaseBannerTagElement, 'Beta')
       expect(actual).to.equal(expected)
@@ -37,9 +37,6 @@ context('App', () => {
   })
 
   it("Doesn't show navigation on the index page", () => {
-    cy.signIn()
-    cy.visit('/')
-
     const indexPage = Page.verifyOnPage(IndexPage)
     indexPage.shouldNotContainNavigation()
   })

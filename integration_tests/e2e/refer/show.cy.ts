@@ -13,41 +13,44 @@ import Page from '../../pages/page'
 import { ShowPersonPage, TaskListPage } from '../../pages/refer'
 
 context('Showing the referral task list and person page', () => {
+  const courseOffering = courseOfferingFactory.build()
+  const prisoner = prisonerFactory.build({
+    dateOfBirth: '1980-01-01',
+    firstName: 'Del',
+    lastName: 'Hatton',
+  })
+  const person = personFactory.build({
+    currentPrison: prisoner.prisonName,
+    dateOfBirth: '1 January 1980',
+    ethnicity: prisoner.ethnicity,
+    gender: prisoner.gender,
+    name: 'Del Hatton',
+    prisonNumber: prisoner.prisonerNumber,
+    religionOrBelief: prisoner.religion,
+    setting: 'Custody',
+  })
+  const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
     cy.task('stubDefaultCaseloads')
+    cy.signIn()
+
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
   })
 
   it('Shows the in-progress referral task list', () => {
-    cy.signIn()
+    cy.task('stubOffering', { courseOffering })
 
     const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build()
-
-    const prisoner = prisonerFactory.build({
-      firstName: 'Del',
-      lastName: 'Hatton',
-    })
-    const person = personFactory.build({
-      currentPrison: prisoner.prisonName,
-      name: 'Del Hatton',
-      prisonNumber: prisoner.prisonerNumber,
-    })
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
 
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison(prison)
-
-    const referral = referralFactory
-      .started()
-      .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-
-    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubOffering', { courseOffering })
     cy.task('stubPrison', prison)
-    cy.task('stubPrisoner', prisoner)
-    cy.task('stubReferral', referral)
 
     const path = referPaths.show({ referralId: referral.id })
     cy.visit(path)
@@ -63,29 +66,6 @@ context('Showing the referral task list and person page', () => {
   })
 
   it('Shows the person page for a referral', () => {
-    cy.signIn()
-
-    const prisoner = prisonerFactory.build({
-      dateOfBirth: '1980-01-01',
-      firstName: 'Del',
-      lastName: 'Hatton',
-    })
-    const person = personFactory.build({
-      currentPrison: prisoner.prisonName,
-      dateOfBirth: '1 January 1980',
-      ethnicity: prisoner.ethnicity,
-      gender: prisoner.gender,
-      name: 'Del Hatton',
-      prisonNumber: prisoner.prisonerNumber,
-      religionOrBelief: prisoner.religion,
-      setting: 'Custody',
-    })
-
-    const referral = referralFactory.started().build({ prisonNumber: prisoner.prisonerNumber })
-
-    cy.task('stubPrisoner', prisoner)
-    cy.task('stubReferral', referral)
-
     const path = referPaths.showPerson({ referralId: referral.id })
     cy.visit(path)
 
