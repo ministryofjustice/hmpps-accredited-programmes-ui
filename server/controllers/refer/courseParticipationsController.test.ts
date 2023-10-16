@@ -32,7 +32,7 @@ describe('CourseParticipationsController', () => {
     response = Helpers.createMockResponseWithCaseloads()
     courseParticipationsController = new CourseParticipationsController(courseService, personService, referralService)
     ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
-      (_courseParticipationWithName, _referralId, _withActions = true) => {
+      (_courseParticipationWithName, _referralId, _withActions = { change: true, remove: true }) => {
         return summaryListOptions
       },
     )
@@ -177,7 +177,7 @@ describe('CourseParticipationsController', () => {
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenCalledWith(
         courseParticipationWithName,
         referral.id,
-        false,
+        { change: false, remove: false },
       )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,

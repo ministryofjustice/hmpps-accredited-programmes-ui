@@ -3,6 +3,7 @@ import { referPaths } from '../../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   personFactory,
   prisonFactory,
   prisonerFactory,
@@ -12,6 +13,7 @@ import { OrganisationUtils } from '../../../server/utils'
 import auth from '../../mockApis/auth'
 import Page from '../../pages/page'
 import { CheckAnswersPage, CompletePage, TaskListPage } from '../../pages/refer'
+import type { CourseParticipationWithName } from '@accredited-programmes/models'
 
 context('Submitting a referral', () => {
   beforeEach(() => {
@@ -42,7 +44,7 @@ context('Submitting a referral', () => {
 
     const referral = referralFactory
       .submittable()
-      .build({ oasysConfirmed: true, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+      .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubOffering', { courseId: course.id, courseOffering })
@@ -57,12 +59,9 @@ context('Submitting a referral', () => {
     taskListPage.shouldBeReadyForSubmission()
   })
 
-  it('Shows the correct information on the Check answers and submit task page', () => {
-    cy.signIn()
-
+  describe('When checking answers', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
-
     const prisoner = prisonerFactory.build({
       dateOfBirth: '1980-01-01',
       firstName: 'Del',
@@ -78,47 +77,89 @@ context('Submitting a referral', () => {
       religionOrBelief: prisoner.religion,
       setting: 'Custody',
     })
-
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison(prison)
-
     const referral = referralFactory
       .submittable()
       .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
-    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubOffering', { courseId: course.id, courseOffering })
-    cy.task('stubPrison', prison)
-    cy.task('stubPrisoner', prisoner)
-    cy.task('stubReferral', referral)
-
     const path = referPaths.checkAnswers({ referralId: referral.id })
-    cy.visit(path)
 
-    const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
-      course,
-      courseOffering,
-      organisation,
-      person,
-      username: auth.mockedUsername(),
+    beforeEach(() => {
+      cy.task('stubCourse', course)
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubOffering', { courseId: course.id, courseOffering })
+      cy.task('stubPrison', prison)
+      cy.task('stubPrisoner', prisoner)
+      cy.task('stubReferral', referral)
+
+      cy.signIn()
     })
 
-    checkAnswersPage.shouldHavePersonDetails(person)
-    checkAnswersPage.shouldContainNavigation(path)
-    checkAnswersPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
-    checkAnswersPage.shouldHaveApplicationSummary()
-    checkAnswersPage.shouldContainPersonSummaryList(person)
-    checkAnswersPage.shouldHaveOasysConfirmation()
-    checkAnswersPage.shouldHaveAdditionalInformation(referral)
-    checkAnswersPage.shouldHaveConfirmationCheckbox()
-    checkAnswersPage.shouldContainButton('Submit referral')
-    checkAnswersPage.shouldContainButtonLink('Return to tasklist', referPaths.show({ referralId: referral.id }))
+    it('Shows the information the user has submitted in the referral form', () => {
+      const courseParticipations = [
+        courseParticipationFactory.withCourseId().build({ courseId: course.id, createdAt: '2023-01-01T12:00:00.000Z' }),
+        courseParticipationFactory
+          .withOtherCourseName()
+          .build({ createdAt: '2022-01-01T12:00:00.000Z', otherCourseName: 'A great course name' }),
+      ]
+      const courseParticipationsWithNames: Array<CourseParticipationWithName> = [
+        { ...courseParticipations[0], name: course.name },
+        {
+          ...courseParticipations[1],
+          name: courseParticipations[1].otherCourseName as CourseParticipationWithName['name'],
+        },
+      ]
+
+      cy.task('stubParticipationsByPerson', { courseParticipations, prisonNumber: prisoner.prisonerNumber })
+
+      cy.visit(path)
+
+      const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
+        course,
+        courseOffering,
+        organisation,
+        participations: courseParticipationsWithNames,
+        person,
+        referral,
+        username: auth.mockedUsername(),
+      })
+      checkAnswersPage.shouldHavePersonDetails(person)
+      checkAnswersPage.shouldContainNavigation(path)
+      checkAnswersPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+      checkAnswersPage.shouldHaveApplicationSummary()
+      checkAnswersPage.shouldContainPersonSummaryList(person)
+      checkAnswersPage.shouldHaveProgrammeHistory()
+      checkAnswersPage.shouldHaveOasysConfirmation()
+      checkAnswersPage.shouldHaveAdditionalInformation(referral)
+      checkAnswersPage.shouldHaveConfirmationCheckbox()
+      checkAnswersPage.shouldContainButton('Submit referral')
+      checkAnswersPage.shouldContainButtonLink('Return to tasklist', referPaths.show({ referralId: referral.id }))
+    })
+
+    describe('for a person with no programme history', () => {
+      it('indicate that there is no programme history', () => {
+        cy.task('stubParticipationsByPerson', { courseParticipations: [], prisonNumber: prisoner.prisonerNumber })
+
+        cy.visit(path)
+
+        const checkAnswersPage = Page.verifyOnPage(CheckAnswersPage, {
+          course,
+          courseOffering,
+          organisation,
+          participations: [],
+          person,
+          referral,
+          username: auth.mockedUsername(),
+        })
+        checkAnswersPage.shouldNotHaveProgrammeHistory()
+      })
+    })
   })
 
   describe('When submitting a referral', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
-
     const prisoner = prisonerFactory.build({
       firstName: 'Del',
       lastName: 'Hatton',
@@ -128,15 +169,29 @@ context('Submitting a referral', () => {
       name: 'Del Hatton',
       prisonNumber: prisoner.prisonerNumber,
     })
-
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison(prison)
+    const courseParticipations = [
+      courseParticipationFactory.withCourseId().build({ courseId: course.id, createdAt: '2023-01-01T12:00:00.000Z' }),
+      courseParticipationFactory
+        .withOtherCourseName()
+        .build({ createdAt: '2022-01-01T12:00:00.000Z', otherCourseName: 'A great course name' }),
+    ]
+    const courseParticipationsWithNames: Array<CourseParticipationWithName> = [
+      { ...courseParticipations[0], name: course.name },
+      {
+        ...courseParticipations[1],
+        name: courseParticipations[1].otherCourseName as CourseParticipationWithName['name'],
+      },
+    ]
 
     beforeEach(() => {
       cy.signIn()
 
+      cy.task('stubCourse', course)
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
       cy.task('stubOffering', { courseId: course.id, courseOffering })
+      cy.task('stubParticipationsByPerson', { courseParticipations, prisonNumber: prisoner.prisonerNumber })
       cy.task('stubPrison', prison)
       cy.task('stubPrisoner', prisoner)
     })
@@ -156,7 +211,9 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
+        participations: courseParticipationsWithNames,
         person,
+        referral,
         username: auth.mockedUsername(),
       })
       checkAnswersPage.confirmDetailsAndSubmitReferral(referral)
@@ -179,7 +236,9 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
+        participations: courseParticipationsWithNames,
         person,
+        referral,
         username: auth.mockedUsername(),
       })
       checkAnswersPage.shouldContainButton('Submit referral').click()
@@ -188,7 +247,9 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
+        participations: courseParticipationsWithNames,
         person,
+        referral,
         username: auth.mockedUsername(),
       })
       checkAnswersPageWithErrors.shouldHaveErrors([

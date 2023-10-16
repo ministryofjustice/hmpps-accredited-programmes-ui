@@ -575,7 +575,10 @@ context('Programme history', () => {
       deleteProgrammeHistoryPage.shouldHavePersonDetails(person)
       deleteProgrammeHistoryPage.shouldContainNavigation(path)
       deleteProgrammeHistoryPage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
-      deleteProgrammeHistoryPage.shouldContainHistorySummaryCards([courseParticipationWithName], referral.id, false)
+      deleteProgrammeHistoryPage.shouldContainHistorySummaryCards([courseParticipationWithName], referral.id, {
+        change: false,
+        remove: false,
+      })
       deleteProgrammeHistoryPage.shouldContainWarningText(
         'You are removing this programme. Once a programme has been removed, it cannot be undone.',
       )

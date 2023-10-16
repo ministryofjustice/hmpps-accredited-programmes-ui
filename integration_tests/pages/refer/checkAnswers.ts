@@ -1,6 +1,13 @@
 import { CourseUtils, ReferralUtils } from '../../../server/utils'
 import Page from '../page'
-import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
+import type {
+  Course,
+  CourseOffering,
+  CourseParticipationWithName,
+  Organisation,
+  Person,
+  Referral,
+} from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
 export default class CheckAnswersPage extends Page {
@@ -10,7 +17,11 @@ export default class CheckAnswersPage extends Page {
 
   organisation: Organisation
 
+  participations: Array<CourseParticipationWithName>
+
   person: Person
+
+  referral: Referral
 
   username: Express.User['username']
 
@@ -18,16 +29,20 @@ export default class CheckAnswersPage extends Page {
     course: Course
     courseOffering: CourseOffering
     organisation: Organisation
+    participations: Array<CourseParticipationWithName>
     person: Person
+    referral: Referral
     username: Express.User['username']
   }) {
     super('Check your answers')
 
-    const { course, courseOffering, organisation, person, username } = args
+    const { course, courseOffering, organisation, participations, person, referral, username } = args
     this.course = CourseUtils.presentCourse(course)
     this.courseOffering = courseOffering
     this.organisation = organisation
+    this.participations = participations
     this.person = person
+    this.referral = referral
     this.username = username
   }
 
@@ -66,5 +81,18 @@ export default class CheckAnswersPage extends Page {
 
   shouldHaveOasysConfirmation(): void {
     cy.get('[data-testid="oasys-confirmation"]').should('have.text', 'I confirm that the information is up to date.')
+  }
+
+  shouldHaveProgrammeHistory(): void {
+    cy.get('[data-testid="programme-history"]').within(() => {
+      this.shouldContainHistorySummaryCards(this.participations, this.referral.id, { change: true, remove: false })
+    })
+  }
+
+  shouldNotHaveProgrammeHistory(): void {
+    cy.get('[data-testid="programme-history"] .govuk-body').should(
+      'have.text',
+      `There is no record of Accredited Programmes for ${this.person.name}.`,
+    )
   }
 }

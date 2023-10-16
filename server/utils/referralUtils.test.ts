@@ -66,8 +66,25 @@ describe('ReferralUtils', () => {
       expect(ReferralUtils.isReadyForSubmission(newReferral)).toEqual(false)
     })
 
-    it('returns true when OASys is confirmed and a reason is provided', () => {
-      // to be updated as the referral model is built out
+    it('returns false when programme history not reviewed', () => {
+      const referral = referralFactory.submittable().build({ hasReviewedProgrammeHistory: false })
+
+      expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
+    })
+
+    it('returns false when OASys not confirmed', () => {
+      const referral = referralFactory.submittable().build({ oasysConfirmed: false })
+
+      expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
+    })
+
+    it('returns false when reason not provided', () => {
+      const referral = referralFactory.submittable().build({ reason: '' })
+
+      expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
+    })
+
+    it('returns true when: programme history reviewed, OASys confirmed, and reason provided', () => {
       const submittableReferral = referralFactory.submittable().build()
 
       expect(ReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)

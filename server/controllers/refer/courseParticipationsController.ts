@@ -62,11 +62,10 @@ export default class CourseParticipationsController {
         await this.courseParticipationsWithNames([courseParticipation], req.user.token)
       )[0]
 
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(
-        courseParticipationWithName,
-        referralId,
-        false,
-      )
+      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId, {
+        change: false,
+        remove: false,
+      })
 
       res.render('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
@@ -145,14 +144,10 @@ export default class CourseParticipationsController {
         req.user.token,
         person.prisonNumber,
       )
-      const courseParticipationsWithNames = await this.courseParticipationsWithNames(
-        courseParticipations,
-        req.user.token,
-      )
-      const sortedCourseParticipationsWithNames = courseParticipationsWithNames.sort((participationA, participationB) =>
-        participationA.createdAt.localeCompare(participationB.createdAt),
-      )
-      const summaryListsOptions = sortedCourseParticipationsWithNames.map(participation =>
+      const courseParticipationsWithNames = (
+        await this.courseParticipationsWithNames(courseParticipations, req.user.token)
+      ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
+      const summaryListsOptions = courseParticipationsWithNames.map(participation =>
         CourseParticipationUtils.summaryListOptions(participation, referral.id),
       )
 
