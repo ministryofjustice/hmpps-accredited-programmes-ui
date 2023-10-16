@@ -1,3 +1,4 @@
+/* eslint-disable import/group-exports */
 const production = process.env.NODE_ENV === 'production'
 
 function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
@@ -29,6 +30,15 @@ export interface ApiConfig {
   url: string
 }
 
+export interface AuditConfig {
+  accessKeyId: string
+  logErrors: boolean
+  queueUrl: string
+  region: string
+  secretAccessKey: string
+  serviceName: string
+}
+
 export default {
   apis: {
     accreditedProgrammesApi: {
@@ -38,6 +48,14 @@ export default {
         response: Number(get('ACCREDITED_PROGRAMMES_API_TIMEOUT_RESPONSE', 10000)),
       },
       url: get('ACCREDITED_PROGRAMMES_API_URL', 'http://localhost:9091', requiredInProduction),
+    },
+    audit: {
+      accessKeyId: get('AUDIT_SQS_ACCESS_KEY_ID', ''),
+      logErrors: false,
+      queueUrl: get('AUDIT_SQS_QUEUE_URL', ''),
+      region: get('AUDIT_SQS_REGION', 'eu-west-2'),
+      secretAccessKey: get('AUDIT_SQS_SECRET_ACCESS_KEY', ''),
+      serviceName: get('AUDIT_SERVICE_NAME', 'accredited-programmes-ui'),
     },
     hmppsAuth: {
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),

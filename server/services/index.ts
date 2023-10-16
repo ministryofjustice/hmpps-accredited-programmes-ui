@@ -1,11 +1,14 @@
 /* istanbul ignore file */
 
+import AuditService from './auditService'
 import CourseService from './courseService'
 import healthCheck from './healthCheck'
 import OrganisationService from './organisationService'
 import PersonService from './personService'
 import ReferralService from './referralService'
 import UserService from './userService'
+import type { AuditConfig } from '../config'
+import config from '../config'
 import {
   caseloadClientBuilder,
   courseClientBuilder,
@@ -17,6 +20,7 @@ import {
 } from '../data'
 
 const services = () => {
+  const auditService = new AuditService(config.apis.audit as AuditConfig)
   const organisationService = new OrganisationService(prisonClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonerClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
@@ -24,6 +28,7 @@ const services = () => {
   const courseService = new CourseService(courseClientBuilder, userService)
 
   return {
+    auditService,
     courseService,
     organisationService,
     personService,
@@ -34,6 +39,15 @@ const services = () => {
 
 type Services = ReturnType<typeof services>
 
-export { CourseService, OrganisationService, PersonService, ReferralService, UserService, healthCheck, services }
+export {
+  AuditService,
+  CourseService,
+  OrganisationService,
+  PersonService,
+  ReferralService,
+  UserService,
+  healthCheck,
+  services,
+}
 
 export type { Services }
