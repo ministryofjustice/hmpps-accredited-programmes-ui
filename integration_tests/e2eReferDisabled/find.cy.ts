@@ -5,24 +5,21 @@ import { CourseOfferingPage } from '../pages/find'
 import Page from '../pages/page'
 
 context('Find', () => {
-  beforeEach(() => {
+  it("Doesn't show the 'Make a referral' button on an offering", () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
-  })
-
-  it("Doesn't show the 'Make a referral' button on an offering", () => {
     cy.signIn()
 
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build({
       secondaryContactEmail: null,
     })
+    cy.task('stubOffering', { courseOffering })
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison(prison)
-
-    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-    cy.task('stubOffering', { courseOffering })
     cy.task('stubPrison', prison)
 
     const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
