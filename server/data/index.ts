@@ -15,7 +15,6 @@ AppInsightsUtils.buildClient()
 import CaseloadClient from './caseloadClient'
 import CourseClient from './courseClient'
 import { serviceCheckFactory } from './healthCheck'
-import type { User } from './hmppsAuthClient'
 import HmppsAuthClient from './hmppsAuthClient'
 import HmppsManageUsersClient from './hmppsManageUsersClient'
 import PrisonClient from './prisonClient'
@@ -64,4 +63,4 @@ export {
   verifyToken,
 }
 
-export type { RedisClient, RestClientBuilder, RestClientBuilderWithoutToken, TokenVerifier, User }
+export type { RedisClient, RestClientBuilder, RestClientBuilderWithoutToken, TokenVerifier }
