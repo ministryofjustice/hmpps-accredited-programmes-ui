@@ -1,4 +1,5 @@
-import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
+import type { Course, CourseOffering, CourseParticipationWithName, Organisation } from '@accredited-programmes/models'
+import type { User } from '@accredited-programmes/users'
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryList,
@@ -34,6 +35,10 @@ type HasHtmlString = {
 }
 
 type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
+
+type CourseParticipationPresenter = CourseParticipationWithName & {
+  addedByName: User['name']
+}
 
 type CoursePresenter = Course & {
   audienceTags: Array<GovukFrontendTagWithText>
@@ -88,6 +93,7 @@ type ReferralTaskListSection = {
 }
 
 export type {
+  CourseParticipationPresenter,
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
