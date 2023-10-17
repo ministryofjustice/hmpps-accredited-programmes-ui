@@ -72,4 +72,57 @@ describe('auditMiddleware', () => {
       expect(logger.error).toHaveBeenCalledWith('User without a username is attempting to access an audited path')
     })
   })
+
+  describe('body parameters', () => {
+    it('includes selected request body parameters with the audit message', async () => {
+      const handler = jest.fn()
+      const response = createMock<Response>({ locals: { user: { username } } })
+      const request = createMock<Request>({
+        body: { bodyParam1: 'body-value-1', bodyParam2: 'body-value-2', bodyParam3: 'body-value-3' },
+        params: requestParams,
+      })
+      const next = jest.fn()
+
+      const auditService = createMock<AuditService>()
+
+      const auditedhandler = auditMiddleware(handler, auditService, {
+        auditBodyParams: ['bodyParam1', 'bodyParam2'],
+        auditEvent,
+      })
+
+      await auditedhandler(request, response, next)
+
+      expect(handler).toHaveBeenCalled()
+      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(auditEvent, username, {
+        ...requestParams,
+        bodyParam1: 'body-value-1',
+        bodyParam2: 'body-value-2',
+      })
+    })
+
+    it('ignores empty request body parameters', async () => {
+      const handler = jest.fn()
+      const response = createMock<Response>({ locals: { user: { username } } })
+      const request = createMock<Request>({
+        body: { bodyParam1: 'body-value-1', bodyParam2: '' },
+        params: requestParams,
+      })
+      const next = jest.fn()
+
+      const auditService = createMock<AuditService>()
+
+      const auditedhandler = auditMiddleware(handler, auditService, {
+        auditBodyParams: ['bodyParam1', 'bodyParam2'],
+        auditEvent,
+      })
+
+      await auditedhandler(request, response, next)
+
+      expect(handler).toHaveBeenCalled()
+      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(auditEvent, username, {
+        ...requestParams,
+        bodyParam1: 'body-value-1',
+      })
+    })
+  })
 })
