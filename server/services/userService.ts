@@ -18,10 +18,7 @@ export default class UserService {
     const hmppsManageUsersClient = this.hmppsManageUsersClientBuilder(token)
     const { username } = await hmppsManageUsersClient.getCurrentUsername()
 
-    const [user, caseloads] = await Promise.all([
-      hmppsManageUsersClient.getUserFromUsername(username),
-      this.getCaseloads(token),
-    ])
+    const [user, caseloads] = await Promise.all([this.getUserFromUsername(token, username), this.getCaseloads(token)])
 
     return { ...user, caseloads, displayName: StringUtils.convertToTitleCase(user.name) }
   }
