@@ -11,6 +11,7 @@ import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
 import prisonerFactory from './prisoner'
 import referralFactory from './referral'
+import userFactory from './user'
 
 export {
   caseloadFactory,
@@ -26,4 +27,5 @@ export {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  userFactory,
 }
