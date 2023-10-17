@@ -100,7 +100,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsWithNames,
         person,
         referral: submittableReferral,
-        username: auth.mockedUsername(),
+        username: auth.mockedUser.username,
       })
       checkAnswersPage.shouldHavePersonDetails(person)
       checkAnswersPage.shouldContainNavigation(path)
@@ -131,7 +131,7 @@ context('Submitting a referral', () => {
           participations: [],
           person,
           referral: submittableReferral,
-          username: auth.mockedUsername(),
+          username: auth.mockedUser.username,
         })
         checkAnswersPage.shouldNotHaveProgrammeHistory()
       })
@@ -158,7 +158,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsWithNames,
         person,
         referral: submittableReferral,
-        username: auth.mockedUsername(),
+        username: auth.mockedUser.username,
       })
       checkAnswersPage.confirmDetailsAndSubmitReferral(submittableReferral)
 
@@ -179,7 +179,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsWithNames,
         person,
         referral: submittableReferral,
-        username: auth.mockedUsername(),
+        username: auth.mockedUser.username,
       })
       checkAnswersPage.shouldContainButton('Submit referral').click()
 
@@ -190,7 +190,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsWithNames,
         person,
         referral: submittableReferral,
-        username: auth.mockedUsername(),
+        username: auth.mockedUser.username,
       })
       checkAnswersPageWithErrors.shouldHaveErrors([
         {
