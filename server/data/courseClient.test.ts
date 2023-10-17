@@ -5,7 +5,7 @@ import CourseClient from './courseClient'
 import config from '../config'
 import { apiPaths } from '../paths'
 import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
-import type { CourseParticipation, CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -69,68 +69,32 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('createParticipation', () => {
-    describe('when `courseId` is provided', () => {
-      const courseParticipation = courseParticipationFactory.withCourseId().build() as CourseParticipation & {
-        courseId: string
-      }
-      const { courseId, prisonNumber } = courseParticipation
+    const courseParticipation = courseParticipationFactory.new().build()
+    const { courseName, prisonNumber } = courseParticipation
 
-      beforeEach(() => {
-        provider.addInteraction({
-          state: `A person exists with prison number ${prisonNumber}`,
-          uponReceiving: `A request to create a course participation for person "${prisonNumber}"`,
-          willRespondWith: {
-            body: Matchers.like(courseParticipation),
-            status: 201,
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `A person exists with prison number ${prisonNumber}`,
+        uponReceiving: `A request to create a course participation for person "${prisonNumber}"`,
+        willRespondWith: {
+          body: Matchers.like(courseParticipation),
+          status: 201,
+        },
+        withRequest: {
+          body: { courseName, prisonNumber },
+          headers: {
+            authorization: `Bearer ${token}`,
           },
-          withRequest: {
-            body: { courseId, prisonNumber },
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-            method: 'POST',
-            path: apiPaths.participations.create({}),
-          },
-        })
-      })
-
-      it('creates a course participation using the `courseId` value', async () => {
-        const result = await courseClient.createParticipation(prisonNumber, courseId)
-
-        expect(result).toEqual(courseParticipation)
+          method: 'POST',
+          path: apiPaths.participations.create({}),
+        },
       })
     })
 
-    describe('when `otherCourseName` is provided and `courseId` is not', () => {
-      const courseParticipation = courseParticipationFactory.withOtherCourseName().build() as CourseParticipation & {
-        otherCourseName: string
-      }
-      const { otherCourseName, prisonNumber } = courseParticipation
+    it('creates a course participation', async () => {
+      const result = await courseClient.createParticipation(prisonNumber, courseName)
 
-      beforeEach(() => {
-        provider.addInteraction({
-          state: `A person exists with prison number ${prisonNumber}`,
-          uponReceiving: `A request to create a course participation for person "${prisonNumber}"`,
-          willRespondWith: {
-            body: Matchers.like(courseParticipation),
-            status: 201,
-          },
-          withRequest: {
-            body: { otherCourseName, prisonNumber },
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-            method: 'POST',
-            path: apiPaths.participations.create({}),
-          },
-        })
-      })
-
-      it('creates a course participation using the `otherCourseName` value', async () => {
-        const result = await courseClient.createParticipation(prisonNumber, undefined, otherCourseName)
-
-        expect(result).toEqual(courseParticipation)
-      })
+      expect(result).toEqual(courseParticipation)
     })
   })
 
@@ -318,10 +282,10 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('updateParticipation', () => {
-    const courseId = 'course-id'
-    const courseParticipation = courseParticipationFactory.withCourseId().build({ courseId })
+    const courseParticipation = courseParticipationFactory.build()
     const courseParticipationUpdate: CourseParticipationUpdate = {
-      courseId,
+      courseName: courseParticipation.courseName,
+      detail: 'nice',
       outcome: {
         status: 'complete',
         yearCompleted: 2023,

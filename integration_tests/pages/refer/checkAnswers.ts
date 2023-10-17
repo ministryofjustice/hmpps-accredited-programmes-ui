@@ -3,7 +3,7 @@ import Page from '../page'
 import type {
   Course,
   CourseOffering,
-  CourseParticipationWithName,
+  CourseParticipation,
   Organisation,
   Person,
   Referral,
@@ -17,7 +17,7 @@ export default class CheckAnswersPage extends Page {
 
   organisation: Organisation
 
-  participations: Array<CourseParticipationWithName>
+  participations: Array<CourseParticipation>
 
   person: Person
 
@@ -29,7 +29,7 @@ export default class CheckAnswersPage extends Page {
     course: Course
     courseOffering: CourseOffering
     organisation: Organisation
-    participations: Array<CourseParticipationWithName>
+    participations: Array<CourseParticipation>
     person: Person
     referral: Referral
     username: Express.User['username']

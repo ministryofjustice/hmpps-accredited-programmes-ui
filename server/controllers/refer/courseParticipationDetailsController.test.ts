@@ -151,6 +151,7 @@ describe('CourseParticipationDetailsController', () => {
   describe('update', () => {
     it('asks the service to update the given course participation details and redirects to the `CourseParticipationsController` `index` action', async () => {
       const courseParticipationUpdate: CourseParticipationUpdate = {
+        courseName: courseParticipation.courseName,
         detail: 'Some additional detail',
         outcome: {
           status: 'complete',
@@ -174,12 +175,15 @@ describe('CourseParticipationDetailsController', () => {
       await requestHandler(request, response, next)
 
       expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
-      expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(request)
-      expect(courseService.updateParticipation).toHaveBeenCalledWith(token, courseParticipationId, {
-        courseId: courseParticipation.courseId,
-        otherCourseName: courseParticipation.otherCourseName,
-        ...courseParticipationUpdate,
-      })
+      expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
+        request,
+        courseParticipation.courseName,
+      )
+      expect(courseService.updateParticipation).toHaveBeenCalledWith(
+        token,
+        courseParticipationId,
+        courseParticipationUpdate,
+      )
       expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully added a programme.')
       expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
     })
@@ -194,7 +198,10 @@ describe('CourseParticipationDetailsController', () => {
         await requestHandler(request, response, next)
 
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
-        expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(request)
+        expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
+          request,
+          courseParticipation.courseName,
+        )
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.details.show({ courseParticipationId, referralId }),
         )

@@ -59,17 +59,17 @@ export default class CourseParticipationDetailsController {
 
       const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
 
-      const processedFormData = CourseParticipationUtils.processDetailsFormData(req)
+      const processedFormData = CourseParticipationUtils.processDetailsFormData(req, courseParticipation.courseName)
 
       if (processedFormData.hasFormErrors) {
         return res.redirect(referPaths.programmeHistory.details.show({ courseParticipationId, referralId }))
       }
 
-      await this.courseService.updateParticipation(req.user.token, courseParticipationId, {
-        courseId: courseParticipation.courseId,
-        otherCourseName: courseParticipation.otherCourseName,
-        ...processedFormData.courseParticipationUpdate,
-      })
+      await this.courseService.updateParticipation(
+        req.user.token,
+        courseParticipationId,
+        processedFormData.courseParticipationUpdate,
+      )
 
       req.flash('successMessage', 'You have successfully added a programme.')
 

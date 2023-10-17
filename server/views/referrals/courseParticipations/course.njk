@@ -45,7 +45,7 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukRadios({
-          name: "courseId",
+          name: "courseName",
           fieldset: {
             legend: {
               text: pageHeading,
@@ -57,7 +57,7 @@
             text: "Select the programme"
           },
           items: courseRadioOptions.concat({
-            value: "other",
+            value: "Other",
             text: "Other",
             conditional: {
               html: otherCourseHtml
@@ -67,8 +67,8 @@
               "data-testid": "other-course-option"
             }
           }),
-          value: formValues.courseId,
-          errorMessage: errors.messages.courseId
+          value: formValues.courseName,
+          errorMessage: errors.messages.courseName
         }) }}
 
         {{ govukButton({

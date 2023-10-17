@@ -3,7 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { CourseParticipationUtils, CourseUtils, FormUtils, TypeUtils } from '../../utils'
-import type { CourseParticipation, CourseParticipationWithName, ReferralUpdate } from '@accredited-programmes/models'
+import type { CourseParticipation, ReferralUpdate } from '@accredited-programmes/models'
 
 export default class CourseParticipationsController {
   constructor(
@@ -18,8 +18,8 @@ export default class CourseParticipationsController {
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
 
-      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processCourseFormData(
-        req.body.courseId,
+      const { courseName, hasFormErrors } = CourseParticipationUtils.processCourseFormData(
+        req.body.courseName,
         req.body.otherCourseName,
         req,
       )
@@ -31,8 +31,7 @@ export default class CourseParticipationsController {
       const courseParticipation = await this.courseService.createParticipation(
         req.user.token,
         referral.prisonNumber,
-        courseId,
-        otherCourseName,
+        courseName as CourseParticipation['courseName'],
       )
 
       return res.redirect(
@@ -58,11 +57,7 @@ export default class CourseParticipationsController {
         res.locals.user.caseloads,
       )
 
-      const courseParticipationWithName = (
-        await this.courseParticipationsWithNames([courseParticipation], req.user.token)
-      )[0]
-
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId, {
+      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipation, referralId, {
         change: false,
         remove: false,
       })
@@ -102,7 +97,6 @@ export default class CourseParticipationsController {
       const { courseParticipationId, referralId } = req.params
 
       const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
-
       const referral = await this.referralService.getReferral(req.user.token, referralId)
       const person = await this.personService.getPerson(
         req.user.username,
@@ -111,17 +105,18 @@ export default class CourseParticipationsController {
       )
       const courses = await this.courseService.getCourses(req.user.token)
 
-      FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
+      FormUtils.setFieldErrors(req, res, ['courseName', 'otherCourseName'])
 
-      const { courseId, otherCourseName } = courseParticipation
-      const isOtherCourse = !courseId && !!otherCourseName
+      const { courseName } = courseParticipation
+      const isKnownCourse = courses.find(course => course.name === courseName)
+      const formValues = isKnownCourse ? { courseName } : { courseName: 'Other', otherCourseName: courseName }
       const hasOtherCourseNameError = !!res.locals.errors.messages.otherCourseName
 
       res.render('referrals/courseParticipations/course', {
         action: `${referPaths.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
         courseRadioOptions: CourseUtils.courseRadioOptions(courses),
-        formValues: { courseId, otherCourseName },
-        otherCourseNameChecked: isOtherCourse || hasOtherCourseNameError,
+        formValues,
+        otherCourseNameChecked: !isKnownCourse || hasOtherCourseNameError,
         pageHeading: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
@@ -140,14 +135,10 @@ export default class CourseParticipationsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-      const courseParticipations = await this.courseService.getParticipationsByPerson(
-        req.user.token,
-        person.prisonNumber,
-      )
-      const courseParticipationsWithNames = (
-        await this.courseParticipationsWithNames(courseParticipations, req.user.token)
+      const sortedCourseParticipations = (
+        await this.courseService.getParticipationsByPerson(req.user.token, person.prisonNumber)
       ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
-      const summaryListsOptions = courseParticipationsWithNames.map(participation =>
+      const summaryListsOptions = sortedCourseParticipations.map(participation =>
         CourseParticipationUtils.summaryListOptions(participation, referral.id),
       )
 
@@ -174,7 +165,7 @@ export default class CourseParticipationsController {
         res.locals.user.caseloads,
       )
 
-      FormUtils.setFieldErrors(req, res, ['courseId', 'otherCourseName'])
+      FormUtils.setFieldErrors(req, res, ['courseName', 'otherCourseName'])
 
       res.render('referrals/courseParticipations/course', {
         action: referPaths.programmeHistory.create({ referralId: referral.id }),
@@ -197,8 +188,8 @@ export default class CourseParticipationsController {
         req.params.courseParticipationId,
       )
 
-      const { courseId, hasFormErrors, otherCourseName } = CourseParticipationUtils.processCourseFormData(
-        req.body.courseId,
+      const { courseName, hasFormErrors } = CourseParticipationUtils.processCourseFormData(
+        req.body.courseName,
         req.body.otherCourseName,
         req,
       )
@@ -212,10 +203,14 @@ export default class CourseParticipationsController {
         )
       }
 
+      const { detail, outcome, setting, source } = currentCourseParticipation
+
       await this.courseService.updateParticipation(req.user.token, currentCourseParticipation.id, {
-        ...currentCourseParticipation,
-        courseId,
-        otherCourseName,
+        courseName: courseName as CourseParticipation['courseName'],
+        detail,
+        outcome,
+        setting,
+        source,
       })
 
       return res.redirect(
@@ -247,25 +242,5 @@ export default class CourseParticipationsController {
 
       return res.redirect(referPaths.show({ referralId }))
     }
-  }
-
-  private async courseParticipationsWithNames(
-    courseParticipations: Array<CourseParticipation>,
-    token: Express.User['token'],
-  ): Promise<Array<CourseParticipationWithName>> {
-    return Promise.all(
-      courseParticipations.map(async courseParticipation => {
-        let name = ''
-
-        if (courseParticipation.courseId) {
-          const course = await this.courseService.getCourse(token, courseParticipation.courseId)
-          name = course.name
-        } else {
-          name = courseParticipation.otherCourseName as CourseParticipationWithName['name']
-        }
-
-        return { ...courseParticipation, name }
-      }),
-    )
   }
 }

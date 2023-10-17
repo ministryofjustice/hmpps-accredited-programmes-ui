@@ -6,7 +6,6 @@ import type {
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-  CourseParticipationWithName,
 } from './CourseParticipation'
 import type { CoursePrerequisite } from './CoursePrerequisite'
 import type { Organisation } from './Organisation'
@@ -22,7 +21,6 @@ export type {
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-  CourseParticipationWithName,
   CoursePrerequisite,
   CreatedReferralResponse,
   Organisation,

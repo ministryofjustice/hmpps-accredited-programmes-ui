@@ -200,22 +200,15 @@ describe('ReferralsController', () => {
       courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
-      const courseParticipations = [
-        courseParticipationFactory.build({ courseId: 'an-ID', createdAt: '2023-01-01T12:00:00.000Z' }),
-        courseParticipationFactory.build({
-          courseId: undefined,
-          createdAt: '2022-01-01T12:00:00.000Z',
-          otherCourseName: 'Another course',
-        }),
-      ]
-      const courseParticipationsWithNames = [
-        { ...courseParticipations[0], name: course.name },
-        { ...courseParticipations[1], name: 'Another course' },
-      ]
+      const earliestCourseParticipation = courseParticipationFactory.build({ createdAt: '2022-01-01T12:00:00.000Z' })
+      const latestCourseParticipation = courseParticipationFactory.build({ createdAt: '2023-01-01T12:00:00.000Z' })
       const summaryListOptions = 'summary list options'
-      courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
+      courseService.getParticipationsByPerson.mockResolvedValue([
+        latestCourseParticipation,
+        earliestCourseParticipation,
+      ])
       ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
-        (_courseParticipationWithName, _referralId, _withActions = { change: true, remove: true }) => {
+        (_courseParticipation, _referralId, _withActions = { change: true, remove: true }) => {
           return summaryListOptions
         },
       )
@@ -231,13 +224,13 @@ describe('ReferralsController', () => {
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         1,
-        courseParticipationsWithNames[1],
+        earliestCourseParticipation,
         referral.id,
         { change: true, remove: false },
       )
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         2,
-        courseParticipationsWithNames[0],
+        latestCourseParticipation,
         referral.id,
         { change: true, remove: false },
       )

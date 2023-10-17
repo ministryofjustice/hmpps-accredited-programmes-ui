@@ -14,13 +14,13 @@ export default class SelectProgrammePage extends Page {
   }
 
   selectCourse(value: string) {
-    this.selectRadioButton('courseId', value)
+    this.selectRadioButton('courseName', value)
   }
 
   shouldContainCourseOptions() {
     this.shouldContainRadioItems([
-      ...this.courses.map(course => ({ label: course.name, value: course.id })),
-      { label: 'Other', value: 'other' },
+      ...this.courses.map(course => ({ label: course.name, value: course.name })),
+      { label: 'Other', value: 'Other' },
     ])
   }
 
@@ -29,14 +29,12 @@ export default class SelectProgrammePage extends Page {
     cy.get(`input[name="otherCourseName"]`).should('be.visible')
   }
 
-  shouldHaveSelectedCourse(
-    courseId: CourseParticipation['courseId'],
-    otherCourseName?: CourseParticipation['otherCourseName'],
-  ) {
-    cy.get(`.govuk-radios__input[value="${courseId}"]`).should('be.checked')
-
-    if (otherCourseName) {
-      cy.get('#otherCourseName').should('have.value', otherCourseName)
+  shouldHaveSelectedCourse(courseName: CourseParticipation['courseName'], isKnownCourse: boolean) {
+    if (isKnownCourse) {
+      cy.get(`.govuk-radios__input[value="${courseName}"]`).should('be.checked')
+    } else {
+      cy.get(`.govuk-radios__input[value="Other"]`).should('be.checked')
+      cy.get('#otherCourseName').should('have.value', courseName)
     }
   }
 
@@ -44,8 +42,8 @@ export default class SelectProgrammePage extends Page {
     cy.get(`input[name="otherCourseName"]`).should('not.be.visible')
   }
 
-  submitSelection(courseParticipation: CourseParticipation, selectedCourseId: Course['id']) {
-    cy.task('stubParticipation', { ...courseParticipation, courseId: selectedCourseId })
+  submitSelection(courseParticipation: CourseParticipation, selectedCourseName: Course['name']) {
+    cy.task('stubParticipation', { ...courseParticipation, courseName: selectedCourseName })
     this.shouldContainButton('Continue').click()
   }
 }
