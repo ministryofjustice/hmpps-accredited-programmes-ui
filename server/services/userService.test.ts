@@ -1,7 +1,10 @@
+import createError from 'http-errors'
+
 import UserService from './userService'
 import logger from '../../logger'
 import { CaseloadClient, HmppsManageUsersClient } from '../data'
 import { caseloadFactory } from '../testutils/factories'
+import type { User } from '@accredited-programmes/users'
 
 jest.mock('../data/hmppsManageUsersClient')
 jest.mock('../data/caseloadClient')
@@ -18,6 +21,15 @@ describe('UserService', () => {
 
   let userService: UserService
 
+  const username = 'JOHN_SMITH'
+  const userResponse: User = {
+    active: true,
+    authSource: 'nomis',
+    name: 'john smith',
+    userId: 'user-id',
+    username,
+  }
+
   beforeEach(() => {
     jest.resetAllMocks()
 
@@ -28,16 +40,9 @@ describe('UserService', () => {
   })
 
   describe('getCurrentUserWithDetails', () => {
-    const username = 'JOHN_SMITH'
     beforeEach(() => {
       hmppsManageUsersClient.getCurrentUsername.mockResolvedValue({ username })
-      hmppsManageUsersClient.getUserFromUsername.mockResolvedValue({
-        active: true,
-        authSource: 'nomis',
-        name: 'john smith',
-        userId: 'user-id',
-        username,
-      })
+      hmppsManageUsersClient.getUserFromUsername.mockResolvedValue(userResponse)
     })
 
     it('retrieves user and formats name', async () => {
@@ -71,6 +76,46 @@ describe('UserService', () => {
         const result = await userService.getCurrentUserWithDetails(token)
         expect(logger.error).toHaveBeenCalledWith(caseloadError, "Failed to fetch user's caseloads")
         expect(result.caseloads).toEqual([])
+      })
+    })
+  })
+
+  describe('getUserFromUsername', () => {
+    beforeEach(() => {
+      hmppsManageUsersClient.getUserFromUsername.mockResolvedValue(userResponse)
+    })
+
+    it('returns the requested user', async () => {
+      const result = await userService.getUserFromUsername(token, username)
+
+      expect(result).toEqual(userResponse)
+      expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(token)
+      expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
+    })
+
+    describe('when the HMPPS Manage Users client throws a 404 error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(404)
+        hmppsManageUsersClient.getUserFromUsername.mockRejectedValue(clientError)
+
+        const expectedError = createError(404, `User with username ${username} not found.`)
+        await expect(userService.getUserFromUsername(token, username)).rejects.toEqual(expectedError)
+
+        expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(token)
+        expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
+      })
+    })
+
+    describe('when the HMPPS Manage Users client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500)
+        hmppsManageUsersClient.getUserFromUsername.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching user ${username}.`)
+        await expect(userService.getUserFromUsername(token, username)).rejects.toEqual(expectedError)
+
+        expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(token)
+        expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
       })
     })
   })
