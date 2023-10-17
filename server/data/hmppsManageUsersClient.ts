@@ -1,7 +1,7 @@
 import RestClient from './restClient'
 import logger from '../../logger'
 import config from '../config'
-import type { User } from '@accredited-programmes/users'
+import type { User } from '@manage-users-api'
 
 export default class HmppsManageUsersClient {
   restClient: RestClient
