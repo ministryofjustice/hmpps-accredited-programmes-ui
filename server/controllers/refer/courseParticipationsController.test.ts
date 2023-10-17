@@ -4,8 +4,14 @@ import type { NextFunction, Request, Response } from 'express'
 
 import CourseParticipationsController from './courseParticipationsController'
 import { referPaths } from '../../paths'
-import type { CourseService, PersonService, ReferralService } from '../../services'
-import { courseFactory, courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
+import type { CourseService, PersonService, ReferralService, UserService } from '../../services'
+import {
+  courseFactory,
+  courseParticipationFactory,
+  personFactory,
+  referralFactory,
+  userFactory,
+} from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../utils'
 import type { CourseParticipation } from '@accredited-programmes/models'
@@ -22,6 +28,7 @@ describe('CourseParticipationsController', () => {
   const courseService = createMock<CourseService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
+  const userService = createMock<UserService>({})
 
   let courseParticipationsController: CourseParticipationsController
 
@@ -30,9 +37,14 @@ describe('CourseParticipationsController', () => {
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
-    courseParticipationsController = new CourseParticipationsController(courseService, personService, referralService)
+    courseParticipationsController = new CourseParticipationsController(
+      courseService,
+      personService,
+      referralService,
+      userService,
+    )
     ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
-      (_courseParticipationWithName, _referralId, _withActions = { change: true, remove: true }) => {
+      (_presentedCourseParticipation, _referralId, _withActions = { change: true, remove: true }) => {
         return summaryListOptions
       },
     )
@@ -158,6 +170,7 @@ describe('CourseParticipationsController', () => {
         courseId: course.id,
         prisonNumber: person.prisonNumber,
       })
+      const user = userFactory.build()
       const courseParticipationId = courseParticipation.id
       const referralId = referral.id
 
@@ -168,14 +181,15 @@ describe('CourseParticipationsController', () => {
       referralService.getReferral.mockResolvedValue(referral)
       courseService.getCourse.mockResolvedValue(course)
       courseService.getParticipation.mockResolvedValue(courseParticipation)
+      userService.getUserFromUsername.mockResolvedValue(user)
 
-      const courseParticipationWithName = { ...courseParticipation, name: course.name }
+      const presentedCourseParticipation = { ...courseParticipation, addedByName: user.name, name: course.name }
 
       const requestHandler = courseParticipationsController.delete()
       await requestHandler(request, response, next)
 
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenCalledWith(
-        courseParticipationWithName,
+        presentedCourseParticipation,
         referral.id,
         { change: false, remove: false },
       )
@@ -277,9 +291,11 @@ describe('CourseParticipationsController', () => {
       }),
     ]
     const course = courseFactory.build()
-    const courseParticipationsWithNames = [
-      { ...courseParticipations[0], name: course.name },
-      { ...courseParticipations[1], name: 'Another course' },
+    const user1 = userFactory.build()
+    const user2 = userFactory.build()
+    const presentedCourseParticipations = [
+      { ...courseParticipations[0], addedByName: user1.name, name: course.name },
+      { ...courseParticipations[1], addedByName: user2.name, name: 'Another course' },
     ]
 
     beforeEach(() => {
@@ -287,6 +303,7 @@ describe('CourseParticipationsController', () => {
       personService.getPerson.mockResolvedValue(person)
       courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
       courseService.getCourse.mockResolvedValue(course)
+      userService.getUserFromUsername.mockResolvedValueOnce(user2).mockResolvedValueOnce(user1)
       ;(request.flash as jest.Mock).mockImplementation(() => [])
     })
 
@@ -296,12 +313,12 @@ describe('CourseParticipationsController', () => {
 
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         1,
-        courseParticipationsWithNames[1],
+        presentedCourseParticipations[1],
         referral.id,
       )
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         2,
-        courseParticipationsWithNames[0],
+        presentedCourseParticipations[0],
         referral.id,
       )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/index', {

@@ -14,6 +14,7 @@ const controllers = (services: Services) => {
     services.organisationService,
     services.personService,
     services.referralService,
+    services.userService,
   )
   const peopleController = new PeopleController(services.personService)
   const reasonController = new ReasonController(services.personService, services.referralService)
@@ -22,6 +23,7 @@ const controllers = (services: Services) => {
     services.courseService,
     services.personService,
     services.referralService,
+    services.userService,
   )
   const courseParticipationDetailsController = new CourseParticipationDetailsController(
     services.courseService,

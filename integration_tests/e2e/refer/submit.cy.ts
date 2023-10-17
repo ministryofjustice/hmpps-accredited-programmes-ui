@@ -8,12 +8,13 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  userFactory,
 } from '../../../server/testutils/factories'
 import { OrganisationUtils } from '../../../server/utils'
 import auth from '../../mockApis/auth'
 import Page from '../../pages/page'
 import { CheckAnswersPage, CompletePage, TaskListPage } from '../../pages/refer'
-import type { CourseParticipationWithName } from '@accredited-programmes/models'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 context('Submitting a referral', () => {
   const course = courseFactory.build()
@@ -33,19 +34,26 @@ context('Submitting a referral', () => {
     religionOrBelief: prisoner.religion,
     setting: 'Custody',
   })
+  const user1 = userFactory.build()
+  const user2 = userFactory.build()
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
   const courseParticipations = [
-    courseParticipationFactory.withCourseId().build({ courseId: course.id, createdAt: '2023-01-01T12:00:00.000Z' }),
     courseParticipationFactory
-      .withOtherCourseName()
-      .build({ createdAt: '2022-01-01T12:00:00.000Z', otherCourseName: 'A great course name' }),
+      .withCourseId()
+      .build({ addedBy: user1.username, courseId: course.id, createdAt: '2023-01-01T12:00:00.000Z' }),
+    courseParticipationFactory.withOtherCourseName().build({
+      addedBy: user2.username,
+      createdAt: '2022-01-01T12:00:00.000Z',
+      otherCourseName: 'A great course name',
+    }),
   ]
-  const courseParticipationsWithNames: Array<CourseParticipationWithName> = [
-    { ...courseParticipations[0], name: course.name },
+  const presentedCourseParticipations: Array<CourseParticipationPresenter> = [
+    { ...courseParticipations[0], addedByName: user1.name, name: course.name },
     {
       ...courseParticipations[1],
-      name: courseParticipations[1].otherCourseName as CourseParticipationWithName['name'],
+      addedByName: user2.name,
+      name: courseParticipations[1].otherCourseName as CourseParticipationPresenter['name'],
     },
   ]
   const submittableReferral = referralFactory
@@ -86,6 +94,8 @@ context('Submitting a referral', () => {
     beforeEach(() => {
       cy.task('stubCourse', course)
       cy.task('stubReferral', submittableReferral)
+      cy.task('stubUserDetails', { user: user1 })
+      cy.task('stubUserDetails', { user: user2 })
     })
 
     it('Shows the information the user has submitted in the referral form', () => {
@@ -97,7 +107,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipationsWithNames,
+        participations: presentedCourseParticipations,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,
@@ -142,6 +152,8 @@ context('Submitting a referral', () => {
     beforeEach(() => {
       cy.task('stubCourse', course)
       cy.task('stubParticipationsByPerson', { courseParticipations, prisonNumber: prisoner.prisonerNumber })
+      cy.task('stubUserDetails', { user: user1 })
+      cy.task('stubUserDetails', { user: user2 })
     })
 
     it('redirects to the referral complete page when the user confirms the details', () => {
@@ -155,7 +167,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipationsWithNames,
+        participations: presentedCourseParticipations,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,
@@ -176,7 +188,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipationsWithNames,
+        participations: presentedCourseParticipations,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,
@@ -187,7 +199,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipationsWithNames,
+        participations: presentedCourseParticipations,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,

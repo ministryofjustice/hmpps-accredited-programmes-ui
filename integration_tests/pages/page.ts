@@ -3,8 +3,9 @@ import type { AxeRules } from '@accredited-programmes/integration-tests'
 import { referPaths } from '../../server/paths'
 import { CourseParticipationUtils, PersonUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { CourseParticipationWithName, Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
+  CourseParticipationPresenter,
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
@@ -87,7 +88,7 @@ export default abstract class Page {
   }
 
   shouldContainHistorySummaryCards(
-    participations: Array<CourseParticipationWithName>,
+    participations: Array<CourseParticipationPresenter>,
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
   ) {
@@ -200,7 +201,7 @@ export default abstract class Page {
   }
 
   shouldContainSummaryCard(
-    courseName: CourseParticipationWithName['name'],
+    courseName: CourseParticipationPresenter['name'],
     actions: Array<GovukFrontendSummaryListCardActionsItemWithText>,
     rows: Array<GovukFrontendSummaryListRowWithValue>,
     summaryCardElement: JQuery<HTMLElement>,

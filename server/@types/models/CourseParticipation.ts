@@ -34,14 +34,4 @@ type CourseParticipationUpdate = {
   source?: CourseParticipation['source']
 }
 
-type CourseParticipationWithName = CourseParticipation & {
-  name: string
-}
-
-export type {
-  CourseParticipation,
-  CourseParticipationOutcome,
-  CourseParticipationSetting,
-  CourseParticipationUpdate,
-  CourseParticipationWithName,
-}
+export type { CourseParticipation, CourseParticipationOutcome, CourseParticipationSetting, CourseParticipationUpdate }

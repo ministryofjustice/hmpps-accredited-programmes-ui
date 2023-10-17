@@ -1,4 +1,4 @@
-import type { Course, CourseOffering, CourseParticipationWithName, Organisation } from '@accredited-programmes/models'
+import type { Course, CourseOffering, CourseParticipation, Organisation } from '@accredited-programmes/models'
 import type { User } from '@accredited-programmes/users'
 import type {
   GovukFrontendRadiosItem,
@@ -36,8 +36,9 @@ type HasHtmlString = {
 
 type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
 
-type CourseParticipationPresenter = CourseParticipationWithName & {
+type CourseParticipationPresenter = CourseParticipation & {
   addedByName: User['name']
+  name: Course['name']
 }
 
 type CoursePresenter = Course & {

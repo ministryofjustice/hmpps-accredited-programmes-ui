@@ -8,10 +8,10 @@ import type {
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-  CourseParticipationWithName,
   Referral,
 } from '@accredited-programmes/models'
 import type {
+  CourseParticipationPresenter,
   GovukFrontendSummaryListCardActionsWithItems,
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
@@ -119,7 +119,7 @@ export default class CourseParticipationUtils {
   }
 
   static summaryListOptions(
-    courseParticipationWithName: CourseParticipationWithName,
+    courseParticipation: CourseParticipationPresenter,
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
   ): GovukFrontendSummaryListWithRowsWithValues {
@@ -128,22 +128,22 @@ export default class CourseParticipationUtils {
     if (withActions.change) {
       actions.items.push({
         href: referPaths.programmeHistory.editProgramme({
-          courseParticipationId: courseParticipationWithName.id,
+          courseParticipationId: courseParticipation.id,
           referralId,
         }),
         text: 'Change',
-        visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+        visuallyHiddenText: `participation for ${courseParticipation.name}`,
       })
     }
 
     if (withActions.remove) {
       actions.items.push({
         href: referPaths.programmeHistory.delete({
-          courseParticipationId: courseParticipationWithName.id,
+          courseParticipationId: courseParticipation.id,
           referralId,
         }),
         text: 'Remove',
-        visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+        visuallyHiddenText: `participation for ${courseParticipation.name}`,
       })
     }
 
@@ -151,25 +151,25 @@ export default class CourseParticipationUtils {
       card: {
         actions,
         title: {
-          text: courseParticipationWithName.name,
+          text: courseParticipation.name,
         },
       },
-      rows: CourseParticipationUtils.summaryListRows(courseParticipationWithName),
+      rows: CourseParticipationUtils.summaryListRows(courseParticipation),
     }
   }
 
   private static summaryListRows(
-    courseParticipationWithName: CourseParticipationWithName,
+    courseParticipation: CourseParticipationPresenter,
   ): Array<GovukFrontendSummaryListRowWithValue> {
     return [
-      CourseParticipationUtils.summaryListRow('Programme name', [courseParticipationWithName.name]),
-      CourseParticipationUtils.summaryListRowSetting(courseParticipationWithName.setting),
-      CourseParticipationUtils.summaryListRowOutcome(courseParticipationWithName.outcome),
-      CourseParticipationUtils.summaryListRow('Additional detail', [courseParticipationWithName.detail]),
-      CourseParticipationUtils.summaryListRow('Source of information', [courseParticipationWithName.source]),
+      CourseParticipationUtils.summaryListRow('Programme name', [courseParticipation.name]),
+      CourseParticipationUtils.summaryListRowSetting(courseParticipation.setting),
+      CourseParticipationUtils.summaryListRowOutcome(courseParticipation.outcome),
+      CourseParticipationUtils.summaryListRow('Additional detail', [courseParticipation.detail]),
+      CourseParticipationUtils.summaryListRow('Source of information', [courseParticipation.source]),
       CourseParticipationUtils.summaryListRow('Added by', [
-        courseParticipationWithName.addedBy,
-        DateUtils.govukFormattedFullDateString(courseParticipationWithName.createdAt),
+        courseParticipation.addedByName,
+        DateUtils.govukFormattedFullDateString(courseParticipation.createdAt),
       ]),
     ]
   }

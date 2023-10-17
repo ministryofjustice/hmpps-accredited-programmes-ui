@@ -5,7 +5,7 @@ import createError from 'http-errors'
 
 import ReferralsController from './referralsController'
 import { referPaths } from '../../paths'
-import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
   courseAudienceFactory,
   courseFactory,
@@ -14,6 +14,7 @@ import {
   organisationFactory,
   personFactory,
   referralFactory,
+  userFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
@@ -34,6 +35,7 @@ describe('ReferralsController', () => {
   const organisationService = createMock<OrganisationService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
+  const userService = createMock<UserService>({})
 
   const course = courseFactory.build()
   const courseOffering = courseOfferingFactory.build()
@@ -43,7 +45,13 @@ describe('ReferralsController', () => {
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
-    referralsController = new ReferralsController(courseService, organisationService, personService, referralService)
+    referralsController = new ReferralsController(
+      courseService,
+      organisationService,
+      personService,
+      referralService,
+      userService,
+    )
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
   })
@@ -193,6 +201,9 @@ describe('ReferralsController', () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
+      const user = userFactory.build()
+      userService.getUserFromUsername.mockResolvedValue(user)
+
       const coursePresenter = createMock<CoursePresenter>({
         audiences: courseAudienceFactory.buildList(1),
         nameAndAlternateName: `${course.name} (${course.alternateName})`,
@@ -208,14 +219,14 @@ describe('ReferralsController', () => {
           otherCourseName: 'Another course',
         }),
       ]
-      const courseParticipationsWithNames = [
-        { ...courseParticipations[0], name: course.name },
-        { ...courseParticipations[1], name: 'Another course' },
+      const presentedCourseParticipations = [
+        { ...courseParticipations[0], addedByName: user.name, name: course.name },
+        { ...courseParticipations[1], addedByName: user.name, name: 'Another course' },
       ]
       const summaryListOptions = 'summary list options'
       courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
       ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
-        (_courseParticipationWithName, _referralId, _withActions = { change: true, remove: true }) => {
+        (_presentedCourseParticipation, _referralId, _withActions = { change: true, remove: true }) => {
           return summaryListOptions
         },
       )
@@ -231,13 +242,13 @@ describe('ReferralsController', () => {
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         1,
-        courseParticipationsWithNames[1],
+        presentedCourseParticipations[1],
         referral.id,
         { change: true, remove: false },
       )
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         2,
-        courseParticipationsWithNames[0],
+        presentedCourseParticipations[0],
         referral.id,
         { change: true, remove: false },
       )

@@ -1,15 +1,17 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { referPaths } from '../../paths'
-import type { CourseService, PersonService, ReferralService } from '../../services'
+import type { CourseService, PersonService, ReferralService, UserService } from '../../services'
 import { CourseParticipationUtils, CourseUtils, FormUtils, TypeUtils } from '../../utils'
-import type { CourseParticipation, CourseParticipationWithName, ReferralUpdate } from '@accredited-programmes/models'
+import type { CourseParticipation, ReferralUpdate } from '@accredited-programmes/models'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 export default class CourseParticipationsController {
   constructor(
     private readonly courseService: CourseService,
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
+    private readonly userService: UserService,
   ) {}
 
   create(): TypedRequestHandler<Request, Response> {
@@ -58,11 +60,11 @@ export default class CourseParticipationsController {
         res.locals.user.caseloads,
       )
 
-      const courseParticipationWithName = (
-        await this.courseParticipationsWithNames([courseParticipation], req.user.token)
+      const presentedCourseParticipation = (
+        await this.presentCourseParticipations([courseParticipation], req.user.token)
       )[0]
 
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId, {
+      const summaryListOptions = CourseParticipationUtils.summaryListOptions(presentedCourseParticipation, referralId, {
         change: false,
         remove: false,
       })
@@ -144,10 +146,10 @@ export default class CourseParticipationsController {
         req.user.token,
         person.prisonNumber,
       )
-      const courseParticipationsWithNames = (
-        await this.courseParticipationsWithNames(courseParticipations, req.user.token)
+      const sortedCourseParticipations = (
+        await this.presentCourseParticipations(courseParticipations, req.user.token)
       ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
-      const summaryListsOptions = courseParticipationsWithNames.map(participation =>
+      const summaryListsOptions = sortedCourseParticipations.map(participation =>
         CourseParticipationUtils.summaryListOptions(participation, referral.id),
       )
 
@@ -249,10 +251,10 @@ export default class CourseParticipationsController {
     }
   }
 
-  private async courseParticipationsWithNames(
+  private async presentCourseParticipations(
     courseParticipations: Array<CourseParticipation>,
     token: Express.User['token'],
-  ): Promise<Array<CourseParticipationWithName>> {
+  ): Promise<Array<CourseParticipationPresenter>> {
     return Promise.all(
       courseParticipations.map(async courseParticipation => {
         let name = ''
@@ -261,10 +263,12 @@ export default class CourseParticipationsController {
           const course = await this.courseService.getCourse(token, courseParticipation.courseId)
           name = course.name
         } else {
-          name = courseParticipation.otherCourseName as CourseParticipationWithName['name']
+          name = courseParticipation.otherCourseName as CourseParticipationPresenter['name']
         }
 
-        return { ...courseParticipation, name }
+        const addedByUser = await this.userService.getUserFromUsername(token, courseParticipation.addedBy)
+
+        return { ...courseParticipation, addedByName: addedByUser.name, name }
       }),
     )
   }

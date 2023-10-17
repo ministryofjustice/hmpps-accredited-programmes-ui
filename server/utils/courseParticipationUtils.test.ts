@@ -10,8 +10,8 @@ import type {
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-  CourseParticipationWithName,
 } from '@accredited-programmes/models'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type {
   GovukFrontendSummaryListRow,
   GovukFrontendSummaryListRowKey,
@@ -305,7 +305,7 @@ describe('CourseParticipationUtils', () => {
 
   describe('summaryListOptions', () => {
     const referralId = faker.string.uuid()
-    const courseParticipationWithName = {
+    const presentedCourseParticipation = {
       ...courseParticipationFactory.build({
         addedBy: 'Eric McNally',
         createdAt: '2023-04-20T16:20:00.000Z',
@@ -321,24 +321,25 @@ describe('CourseParticipationUtils', () => {
         },
         source: 'Word of mouth',
       }),
+      addedByName: 'Eric McNally',
       name: 'A mediocre course name (aMCN)',
     }
 
-    describe('when all fields are present on the CourseParticipationWithName', () => {
+    describe('when all fields are present on the CourseParticipationPresenter', () => {
       it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
-        expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId)).toEqual({
+        expect(CourseParticipationUtils.summaryListOptions(presentedCourseParticipation, referralId)).toEqual({
           card: {
             actions: {
               items: [
                 {
-                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/programme`,
+                  href: `/referrals/${referralId}/programme-history/${presentedCourseParticipation.id}/programme`,
                   text: 'Change',
-                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                  visuallyHiddenText: `participation for ${presentedCourseParticipation.name}`,
                 },
                 {
-                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
+                  href: `/referrals/${referralId}/programme-history/${presentedCourseParticipation.id}/delete`,
                   text: 'Remove',
-                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                  visuallyHiddenText: `participation for ${presentedCourseParticipation.name}`,
                 },
               ],
             },
@@ -383,7 +384,7 @@ describe('CourseParticipationUtils', () => {
     ])('when `withActions` is %s', (withActions, omits, actionText) => {
       it(`omits ${omits}`, () => {
         const summaryListOptions = CourseParticipationUtils.summaryListOptions(
-          courseParticipationWithName,
+          presentedCourseParticipation,
           referralId,
           withActions,
         )
@@ -398,8 +399,8 @@ describe('CourseParticipationUtils', () => {
     describe('rows with optional values', () => {
       describe('setting', () => {
         describe('when the setting has no location', () => {
-          const withoutSettingLocation: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutSettingLocation: CourseParticipationPresenter = {
+            ...presentedCourseParticipation,
             setting: {
               location: undefined,
               type: 'community',
@@ -413,8 +414,8 @@ describe('CourseParticipationUtils', () => {
         })
 
         describe('when there is no setting', () => {
-          const withoutSetting: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutSetting: CourseParticipationPresenter = {
+            ...presentedCourseParticipation,
             setting: undefined,
           }
 
@@ -428,8 +429,8 @@ describe('CourseParticipationUtils', () => {
       describe('outcome', () => {
         describe('when the outcome is incomplete', () => {
           describe('and there is a yearStarted value', () => {
-            const withOutcomeYearStarted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withOutcomeYearStarted: CourseParticipationPresenter = {
+              ...presentedCourseParticipation,
               outcome: { status: 'incomplete', yearStarted: 2019 },
             }
 
@@ -440,8 +441,8 @@ describe('CourseParticipationUtils', () => {
           })
 
           describe('and there is no yearStarted value', () => {
-            const withoutOutcomeYearStarted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withoutOutcomeYearStarted: CourseParticipationPresenter = {
+              ...presentedCourseParticipation,
               outcome: { status: 'incomplete', yearStarted: undefined },
             }
 
@@ -454,8 +455,8 @@ describe('CourseParticipationUtils', () => {
 
         describe('when the outcome is complete', () => {
           describe('and there is a yearCompleted value', () => {
-            const withOutcomeYearCompleted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withOutcomeYearCompleted: CourseParticipationPresenter = {
+              ...presentedCourseParticipation,
               outcome: { status: 'complete', yearCompleted: 2019 },
             }
 
@@ -466,8 +467,8 @@ describe('CourseParticipationUtils', () => {
           })
 
           describe('and there is no yearCompleted value', () => {
-            const withoutOutcomeYearCompleted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withoutOutcomeYearCompleted: CourseParticipationPresenter = {
+              ...presentedCourseParticipation,
               outcome: { status: 'complete', yearCompleted: undefined },
             }
 
@@ -479,8 +480,8 @@ describe('CourseParticipationUtils', () => {
         })
 
         describe('when there is no outcome', () => {
-          const withoutOutcome: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutOutcome: CourseParticipationPresenter = {
+            ...presentedCourseParticipation,
             outcome: undefined,
           }
 
@@ -493,8 +494,8 @@ describe('CourseParticipationUtils', () => {
 
       describe('additional detail', () => {
         describe('when there is no additional detail set', () => {
-          const withoutOutcomeAdditionalDetail: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutOutcomeAdditionalDetail: CourseParticipationPresenter = {
+            ...presentedCourseParticipation,
             detail: undefined,
           }
 
@@ -507,8 +508,8 @@ describe('CourseParticipationUtils', () => {
 
       describe('source of information', () => {
         describe('when there is no source of information set', () => {
-          const withoutSource: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutSource: CourseParticipationPresenter = {
+            ...presentedCourseParticipation,
             source: undefined,
           }
 
