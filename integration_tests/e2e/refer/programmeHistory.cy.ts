@@ -421,7 +421,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainSuccessMessage('You have successfully added a programme.')
       })
 
-      it('displays an error when inputting a non numeric value for `yearCompleted`', () => {
+      it('displays an error when `yearCompleted` is invalid', () => {
         cy.task('stubParticipation', newCourseParticipation)
 
         cy.visit(newCourseParticipationPath)
@@ -448,7 +448,7 @@ context('Programme history', () => {
         ])
       })
 
-      it('displays an error when inputting a non numeric value for `yearStarted`', () => {
+      it('displays an error when `yearStarted` is invalid', () => {
         cy.task('stubParticipation', newCourseParticipation)
 
         cy.visit(newCourseParticipationPath)
