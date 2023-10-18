@@ -21,23 +21,17 @@ export default {
       },
     }),
 
-  stubUserDetails: (args: { name: User['name']; username: User['username'] }): SuperAgentRequest =>
+  stubUserDetails: (user: User): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/users/${args.username}`,
+        urlPattern: `/users/${user.username}`,
       },
       response: {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: {
-          active: true,
-          authSource: 'auth',
-          name: args.name,
-          userId: '1234',
-          username: args.username,
-        },
+        jsonBody: user,
         status: 200,
       },
     }),

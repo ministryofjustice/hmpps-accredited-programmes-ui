@@ -4,11 +4,10 @@ import type { Response } from 'superagent'
 import manageUserStubs from './manageUsers'
 import tokenVerification from './tokenVerification'
 import type { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
+import { userFactory } from '../../server/testutils/factories'
 import { getMatchingRequests, stubFor } from '../../wiremock'
 
-const mockedUsername = () => {
-  return 'USER1'
-}
+const mockedUser = userFactory.build({ name: 'john smith', username: 'USER1' })
 
 const createToken = ({ authorities = [] }: { authorities?: Array<ApplicationRoles> }) => {
   const payload = {
@@ -17,7 +16,7 @@ const createToken = ({ authorities = [] }: { authorities?: Array<ApplicationRole
     client_id: 'clientid',
     jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
     scope: ['read'],
-    user_name: mockedUsername(),
+    user_name: mockedUser.username,
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })
@@ -118,7 +117,7 @@ const token = ({ authorities }: { authorities?: Array<ApplicationRoles> }) =>
         internalUser: true,
         scope: 'read',
         token_type: 'bearer',
-        user_name: mockedUsername(),
+        user_name: mockedUser.username,
       },
       status: 200,
     },
@@ -126,12 +125,12 @@ const token = ({ authorities }: { authorities?: Array<ApplicationRoles> }) =>
 
 export default {
   getSignInUrl,
-  mockedUsername,
+  mockedUser,
   stubAuthPing: ping,
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> =>
     Promise.all([
-      manageUserStubs.stubCurrentUser(mockedUsername()),
-      manageUserStubs.stubUserDetails({ name, username: mockedUsername() }),
+      manageUserStubs.stubCurrentUser(mockedUser.username),
+      manageUserStubs.stubUserDetails(userFactory.build({ ...mockedUser, name })),
     ]),
   stubSignIn: (
     args = {
