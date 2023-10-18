@@ -7,8 +7,8 @@ describe('CourseUtils', () => {
       const courses = courseFactory.buildList(2)
 
       expect(CourseUtils.courseRadioOptions(courses)).toEqual([
-        { text: courses[0].name, value: courses[0].id },
-        { text: courses[1].name, value: courses[1].id },
+        { text: courses[0].name, value: courses[0].name },
+        { text: courses[1].name, value: courses[1].name },
       ])
     })
   })

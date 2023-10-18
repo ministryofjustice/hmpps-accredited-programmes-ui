@@ -4,7 +4,7 @@
     "addedBy": "Cedric Daniels",
     "createdAt": "2023-09-14T10:14:32.047Z",
     "prisonNumber": "DEF1234",
-    "courseId": "986d6256-5e2c-4792-b93a-568d923cf50c",
+    "courseName": "Kaizen",
     "detail": "Simply the best",
     "outcome": {
       "status": "complete",
@@ -19,14 +19,7 @@
   {
     "id": "57ac20a6-a660-405e-8210-43cb5b4cfc8d",
     "addedBy": "Roland Pryzbylewski",
-    "createdAt": "2023-09-14T10:46:23.098Z",
-    "prisonNumber": "DEF1234",
-    "otherCourseName": "Opening New Doors"
-  },
-  {
-    "id": "57ac20a6-a660-405e-8210-43cb5b4cfc8d",
-    "addedBy": "Roland Pryzbylewski",
-    "courseId": "197e62b4-4d34-4d30-a51f-e6427100c6c4",
+    "courseName": "Becoming New Me Plus",
     "createdAt": "2023-09-14T12:31:57.002Z",
     "prisonNumber": "DEF1234",
     "outcome": {

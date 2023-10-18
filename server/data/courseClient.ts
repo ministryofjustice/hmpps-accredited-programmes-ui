@@ -23,11 +23,10 @@ export default class CourseClient {
 
   async createParticipation(
     prisonNumber: CourseParticipation['prisonNumber'],
-    courseId?: CourseParticipation['id'],
-    otherCourseName?: CourseParticipation['otherCourseName'],
+    courseName: CourseParticipation['courseName'],
   ): Promise<CourseParticipation> {
     return (await this.restClient.post({
-      data: { courseId, otherCourseName, prisonNumber },
+      data: { courseName, prisonNumber },
       path: apiPaths.participations.create({}),
     })) as CourseParticipation
   }

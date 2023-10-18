@@ -7,10 +7,10 @@ import type { RequestWithCourseParticipationDetailsBody } from './courseParticip
 import CourseParticipationUtils from './courseParticipationUtils'
 import { courseParticipationFactory } from '../testutils/factories'
 import type {
+  CourseParticipation,
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-  CourseParticipationWithName,
 } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListRow,
@@ -29,6 +29,7 @@ describe('CourseParticipationUtils', () => {
   describe('processDetailsFormData', () => {
     let request: DeepMocked<RequestWithCourseParticipationDetailsBody>
     let expectedCourseParticipationUpdate: CourseParticipationUpdate
+    const courseName = 'A course name'
 
     beforeEach(() => {
       request = createMock<RequestWithCourseParticipationDetailsBody>({})
@@ -49,6 +50,7 @@ describe('CourseParticipationUtils', () => {
       }
 
       expectedCourseParticipationUpdate = {
+        courseName,
         detail: request.body.detail,
         outcome: {
           status: request.body.outcome.status as CourseParticipationOutcome['status'],
@@ -65,7 +67,7 @@ describe('CourseParticipationUtils', () => {
 
     describe('when the `request.body` is valid', () => {
       it('returns the `courseParticipationUpdate` and reports no errors', () => {
-        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+        expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
           courseParticipationUpdate: expectedCourseParticipationUpdate,
           hasFormErrors: false,
         })
@@ -77,7 +79,7 @@ describe('CourseParticipationUtils', () => {
         request.body.detail = ' \n \n '
         expectedCourseParticipationUpdate.detail = undefined
 
-        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+        expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
           courseParticipationUpdate: expectedCourseParticipationUpdate,
           hasFormErrors: false,
         })
@@ -89,7 +91,7 @@ describe('CourseParticipationUtils', () => {
         request.body.outcome.status = undefined
         expectedCourseParticipationUpdate.outcome = undefined
 
-        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+        expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
           courseParticipationUpdate: expectedCourseParticipationUpdate,
           hasFormErrors: false,
         })
@@ -102,7 +104,7 @@ describe('CourseParticipationUtils', () => {
           request.body.outcome.yearCompleted = ''
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: false,
           })
@@ -114,7 +116,7 @@ describe('CourseParticipationUtils', () => {
           request.body.outcome.yearCompleted = 'not a number'
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: true,
           })
@@ -136,7 +138,7 @@ describe('CourseParticipationUtils', () => {
           request.body.outcome.yearStarted = '2019'
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = 2019
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: false,
           })
@@ -148,7 +150,7 @@ describe('CourseParticipationUtils', () => {
           request.body.outcome.yearStarted = ''
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = undefined
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: false,
           })
@@ -160,7 +162,7 @@ describe('CourseParticipationUtils', () => {
           request.body.outcome.yearStarted = 'not a number'
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = undefined
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: true,
           })
@@ -175,7 +177,7 @@ describe('CourseParticipationUtils', () => {
         request.body.setting.type = undefined
         expectedCourseParticipationUpdate.setting = undefined
 
-        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+        expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
           courseParticipationUpdate: expectedCourseParticipationUpdate,
           hasFormErrors: false,
         })
@@ -188,7 +190,7 @@ describe('CourseParticipationUtils', () => {
           request.body.setting.communityLocation = ''
           ;(expectedCourseParticipationUpdate.setting as CourseParticipationSetting).location = undefined
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: false,
           })
@@ -207,7 +209,7 @@ describe('CourseParticipationUtils', () => {
           request.body.setting.custodyLocation = ''
           ;(expectedCourseParticipationUpdate.setting as CourseParticipationSetting).location = undefined
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: false,
           })
@@ -220,7 +222,7 @@ describe('CourseParticipationUtils', () => {
           ;(expectedCourseParticipationUpdate.setting as CourseParticipationSetting).location =
             request.body.setting.custodyLocation
 
-          expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
             courseParticipationUpdate: expectedCourseParticipationUpdate,
             hasFormErrors: false,
           })
@@ -233,7 +235,7 @@ describe('CourseParticipationUtils', () => {
         request.body.source = ' \n \n '
         expectedCourseParticipationUpdate.source = undefined
 
-        expect(CourseParticipationUtils.processDetailsFormData(request)).toEqual({
+        expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
           courseParticipationUpdate: expectedCourseParticipationUpdate,
           hasFormErrors: false,
         })
@@ -248,34 +250,34 @@ describe('CourseParticipationUtils', () => {
       request = createMock<Request>({})
     })
 
-    describe('when the `courseId` is a non-empty string', () => {
-      it('returns the course ID and reports no errors', () => {
-        const validId = 'AN-ID'
+    describe('when the `courseName` is a non-empty string and not "Other"', () => {
+      it('returns the course name and reports no errors', () => {
+        const courseName = 'A known course'
 
-        expect(CourseParticipationUtils.processCourseFormData(validId, undefined, request)).toEqual({
-          courseId: validId,
+        expect(CourseParticipationUtils.processCourseFormData(courseName, undefined, request)).toEqual({
+          courseName,
           hasFormErrors: false,
         })
       })
     })
 
-    describe("when the `courseId` is `'other'`", () => {
-      const otherId = 'other'
+    describe('when the `courseName` is "Other"', () => {
+      const courseName = 'Other'
 
       describe('and `otherCourseName` is a non-empty string when trimmed', () => {
         it('returns the other course name and reports no errors', () => {
           const otherCourseName = 'Another course'
 
-          expect(CourseParticipationUtils.processCourseFormData(otherId, otherCourseName, request)).toEqual({
+          expect(CourseParticipationUtils.processCourseFormData(courseName, otherCourseName, request)).toEqual({
+            courseName: otherCourseName,
             hasFormErrors: false,
-            otherCourseName,
           })
         })
       })
 
       describe('and `otherCourseName` is `undefined`', () => {
         it('flashes an appropriate error message and reports an error', () => {
-          expect(CourseParticipationUtils.processCourseFormData(otherId, undefined, request)).toEqual({
+          expect(CourseParticipationUtils.processCourseFormData(courseName, undefined, request)).toEqual({
             hasFormErrors: true,
           })
           expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
@@ -284,30 +286,31 @@ describe('CourseParticipationUtils', () => {
 
       describe('and `otherCourseName` is an empty string when trimmed', () => {
         it('flashes an appropriate error message and reports an error', () => {
-          expect(CourseParticipationUtils.processCourseFormData(otherId, '  ', request)).toEqual({
+          expect(CourseParticipationUtils.processCourseFormData(courseName, '  ', request)).toEqual({
+            courseName: '',
             hasFormErrors: true,
-            otherCourseName: '',
           })
           expect(request.flash).toHaveBeenCalledWith('otherCourseNameError', 'Enter the programme name')
         })
       })
     })
 
-    describe('when the `courseId` is `undefined`', () => {
+    describe('when the `courseName` is `undefined`', () => {
       it('flashes an appropriate error message and reports an error', () => {
         expect(CourseParticipationUtils.processCourseFormData(undefined, undefined, request)).toEqual({
           hasFormErrors: true,
         })
-        expect(request.flash).toHaveBeenCalledWith('courseIdError', 'Select a programme')
+        expect(request.flash).toHaveBeenCalledWith('courseNameError', 'Select a programme')
       })
     })
   })
 
   describe('summaryListOptions', () => {
     const referralId = faker.string.uuid()
-    const courseParticipationWithName = {
+    const courseParticipation = {
       ...courseParticipationFactory.build({
         addedBy: 'Eric McNally',
+        courseName: 'A mediocre course name (aMCN)',
         createdAt: '2023-04-20T16:20:00.000Z',
         detail: 'Motivation level over 9000!',
         outcome: {
@@ -321,24 +324,23 @@ describe('CourseParticipationUtils', () => {
         },
         source: 'Word of mouth',
       }),
-      name: 'A mediocre course name (aMCN)',
     }
 
-    describe('when all fields are present on the CourseParticipationWithName', () => {
+    describe('when all fields are present on the CourseParticipation', () => {
       it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
-        expect(CourseParticipationUtils.summaryListOptions(courseParticipationWithName, referralId)).toEqual({
+        expect(CourseParticipationUtils.summaryListOptions(courseParticipation, referralId)).toEqual({
           card: {
             actions: {
               items: [
                 {
-                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/programme`,
+                  href: `/referrals/${referralId}/programme-history/${courseParticipation.id}/programme`,
                   text: 'Change',
-                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                  visuallyHiddenText: `participation for ${courseParticipation.courseName}`,
                 },
                 {
-                  href: `/referrals/${referralId}/programme-history/${courseParticipationWithName.id}/delete`,
+                  href: `/referrals/${referralId}/programme-history/${courseParticipation.id}/delete`,
                   text: 'Remove',
-                  visuallyHiddenText: `participation for ${courseParticipationWithName.name}`,
+                  visuallyHiddenText: `participation for ${courseParticipation.courseName}`,
                 },
               ],
             },
@@ -383,7 +385,7 @@ describe('CourseParticipationUtils', () => {
     ])('when `withActions` is %s', (withActions, omits, actionText) => {
       it(`omits ${omits}`, () => {
         const summaryListOptions = CourseParticipationUtils.summaryListOptions(
-          courseParticipationWithName,
+          courseParticipation,
           referralId,
           withActions,
         )
@@ -398,8 +400,8 @@ describe('CourseParticipationUtils', () => {
     describe('rows with optional values', () => {
       describe('setting', () => {
         describe('when the setting has no location', () => {
-          const withoutSettingLocation: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutSettingLocation: CourseParticipation = {
+            ...courseParticipation,
             setting: {
               location: undefined,
               type: 'community',
@@ -413,8 +415,8 @@ describe('CourseParticipationUtils', () => {
         })
 
         describe('when there is no setting', () => {
-          const withoutSetting: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutSetting: CourseParticipation = {
+            ...courseParticipation,
             setting: undefined,
           }
 
@@ -428,8 +430,8 @@ describe('CourseParticipationUtils', () => {
       describe('outcome', () => {
         describe('when the outcome is incomplete', () => {
           describe('and there is a yearStarted value', () => {
-            const withOutcomeYearStarted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withOutcomeYearStarted: CourseParticipation = {
+              ...courseParticipation,
               outcome: { status: 'incomplete', yearStarted: 2019 },
             }
 
@@ -440,8 +442,8 @@ describe('CourseParticipationUtils', () => {
           })
 
           describe('and there is no yearStarted value', () => {
-            const withoutOutcomeYearStarted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withoutOutcomeYearStarted: CourseParticipation = {
+              ...courseParticipation,
               outcome: { status: 'incomplete', yearStarted: undefined },
             }
 
@@ -454,8 +456,8 @@ describe('CourseParticipationUtils', () => {
 
         describe('when the outcome is complete', () => {
           describe('and there is a yearCompleted value', () => {
-            const withOutcomeYearCompleted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withOutcomeYearCompleted: CourseParticipation = {
+              ...courseParticipation,
               outcome: { status: 'complete', yearCompleted: 2019 },
             }
 
@@ -466,8 +468,8 @@ describe('CourseParticipationUtils', () => {
           })
 
           describe('and there is no yearCompleted value', () => {
-            const withoutOutcomeYearCompleted: CourseParticipationWithName = {
-              ...courseParticipationWithName,
+            const withoutOutcomeYearCompleted: CourseParticipation = {
+              ...courseParticipation,
               outcome: { status: 'complete', yearCompleted: undefined },
             }
 
@@ -479,8 +481,8 @@ describe('CourseParticipationUtils', () => {
         })
 
         describe('when there is no outcome', () => {
-          const withoutOutcome: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutOutcome: CourseParticipation = {
+            ...courseParticipation,
             outcome: undefined,
           }
 
@@ -493,8 +495,8 @@ describe('CourseParticipationUtils', () => {
 
       describe('additional detail', () => {
         describe('when there is no additional detail set', () => {
-          const withoutOutcomeAdditionalDetail: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutOutcomeAdditionalDetail: CourseParticipation = {
+            ...courseParticipation,
             detail: undefined,
           }
 
@@ -507,8 +509,8 @@ describe('CourseParticipationUtils', () => {
 
       describe('source of information', () => {
         describe('when there is no source of information set', () => {
-          const withoutSource: CourseParticipationWithName = {
-            ...courseParticipationWithName,
+          const withoutSource: CourseParticipation = {
+            ...courseParticipation,
             source: undefined,
           }
 

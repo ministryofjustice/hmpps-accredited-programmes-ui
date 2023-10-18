@@ -3,7 +3,7 @@ import type { AxeRules } from '@accredited-programmes/integration-tests'
 import { referPaths } from '../../server/paths'
 import { CourseParticipationUtils, PersonUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { CourseParticipationWithName, Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { CourseParticipation, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
@@ -87,7 +87,7 @@ export default abstract class Page {
   }
 
   shouldContainHistorySummaryCards(
-    participations: Array<CourseParticipationWithName>,
+    participations: Array<CourseParticipation>,
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
   ) {
@@ -108,7 +108,7 @@ export default abstract class Page {
                   referralId,
                 }),
                 text: 'Change',
-                visuallyHiddenText: ` participation for ${participation.name}`,
+                visuallyHiddenText: ` participation for ${participation.courseName}`,
               })
             }
 
@@ -119,11 +119,11 @@ export default abstract class Page {
                   referralId,
                 }),
                 text: 'Remove',
-                visuallyHiddenText: ` participation for ${participation.name}`,
+                visuallyHiddenText: ` participation for ${participation.courseName}`,
               })
             }
 
-            this.shouldContainSummaryCard(participation.name, actions, rows, summaryCardElement)
+            this.shouldContainSummaryCard(participation.courseName, actions, rows, summaryCardElement)
           })
       })
   }
@@ -200,7 +200,7 @@ export default abstract class Page {
   }
 
   shouldContainSummaryCard(
-    courseName: CourseParticipationWithName['name'],
+    courseName: CourseParticipation['courseName'],
     actions: Array<GovukFrontendSummaryListCardActionsItemWithText>,
     rows: Array<GovukFrontendSummaryListRowWithValue>,
     summaryCardElement: JQuery<HTMLElement>,

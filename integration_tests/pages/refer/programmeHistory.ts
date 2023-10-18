@@ -1,22 +1,18 @@
 import Page from '../page'
-import type { CourseParticipationWithName, Person, Referral } from '@accredited-programmes/models'
+import type { CourseParticipation, Person, Referral } from '@accredited-programmes/models'
 
 export default class ProgrammeHistoryPage extends Page {
-  participations: Array<CourseParticipationWithName>
+  participations: Array<CourseParticipation>
 
   person: Person
 
   referral: Referral
 
-  constructor(args: {
-    participationsWithNames: Array<CourseParticipationWithName>
-    person: Person
-    referral: Referral
-  }) {
+  constructor(args: { participations: Array<CourseParticipation>; person: Person; referral: Referral }) {
     super('Accredited Programme history')
 
-    const { participationsWithNames, person, referral } = args
-    this.participations = participationsWithNames
+    const { participations, person, referral } = args
+    this.participations = participations
     this.person = person
     this.referral = referral
   }

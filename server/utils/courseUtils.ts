@@ -12,7 +12,7 @@ export default class CourseUtils {
     return courses.map(course => {
       return {
         text: course.name,
-        value: course.id,
+        value: course.name,
       }
     })
   }

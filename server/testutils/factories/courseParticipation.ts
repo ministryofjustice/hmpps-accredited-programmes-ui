@@ -7,67 +7,25 @@ import FactoryHelpers from './factoryHelpers'
 import { StringUtils } from '../../utils'
 import type { CourseParticipation } from '@accredited-programmes/models'
 
-const courseParticipationTypes = {
-  base() {
-    return {
-      id: faker.string.uuid(), // eslint-disable-next-line sort-keys
-      addedBy: `${faker.person.firstName()} ${faker.person.lastName()}`,
-      courseId: undefined,
-      createdAt: `${faker.date.between({ from: '2023-09-20T00:00:00.000Z', to: new Date() })}`,
-      detail: faker.lorem.paragraph({ max: 5, min: 0 }),
-      otherCourseName: undefined,
-      outcome: FactoryHelpers.optionalArrayElement([courseParticipationOutcomeFactory.build()]),
-      prisonNumber: faker.string.alphanumeric({ length: 7 }),
-      setting: FactoryHelpers.optionalArrayElement([courseParticipationSettingFactory.build()]),
-      source: FactoryHelpers.optionalArrayElement(faker.word.words()),
-    }
-  },
-
+class CourseParticipationFactory extends Factory<CourseParticipation> {
   new() {
-    return {
-      ...this.random(),
+    return this.params({
       detail: undefined,
       outcome: undefined,
       setting: undefined,
       source: undefined,
-    }
-  },
-
-  random() {
-    const type = faker.helpers.arrayElement<'withCourseId' | 'withOtherCourseName'>([
-      'withCourseId',
-      'withOtherCourseName',
-    ])
-    return this[type]()
-  },
-
-  withCourseId() {
-    return {
-      ...this.base(),
-      courseId: faker.string.uuid(),
-    }
-  },
-
-  withOtherCourseName() {
-    return {
-      ...this.base(),
-      otherCourseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
-    }
-  },
-}
-
-class CourseParticipationFactory extends Factory<CourseParticipation> {
-  new() {
-    return this.params(courseParticipationTypes.new())
-  }
-
-  withCourseId() {
-    return this.params(courseParticipationTypes.withCourseId())
-  }
-
-  withOtherCourseName() {
-    return this.params(courseParticipationTypes.withOtherCourseName())
+    })
   }
 }
 
-export default CourseParticipationFactory.define(() => courseParticipationTypes.random())
+export default CourseParticipationFactory.define(() => ({
+  id: faker.string.uuid(), // eslint-disable-next-line sort-keys
+  addedBy: `${faker.person.firstName()} ${faker.person.lastName()}`,
+  courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
+  createdAt: `${faker.date.between({ from: '2023-09-20T00:00:00.000Z', to: new Date() })}`,
+  detail: faker.lorem.paragraph({ max: 5, min: 0 }),
+  outcome: FactoryHelpers.optionalArrayElement([courseParticipationOutcomeFactory.build()]),
+  prisonNumber: faker.string.alphanumeric({ length: 7 }),
+  setting: FactoryHelpers.optionalArrayElement([courseParticipationSettingFactory.build()]),
+  source: FactoryHelpers.optionalArrayElement(faker.word.words()),
+}))

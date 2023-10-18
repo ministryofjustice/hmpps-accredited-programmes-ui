@@ -19,7 +19,7 @@ context('Refer', () => {
     .started()
     .build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
   const courseParticipation = courseParticipationFactory.build({
-    courseId: course.id,
+    courseName: course.name,
     prisonNumber: prisoner.prisonerNumber,
   })
 

@@ -50,16 +50,16 @@ describe('CourseParticipationsController', () => {
       request.params.referralId = referral.id
     })
 
-    describe('when the `courseId` is a non-empty string', () => {
+    describe('when the `courseName` is a non-empty string and not "Other"', () => {
       it('asks the service to create a course participation and redirects to the details action', async () => {
-        const courseParticipation = courseParticipationFactory.withCourseId().build()
-        const { courseId } = courseParticipation
+        const courseParticipation = courseParticipationFactory.build()
+        const { courseName } = courseParticipation
 
-        request.body = { courseId }
+        request.body = { courseName }
         courseService.createParticipation.mockResolvedValue(courseParticipation)
         ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
-          (_courseId, _otherCourseName, _request) => {
-            return { courseId, hasFormErrors: false }
+          (_courseName, _otherCourseName, _request) => {
+            return { courseName, hasFormErrors: false }
           },
         )
 
@@ -68,16 +68,11 @@ describe('CourseParticipationsController', () => {
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
-          request.body.courseId,
+          request.body.courseName,
           request.body.otherCourseName,
           request,
         )
-        expect(courseService.createParticipation).toHaveBeenCalledWith(
-          token,
-          referral.prisonNumber,
-          courseId,
-          undefined,
-        )
+        expect(courseService.createParticipation).toHaveBeenCalledWith(token, referral.prisonNumber, courseName)
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
@@ -87,16 +82,16 @@ describe('CourseParticipationsController', () => {
       })
     })
 
-    describe('when the `courseId` is `other` and `otherCourseName` is a non-empty string when trimmed', () => {
+    describe('when the `courseName` is "Other" and `otherCourseName` is a non-empty string when trimmed', () => {
       it('asks the service to create a course participation and redirects to the details action', async () => {
-        const courseParticipation = courseParticipationFactory.withOtherCourseName().build()
-        const { otherCourseName } = courseParticipation
+        const otherCourseName = 'A course not in our system'
+        const courseParticipation = courseParticipationFactory.build({ courseName: otherCourseName })
 
-        request.body = { courseId: 'other', otherCourseName }
+        request.body = { courseName: 'Other', otherCourseName }
         courseService.createParticipation.mockResolvedValue(courseParticipation)
         ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
-          (_courseId, _otherCourseName, _request) => {
-            return { hasFormErrors: false, otherCourseName }
+          (_courseName, _otherCourseName, _request) => {
+            return { courseName: otherCourseName, hasFormErrors: false }
           },
         )
 
@@ -105,16 +100,11 @@ describe('CourseParticipationsController', () => {
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
-          request.body.courseId,
+          request.body.courseName,
           request.body.otherCourseName,
           request,
         )
-        expect(courseService.createParticipation).toHaveBeenCalledWith(
-          token,
-          referral.prisonNumber,
-          undefined,
-          otherCourseName,
-        )
+        expect(courseService.createParticipation).toHaveBeenCalledWith(token, referral.prisonNumber, otherCourseName)
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
@@ -126,9 +116,9 @@ describe('CourseParticipationsController', () => {
 
     describe('when there are form errors', () => {
       it('redirects back to the `new` action', async () => {
-        request.body = { courseId: 'something', otherCourseName: 'something else' }
+        request.body = { courseName: 'something', otherCourseName: 'something else' }
         ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
-          (_courseId, _otherCourseName, _request) => {
+          (_courseName, _otherCourseName, _request) => {
             return { hasFormErrors: true }
           },
         )
@@ -138,7 +128,7 @@ describe('CourseParticipationsController', () => {
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
-          request.body.courseId,
+          request.body.courseName,
           request.body.otherCourseName,
           request,
         )
@@ -154,8 +144,8 @@ describe('CourseParticipationsController', () => {
       const person = personFactory.build()
       const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
       const course = courseFactory.build()
-      const courseParticipation = courseParticipationFactory.withCourseId().build({
-        courseId: course.id,
+      const courseParticipation = courseParticipationFactory.build({
+        courseName: course.name,
         prisonNumber: person.prisonNumber,
       })
       const courseParticipationId = courseParticipation.id
@@ -169,16 +159,13 @@ describe('CourseParticipationsController', () => {
       courseService.getCourse.mockResolvedValue(course)
       courseService.getParticipation.mockResolvedValue(courseParticipation)
 
-      const courseParticipationWithName = { ...courseParticipation, name: course.name }
-
       const requestHandler = courseParticipationsController.delete()
       await requestHandler(request, response, next)
 
-      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenCalledWith(
-        courseParticipationWithName,
-        referral.id,
-        { change: false, remove: false },
-      )
+      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenCalledWith(courseParticipation, referral.id, {
+        change: false,
+        remove: false,
+      })
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
@@ -209,43 +196,37 @@ describe('CourseParticipationsController', () => {
   describe('editCourse', () => {
     const courses = courseFactory.buildList(2)
     const person = personFactory.build()
-    const courseParticipationWithCourseId = courseParticipationFactory.withCourseId().build({
-      courseId: courses[0].id,
+    const courseParticipationWithKnownCoursename = courseParticipationFactory.build({
+      courseName: courses[0].name,
       prisonNumber: person.prisonNumber,
     })
-    const courseParticipationWithOtherCourseName = courseParticipationFactory.withOtherCourseName().build({
+    const courseParticipationWithUnknownCourseName = courseParticipationFactory.build({
+      courseName: 'A course not in our system',
       prisonNumber: person.prisonNumber,
     })
     const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
 
-    beforeEach(() => {
-      request.params.referralId = referral.id
-    })
-
-    type CourseIdentifierType = 'a courseId' | 'an otherCourseName'
-
-    describe.each<[CourseIdentifierType, CourseParticipation]>([
-      ['a courseId', courseParticipationWithCourseId],
-      ['an otherCourseName', courseParticipationWithOtherCourseName],
+    describe.each([
+      ['a known', courseParticipationWithKnownCoursename],
+      ['an unknown', courseParticipationWithUnknownCourseName],
     ])(
-      'when the participation has `%s`',
-      (courseIdentifierType: CourseIdentifierType, courseParticipation: CourseParticipation) => {
+      'when the participation has %s `courseName`',
+      (courseNameType: string, courseParticipation: CourseParticipation) => {
         it('renders the edit template for selecting a course', async () => {
-          request.params.courseParticipationId = courseParticipation.id
+          request.params = { courseParticipationId: courseParticipation.id, referralId: referral.id }
           courseService.getParticipation.mockResolvedValue(courseParticipation)
           referralService.getReferral.mockResolvedValue(referral)
           personService.getPerson.mockResolvedValue(person)
           courseService.getCourses.mockResolvedValue(courses)
-
-          const emptyErrorsLocal = { list: [], messages: {} }
           ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
-            response.locals.errors = emptyErrorsLocal
+            response.locals.errors = { list: [], messages: {} }
           })
 
           const requestHandler = courseParticipationsController.editCourse()
           await requestHandler(request, response, next)
 
-          const { courseId, otherCourseName } = courseParticipation
+          const { courseName } = courseParticipation
+          const isKnownCourse = courseNameType === 'a known'
 
           expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/course', {
             action: `${referPaths.programmeHistory.updateProgramme({
@@ -253,13 +234,13 @@ describe('CourseParticipationsController', () => {
               referralId: referral.id,
             })}?_method=PUT`,
             courseRadioOptions: CourseUtils.courseRadioOptions(courses),
-            formValues: { courseId, otherCourseName },
-            otherCourseNameChecked: courseIdentifierType === 'an otherCourseName',
+            formValues: isKnownCourse ? { courseName } : { courseName: 'Other', otherCourseName: courseName },
+            otherCourseNameChecked: !isKnownCourse,
             pageHeading: 'Add Accredited Programme history',
             person,
             referralId: referral.id,
           })
-          expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
+          expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseName', 'otherCourseName'])
         })
       },
     )
@@ -268,24 +249,17 @@ describe('CourseParticipationsController', () => {
   describe('index', () => {
     const referral = referralFactory.build()
     const person = personFactory.build()
-    const courseParticipations = [
-      courseParticipationFactory.build({ courseId: 'an-ID', createdAt: '2023-01-01T12:00:00.000Z' }),
-      courseParticipationFactory.build({
-        courseId: undefined,
-        createdAt: '2022-01-01T12:00:00.000Z',
-        otherCourseName: 'Another course',
-      }),
-    ]
+    const earliestCourseParticipation = courseParticipationFactory.build({ createdAt: '2022-01-01T12:00:00.000Z' })
+    const latestCourseParticipation = courseParticipationFactory.build({ createdAt: '2023-01-01T12:00:00.000Z' })
     const course = courseFactory.build()
-    const courseParticipationsWithNames = [
-      { ...courseParticipations[0], name: course.name },
-      { ...courseParticipations[1], name: 'Another course' },
-    ]
 
     beforeEach(() => {
       referralService.getReferral.mockResolvedValue(referral)
       personService.getPerson.mockResolvedValue(person)
-      courseService.getParticipationsByPerson.mockResolvedValue(courseParticipations)
+      courseService.getParticipationsByPerson.mockResolvedValue([
+        latestCourseParticipation,
+        earliestCourseParticipation,
+      ])
       courseService.getCourse.mockResolvedValue(course)
       ;(request.flash as jest.Mock).mockImplementation(() => [])
     })
@@ -296,12 +270,12 @@ describe('CourseParticipationsController', () => {
 
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         1,
-        courseParticipationsWithNames[1],
+        earliestCourseParticipation,
         referral.id,
       )
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         2,
-        courseParticipationsWithNames[0],
+        latestCourseParticipation,
         referral.id,
       )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/index', {
@@ -360,7 +334,7 @@ describe('CourseParticipationsController', () => {
         person,
         referralId: referral.id,
       })
-      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseId', 'otherCourseName'])
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseName', 'otherCourseName'])
     })
   })
 
@@ -372,44 +346,51 @@ describe('CourseParticipationsController', () => {
       request.params.referralId = referral.id
     })
 
-    describe.each<[string, string]>([
-      ['when the `courseId` is a non-empty string', `courseId`],
-      ['when the `courseId` is `other` and `otherCourseName` is a non-empty string when trimmed', 'otherCourseName'],
-    ])('%s', (_description: string, truthyField: string) => {
+    describe.each([
+      ['when the `courseName` is a non-empty string and not "Other"', false],
+      ['when the `courseName` is "Other" and `otherCourseName` is a non-empty string when trimmed', true],
+    ])('%s', (_description: string, isOtherCourse: boolean) => {
       it('asks the service to update the course data and redirects to the details action', async () => {
         const courseParticipation = courseParticipationFactory.build()
         request.params.courseParticipationId = courseParticipation.id
         courseService.getParticipation.mockResolvedValue(courseParticipation)
 
-        const newValue = 'A NEW VALUE'
-        request.body = { [truthyField]: newValue }
+        const courseName = 'A NEW VALUE'
+
+        if (isOtherCourse) {
+          request.body = { courseName: 'other', otherCourseName: courseName }
+        } else {
+          request.body = { courseName }
+        }
         ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
-          (_courseId, _otherCourseName, _request) => {
-            return { hasFormErrors: false, [truthyField]: newValue }
+          (_courseName, _otherCourseName, _request) => {
+            return { courseName, hasFormErrors: false }
           },
         )
 
-        const undefinedField = truthyField === 'courseId' ? 'otherCourseName' : 'courseId'
-        const updatedCourseParticipation = {
-          ...courseParticipation,
-          [truthyField]: newValue,
-          [undefinedField]: undefined,
+        const { detail, setting, source, outcome } = courseParticipation
+        const courseParticipationUpdate = {
+          courseName,
+          detail,
+          outcome,
+          setting,
+          source,
         }
-        courseService.updateParticipation.mockResolvedValue(updatedCourseParticipation)
+        courseService.updateParticipation.mockResolvedValue({ ...courseParticipation, ...courseParticipationUpdate })
 
         const requestHandler = courseParticipationsController.updateCourse()
         await requestHandler(request, response, next)
 
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
-          request.body.courseId,
+          request.body.courseName,
           request.body.otherCourseName,
           request,
         )
         expect(courseService.updateParticipation).toHaveBeenCalledWith(
           token,
           courseParticipation.id,
-          updatedCourseParticipation,
+          courseParticipationUpdate,
         )
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.details.show({
@@ -426,9 +407,9 @@ describe('CourseParticipationsController', () => {
         request.params.courseParticipationId = courseParticipation.id
         courseService.getParticipation.mockResolvedValue(courseParticipation)
 
-        request.body = { courseId: 'something', otherCourseName: 'something else' }
+        request.body = { courseName: 'something', otherCourseName: 'something else' }
         ;(CourseParticipationUtils.processCourseFormData as jest.Mock).mockImplementation(
-          (_courseId, _otherCourseName, _request) => {
+          (_courseName, _otherCourseName, _request) => {
             return { hasFormErrors: true }
           },
         )
@@ -438,7 +419,7 @@ describe('CourseParticipationsController', () => {
 
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
-          request.body.courseId,
+          request.body.courseName,
           request.body.otherCourseName,
           request,
         )

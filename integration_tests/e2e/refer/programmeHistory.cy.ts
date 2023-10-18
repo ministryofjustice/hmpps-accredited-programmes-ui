@@ -18,7 +18,7 @@ import {
   SelectProgrammePage,
   TaskListPage,
 } from '../../pages/refer'
-import type { CourseParticipation, CourseParticipationWithName } from '@accredited-programmes/models'
+import type { CourseParticipation } from '@accredited-programmes/models'
 
 context('Programme history', () => {
   const prisoner = prisonerFactory.build({
@@ -31,21 +31,14 @@ context('Programme history', () => {
     prisonNumber: prisoner.prisonerNumber,
   })
   const courses = courseFactory.buildList(4)
-  const courseParticipationWithCourseId = courseParticipationFactory.withCourseId().build({
-    courseId: courses[0].id,
-    createdAt: '2023-01-01T12:00:00.000Z',
+  const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
+    courseName: courses[0].name,
     prisonNumber: person.prisonNumber,
   })
-  const courseParticipationWithCourseIdAndName = { ...courseParticipationWithCourseId, name: courses[0].name }
-  const courseParticipationWithOtherCourseName = courseParticipationFactory.withOtherCourseName().build({
-    createdAt: '2022-01-01T12:00:00.000Z',
-    otherCourseName: 'A great course name',
+  const courseParticipationWithUnknownCourseName = courseParticipationFactory.build({
+    courseName: 'An course not in our system',
     prisonNumber: person.prisonNumber,
   })
-  const courseParticipationWithOtherCourseNameAndName = {
-    ...courseParticipationWithOtherCourseName,
-    name: courseParticipationWithOtherCourseName.otherCourseName as CourseParticipationWithName['name'],
-  }
   const courseOffering = courseOfferingFactory.build()
   const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
@@ -64,11 +57,7 @@ context('Programme history', () => {
     const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
     const organisation = OrganisationUtils.organisationFromPrison(prison)
 
-    const courseParticipations = [courseParticipationWithCourseId, courseParticipationWithOtherCourseName]
-    const courseParticipationsWithNames: Array<CourseParticipationWithName> = [
-      courseParticipationWithCourseIdAndName,
-      courseParticipationWithOtherCourseNameAndName,
-    ]
+    const courseParticipations = [courseParticipationWithKnownCourseName, courseParticipationWithUnknownCourseName]
 
     const path = referPaths.programmeHistory.index({ referralId: referral.id })
 
@@ -85,7 +74,7 @@ context('Programme history', () => {
 
       it('shows the page with an existing programme history', () => {
         const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-          participationsWithNames: courseParticipationsWithNames,
+          participations: courseParticipations,
           person,
           referral,
         })
@@ -94,7 +83,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
         programmeHistoryPage.shouldNotContainSuccessMessage()
         programmeHistoryPage.shouldContainPreHistoryParagraph()
-        programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsWithNames, referral.id)
+        programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipations, referral.id)
         programmeHistoryPage.shouldContainButton('Continue')
         programmeHistoryPage.shouldContainButtonLink(
           'Add another',
@@ -112,7 +101,7 @@ context('Programme history', () => {
 
         it('updates the referral and redirects to the task list', () => {
           const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-            participationsWithNames: courseParticipationsWithNames,
+            participations: courseParticipations,
             person,
             referral,
           })
@@ -143,7 +132,7 @@ context('Programme history', () => {
 
       it('shows the page without an existing programme history', () => {
         const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-          participationsWithNames: emptyCourseParticipations as Array<CourseParticipationWithName>,
+          participations: emptyCourseParticipations as Array<CourseParticipation>,
           person,
           referral,
         })
@@ -170,7 +159,7 @@ context('Programme history', () => {
 
         it('updates the referral and redirects to the task list', () => {
           const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-            participationsWithNames: courseParticipationsWithNames,
+            participations: courseParticipations,
             person,
             referral,
           })
@@ -213,15 +202,15 @@ context('Programme history', () => {
         })
 
         it('creates the new entry and redirects to the details page', () => {
-          cy.task('stubCreateParticipation', courseParticipationWithCourseId)
+          cy.task('stubCreateParticipation', courseParticipationWithKnownCourseName)
 
           const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-          selectProgrammePage.selectCourse(courses[0].id)
-          selectProgrammePage.submitSelection(courseParticipationWithCourseId, courses[0].id)
+          selectProgrammePage.selectCourse(courses[0].name)
+          selectProgrammePage.submitSelection(courseParticipationWithKnownCourseName, courses[0].name)
 
           Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
             course: courses[0],
-            courseParticipation: courseParticipationWithCourseId,
+            courseParticipation: courseParticipationWithKnownCourseName,
             person,
           })
         })
@@ -233,7 +222,7 @@ context('Programme history', () => {
           const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
           selectProgrammePageWithError.shouldHaveErrors([
             {
-              field: 'courseId',
+              field: 'courseName',
               message: 'Select a programme',
             },
           ])
@@ -241,7 +230,7 @@ context('Programme history', () => {
 
         it('displays an error when "Other" is selected but a programme name is not provided', () => {
           const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-          selectProgrammePage.selectCourse('other')
+          selectProgrammePage.selectCourse('Other')
           selectProgrammePage.shouldContainButton('Continue').click()
 
           const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
@@ -255,57 +244,57 @@ context('Programme history', () => {
       })
 
       describe('for an existing entry', () => {
-        const courseParticipationWithCourseIdPath = referPaths.programmeHistory.editProgramme({
-          courseParticipationId: courseParticipationWithCourseId.id,
+        const courseParticipationWithKnownCourseNamePath = referPaths.programmeHistory.editProgramme({
+          courseParticipationId: courseParticipationWithKnownCourseName.id,
           referralId: referral.id,
         })
-        const courseParticipationWithOtherCourseNamePath = referPaths.programmeHistory.editProgramme({
-          courseParticipationId: courseParticipationWithOtherCourseName.id,
+        const courseParticipationWithUnknownCourseNamePath = referPaths.programmeHistory.editProgramme({
+          courseParticipationId: courseParticipationWithUnknownCourseName.id,
           referralId: referral.id,
         })
 
         it('shows the select programme page for a history with a known programme', () => {
-          cy.task('stubParticipation', courseParticipationWithCourseId)
+          cy.task('stubParticipation', courseParticipationWithKnownCourseName)
 
-          cy.visit(courseParticipationWithCourseIdPath)
+          cy.visit(courseParticipationWithKnownCourseNamePath)
 
           const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
           selectProgrammePage.shouldHavePersonDetails(person)
-          selectProgrammePage.shouldContainNavigation(courseParticipationWithCourseIdPath)
+          selectProgrammePage.shouldContainNavigation(courseParticipationWithKnownCourseNamePath)
           selectProgrammePage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
           selectProgrammePage.shouldContainCourseOptions()
-          selectProgrammePage.shouldHaveSelectedCourse(courseParticipationWithCourseId.courseId)
+          selectProgrammePage.shouldHaveSelectedCourse(courseParticipationWithKnownCourseName.courseName, true)
           selectProgrammePage.shouldNotDisplayOtherCourseInput()
           selectProgrammePage.shouldContainButton('Continue')
         })
 
         it('shows the select programme page for a history with an other programme', () => {
-          cy.task('stubParticipation', courseParticipationWithOtherCourseName)
+          cy.task('stubParticipation', courseParticipationWithUnknownCourseName)
 
-          cy.visit(courseParticipationWithOtherCourseNamePath)
+          cy.visit(courseParticipationWithUnknownCourseNamePath)
 
           const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
           selectProgrammePage.shouldHavePersonDetails(person)
-          selectProgrammePage.shouldContainNavigation(courseParticipationWithOtherCourseNamePath)
+          selectProgrammePage.shouldContainNavigation(courseParticipationWithUnknownCourseNamePath)
           selectProgrammePage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
           selectProgrammePage.shouldContainCourseOptions()
           selectProgrammePage.shouldDisplayOtherCourseInput()
-          selectProgrammePage.shouldHaveSelectedCourse('other', courseParticipationWithOtherCourseName.otherCourseName)
+          selectProgrammePage.shouldHaveSelectedCourse(courseParticipationWithUnknownCourseName.courseName, false)
           selectProgrammePage.shouldContainButton('Continue')
         })
 
         it('updates the entry and redirects to the details page', () => {
-          const newCourseId = courses[2].id
-          const updatedParticipation = { ...courseParticipationWithCourseId, courseId: newCourseId }
+          const newCourseName = courses[2].name
+          const updatedParticipation = { ...courseParticipationWithKnownCourseName, courseName: newCourseName }
 
-          cy.task('stubParticipation', courseParticipationWithCourseId)
+          cy.task('stubParticipation', courseParticipationWithKnownCourseName)
           cy.task('stubUpdateParticipation', updatedParticipation)
 
-          cy.visit(courseParticipationWithCourseIdPath)
+          cy.visit(courseParticipationWithKnownCourseNamePath)
 
           const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-          selectProgrammePage.selectCourse(newCourseId)
-          selectProgrammePage.submitSelection(courseParticipationWithCourseId, newCourseId)
+          selectProgrammePage.selectCourse(newCourseName)
+          selectProgrammePage.submitSelection(courseParticipationWithKnownCourseName, newCourseName)
 
           Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
             course: courses[0],
@@ -315,12 +304,12 @@ context('Programme history', () => {
         })
 
         it('displays an error when "Other" is selected but a programme name is not provided', () => {
-          cy.task('stubParticipation', courseParticipationWithCourseId)
+          cy.task('stubParticipation', courseParticipationWithKnownCourseName)
 
-          cy.visit(courseParticipationWithCourseIdPath)
+          cy.visit(courseParticipationWithKnownCourseNamePath)
 
           const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
-          selectProgrammePage.selectCourse('other')
+          selectProgrammePage.selectCourse('Other')
           selectProgrammePage.shouldContainButton('Continue').click()
 
           const selectProgrammePageWithError = Page.verifyOnPage(SelectProgrammePage, { courses })
@@ -336,8 +325,7 @@ context('Programme history', () => {
 
     describe('and adding details', () => {
       const newCourseParticipation = courseParticipationFactory.new().build({
-        courseId: courses[0].id,
-        otherCourseName: undefined,
+        courseName: courses[0].name,
         prisonNumber: person.prisonNumber,
       })
       const newCourseParticipationPath = referPaths.programmeHistory.details.show({
@@ -426,7 +414,7 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.submitDetails()
 
         const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-          participationsWithNames: [{ ...updatedCourseParticipation, name: courses[0].name }],
+          participations: [{ ...updatedCourseParticipation, name: courses[0].name }],
           person,
           referral,
         })
@@ -489,12 +477,12 @@ context('Programme history', () => {
 
       describe('for a participation with existing details', () => {
         const path = referPaths.programmeHistory.details.show({
-          courseParticipationId: courseParticipationWithCourseId.id,
+          courseParticipationId: courseParticipationWithKnownCourseName.id,
           referralId: referral.id,
         })
 
         beforeEach(() => {
-          cy.task('stubParticipation', courseParticipationWithCourseId)
+          cy.task('stubParticipation', courseParticipationWithKnownCourseName)
 
           cy.visit(path)
         })
@@ -502,7 +490,7 @@ context('Programme history', () => {
         it('shows the details page with the form fields pre-populated', () => {
           const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
             course: courses[0],
-            courseParticipation: courseParticipationWithCourseId,
+            courseParticipation: courseParticipationWithKnownCourseName,
             person,
           })
           programmeHistoryDetailsPage.shouldHaveCorrectFormValues()
@@ -513,12 +501,12 @@ context('Programme history', () => {
 
   describe('When removing from the programme history', () => {
     const path = referPaths.programmeHistory.delete({
-      courseParticipationId: courseParticipationWithCourseId.id,
+      courseParticipationId: courseParticipationWithKnownCourseName.id,
       referralId: referral.id,
     })
 
     beforeEach(() => {
-      cy.task('stubParticipation', courseParticipationWithCourseId)
+      cy.task('stubParticipation', courseParticipationWithKnownCourseName)
       cy.task('stubCourse', courses[0])
 
       cy.visit(path)
@@ -526,7 +514,7 @@ context('Programme history', () => {
 
     it('shows the delete page', () => {
       const deleteProgrammeHistoryPage = Page.verifyOnPage(DeleteProgrammeHistoryPage, {
-        participationWithName: courseParticipationWithCourseIdAndName,
+        participation: courseParticipationWithKnownCourseName,
         person,
         referral,
       })
@@ -534,7 +522,7 @@ context('Programme history', () => {
       deleteProgrammeHistoryPage.shouldContainNavigation(path)
       deleteProgrammeHistoryPage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
       deleteProgrammeHistoryPage.shouldContainHistorySummaryCards(
-        [courseParticipationWithCourseIdAndName],
+        [courseParticipationWithKnownCourseName],
         referral.id,
         {
           change: false,
@@ -548,17 +536,17 @@ context('Programme history', () => {
     })
 
     it('deletes the entry and redirects to the programme history page', () => {
-      cy.task('stubDeleteParticipation', courseParticipationWithCourseId.id)
+      cy.task('stubDeleteParticipation', courseParticipationWithKnownCourseName.id)
 
       const deleteProgrammeHistoryPage = Page.verifyOnPage(DeleteProgrammeHistoryPage, {
-        participationWithName: courseParticipationWithCourseIdAndName,
+        participation: courseParticipationWithKnownCourseName,
         person,
         referral,
       })
       deleteProgrammeHistoryPage.confirm()
 
       const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-        participationsWithNames: [],
+        participations: [],
         person,
         referral,
       })
