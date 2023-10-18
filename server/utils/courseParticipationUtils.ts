@@ -215,13 +215,7 @@ export default class CourseParticipationUtils {
     request: Request,
   ): { hasError: boolean; value: number | undefined } {
     let hasError = false
-
     const trimmedValue = value.trim()
-
-    if (!trimmedValue) {
-      return { hasError, value: undefined }
-    }
-
     const numericValue = Number(trimmedValue)
 
     if (trimmedValue) {
@@ -239,10 +233,11 @@ export default class CourseParticipationUtils {
 
     if (hasError) {
       request.flash('formValues', JSON.stringify(request.body))
-      return { hasError, value: undefined }
     }
 
-    return { hasError, value: numericValue }
+    const processedValue = !trimmedValue || hasError ? undefined : numericValue
+
+    return { hasError, value: processedValue }
   }
 }
 
