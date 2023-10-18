@@ -1,5 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import type { Request, Response } from 'express'
+import { path } from 'static-path'
 
 import auditMiddleware from './auditMiddleware'
 import logger from '../../logger'
@@ -123,6 +124,105 @@ describe('auditMiddleware', () => {
         ...requestParams,
         bodyParam1: 'body-value-1',
       })
+    })
+  })
+
+  describe('redirectAuditSpecs', () => {
+    const programmeHistoryPathPrefix = path('/referrals').path(':referralId').path('programme-history')
+
+    it('sends an audit message based on the redirect destination of the given request handler', async () => {
+      const somePath = programmeHistoryPathPrefix.path(':courseParticipationId').path('details')
+
+      const handler = jest.fn()
+      const response = createMock<Response>({
+        get: field => {
+          return field === 'Location'
+            ? somePath({ courseParticipationId: 'my-course-participation-uuid', referralId: 'my-referral-uuid' })
+            : undefined
+        },
+        locals: { user: { username } },
+      })
+      const request = createMock<Request>()
+      const next = jest.fn()
+
+      const auditService = createMock<AuditService>()
+
+      const auditedhandler = auditMiddleware(handler, auditService, {
+        redirectAuditEventSpecs: [{ auditEvent, path: somePath.pattern }],
+      })
+
+      await auditedhandler(request, response, next)
+
+      expect(handler).toHaveBeenCalled()
+      expect(auditService.sendAuditMessage).toHaveBeenCalledWith(auditEvent, username, {
+        courseParticipationId: 'my-course-participation-uuid',
+        referralId: 'my-referral-uuid',
+      })
+    })
+
+    it('sends an audit message only for the first matching RedirectAuditEventSpec', async () => {
+      const nonMatchingPath = path('/').path('some-path-component')
+      const matchingPath1 = programmeHistoryPathPrefix.path('new')
+      const matchingPath2 = programmeHistoryPathPrefix.path(':courseParticipationId')
+
+      const handler = jest.fn()
+      const response = createMock<Response>({
+        get: field => {
+          return field === 'Location' ? matchingPath1({ referralId: 'my-referral-uuid' }) : undefined
+        },
+        locals: { user: { username } },
+      })
+      const request = createMock<Request>()
+      const next = jest.fn()
+
+      const auditService = createMock<AuditService>()
+
+      const auditedhandler = auditMiddleware(handler, auditService, {
+        redirectAuditEventSpecs: [
+          { auditEvent: 'NON_MATCHING_PATH_AUDIT_EVENT', path: nonMatchingPath.pattern },
+          { auditEvent: 'MATCHING_PATH_1_AUDIT_EVENT', path: matchingPath1.pattern },
+          { auditEvent: 'MATCHING_PATH_2_AUDIT_EVENT', path: matchingPath2.pattern },
+        ],
+      })
+
+      await auditedhandler(request, response, next)
+
+      expect(handler).toHaveBeenCalled()
+      expect(auditService.sendAuditMessage).toHaveBeenCalledWith('MATCHING_PATH_1_AUDIT_EVENT', username, {
+        referralId: 'my-referral-uuid',
+      })
+    })
+
+    it('sends the default message if the path does not match', async () => {
+      const nonMatchingPath = path('/').path('some-path-component')
+      const matchingPath1 = programmeHistoryPathPrefix.path('new')
+      const matchingPath2 = programmeHistoryPathPrefix.path(':courseParticipationId')
+
+      const handler = jest.fn()
+      const response = createMock<Response>({
+        get: field => {
+          return field === 'Location' ? nonMatchingPath.pattern : undefined
+        },
+        locals: { user: { username } },
+      })
+      const request = createMock<Request>({ params: requestParams })
+      const next = jest.fn()
+
+      const auditService = createMock<AuditService>()
+
+      const auditedhandler = auditMiddleware(handler, auditService, {
+        auditEvent: 'DEFAULT_AUDIT_EVENT',
+        redirectAuditEventSpecs: [
+          { auditEvent: 'MATCHING_PATH_1_AUDIT_EVENT', path: matchingPath1.pattern },
+          { auditEvent: 'MATCHING_PATH_2_AUDIT_EVENT', path: matchingPath2.pattern },
+        ],
+      })
+
+      await auditedhandler(request, response, next)
+
+      expect(handler).toHaveBeenCalled()
+      expect(auditService.sendAuditMessage).toHaveBeenCalled()
+      expect(auditService.sendAuditMessage).toHaveBeenCalledWith('DEFAULT_AUDIT_EVENT', username, requestParams)
     })
   })
 })
