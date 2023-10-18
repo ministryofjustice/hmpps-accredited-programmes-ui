@@ -73,37 +73,26 @@ export default class CourseParticipationUtils {
     courseParticipationUpdate: CourseParticipationUpdate
     hasFormErrors: boolean
   } {
-    const { body } = request
+    const { detail, outcome, setting, source } = request.body
+
     let hasFormErrors = false
+    let processedOutcome: CourseParticipationOutcome | undefined
 
-    const validateYear = (field: string, value: string): number | undefined => {
-      const validatedYear = value ? Number(value) : undefined
+    if (outcome.status) {
+      const field = outcome.status === 'complete' ? 'yearCompleted' : 'yearStarted'
+      const { hasError, value } = this.validateYear(field, outcome[field], request)
 
-      if (value && Number.isNaN(validatedYear)) {
-        request.flash(`${field}Error`, 'Enter a year using numbers only')
-        request.flash('formValues', JSON.stringify(body))
-
+      if (hasError) {
         hasFormErrors = true
-
-        return undefined
       }
 
-      return validatedYear
+      processedOutcome = { [field]: value, status: outcome.status }
     }
-
-    const { detail, outcome, setting, source } = body
 
     const courseParticipationUpdate: CourseParticipationUpdate = {
       courseName,
       detail: detail?.trim() || undefined,
-      outcome: outcome.status
-        ? {
-            status: outcome.status,
-            yearCompleted:
-              outcome.status === 'complete' ? validateYear('yearCompleted', outcome.yearCompleted) : undefined,
-            yearStarted: outcome.status === 'incomplete' ? validateYear('yearStarted', outcome.yearStarted) : undefined,
-          }
-        : undefined,
+      outcome: processedOutcome,
       setting: setting.type
         ? {
             location: (setting.type === 'community' ? setting.communityLocation : setting.custodyLocation) || undefined,
@@ -218,6 +207,42 @@ export default class CourseParticipationUtils {
     }
 
     return this.summaryListRow('Setting', valueTextItems)
+  }
+
+  private static validateYear(
+    field: string,
+    value: string,
+    request: Request,
+  ): { hasError: boolean; value: number | undefined } {
+    let hasError = false
+
+    const trimmedValue = value.trim()
+
+    if (!trimmedValue) {
+      return { hasError, value: undefined }
+    }
+
+    const numericValue = Number(trimmedValue)
+
+    if (trimmedValue) {
+      if (Number.isNaN(numericValue)) {
+        request.flash(`${field}Error`, 'Enter a year using numbers only')
+        hasError = true
+      } else if (trimmedValue.length !== 4) {
+        request.flash(`${field}Error`, 'Enter a year using 4 digits only. For example, 1994')
+        hasError = true
+      } else if (numericValue < 1990 || numericValue > new Date().getFullYear()) {
+        request.flash(`${field}Error`, `Enter a year between 1990 and ${new Date().getFullYear()}`)
+        hasError = true
+      }
+    }
+
+    if (hasError) {
+      request.flash('formValues', JSON.stringify(request.body))
+      return { hasError, value: undefined }
+    }
+
+    return { hasError, value: numericValue }
   }
 }
 
