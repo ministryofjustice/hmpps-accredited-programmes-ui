@@ -2,7 +2,7 @@ import nock from 'nock'
 
 import HmppsManageUsersClient from './hmppsManageUsersClient'
 import config from '../config'
-import type { User } from '@accredited-programmes/users'
+import type { User } from '@manage-users-api'
 
 jest.mock('./tokenStore')
 

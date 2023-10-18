@@ -1,7 +1,7 @@
 import type { SuperAgentRequest } from 'superagent'
 
 import { stubFor } from '../../wiremock'
-import type { User } from '@accredited-programmes/users'
+import type { User } from '@manage-users-api'
 
 export default {
   stubCurrentUser: (username: User['username']): SuperAgentRequest =>
