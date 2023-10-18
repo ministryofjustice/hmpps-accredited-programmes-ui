@@ -30,6 +30,7 @@ describe('CourseParticipationUtils', () => {
     let request: DeepMocked<RequestWithCourseParticipationDetailsBody>
     let expectedCourseParticipationUpdate: CourseParticipationUpdate
     const courseName = 'A course name'
+    const currentYear = new Date().getFullYear()
 
     beforeEach(() => {
       request = createMock<RequestWithCourseParticipationDetailsBody>({})
@@ -99,9 +100,9 @@ describe('CourseParticipationUtils', () => {
     })
 
     describe('when `request.body.outcome.status` is `complete`', () => {
-      describe('and `request.body.outcome.yearCompleted` is an empty string', () => {
+      describe('and `request.body.outcome.yearCompleted` is an empty string when trimmed', () => {
         it('returns `courseParticipationUpdate.outcome.yearCompleted` as undefined and reports no errors', () => {
-          request.body.outcome.yearCompleted = ''
+          request.body.outcome.yearCompleted = '  '
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
 
           expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
@@ -124,6 +125,57 @@ describe('CourseParticipationUtils', () => {
           expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
         })
       })
+
+      describe('and `request.body.outcome.yearCompleted` is not four digits long', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearCompleted` as undefined', () => {
+          request.body.outcome.yearCompleted = '202'
+          ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith(
+            'yearCompletedError',
+            'Enter a year using 4 digits only. For example, 1994',
+          )
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
+
+      describe('and `request.body.outcome.yearCompleted` is less than 1990', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearCompleted` as undefined', () => {
+          request.body.outcome.yearCompleted = '1989'
+          ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith(
+            'yearCompletedError',
+            `Enter a year between 1990 and ${currentYear}`,
+          )
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
+
+      describe('and `request.body.outcome.yearCompleted` is in the future', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearCompleted` as undefined', () => {
+          request.body.outcome.yearCompleted = (currentYear + 1).toString()
+          ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith(
+            'yearCompletedError',
+            `Enter a year between 1990 and ${currentYear}`,
+          )
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
     })
 
     describe('when `request.body.outcome.status` is `incomplete`', () => {
@@ -133,7 +185,7 @@ describe('CourseParticipationUtils', () => {
         ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
       })
 
-      describe('and `request.body.outcome.yearCompleted` is a valid `string` value', () => {
+      describe('and `request.body.outcome.yearStarted` is a valid `string` value', () => {
         it('returns `courseParticipationUpdate.outcome.yearStarted` as `number` and reports no errors', () => {
           request.body.outcome.yearStarted = '2019'
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = 2019
@@ -145,9 +197,9 @@ describe('CourseParticipationUtils', () => {
         })
       })
 
-      describe('and `request.body.outcome.yearStarted` is an empty string', () => {
+      describe('and `request.body.outcome.yearStarted` is an empty string when trimmed', () => {
         it('returns `courseParticipationUpdate.outcome.yearStarted` as undefined and reports no errors', () => {
-          request.body.outcome.yearStarted = ''
+          request.body.outcome.yearStarted = '  '
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = undefined
 
           expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
@@ -167,6 +219,51 @@ describe('CourseParticipationUtils', () => {
             hasFormErrors: true,
           })
           expect(request.flash).toHaveBeenCalledWith('yearStartedError', 'Enter a year using numbers only')
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
+
+      describe('and `request.body.outcome.yearStarted` is not four digits long', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearStarted` as undefined', () => {
+          request.body.outcome.yearStarted = '202'
+          ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith(
+            'yearStartedError',
+            'Enter a year using 4 digits only. For example, 1994',
+          )
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
+
+      describe('and `request.body.outcome.yearStarted` is less than 1990', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearStarted` as undefined', () => {
+          request.body.outcome.yearStarted = '1989'
+          ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith('yearStartedError', `Enter a year between 1990 and ${currentYear}`)
+          expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
+        })
+      })
+
+      describe('and `request.body.outcome.yearStarted` is in the future', () => {
+        it('flashes an appropriate error message, reports an error and returns `courseParticipationUpdate.outcome.yearStarted` as undefined', () => {
+          request.body.outcome.yearStarted = (currentYear + 1).toString()
+          ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = undefined
+
+          expect(CourseParticipationUtils.processDetailsFormData(request, courseName)).toEqual({
+            courseParticipationUpdate: expectedCourseParticipationUpdate,
+            hasFormErrors: true,
+          })
+          expect(request.flash).toHaveBeenCalledWith('yearStartedError', `Enter a year between 1990 and ${currentYear}`)
           expect(request.flash).toHaveBeenCalledWith('formValues', JSON.stringify(request.body))
         })
       })
