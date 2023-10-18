@@ -133,7 +133,7 @@ describe('CourseParticipationUtils', () => {
         ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearCompleted = undefined
       })
 
-      describe('and `request.body.outcome.yearCompleted` is a valid `string` value', () => {
+      describe('and `request.body.outcome.yearStarted` is a valid `string` value', () => {
         it('returns `courseParticipationUpdate.outcome.yearStarted` as `number` and reports no errors', () => {
           request.body.outcome.yearStarted = '2019'
           ;(expectedCourseParticipationUpdate.outcome as CourseParticipationOutcome).yearStarted = 2019
