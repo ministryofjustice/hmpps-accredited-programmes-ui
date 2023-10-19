@@ -328,7 +328,7 @@ context('Programme history', () => {
         courseName: courses[0].name,
         prisonNumber: person.prisonNumber,
       })
-      const newCourseParticipationPath = referPaths.programmeHistory.details.show({
+      const newCourseParticipationDetailsPath = referPaths.programmeHistory.details.show({
         courseParticipationId: newCourseParticipation.id,
         referralId: referral.id,
       })
@@ -336,14 +336,14 @@ context('Programme history', () => {
       it('shows the details page', () => {
         cy.task('stubParticipation', newCourseParticipation)
 
-        cy.visit(newCourseParticipationPath)
+        cy.visit(newCourseParticipationDetailsPath)
 
         const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
           course: courses[0],
           courseParticipation: newCourseParticipation,
           person,
         })
-        programmeHistoryDetailsPage.shouldContainNavigation(newCourseParticipationPath)
+        programmeHistoryDetailsPage.shouldContainNavigation(newCourseParticipationDetailsPath)
         programmeHistoryDetailsPage.shouldHavePersonDetails(person)
         programmeHistoryDetailsPage.shouldContainBackLink(
           referPaths.programmeHistory.editProgramme({
@@ -370,7 +370,7 @@ context('Programme history', () => {
       it('updates the entry and redirects to the programme history page', () => {
         cy.task('stubParticipation', newCourseParticipation)
 
-        cy.visit(newCourseParticipationPath)
+        cy.visit(newCourseParticipationDetailsPath)
 
         const formValues: CourseParticipationDetailsBody = {
           detail: 'Some outcome details',
@@ -424,7 +424,7 @@ context('Programme history', () => {
       it('displays an error when `yearCompleted` is invalid', () => {
         cy.task('stubParticipation', newCourseParticipation)
 
-        cy.visit(newCourseParticipationPath)
+        cy.visit(newCourseParticipationDetailsPath)
 
         const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
           course: courses[0],
@@ -451,7 +451,7 @@ context('Programme history', () => {
       it('displays an error when `yearStarted` is invalid', () => {
         cy.task('stubParticipation', newCourseParticipation)
 
-        cy.visit(newCourseParticipationPath)
+        cy.visit(newCourseParticipationDetailsPath)
 
         const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
           course: courses[0],
