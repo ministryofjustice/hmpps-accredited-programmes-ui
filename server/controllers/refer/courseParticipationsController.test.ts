@@ -73,6 +73,7 @@ describe('CourseParticipationsController', () => {
           request,
         )
         expect(courseService.createParticipation).toHaveBeenCalledWith(token, referral.prisonNumber, courseName)
+        expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully added a programme.')
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,
@@ -105,6 +106,7 @@ describe('CourseParticipationsController', () => {
           request,
         )
         expect(courseService.createParticipation).toHaveBeenCalledWith(token, referral.prisonNumber, otherCourseName)
+        expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully added a programme.')
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,

@@ -34,6 +34,8 @@ export default class CourseParticipationsController {
         courseName as CourseParticipation['courseName'],
       )
 
+      req.flash('successMessage', 'You have successfully added a programme.')
+
       return res.redirect(
         referPaths.programmeHistory.details.show({
           courseParticipationId: courseParticipation.id,
