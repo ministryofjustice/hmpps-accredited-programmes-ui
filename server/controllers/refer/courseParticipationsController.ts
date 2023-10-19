@@ -16,7 +16,9 @@ export default class CourseParticipationsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
 
       const { courseName, hasFormErrors } = CourseParticipationUtils.processCourseFormData(
         req.body.courseName,
@@ -25,7 +27,7 @@ export default class CourseParticipationsController {
       )
 
       if (hasFormErrors) {
-        return res.redirect(referPaths.programmeHistory.new({ referralId: req.params.referralId }))
+        return res.redirect(referPaths.programmeHistory.new({ referralId }))
       }
 
       const courseParticipation = await this.courseService.createParticipation(
@@ -72,7 +74,7 @@ export default class CourseParticipationsController {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
         person,
-        referralId: referral.id,
+        referralId,
         summaryListOptions,
       })
     }
@@ -135,7 +137,8 @@ export default class CourseParticipationsController {
       TypeUtils.assertHasUser(req)
 
       const successMessage = req.flash('successMessage')[0]
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const { referralId } = req.params
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -152,14 +155,14 @@ export default class CourseParticipationsController {
       )
 
       const summaryListsOptions = courseParticipationsPresenter.map(participation =>
-        CourseParticipationUtils.summaryListOptions(participation, referral.id),
+        CourseParticipationUtils.summaryListOptions(participation, referralId),
       )
 
       res.render('referrals/courseParticipations/index', {
         action: `${referPaths.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
         pageHeading: 'Accredited Programme history',
         person,
-        referralId: referral.id,
+        referralId,
         successMessage,
         summaryListsOptions,
       })
@@ -169,9 +172,10 @@ export default class CourseParticipationsController {
   new(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
+      const { referralId } = req.params
 
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
       const courseNames = await this.courseService.getCourseNames(req.user.token)
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -181,7 +185,7 @@ export default class CourseParticipationsController {
       FormUtils.setFieldErrors(req, res, ['courseName', 'otherCourseName'])
 
       res.render('referrals/courseParticipations/course', {
-        action: referPaths.programmeHistory.create({ referralId: referral.id }),
+        action: referPaths.programmeHistory.create({ referralId }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues: {},
         otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
@@ -196,9 +200,11 @@ export default class CourseParticipationsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { courseParticipationId, referralId } = req.params
+
       const currentCourseParticipation = await this.courseService.getParticipation(
         req.user.token,
-        req.params.courseParticipationId,
+        courseParticipationId,
       )
 
       const { courseName, hasFormErrors } = CourseParticipationUtils.processCourseFormData(
@@ -210,15 +216,15 @@ export default class CourseParticipationsController {
       if (hasFormErrors) {
         return res.redirect(
           referPaths.programmeHistory.editProgramme({
-            courseParticipationId: currentCourseParticipation.id,
-            referralId: req.params.referralId,
+            courseParticipationId,
+            referralId,
           }),
         )
       }
 
       const { detail, outcome, setting, source } = currentCourseParticipation
 
-      await this.courseService.updateParticipation(req.user.token, currentCourseParticipation.id, {
+      await this.courseService.updateParticipation(req.user.token, courseParticipationId, {
         courseName: courseName as CourseParticipation['courseName'],
         detail,
         outcome,
@@ -230,8 +236,8 @@ export default class CourseParticipationsController {
 
       return res.redirect(
         referPaths.programmeHistory.details.show({
-          courseParticipationId: req.params.courseParticipationId,
-          referralId: req.params.referralId,
+          courseParticipationId,
+          referralId,
         }),
       )
     }

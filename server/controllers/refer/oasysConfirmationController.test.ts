@@ -69,6 +69,7 @@ describe('OasysConfirmationController', () => {
     })
 
     it("asks the service to update the field and redirects to the ReferralController's show action", async () => {
+      request.params.referralId = referral.id
       request.body.oasysConfirmed = true
 
       const requestHandler = oasysConfirmationController.update()

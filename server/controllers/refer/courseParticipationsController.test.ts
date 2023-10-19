@@ -305,6 +305,7 @@ describe('CourseParticipationsController', () => {
         .mockResolvedValue(earliestCourseParticipationPresenter)
       courseService.getCourse.mockResolvedValue(course)
       ;(request.flash as jest.Mock).mockImplementation(() => [])
+      request.params.referralId = referral.id
     })
 
     it("renders the index template for a person's programme history", async () => {
@@ -360,6 +361,7 @@ describe('CourseParticipationsController', () => {
 
       const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
+      request.params.referralId = referral.id
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {

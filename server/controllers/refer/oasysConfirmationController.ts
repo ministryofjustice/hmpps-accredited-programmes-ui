@@ -36,15 +36,16 @@ export default class OasysConfirmationController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { referralId } = req.params
       const { oasysConfirmed } = req.body
 
       if (!oasysConfirmed) {
         req.flash('oasysConfirmedError', 'Confirm the OASys information is up to date')
 
-        return res.redirect(referPaths.confirmOasys.show({ referralId: req.params.referralId }))
+        return res.redirect(referPaths.confirmOasys.show({ referralId }))
       }
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
 
       const referralUpdate: ReferralUpdate = {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
@@ -52,9 +53,9 @@ export default class OasysConfirmationController {
         reason: referral.reason,
       }
 
-      await this.referralService.updateReferral(req.user.token, referral.id, referralUpdate)
+      await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)
 
-      return res.redirect(referPaths.show({ referralId: referral.id }))
+      return res.redirect(referPaths.show({ referralId }))
     }
   }
 }
