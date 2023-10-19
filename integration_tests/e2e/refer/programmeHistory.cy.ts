@@ -8,8 +8,9 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  userFactory,
 } from '../../../server/testutils/factories'
-import { type CourseParticipationDetailsBody, OrganisationUtils } from '../../../server/utils'
+import { type CourseParticipationDetailsBody, OrganisationUtils, StringUtils } from '../../../server/utils'
 import Page from '../../pages/page'
 import {
   DeleteProgrammeHistoryPage,
@@ -19,6 +20,7 @@ import {
   TaskListPage,
 } from '../../pages/refer'
 import type { CourseParticipation } from '@accredited-programmes/models'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 context('Programme history', () => {
   const prisoner = prisonerFactory.build({
@@ -31,14 +33,26 @@ context('Programme history', () => {
     prisonNumber: prisoner.prisonerNumber,
   })
   const courses = courseFactory.buildList(4)
+  const addedByUser1 = userFactory.build()
+  const addedByUser2 = userFactory.build()
   const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
+    addedBy: addedByUser1.username,
     courseName: courses[0].name,
     prisonNumber: person.prisonNumber,
   })
+  const courseParticipationWithKnownCourseNamePresenter: CourseParticipationPresenter = {
+    ...courseParticipationWithKnownCourseName,
+    addedByDisplayName: StringUtils.convertToTitleCase(addedByUser1.name),
+  }
   const courseParticipationWithUnknownCourseName = courseParticipationFactory.build({
+    addedBy: addedByUser2.username,
     courseName: 'An course not in our system',
     prisonNumber: person.prisonNumber,
   })
+  const courseParticipationWithUnknownCourseNamePresenter: CourseParticipationPresenter = {
+    ...courseParticipationWithUnknownCourseName,
+    addedByDisplayName: StringUtils.convertToTitleCase(addedByUser2.name),
+  }
   const courseOffering = courseOfferingFactory.build()
   const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
   const programmeHistoryPath = referPaths.programmeHistory.index({ referralId: referral.id })
@@ -53,6 +67,8 @@ context('Programme history', () => {
 
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
+    cy.task('stubUserDetails', addedByUser1)
+    cy.task('stubUserDetails', addedByUser2)
   })
 
   describe('Showing the programme history page', () => {
@@ -60,6 +76,10 @@ context('Programme history', () => {
     const organisation = OrganisationUtils.organisationFromPrison(prison)
 
     const courseParticipations = [courseParticipationWithKnownCourseName, courseParticipationWithUnknownCourseName]
+    const courseParticipationsPresenter: Array<CourseParticipationPresenter> = [
+      courseParticipationWithKnownCourseNamePresenter,
+      courseParticipationWithUnknownCourseNamePresenter,
+    ]
 
     beforeEach(() => {
       cy.task('stubCourse', courses[0])
@@ -74,7 +94,7 @@ context('Programme history', () => {
 
       it('shows the page with an existing programme history', () => {
         const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-          participations: courseParticipations,
+          participations: courseParticipationsPresenter,
           person,
           referral,
         })
@@ -83,7 +103,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
         programmeHistoryPage.shouldNotContainSuccessMessage()
         programmeHistoryPage.shouldContainPreHistoryParagraph()
-        programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipations, referral.id)
+        programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id)
         programmeHistoryPage.shouldContainButton('Continue')
         programmeHistoryPage.shouldContainButtonLink('Add another', newParticipationPath)
       })
@@ -98,7 +118,7 @@ context('Programme history', () => {
 
         it('updates the referral and redirects to the task list', () => {
           const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-            participations: courseParticipations,
+            participations: courseParticipationsPresenter,
             person,
             referral,
           })
@@ -117,6 +137,7 @@ context('Programme history', () => {
 
     describe('when there is no existing programme history', () => {
       const emptyCourseParticipations: Array<CourseParticipation> = []
+      const emptyCourseParticipationsPresenter: Array<CourseParticipationPresenter> = []
 
       beforeEach(() => {
         cy.task('stubParticipationsByPerson', {
@@ -129,7 +150,7 @@ context('Programme history', () => {
 
       it('shows the page without an existing programme history', () => {
         const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-          participations: emptyCourseParticipations as Array<CourseParticipation>,
+          participations: emptyCourseParticipationsPresenter,
           person,
           referral,
         })
@@ -153,7 +174,7 @@ context('Programme history', () => {
 
         it('updates the referral and redirects to the task list', () => {
           const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-            participations: courseParticipations,
+            participations: emptyCourseParticipationsPresenter,
             person,
             referral,
           })
@@ -317,6 +338,7 @@ context('Programme history', () => {
 
     describe('and adding details', () => {
       const newCourseParticipation = courseParticipationFactory.new().build({
+        addedBy: addedByUser1.username,
         courseName: courses[0].name,
         prisonNumber: person.prisonNumber,
       })
@@ -391,6 +413,10 @@ context('Programme history', () => {
           },
           source: formValues.source,
         })
+        const updatedCourseParticipationPresenter: CourseParticipationPresenter = {
+          ...updatedCourseParticipation,
+          addedByDisplayName: StringUtils.convertToTitleCase(addedByUser1.name),
+        }
 
         const programmeHistoryDetailsPage = Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
           course: courses[0],
@@ -406,7 +432,7 @@ context('Programme history', () => {
         programmeHistoryDetailsPage.submitDetails()
 
         Page.verifyOnPage(ProgrammeHistoryPage, {
-          participations: [{ ...updatedCourseParticipation, name: courses[0].name }],
+          participations: [{ ...updatedCourseParticipationPresenter, name: courses[0].name }],
           person,
           referral,
         })
@@ -491,6 +517,7 @@ context('Programme history', () => {
 
     describe('success messages', () => {
       const courseParticipations = [courseParticipationWithKnownCourseName]
+      const courseParticipationsPresenter = [courseParticipationWithKnownCourseNamePresenter]
       const addedSuccessMessage = 'You have successfully added a programme.'
       const updatedSuccessMessage = 'You have successfully updated a programme.'
 
@@ -524,7 +551,7 @@ context('Programme history', () => {
             programmeHistoryDetailsPage.submitDetails()
 
             const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-              participations: courseParticipations,
+              participations: courseParticipationsPresenter,
               person,
               referral,
             })
@@ -537,7 +564,7 @@ context('Programme history', () => {
             cy.visit(programmeHistoryPath)
 
             const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-              participations: courseParticipations,
+              participations: courseParticipationsPresenter,
               person,
               referral,
             })
@@ -550,7 +577,7 @@ context('Programme history', () => {
             cy.visit(programmeHistoryPath)
 
             Page.verifyOnPage(ProgrammeHistoryPage, {
-              participations: courseParticipations,
+              participations: courseParticipationsPresenter,
               person,
               referral,
             })
@@ -570,7 +597,7 @@ context('Programme history', () => {
             programmeHistoryDetailsPage.submitDetails()
 
             const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-              participations: courseParticipations,
+              participations: courseParticipationsPresenter,
               person,
               referral,
             })
@@ -604,7 +631,7 @@ context('Programme history', () => {
           cy.visit(programmeHistoryPath)
 
           const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
-            participations: courseParticipations,
+            participations: courseParticipationsPresenter,
             person,
             referral,
           })
@@ -637,7 +664,7 @@ context('Programme history', () => {
       deleteProgrammeHistoryPage.shouldContainNavigation(path)
       deleteProgrammeHistoryPage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
       deleteProgrammeHistoryPage.shouldContainHistorySummaryCards(
-        [courseParticipationWithKnownCourseName],
+        [courseParticipationWithKnownCourseNamePresenter],
         referral.id,
         {
           change: false,

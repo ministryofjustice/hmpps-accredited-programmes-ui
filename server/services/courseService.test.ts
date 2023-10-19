@@ -1,10 +1,18 @@
 import { faker } from '@faker-js/faker'
+import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import CourseService from './courseService'
+import type UserService from './userService'
 import { CourseClient } from '../data'
-import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  courseParticipationFactory,
+  personFactory,
+  userFactory,
+} from '../testutils/factories'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/courseClient')
@@ -13,7 +21,8 @@ describe('CourseService', () => {
   const courseClient = new CourseClient('token') as jest.Mocked<CourseClient>
   const courseClientBuilder = jest.fn()
 
-  const service = new CourseService(courseClientBuilder)
+  const userService = createMock<UserService>()
+  const service = new CourseService(courseClientBuilder, userService)
 
   const token = 'token'
 
@@ -203,6 +212,24 @@ describe('CourseService', () => {
 
         expect(courseClientBuilder).toHaveBeenCalledWith(token)
         expect(courseClient.findParticipationsByPerson).toHaveBeenCalledWith(person.prisonNumber)
+      })
+    })
+  })
+
+  describe('presentCourseParticipation', () => {
+    const addedByUser = userFactory.build({ name: 'john smith' })
+    const courseParticipation = courseParticipationFactory.build({ addedBy: addedByUser.username })
+
+    it('calls the user service to get details of the user who added the course participation and returns the course participation with formatted `addedByDisplayName`', async () => {
+      when(userService.getUserFromUsername)
+        .calledWith(token, courseParticipation.addedBy)
+        .mockResolvedValue(addedByUser)
+
+      const result = await service.presentCourseParticipation(token, courseParticipation)
+
+      expect(result).toEqual({
+        ...courseParticipation,
+        addedByDisplayName: 'John Smith',
       })
     })
   })

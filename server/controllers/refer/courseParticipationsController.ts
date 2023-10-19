@@ -52,6 +52,10 @@ export default class CourseParticipationsController {
       const { courseParticipationId, referralId } = req.params
 
       const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+      const courseParticipationPresenter = await this.courseService.presentCourseParticipation(
+        req.user.token,
+        courseParticipation,
+      )
       const referral = await this.referralService.getReferral(req.user.token, referralId)
       const person = await this.personService.getPerson(
         req.user.username,
@@ -59,7 +63,7 @@ export default class CourseParticipationsController {
         res.locals.user.caseloads,
       )
 
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipation, referralId, {
+      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, {
         change: false,
         remove: false,
       })
@@ -140,7 +144,14 @@ export default class CourseParticipationsController {
       const sortedCourseParticipations = (
         await this.courseService.getParticipationsByPerson(req.user.token, person.prisonNumber)
       ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
-      const summaryListsOptions = sortedCourseParticipations.map(participation =>
+
+      const courseParticipationsPresenter = await Promise.all(
+        sortedCourseParticipations.map(participation =>
+          this.courseService.presentCourseParticipation(req.user.token, participation),
+        ),
+      )
+
+      const summaryListsOptions = courseParticipationsPresenter.map(participation =>
         CourseParticipationUtils.summaryListOptions(participation, referral.id),
       )
 

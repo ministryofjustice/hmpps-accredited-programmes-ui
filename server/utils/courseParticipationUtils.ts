@@ -11,6 +11,7 @@ import type {
   Referral,
 } from '@accredited-programmes/models'
 import type {
+  CourseParticipationPresenter,
   GovukFrontendSummaryListCardActionsWithItems,
   GovukFrontendSummaryListRowWithValue,
   GovukFrontendSummaryListWithRowsWithValues,
@@ -109,7 +110,7 @@ export default class CourseParticipationUtils {
   }
 
   static summaryListOptions(
-    courseParticipation: CourseParticipation,
+    courseParticipation: CourseParticipationPresenter,
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
   ): GovukFrontendSummaryListWithRowsWithValues {
@@ -149,7 +150,7 @@ export default class CourseParticipationUtils {
   }
 
   private static summaryListRows(
-    courseParticipation: CourseParticipation,
+    courseParticipation: CourseParticipationPresenter,
   ): Array<GovukFrontendSummaryListRowWithValue> {
     return [
       CourseParticipationUtils.summaryListRow('Programme name', [courseParticipation.courseName]),
@@ -158,7 +159,7 @@ export default class CourseParticipationUtils {
       CourseParticipationUtils.summaryListRow('Additional detail', [courseParticipation.detail]),
       CourseParticipationUtils.summaryListRow('Source of information', [courseParticipation.source]),
       CourseParticipationUtils.summaryListRow('Added by', [
-        courseParticipation.addedBy,
+        courseParticipation.addedByDisplayName,
         DateUtils.govukFormattedFullDateString(courseParticipation.createdAt),
       ]),
     ]

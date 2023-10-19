@@ -1,14 +1,22 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import { when } from 'jest-when'
 
 import CourseParticipationsController from './courseParticipationsController'
 import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
-import { courseFactory, courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
+import {
+  courseFactory,
+  courseParticipationFactory,
+  personFactory,
+  referralFactory,
+  userFactory,
+} from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../utils'
+import { CourseParticipationUtils, CourseUtils, FormUtils, StringUtils } from '../../utils'
 import type { CourseParticipation } from '@accredited-programmes/models'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/formUtils')
 jest.mock('../../utils/courseParticipationUtils')
@@ -143,13 +151,19 @@ describe('CourseParticipationsController', () => {
 
   describe('delete', () => {
     it('renders the delete template for a specific course participation', async () => {
+      const addedByUser = userFactory.build()
       const person = personFactory.build()
       const referral = referralFactory.build({ prisonNumber: person.prisonNumber })
       const course = courseFactory.build()
       const courseParticipation = courseParticipationFactory.build({
+        addedBy: addedByUser.username,
         courseName: course.name,
         prisonNumber: person.prisonNumber,
       })
+      const courseParticipationPresenter: CourseParticipationPresenter = {
+        ...courseParticipation,
+        addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+      }
       const courseParticipationId = courseParticipation.id
       const referralId = referral.id
 
@@ -160,14 +174,19 @@ describe('CourseParticipationsController', () => {
       referralService.getReferral.mockResolvedValue(referral)
       courseService.getCourse.mockResolvedValue(course)
       courseService.getParticipation.mockResolvedValue(courseParticipation)
+      courseService.presentCourseParticipation.mockResolvedValue(courseParticipationPresenter)
 
       const requestHandler = courseParticipationsController.delete()
       await requestHandler(request, response, next)
 
-      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenCalledWith(courseParticipation, referral.id, {
-        change: false,
-        remove: false,
-      })
+      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenCalledWith(
+        courseParticipationPresenter,
+        referral.id,
+        {
+          change: false,
+          remove: false,
+        },
+      )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
@@ -249,10 +268,25 @@ describe('CourseParticipationsController', () => {
   })
 
   describe('index', () => {
+    const addedByUser = userFactory.build()
     const referral = referralFactory.build()
     const person = personFactory.build()
-    const earliestCourseParticipation = courseParticipationFactory.build({ createdAt: '2022-01-01T12:00:00.000Z' })
-    const latestCourseParticipation = courseParticipationFactory.build({ createdAt: '2023-01-01T12:00:00.000Z' })
+    const earliestCourseParticipation = courseParticipationFactory.build({
+      addedBy: addedByUser.username,
+      createdAt: '2022-01-01T12:00:00.000Z',
+    })
+    const earliestCourseParticipationPresenter: CourseParticipationPresenter = {
+      ...earliestCourseParticipation,
+      addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+    }
+    const latestCourseParticipation = courseParticipationFactory.build({
+      addedBy: addedByUser.username,
+      createdAt: '2023-01-01T12:00:00.000Z',
+    })
+    const latestCourseParticipationPresenter: CourseParticipationPresenter = {
+      ...latestCourseParticipation,
+      addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+    }
     const course = courseFactory.build()
 
     beforeEach(() => {
@@ -262,6 +296,12 @@ describe('CourseParticipationsController', () => {
         latestCourseParticipation,
         earliestCourseParticipation,
       ])
+      when(courseService.presentCourseParticipation)
+        .calledWith(token, latestCourseParticipation)
+        .mockResolvedValue(latestCourseParticipationPresenter)
+      when(courseService.presentCourseParticipation)
+        .calledWith(token, earliestCourseParticipation)
+        .mockResolvedValue(earliestCourseParticipationPresenter)
       courseService.getCourse.mockResolvedValue(course)
       ;(request.flash as jest.Mock).mockImplementation(() => [])
     })
@@ -272,12 +312,12 @@ describe('CourseParticipationsController', () => {
 
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         1,
-        earliestCourseParticipation,
+        earliestCourseParticipationPresenter,
         referral.id,
       )
       expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
         2,
-        latestCourseParticipation,
+        latestCourseParticipationPresenter,
         referral.id,
       )
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/index', {

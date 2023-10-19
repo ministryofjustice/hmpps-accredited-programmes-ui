@@ -35,10 +35,17 @@ export default class ReferralsController {
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
+
       const sortedCourseParticipations = (
         await this.courseService.getParticipationsByPerson(req.user.token, person.prisonNumber)
       ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
-      const participationSummaryListsOptions = sortedCourseParticipations.map(participation =>
+
+      const courseParticipationsPresenter = await Promise.all(
+        sortedCourseParticipations.map(participation =>
+          this.courseService.presentCourseParticipation(req.user.token, participation),
+        ),
+      )
+      const participationSummaryListsOptions = courseParticipationsPresenter.map(participation =>
         CourseParticipationUtils.summaryListOptions(participation, referral.id, { change: true, remove: false }),
       )
       const coursePresenter = CourseUtils.presentCourse(course)

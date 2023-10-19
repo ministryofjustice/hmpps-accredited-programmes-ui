@@ -5,6 +5,7 @@ import { CourseParticipationUtils, PersonUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { CourseParticipation, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
+  CourseParticipationPresenter,
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
@@ -87,7 +88,7 @@ export default abstract class Page {
   }
 
   shouldContainHistorySummaryCards(
-    participations: Array<CourseParticipation>,
+    participations: Array<CourseParticipationPresenter>,
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
   ) {
