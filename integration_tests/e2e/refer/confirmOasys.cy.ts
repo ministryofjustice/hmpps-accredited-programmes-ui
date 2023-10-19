@@ -44,8 +44,10 @@ context('OASys confirmation', () => {
     confirmOasysPage.shouldHavePersonDetails(person)
     confirmOasysPage.shouldContainNavigation(path)
     confirmOasysPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
-    confirmOasysPage.shouldContainImportanceDetails()
-    confirmOasysPage.shouldContainLastUpdatedNotificationBanner()
+    confirmOasysPage.shouldContainOasysAccessParagraph()
+    confirmOasysPage.shouldContainWarningText(
+      'You must confirm that the OASys information is accurate before submitting your application.',
+    )
     confirmOasysPage.shouldContainConfirmationCheckbox()
     confirmOasysPage.shouldContainSaveAndContinueButton()
   })
