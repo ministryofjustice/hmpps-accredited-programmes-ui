@@ -8,15 +8,16 @@ import { referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { courseParticipationFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseParticipationUtils, FormUtils } from '../../utils'
+import { CourseParticipationUtils, FormUtils, ReferralUtils } from '../../utils'
 import type {
   CourseParticipation,
   CourseParticipationSetting,
   CourseParticipationUpdate,
 } from '@accredited-programmes/models'
 
-jest.mock('../../utils/formUtils')
 jest.mock('../../utils/courseParticipationUtils')
+jest.mock('../../utils/formUtils')
+jest.mock('../../utils/referralUtils')
 
 describe('CourseParticipationDetailsController', () => {
   const token = 'SOME_TOKEN'
@@ -54,6 +55,9 @@ describe('CourseParticipationDetailsController', () => {
 
     referralService.getReferral.mockResolvedValue(referral)
     courseService.getParticipation.mockResolvedValue(courseParticipation)
+    ;(ReferralUtils.redirectIfSubmitted as jest.Mock).mockImplementation((_referral, _response) => {
+      // Do nothing
+    })
   })
 
   afterEach(() => {
@@ -84,6 +88,7 @@ describe('CourseParticipationDetailsController', () => {
         person,
         referralId,
       })
+      expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['yearCompleted', 'yearStarted'])
       expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
         detail: courseParticipation.detail,
@@ -174,6 +179,8 @@ describe('CourseParticipationDetailsController', () => {
       const requestHandler = courseParticipationDetailsController.update()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
       expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
       expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
         request,

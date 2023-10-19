@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
-import { FormUtils, TypeUtils } from '../../utils'
+import { FormUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
 export default class ReasonController {
@@ -16,6 +16,8 @@ export default class ReasonController {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
+
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -37,6 +39,10 @@ export default class ReasonController {
       TypeUtils.assertHasUser(req)
 
       const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
+
       const formattedReason = req.body.reason?.trim()
 
       if (!formattedReason) {
@@ -44,8 +50,6 @@ export default class ReasonController {
 
         return res.redirect(referPaths.reason.show({ referralId }))
       }
-
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
 
       const referralUpdate: ReferralUpdate = {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,

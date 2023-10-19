@@ -7,9 +7,10 @@ import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { FormUtils } from '../../utils'
+import { FormUtils, ReferralUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
+jest.mock('../../utils/referralUtils')
 
 describe('OasysConfirmationController', () => {
   const token = 'SOME_TOKEN'
@@ -28,6 +29,9 @@ describe('OasysConfirmationController', () => {
     request = createMock<Request>({ user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
     oasysConfirmationController = new OasysConfirmationController(personService, referralService)
+    ;(ReferralUtils.redirectIfSubmitted as jest.Mock).mockImplementation((_referral, _response) => {
+      // Do nothing
+    })
   })
 
   afterEach(() => {
@@ -57,6 +61,7 @@ describe('OasysConfirmationController', () => {
         person,
         referral,
       })
+      expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['oasysConfirmed'])
     })
   })
@@ -76,6 +81,8 @@ describe('OasysConfirmationController', () => {
       await requestHandler(request, response, next)
 
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
+      expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+      expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
       expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: true,

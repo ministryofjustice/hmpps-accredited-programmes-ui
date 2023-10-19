@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
-import { FormUtils, TypeUtils } from '../../utils'
+import { FormUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
 export default class OasysConfirmationController {
@@ -16,6 +16,8 @@ export default class OasysConfirmationController {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
+
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -46,6 +48,7 @@ export default class OasysConfirmationController {
       }
 
       const referral = await this.referralService.getReferral(req.user.token, referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
 
       const referralUpdate: ReferralUpdate = {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,

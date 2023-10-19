@@ -7,9 +7,10 @@ import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { FormUtils } from '../../utils'
+import { FormUtils, ReferralUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
+jest.mock('../../utils/referralUtils')
 
 describe('ReasonController', () => {
   const token = 'SOME_TOKEN'
@@ -29,6 +30,9 @@ describe('ReasonController', () => {
     request = createMock<Request>({ user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
     reasonController = new ReasonController(personService, referralService)
+    ;(ReferralUtils.redirectIfSubmitted as jest.Mock).mockImplementation((_referral, _response) => {
+      // Do nothing
+    })
   })
 
   afterEach(() => {
@@ -58,7 +62,7 @@ describe('ReasonController', () => {
         person,
         referral,
       })
-
+      expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reason'])
     })
   })
@@ -77,6 +81,8 @@ describe('ReasonController', () => {
       const requestHandler = reasonController.update()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+      expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
       expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: referral.oasysConfirmed,
@@ -92,6 +98,8 @@ describe('ReasonController', () => {
         const requestHandler = reasonController.update()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+        expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId: referral.id }))
         expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
       })
@@ -106,6 +114,8 @@ describe('ReasonController', () => {
         const requestHandler = reasonController.update()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+        expect(ReferralUtils.redirectIfSubmitted).toHaveBeenCalledWith(referral, response)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId: referral.id }))
         expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
       })

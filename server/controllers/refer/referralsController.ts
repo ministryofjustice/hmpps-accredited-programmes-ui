@@ -22,6 +22,7 @@ export default class ReferralsController {
       const { username } = req.user
 
       const referral = await this.referralService.getReferral(req.user.token, referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
 
       if (!ReferralUtils.isReadyForSubmission(referral)) {
         return res.redirect(referPaths.show({ referralId }))
@@ -129,6 +130,8 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
+
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
@@ -156,6 +159,8 @@ export default class ReferralsController {
       const { referralId } = req.params
 
       const referral = await this.referralService.getReferral(req.user.token, referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
+
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -195,6 +200,9 @@ export default class ReferralsController {
 
       const { referralId } = req.params
 
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      ReferralUtils.redirectIfSubmitted(referral, res)
+
       if (req.body.confirmation !== 'true') {
         req.flash(
           'confirmationError',
@@ -203,8 +211,6 @@ export default class ReferralsController {
 
         return res.redirect(referPaths.checkAnswers({ referralId }))
       }
-
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
 
       if (!ReferralUtils.isReadyForSubmission(referral)) {
         return res.redirect(referPaths.show({ referralId }))
