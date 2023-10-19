@@ -7,12 +7,13 @@ export default Factory.define<User>(() => {
   const userId = faker.string.uuid()
   const firstName = faker.person.firstName()
   const lastName = faker.person.lastName()
+  const name = `${firstName} ${lastName}`
 
   return {
     active: true,
     activeCaseLoadId: faker.string.alpha({ casing: 'upper', length: 3 }),
     authSource: 'nomis',
-    name: `${firstName} ${lastName}`,
+    name: faker.helpers.arrayElement([name, name.toLowerCase()]),
     staffId: faker.number.int(),
     userId,
     username: faker.internet.userName({ firstName, lastName }),
