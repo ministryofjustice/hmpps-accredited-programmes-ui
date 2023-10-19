@@ -49,7 +49,7 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
 
-  app.use(routes(controllers))
+  app.use(routes(controllers, services))
 
   app.use((req, res, next) => next(createError(404, 'Not Found')))
   // The Sentry error handler must be before any other error middleware and after all controllers

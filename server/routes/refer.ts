@@ -3,15 +3,16 @@ import type { Router } from 'express'
 import type { Controllers } from '../controllers'
 import { ApplicationRoles } from '../middleware/roleBasedAccessMiddleware'
 import { referPaths } from '../paths'
+import type { Services } from '../services'
 import { RouteUtils } from '../utils'
 
-export default function routes(controllers: Controllers, router: Router): Router {
+export default function routes(controllers: Controllers, services: Services, router: Router): Router {
   const {
     get,
     delete: deleteAction,
     post,
     put,
-  } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
+  } = RouteUtils.actions(router, services.auditService, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
     courseParticipationDetailsController,
     courseParticipationsController,

@@ -1,3 +1,4 @@
+import auditMiddleware from './auditMiddleware'
 import authorisationMiddleware from './authorisationMiddleware'
 import { ApplicationRoles } from './roleBasedAccessMiddleware'
 import setUpAuthentication from './setUpAuthentication'
@@ -12,6 +13,7 @@ import setUpWebSession from './setUpWebSession'
 
 export {
   ApplicationRoles,
+  auditMiddleware,
   authorisationMiddleware,
   setUpAuthentication,
   setUpCsrf,
