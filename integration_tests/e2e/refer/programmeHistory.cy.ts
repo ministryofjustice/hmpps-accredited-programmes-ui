@@ -42,6 +42,7 @@ context('Programme history', () => {
   const courseOffering = courseOfferingFactory.build()
   const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
   const programmeHistoryPath = referPaths.programmeHistory.index({ referralId: referral.id })
+  const newParticipationPath = referPaths.programmeHistory.new({ referralId: referral.id })
 
   beforeEach(() => {
     cy.task('reset')
@@ -84,10 +85,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainPreHistoryParagraph()
         programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipations, referral.id)
         programmeHistoryPage.shouldContainButton('Continue')
-        programmeHistoryPage.shouldContainButtonLink(
-          'Add another',
-          referPaths.programmeHistory.new({ referralId: referral.id }),
-        )
+        programmeHistoryPage.shouldContainButtonLink('Add another', newParticipationPath)
       })
 
       describe('and the programme history has been reviewed', () => {
@@ -142,10 +140,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainNoHistoryHeading()
         programmeHistoryPage.shouldContainNoHistoryParagraph()
         programmeHistoryPage.shouldContainButton('Continue')
-        programmeHistoryPage.shouldContainButtonLink(
-          'Add a programme',
-          referPaths.programmeHistory.new({ referralId: referral.id }),
-        )
+        programmeHistoryPage.shouldContainButtonLink('Add a programme', newParticipationPath)
       })
 
       describe('and the programme history has been reviewed', () => {
@@ -183,16 +178,14 @@ context('Programme history', () => {
       })
 
       describe('for a new entry', () => {
-        const path = referPaths.programmeHistory.new({ referralId: referral.id })
-
         beforeEach(() => {
-          cy.visit(path)
+          cy.visit(newParticipationPath)
         })
 
         it('shows the select programme page', () => {
           const selectProgrammePage = Page.verifyOnPage(SelectProgrammePage, { courses })
           selectProgrammePage.shouldHavePersonDetails(person)
-          selectProgrammePage.shouldContainNavigation(path)
+          selectProgrammePage.shouldContainNavigation(newParticipationPath)
           selectProgrammePage.shouldContainBackLink(referPaths.programmeHistory.index({ referralId: referral.id }))
           selectProgrammePage.shouldContainCourseOptions()
           selectProgrammePage.shouldNotDisplayOtherCourseInput()
@@ -498,7 +491,6 @@ context('Programme history', () => {
 
     describe('success messages', () => {
       const courseParticipations = [courseParticipationWithKnownCourseName]
-      const newParticipationPath = referPaths.programmeHistory.new({ referralId: referral.id })
       const addedSuccessMessage = 'You have successfully added a programme.'
       const updatedSuccessMessage = 'You have successfully updated a programme.'
 
