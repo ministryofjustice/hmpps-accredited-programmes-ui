@@ -296,7 +296,7 @@ context('Programme history', () => {
           selectProgrammePage.submitSelection(courseParticipationWithKnownCourseName, newCourseName)
 
           Page.verifyOnPage(ProgrammeHistoryDetailsPage, {
-            course: courses[0],
+            course: courses[2],
             courseParticipation: updatedParticipation,
             person,
           })
