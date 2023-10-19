@@ -80,6 +80,16 @@
     ],
     "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/prefer-destructuring": [
+      "error",
+      {
+        "array": false,
+        "object": true
+      },
+      {
+        "enforceForRenamedProperties": false
+      }
+    ],
     "@typescript-eslint/semi": "off",
     "@typescript-eslint/sort-type-constituents": "error",
     "class-methods-use-this": "off",
