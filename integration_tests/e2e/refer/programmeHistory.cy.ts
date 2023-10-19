@@ -41,6 +41,7 @@ context('Programme history', () => {
   })
   const courseOffering = courseOfferingFactory.build()
   const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+  const programmeHistoryPath = referPaths.programmeHistory.index({ referralId: referral.id })
 
   beforeEach(() => {
     cy.task('reset')
@@ -59,8 +60,6 @@ context('Programme history', () => {
 
     const courseParticipations = [courseParticipationWithKnownCourseName, courseParticipationWithUnknownCourseName]
 
-    const path = referPaths.programmeHistory.index({ referralId: referral.id })
-
     beforeEach(() => {
       cy.task('stubCourse', courses[0])
     })
@@ -69,7 +68,7 @@ context('Programme history', () => {
       beforeEach(() => {
         cy.task('stubParticipationsByPerson', { courseParticipations, prisonNumber: prisoner.prisonerNumber })
 
-        cy.visit(path)
+        cy.visit(programmeHistoryPath)
       })
 
       it('shows the page with an existing programme history', () => {
@@ -79,7 +78,7 @@ context('Programme history', () => {
           referral,
         })
         programmeHistoryPage.shouldHavePersonDetails(person)
-        programmeHistoryPage.shouldContainNavigation(path)
+        programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
         programmeHistoryPage.shouldNotContainSuccessMessage()
         programmeHistoryPage.shouldContainPreHistoryParagraph()
@@ -127,7 +126,7 @@ context('Programme history', () => {
           prisonNumber: prisoner.prisonerNumber,
         })
 
-        cy.visit(path)
+        cy.visit(programmeHistoryPath)
       })
 
       it('shows the page without an existing programme history', () => {
@@ -137,7 +136,7 @@ context('Programme history', () => {
           referral,
         })
         programmeHistoryPage.shouldHavePersonDetails(person)
-        programmeHistoryPage.shouldContainNavigation(path)
+        programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
         programmeHistoryPage.shouldNotContainSuccessMessage()
         programmeHistoryPage.shouldContainNoHistoryHeading()
