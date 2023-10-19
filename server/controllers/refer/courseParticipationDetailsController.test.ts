@@ -184,7 +184,7 @@ describe('CourseParticipationDetailsController', () => {
         courseParticipationId,
         courseParticipationUpdate,
       )
-      expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully added a programme.')
+      expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully updated a programme.')
       expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
     })
 

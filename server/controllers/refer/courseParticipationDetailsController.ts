@@ -71,7 +71,7 @@ export default class CourseParticipationDetailsController {
         processedFormData.courseParticipationUpdate,
       )
 
-      req.flash('successMessage', 'You have successfully added a programme.')
+      req.flash('successMessage', 'You have successfully updated a programme.')
 
       return res.redirect(referPaths.programmeHistory.index({ referralId }))
     }
