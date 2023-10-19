@@ -1,3 +1,5 @@
+import type { Response } from 'express'
+
 import { referPaths } from '../paths'
 import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
@@ -46,6 +48,12 @@ export default class ReferralUtils {
 
   static isReadyForSubmission(referral: Referral): boolean {
     return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.reason
+  }
+
+  static redirectIfSubmitted(referral: Referral, response: Response) {
+    if (referral.status !== 'referral_started') {
+      response.redirect(referPaths.complete({ referralId: referral.id }))
+    }
   }
 
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {

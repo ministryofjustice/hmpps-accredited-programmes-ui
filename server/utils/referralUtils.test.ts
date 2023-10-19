@@ -1,5 +1,10 @@
+import type { DeepMocked } from '@golevelup/ts-jest'
+import { createMock } from '@golevelup/ts-jest'
+import type { Response } from 'express'
+
 import CourseUtils from './courseUtils'
 import ReferralUtils from './referralUtils'
+import { referPaths } from '../paths'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -88,6 +93,30 @@ describe('ReferralUtils', () => {
       const submittableReferral = referralFactory.submittable().build()
 
       expect(ReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)
+    })
+  })
+
+  describe('redirectIfSubmitted', () => {
+    let response: DeepMocked<Response>
+
+    beforeEach(() => {
+      response = createMock<Response>({})
+    })
+
+    describe('when the referral status is "referral_started"', () => {
+      it('does nothing', () => {
+        const referral = referralFactory.started().build()
+        ReferralUtils.redirectIfSubmitted(referral, response)
+        expect(response.redirect).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the referral status is not "referral_started"', () => {
+      it('redirects to the referral complete action', () => {
+        const referral = referralFactory.submitted().build()
+        ReferralUtils.redirectIfSubmitted(referral, response)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId: referral.id }))
+      })
     })
   })
 
