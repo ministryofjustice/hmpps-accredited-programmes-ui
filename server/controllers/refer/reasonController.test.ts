@@ -71,6 +71,7 @@ describe('ReasonController', () => {
     })
 
     it('ask the service to update the referral and redirects to the referral show action', async () => {
+      request.params.referralId = referral.id
       request.body.reason = ' Some reason\nAnother paragraph\n '
 
       const requestHandler = reasonController.update()

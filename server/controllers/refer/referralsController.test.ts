@@ -172,6 +172,7 @@ describe('ReferralsController', () => {
 
       const referral = referralFactory.started().build({ prisonNumber: person.prisonNumber })
       referralService.getReferral.mockResolvedValue(referral)
+      request.params.referralId = referral.id
 
       const requestHandler = referralsController.showPerson()
       await requestHandler(request, response, next)

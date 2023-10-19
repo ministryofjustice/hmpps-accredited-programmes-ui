@@ -36,15 +36,16 @@ export default class ReasonController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { referralId } = req.params
       const formattedReason = req.body.reason?.trim()
 
       if (!formattedReason) {
         req.flash('reasonError', 'Enter a reason for the referral')
 
-        return res.redirect(referPaths.reason.show({ referralId: req.params.referralId }))
+        return res.redirect(referPaths.reason.show({ referralId }))
       }
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
 
       const referralUpdate: ReferralUpdate = {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
@@ -52,9 +53,9 @@ export default class ReasonController {
         reason: formattedReason,
       }
 
-      await this.referralService.updateReferral(req.user.token, referral.id, referralUpdate)
+      await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)
 
-      return res.redirect(referPaths.show({ referralId: referral.id }))
+      return res.redirect(referPaths.show({ referralId }))
     }
   }
 }
