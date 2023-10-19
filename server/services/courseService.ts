@@ -1,7 +1,9 @@
 import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
+import type UserService from './userService'
 import type { CourseClient, RestClientBuilder } from '../data'
+import { StringUtils } from '../utils'
 import type {
   Course,
   CourseOffering,
@@ -9,9 +11,13 @@ import type {
   CourseParticipationUpdate,
   Person,
 } from '@accredited-programmes/models'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 export default class CourseService {
-  constructor(private readonly courseClientBuilder: RestClientBuilder<CourseClient>) {}
+  constructor(
+    private readonly courseClientBuilder: RestClientBuilder<CourseClient>,
+    private readonly userService: UserService,
+  ) {}
 
   async createParticipation(
     token: Express.User['token'],
@@ -85,6 +91,15 @@ export default class CourseService {
   ): Promise<Array<CourseParticipation>> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.findParticipationsByPerson(prisonNumber)
+  }
+
+  async presentCourseParticipation(
+    token: Express.User['token'],
+    courseParticipation: CourseParticipation,
+  ): Promise<CourseParticipationPresenter> {
+    const addedByUser = await this.userService.getUserFromUsername(token, courseParticipation.addedBy)
+
+    return { ...courseParticipation, addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name) }
   }
 
   async updateParticipation(

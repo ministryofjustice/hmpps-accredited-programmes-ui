@@ -8,11 +8,13 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  userFactory,
 } from '../../../server/testutils/factories'
-import { OrganisationUtils } from '../../../server/utils'
+import { OrganisationUtils, StringUtils } from '../../../server/utils'
 import auth from '../../mockApis/auth'
 import Page from '../../pages/page'
 import { CheckAnswersPage, CompletePage, TaskListPage } from '../../pages/refer'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 context('Submitting a referral', () => {
   const course = courseFactory.build()
@@ -34,15 +36,31 @@ context('Submitting a referral', () => {
   })
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
+  const addedByUser1 = userFactory.build()
+  const addedByUser2 = userFactory.build()
   const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
+    addedBy: addedByUser1.username,
     courseName: course.name,
     prisonNumber: person.prisonNumber,
   })
+  const courseParticipationWithKnownCourseNamePresenter: CourseParticipationPresenter = {
+    ...courseParticipationWithKnownCourseName,
+    addedByDisplayName: StringUtils.convertToTitleCase(addedByUser1.name),
+  }
   const courseParticipationWithUnknownCourseName = courseParticipationFactory.build({
+    addedBy: addedByUser2.username,
     courseName: 'An course not in our system',
     prisonNumber: person.prisonNumber,
   })
+  const courseParticipationWithUnknownCourseNamePresenter: CourseParticipationPresenter = {
+    ...courseParticipationWithUnknownCourseName,
+    addedByDisplayName: StringUtils.convertToTitleCase(addedByUser2.name),
+  }
   const courseParticipations = [courseParticipationWithKnownCourseName, courseParticipationWithUnknownCourseName]
+  const courseParticipationsPresenter: Array<CourseParticipationPresenter> = [
+    courseParticipationWithKnownCourseNamePresenter,
+    courseParticipationWithUnknownCourseNamePresenter,
+  ]
   const submittableReferral = referralFactory
     .submittable()
     .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
@@ -58,6 +76,8 @@ context('Submitting a referral', () => {
     cy.task('stubOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
     cy.task('stubPrisoner', prisoner)
+    cy.task('stubUserDetails', addedByUser1)
+    cy.task('stubUserDetails', addedByUser2)
   })
 
   it('Links to the check answers page when the referral is ready for submission', () => {
@@ -92,7 +112,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipations,
+        participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,
@@ -150,7 +170,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipations,
+        participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,
@@ -171,7 +191,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipations,
+        participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,
@@ -182,7 +202,7 @@ context('Submitting a referral', () => {
         course,
         courseOffering,
         organisation,
-        participations: courseParticipations,
+        participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
         username: auth.mockedUser.username,

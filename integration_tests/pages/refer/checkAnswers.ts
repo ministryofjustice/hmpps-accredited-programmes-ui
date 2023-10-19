@@ -1,14 +1,7 @@
 import { CourseUtils, ReferralUtils } from '../../../server/utils'
 import Page from '../page'
-import type {
-  Course,
-  CourseOffering,
-  CourseParticipation,
-  Organisation,
-  Person,
-  Referral,
-} from '@accredited-programmes/models'
-import type { CoursePresenter } from '@accredited-programmes/ui'
+import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
 
 export default class CheckAnswersPage extends Page {
   course: CoursePresenter
@@ -17,7 +10,7 @@ export default class CheckAnswersPage extends Page {
 
   organisation: Organisation
 
-  participations: Array<CourseParticipation>
+  participations: Array<CourseParticipationPresenter>
 
   person: Person
 
@@ -29,7 +22,7 @@ export default class CheckAnswersPage extends Page {
     course: Course
     courseOffering: CourseOffering
     organisation: Organisation
-    participations: Array<CourseParticipation>
+    participations: Array<CourseParticipationPresenter>
     person: Person
     referral: Referral
     username: Express.User['username']
