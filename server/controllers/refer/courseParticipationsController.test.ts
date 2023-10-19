@@ -394,6 +394,7 @@ describe('CourseParticipationsController', () => {
           courseParticipation.id,
           courseParticipationUpdate,
         )
+        expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully updated a programme.')
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.programmeHistory.details.show({
             courseParticipationId: courseParticipation.id,

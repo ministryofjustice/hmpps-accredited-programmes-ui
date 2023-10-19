@@ -215,6 +215,8 @@ export default class CourseParticipationsController {
         source,
       })
 
+      req.flash('successMessage', 'You have successfully updated a programme.')
+
       return res.redirect(
         referPaths.programmeHistory.details.show({
           courseParticipationId: req.params.courseParticipationId,
