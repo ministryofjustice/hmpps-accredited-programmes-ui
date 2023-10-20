@@ -8,11 +8,11 @@ import type {
 } from '@accredited-programmes/ui'
 
 export default class CourseUtils {
-  static courseRadioOptions(courses: Array<Course>): Array<GovukFrontendTagWithText> {
-    return courses.map(course => {
+  static courseRadioOptions(courseNames: Array<Course['name']>): Array<GovukFrontendTagWithText> {
+    return courseNames.map(courseName => {
       return {
-        text: course.name,
-        value: course.name,
+        text: courseName,
+        value: courseName,
       }
     })
   }

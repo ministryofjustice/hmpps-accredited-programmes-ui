@@ -31,6 +31,19 @@ export default {
       },
     }),
 
+  stubCourseNames: (courseNames: Array<Course['name']>): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.courses.names({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courseNames,
+        status: 200,
+      },
+    }),
+
   stubCourses: (courses: Array<Course>): SuperAgentRequest =>
     stubFor({
       request: {

@@ -109,18 +109,18 @@ export default class CourseParticipationsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-      const courses = await this.courseService.getCourses(req.user.token)
+      const courseNames = await this.courseService.getCourseNames(req.user.token)
 
       FormUtils.setFieldErrors(req, res, ['courseName', 'otherCourseName'])
 
       const { courseName } = courseParticipation
-      const isKnownCourse = courses.find(course => course.name === courseName)
+      const isKnownCourse = courseNames.find(knownCourseName => knownCourseName === courseName)
       const formValues = isKnownCourse ? { courseName } : { courseName: 'Other', otherCourseName: courseName }
       const hasOtherCourseNameError = !!res.locals.errors.messages.otherCourseName
 
       res.render('referrals/courseParticipations/course', {
         action: `${referPaths.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
-        courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues,
         otherCourseNameChecked: !isKnownCourse || hasOtherCourseNameError,
         pageHeading: 'Add Accredited Programme history',
@@ -170,7 +170,7 @@ export default class CourseParticipationsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const courses = await this.courseService.getCourses(req.user.token)
+      const courseNames = await this.courseService.getCourseNames(req.user.token)
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
       const person = await this.personService.getPerson(
         req.user.username,
@@ -182,7 +182,7 @@ export default class CourseParticipationsController {
 
       res.render('referrals/courseParticipations/course', {
         action: referPaths.programmeHistory.create({ referralId: referral.id }),
-        courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues: {},
         otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
         pageHeading: 'Add Accredited Programme history',

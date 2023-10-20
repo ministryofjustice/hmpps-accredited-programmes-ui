@@ -33,6 +33,7 @@ context('Programme history', () => {
     prisonNumber: prisoner.prisonerNumber,
   })
   const courses = courseFactory.buildList(4)
+  const courseNames = courses.map(course => course.name)
   const addedByUser1 = userFactory.build()
   const addedByUser2 = userFactory.build()
   const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
@@ -195,7 +196,7 @@ context('Programme history', () => {
   describe('When adding to the programme history', () => {
     describe('and selecting a programme', () => {
       beforeEach(() => {
-        cy.task('stubCourses', courses)
+        cy.task('stubCourseNames', courseNames)
       })
 
       describe('for a new entry', () => {
@@ -522,7 +523,7 @@ context('Programme history', () => {
       const updatedSuccessMessage = 'You have successfully updated a programme.'
 
       beforeEach(() => {
-        cy.task('stubCourses', courses)
+        cy.task('stubCourseNames', courseNames)
         cy.task('stubParticipationsByPerson', {
           courseParticipations,
           prisonNumber: prisoner.prisonerNumber,

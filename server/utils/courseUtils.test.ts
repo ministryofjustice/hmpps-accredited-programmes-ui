@@ -5,10 +5,11 @@ describe('CourseUtils', () => {
   describe('courseRadioOptions', () => {
     it('returns a formatted array of courses to use with UI radios', () => {
       const courses = courseFactory.buildList(2)
+      const courseNames = courses.map(course => course.name)
 
-      expect(CourseUtils.courseRadioOptions(courses)).toEqual([
-        { text: courses[0].name, value: courses[0].name },
-        { text: courses[1].name, value: courses[1].name },
+      expect(CourseUtils.courseRadioOptions(courseNames)).toEqual([
+        { text: courseNames[0], value: courseNames[0] },
+        { text: courseNames[1], value: courseNames[1] },
       ])
     })
   })
