@@ -61,6 +61,21 @@ describe('CourseService', () => {
     })
   })
 
+  describe('getCourseNames', () => {
+    it('returns a list of all course names', async () => {
+      const courses = courseFactory.buildList(3)
+      const courseNames = courses.map(course => course.name)
+      courseClient.findCourseNames.mockResolvedValue(courseNames)
+
+      const result = await service.getCourseNames(token)
+
+      expect(result).toEqual(courseNames)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(token)
+      expect(courseClient.findCourseNames).toHaveBeenCalled()
+    })
+  })
+
   describe('getCourses', () => {
     it('returns a list of all courses', async () => {
       const courses = courseFactory.buildList(3)
