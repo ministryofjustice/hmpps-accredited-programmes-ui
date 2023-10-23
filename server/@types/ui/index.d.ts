@@ -91,6 +91,12 @@ type ReferralTaskListSection = {
   items: Array<ReferralTaskListItem>
 }
 
+type MojFrontendSideNavigationItem = {
+  active: boolean
+  href: string
+  text: string
+}
+
 export type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -102,6 +108,7 @@ export type {
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
+  MojFrontendSideNavigationItem,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
   ReferralTaskListItem,
