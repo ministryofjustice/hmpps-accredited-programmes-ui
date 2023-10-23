@@ -1,8 +1,11 @@
+import type { Request } from 'express'
+
 import { referPaths } from '../paths'
 import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithValue,
+  MojFrontendSideNavigationItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
@@ -105,6 +108,35 @@ export default class ReferralUtils {
         ],
       },
     ]
+  }
+
+  static viewReferralNavigationItems(
+    currentPath: Request['path'],
+    referralId: Referral['id'],
+  ): Array<MojFrontendSideNavigationItem> {
+    const navigationItems = [
+      {
+        href: referPaths.submitted.personalDetails({ referralId }),
+        text: 'Personal details',
+      },
+      {
+        href: referPaths.submitted.programmeHistory({ referralId }),
+        text: 'Programme history',
+      },
+      {
+        href: referPaths.submitted.sentenceInformation({ referralId }),
+        text: 'Sentence information',
+      },
+      {
+        href: referPaths.submitted.additionalInformation({ referralId }),
+        text: 'Additional information',
+      },
+    ]
+
+    return navigationItems.map(item => ({
+      ...item,
+      active: currentPath === item.href,
+    }))
   }
 
   private static taskListStatusTag(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {
