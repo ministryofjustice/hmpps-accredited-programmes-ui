@@ -216,6 +216,7 @@ describe('CourseParticipationsController', () => {
 
   describe('editCourse', () => {
     const courses = courseFactory.buildList(2)
+    const courseNames = courses.map(course => course.name)
     const person = personFactory.build()
     const courseParticipationWithKnownCoursename = courseParticipationFactory.build({
       courseName: courses[0].name,
@@ -238,7 +239,7 @@ describe('CourseParticipationsController', () => {
           courseService.getParticipation.mockResolvedValue(courseParticipation)
           referralService.getReferral.mockResolvedValue(referral)
           personService.getPerson.mockResolvedValue(person)
-          courseService.getCourses.mockResolvedValue(courses)
+          courseService.getCourseNames.mockResolvedValue(courseNames)
           ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
             response.locals.errors = { list: [], messages: {} }
           })
@@ -254,7 +255,7 @@ describe('CourseParticipationsController', () => {
               courseParticipationId: courseParticipation.id,
               referralId: referral.id,
             })}?_method=PUT`,
-            courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+            courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
             formValues: isKnownCourse ? { courseName } : { courseName: 'Other', otherCourseName: courseName },
             otherCourseNameChecked: !isKnownCourse,
             pageHeading: 'Add Accredited Programme history',
@@ -351,7 +352,8 @@ describe('CourseParticipationsController', () => {
   describe('new', () => {
     it('renders the new template for selecting a course', async () => {
       const courses = courseFactory.buildList(2)
-      courseService.getCourses.mockResolvedValue(courses)
+      const courseNames = courses.map(course => course.name)
+      courseService.getCourseNames.mockResolvedValue(courseNames)
 
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
@@ -369,7 +371,7 @@ describe('CourseParticipationsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/courseParticipations/course', {
         action: referPaths.programmeHistory.create({ referralId: referral.id }),
-        courseRadioOptions: CourseUtils.courseRadioOptions(courses),
+        courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues: {},
         otherCourseNameChecked: false,
         pageHeading: 'Add Accredited Programme history',

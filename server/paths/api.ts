@@ -1,6 +1,7 @@
 import { path } from 'static-path'
 
 const coursesPath = path('/courses')
+const courseNamesPath = coursesPath.path('course-names')
 const coursePath = coursesPath.path(':courseId')
 const offeringsByCoursePath = coursePath.path('offerings')
 
@@ -18,6 +19,7 @@ const participationPath = participationsPath.path(':courseParticipationId')
 export default {
   courses: {
     index: coursesPath,
+    names: courseNamesPath,
     offerings: offeringsByCoursePath,
     show: coursePath,
   },

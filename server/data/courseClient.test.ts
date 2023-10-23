@@ -204,6 +204,34 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('findCourseNames', () => {
+    const courseNames = allCourses.map(course => course.name)
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'Course names exist on the API',
+        uponReceiving: 'A request for all course names',
+        willRespondWith: {
+          body: Matchers.like(courseNames),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'GET',
+          path: apiPaths.courses.names({}),
+        },
+      })
+    })
+
+    it('fetches all course names', async () => {
+      const result = await courseClient.findCourseNames()
+
+      expect(result).toEqual(courseNames)
+    })
+  })
+
   describe('findOffering', () => {
     beforeEach(() => {
       provider.addInteraction({
