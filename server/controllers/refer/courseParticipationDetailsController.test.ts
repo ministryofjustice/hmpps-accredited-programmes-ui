@@ -29,11 +29,10 @@ describe('CourseParticipationDetailsController', () => {
   const referralService = createMock<ReferralService>({})
 
   const courseParticipationId = faker.string.uuid()
-  const referralId = faker.string.uuid()
-
-  const referral = referralFactory.build({ id: referralId })
   const courseParticipation = courseParticipationFactory.new().build()
 
+  const referralId = faker.string.uuid()
+  const draftReferral = referralFactory.started().build({ id: referralId })
   let courseParticipationDetailsController: CourseParticipationDetailsController
 
   beforeEach(() => {
@@ -52,7 +51,6 @@ describe('CourseParticipationDetailsController', () => {
       referralService,
     )
 
-    referralService.getReferral.mockResolvedValue(referral)
     courseService.getParticipation.mockResolvedValue(courseParticipation)
   })
 
@@ -62,6 +60,8 @@ describe('CourseParticipationDetailsController', () => {
 
   describe('show', () => {
     it('renders the details show page and calls `FormUtils.setFieldErrors` and `FormUtils.setFormValues` with the correct param values', async () => {
+      referralService.getReferral.mockResolvedValue(draftReferral)
+
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
@@ -100,6 +100,8 @@ describe('CourseParticipationDetailsController', () => {
     describe('when the course participation has existing data', () => {
       describe('and has a `setting.type` of `community` and a `setting.location`', () => {
         it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
+          referralService.getReferral.mockResolvedValue(draftReferral)
+
           const courseParticipationWithCommunitySetting = courseParticipationFactory.build({
             setting: { location: 'Somewhere', type: 'community' },
           }) as CourseParticipation & { setting: CourseParticipationSetting }
@@ -124,6 +126,8 @@ describe('CourseParticipationDetailsController', () => {
 
       describe('and has a `setting.type` of `custody` and a `setting.location`', () => {
         it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
+          referralService.getReferral.mockResolvedValue(draftReferral)
+
           const courseParticipationWithCustodySetting = courseParticipationFactory.build({
             setting: { location: 'Somewhere', type: 'custody' },
           }) as CourseParticipation & { setting: CourseParticipationSetting }
