@@ -109,7 +109,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         state: `A course exists with ID ${course1.id}`,
         uponReceiving: `A request to destroy course participation "${courseParticipationToDestroy.id}"`,
         willRespondWith: {
-          status: 200,
+          status: 204,
         },
         withRequest: {
           headers: {
