@@ -19,6 +19,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     referralsController,
     peopleController,
     oasysConfirmationController,
+    submittedReferralsController,
   } = controllers
 
   get(referPaths.start.pattern, referralsController.start())
@@ -55,6 +56,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.checkAnswers.pattern, referralsController.checkAnswers())
   get(referPaths.complete.pattern, referralsController.complete())
   post(referPaths.submit.pattern, referralsController.submit())
+
+  get(referPaths.submitted.personalDetails.pattern, submittedReferralsController.personalDetails())
 
   return router
 }
