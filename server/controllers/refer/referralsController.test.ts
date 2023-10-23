@@ -168,6 +168,19 @@ describe('ReferralsController', () => {
         taskListSections: ReferralUtils.taskListSections(draftReferral),
       })
     })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        request.params.referralId = referralId
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = referralsController.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
   })
 
   describe('showPerson', () => {
@@ -186,6 +199,19 @@ describe('ReferralsController', () => {
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
+      })
+    })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        request.params.referralId = referralId
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = referralsController.showPerson()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
       })
     })
   })
@@ -286,6 +312,19 @@ describe('ReferralsController', () => {
       })
     })
 
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        request.params.referralId = referralId
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = referralsController.checkAnswers()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
+
     describe('when the referral is not ready for submission', () => {
       it('redirects to the show referral action', async () => {
         request.params.referralId = draftReferral.id
@@ -338,6 +377,20 @@ describe('ReferralsController', () => {
           'Confirm that the information you have provided is complete, accurate and up to date',
         )
         expect(response.redirect).toHaveBeenCalledWith(referPaths.checkAnswers({ referralId }))
+      })
+    })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        request.body.confirmation = 'true'
+        request.params.referralId = referralId
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = referralsController.submit()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
       })
     })
 

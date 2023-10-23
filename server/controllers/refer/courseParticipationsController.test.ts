@@ -37,6 +37,7 @@ describe('CourseParticipationsController', () => {
   const person = personFactory.build()
   const referralId = 'a-referral-id'
   const draftReferral = referralFactory.started().build({ id: referralId, prisonNumber: person.prisonNumber })
+  const submittedReferral = referralFactory.submitted().build({ id: referralId, prisonNumber: person.prisonNumber })
 
   beforeEach(() => {
     request = createMock<Request>({ params: { referralId }, user: { token } })
@@ -128,6 +129,18 @@ describe('CourseParticipationsController', () => {
       })
     })
 
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.create()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
+
     describe('when there are form errors', () => {
       it('redirects back to the `new` action', async () => {
         referralService.getReferral.mockResolvedValue(draftReferral)
@@ -195,20 +208,46 @@ describe('CourseParticipationsController', () => {
         summaryListOptions,
       })
     })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.delete()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
   })
 
   describe('destroy', () => {
     it('asks the service to delete the participation and redirects to the index action', async () => {
-      const courseParticipationId = 'aCourseParticipationId'
+      referralService.getReferral.mockResolvedValue(draftReferral)
 
+      const courseParticipationId = 'aCourseParticipationId'
       request.params.courseParticipationId = courseParticipationId
 
       const requestHandler = courseParticipationsController.destroy()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(courseService.deleteParticipation).toHaveBeenCalledWith(token, courseParticipationId)
       expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully removed a programme.')
       expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
+    })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.destroy()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
     })
   })
 
@@ -263,6 +302,18 @@ describe('CourseParticipationsController', () => {
         })
       },
     )
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.editCourse()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
   })
 
   describe('index', () => {
@@ -346,6 +397,18 @@ describe('CourseParticipationsController', () => {
         )
       })
     })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.index()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
   })
 
   describe('new', () => {
@@ -378,6 +441,18 @@ describe('CourseParticipationsController', () => {
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['courseName', 'otherCourseName'])
     })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.new()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
   })
 
   describe('updateCourse', () => {
@@ -386,6 +461,8 @@ describe('CourseParticipationsController', () => {
       ['when the `courseName` is "Other" and `otherCourseName` is a non-empty string when trimmed', true],
     ])('%s', (_description: string, isOtherCourse: boolean) => {
       it('asks the service to update the course data and redirects to the details action', async () => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+
         const courseParticipation = courseParticipationFactory.build()
         request.params.courseParticipationId = courseParticipation.id
         courseService.getParticipation.mockResolvedValue(courseParticipation)
@@ -416,6 +493,7 @@ describe('CourseParticipationsController', () => {
         const requestHandler = courseParticipationsController.updateCourse()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
@@ -437,8 +515,22 @@ describe('CourseParticipationsController', () => {
       })
     })
 
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.updateCourse()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
+
     describe('when there are form errors', () => {
       it('redirects back to the `editCourse` action', async () => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+
         const courseParticipation = courseParticipationFactory.build()
         request.params.courseParticipationId = courseParticipation.id
         courseService.getParticipation.mockResolvedValue(courseParticipation)
@@ -453,6 +545,7 @@ describe('CourseParticipationsController', () => {
         const requestHandler = courseParticipationsController.updateCourse()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
@@ -486,6 +579,18 @@ describe('CourseParticipationsController', () => {
         reason: draftReferral.reason,
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId }))
+    })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationsController.updateHasReviewedProgrammeHistory()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
     })
   })
 })

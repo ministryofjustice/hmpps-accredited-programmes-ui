@@ -30,6 +30,12 @@ describe('ReasonController', () => {
     prisonNumber: person.prisonNumber,
     reason: undefined,
   })
+  const submittedReferral = referralFactory.submitted().build({
+    id: referralId,
+    offeringId: courseOffering.id,
+    prisonNumber: person.prisonNumber,
+    reason: undefined,
+  })
 
   let reasonController: ReasonController
 
@@ -64,6 +70,18 @@ describe('ReasonController', () => {
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reason'])
     })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = reasonController.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
   })
 
   describe('update', () => {
@@ -83,11 +101,26 @@ describe('ReasonController', () => {
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId }))
     })
 
-    describe('when the reason is not provided', () => {
-      it('redirects to the reason show action with an error', async () => {
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
         const requestHandler = reasonController.update()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
+
+    describe('when the reason is not provided', () => {
+      it('redirects to the reason show action with an error', async () => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+
+        const requestHandler = reasonController.update()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId }))
         expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
       })
@@ -95,11 +128,13 @@ describe('ReasonController', () => {
 
     describe('when the provided reason is just spaces and new lines', () => {
       it('redirects to the reason show action with an error', async () => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
         request.body.reason = ' \n \n '
 
         const requestHandler = reasonController.update()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId }))
         expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
       })

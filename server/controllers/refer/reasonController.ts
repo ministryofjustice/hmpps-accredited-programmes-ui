@@ -15,7 +15,14 @@ export default class ReasonController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { referralId } = req.params
+
       const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -24,7 +31,7 @@ export default class ReasonController {
 
       FormUtils.setFieldErrors(req, res, ['reason'])
 
-      res.render('referrals/reason/show', {
+      return res.render('referrals/reason/show', {
         pageHeading: 'Add reason for referral and any additional information',
         person,
         referral,
@@ -37,6 +44,13 @@ export default class ReasonController {
       TypeUtils.assertHasUser(req)
 
       const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       const formattedReason = req.body.reason?.trim()
 
       if (!formattedReason) {
@@ -44,8 +58,6 @@ export default class ReasonController {
 
         return res.redirect(referPaths.reason.show({ referralId }))
       }
-
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
 
       const referralUpdate: ReferralUpdate = {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,

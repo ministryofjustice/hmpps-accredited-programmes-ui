@@ -15,7 +15,14 @@ export default class OasysConfirmationController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -24,7 +31,7 @@ export default class OasysConfirmationController {
 
       FormUtils.setFieldErrors(req, res, ['oasysConfirmed'])
 
-      res.render('referrals/oasysConfirmation/show', {
+      return res.render('referrals/oasysConfirmation/show', {
         pageHeading: 'Confirm the OASys information',
         person,
         referral,
@@ -37,6 +44,13 @@ export default class OasysConfirmationController {
       TypeUtils.assertHasUser(req)
 
       const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       const { oasysConfirmed } = req.body
 
       if (!oasysConfirmed) {
@@ -44,8 +58,6 @@ export default class OasysConfirmationController {
 
         return res.redirect(referPaths.confirmOasys.show({ referralId }))
       }
-
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
 
       const referralUpdate: ReferralUpdate = {
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,

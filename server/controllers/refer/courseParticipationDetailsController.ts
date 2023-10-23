@@ -16,12 +16,17 @@ export default class CourseParticipationDetailsController {
       TypeUtils.assertHasUser(req)
       const { courseParticipationId, referralId } = req.params
 
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       const { detail, outcome, setting, source } = await this.courseService.getParticipation(
         req.user.token,
         courseParticipationId,
       )
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -40,7 +45,7 @@ export default class CourseParticipationDetailsController {
         source,
       })
 
-      res.render('referrals/courseParticipations/details/show', {
+      return res.render('referrals/courseParticipations/details/show', {
         action: `${referPaths.programmeHistory.details.update({ courseParticipationId, referralId })}?_method=PUT`,
         backLinkHref: referPaths.programmeHistory.editProgramme({ courseParticipationId, referralId }),
         courseParticipationId,
@@ -56,6 +61,12 @@ export default class CourseParticipationDetailsController {
       TypeUtils.assertHasUser(req)
 
       const { courseParticipationId, referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
 
       const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
 
