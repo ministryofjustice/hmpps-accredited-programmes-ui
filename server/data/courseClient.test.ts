@@ -30,11 +30,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     alternateName: null,
   })
   const allCourses = [course1, course2, course3]
-  const courseOfferings = courseOfferingFactory.buildList(3)
   const courseOffering = courseOfferingFactory.build({
     id: '20f3abc8-dd92-43ae-b88e-5797a0ad3f4b', // eslint-disable-next-line sort-keys
     secondaryContactEmail: 'nobody2-iry@digital.justice.gov.uk',
   })
+  const courseOfferings = [courseOffering, ...courseOfferingFactory.buildList(2)]
   const person = personFactory.build()
   const courseParticipations = [
     courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
