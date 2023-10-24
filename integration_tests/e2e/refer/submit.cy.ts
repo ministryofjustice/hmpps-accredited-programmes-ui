@@ -134,7 +134,7 @@ context('Submitting a referral', () => {
     })
 
     describe('for a person with no programme history', () => {
-      it('indicate that there is no programme history', () => {
+      it('indicates that there is no programme history', () => {
         cy.task('stubParticipationsByPerson', { courseParticipations: [], prisonNumber: prisoner.prisonerNumber })
 
         cy.visit(path)
