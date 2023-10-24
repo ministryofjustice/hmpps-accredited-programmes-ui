@@ -33,6 +33,22 @@ if [ "$UPDATE" = true ]; then
   script/update
 fi
 
+cleanup() {
+  docker-compose -p hmpps-accredited-programmes-ui_integration-test -f docker-compose-test.yml down
+
+  GREEN='\033[1;32m'
+  RED='\033[1;31m'
+  RESET_COLOUR='\033[0m'
+
+  if [ "$SUCCESS" = true ]; then
+    echo "\n\n${GREEN}( ͡° ͜ʖ ͡°) The full test suite ran successfully!${RESET_COLOUR}"
+  else
+    echo "\n\n${RED}( ͡° ʖ̯ ͡°) The test suite failed.${RESET_COLOUR}"
+  fi
+}
+
+trap cleanup EXIT
+
 echo "==> Linting the code..."
 
 npm run lint
@@ -60,19 +76,3 @@ echo "==> Running refer-disabled integration tests..."
 npm run test:integration:refer-disabled:cli
 
 SUCCESS=true
-
-cleanup() {
-  docker-compose -p hmpps-accredited-programmes-ui_integration-test -f docker-compose-test.yml down
-
-  GREEN='\033[1;32m'
-  GREEN='\033[1;31m'
-  RESET_COLOUR='\033[0m'
-
-  if [ "$SUCCESS" = true ]; then
-    echo "${GREEN}( ͡° ͜ʖ ͡°) The full test suite ran successfully!${RESET_COLOUR}\n\n"
-  else
-    echo "${RED}( ͡° ʖ̯ ͡°) The test suite failed.${RESET_COLOUR}\n\n"
-  fi
-}
-
-trap cleanup EXIT
