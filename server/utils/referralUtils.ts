@@ -47,6 +47,26 @@ export default class ReferralUtils {
     ]
   }
 
+  static courseOfferingSummaryListRows(
+    coursePresenter: CoursePresenter,
+    organisationName: Organisation['name'],
+  ): Array<GovukFrontendSummaryListRowWithValue> {
+    return [
+      {
+        key: { text: 'Programme name' },
+        value: { text: coursePresenter.nameAndAlternateName },
+      },
+      {
+        key: { text: 'Programme strand' },
+        value: { text: coursePresenter.audiences.map(audience => audience.value).join(', ') },
+      },
+      {
+        key: { text: 'Programme location' },
+        value: { text: organisationName },
+      },
+    ]
+  }
+
   static isReadyForSubmission(referral: Referral): boolean {
     return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
   }

@@ -60,6 +60,38 @@ describe('ReferralUtils', () => {
     })
   })
 
+  describe('courseOfferingSummaryListRows', () => {
+    it('formats course offering information in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
+      const course = courseFactory.build({
+        alternateName: 'TC+',
+        audiences: [
+          {
+            id: '1',
+            value: 'General offence',
+          },
+        ],
+        name: 'Test Course',
+      })
+      const coursePresenter = CourseUtils.presentCourse(course)
+      const organisation = organisationFactory.build({ name: 'HMP Hewell' })
+
+      expect(ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name)).toEqual([
+        {
+          key: { text: 'Programme name' },
+          value: { text: 'Test Course (TC+)' },
+        },
+        {
+          key: { text: 'Programme strand' },
+          value: { text: 'General offence' },
+        },
+        {
+          key: { text: 'Programme location' },
+          value: { text: 'HMP Hewell' },
+        },
+      ])
+    })
+  })
+
   describe('isReadyForSubmission', () => {
     it('returns false for a new referral', () => {
       const newReferral = referralFactory.started().build()
