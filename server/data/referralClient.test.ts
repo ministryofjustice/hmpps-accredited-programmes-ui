@@ -28,7 +28,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         uponReceiving: 'A request to create a referral',
         willRespondWith: {
           body: Matchers.like(createdReferralResponse),
-          status: 200,
+          status: 201,
         },
         withRequest: {
           body: {
