@@ -46,7 +46,7 @@ export default class CheckAnswersPage extends Page {
   }
 
   shouldHaveAdditionalInformation(referral: Referral): void {
-    this.shouldContainLink('Change additional information', `/referrals/${referral.id}/reason`)
+    this.shouldContainLink('Change additional information', `/refer/new/referrals/${referral.id}/reason`)
     cy.get('[data-testid="additional-information"]').should('have.text', referral.reason)
   }
 

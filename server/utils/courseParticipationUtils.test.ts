@@ -431,12 +431,12 @@ describe('CourseParticipationUtils', () => {
             actions: {
               items: [
                 {
-                  href: `/referrals/${referralId}/programme-history/${courseParticipationPresenter.id}/programme`,
+                  href: `/refer/new/referrals/${referralId}/programme-history/${courseParticipationPresenter.id}/programme`,
                   text: 'Change',
                   visuallyHiddenText: `participation for ${courseParticipationPresenter.courseName}`,
                 },
                 {
-                  href: `/referrals/${referralId}/programme-history/${courseParticipationPresenter.id}/delete`,
+                  href: `/refer/new/referrals/${referralId}/programme-history/${courseParticipationPresenter.id}/delete`,
                   text: 'Remove',
                   visuallyHiddenText: `participation for ${courseParticipationPresenter.courseName}`,
                 },
