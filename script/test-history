@@ -9,9 +9,13 @@
 #
 #              Inspired by a Gary Bernhardt script: https://youtu.be/ZQnyApKysg4?t=183
 
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+RESET_COLOUR='\033[0m'
+
 if [ $(git status --porcelain=v1 2>/dev/null | wc -l) = 1 ]
 then
-  echo "( ͡° ʖ̯ ͡°) Unable to execute script: commit or stash changes and try again"
+  echo "\n\n${RED}( ͡° ʖ̯ ͡°) Unable to execute script: commit or stash changes and try again${RESET_COLOUR}"
   exit 1
 fi
 
@@ -49,12 +53,12 @@ do
   
   if [ $? != 0 ]
   then
-    echo "( ͡° ʖ̯ ͡°) Identified bad commit: $revision. Exiting script..."
+    echo "\n\n${RED}( ͡° ʖ̯ ͡°) Identified bad commit: $revision.${RESET_COLOUR}"
     git checkout $BRANCH
     exit 1
   fi
 done <<< "$HISTORY"
 
-echo "( ͡° ͜ʖ ͡°) History clean. Exiting script..."
+echo "\n\n${GREEN}( ͡° ͜ʖ ͡°) History clean!${RESET_COLOUR}"
 
 git checkout $BRANCH
