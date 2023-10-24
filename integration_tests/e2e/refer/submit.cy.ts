@@ -134,7 +134,7 @@ context('Submitting a referral', () => {
     })
 
     describe('for a person with no programme history', () => {
-      it('indicate that there is no programme history', () => {
+      it('indicates that there is no programme history', () => {
         cy.task('stubParticipationsByPerson', { courseParticipations: [], prisonNumber: prisoner.prisonerNumber })
 
         cy.visit(path)
@@ -217,7 +217,7 @@ context('Submitting a referral', () => {
   })
 
   it('Shows the complete page for a completed referral', () => {
-    const submittedReferral = referralFactory.submitted().build({ status: 'referral_submitted' })
+    const submittedReferral = referralFactory.submitted().build()
     cy.task('stubReferral', submittedReferral)
 
     const path = referPaths.complete({ referralId: submittedReferral.id })

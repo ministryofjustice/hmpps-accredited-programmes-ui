@@ -21,11 +21,19 @@ describe('OasysConfirmationController', () => {
   const referralService = createMock<ReferralService>({})
 
   const courseOffering = courseOfferingFactory.build()
+  const person = personFactory.build()
+  const referralId = 'A-REFERRAL-ID'
+  const draftReferral = referralFactory
+    .started()
+    .build({ id: referralId, oasysConfirmed: false, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+  const submittedReferral = referralFactory
+    .submitted()
+    .build({ id: referralId, oasysConfirmed: false, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
   let oasysConfirmationController: OasysConfirmationController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token } })
+    request = createMock<Request>({ params: { referralId }, user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
     oasysConfirmationController = new OasysConfirmationController(personService, referralService)
   })
@@ -36,13 +44,8 @@ describe('OasysConfirmationController', () => {
 
   describe('show', () => {
     it('renders the show template for confirming OASys information is up to date', async () => {
-      const person = personFactory.build()
+      referralService.getReferral.mockResolvedValue(draftReferral)
       personService.getPerson.mockResolvedValue(person)
-
-      const referral = referralFactory
-        .started()
-        .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-      referralService.getReferral.mockResolvedValue(referral)
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
@@ -52,45 +55,67 @@ describe('OasysConfirmationController', () => {
       const requestHandler = oasysConfirmationController.show()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(response.render).toHaveBeenCalledWith('referrals/oasysConfirmation/show', {
         pageHeading: 'Confirm the OASys information',
         person,
-        referral,
+        referral: draftReferral,
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['oasysConfirmed'])
+    })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = oasysConfirmationController.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
     })
   })
 
   describe('update', () => {
-    const referral = referralFactory.build({ oasysConfirmed: false, status: 'referral_started' })
-
-    beforeEach(() => {
-      referralService.getReferral.mockResolvedValue(referral)
-    })
-
     it("asks the service to update the field and redirects to the ReferralController's show action", async () => {
+      referralService.getReferral.mockResolvedValue(draftReferral)
+
       request.body.oasysConfirmed = true
 
       const requestHandler = oasysConfirmationController.update()
       await requestHandler(request, response, next)
 
-      expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId: referral.id }))
-      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referral.id, {
-        hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
+      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId }))
+      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referralId, {
+        hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
         oasysConfirmed: true,
-        reason: referral.reason,
+        reason: draftReferral.reason,
       })
     })
 
     describe('when the `oasysConfirmed` field is not set', () => {
       it('redirects back to the confirm oasys page with an error', async () => {
-        request.params.referralId = referral.id
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        const requestHandler = oasysConfirmationController.update()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.confirmOasys.show({ referralId }))
+        expect(request.flash).toHaveBeenCalledWith('oasysConfirmedError', 'Confirm the OASys information is up to date')
+      })
+    })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
 
         const requestHandler = oasysConfirmationController.update()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.confirmOasys.show({ referralId: referral.id }))
-        expect(request.flash).toHaveBeenCalledWith('oasysConfirmedError', 'Confirm the OASys information is up to date')
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
       })
     })
   })

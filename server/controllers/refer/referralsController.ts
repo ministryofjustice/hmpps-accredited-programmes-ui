@@ -23,8 +23,12 @@ export default class ReferralsController {
 
       const referral = await this.referralService.getReferral(req.user.token, referralId)
 
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       if (!ReferralUtils.isReadyForSubmission(referral)) {
-        return res.redirect(referPaths.show({ referralId: referral.id }))
+        return res.redirect(referPaths.show({ referralId }))
       }
 
       const person = await this.personService.getPerson(
@@ -46,7 +50,7 @@ export default class ReferralsController {
         ),
       )
       const participationSummaryListsOptions = courseParticipationsPresenter.map(participation =>
-        CourseParticipationUtils.summaryListOptions(participation, referral.id, { change: true, remove: false }),
+        CourseParticipationUtils.summaryListOptions(participation, referralId, { change: true, remove: false }),
       )
       const coursePresenter = CourseUtils.presentCourse(course)
 
@@ -128,7 +132,14 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
@@ -139,7 +150,7 @@ export default class ReferralsController {
       )
       const coursePresenter = CourseUtils.presentCourse(course)
 
-      res.render('referrals/show', {
+      return res.render('referrals/show', {
         course: coursePresenter,
         organisation,
         pageHeading: 'Make a referral',
@@ -153,18 +164,25 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
+
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
 
-      res.render('referrals/showPerson', {
+      return res.render('referrals/showPerson', {
         pageHeading: `${person.name}'s details`,
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
-        referralId: referral.id,
+        referralId,
       })
     }
   }
@@ -191,24 +209,30 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { referralId } = req.params
+
       if (req.body.confirmation !== 'true') {
         req.flash(
           'confirmationError',
           'Confirm that the information you have provided is complete, accurate and up to date',
         )
 
-        return res.redirect(referPaths.checkAnswers({ referralId: req.params.referralId }))
+        return res.redirect(referPaths.checkAnswers({ referralId }))
       }
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const referral = await this.referralService.getReferral(req.user.token, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.complete({ referralId }))
+      }
 
       if (!ReferralUtils.isReadyForSubmission(referral)) {
-        return res.redirect(referPaths.show({ referralId: referral.id }))
+        return res.redirect(referPaths.show({ referralId }))
       }
 
-      await this.referralService.updateReferralStatus(req.user.token, req.params.referralId, 'referral_submitted')
+      await this.referralService.updateReferralStatus(req.user.token, referralId, 'referral_submitted')
 
-      return res.redirect(referPaths.complete({ referralId: req.params.referralId }))
+      return res.redirect(referPaths.complete({ referralId }))
     }
   }
 }

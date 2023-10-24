@@ -29,10 +29,11 @@ describe('CourseParticipationDetailsController', () => {
   const referralService = createMock<ReferralService>({})
 
   const courseParticipationId = faker.string.uuid()
-  const referralId = faker.string.uuid()
-
-  const referral = referralFactory.build({ id: referralId })
   const courseParticipation = courseParticipationFactory.new().build()
+
+  const referralId = faker.string.uuid()
+  const draftReferral = referralFactory.started().build({ id: referralId })
+  const submittedReferral = referralFactory.submitted().build({ id: referralId })
 
   let courseParticipationDetailsController: CourseParticipationDetailsController
 
@@ -52,7 +53,6 @@ describe('CourseParticipationDetailsController', () => {
       referralService,
     )
 
-    referralService.getReferral.mockResolvedValue(referral)
     courseService.getParticipation.mockResolvedValue(courseParticipation)
   })
 
@@ -62,6 +62,8 @@ describe('CourseParticipationDetailsController', () => {
 
   describe('show', () => {
     it('renders the details show page and calls `FormUtils.setFieldErrors` and `FormUtils.setFormValues` with the correct param values', async () => {
+      referralService.getReferral.mockResolvedValue(draftReferral)
+
       const person = personFactory.build()
       personService.getPerson.mockResolvedValue(person)
 
@@ -100,6 +102,8 @@ describe('CourseParticipationDetailsController', () => {
     describe('when the course participation has existing data', () => {
       describe('and has a `setting.type` of `community` and a `setting.location`', () => {
         it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
+          referralService.getReferral.mockResolvedValue(draftReferral)
+
           const courseParticipationWithCommunitySetting = courseParticipationFactory.build({
             setting: { location: 'Somewhere', type: 'community' },
           }) as CourseParticipation & { setting: CourseParticipationSetting }
@@ -124,6 +128,8 @@ describe('CourseParticipationDetailsController', () => {
 
       describe('and has a `setting.type` of `custody` and a `setting.location`', () => {
         it('calls `FormUtils.setFormValues` with the correct `defaultValues` param values', async () => {
+          referralService.getReferral.mockResolvedValue(draftReferral)
+
           const courseParticipationWithCustodySetting = courseParticipationFactory.build({
             setting: { location: 'Somewhere', type: 'custody' },
           }) as CourseParticipation & { setting: CourseParticipationSetting }
@@ -146,10 +152,24 @@ describe('CourseParticipationDetailsController', () => {
         })
       })
     })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationDetailsController.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
   })
 
   describe('update', () => {
     it('asks the service to update the given course participation details and redirects to the `CourseParticipationsController` `index` action', async () => {
+      referralService.getReferral.mockResolvedValue(draftReferral)
+
       const courseParticipationUpdate: CourseParticipationUpdate = {
         courseName: courseParticipation.courseName,
         detail: 'Some additional detail',
@@ -174,6 +194,7 @@ describe('CourseParticipationDetailsController', () => {
       const requestHandler = courseParticipationDetailsController.update()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
       expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
         request,
@@ -188,8 +209,21 @@ describe('CourseParticipationDetailsController', () => {
       expect(response.redirect).toHaveBeenCalledWith(referPaths.programmeHistory.index({ referralId }))
     })
 
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = courseParticipationDetailsController.update()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
+      })
+    })
+
     describe('when the form has errors', () => {
       it('redirects back to the `show` action', async () => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
         ;(CourseParticipationUtils.processDetailsFormData as jest.Mock).mockImplementation(_request => {
           return { hasFormErrors: true }
         })
@@ -197,6 +231,7 @@ describe('CourseParticipationDetailsController', () => {
         const requestHandler = courseParticipationDetailsController.update()
         await requestHandler(request, response, next)
 
+        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
         expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
           request,
