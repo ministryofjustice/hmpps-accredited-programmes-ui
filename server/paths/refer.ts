@@ -10,20 +10,22 @@ const peoplePathBase = offeringReferralPathBase.path('people')
 const findPersonPath = peoplePathBase.path('search')
 const personPath = peoplePathBase.path(':prisonNumber')
 
-const referralsPath = path('/referrals')
-const showReferralPath = referralsPath.path(':referralId')
-const referralPersonPath = showReferralPath.path('person')
-const programmeHistoryPath = showReferralPath.path('programme-history')
+const referBasePath = path('/refer')
+
+const draftReferralsPath = referBasePath.path('/new/referrals')
+const showDraftReferralPath = draftReferralsPath.path(':referralId')
+const referralPersonPath = showDraftReferralPath.path('person')
+const programmeHistoryPath = showDraftReferralPath.path('programme-history')
 const newProgrammeHistoryPath = programmeHistoryPath.path('new')
 const showProgrammeHistoryPath = programmeHistoryPath.path(':courseParticipationId')
 const programmeHistoryProgrammePath = showProgrammeHistoryPath.path('programme')
 const programmeHistoryDetailsPath = showProgrammeHistoryPath.path('details')
 const deleteProgrammeHistoryPath = showProgrammeHistoryPath.path('delete')
-const confirmOasysPath = showReferralPath.path('confirm-oasys')
-const reasonForReferralPath = showReferralPath.path('reason')
-const checkAnswersPath = showReferralPath.path('check-answers')
-const completeReferralPath = showReferralPath.path('complete')
-const submitReferralPath = showReferralPath.path('submit')
+const confirmOasysPath = showDraftReferralPath.path('confirm-oasys')
+const reasonForReferralPath = showDraftReferralPath.path('reason')
+const checkAnswersPath = showDraftReferralPath.path('check-answers')
+const completeReferralPath = showDraftReferralPath.path('complete')
+const submitReferralPath = showDraftReferralPath.path('submit')
 
 export default {
   checkAnswers: checkAnswersPath,
@@ -32,7 +34,7 @@ export default {
     show: confirmOasysPath,
     update: confirmOasysPath,
   },
-  create: referralsPath,
+  create: draftReferralsPath,
   new: newReferralPath,
   people: {
     find: findPersonPath,
@@ -56,9 +58,9 @@ export default {
     show: reasonForReferralPath,
     update: reasonForReferralPath,
   },
-  show: showReferralPath,
+  show: showDraftReferralPath,
   showPerson: referralPersonPath,
   start: startReferralPath,
   submit: submitReferralPath,
-  update: showReferralPath,
+  update: showDraftReferralPath,
 }

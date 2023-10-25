@@ -102,7 +102,7 @@ describe('ReferralUtils', () => {
             {
               statusTag: { classes: 'moj-task-list__task-completed', text: 'completed' },
               text: 'Confirm personal details',
-              url: `/referrals/${referral.id}/person`,
+              url: `/refer/new/referrals/${referral.id}/person`,
             },
           ],
         },
@@ -116,7 +116,7 @@ describe('ReferralUtils', () => {
                 text: 'not started',
               },
               text: 'Review Accredited Programme history',
-              url: `/referrals/${referral.id}/programme-history`,
+              url: `/refer/new/referrals/${referral.id}/programme-history`,
             },
             {
               statusTag: {
@@ -125,7 +125,7 @@ describe('ReferralUtils', () => {
                 text: 'not started',
               },
               text: 'Confirm the OASys information',
-              url: `/referrals/${referral.id}/confirm-oasys`,
+              url: `/refer/new/referrals/${referral.id}/confirm-oasys`,
             },
             {
               statusTag: {
@@ -134,7 +134,7 @@ describe('ReferralUtils', () => {
                 text: 'not started',
               },
               text: 'Add additional information',
-              url: `/referrals/${referral.id}/reason`,
+              url: `/refer/new/referrals/${referral.id}/reason`,
             },
           ],
         },
@@ -192,7 +192,7 @@ describe('ReferralUtils', () => {
       const checkAnswersSection = getTaskListSection('Check answers and submit', taskListSections)
       const checkAnswersTask = getTaskListItem('Check answers and submit', checkAnswersSection)
 
-      expect(checkAnswersTask.url).toEqual(`/referrals/${referralWithOasysConfirmed.id}/check-answers`)
+      expect(checkAnswersTask.url).toEqual(`/refer/new/referrals/${referralWithOasysConfirmed.id}/check-answers`)
       expect(checkAnswersTask.statusTag.text).toEqual('not started')
     })
   })
