@@ -18,11 +18,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   const course1 = courseFactory.build({
-    id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8', // eslint-disable-next-line sort-keys
+    id: 'd3abc217-75ee-46e9-a010-368f30282367', // eslint-disable-next-line sort-keys
     alternateName: 'AC++',
   })
   const course2 = courseFactory.build({
-    id: 'd3abc217-75ee-46e9-a010-368f30282367', // eslint-disable-next-line sort-keys
+    id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8', // eslint-disable-next-line sort-keys
     alternateName: 'LC',
   })
   const course3 = courseFactory.build({
@@ -30,16 +30,22 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     alternateName: null,
   })
   const allCourses = [course1, course2, course3]
-  const courseOffering = courseOfferingFactory.build({
-    id: '20f3abc8-dd92-43ae-b88e-5797a0ad3f4b', // eslint-disable-next-line sort-keys
-    secondaryContactEmail: 'nobody2-iry@digital.justice.gov.uk',
+  const courseOffering1 = courseOfferingFactory.build({
+    id: '7fffcc6a-11f8-4713-be35-cf5ff1aee517', // eslint-disable-next-line sort-keys
+    secondaryContactEmail: 'nobody2-mdi@digital.justice.gov.uk',
   })
-  const courseOfferings = [courseOffering, ...courseOfferingFactory.buildList(2)]
-  const person = personFactory.build()
+  const courseOffering2 = courseOfferingFactory.build({
+    id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537',
+  })
+  const courseOffering3 = courseOfferingFactory.build({
+    id: '39b77a2f-7398-4d5f-b744-cdcefca12671',
+  })
+  const allCourseOfferings = [courseOffering1, courseOffering2, courseOffering3]
+  const person = personFactory.build({ prisonNumber: 'A1234AA' })
   const courseParticipations = [
-    courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
-    courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
-    courseParticipationFactory.build({ prisonNumber: person.prisonNumber }),
+    courseParticipationFactory.build({ id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004', prisonNumber: person.prisonNumber }),
+    courseParticipationFactory.build({ id: '9372880f-95ba-4cde-a71a-01e2a06a0644', prisonNumber: person.prisonNumber }),
+    courseParticipationFactory.build({ id: 'eb357e5d-5416-43bf-a8d2-0dc8fd92162e', prisonNumber: person.prisonNumber }),
   ]
 
   describe('all', () => {
@@ -69,7 +75,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('createParticipation', () => {
-    const courseParticipation = courseParticipationFactory.new().build()
+    const courseParticipation = courseParticipationFactory
+      .new()
+      .build({ id: 'c35c5c3c-7d97-40e6-a744-9526d68495d0', prisonNumber: person.prisonNumber })
     const { courseName, prisonNumber } = courseParticipation
 
     beforeEach(() => {
@@ -155,8 +163,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('findCourseByOffering', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: `An offering with ID ${courseOffering.id} exists and has an associated course`,
-        uponReceiving: `A request for offering "${courseOffering.id}"'s course`,
+        state: `An offering with ID ${courseOffering1.id} exists and has an associated course`,
+        uponReceiving: `A request for offering "${courseOffering1.id}"'s course`,
         willRespondWith: {
           body: Matchers.like(course1),
           status: 200,
@@ -166,13 +174,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${token}`,
           },
           method: 'GET',
-          path: apiPaths.offerings.course({ courseOfferingId: courseOffering.id }),
+          path: apiPaths.offerings.course({ courseOfferingId: courseOffering1.id }),
         },
       })
     })
 
     it("fetches the given offering's course", async () => {
-      const result = await courseClient.findCourseByOffering(courseOffering.id)
+      const result = await courseClient.findCourseByOffering(courseOffering1.id)
 
       expect(result).toEqual(course1)
     })
@@ -184,7 +192,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         state: `Offerings exist for a course with ID ${course1.id}`,
         uponReceiving: `A request for course "${course1.id}"'s offerings`,
         willRespondWith: {
-          body: Matchers.like(courseOfferings),
+          body: Matchers.like(allCourseOfferings),
           status: 200,
         },
         withRequest: {
@@ -200,7 +208,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     it("fetches the given course's offerings", async () => {
       const result = await courseClient.findOfferings(course1.id)
 
-      expect(result).toEqual(courseOfferings)
+      expect(result).toEqual(allCourseOfferings)
     })
   })
 
@@ -235,10 +243,10 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('findOffering', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: `An offering exists with ID ${courseOffering.id}`,
-        uponReceiving: `A request for course offering "${courseOffering.id}"`,
+        state: `An offering exists with ID ${courseOffering1.id}`,
+        uponReceiving: `A request for course offering "${courseOffering1.id}"`,
         willRespondWith: {
-          body: Matchers.like(courseOffering),
+          body: Matchers.like(courseOffering1),
           status: 200,
         },
         withRequest: {
@@ -246,15 +254,15 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${token}`,
           },
           method: 'GET',
-          path: apiPaths.offerings.show({ courseOfferingId: courseOffering.id }),
+          path: apiPaths.offerings.show({ courseOfferingId: courseOffering1.id }),
         },
       })
     })
 
     it('fetches the given course offering', async () => {
-      const result = await courseClient.findOffering(courseOffering.id)
+      const result = await courseClient.findOffering(courseOffering1.id)
 
-      expect(result).toEqual(courseOffering)
+      expect(result).toEqual(courseOffering1)
     })
   })
 
@@ -313,7 +321,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('updateParticipation', () => {
-    const courseParticipation = courseParticipationFactory.build()
+    const courseParticipation = courseParticipationFactory.build({ id: '1c0fbebe-7768-4dbe-ae58-6036183dbeff' })
     const courseParticipationUpdate: CourseParticipationUpdate = {
       courseName: courseParticipation.courseName,
       detail: 'nice',
