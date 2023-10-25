@@ -46,12 +46,12 @@ export default class CheckAnswersPage extends Page {
     this.shouldContainButton('Submit referral').click()
   }
 
-  shouldHaveAdditionalInformation(referral: Referral): void {
+  shouldHaveAdditionalInformation(): void {
     this.shouldContainLink(
       'Change additional information',
-      referPaths.additionalInformation.show({ referralId: referral.id }),
+      referPaths.additionalInformation.show({ referralId: this.referral.id }),
     )
-    cy.get('[data-testid="additional-information"]').should('have.text', referral.additionalInformation)
+    cy.get('[data-testid="additional-information"]').should('have.text', this.referral.additionalInformation)
   }
 
   shouldHaveApplicationSummary() {
