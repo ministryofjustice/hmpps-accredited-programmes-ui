@@ -22,7 +22,7 @@ export default class FindPersonPage extends Page {
       )
 
       cy.get('.govuk-hint').then(hintElement => {
-        const { actual, expected } = Helpers.parseHtml(hintElement, 'For example, a prison number is DO16821')
+        const { actual, expected } = Helpers.parseHtml(hintElement, 'For example, a prison number is A1234AA')
         expect(actual).to.equal(expected)
       })
 
