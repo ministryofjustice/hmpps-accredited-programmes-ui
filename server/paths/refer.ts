@@ -27,6 +27,13 @@ const checkAnswersPath = showDraftReferralPath.path('check-answers')
 const completeReferralPath = showDraftReferralPath.path('complete')
 const submitReferralPath = showDraftReferralPath.path('submit')
 
+const submittedReferralsPath = referBasePath.path('/referrals')
+const showSubmittedReferralPath = submittedReferralsPath.path(':referralId')
+const submittedReferralPersonalDetailsPath = showSubmittedReferralPath.path('personal-details')
+const submittedReferralProgrammeHistoryPath = showSubmittedReferralPath.path('programme-history')
+const submittedReferralSentenceInformationPath = showSubmittedReferralPath.path('sentence-information')
+const submittedReferralAdditionalInformationPath = showSubmittedReferralPath.path('additional-information')
+
 export default {
   additionalInformation: {
     show: additionalInformationPath,
@@ -62,5 +69,11 @@ export default {
   showPerson: referralPersonPath,
   start: startReferralPath,
   submit: submitReferralPath,
+  submitted: {
+    additionalInformation: submittedReferralAdditionalInformationPath,
+    personalDetails: submittedReferralPersonalDetailsPath,
+    programmeHistory: submittedReferralProgrammeHistoryPath,
+    sentenceInformation: submittedReferralSentenceInformationPath,
+  },
   update: showDraftReferralPath,
 }
