@@ -574,9 +574,9 @@ describe('CourseParticipationsController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(referralService.updateReferral).toHaveBeenCalledWith(token, referralId, {
+        additionalInformation: draftReferral.additionalInformation,
         hasReviewedProgrammeHistory,
         oasysConfirmed: draftReferral.oasysConfirmed,
-        reason: draftReferral.reason,
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId }))
     })

@@ -60,9 +60,9 @@ export default class OasysConfirmationController {
       }
 
       const referralUpdate: ReferralUpdate = {
+        additionalInformation: referral.additionalInformation,
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed,
-        reason: referral.reason,
       }
 
       await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)

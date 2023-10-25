@@ -296,7 +296,7 @@ describe('ReferralsController', () => {
         { change: true, remove: false },
       )
       expect(response.render).toHaveBeenCalledWith('referrals/checkAnswers', {
-        additionalInformation: submittableReferral.reason,
+        additionalInformation: submittableReferral.additionalInformation,
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
           courseOffering,
           coursePresenter,

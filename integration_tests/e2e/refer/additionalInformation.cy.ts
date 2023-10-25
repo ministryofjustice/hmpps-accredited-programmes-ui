@@ -10,9 +10,9 @@ import {
 } from '../../../server/testutils/factories'
 import { OrganisationUtils } from '../../../server/utils'
 import Page from '../../pages/page'
-import { ReasonPage, TaskListPage } from '../../pages/refer'
+import { AdditionalInformationPage, TaskListPage } from '../../pages/refer'
 
-context('Reason', () => {
+context('Additional information', () => {
   const courseOffering = courseOfferingFactory.build()
   const prisoner = prisonerFactory.build({
     firstName: 'Del',
@@ -36,20 +36,20 @@ context('Reason', () => {
     cy.task('stubReferral', referral)
   })
 
-  it('Shows the reason form page', () => {
-    const path = referPaths.reason.show({ referralId: referral.id })
+  it('Shows the additional information form page', () => {
+    const path = referPaths.additionalInformation.show({ referralId: referral.id })
     cy.visit(path)
 
-    const reasonPage = Page.verifyOnPage(ReasonPage, { person, referral })
-    reasonPage.shouldHavePersonDetails(person)
-    reasonPage.shouldContainNavigation(path)
-    reasonPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
-    reasonPage.shouldContainInstructions()
-    reasonPage.shouldContainReasonTextArea()
-    reasonPage.shouldContainSaveAndContinueButton()
+    const additionalInformationPage = Page.verifyOnPage(AdditionalInformationPage, { person, referral })
+    additionalInformationPage.shouldHavePersonDetails(person)
+    additionalInformationPage.shouldContainNavigation(path)
+    additionalInformationPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
+    additionalInformationPage.shouldContainInstructions()
+    additionalInformationPage.shouldContainAdditionalInformationTextArea()
+    additionalInformationPage.shouldContainSaveAndContinueButton()
   })
 
-  describe('When updating the reason', () => {
+  describe('When updating the additional information', () => {
     it('updates the referral and redirects to the task list', () => {
       cy.task('stubUpdateReferral', referral.id)
 
@@ -61,27 +61,27 @@ context('Reason', () => {
       const organisation = OrganisationUtils.organisationFromPrison(prison)
       cy.task('stubPrison', prison)
 
-      const path = referPaths.reason.show({ referralId: referral.id })
+      const path = referPaths.additionalInformation.show({ referralId: referral.id })
       cy.visit(path)
 
-      const reasonPage = Page.verifyOnPage(ReasonPage, { person, referral })
-      reasonPage.submitReason()
+      const additionalInformationPage = Page.verifyOnPage(AdditionalInformationPage, { person, referral })
+      additionalInformationPage.submitAdditionalInformation()
 
       const taskListPage = Page.verifyOnPage(TaskListPage, { course, courseOffering, organisation, referral })
-      taskListPage.shouldHaveReason()
+      taskListPage.shouldHaveAdditionalInformation()
     })
 
-    it('displays an error when the reason is not provided', () => {
-      const path = referPaths.reason.show({ referralId: referral.id })
+    it('displays an error when additional information is not provided', () => {
+      const path = referPaths.additionalInformation.show({ referralId: referral.id })
       cy.visit(path)
 
-      const reasonPage = Page.verifyOnPage(ReasonPage, { person, referral })
-      reasonPage.shouldContainButton('Save and continue').click()
+      const additionalInformationPage = Page.verifyOnPage(AdditionalInformationPage, { person, referral })
+      additionalInformationPage.shouldContainButton('Save and continue').click()
 
-      const reasonPageWithError = Page.verifyOnPage(ReasonPage, { person, referral })
-      reasonPageWithError.shouldHaveErrors([
+      const additionalInformationPageWithError = Page.verifyOnPage(AdditionalInformationPage, { person, referral })
+      additionalInformationPageWithError.shouldHaveErrors([
         {
-          field: 'reason',
+          field: 'additionalInformation',
           message: 'Enter additional information',
         },
       ])

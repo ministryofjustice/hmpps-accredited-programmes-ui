@@ -37,12 +37,12 @@
       </ul>
       {% endset %}
 
-      <form action="{{ referPaths.reason.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+      <form action="{{ referPaths.additionalInformation.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukTextarea({
-          name: "reason",
-          id: "reason",
+          name: "additionalInformation",
+          id: "additionalInformation",
           label: {
             text: pageHeading,
             classes: "govuk-label--l",
@@ -51,11 +51,11 @@
           hint: {
             html: hintHtml
           },
-          value: referral.reason,
+          value: referral.additionalInformation,
           attributes: {
-            "data-testid": "reason-text-area"
+            "data-testid": "additional-information-text-area"
           },
-          errorMessage: errors.messages.reason
+          errorMessage: errors.messages.additionalInformation
         }) }}
 
         {{ govukButton({

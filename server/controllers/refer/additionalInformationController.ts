@@ -5,7 +5,7 @@ import type { PersonService, ReferralService } from '../../services'
 import { FormUtils, TypeUtils } from '../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
-export default class ReasonController {
+export default class AdditionalInformationController {
   constructor(
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
@@ -29,9 +29,9 @@ export default class ReasonController {
         res.locals.user.caseloads,
       )
 
-      FormUtils.setFieldErrors(req, res, ['reason'])
+      FormUtils.setFieldErrors(req, res, ['additionalInformation'])
 
-      return res.render('referrals/reason/show', {
+      return res.render('referrals/additionalInformation/show', {
         pageHeading: 'Add additional information',
         person,
         referral,
@@ -51,18 +51,18 @@ export default class ReasonController {
         return res.redirect(referPaths.complete({ referralId }))
       }
 
-      const formattedReason = req.body.reason?.trim()
+      const formattedAdditionalInformation = req.body.additionalInformation?.trim()
 
-      if (!formattedReason) {
-        req.flash('reasonError', 'Enter additional information')
+      if (!formattedAdditionalInformation) {
+        req.flash('additionalInformationError', 'Enter additional information')
 
-        return res.redirect(referPaths.reason.show({ referralId }))
+        return res.redirect(referPaths.additionalInformation.show({ referralId }))
       }
 
       const referralUpdate: ReferralUpdate = {
+        additionalInformation: formattedAdditionalInformation,
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: referral.oasysConfirmed,
-        reason: formattedReason,
       }
 
       await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)

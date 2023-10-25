@@ -62,18 +62,21 @@ export default class TaskListPage extends Page {
     })
   }
 
+  shouldHaveAdditionalInformation() {
+    cy.get('[data-testid="additional-information-tag"]').then(additionalInformationTagElement => {
+      this.shouldContainTag(
+        { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
+        additionalInformationTagElement,
+      )
+    })
+  }
+
   shouldHaveConfirmedOasys() {
     cy.get('[data-testid="confirm-oasys-tag"]').then(confirmOasysTagElement => {
       this.shouldContainTag(
         { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
         confirmOasysTagElement,
       )
-    })
-  }
-
-  shouldHaveReason() {
-    cy.get('[data-testid="reason-tag"]').then(reasonTagElement => {
-      this.shouldContainTag({ classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' }, reasonTagElement)
     })
   }
 

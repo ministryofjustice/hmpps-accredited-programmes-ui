@@ -78,13 +78,13 @@ describe('ReferralUtils', () => {
       expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
     })
 
-    it('returns false when reason not provided', () => {
-      const referral = referralFactory.submittable().build({ reason: '' })
+    it('returns false when additional information not provided', () => {
+      const referral = referralFactory.submittable().build({ additionalInformation: '' })
 
       expect(ReferralUtils.isReadyForSubmission(referral)).toEqual(false)
     })
 
-    it('returns true when: programme history reviewed, OASys confirmed, and reason provided', () => {
+    it('returns true when programme history reviewed, OASys confirmed, and additional information provided', () => {
       const submittableReferral = referralFactory.submittable().build()
 
       expect(ReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)
@@ -129,12 +129,12 @@ describe('ReferralUtils', () => {
             },
             {
               statusTag: {
-                attributes: { 'data-testid': 'reason-tag' },
+                attributes: { 'data-testid': 'additional-information-tag' },
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
                 text: 'not started',
               },
               text: 'Add additional information',
-              url: `/refer/new/referrals/${referral.id}/reason`,
+              url: `/refer/new/referrals/${referral.id}/additional-information`,
             },
           ],
         },
@@ -163,7 +163,10 @@ describe('ReferralUtils', () => {
         'Review Accredited Programme history',
         referralInformationSection,
       ).statusTag
-      const reasonStatusTag = getTaskListItem('Add additional information', referralInformationSection).statusTag
+      const additionalInformationStatusTag = getTaskListItem(
+        'Add additional information',
+        referralInformationSection,
+      ).statusTag
       const confirmOasysStatusTag = getTaskListItem(
         'Confirm the OASys information',
         referralInformationSection,
@@ -174,8 +177,8 @@ describe('ReferralUtils', () => {
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })
-      expect(reasonStatusTag).toEqual({
-        attributes: { 'data-testid': 'reason-tag' },
+      expect(additionalInformationStatusTag).toEqual({
+        attributes: { 'data-testid': 'additional-information-tag' },
         classes: 'moj-task-list__task-completed',
         text: 'completed',
       })

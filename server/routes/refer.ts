@@ -13,9 +13,9 @@ export default function routes(controllers: Controllers, router: Router): Router
     put,
   } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
+    additionalInformationController,
     courseParticipationDetailsController,
     courseParticipationsController,
-    reasonController,
     referralsController,
     peopleController,
     oasysConfirmationController,
@@ -34,8 +34,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.confirmOasys.show.pattern, oasysConfirmationController.show())
   put(referPaths.confirmOasys.update.pattern, oasysConfirmationController.update())
 
-  get(referPaths.reason.show.pattern, reasonController.show())
-  put(referPaths.reason.update.pattern, reasonController.update())
+  get(referPaths.additionalInformation.show.pattern, additionalInformationController.show())
+  put(referPaths.additionalInformation.update.pattern, additionalInformationController.update())
 
   get(referPaths.programmeHistory.index.pattern, courseParticipationsController.index())
   put(

@@ -22,12 +22,16 @@ const programmeHistoryProgrammePath = showProgrammeHistoryPath.path('programme')
 const programmeHistoryDetailsPath = showProgrammeHistoryPath.path('details')
 const deleteProgrammeHistoryPath = showProgrammeHistoryPath.path('delete')
 const confirmOasysPath = showDraftReferralPath.path('confirm-oasys')
-const reasonForReferralPath = showDraftReferralPath.path('reason')
+const additionalInformationPath = showDraftReferralPath.path('additional-information')
 const checkAnswersPath = showDraftReferralPath.path('check-answers')
 const completeReferralPath = showDraftReferralPath.path('complete')
 const submitReferralPath = showDraftReferralPath.path('submit')
 
 export default {
+  additionalInformation: {
+    show: additionalInformationPath,
+    update: additionalInformationPath,
+  },
   checkAnswers: checkAnswersPath,
   complete: completeReferralPath,
   confirmOasys: {
@@ -53,10 +57,6 @@ export default {
     new: newProgrammeHistoryPath,
     updateProgramme: programmeHistoryProgrammePath,
     updateReviewedStatus: programmeHistoryPath,
-  },
-  reason: {
-    show: reasonForReferralPath,
-    update: reasonForReferralPath,
   },
   show: showDraftReferralPath,
   showPerson: referralPersonPath,

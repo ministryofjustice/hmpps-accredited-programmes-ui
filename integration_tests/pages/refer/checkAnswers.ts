@@ -1,3 +1,4 @@
+import { referPaths } from '../../../server/paths'
 import { CourseUtils, ReferralUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
@@ -46,8 +47,11 @@ export default class CheckAnswersPage extends Page {
   }
 
   shouldHaveAdditionalInformation(referral: Referral): void {
-    this.shouldContainLink('Change additional information', `/refer/new/referrals/${referral.id}/reason`)
-    cy.get('[data-testid="additional-information"]').should('have.text', referral.reason)
+    this.shouldContainLink(
+      'Change additional information',
+      referPaths.additionalInformation.show({ referralId: referral.id }),
+    )
+    cy.get('[data-testid="additional-information"]').should('have.text', referral.additionalInformation)
   }
 
   shouldHaveApplicationSummary() {

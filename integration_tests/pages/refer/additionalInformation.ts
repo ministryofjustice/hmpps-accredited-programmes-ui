@@ -1,7 +1,7 @@
 import Page from '../page'
 import type { Person, Referral } from '@accredited-programmes/models'
 
-export default class ReasonPage extends Page {
+export default class AdditionalInformationPage extends Page {
   person: Person
 
   referral: Referral
@@ -15,8 +15,12 @@ export default class ReasonPage extends Page {
     this.referral = referral
   }
 
+  shouldContainAdditionalInformationTextArea() {
+    this.shouldContainTextArea('additionalInformation', 'Add additional information')
+  }
+
   shouldContainInstructions() {
-    cy.get('#reason-hint .govuk-body').should(
+    cy.get('#additionalInformation-hint .govuk-body').should(
       'have.text',
       'You can provide any additional information you feel will help the programme team in their assessment. This might include:',
     )
@@ -33,18 +37,14 @@ export default class ReasonPage extends Page {
     })
   }
 
-  shouldContainReasonTextArea() {
-    this.shouldContainTextArea('reason', 'Add additional information')
-  }
-
   shouldContainSaveAndContinueButton() {
     this.shouldContainButton('Save and continue')
   }
 
-  submitReason() {
-    const reason = 'This is the reason for the referral'
-    cy.get('[data-testid="reason-text-area"]').type(reason)
-    this.referral = { ...this.referral, reason }
+  submitAdditionalInformation() {
+    const additionalInformation = 'Wheat gluten makes great fake chicken'
+    cy.get('[data-testid="additional-information-text-area"]').type(additionalInformation)
+    this.referral = { ...this.referral, additionalInformation }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)
     this.shouldContainButton('Save and continue').click()
