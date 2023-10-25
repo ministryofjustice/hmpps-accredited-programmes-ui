@@ -64,7 +64,7 @@ describe('ReasonController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(response.render).toHaveBeenCalledWith('referrals/reason/show', {
-        pageHeading: 'Add reason for referral and any additional information',
+        pageHeading: 'Add additional information',
         person,
         referral: draftReferral,
       })
@@ -87,7 +87,7 @@ describe('ReasonController', () => {
   describe('update', () => {
     it('ask the service to update the referral and redirects to the referral show action', async () => {
       referralService.getReferral.mockResolvedValue(draftReferral)
-      request.body.reason = ' Some reason\nAnother paragraph\n '
+      request.body.reason = ' Some additional information\nAnother paragraph\n '
 
       const requestHandler = reasonController.update()
       await requestHandler(request, response, next)
@@ -96,7 +96,7 @@ describe('ReasonController', () => {
       expect(referralService.updateReferral).toHaveBeenCalledWith(token, referralId, {
         hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
         oasysConfirmed: draftReferral.oasysConfirmed,
-        reason: 'Some reason\nAnother paragraph',
+        reason: 'Some additional information\nAnother paragraph',
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId }))
     })
@@ -122,7 +122,7 @@ describe('ReasonController', () => {
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId }))
-        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
+        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter additional information')
       })
     })
 
@@ -136,7 +136,7 @@ describe('ReasonController', () => {
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId }))
-        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
+        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter additional information')
       })
     })
   })

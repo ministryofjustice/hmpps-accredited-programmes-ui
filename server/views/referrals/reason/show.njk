@@ -27,11 +27,13 @@
         }) }}
       {% endif %}
 
-      {% set detailsHtml %}
+      {% set hintHtml %}
+      <p class="govuk-body">You can provide any additional information you feel will help the programme team in their assessment. This might include:</p>
       <ul class="govuk-list govuk-list--bullet">
-        <li>you can provide information about why you're referring this person to this programme</li>
-        <li>you can add supporting information that would be useful for the programme team to know</li>
-        <li>you can add any other information that would be useful for the programme team to know</li>
+        <li>The reason for the referral</li>
+        <li>The person's motivation to complete a programme</li>
+        <li>Their offence history and behaviour</li>
+        <li>Information to support an override</li>
       </ul>
       {% endset %}
 
@@ -47,13 +49,7 @@
             isPageHeading: true
           },
           hint: {
-            html: govukDetails({
-              summaryText: "What type of information can I add?",
-              html: detailsHtml,
-              attributes: {
-                "data-testid": "information-type-details"
-              }
-            }) 
+            html: hintHtml
           },
           value: referral.reason,
           attributes: {

@@ -32,7 +32,7 @@ export default class ReasonController {
       FormUtils.setFieldErrors(req, res, ['reason'])
 
       return res.render('referrals/reason/show', {
-        pageHeading: 'Add reason for referral and any additional information',
+        pageHeading: 'Add additional information',
         person,
         referral,
       })
@@ -54,7 +54,7 @@ export default class ReasonController {
       const formattedReason = req.body.reason?.trim()
 
       if (!formattedReason) {
-        req.flash('reasonError', 'Enter a reason for the referral')
+        req.flash('reasonError', 'Enter additional information')
 
         return res.redirect(referPaths.reason.show({ referralId }))
       }

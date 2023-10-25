@@ -44,7 +44,7 @@ context('Reason', () => {
     reasonPage.shouldHavePersonDetails(person)
     reasonPage.shouldContainNavigation(path)
     reasonPage.shouldContainBackLink(referPaths.show({ referralId: referral.id }))
-    reasonPage.shouldContainInformationTypeDetails()
+    reasonPage.shouldContainInstructions()
     reasonPage.shouldContainReasonTextArea()
     reasonPage.shouldContainSaveAndContinueButton()
   })
@@ -82,7 +82,7 @@ context('Reason', () => {
       reasonPageWithError.shouldHaveErrors([
         {
           field: 'reason',
-          message: 'Enter a reason for the referral',
+          message: 'Enter additional information',
         },
       ])
     })

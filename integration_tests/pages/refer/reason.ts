@@ -7,7 +7,7 @@ export default class ReasonPage extends Page {
   referral: Referral
 
   constructor(args: { person: Person; referral: Referral }) {
-    super('Add reason for referral and any additional information')
+    super('Add additional information')
 
     const { person, referral } = args
 
@@ -15,20 +15,26 @@ export default class ReasonPage extends Page {
     this.referral = referral
   }
 
-  shouldContainInformationTypeDetails() {
-    cy.get('[data-testid="information-type-details"]').then(informationTypeDetailsElement => {
-      this.shouldContainDetails(
-        'What type of information can I add?',
-        "you can provide information about why you're referring this person to this programme" +
-          'you can add supporting information that would be useful for the programme team to know' +
-          'you can add any other information that would be useful for the programme team to know',
-        informationTypeDetailsElement,
-      )
+  shouldContainInstructions() {
+    cy.get('#reason-hint .govuk-body').should(
+      'have.text',
+      'You can provide any additional information you feel will help the programme team in their assessment. This might include:',
+    )
+
+    const expectedListText = [
+      'The reason for the referral',
+      "The person's motivation to complete a programme",
+      'Their offence history and behaviour',
+      'Information to support an override',
+    ]
+
+    cy.get('.govuk-list li').each((listItemElement, listItemElementIndex) => {
+      cy.wrap(listItemElement).should('have.text', expectedListText[listItemElementIndex])
     })
   }
 
   shouldContainReasonTextArea() {
-    this.shouldContainTextArea('reason', 'Add reason for referral and any additional information')
+    this.shouldContainTextArea('reason', 'Add additional information')
   }
 
   shouldContainSaveAndContinueButton() {
