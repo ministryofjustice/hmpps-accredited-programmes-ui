@@ -6,27 +6,27 @@ import type { Referral, ReferralStatus } from '@accredited-programmes/models'
 class ReferralFactory extends Factory<Referral> {
   started() {
     return this.params({
+      additionalInformation: undefined,
       hasReviewedProgrammeHistory: false,
       oasysConfirmed: false,
-      reason: undefined,
       status: 'referral_started',
     })
   }
 
   submittable() {
     return this.params({
+      additionalInformation: faker.lorem.paragraph({ max: 5, min: 1 }),
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
-      reason: faker.lorem.paragraph({ max: 5, min: 1 }),
       status: 'referral_started',
     })
   }
 
   submitted() {
     return this.params({
+      additionalInformation: faker.lorem.paragraph({ max: 5, min: 1 }),
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
-      reason: faker.lorem.paragraph({ max: 5, min: 1 }),
       status: 'referral_submitted',
     })
   }
@@ -34,11 +34,11 @@ class ReferralFactory extends Factory<Referral> {
 
 export default ReferralFactory.define(() => ({
   id: faker.string.uuid(), // eslint-disable-next-line sort-keys
+  additionalInformation: faker.lorem.paragraph({ max: 5, min: 0 }),
   hasReviewedProgrammeHistory: faker.datatype.boolean(),
   oasysConfirmed: faker.datatype.boolean(),
   offeringId: faker.string.uuid(),
   prisonNumber: faker.string.alphanumeric({ length: 7 }),
-  reason: faker.lorem.paragraph({ max: 5, min: 0 }),
   referrerId: faker.string.numeric({ length: 6 }),
   status: faker.helpers.arrayElement([
     'awaiting_assesment',

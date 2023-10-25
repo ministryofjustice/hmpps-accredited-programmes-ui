@@ -80,9 +80,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('update', () => {
     const referralUpdate: ReferralUpdate = {
+      additionalInformation: 'Some fascinating information',
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
-      reason: 'A brilliant reason',
     }
 
     beforeEach(() => {

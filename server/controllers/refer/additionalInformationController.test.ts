@@ -2,7 +2,7 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import ReasonController from './reasonController'
+import AdditionalInformationController from './additionalInformationController'
 import { referPaths } from '../../paths'
 import type { PersonService, ReferralService } from '../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
@@ -11,7 +11,7 @@ import { FormUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
 
-describe('ReasonController', () => {
+describe('AdditionalInformationController', () => {
   const token = 'SOME_TOKEN'
 
   let request: DeepMocked<Request>
@@ -25,24 +25,24 @@ describe('ReasonController', () => {
   const person = personFactory.build()
   const referralId = 'A-REFERRAL-ID'
   const draftReferral = referralFactory.started().build({
-    id: referralId,
+    id: referralId, // eslint-disable-next-line sort-keys
+    additionalInformation: undefined,
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
-    reason: undefined,
   })
   const submittedReferral = referralFactory.submitted().build({
-    id: referralId,
+    id: referralId, // eslint-disable-next-line sort-keys
+    additionalInformation: undefined,
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
-    reason: undefined,
   })
 
-  let reasonController: ReasonController
+  let additionalInformationController: AdditionalInformationController
 
   beforeEach(() => {
     request = createMock<Request>({ params: { referralId }, user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
-    reasonController = new ReasonController(personService, referralService)
+    additionalInformationController = new AdditionalInformationController(personService, referralService)
   })
 
   afterEach(() => {
@@ -50,7 +50,7 @@ describe('ReasonController', () => {
   })
 
   describe('show', () => {
-    it('renders the reason for referral page', async () => {
+    it('renders the additional information page', async () => {
       personService.getPerson.mockResolvedValue(person)
       referralService.getReferral.mockResolvedValue(draftReferral)
 
@@ -59,23 +59,23 @@ describe('ReasonController', () => {
         response.locals.errors = emptyErrorsLocal
       })
 
-      const requestHandler = reasonController.show()
+      const requestHandler = additionalInformationController.show()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
-      expect(response.render).toHaveBeenCalledWith('referrals/reason/show', {
-        pageHeading: 'Add reason for referral and any additional information',
+      expect(response.render).toHaveBeenCalledWith('referrals/additionalInformation/show', {
+        pageHeading: 'Add additional information',
         person,
         referral: draftReferral,
       })
-      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reason'])
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['additionalInformation'])
     })
 
     describe('when the referral has been submitted', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = reasonController.show()
+        const requestHandler = additionalInformationController.show()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -87,16 +87,16 @@ describe('ReasonController', () => {
   describe('update', () => {
     it('ask the service to update the referral and redirects to the referral show action', async () => {
       referralService.getReferral.mockResolvedValue(draftReferral)
-      request.body.reason = ' Some reason\nAnother paragraph\n '
+      request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
 
-      const requestHandler = reasonController.update()
+      const requestHandler = additionalInformationController.update()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(referralService.updateReferral).toHaveBeenCalledWith(token, referralId, {
+        additionalInformation: 'Some additional information\nAnother paragraph',
         hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
         oasysConfirmed: draftReferral.oasysConfirmed,
-        reason: 'Some reason\nAnother paragraph',
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.show({ referralId }))
     })
@@ -105,7 +105,7 @@ describe('ReasonController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = reasonController.update()
+        const requestHandler = additionalInformationController.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -113,30 +113,30 @@ describe('ReasonController', () => {
       })
     })
 
-    describe('when the reason is not provided', () => {
-      it('redirects to the reason show action with an error', async () => {
+    describe('when additional information is not provided', () => {
+      it('redirects to the additional information show action with an error', async () => {
         referralService.getReferral.mockResolvedValue(draftReferral)
 
-        const requestHandler = reasonController.update()
+        const requestHandler = additionalInformationController.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId }))
-        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.additionalInformation.show({ referralId }))
+        expect(request.flash).toHaveBeenCalledWith('additionalInformationError', 'Enter additional information')
       })
     })
 
-    describe('when the provided reason is just spaces and new lines', () => {
-      it('redirects to the reason show action with an error', async () => {
+    describe('when the provided additional information is just spaces and new lines', () => {
+      it('redirects to the additional information show action with an error', async () => {
         referralService.getReferral.mockResolvedValue(draftReferral)
-        request.body.reason = ' \n \n '
+        request.body.additionalInformation = ' \n \n '
 
-        const requestHandler = reasonController.update()
+        const requestHandler = additionalInformationController.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.reason.show({ referralId }))
-        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for the referral')
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.additionalInformation.show({ referralId }))
+        expect(request.flash).toHaveBeenCalledWith('additionalInformationError', 'Enter additional information')
       })
     })
   })

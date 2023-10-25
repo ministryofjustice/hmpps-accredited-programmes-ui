@@ -294,12 +294,12 @@ export default class CourseParticipationsController {
       }
 
       const hasReviewedProgrammeHistory = req.body.hasReviewedProgrammeHistory === 'true'
-      const { oasysConfirmed, reason } = referral
+      const { oasysConfirmed, additionalInformation } = referral
 
       const referralUpdate: ReferralUpdate = {
+        additionalInformation,
         hasReviewedProgrammeHistory,
         oasysConfirmed,
-        reason,
       }
 
       await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)

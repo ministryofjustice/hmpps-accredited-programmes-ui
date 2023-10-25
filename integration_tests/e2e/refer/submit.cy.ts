@@ -124,7 +124,7 @@ context('Submitting a referral', () => {
       checkAnswersPage.shouldContainPersonSummaryList(person)
       checkAnswersPage.shouldHaveProgrammeHistory()
       checkAnswersPage.shouldHaveOasysConfirmation()
-      checkAnswersPage.shouldHaveAdditionalInformation(submittableReferral)
+      checkAnswersPage.shouldHaveAdditionalInformation()
       checkAnswersPage.shouldHaveConfirmationCheckbox()
       checkAnswersPage.shouldContainButton('Submit referral')
       checkAnswersPage.shouldContainButtonLink(

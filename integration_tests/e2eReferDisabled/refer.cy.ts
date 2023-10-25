@@ -99,11 +99,11 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
-  it("Doesn't show the reason for referral form page", () => {
+  it("Doesn't show the additional information form page", () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', startedReferral)
 
-    const path = referPaths.reason.show({ referralId: startedReferral.id })
+    const path = referPaths.additionalInformation.show({ referralId: startedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)

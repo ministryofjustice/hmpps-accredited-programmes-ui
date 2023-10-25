@@ -31,8 +31,8 @@ export default class StartReferralPage extends Page {
 
     const listItemsText = [
       "review this person's information and confirm that it's accurate",
-      "update information at the source if it's out of date or inaccurate. For example, in OASys or NOMIS",
-      'provide a reason for the referral and any supporting information',
+      "review or add this person's history of Accredited Programmes",
+      'provide any supporting information for this referral',
     ]
 
     cy.get('.govuk-list li').each((listItem, listItemIndex) => {

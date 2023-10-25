@@ -45,7 +45,7 @@ export default class ReferralUtils {
   }
 
   static isReadyForSubmission(referral: Referral): boolean {
-    return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.reason
+    return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
   }
 
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
@@ -84,9 +84,12 @@ export default class ReferralUtils {
             url: referPaths.confirmOasys.show({ referralId }),
           },
           {
-            statusTag: ReferralUtils.taskListStatusTag(referral.reason ? 'completed' : 'not started', 'reason-tag'),
+            statusTag: ReferralUtils.taskListStatusTag(
+              referral.additionalInformation ? 'completed' : 'not started',
+              'additional-information-tag',
+            ),
             text: 'Add additional information',
-            url: referPaths.reason.show({ referralId }),
+            url: referPaths.additionalInformation.show({ referralId }),
           },
         ],
       },
