@@ -295,10 +295,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findParticipationsByPerson', () => {
+    const prisonNumber = 'B1234BB'
     beforeEach(() => {
       provider.addInteraction({
-        state: `Participations exist for a person with prison number ${person.prisonNumber}`,
-        uponReceiving: `A request for person "${person.prisonNumber}"'s participations`,
+        state: `Participations exist for a person with prison number ${prisonNumber}`,
+        uponReceiving: `A request for person "${prisonNumber}"'s participations`,
         willRespondWith: {
           body: Matchers.like(courseParticipations),
           status: 200,
@@ -308,13 +309,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${token}`,
           },
           method: 'GET',
-          path: apiPaths.people.participations({ prisonNumber: person.prisonNumber }),
+          path: apiPaths.people.participations({ prisonNumber }),
         },
       })
     })
 
     it("fetches the given person's course participations", async () => {
-      const result = await courseClient.findParticipationsByPerson(person.prisonNumber)
+      const result = await courseClient.findParticipationsByPerson(prisonNumber)
 
       expect(result).toEqual(courseParticipations)
     })
