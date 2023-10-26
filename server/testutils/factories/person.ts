@@ -8,6 +8,7 @@ export default Factory.define<Person>(({ params }) => {
   const currentPrison = params.currentPrison || `${county} (HMP)`
 
   return {
+    bookingId: faker.string.numeric({ length: 10 }),
     currentPrison,
     dateOfBirth: faker.date.birthdate().toDateString(),
     ethnicity: faker.lorem.word(),

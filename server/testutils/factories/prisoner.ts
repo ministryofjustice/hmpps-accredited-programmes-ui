@@ -13,6 +13,7 @@ export default Factory.define<Prisoner>(({ params }) => {
   const day = dateOfBirth.getDate()
 
   return {
+    bookingId: faker.string.numeric({ length: 10 }),
     dateOfBirth: [year, month, day].join('-'),
     ethnicity: faker.lorem.word(),
     firstName: faker.person.firstName(),

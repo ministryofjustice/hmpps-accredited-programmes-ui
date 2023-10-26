@@ -9,6 +9,7 @@ export default class PersonUtils {
     const unavailable = 'Not entered'
 
     return {
+      bookingId: prisoner.bookingId,
       currentPrison: prisoner.prisonName,
       dateOfBirth: DateUtils.govukFormattedFullDateString(prisoner.dateOfBirth),
       ethnicity: prisoner.ethnicity || unavailable,
