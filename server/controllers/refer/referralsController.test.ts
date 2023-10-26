@@ -352,8 +352,6 @@ describe('ReferralsController', () => {
       referralService.getReferral.mockResolvedValue(submittableReferral)
       request.body.confirmation = 'true'
 
-      referralService.getReferral.mockResolvedValue(submittableReferral)
-
       request.params.referralId = referralId
       ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
 
@@ -362,7 +360,7 @@ describe('ReferralsController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(response.redirect).toHaveBeenCalledWith(referPaths.complete({ referralId }))
-      expect(referralService.updateReferralStatus).toHaveBeenCalledWith(token, referralId, 'referral_submitted')
+      expect(referralService.submitReferral).toHaveBeenCalledWith(token, referralId)
     })
 
     describe('when the body is invalid', () => {

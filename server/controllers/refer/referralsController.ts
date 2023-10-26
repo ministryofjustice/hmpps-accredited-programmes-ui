@@ -230,7 +230,7 @@ export default class ReferralsController {
         return res.redirect(referPaths.show({ referralId }))
       }
 
-      await this.referralService.updateReferralStatus(req.user.token, referralId, 'referral_submitted')
+      await this.referralService.submitReferral(req.user.token, referralId)
 
       return res.redirect(referPaths.complete({ referralId }))
     }
