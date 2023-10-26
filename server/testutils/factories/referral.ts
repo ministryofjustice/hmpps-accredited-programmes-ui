@@ -10,6 +10,7 @@ class ReferralFactory extends Factory<Referral> {
       hasReviewedProgrammeHistory: false,
       oasysConfirmed: false,
       status: 'referral_started',
+      submittedAt: undefined,
     })
   }
 
@@ -19,6 +20,7 @@ class ReferralFactory extends Factory<Referral> {
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
       status: 'referral_started',
+      submittedAt: undefined,
     })
   }
 
@@ -28,11 +30,19 @@ class ReferralFactory extends Factory<Referral> {
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
       status: 'referral_submitted',
+      submittedAt: faker.date.past().toISOString(),
     })
   }
 }
 
-export default ReferralFactory.define(() => ({
+const status = faker.helpers.arrayElement([
+  'awaiting_assesment',
+  'assessment_started',
+  'referral_started',
+  'referral_submitted',
+]) as ReferralStatus
+
+export default ReferralFactory.define(({ params }) => ({
   id: faker.string.uuid(), // eslint-disable-next-line sort-keys
   additionalInformation: faker.lorem.paragraph({ max: 5, min: 0 }),
   hasReviewedProgrammeHistory: faker.datatype.boolean(),
@@ -40,10 +50,6 @@ export default ReferralFactory.define(() => ({
   offeringId: faker.string.uuid(),
   prisonNumber: faker.string.alphanumeric({ length: 7 }),
   referrerId: faker.string.numeric({ length: 6 }),
-  status: faker.helpers.arrayElement([
-    'awaiting_assesment',
-    'assessment_started',
-    'referral_started',
-    'referral_submitted',
-  ]) as ReferralStatus,
+  status,
+  submittedAt: (params.status || status) !== 'referral_started' ? faker.date.past().toISOString() : undefined,
 }))
