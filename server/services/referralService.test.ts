@@ -61,6 +61,17 @@ describe('ReferralService', () => {
     })
   })
 
+  describe('submitReferral', () => {
+    it('asks the client to submit a referral', async () => {
+      const referral = referralFactory.submitted().build()
+
+      await service.submitReferral(token, referral.id)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(referralClient.submit).toHaveBeenCalledWith(referral.id)
+    })
+  })
+
   describe('updateReferral', () => {
     it('asks the client to update a referral', async () => {
       const referralId = 'an-ID'

@@ -19,6 +19,11 @@ export default class ReferralService {
     return referralClient.find(referralId)
   }
 
+  async submitReferral(token: Express.User['token'], referralId: Referral['id']): Promise<void> {
+    const referralClient = this.referralClientBuilder(token)
+    return referralClient.submit(referralId)
+  }
+
   async updateReferral(
     token: Express.User['token'],
     referralId: Referral['id'],
