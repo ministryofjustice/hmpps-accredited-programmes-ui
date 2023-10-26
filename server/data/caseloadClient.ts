@@ -13,7 +13,7 @@ export default class CaseloadClient {
 
   async allByCurrentUser(): Promise<Array<Caseload>> {
     return (await this.restClient.get({
-      path: prisonApiPaths.users.current.caseloads({}),
+      path: prisonApiPaths.caseloads.currentUser({}),
     })) as Array<Caseload>
   }
 }
