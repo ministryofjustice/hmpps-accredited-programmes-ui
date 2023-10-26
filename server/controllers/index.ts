@@ -3,6 +3,7 @@
 import DashboardController from './dashboardController'
 import findControllers from './find'
 import referControllers from './refer'
+import sharedControllers from './shared'
 import type { Services } from '../services'
 
 export const controllers = (services: Services) => {
@@ -12,6 +13,7 @@ export const controllers = (services: Services) => {
     dashboardController,
     ...findControllers(services),
     ...referControllers(services),
+    ...sharedControllers(services),
   }
 }
 

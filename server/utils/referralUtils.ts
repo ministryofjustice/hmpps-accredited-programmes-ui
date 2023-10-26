@@ -1,8 +1,11 @@
+import type { Request } from 'express'
+
 import { referPaths } from '../paths'
 import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithValue,
+  MojFrontendSideNavigationItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
@@ -40,6 +43,26 @@ export default class ReferralUtils {
       {
         key: { text: 'Contact email address' },
         value: { text: courseOffering.contactEmail },
+      },
+    ]
+  }
+
+  static courseOfferingSummaryListRows(
+    coursePresenter: CoursePresenter,
+    organisationName: Organisation['name'],
+  ): Array<GovukFrontendSummaryListRowWithValue> {
+    return [
+      {
+        key: { text: 'Programme name' },
+        value: { text: coursePresenter.nameAndAlternateName },
+      },
+      {
+        key: { text: 'Programme strand' },
+        value: { text: coursePresenter.audiences.map(audience => audience.value).join(', ') },
+      },
+      {
+        key: { text: 'Programme location' },
+        value: { text: organisationName },
       },
     ]
   }
@@ -105,6 +128,35 @@ export default class ReferralUtils {
         ],
       },
     ]
+  }
+
+  static viewReferralNavigationItems(
+    currentPath: Request['path'],
+    referralId: Referral['id'],
+  ): Array<MojFrontendSideNavigationItem> {
+    const navigationItems = [
+      {
+        href: referPaths.submitted.personalDetails({ referralId }),
+        text: 'Personal details',
+      },
+      {
+        href: referPaths.submitted.programmeHistory({ referralId }),
+        text: 'Programme history',
+      },
+      {
+        href: referPaths.submitted.sentenceInformation({ referralId }),
+        text: 'Sentence information',
+      },
+      {
+        href: referPaths.submitted.additionalInformation({ referralId }),
+        text: 'Additional information',
+      },
+    ]
+
+    return navigationItems.map(item => ({
+      ...item,
+      active: currentPath === item.href,
+    }))
   }
 
   private static taskListStatusTag(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {

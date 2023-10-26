@@ -1,7 +1,7 @@
 import type { AxeRules } from '@accredited-programmes/integration-tests'
 
 import { referPaths } from '../../server/paths'
-import { CourseParticipationUtils, PersonUtils } from '../../server/utils'
+import { CourseParticipationUtils, PersonUtils, ReferralUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { CourseParticipation, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
@@ -74,6 +74,15 @@ export default abstract class Page {
   shouldContainCheckbox(name: string, label: string): void {
     cy.get(`.govuk-checkboxes__input[name="${name}"]`).should('exist')
     cy.get(`.govuk-checkboxes__label[for="${name}"]`).should('contain.text', label)
+  }
+
+  shouldContainCourseOfferingSummaryList(course: CoursePresenter, organisationName: Organisation['name']) {
+    cy.get('[data-testid="course-offering-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        ReferralUtils.courseOfferingSummaryListRows(course, organisationName),
+        summaryListElement,
+      )
+    })
   }
 
   shouldContainDetails(summaryText: string, detailsText: string, detailsElement: JQuery<HTMLElement>): void {

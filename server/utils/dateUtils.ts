@@ -6,8 +6,10 @@ export default class DateUtils {
    * @param datestring A datetime string e.g. 2011-10-05T14:48:00.000Z or 2001-06-03
    * @returns A string
    * */
-  static govukFormattedFullDateString(datestring: string): string {
-    return new Date(datestring).toLocaleDateString('en-GB', {
+  static govukFormattedFullDateString(datestring?: string): string {
+    const date = datestring ? new Date(datestring) : new Date()
+
+    return new Date(date).toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',

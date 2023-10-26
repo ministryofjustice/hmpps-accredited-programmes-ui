@@ -1,5 +1,6 @@
 import CourseUtils from './courseUtils'
 import ReferralUtils from './referralUtils'
+import { referPaths } from '../paths'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -54,6 +55,38 @@ describe('ReferralUtils', () => {
         {
           key: { text: 'Contact email address' },
           value: { text: 'nobody-hmp-what@digital.justice.gov.uk' },
+        },
+      ])
+    })
+  })
+
+  describe('courseOfferingSummaryListRows', () => {
+    it('formats course offering information in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
+      const course = courseFactory.build({
+        alternateName: 'TC+',
+        audiences: [
+          {
+            id: '1',
+            value: 'General offence',
+          },
+        ],
+        name: 'Test Course',
+      })
+      const coursePresenter = CourseUtils.presentCourse(course)
+      const organisation = organisationFactory.build({ name: 'HMP Hewell' })
+
+      expect(ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name)).toEqual([
+        {
+          key: { text: 'Programme name' },
+          value: { text: 'Test Course (TC+)' },
+        },
+        {
+          key: { text: 'Programme strand' },
+          value: { text: 'General offence' },
+        },
+        {
+          key: { text: 'Programme location' },
+          value: { text: 'HMP Hewell' },
         },
       ])
     })
@@ -197,6 +230,36 @@ describe('ReferralUtils', () => {
 
       expect(checkAnswersTask.url).toEqual(`/refer/new/referrals/${referralWithOasysConfirmed.id}/check-answers`)
       expect(checkAnswersTask.statusTag.text).toEqual('not started')
+    })
+  })
+
+  describe('viewReferralNavigationItems', () => {
+    it('returns navigation items for the view referral pages and sets the requested page as active', () => {
+      const mockReferralId = 'mock-referral-id'
+      const currentRequestPath = referPaths.submitted.personalDetails({ referralId: mockReferralId })
+
+      expect(ReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
+        {
+          active: true,
+          href: referPaths.submitted.personalDetails({ referralId: mockReferralId }),
+          text: 'Personal details',
+        },
+        {
+          active: false,
+          href: referPaths.submitted.programmeHistory({ referralId: mockReferralId }),
+          text: 'Programme history',
+        },
+        {
+          active: false,
+          href: referPaths.submitted.sentenceInformation({ referralId: mockReferralId }),
+          text: 'Sentence information',
+        },
+        {
+          active: false,
+          href: referPaths.submitted.additionalInformation({ referralId: mockReferralId }),
+          text: 'Additional information',
+        },
+      ])
     })
   })
 })

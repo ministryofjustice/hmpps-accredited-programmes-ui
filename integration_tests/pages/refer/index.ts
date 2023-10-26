@@ -10,6 +10,7 @@ import ProgrammeHistoryDetailsPage from './programmeHistoryDetails'
 import SelectProgrammePage from './selectProgramme'
 import ShowPersonPage from './showPerson'
 import StartReferralPage from './startReferral'
+import SubmittedPersonalDetailsPage from './submittedPersonalDetails'
 import TaskListPage from './taskList'
 
 export {
@@ -25,5 +26,6 @@ export {
   SelectProgrammePage,
   ShowPersonPage,
   StartReferralPage,
+  SubmittedPersonalDetailsPage,
   TaskListPage,
 }

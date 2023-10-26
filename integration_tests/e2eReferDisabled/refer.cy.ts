@@ -198,4 +198,22 @@ context('Refer', () => {
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
     notFoundPage.shouldContain404H2()
   })
+
+  it("Doesn't show the view submitted personal details page for a referral", () => {
+    const referral = referralFactory.submitted().build({
+      offeringId: courseOffering.id,
+      prisonNumber: prisoner.prisonerNumber,
+    })
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', referral)
+
+    const path = referPaths.submitted.personalDetails({ referralId: referral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
 })
