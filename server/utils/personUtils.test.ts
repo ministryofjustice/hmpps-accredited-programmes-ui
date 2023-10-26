@@ -6,6 +6,7 @@ describe('PersonUtils', () => {
     describe('when all fields are present on a Prison Offender Search "Prisoner"', () => {
       it('returns a "Person" with those fields', () => {
         const prisoner = prisonerFactory.build({
+          bookingId: '1234567890',
           dateOfBirth: '1971-07-05',
           ethnicity: 'White',
           firstName: 'Del',
@@ -17,6 +18,7 @@ describe('PersonUtils', () => {
         })
 
         expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
+          bookingId: '1234567890',
           currentPrison: 'HMP Hewell',
           dateOfBirth: '5 July 1971',
           ethnicity: 'White',
@@ -40,6 +42,7 @@ describe('PersonUtils', () => {
     describe('when fields are missing on a Prison Offender Search "Prisoner"', () => {
       it('returns a "Person" with those "Not entered" for those fields', () => {
         const prisoner = prisonerFactory.build({
+          bookingId: '1234567890',
           dateOfBirth: '1971-07-05',
           ethnicity: undefined,
           firstName: 'Del',
@@ -51,6 +54,7 @@ describe('PersonUtils', () => {
         })
 
         expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
+          bookingId: '1234567890',
           currentPrison: 'HMP Hewell',
           dateOfBirth: '5 July 1971',
           ethnicity: 'Not entered',
