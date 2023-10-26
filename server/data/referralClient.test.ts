@@ -80,6 +80,29 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('submit', () => {
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'Referral can be submitted',
+        uponReceiving: 'A request to submit a referral',
+        willRespondWith: {
+          status: 204,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          method: 'POST',
+          path: apiPaths.referrals.submit({ referralId: referral.id }),
+        },
+      })
+    })
+
+    it('submits a referral', async () => {
+      await referralClient.submit(referral.id)
+    })
+  })
+
   describe('update', () => {
     const referralUpdate: ReferralUpdate = {
       additionalInformation: 'Some fascinating information',
