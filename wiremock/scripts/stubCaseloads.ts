@@ -7,7 +7,7 @@ import { caseloads } from '../stubs'
 stubFor({
   request: {
     method: 'GET',
-    url: prisonApiPaths.users.current.caseloads({}),
+    url: prisonApiPaths.caseloads.currentUser({}),
   },
   response: {
     headers: {

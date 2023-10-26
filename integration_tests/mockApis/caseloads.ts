@@ -10,7 +10,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: prisonApiPaths.users.current.caseloads({}),
+        url: prisonApiPaths.caseloads.currentUser({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
@@ -23,7 +23,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: prisonApiPaths.users.current.caseloads({}),
+        url: prisonApiPaths.caseloads.currentUser({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
