@@ -161,7 +161,7 @@ context('Submitting a referral', () => {
 
     it('redirects to the referral complete page when the user confirms the details', () => {
       cy.task('stubReferral', submittableReferral)
-      cy.task('stubUpdateReferralStatus', submittableReferral.id)
+      cy.task('stubSubmitReferral', submittableReferral.id)
 
       const path = referPaths.checkAnswers({ referralId: submittableReferral.id })
       cy.visit(path)
@@ -175,7 +175,7 @@ context('Submitting a referral', () => {
         referral: submittableReferral,
         username: auth.mockedUser.username,
       })
-      checkAnswersPage.confirmDetailsAndSubmitReferral(submittableReferral)
+      checkAnswersPage.confirmDetailsAndSubmitReferral()
 
       const completePage = Page.verifyOnPage(CompletePage)
       completePage.shouldContainPanel('Referral complete')

@@ -40,9 +40,23 @@ export default class CheckAnswersPage extends Page {
     this.username = username
   }
 
-  confirmDetailsAndSubmitReferral(referral: Referral) {
+  confirmDetailsAndSubmitReferral() {
+    // Need to stub the call to get the referral twice because
+    // the first stub is for the submit method and
+    // the second stub is for the complete page
+    cy.task('stubReferralWithScenario', {
+      newScenarioState: 'Submitted',
+      referral: this.referral,
+      requiredScenarioState: 'Started',
+      scenarioName: 'Submitting a referral',
+    })
+    cy.task('stubReferralWithScenario', {
+      referral: { ...this.referral, status: 'referral_submitted' },
+      requiredScenarioState: 'Submitted',
+      scenarioName: 'Submitting a referral',
+    })
+
     cy.get('[name="confirmation"]').check()
-    cy.task('stubReferral', { ...referral, status: 'referral_submitted' })
     this.shouldContainButton('Submit referral').click()
   }
 
