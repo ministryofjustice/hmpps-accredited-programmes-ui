@@ -5,7 +5,13 @@ import type { NextFunction, Request, Response } from 'express'
 import SubmittedReferralsController from './submittedReferralsController'
 import { referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { courseFactory, organisationFactory, personFactory, referralFactory } from '../../testutils/factories'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  organisationFactory,
+  personFactory,
+  referralFactory,
+} from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils } from '../../utils'
 
@@ -22,6 +28,7 @@ describe('SubmittedReferralsController', () => {
   const referralService = createMock<ReferralService>({})
 
   const course = courseFactory.build()
+  const courseOffering = courseOfferingFactory.build()
   const organisation = organisationFactory.build()
   const person = personFactory.build()
   const referral = referralFactory.submitted().build({ prisonNumber: person.prisonNumber })
@@ -33,6 +40,7 @@ describe('SubmittedReferralsController', () => {
     response = Helpers.createMockResponseWithCaseloads()
 
     courseService.getCourseByOffering.mockResolvedValue(course)
+    courseService.getOffering.mockResolvedValue(courseOffering)
     organisationService.getOrganisation.mockResolvedValue(organisation)
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
