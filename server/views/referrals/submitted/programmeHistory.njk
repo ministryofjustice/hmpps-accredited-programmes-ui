@@ -1,0 +1,14 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "./partials/layout.njk" %}
+
+{% block submittedReferralContent %}
+  {% if participationSummaryListsOptions.length %}
+    {% for summaryListOptions in participationSummaryListsOptions %}
+      {{ govukSummaryList(summaryListOptions) }}
+    {% endfor %}
+  {% else %}
+    <p class="govuk-body">There is no record of Accredited Programmes for {{ person.name }}.</p>
+  {% endif %}
+{% endblock submittedReferralContent %}

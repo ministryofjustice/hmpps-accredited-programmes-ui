@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
+import { CourseParticipationUtils, CourseUtils, DateUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithValue, MojFrontendSideNavigationItem } from '@accredited-programmes/ui'
 
@@ -23,6 +23,36 @@ export default class SubmittedReferralsController {
         ...sharedPageData,
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         personSummaryListRows: PersonUtils.summaryListRows(sharedPageData.person),
+      })
+    }
+  }
+
+  programmeHistory(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const sortedCourseParticipations = (
+        await this.courseService.getParticipationsByPerson(req.user.token, sharedPageData.person.prisonNumber)
+      ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
+
+      const courseParticipationsPresenter = await Promise.all(
+        sortedCourseParticipations.map(participation =>
+          this.courseService.presentCourseParticipation(req.user.token, participation),
+        ),
+      )
+
+      const participationSummaryListsOptions = courseParticipationsPresenter.map(participation =>
+        CourseParticipationUtils.summaryListOptions(participation, sharedPageData.referral.id, {
+          change: false,
+          remove: false,
+        }),
+      )
+
+      res.render('referrals/submitted/programmeHistory', {
+        ...sharedPageData,
+        participationSummaryListsOptions,
       })
     }
   }

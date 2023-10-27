@@ -58,6 +58,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(referPaths.submit.pattern, referralsController.submit())
 
   get(referPaths.submitted.personalDetails.pattern, submittedReferralsController.personalDetails())
+  get(referPaths.submitted.programmeHistory.pattern, submittedReferralsController.programmeHistory())
 
   return router
 }

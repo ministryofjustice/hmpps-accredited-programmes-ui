@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import { when } from 'jest-when'
 
 import SubmittedReferralsController from './submittedReferralsController'
 import { referPaths } from '../../paths'
@@ -8,12 +9,17 @@ import type { CourseService, OrganisationService, PersonService, ReferralService
 import {
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   organisationFactory,
   personFactory,
   referralFactory,
+  userFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseUtils, DateUtils, PersonUtils, ReferralUtils } from '../../utils'
+import { CourseParticipationUtils, CourseUtils, DateUtils, PersonUtils, ReferralUtils, StringUtils } from '../../utils'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+
+jest.mock('../../utils/courseParticipationUtils')
 
 describe('SubmittedReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -73,6 +79,63 @@ describe('SubmittedReferralsController', () => {
         pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
+        referral,
+      })
+    })
+  })
+
+  describe('programmeHistory', () => {
+    it('renders the programme history template with the correct response locals', async () => {
+      request.path = referPaths.submitted.programmeHistory({ referralId: referral.id })
+
+      const addedByUser = userFactory.build()
+
+      const earliestCourseParticipation = courseParticipationFactory.build({
+        addedBy: addedByUser.username,
+        createdAt: '2022-01-01T12:00:00.000Z',
+      })
+      const earliestCourseParticipationPresenter: CourseParticipationPresenter = {
+        ...earliestCourseParticipation,
+        addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+      }
+      const latestCourseParticipation = courseParticipationFactory.build({
+        addedBy: addedByUser.username,
+        createdAt: '2023-01-01T12:00:00.000Z',
+      })
+      courseService.getParticipationsByPerson.mockResolvedValue([
+        latestCourseParticipation,
+        earliestCourseParticipation,
+      ])
+      const latestCourseParticipationPresenter: CourseParticipationPresenter = {
+        ...latestCourseParticipation,
+        addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+      }
+
+      when(courseService.presentCourseParticipation)
+        .calledWith(token, earliestCourseParticipation)
+        .mockResolvedValue(earliestCourseParticipationPresenter)
+      when(courseService.presentCourseParticipation)
+        .calledWith(token, latestCourseParticipation)
+        .mockResolvedValue(latestCourseParticipationPresenter)
+
+      const summaryListOptions = 'summary list options'
+      ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
+        (_courseParticipation, _referralId, _withActions = { change: true, remove: true }) => {
+          return summaryListOptions
+        },
+      )
+
+      const requestHandler = submittedReferralsController.programmeHistory()
+      await requestHandler(request, response, next)
+
+      const coursePresenter = CourseUtils.presentCourse(course)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/submitted/programmeHistory', {
+        courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
+        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+        participationSummaryListsOptions: [summaryListOptions, summaryListOptions],
+        person,
         referral,
       })
     })
