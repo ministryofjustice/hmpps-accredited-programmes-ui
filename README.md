@@ -118,3 +118,33 @@ run either of the following:
 ```bash
   npm run test:integration:refer-disabled:ui
 ```
+
+## Using Postman
+
+We have a Postman team for interacting with APIs - please ask to be added to it.
+
+You'll need to populate secret environment variables in the `Environments`
+section of Postman.
+
+**Ensure you put these in the "Current value" box, rather than "Initial value"
+or they will be shared!**
+
+### Local
+
+These secrets can be copied across from `.env.example` in this repo.
+
+### Dev & Dev (API credentials)
+
+You can use project-specific credentials for interacting with dev APIs. You'll
+need to fetch the secrets for this section from Kubernetes.
+
+See instructions in the [Manage Infrastructure
+docs](./doc/how-to/manage-infrastructure.md#viewing-an-individual-set-of-secrets)
+for accessing these secrets.
+
+### Preprod
+
+You'll need to have a personal client created for you by the HMPPS Auth, Audit
+and Registers team to view preprod data. This will require you to have Security
+Clearance and be on the MOJ VPN. Ask for this in the
+`#hmpps-auth-audit-registers` Slack channel.

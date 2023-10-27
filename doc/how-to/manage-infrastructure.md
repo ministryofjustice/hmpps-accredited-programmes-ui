@@ -92,6 +92,26 @@ kubectl --namespace hmpps-accredited-programmes-<env> edit secret <secret set na
 
 Consider a [rolling restart](#rolling-restart) to apply this change.
 
+#### Viewing an individual set of secrets
+
+You can an individual set of secrets with the following command.
+
+```bash
+kubectl -n hmpps-accredited-programmes-<env> get secret <secret set> -o yaml
+```
+
+e.g.
+
+```bash
+kubectl -n hmpps-accredited-programmes-dev get secret hmpps-accredited-programmes-ui -o yaml
+```
+
+This will output the base64 encoded secrets in that set, which you can then decode and view with:
+
+```bash
+echo 'MY_BASE_64_ENCODED_STRING' | base64 -d
+```
+
 ### Rolling restart
 
 Restart an individual service without downtime. Each service will have multiple
