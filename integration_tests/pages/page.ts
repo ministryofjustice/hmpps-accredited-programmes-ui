@@ -209,6 +209,27 @@ export default abstract class Page {
     })
   }
 
+  shouldContainSubmittedReferralSideNavigation(currentPath: string, referralId: Referral['id']): void {
+    const navigationItems = ReferralUtils.viewReferralNavigationItems('/', referralId)
+
+    cy.get('.moj-side-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
+      const { href, text } = navigationItems[navigationItemElementIndex]
+
+      const { actual, expected } = Helpers.parseHtml(navigationItemElement, text)
+      expect(actual).to.equal(expected)
+
+      cy.wrap(navigationItemElement).within(() => {
+        cy.get('a').should('have.attr', 'href', href)
+
+        if (currentPath === href) {
+          cy.get('a').should('have.attr', 'aria-current', 'location')
+        } else {
+          cy.get('a').should('not.have.attr', 'aria-current', 'location')
+        }
+      })
+    })
+  }
+
   shouldContainSummaryCard(
     courseName: CourseParticipation['courseName'],
     actions: Array<GovukFrontendSummaryListCardActionsItemWithText>,

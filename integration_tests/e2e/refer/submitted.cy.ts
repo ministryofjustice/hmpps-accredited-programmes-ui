@@ -66,7 +66,7 @@ context('Viewing a submitted referral', () => {
       submittedReferralPersonalDetailsPage.shouldContainNavigation(path)
       submittedReferralPersonalDetailsPage.shouldContainBackLink('#')
       submittedReferralPersonalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      submittedReferralPersonalDetailsPage.shouldContainSideNavigation(path)
+      submittedReferralPersonalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       submittedReferralPersonalDetailsPage.shouldContainImportedFromText()
       submittedReferralPersonalDetailsPage.shouldContainPersonSummaryList(person)
     })
