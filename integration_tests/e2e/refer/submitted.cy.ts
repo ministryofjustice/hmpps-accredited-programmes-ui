@@ -59,8 +59,6 @@ context('Viewing a submitted referral', () => {
 
       const submittedReferralPersonalDetailsPage = Page.verifyOnPage(SubmittedReferralPersonalDetailsPage, {
         course,
-        organisation,
-        referral,
       })
       submittedReferralPersonalDetailsPage.shouldHavePersonDetails(person)
       submittedReferralPersonalDetailsPage.shouldContainNavigation(path)

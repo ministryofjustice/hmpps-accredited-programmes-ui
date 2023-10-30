@@ -1,24 +1,13 @@
 import { CourseUtils, DateUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course, Organisation, Referral } from '@accredited-programmes/models'
-import type { CoursePresenter } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes/models'
 
 export default class SubmittedReferralPersonalDetailsPage extends Page {
-  course: CoursePresenter
-
-  organisation: Organisation
-
-  referral: Referral
-
-  constructor(args: { course: Course; organisation: Organisation; referral: Referral }) {
-    const { course, organisation, referral } = args
+  constructor(args: { course: Course }) {
+    const { course } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
     super(`Referral to ${coursePresenter.nameAndAlternateName}`)
-
-    this.course = coursePresenter
-    this.organisation = organisation
-    this.referral = referral
   }
 
   shouldContainImportedFromText(): void {
