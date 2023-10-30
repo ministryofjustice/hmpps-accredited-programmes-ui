@@ -36,6 +36,19 @@ export default class CourseService {
     return courseClient.destroyParticipation(courseParticipationId)
   }
 
+  async getAndPresentParticipationsByPerson(
+    token: Express.User['token'],
+    prisonNumber: Person['prisonNumber'],
+  ): Promise<Array<CourseParticipationPresenter>> {
+    const sortedCourseParticipations = (await this.getParticipationsByPerson(token, prisonNumber)).sort(
+      (participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt),
+    )
+
+    return Promise.all(
+      sortedCourseParticipations.map(participation => this.presentCourseParticipation(token, participation)),
+    )
+  }
+
   async getCourse(token: Express.User['token'], courseId: Course['id']): Promise<Course> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.find(courseId)

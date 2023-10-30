@@ -2,7 +2,6 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
-import { when } from 'jest-when'
 
 import ReferralsController from './referralsController'
 import { referPaths } from '../../paths'
@@ -239,32 +238,25 @@ describe('ReferralsController', () => {
 
       const addedByUser = userFactory.build()
 
-      const earliestCourseParticipation = courseParticipationFactory.build({
-        addedBy: addedByUser.username,
-        createdAt: '2022-01-01T12:00:00.000Z',
-      })
       const earliestCourseParticipationPresenter: CourseParticipationPresenter = {
-        ...earliestCourseParticipation,
+        ...courseParticipationFactory.build({
+          addedBy: addedByUser.username,
+          createdAt: '2022-01-01T12:00:00.000Z',
+        }),
         addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
       }
-      const latestCourseParticipation = courseParticipationFactory.build({
-        addedBy: addedByUser.username,
-        createdAt: '2023-01-01T12:00:00.000Z',
-      })
-      courseService.getParticipationsByPerson.mockResolvedValue([
-        latestCourseParticipation,
-        earliestCourseParticipation,
-      ])
+
       const latestCourseParticipationPresenter: CourseParticipationPresenter = {
-        ...latestCourseParticipation,
+        ...courseParticipationFactory.build({
+          addedBy: addedByUser.username,
+          createdAt: '2023-01-01T12:00:00.000Z',
+        }),
         addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
       }
-      when(courseService.presentCourseParticipation)
-        .calledWith(token, earliestCourseParticipation)
-        .mockResolvedValue(earliestCourseParticipationPresenter)
-      when(courseService.presentCourseParticipation)
-        .calledWith(token, latestCourseParticipation)
-        .mockResolvedValue(latestCourseParticipationPresenter)
+
+      const courseParticipationPresenters = [earliestCourseParticipationPresenter, latestCourseParticipationPresenter]
+
+      courseService.getAndPresentParticipationsByPerson.mockResolvedValue(courseParticipationPresenters)
 
       const summaryListOptions = 'summary list options'
       ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(

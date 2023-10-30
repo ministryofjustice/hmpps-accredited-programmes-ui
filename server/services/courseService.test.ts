@@ -13,6 +13,7 @@ import {
   personFactory,
   userFactory,
 } from '../testutils/factories'
+import { StringUtils } from '../utils'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/courseClient')
@@ -73,6 +74,40 @@ describe('CourseService', () => {
 
       expect(courseClientBuilder).toHaveBeenCalledWith(token)
       expect(courseClient.findCourseNames).toHaveBeenCalled()
+    })
+  })
+
+  describe('getAndPresentCourseParticipationsByPrisonNumber', () => {
+    it('fetches all Course Participations for a `prisonNumber`, sorts them by the date created, and presents them with their creators', async () => {
+      const person = personFactory.build()
+      const addedByUser = userFactory.build({ name: 'john smith' })
+
+      const earliestCourseParticipation = courseParticipationFactory.build({
+        addedBy: addedByUser.username,
+        createdAt: '2022-01-01T12:00:00.000Z',
+        prisonNumber: person.prisonNumber,
+      })
+      const latestCourseParticipation = courseParticipationFactory.build({
+        addedBy: addedByUser.username,
+        createdAt: '2023-01-01T12:00:00.000Z',
+        prisonNumber: person.prisonNumber,
+      })
+      courseClient.findParticipationsByPerson.mockResolvedValue([
+        latestCourseParticipation,
+        earliestCourseParticipation,
+      ])
+
+      userService.getUserFromUsername.mockResolvedValue(addedByUser)
+
+      const result = await service.getAndPresentParticipationsByPerson(token, person.prisonNumber)
+
+      expect(result).toEqual([
+        { ...earliestCourseParticipation, addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name) },
+        {
+          ...latestCourseParticipation,
+          addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+        },
+      ])
     })
   })
 

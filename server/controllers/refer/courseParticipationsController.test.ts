@@ -1,7 +1,6 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import { when } from 'jest-when'
 
 import CourseParticipationsController from './courseParticipationsController'
 import { referPaths } from '../../paths'
@@ -318,36 +317,26 @@ describe('CourseParticipationsController', () => {
 
   describe('index', () => {
     const addedByUser = userFactory.build()
-    const earliestCourseParticipation = courseParticipationFactory.build({
-      addedBy: addedByUser.username,
-      createdAt: '2022-01-01T12:00:00.000Z',
-    })
     const earliestCourseParticipationPresenter: CourseParticipationPresenter = {
-      ...earliestCourseParticipation,
+      ...courseParticipationFactory.build({
+        createdAt: '2022-01-01T12:00:00.000Z',
+      }),
       addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
     }
-    const latestCourseParticipation = courseParticipationFactory.build({
-      addedBy: addedByUser.username,
-      createdAt: '2023-01-01T12:00:00.000Z',
-    })
     const latestCourseParticipationPresenter: CourseParticipationPresenter = {
-      ...latestCourseParticipation,
+      ...courseParticipationFactory.build({
+        createdAt: '2023-01-01T12:00:00.000Z',
+      }),
       addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
     }
     const course = courseFactory.build()
 
     beforeEach(() => {
       personService.getPerson.mockResolvedValue(person)
-      courseService.getParticipationsByPerson.mockResolvedValue([
-        latestCourseParticipation,
-        earliestCourseParticipation,
+      courseService.getAndPresentParticipationsByPerson.mockResolvedValue([
+        earliestCourseParticipationPresenter,
+        latestCourseParticipationPresenter,
       ])
-      when(courseService.presentCourseParticipation)
-        .calledWith(token, latestCourseParticipation)
-        .mockResolvedValue(latestCourseParticipationPresenter)
-      when(courseService.presentCourseParticipation)
-        .calledWith(token, earliestCourseParticipation)
-        .mockResolvedValue(earliestCourseParticipationPresenter)
       courseService.getCourse.mockResolvedValue(course)
       ;(request.flash as jest.Mock).mockImplementation(() => [])
     })
