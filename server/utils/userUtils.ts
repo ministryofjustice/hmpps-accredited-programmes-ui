@@ -1,4 +1,4 @@
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 
 export default class UserUtils {
   static getUserRolesFromToken(token: Express.User['token']): Array<string> | undefined {
