@@ -18,10 +18,10 @@ if [ "$MOCK_API" = true ]; then
   npx ts-node --transpile-only ./wiremock/scripts/stubApis.ts > /dev/null
   npx ts-node --transpile-only ./wiremock/scripts/stubCaseloads.ts > /dev/null
   npx ts-node --transpile-only ./wiremock/scripts/stubPrisoners.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubSentenceAndOffenceDetails.ts > /dev/null
 
 else
   docker compose up -d
-
 
   npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts > /dev/null
 
@@ -31,4 +31,6 @@ else
   echo "==> Stubbing Prisoner Offender Search endpoints..."
   npx ts-node --transpile-only ./wiremock/scripts/stubPrisoners.ts > /dev/null
 
+  echo "==> Stubbing Prison API sentence information endpoints..."
+  npx ts-node --transpile-only ./wiremock/scripts/stubSentenceAndOffenceDetails.ts > /dev/null
 fi
