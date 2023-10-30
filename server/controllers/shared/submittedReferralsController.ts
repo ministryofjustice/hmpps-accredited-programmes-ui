@@ -1,7 +1,13 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
+import type {
+  CourseService,
+  OrganisationService,
+  PersonService,
+  ReferralService,
+  SentenceInformationService,
+} from '../../services'
+import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils, TypeUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithValue, MojFrontendSideNavigationItem } from '@accredited-programmes/ui'
 
@@ -11,6 +17,7 @@ export default class SubmittedReferralsController {
     private readonly organisationService: OrganisationService,
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
+    private readonly sentenceInformationService: SentenceInformationService,
   ) {}
 
   personalDetails(): TypedRequestHandler<Request, Response> {
@@ -23,6 +30,25 @@ export default class SubmittedReferralsController {
         ...sharedPageData,
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         personSummaryListRows: PersonUtils.summaryListRows(sharedPageData.person),
+      })
+    }
+  }
+
+  sentenceInformation(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const sentenceAndOffenceDetails = await this.sentenceInformationService.getSentenceAndOffenceDetails(
+        req.user.token,
+        sharedPageData.person.bookingId,
+      )
+
+      res.render('referrals/submitted/sentenceInformation', {
+        ...sharedPageData,
+        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(sentenceAndOffenceDetails),
+        importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
       })
     }
   }

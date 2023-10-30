@@ -4,16 +4,23 @@ import type { NextFunction, Request, Response } from 'express'
 
 import SubmittedReferralsController from './submittedReferralsController'
 import { referPaths } from '../../paths'
-import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
+import type {
+  CourseService,
+  OrganisationService,
+  PersonService,
+  ReferralService,
+  SentenceInformationService,
+} from '../../services'
 import {
   courseFactory,
   courseOfferingFactory,
   organisationFactory,
   personFactory,
   referralFactory,
+  sentenceAndOffenceDetailsFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseUtils, DateUtils, PersonUtils, ReferralUtils } from '../../utils'
+import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
 
 describe('SubmittedReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -26,14 +33,24 @@ describe('SubmittedReferralsController', () => {
   const organisationService = createMock<OrganisationService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
+  const sentenceInformationService = createMock<SentenceInformationService>({})
 
   const course = courseFactory.build()
+  const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
   const person = personFactory.build()
   const referral = referralFactory
     .submitted()
     .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+  const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+
+  const sharedPageData = {
+    courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
+    pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+    person,
+    referral,
+  }
 
   let submittedReferralsController: SubmittedReferralsController
 
@@ -52,6 +69,7 @@ describe('SubmittedReferralsController', () => {
       organisationService,
       personService,
       referralService,
+      sentenceInformationService,
     )
   })
 
@@ -66,16 +84,29 @@ describe('SubmittedReferralsController', () => {
       const requestHandler = submittedReferralsController.personalDetails()
       await requestHandler(request, response, next)
 
-      const coursePresenter = CourseUtils.presentCourse(course)
-
       expect(response.render).toHaveBeenCalledWith('referrals/submitted/personalDetails', {
-        courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
+        ...sharedPageData,
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-        pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
-        person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
-        referral,
+      })
+    })
+  })
+
+  describe('sentenceInformation', () => {
+    it('renders the sentence information template with the correct response locals', async () => {
+      sentenceInformationService.getSentenceAndOffenceDetails.mockResolvedValue(sentenceAndOffenceDetails)
+
+      request.path = referPaths.submitted.sentenceInformation({ referralId: referral.id })
+
+      const requestHandler = submittedReferralsController.sentenceInformation()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/submitted/sentenceInformation', {
+        ...sharedPageData,
+        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(sentenceAndOffenceDetails),
+        importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
       })
     })
   })

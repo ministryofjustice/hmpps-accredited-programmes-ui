@@ -1,0 +1,26 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "./partials/layout.njk" %}
+
+{% block submittedReferralContent %}
+  {{ govukInsetText({
+    classes: "govuk-!-margin-top-0",
+    text: importedFromText,
+    attributes: {
+      "data-testid": "imported-from-text"
+    }
+  }) }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Sentence details"
+      },
+      attributes: {
+        "data-testid": "sentence-details-summary-card"
+      }
+    },
+    rows: detailsSummaryListRows
+  }) }}
+{% endblock submittedReferralContent %}
