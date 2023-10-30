@@ -22,6 +22,7 @@ import PrisonerClient from './prisonerClient'
 import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
 import ReferralClient from './referralClient'
+import SentenceInformationClient from './sentenceInformationClient'
 import TokenStore from './tokenStore'
 import type { TokenVerifier } from './tokenVerification'
 import verifyToken from './tokenVerification'
@@ -41,6 +42,8 @@ const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: Express
   new PrisonerClient(token)
 const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: Express.User['token']) =>
   new ReferralClient(token)
+const sentenceInformationClientBuilder: RestClientBuilder<SentenceInformationClient> = (token: Express.User['token']) =>
+  new SentenceInformationClient(token)
 
 export {
   CaseloadClient,
@@ -50,6 +53,7 @@ export {
   PrisonClient,
   PrisonerClient,
   ReferralClient,
+  SentenceInformationClient,
   TokenStore,
   caseloadClientBuilder,
   courseClientBuilder,
@@ -59,6 +63,7 @@ export {
   prisonClientBuilder,
   prisonerClientBuilder,
   referralClientBuilder,
+  sentenceInformationClientBuilder,
   serviceCheckFactory,
   verifyToken,
 }

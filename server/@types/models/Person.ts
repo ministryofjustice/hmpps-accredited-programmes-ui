@@ -1,4 +1,5 @@
 export type Person = {
+  bookingId: string
   currentPrison: string
   dateOfBirth: string
   ethnicity: string

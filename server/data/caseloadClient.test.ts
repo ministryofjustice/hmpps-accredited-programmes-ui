@@ -31,7 +31,7 @@ describe('caseloadClient', () => {
 
     it('fetches all Caseloads for the logged in user', async () => {
       fakePrisonApi
-        .get(prisonApiPaths.users.current.caseloads({}))
+        .get(prisonApiPaths.caseloads.currentUser({}))
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, caseloads)
 
