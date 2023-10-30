@@ -12,7 +12,7 @@ const personPath = peoplePathBase.path(':prisonNumber')
 
 const referBasePath = path('/refer')
 
-const draftReferralsPath = referBasePath.path('/new/referrals')
+const draftReferralsPath = referBasePath.path('new/referrals')
 const showDraftReferralPath = draftReferralsPath.path(':referralId')
 const referralPersonPath = showDraftReferralPath.path('person')
 const programmeHistoryPath = showDraftReferralPath.path('programme-history')
