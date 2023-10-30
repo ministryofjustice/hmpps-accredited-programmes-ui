@@ -59,6 +59,7 @@ context('Viewing a submitted referral', () => {
 
       const submittedReferralPersonalDetailsPage = Page.verifyOnPage(SubmittedReferralPersonalDetailsPage, {
         course,
+        person,
       })
       submittedReferralPersonalDetailsPage.shouldHavePersonDetails(person)
       submittedReferralPersonalDetailsPage.shouldContainNavigation(path)
@@ -66,7 +67,7 @@ context('Viewing a submitted referral', () => {
       submittedReferralPersonalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       submittedReferralPersonalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       submittedReferralPersonalDetailsPage.shouldContainImportedFromText()
-      submittedReferralPersonalDetailsPage.shouldContainPersonSummaryList(person)
+      submittedReferralPersonalDetailsPage.shouldContainPersonalDetailsSummaryCard()
     })
   })
 })
