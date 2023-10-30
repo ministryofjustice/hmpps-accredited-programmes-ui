@@ -6,6 +6,7 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  sentenceAndOffenceDetailsFactory,
 } from '../../server/testutils/factories'
 import NotFoundPage from '../pages/notFound'
 import Page from '../pages/page'
@@ -18,6 +19,10 @@ context('Refer', () => {
   const startedReferral = referralFactory
     .started()
     .build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
+  const submittedReferral = referralFactory.submitted().build({
+    offeringId: courseOffering.id,
+    prisonNumber: prisoner.prisonerNumber,
+  })
   const courseParticipation = courseParticipationFactory.build({
     courseName: course.name,
     prisonNumber: prisoner.prisonerNumber,
@@ -189,28 +194,39 @@ context('Refer', () => {
   })
 
   it("Doesn't show the complete page for a referral", () => {
-    const referral = referralFactory.submitted().build()
-    cy.task('stubReferral', referral)
+    cy.task('stubReferral', submittedReferral)
 
-    const path = referPaths.complete({ referralId: referral.id })
+    const path = referPaths.complete({ referralId: submittedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
     notFoundPage.shouldContain404H2()
   })
 
-  it("Doesn't show the view submitted personal details page for a referral", () => {
-    const referral = referralFactory.submitted().build({
-      offeringId: courseOffering.id,
-      prisonNumber: prisoner.prisonerNumber,
-    })
+  it("Doesn't show the personal details page for a submitted referral", () => {
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
     cy.task('stubPrisoner', prisoner)
-    cy.task('stubReferral', referral)
+    cy.task('stubReferral', submittedReferral)
 
-    const path = referPaths.submitted.personalDetails({ referralId: referral.id })
+    const path = referPaths.submitted.personalDetails({ referralId: submittedReferral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
+  it("Doesn't show the sentence information page for a submitted referral", () => {
+    const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', submittedReferral)
+    cy.task('stubSentenceAndOffenceDetails', { bookingId: prisoner.bookingId, sentenceAndOffenceDetails })
+
+    const path = referPaths.submitted.sentenceInformation({ referralId: submittedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
