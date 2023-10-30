@@ -10,7 +10,7 @@ import {
 } from '../../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../../server/utils'
 import Page from '../../pages/page'
-import { SubmittedPersonalDetailsPage } from '../../pages/refer'
+import { SubmittedReferralPersonalDetailsPage } from '../../pages/refer'
 
 context('Viewing a submitted referral', () => {
   const course = courseFactory.build()
@@ -55,21 +55,20 @@ context('Viewing a submitted referral', () => {
   describe('When reviewing personal details', () => {
     it('shows the correct information', () => {
       const path = referPaths.submitted.personalDetails({ referralId: referral.id })
-
       cy.visit(path)
 
-      const submittedPersonalDetailsPage = Page.verifyOnPage(SubmittedPersonalDetailsPage, {
+      const submittedReferralPersonalDetailsPage = Page.verifyOnPage(SubmittedReferralPersonalDetailsPage, {
         course,
         organisation,
         referral,
       })
-      submittedPersonalDetailsPage.shouldHavePersonDetails(person)
-      submittedPersonalDetailsPage.shouldContainNavigation(path)
-      submittedPersonalDetailsPage.shouldContainBackLink('#')
-      submittedPersonalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      submittedPersonalDetailsPage.shouldContainSideNavigation(path)
-      submittedPersonalDetailsPage.shouldContainImportedFromText()
-      submittedPersonalDetailsPage.shouldContainPersonSummaryList(person)
+      submittedReferralPersonalDetailsPage.shouldHavePersonDetails(person)
+      submittedReferralPersonalDetailsPage.shouldContainNavigation(path)
+      submittedReferralPersonalDetailsPage.shouldContainBackLink('#')
+      submittedReferralPersonalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+      submittedReferralPersonalDetailsPage.shouldContainSideNavigation(path)
+      submittedReferralPersonalDetailsPage.shouldContainImportedFromText()
+      submittedReferralPersonalDetailsPage.shouldContainPersonSummaryList(person)
     })
   })
 })

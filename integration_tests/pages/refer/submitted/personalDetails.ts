@@ -1,10 +1,10 @@
-import { CourseUtils, DateUtils, ReferralUtils } from '../../../server/utils'
-import Helpers from '../../support/helpers'
-import Page from '../page'
+import { CourseUtils, DateUtils, ReferralUtils } from '../../../../server/utils'
+import Helpers from '../../../support/helpers'
+import Page from '../../page'
 import type { Course, Organisation, Referral } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
 
-export default class SubmittedPersonalDetailsPage extends Page {
+export default class SubmittedReferralPersonalDetailsPage extends Page {
   course: CoursePresenter
 
   organisation: Organisation
