@@ -28,6 +28,12 @@ export default class ReferralClient {
     })) as Referral
   }
 
+  async submit(referralId: Referral['id']): Promise<void> {
+    await this.restClient.post({
+      path: apiPaths.referrals.submit({ referralId }),
+    })
+  }
+
   async update(referralId: Referral['id'], referralUpdate: ReferralUpdate): Promise<void> {
     await this.restClient.put({
       data: referralUpdate,
