@@ -225,5 +225,7 @@ context('Submitting a referral', () => {
 
     const completePage = Page.verifyOnPage(CompletePage)
     completePage.shouldContainPanel('Referral complete')
+    completePage.shouldHaveProcessInformation()
+    completePage.shouldContainFeedbackLink()
   })
 })
