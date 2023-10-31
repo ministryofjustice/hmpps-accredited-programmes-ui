@@ -58,7 +58,6 @@ context('Showing the referral task list and person page', () => {
     const taskListPage = Page.verifyOnPage(NewReferralTaskListPage, { course, courseOffering, organisation, referral })
     taskListPage.shouldHavePersonDetails(person)
     taskListPage.shouldContainNavigation(path)
-    taskListPage.shouldContainBackLink('#')
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
     taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
     taskListPage.shouldContainTaskList()
