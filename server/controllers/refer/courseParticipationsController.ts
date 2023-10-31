@@ -64,20 +64,17 @@ export default class CourseParticipationsController {
       }
 
       const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
-      const courseParticipationPresenter = await this.courseService.presentCourseParticipation(
+      const summaryListOptions = await this.courseService.presentCourseParticipation(
         req.user.token,
         courseParticipation,
+        referralId,
+        { change: false, remove: false },
       )
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, {
-        change: false,
-        remove: false,
-      })
 
       return res.render('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
@@ -170,13 +167,10 @@ export default class CourseParticipationsController {
         res.locals.user.caseloads,
       )
 
-      const sortedCourseParticipations = await this.courseService.getAndPresentParticipationsByPerson(
+      const summaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
         req.user.token,
         person.prisonNumber,
-      )
-
-      const summaryListsOptions = sortedCourseParticipations.map(participation =>
-        CourseParticipationUtils.summaryListOptions(participation, referralId),
+        referralId,
       )
 
       const successMessage = req.flash('successMessage')[0]

@@ -13,10 +13,11 @@ import {
   personFactory,
   userFactory,
 } from '../testutils/factories'
-import { StringUtils } from '../utils'
+import { CourseParticipationUtils, StringUtils } from '../utils'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/courseClient')
+jest.mock('../utils/courseParticipationUtils')
 
 describe('CourseService', () => {
   const courseClient = new CourseClient('token') as jest.Mocked<CourseClient>
@@ -78,36 +79,78 @@ describe('CourseService', () => {
   })
 
   describe('getAndPresentCourseParticipationsByPrisonNumber', () => {
-    it('fetches all Course Participations for a `prisonNumber`, sorts them by the date created, and presents them with their creators', async () => {
-      const person = personFactory.build()
-      const addedByUser = userFactory.build({ name: 'john smith' })
+    const person = personFactory.build()
+    const addedByUser = userFactory.build({ name: 'john smith' })
 
-      const earliestCourseParticipation = courseParticipationFactory.build({
-        addedBy: addedByUser.username,
-        createdAt: '2022-01-01T12:00:00.000Z',
-        prisonNumber: person.prisonNumber,
-      })
-      const latestCourseParticipation = courseParticipationFactory.build({
-        addedBy: addedByUser.username,
-        createdAt: '2023-01-01T12:00:00.000Z',
-        prisonNumber: person.prisonNumber,
-      })
+    const earliestCourseParticipation = courseParticipationFactory.build({
+      addedBy: addedByUser.username,
+      createdAt: '2022-01-01T12:00:00.000Z',
+      prisonNumber: person.prisonNumber,
+    })
+    const latestCourseParticipation = courseParticipationFactory.build({
+      addedBy: addedByUser.username,
+      createdAt: '2023-01-01T12:00:00.000Z',
+      prisonNumber: person.prisonNumber,
+    })
+    const addedByDisplayName = StringUtils.convertToTitleCase(addedByUser.name)
+
+    beforeEach(() => {
       courseClient.findParticipationsByPerson.mockResolvedValue([
         latestCourseParticipation,
         earliestCourseParticipation,
       ])
 
       userService.getUserFromUsername.mockResolvedValue(addedByUser)
+    })
 
-      const result = await service.getAndPresentParticipationsByPerson(token, person.prisonNumber)
+    describe('when no actions are passed', () => {
+      it('fetches the creator, then formats the participation and creator in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', async () => {
+        when(CourseParticipationUtils.summaryListOptions as jest.Mock)
+          .calledWith({ ...earliestCourseParticipation, addedByDisplayName }, 'a-referral-id', {
+            change: true,
+            remove: true,
+          })
+          .mockReturnValue('course participation 1 options')
+        when(CourseParticipationUtils.summaryListOptions as jest.Mock)
+          .calledWith({ ...latestCourseParticipation, addedByDisplayName }, 'a-referral-id', {
+            change: true,
+            remove: true,
+          })
+          .mockReturnValue('course participation 2 options')
 
-      expect(result).toEqual([
-        { ...earliestCourseParticipation, addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name) },
-        {
-          ...latestCourseParticipation,
-          addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
-        },
-      ])
+        const result = await service.getAndPresentParticipationsByPerson(token, person.prisonNumber, 'a-referral-id')
+
+        expect(result).toEqual(['course participation 1 options', 'course participation 2 options'])
+      })
+    })
+
+    describe('when actions are passed', () => {
+      it('uses the specified actions when creating options for the summary list Nunjucks macro', async () => {
+        await service.getAndPresentParticipationsByPerson(token, person.prisonNumber, 'a-referral-id', {
+          change: false,
+          remove: false,
+        })
+
+        expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
+          1,
+          { ...earliestCourseParticipation, addedByDisplayName },
+          'a-referral-id',
+          {
+            change: false,
+            remove: false,
+          },
+        )
+
+        expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
+          2,
+          { ...latestCourseParticipation, addedByDisplayName },
+          'a-referral-id',
+          {
+            change: false,
+            remove: false,
+          },
+        )
+      })
     })
   })
 
@@ -269,18 +312,24 @@ describe('CourseService', () => {
   describe('presentCourseParticipation', () => {
     const addedByUser = userFactory.build({ name: 'john smith' })
     const courseParticipation = courseParticipationFactory.build({ addedBy: addedByUser.username })
+    const addedByDisplayName = StringUtils.convertToTitleCase(addedByUser.name)
+    const referralId = 'a-referral-id'
 
-    it('calls the user service to get details of the user who added the course participation and returns the course participation with formatted `addedByDisplayName`', async () => {
+    it('fetches the creator, then formats the participation and creator in the appropriate for passing to a GOV.UK summary list Nunjucks macro', async () => {
       when(userService.getUserFromUsername)
         .calledWith(token, courseParticipation.addedBy)
         .mockResolvedValue(addedByUser)
 
-      const result = await service.presentCourseParticipation(token, courseParticipation)
+      when(CourseParticipationUtils.summaryListOptions as jest.Mock)
+        .calledWith({ ...courseParticipation, addedByDisplayName }, referralId, {
+          change: true,
+          remove: true,
+        })
+        .mockReturnValue('course participation 1 options')
 
-      expect(result).toEqual({
-        ...courseParticipation,
-        addedByDisplayName: 'John Smith',
-      })
+      const result = await service.presentCourseParticipation(token, courseParticipation, referralId)
+
+      expect(result).toEqual('course participation 1 options')
     })
   })
 

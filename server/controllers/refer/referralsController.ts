@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { CourseParticipationUtils, CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
+import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
 import type { CreatedReferralResponse } from '@accredited-programmes/models'
 
 export default class ReferralsController {
@@ -40,14 +40,13 @@ export default class ReferralsController {
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
 
-      const courseParticipations = await this.courseService.getAndPresentParticipationsByPerson(
+      const participationSummaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
         req.user.token,
         person.prisonNumber,
+        referralId,
+        { change: true, remove: false },
       )
 
-      const participationSummaryListsOptions = courseParticipations.map(participation =>
-        CourseParticipationUtils.summaryListOptions(participation, referralId, { change: true, remove: false }),
-      )
       const coursePresenter = CourseUtils.presentCourse(course)
 
       FormUtils.setFieldErrors(req, res, ['confirmation'])
