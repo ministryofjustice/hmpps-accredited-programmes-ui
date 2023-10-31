@@ -4,23 +4,23 @@ import { Factory } from 'fishery'
 import FactoryHelpers from './factoryHelpers'
 import type { CourseParticipationOutcome } from '@accredited-programmes/models'
 
-const randomNonFutureYearFrom = (minimumYear: number): number => {
+const randomValidYear = (): number => {
   const currentYear = new Date().getFullYear()
-  return faker.number.int({ max: currentYear, min: minimumYear })
+  return faker.number.int({ max: currentYear, min: 1990 })
 }
 
 const outcomeTypes = {
   complete(): CourseParticipationOutcome {
     return {
       status: 'complete',
-      yearCompleted: FactoryHelpers.optionalArrayElement(randomNonFutureYearFrom(1980)),
+      yearCompleted: FactoryHelpers.optionalArrayElement(randomValidYear()),
     }
   },
 
   incomplete(): CourseParticipationOutcome {
     return {
       status: 'incomplete',
-      yearStarted: FactoryHelpers.optionalArrayElement(randomNonFutureYearFrom(1980)),
+      yearStarted: FactoryHelpers.optionalArrayElement(randomValidYear()),
     }
   },
 
