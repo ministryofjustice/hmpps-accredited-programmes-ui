@@ -30,7 +30,7 @@ export default class NewReferralTaskListPage extends Page {
 
   shouldBeReadyForSubmission() {
     cy.get('[data-testid="check-answers-list-item"]').within(() => {
-      cy.get('a').should('have.attr', 'href', `/refer/new/referrals/${this.referral.id}/check-answers`)
+      cy.get('a').should('have.attr', 'href', `/refer/referrals/new/${this.referral.id}/check-answers`)
       cy.get('.govuk-tag').then(tagElement => {
         const { actual, expected } = Helpers.parseHtml(tagElement, 'not started')
         expect(actual).to.equal(expected)

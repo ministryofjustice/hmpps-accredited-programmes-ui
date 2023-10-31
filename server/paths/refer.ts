@@ -7,7 +7,7 @@ const newReferralPeoplePathBase = offeringReferralPathBase.path('people')
 
 const referPathBase = path('/refer')
 
-const newReferralsPath = referPathBase.path('new/referrals')
+const newReferralsPath = referPathBase.path('referrals/new')
 const newReferralShowPath = newReferralsPath.path(':referralId')
 const newReferralProgrammeHistoryPath = newReferralShowPath.path('programme-history')
 const newReferralProgrammeHistoryShowPath = newReferralProgrammeHistoryPath.path(':courseParticipationId')

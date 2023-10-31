@@ -63,7 +63,7 @@ There are three user accounts with different roles that can be used when running
 
 The local copy of the Accredited Programmes API has various seeds in place providing data to work with in local development. These include courses, course offerings, and associated data, as well as one referral. This referral is at the stage of having just been created, and can be used to jump to the task list part of the Refer journey.
 
-Seeded referral ID and local server link: [c11fab18-dc8d-420c-9c82-d0edd373732d](http://localhost:3000/refer/new/referrals/c11fab18-dc8d-420c-9c82-d0edd373732d)
+Seeded referral ID and local server link: [c11fab18-dc8d-420c-9c82-d0edd373732d](http://localhost:3000/refer/referrals/new/c11fab18-dc8d-420c-9c82-d0edd373732d)
 
 ## Running the tests
 
