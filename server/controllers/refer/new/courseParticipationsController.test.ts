@@ -30,7 +30,7 @@ describe('NewReferralsCourseParticipationsController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
-  let newReferralsCourseParticipationsController: NewReferralsCourseParticipationsController
+  let controller: NewReferralsCourseParticipationsController
 
   const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithValues
   const person = personFactory.build()
@@ -41,11 +41,8 @@ describe('NewReferralsCourseParticipationsController', () => {
   beforeEach(() => {
     request = createMock<Request>({ params: { referralId }, user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
-    newReferralsCourseParticipationsController = new NewReferralsCourseParticipationsController(
-      courseService,
-      personService,
-      referralService,
-    )
+
+    controller = new NewReferralsCourseParticipationsController(courseService, personService, referralService)
     courseService.presentCourseParticipation.mockResolvedValue(summaryListOptions)
     courseService.getAndPresentParticipationsByPerson.mockResolvedValue([summaryListOptions, summaryListOptions])
   })
@@ -70,7 +67,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           },
         )
 
-        const requestHandler = newReferralsCourseParticipationsController.create()
+        const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -105,7 +102,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           },
         )
 
-        const requestHandler = newReferralsCourseParticipationsController.create()
+        const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -133,7 +130,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.create()
+        const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -151,7 +148,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           },
         )
 
-        const requestHandler = newReferralsCourseParticipationsController.create()
+        const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -183,7 +180,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       courseService.getCourse.mockResolvedValue(course)
       courseService.getParticipation.mockResolvedValue(courseParticipation)
 
-      const requestHandler = newReferralsCourseParticipationsController.delete()
+      const requestHandler = controller.delete()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
@@ -204,7 +201,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.delete()
+        const requestHandler = controller.delete()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
@@ -220,7 +217,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       const courseParticipationId = 'aCourseParticipationId'
       request.params.courseParticipationId = courseParticipationId
 
-      const requestHandler = newReferralsCourseParticipationsController.destroy()
+      const requestHandler = controller.destroy()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -233,7 +230,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.destroy()
+        const requestHandler = controller.destroy()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -270,7 +267,7 @@ describe('NewReferralsCourseParticipationsController', () => {
             response.locals.errors = { list: [], messages: {} }
           })
 
-          const requestHandler = newReferralsCourseParticipationsController.editCourse()
+          const requestHandler = controller.editCourse()
           await requestHandler(request, response, next)
 
           const { courseName } = courseParticipation
@@ -298,7 +295,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.editCourse()
+        const requestHandler = controller.editCourse()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -319,7 +316,7 @@ describe('NewReferralsCourseParticipationsController', () => {
     it("renders the index template for a person's programme history", async () => {
       referralService.getReferral.mockResolvedValue(draftReferral)
 
-      const requestHandler = newReferralsCourseParticipationsController.index()
+      const requestHandler = controller.index()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -346,7 +343,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const successMessage = 'A success message'
         ;(request.flash as jest.Mock).mockImplementation(() => [successMessage])
 
-        const requestHandler = newReferralsCourseParticipationsController.index()
+        const requestHandler = controller.index()
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith(
@@ -362,7 +359,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.index()
+        const requestHandler = controller.index()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -386,7 +383,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         response.locals.errors = emptyErrorsLocal
       })
 
-      const requestHandler = newReferralsCourseParticipationsController.new()
+      const requestHandler = controller.new()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -406,7 +403,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.new()
+        const requestHandler = controller.new()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -450,7 +447,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         }
         courseService.updateParticipation.mockResolvedValue({ ...courseParticipation, ...courseParticipationUpdate })
 
-        const requestHandler = newReferralsCourseParticipationsController.updateCourse()
+        const requestHandler = controller.updateCourse()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -479,7 +476,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.updateCourse()
+        const requestHandler = controller.updateCourse()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -502,7 +499,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           },
         )
 
-        const requestHandler = newReferralsCourseParticipationsController.updateCourse()
+        const requestHandler = controller.updateCourse()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -529,7 +526,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       const hasReviewedProgrammeHistory = true
       request.body = { hasReviewedProgrammeHistory: hasReviewedProgrammeHistory.toString() }
 
-      const requestHandler = newReferralsCourseParticipationsController.updateHasReviewedProgrammeHistory()
+      const requestHandler = controller.updateHasReviewedProgrammeHistory()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -545,7 +542,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationsController.updateHasReviewedProgrammeHistory()
+        const requestHandler = controller.updateHasReviewedProgrammeHistory()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)

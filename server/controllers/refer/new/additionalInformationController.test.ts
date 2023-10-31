@@ -37,15 +37,12 @@ describe('NewReferralsAdditionalInformationController', () => {
     prisonNumber: person.prisonNumber,
   })
 
-  let newReferralsAdditionalInformationController: NewReferralsAdditionalInformationController
+  let controller: NewReferralsAdditionalInformationController
 
   beforeEach(() => {
     request = createMock<Request>({ params: { referralId }, user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
-    newReferralsAdditionalInformationController = new NewReferralsAdditionalInformationController(
-      personService,
-      referralService,
-    )
+    controller = new NewReferralsAdditionalInformationController(personService, referralService)
   })
 
   afterEach(() => {
@@ -62,7 +59,7 @@ describe('NewReferralsAdditionalInformationController', () => {
         response.locals.errors = emptyErrorsLocal
       })
 
-      const requestHandler = newReferralsAdditionalInformationController.show()
+      const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -78,7 +75,7 @@ describe('NewReferralsAdditionalInformationController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsAdditionalInformationController.show()
+        const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -92,7 +89,7 @@ describe('NewReferralsAdditionalInformationController', () => {
       referralService.getReferral.mockResolvedValue(draftReferral)
       request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
 
-      const requestHandler = newReferralsAdditionalInformationController.update()
+      const requestHandler = controller.update()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -108,7 +105,7 @@ describe('NewReferralsAdditionalInformationController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsAdditionalInformationController.update()
+        const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -120,7 +117,7 @@ describe('NewReferralsAdditionalInformationController', () => {
       it('redirects to the additional information show action with an error', async () => {
         referralService.getReferral.mockResolvedValue(draftReferral)
 
-        const requestHandler = newReferralsAdditionalInformationController.update()
+        const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -134,7 +131,7 @@ describe('NewReferralsAdditionalInformationController', () => {
         referralService.getReferral.mockResolvedValue(draftReferral)
         request.body.additionalInformation = ' \n \n '
 
-        const requestHandler = newReferralsAdditionalInformationController.update()
+        const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)

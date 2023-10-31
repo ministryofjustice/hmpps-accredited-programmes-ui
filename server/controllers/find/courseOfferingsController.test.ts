@@ -18,7 +18,7 @@ describe('CoursesOfferingsController', () => {
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build()
 
-    let courseOfferingsController: CourseOfferingsController
+    let controller: CourseOfferingsController
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
@@ -26,14 +26,14 @@ describe('CoursesOfferingsController', () => {
     beforeEach(() => {
       request = createMock<Request>({ user: { token } })
       response = createMock<Response>({})
-      courseOfferingsController = new CourseOfferingsController(courseService, organisationService)
+      controller = new CourseOfferingsController(courseService, organisationService)
     })
 
     it('renders the course offering show template', async () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
-      const requestHandler = courseOfferingsController.show()
+      const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       const coursePresenter = CourseUtils.presentCourse(course)

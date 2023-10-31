@@ -35,7 +35,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
   const draftReferral = referralFactory.started().build({ id: referralId })
   const submittedReferral = referralFactory.submitted().build({ id: referralId })
 
-  let newReferralsCourseParticipationDetailsController: NewReferralsCourseParticipationDetailsController
+  let controller: NewReferralsCourseParticipationDetailsController
 
   beforeEach(() => {
     request = createMock<Request>({
@@ -47,11 +47,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
     })
     response = Helpers.createMockResponseWithCaseloads()
 
-    newReferralsCourseParticipationDetailsController = new NewReferralsCourseParticipationDetailsController(
-      courseService,
-      personService,
-      referralService,
-    )
+    controller = new NewReferralsCourseParticipationDetailsController(courseService, personService, referralService)
 
     courseService.getParticipation.mockResolvedValue(courseParticipation)
   })
@@ -75,7 +71,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
         response.locals.formValues = {}
       })
 
-      const requestHandler = newReferralsCourseParticipationDetailsController.show()
+      const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/details/show', {
@@ -110,7 +106,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
 
           courseService.getParticipation.mockResolvedValue(courseParticipationWithCommunitySetting)
 
-          const requestHandler = newReferralsCourseParticipationDetailsController.show()
+          const requestHandler = controller.show()
           await requestHandler(request, response, next)
 
           expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
@@ -136,7 +132,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
 
           courseService.getParticipation.mockResolvedValue(courseParticipationWithCustodySetting)
 
-          const requestHandler = newReferralsCourseParticipationDetailsController.show()
+          const requestHandler = controller.show()
           await requestHandler(request, response, next)
 
           expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
@@ -157,7 +153,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationDetailsController.show()
+        const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -191,7 +187,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
         }
       })
 
-      const requestHandler = newReferralsCourseParticipationDetailsController.update()
+      const requestHandler = controller.update()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -213,7 +209,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsCourseParticipationDetailsController.update()
+        const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -228,7 +224,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
           return { hasFormErrors: true }
         })
 
-        const requestHandler = newReferralsCourseParticipationDetailsController.update()
+        const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)

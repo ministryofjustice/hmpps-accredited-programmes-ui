@@ -17,12 +17,12 @@ describe('CoursesController', () => {
   const courseService = createMock<CourseService>({})
   const organisationService = createMock<OrganisationService>({})
 
-  let coursesController: CoursesController
+  let controller: CoursesController
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
     response = createMock<Response>({})
-    coursesController = new CoursesController(courseService, organisationService)
+    controller = new CoursesController(courseService, organisationService)
   })
 
   describe('index', () => {
@@ -34,7 +34,7 @@ describe('CoursesController', () => {
 
       const sortedCourses = [courseA, courseB, courseC]
 
-      const requestHandler = coursesController.index()
+      const requestHandler = controller.index()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
@@ -70,7 +70,7 @@ describe('CoursesController', () => {
 
         courseService.getOfferingsByCourse.mockResolvedValue(courseOfferings)
 
-        const requestHandler = coursesController.show()
+        const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         const organisationIds = organisations.map(organisation => organisation.id)
@@ -109,7 +109,7 @@ describe('CoursesController', () => {
 
         courseService.getOfferingsByCourse.mockResolvedValue(courseOfferingsForAllOrganisations)
 
-        const requestHandler = coursesController.show()
+        const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         const allOrganisationIds = allOrganisations.map(organisation => organisation.id)

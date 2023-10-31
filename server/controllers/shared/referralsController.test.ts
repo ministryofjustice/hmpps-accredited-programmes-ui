@@ -53,7 +53,7 @@ describe('ReferralsController', () => {
     submissionSummaryListRows: ReferralUtils.submissionSummaryListRows(referral),
   }
 
-  let submittedReferralsController: SubmittedReferralsController
+  let controller: SubmittedReferralsController
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
@@ -65,7 +65,7 @@ describe('ReferralsController', () => {
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
 
-    submittedReferralsController = new SubmittedReferralsController(
+    controller = new SubmittedReferralsController(
       courseService,
       organisationService,
       personService,
@@ -82,7 +82,7 @@ describe('ReferralsController', () => {
     it('renders the personal details template with the correct response locals', async () => {
       request.path = referPaths.show.personalDetails({ referralId: referral.id })
 
-      const requestHandler = submittedReferralsController.personalDetails()
+      const requestHandler = controller.personalDetails()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/personalDetails', {
@@ -100,7 +100,7 @@ describe('ReferralsController', () => {
 
       request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
 
-      const requestHandler = submittedReferralsController.sentenceInformation()
+      const requestHandler = controller.sentenceInformation()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {

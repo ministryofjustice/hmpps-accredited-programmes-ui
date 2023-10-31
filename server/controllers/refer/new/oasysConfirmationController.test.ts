@@ -30,15 +30,12 @@ describe('NewReferralsOasysConfirmationController', () => {
     .submitted()
     .build({ id: referralId, oasysConfirmed: false, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
-  let newReferralsOasysConfirmationController: NewReferralsOasysConfirmationController
+  let controller: NewReferralsOasysConfirmationController
 
   beforeEach(() => {
     request = createMock<Request>({ params: { referralId }, user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
-    newReferralsOasysConfirmationController = new NewReferralsOasysConfirmationController(
-      personService,
-      referralService,
-    )
+    controller = new NewReferralsOasysConfirmationController(personService, referralService)
   })
 
   afterEach(() => {
@@ -55,7 +52,7 @@ describe('NewReferralsOasysConfirmationController', () => {
         response.locals.errors = emptyErrorsLocal
       })
 
-      const requestHandler = newReferralsOasysConfirmationController.show()
+      const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -71,7 +68,7 @@ describe('NewReferralsOasysConfirmationController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsOasysConfirmationController.show()
+        const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -86,7 +83,7 @@ describe('NewReferralsOasysConfirmationController', () => {
 
       request.body.oasysConfirmed = true
 
-      const requestHandler = newReferralsOasysConfirmationController.update()
+      const requestHandler = controller.update()
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -101,7 +98,7 @@ describe('NewReferralsOasysConfirmationController', () => {
     describe('when the `oasysConfirmed` field is not set', () => {
       it('redirects back to the confirm oasys page with an error', async () => {
         referralService.getReferral.mockResolvedValue(draftReferral)
-        const requestHandler = newReferralsOasysConfirmationController.update()
+        const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
@@ -114,7 +111,7 @@ describe('NewReferralsOasysConfirmationController', () => {
       it('redirects to the referral confirmation action', async () => {
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
-        const requestHandler = newReferralsOasysConfirmationController.update()
+        const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)

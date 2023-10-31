@@ -20,12 +20,12 @@ describe('NewReferralsPeopleController', () => {
   const personService = createMock<PersonService>({})
   const courseOfferingId = 'A-COURSE-OFFERING-ID'
 
-  let newReferralsPeopleController: NewReferralsPeopleController
+  let controller: NewReferralsPeopleController
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token } })
     response = Helpers.createMockResponseWithCaseloads()
-    newReferralsPeopleController = new NewReferralsPeopleController(personService)
+    controller = new NewReferralsPeopleController(personService)
   })
 
   describe('find', () => {
@@ -35,7 +35,7 @@ describe('NewReferralsPeopleController', () => {
       request.params.courseOfferingId = courseOfferingId
       request.body.prisonNumber = prisonNumber
 
-      const requestHandler = newReferralsPeopleController.find()
+      const requestHandler = controller.find()
       await requestHandler(request, response, next)
 
       expect(response.redirect).toHaveBeenCalledWith(referPaths.new.people.show({ courseOfferingId, prisonNumber }))
@@ -48,7 +48,7 @@ describe('NewReferralsPeopleController', () => {
         request.params.courseOfferingId = courseOfferingId
         request.body.prisonNumber = prisonNumber
 
-        const requestHandler = newReferralsPeopleController.find()
+        const requestHandler = controller.find()
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.new({ courseOfferingId }))
@@ -70,7 +70,7 @@ describe('NewReferralsPeopleController', () => {
       const mockPersonSummaryList = [{ key: { text: 'My Key' }, value: { text: 'My value' } }]
       ;(PersonUtils.summaryListRows as jest.Mock).mockReturnValue(mockPersonSummaryList)
 
-      const requestHandler = newReferralsPeopleController.show()
+      const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/people/show', {
@@ -91,7 +91,7 @@ describe('NewReferralsPeopleController', () => {
         const serviceError = createError(404)
         personService.getPerson.mockRejectedValue(serviceError)
 
-        const requestHandler = newReferralsPeopleController.show()
+        const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.new({ courseOfferingId }))
