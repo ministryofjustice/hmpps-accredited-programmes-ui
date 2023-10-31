@@ -1,5 +1,6 @@
 [
   {
+    "bookingId": "0001234567",
     "firstName": "Del",
     "lastName": "Hatton",
     "prisonerNumber": "ABC1234",
@@ -10,6 +11,7 @@
     "prisonName": "Whatton (HMP)"
   },
   {
+    "bookingId": "0000123456",
     "firstName": "John",
     "lastName": "Smith",
     "prisonerNumber": "DEF1234",

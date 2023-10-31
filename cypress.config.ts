@@ -10,6 +10,7 @@ import manageUsers from './integration_tests/mockApis/manageUsers'
 import prisons from './integration_tests/mockApis/prisons'
 import prisoners from './integration_tests/mockApis/prisoners'
 import referrals from './integration_tests/mockApis/referrals'
+import sentenceInformation from './integration_tests/mockApis/sentenceInformation'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import { resetStubs } from './wiremock'
 
@@ -42,6 +43,7 @@ export const defaultConfig: Cypress.ConfigOptions = {
         ...prisons,
         ...prisoners,
         ...referrals,
+        ...sentenceInformation,
         ...tokenVerification,
         log(message) {
           console.log(message)

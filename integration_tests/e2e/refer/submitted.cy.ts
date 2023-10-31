@@ -7,10 +7,11 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  sentenceAndOffenceDetailsFactory,
 } from '../../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../../server/utils'
 import Page from '../../pages/page'
-import { SubmittedReferralPersonalDetailsPage } from '../../pages/refer'
+import { SubmittedReferralPersonalDetailsPage, SubmittedReferralSentenceInformationPage } from '../../pages/refer'
 
 context('Viewing a submitted referral', () => {
   const course = courseFactory.build()
@@ -68,6 +69,31 @@ context('Viewing a submitted referral', () => {
       submittedReferralPersonalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       submittedReferralPersonalDetailsPage.shouldContainImportedFromText()
       submittedReferralPersonalDetailsPage.shouldContainPersonalDetailsSummaryCard()
+    })
+  })
+
+  describe('When reviewing sentence information', () => {
+    it('shows the correct information', () => {
+      const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+      cy.task('stubSentenceAndOffenceDetails', { bookingId: prisoner.bookingId, sentenceAndOffenceDetails })
+
+      const path = referPaths.submitted.sentenceInformation({ referralId: referral.id })
+      cy.visit(path)
+
+      const submittedReferralSentenceInformationPage = Page.verifyOnPage(SubmittedReferralSentenceInformationPage, {
+        course,
+        sentenceAndOffenceDetails,
+      })
+      submittedReferralSentenceInformationPage.shouldHavePersonDetails(person)
+      submittedReferralSentenceInformationPage.shouldContainNavigation(path)
+      submittedReferralSentenceInformationPage.shouldContainBackLink('#')
+      submittedReferralSentenceInformationPage.shouldContainCourseOfferingSummaryList(
+        coursePresenter,
+        organisation.name,
+      )
+      submittedReferralSentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      submittedReferralSentenceInformationPage.shouldContainImportedFromText()
+      submittedReferralSentenceInformationPage.shouldContainSentenceDetailsSummaryCard()
     })
   })
 })

@@ -11,6 +11,7 @@ import OrganisationUtils from './organisationUtils'
 import PersonUtils from './personUtils'
 import ReferralUtils from './referralUtils'
 import RouteUtils from './routeUtils'
+import SentenceInformationUtils from './sentenceInformationUtils'
 import StringUtils from './stringUtils'
 import TypeUtils from './typeUtils'
 import UserUtils from './userUtils'
@@ -24,6 +25,7 @@ export {
   PersonUtils,
   ReferralUtils,
   RouteUtils,
+  SentenceInformationUtils,
   StringUtils,
   TypeUtils,
   UserUtils,
