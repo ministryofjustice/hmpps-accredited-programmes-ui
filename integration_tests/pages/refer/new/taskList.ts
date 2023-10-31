@@ -1,3 +1,4 @@
+import { referPaths } from '../../../../server/paths'
 import { CourseUtils, ReferralUtils } from '../../../../server/utils'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
@@ -30,7 +31,7 @@ export default class NewReferralTaskListPage extends Page {
 
   shouldBeReadyForSubmission() {
     cy.get('[data-testid="check-answers-list-item"]').within(() => {
-      cy.get('a').should('have.attr', 'href', `/refer/referrals/new/${this.referral.id}/check-answers`)
+      cy.get('a').should('have.attr', 'href', referPaths.new.checkAnswers({ referralId: this.referral.id }))
       cy.get('.govuk-tag').then(tagElement => {
         const { actual, expected } = Helpers.parseHtml(tagElement, 'not started')
         expect(actual).to.equal(expected)
