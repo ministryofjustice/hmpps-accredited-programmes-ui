@@ -62,6 +62,7 @@ export default class SubmittedReferralsController {
     pageHeading: string
     person: Person
     referral: Referral
+    submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithValue>
   }> {
     TypeUtils.assertHasUser(req)
 
@@ -85,6 +86,7 @@ export default class SubmittedReferralsController {
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       person,
       referral,
+      submissionSummaryListRows: ReferralUtils.submissionSummaryListRows(referral),
     }
   }
 }
