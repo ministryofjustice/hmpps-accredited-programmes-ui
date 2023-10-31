@@ -66,6 +66,7 @@ context('Viewing a submitted referral', () => {
       submittedReferralPersonalDetailsPage.shouldContainNavigation(path)
       submittedReferralPersonalDetailsPage.shouldContainBackLink('#')
       submittedReferralPersonalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+      submittedReferralPersonalDetailsPage.shouldContainSubmissionSummaryList(referral)
       submittedReferralPersonalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       submittedReferralPersonalDetailsPage.shouldContainImportedFromText()
       submittedReferralPersonalDetailsPage.shouldContainPersonalDetailsSummaryCard()
@@ -91,6 +92,7 @@ context('Viewing a submitted referral', () => {
         coursePresenter,
         organisation.name,
       )
+      submittedReferralSentenceInformationPage.shouldContainSubmissionSummaryList(referral)
       submittedReferralSentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       submittedReferralSentenceInformationPage.shouldContainImportedFromText()
       submittedReferralSentenceInformationPage.shouldContainSentenceDetailsSummaryCard()

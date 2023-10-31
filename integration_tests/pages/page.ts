@@ -209,6 +209,12 @@ export default abstract class Page {
     })
   }
 
+  shouldContainSubmissionSummaryList(referral: Referral): void {
+    cy.get('[data-testid="submission-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(ReferralUtils.submissionSummaryListRows(referral), summaryListElement)
+    })
+  }
+
   shouldContainSubmittedReferralSideNavigation(currentPath: string, referralId: Referral['id']): void {
     const navigationItems = ReferralUtils.viewReferralNavigationItems('/', referralId)
 

@@ -28,6 +28,14 @@
           "data-testid": "course-offering-summary-list"
         }
       }) }}
+
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border',
+        rows: submissionSummaryListRows,
+        attributes: {
+          "data-testid": "submission-summary-list"
+        }
+      }) }}
     </div>
   </div>
 

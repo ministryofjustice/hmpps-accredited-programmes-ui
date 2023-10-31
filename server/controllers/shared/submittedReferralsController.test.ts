@@ -50,6 +50,7 @@ describe('SubmittedReferralsController', () => {
     pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
     person,
     referral,
+    submissionSummaryListRows: ReferralUtils.submissionSummaryListRows(referral),
   }
 
   let submittedReferralsController: SubmittedReferralsController

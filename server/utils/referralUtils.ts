@@ -1,5 +1,6 @@
 import type { Request } from 'express'
 
+import DateUtils from './dateUtils'
 import { referPaths } from '../paths'
 import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
@@ -69,6 +70,15 @@ export default class ReferralUtils {
 
   static isReadyForSubmission(referral: Referral): boolean {
     return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
+  }
+
+  static submissionSummaryListRows(referral: Referral): Array<GovukFrontendSummaryListRowWithValue> {
+    return [
+      {
+        key: { text: 'Date referred' },
+        value: { text: DateUtils.govukFormattedFullDateString(referral.submittedOn) },
+      },
+    ]
   }
 
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {

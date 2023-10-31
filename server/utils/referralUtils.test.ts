@@ -124,6 +124,19 @@ describe('ReferralUtils', () => {
     })
   })
 
+  describe('submissionSummaryListRows', () => {
+    it('returns submission details relating to a referral in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
+      const referral = referralFactory.submitted().build({ submittedOn: '2023-10-31T00:00:00.000000' })
+
+      expect(ReferralUtils.submissionSummaryListRows(referral)).toEqual([
+        {
+          key: { text: 'Date referred' },
+          value: { text: '31 October 2023' },
+        },
+      ])
+    })
+  })
+
   describe('taskListSections', () => {
     it('returns task list sections for a given referral', () => {
       const referral = referralFactory.started().build()
