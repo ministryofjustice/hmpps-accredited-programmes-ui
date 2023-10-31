@@ -249,27 +249,27 @@ describe('ReferralUtils', () => {
   describe('viewReferralNavigationItems', () => {
     it('returns navigation items for the view referral pages and sets the requested page as active', () => {
       const mockReferralId = 'mock-referral-id'
-      const currentRequestPath = referPaths.submitted.personalDetails({ referralId: mockReferralId })
+      const currentRequestPath = referPaths.show.personalDetails({ referralId: mockReferralId })
 
       expect(ReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
         {
           active: true,
-          href: referPaths.submitted.personalDetails({ referralId: mockReferralId }),
+          href: referPaths.show.personalDetails({ referralId: mockReferralId }),
           text: 'Personal details',
         },
         {
           active: false,
-          href: referPaths.submitted.programmeHistory({ referralId: mockReferralId }),
+          href: referPaths.show.programmeHistory({ referralId: mockReferralId }),
           text: 'Programme history',
         },
         {
           active: false,
-          href: referPaths.submitted.sentenceInformation({ referralId: mockReferralId }),
+          href: referPaths.show.sentenceInformation({ referralId: mockReferralId }),
           text: 'Sentence information',
         },
         {
           active: false,
-          href: referPaths.submitted.additionalInformation({ referralId: mockReferralId }),
+          href: referPaths.show.additionalInformation({ referralId: mockReferralId }),
           text: 'Additional information',
         },
       ])

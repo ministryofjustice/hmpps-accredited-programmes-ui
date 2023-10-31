@@ -40,7 +40,7 @@ context('Refer', () => {
     cy.task('stubOffering', { courseOffering })
     cy.task('stubPrison', prison)
 
-    const path = referPaths.start({ courseOfferingId: courseOffering.id })
+    const path = referPaths.new.start({ courseOfferingId: courseOffering.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -48,7 +48,7 @@ context('Refer', () => {
   })
 
   it("Doesn't show the 'find person' page for a referral", () => {
-    const path = referPaths.new({ courseOfferingId: courseOffering.id })
+    const path = referPaths.new.new({ courseOfferingId: courseOffering.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -58,7 +58,7 @@ context('Refer', () => {
   it("Doesn't show the 'confirm person' page for a new referral", () => {
     cy.task('stubPrisoner', prisoner)
 
-    const path = referPaths.people.show({
+    const path = referPaths.new.people.show({
       courseOfferingId: courseOffering.id,
       prisonNumber: prisoner.prisonerNumber,
     })
@@ -75,7 +75,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', startedReferral)
 
-    const path = referPaths.show({ referralId: startedReferral.id })
+    const path = referPaths.new.show({ referralId: startedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -86,7 +86,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', startedReferral)
 
-    const path = referPaths.showPerson({ referralId: startedReferral.id })
+    const path = referPaths.new.showPerson({ referralId: startedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -97,7 +97,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', startedReferral)
 
-    const path = referPaths.confirmOasys.show({ referralId: startedReferral.id })
+    const path = referPaths.new.confirmOasys.show({ referralId: startedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -108,7 +108,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', startedReferral)
 
-    const path = referPaths.additionalInformation.show({ referralId: startedReferral.id })
+    const path = referPaths.new.additionalInformation.show({ referralId: startedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -123,7 +123,7 @@ context('Refer', () => {
     const participations = [courseParticipation, ...courseParticipationFactory.buildList(2)]
     cy.task('stubParticipationsByPerson', { participations, prisonNumber: prisoner.prisonerNumber })
 
-    const path = referPaths.programmeHistory.index({ referralId: startedReferral.id })
+    const path = referPaths.new.programmeHistory.index({ referralId: startedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -137,7 +137,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', startedReferral)
 
-    const path = referPaths.programmeHistory.new({ referralId: startedReferral.id })
+    const path = referPaths.new.programmeHistory.new({ referralId: startedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -149,7 +149,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', startedReferral)
 
-    const path = referPaths.programmeHistory.details.show({
+    const path = referPaths.new.programmeHistory.details.show({
       courseParticipationId: courseParticipation.id,
       referralId: startedReferral.id,
     })
@@ -165,7 +165,7 @@ context('Refer', () => {
     cy.task('stubParticipation', courseParticipation)
     cy.task('stubCourse', course)
 
-    const path = referPaths.programmeHistory.delete({
+    const path = referPaths.new.programmeHistory.delete({
       courseParticipationId: courseParticipation.id,
       referralId: startedReferral.id,
     })
@@ -186,7 +186,7 @@ context('Refer', () => {
       .build({ offeringId: courseOffering.id, prisonNumber: prisoner.prisonerNumber })
     cy.task('stubReferral', referral)
 
-    const path = referPaths.checkAnswers({ referralId: referral.id })
+    const path = referPaths.new.checkAnswers({ referralId: referral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -196,7 +196,7 @@ context('Refer', () => {
   it("Doesn't show the complete page for a referral", () => {
     cy.task('stubReferral', submittedReferral)
 
-    const path = referPaths.complete({ referralId: submittedReferral.id })
+    const path = referPaths.new.complete({ referralId: submittedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -210,7 +210,7 @@ context('Refer', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', submittedReferral)
 
-    const path = referPaths.submitted.personalDetails({ referralId: submittedReferral.id })
+    const path = referPaths.show.personalDetails({ referralId: submittedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
@@ -226,7 +226,7 @@ context('Refer', () => {
     cy.task('stubReferral', submittedReferral)
     cy.task('stubSentenceAndOffenceDetails', { bookingId: prisoner.bookingId, sentenceAndOffenceDetails })
 
-    const path = referPaths.submitted.sentenceInformation({ referralId: submittedReferral.id })
+    const path = referPaths.show.sentenceInformation({ referralId: submittedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)

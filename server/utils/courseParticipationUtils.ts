@@ -118,7 +118,7 @@ export default class CourseParticipationUtils {
 
     if (withActions.change) {
       actions.items.push({
-        href: referPaths.programmeHistory.editProgramme({
+        href: referPaths.new.programmeHistory.editProgramme({
           courseParticipationId: courseParticipation.id,
           referralId,
         }),
@@ -129,7 +129,7 @@ export default class CourseParticipationUtils {
 
     if (withActions.remove) {
       actions.items.push({
-        href: referPaths.programmeHistory.delete({
+        href: referPaths.new.programmeHistory.delete({
           courseParticipationId: courseParticipation.id,
           referralId,
         }),

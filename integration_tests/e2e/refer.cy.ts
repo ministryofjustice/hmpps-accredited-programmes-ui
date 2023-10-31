@@ -3,7 +3,7 @@ import { referPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory, referralFactory } from '../../server/testutils/factories'
 import AuthErrorPage from '../pages/authError'
 import Page from '../pages/page'
-import { CompletePage } from '../pages/refer'
+import { NewReferralCompletePage } from '../pages/refer'
 
 context('General Refer functionality', () => {
   beforeEach(() => {
@@ -24,7 +24,7 @@ context('General Refer functionality', () => {
       const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
       cy.task('stubPrison', prison)
 
-      const path = referPaths.start({ courseOfferingId: courseOffering.id })
+      const path = referPaths.new.start({ courseOfferingId: courseOffering.id })
       cy.visit(path, { failOnStatusCode: false })
 
       const authErrorPage = Page.verifyOnPage(AuthErrorPage)
@@ -40,10 +40,10 @@ context('General Refer functionality', () => {
       const referral = referralFactory.submitted().build({})
       cy.task('stubReferral', referral)
 
-      const path = referPaths.programmeHistory.index({ referralId: referral.id })
+      const path = referPaths.new.programmeHistory.index({ referralId: referral.id })
       cy.visit(path)
 
-      Page.verifyOnPage(CompletePage)
+      Page.verifyOnPage(NewReferralCompletePage)
     })
   })
 })

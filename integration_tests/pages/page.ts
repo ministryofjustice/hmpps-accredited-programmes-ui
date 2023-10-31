@@ -113,7 +113,7 @@ export default abstract class Page {
 
             if (withActions.change) {
               actions.push({
-                href: referPaths.programmeHistory.editProgramme({
+                href: referPaths.new.programmeHistory.editProgramme({
                   courseParticipationId: participation.id,
                   referralId,
                 }),
@@ -124,7 +124,7 @@ export default abstract class Page {
 
             if (withActions.remove) {
               actions.push({
-                href: referPaths.programmeHistory.delete({
+                href: referPaths.new.programmeHistory.delete({
                   courseParticipationId: participation.id,
                   referralId,
                 }),

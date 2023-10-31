@@ -1,0 +1,80 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "../../_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: referPaths.new.programmeHistory.index({ referralId: referralId })
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  {% set otherCourseHtml %}
+  {{ govukInput({
+    id: "otherCourseName",
+    name: "otherCourseName",
+    value: formValues.otherCourseName,
+    type: "text",
+    classes: "govuk-!-width-one-third",
+    label: {
+      text: "Enter the programme"
+    },
+    errorMessage: errors.messages.otherCourseName
+  }) }}
+  {% endset %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+
+      <form action="{{ action }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukRadios({
+          name: "courseName",
+          fieldset: {
+            legend: {
+              text: pageHeading,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "Select the programme"
+          },
+          items: courseRadioOptions.concat({
+            value: "Other",
+            text: "Other",
+            conditional: {
+              html: otherCourseHtml
+            },
+            checked: otherCourseNameChecked,
+            attributes: {
+              "data-testid": "other-course-option"
+            }
+          }),
+          value: formValues.courseName,
+          errorMessage: errors.messages.courseName
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}

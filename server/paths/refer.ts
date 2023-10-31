@@ -3,77 +3,62 @@ import { path } from 'static-path'
 import findPaths from './find'
 
 const offeringReferralPathBase = findPaths.offerings.show.path('referrals')
-const startReferralPath = offeringReferralPathBase.path('start')
-const newReferralPath = offeringReferralPathBase.path('new')
+const newReferralPeoplePathBase = offeringReferralPathBase.path('people')
 
-const peoplePathBase = offeringReferralPathBase.path('people')
-const findPersonPath = peoplePathBase.path('search')
-const personPath = peoplePathBase.path(':prisonNumber')
+const referPathBase = path('/refer')
 
-const referBasePath = path('/refer')
+const newReferralsPath = referPathBase.path('new/referrals')
+const newReferralShowPath = newReferralsPath.path(':referralId')
+const newReferralProgrammeHistoryPath = newReferralShowPath.path('programme-history')
+const newReferralProgrammeHistoryShowPath = newReferralProgrammeHistoryPath.path(':courseParticipationId')
+const newReferralProgrammeHistoryProgrammePath = newReferralProgrammeHistoryShowPath.path('programme')
+const newReferralConfirmOasysPath = newReferralShowPath.path('confirm-oasys')
+const newReferralAdditionalInformationPath = newReferralShowPath.path('additional-information')
 
-const draftReferralsPath = referBasePath.path('new/referrals')
-const showDraftReferralPath = draftReferralsPath.path(':referralId')
-const referralPersonPath = showDraftReferralPath.path('person')
-const programmeHistoryPath = showDraftReferralPath.path('programme-history')
-const newProgrammeHistoryPath = programmeHistoryPath.path('new')
-const showProgrammeHistoryPath = programmeHistoryPath.path(':courseParticipationId')
-const programmeHistoryProgrammePath = showProgrammeHistoryPath.path('programme')
-const programmeHistoryDetailsPath = showProgrammeHistoryPath.path('details')
-const deleteProgrammeHistoryPath = showProgrammeHistoryPath.path('delete')
-const confirmOasysPath = showDraftReferralPath.path('confirm-oasys')
-const additionalInformationPath = showDraftReferralPath.path('additional-information')
-const checkAnswersPath = showDraftReferralPath.path('check-answers')
-const completeReferralPath = showDraftReferralPath.path('complete')
-const submitReferralPath = showDraftReferralPath.path('submit')
-
-const submittedReferralsPath = referBasePath.path('referrals')
-const showSubmittedReferralPath = submittedReferralsPath.path(':referralId')
-const submittedReferralPersonalDetailsPath = showSubmittedReferralPath.path('personal-details')
-const submittedReferralProgrammeHistoryPath = showSubmittedReferralPath.path('programme-history')
-const submittedReferralSentenceInformationPath = showSubmittedReferralPath.path('sentence-information')
-const submittedReferralAdditionalInformationPath = showSubmittedReferralPath.path('additional-information')
+const referralShowPathBase = referPathBase.path('referrals/:referralId')
 
 export default {
-  additionalInformation: {
-    show: additionalInformationPath,
-    update: additionalInformationPath,
-  },
-  checkAnswers: checkAnswersPath,
-  complete: completeReferralPath,
-  confirmOasys: {
-    show: confirmOasysPath,
-    update: confirmOasysPath,
-  },
-  create: draftReferralsPath,
-  new: newReferralPath,
-  people: {
-    find: findPersonPath,
-    show: personPath,
-  },
-  programmeHistory: {
-    create: programmeHistoryPath,
-    delete: deleteProgrammeHistoryPath,
-    destroy: showProgrammeHistoryPath,
-    details: {
-      show: programmeHistoryDetailsPath,
-      update: programmeHistoryDetailsPath,
+  new: {
+    additionalInformation: {
+      show: newReferralAdditionalInformationPath,
+      update: newReferralAdditionalInformationPath,
     },
-    editProgramme: programmeHistoryProgrammePath,
-    index: programmeHistoryPath,
-    new: newProgrammeHistoryPath,
-    updateProgramme: programmeHistoryProgrammePath,
-    updateReviewedStatus: programmeHistoryPath,
+    checkAnswers: newReferralShowPath.path('check-answers'),
+    complete: newReferralShowPath.path('complete'),
+    confirmOasys: {
+      show: newReferralConfirmOasysPath,
+      update: newReferralConfirmOasysPath,
+    },
+    create: newReferralsPath,
+    new: offeringReferralPathBase.path('new'),
+    people: {
+      find: newReferralPeoplePathBase.path('search'),
+      show: newReferralPeoplePathBase.path(':prisonNumber'),
+    },
+    programmeHistory: {
+      create: newReferralProgrammeHistoryPath,
+      delete: newReferralProgrammeHistoryShowPath.path('delete'),
+      destroy: newReferralProgrammeHistoryShowPath,
+      details: {
+        show: newReferralProgrammeHistoryShowPath.path('details'),
+        update: newReferralProgrammeHistoryShowPath,
+      },
+      editProgramme: newReferralProgrammeHistoryProgrammePath,
+      index: newReferralProgrammeHistoryPath,
+      new: newReferralProgrammeHistoryPath.path('new'),
+      updateProgramme: newReferralProgrammeHistoryProgrammePath,
+      updateReviewedStatus: newReferralProgrammeHistoryPath,
+    },
+    show: newReferralShowPath,
+    showPerson: newReferralShowPath.path('person'),
+    start: offeringReferralPathBase.path('start'),
+    submit: newReferralShowPath.path('submit'),
+    update: newReferralShowPath,
   },
-  show: showDraftReferralPath,
-  showPerson: referralPersonPath,
-  start: startReferralPath,
-  submit: submitReferralPath,
-  submitted: {
-    additionalInformation: submittedReferralAdditionalInformationPath,
-    personalDetails: submittedReferralPersonalDetailsPath,
-    programmeHistory: submittedReferralProgrammeHistoryPath,
-    sentenceInformation: submittedReferralSentenceInformationPath,
+  show: {
+    additionalInformation: referralShowPathBase.path('additional-information'),
+    personalDetails: referralShowPathBase.path('personal-details'),
+    programmeHistory: referralShowPathBase.path('programme-history'),
+    sentenceInformation: referralShowPathBase.path('sentence-information'),
   },
-  update: showDraftReferralPath,
 }
