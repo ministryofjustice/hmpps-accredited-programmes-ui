@@ -10,7 +10,7 @@ class ReferralFactory extends Factory<Referral> {
       hasReviewedProgrammeHistory: false,
       oasysConfirmed: false,
       status: 'referral_started',
-      submittedAt: undefined,
+      submittedOn: undefined,
     })
   }
 
@@ -20,7 +20,7 @@ class ReferralFactory extends Factory<Referral> {
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
       status: 'referral_started',
-      submittedAt: undefined,
+      submittedOn: undefined,
     })
   }
 
@@ -30,7 +30,7 @@ class ReferralFactory extends Factory<Referral> {
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
       status: 'referral_submitted',
-      submittedAt: faker.date.past().toISOString(),
+      submittedOn: faker.date.past().toISOString(),
     })
   }
 }
@@ -51,5 +51,5 @@ export default ReferralFactory.define(({ params }) => ({
   prisonNumber: faker.string.alphanumeric({ length: 7 }),
   referrerId: faker.string.numeric({ length: 6 }),
   status,
-  submittedAt: (params.status || status) !== 'referral_started' ? faker.date.past().toISOString() : undefined,
+  submittedOn: (params.status || status) !== 'referral_started' ? faker.date.past().toISOString() : undefined,
 }))

@@ -10,7 +10,7 @@ type Referral = {
   prisonNumber: Person['prisonNumber']
   referrerId: Express.User['userId']
   status: ReferralStatus
-  submittedAt?: string
+  submittedOn?: string
 }
 
 type CreatedReferralResponse = {
