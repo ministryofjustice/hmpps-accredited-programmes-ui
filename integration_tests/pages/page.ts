@@ -3,7 +3,7 @@ import type { AxeRules } from '@accredited-programmes/integration-tests'
 import { referPaths } from '../../server/paths'
 import { CourseParticipationUtils, PersonUtils, ReferralUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { CourseParticipation, Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -14,7 +14,7 @@ import type {
   HasHtmlString,
   HasTextString,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendWarningText } from '@govuk-frontend'
+import type { GovukFrontendSummaryListCardTitle, GovukFrontendWarningText } from '@govuk-frontend'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -209,14 +209,35 @@ export default abstract class Page {
     })
   }
 
+  shouldContainSubmittedReferralSideNavigation(currentPath: string, referralId: Referral['id']): void {
+    const navigationItems = ReferralUtils.viewReferralNavigationItems('/', referralId)
+
+    cy.get('.moj-side-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
+      const { href, text } = navigationItems[navigationItemElementIndex]
+
+      const { actual, expected } = Helpers.parseHtml(navigationItemElement, text)
+      expect(actual).to.equal(expected)
+
+      cy.wrap(navigationItemElement).within(() => {
+        cy.get('a').should('have.attr', 'href', href)
+
+        if (currentPath === href) {
+          cy.get('a').should('have.attr', 'aria-current', 'location')
+        } else {
+          cy.get('a').should('not.have.attr', 'aria-current', 'location')
+        }
+      })
+    })
+  }
+
   shouldContainSummaryCard(
-    courseName: CourseParticipation['courseName'],
+    title: GovukFrontendSummaryListCardTitle['text'],
     actions: Array<GovukFrontendSummaryListCardActionsItemWithText>,
     rows: Array<GovukFrontendSummaryListRowWithValue>,
     summaryCardElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryCardElement).within(() => {
-      cy.get('.govuk-summary-card__title').should('have.text', courseName)
+      cy.get('.govuk-summary-card__title').should('have.text', title)
 
       actions.forEach((action, actionIndex) => {
         cy.get('.govuk-summary-card__actions .govuk-link')

@@ -27,7 +27,7 @@ const checkAnswersPath = showDraftReferralPath.path('check-answers')
 const completeReferralPath = showDraftReferralPath.path('complete')
 const submitReferralPath = showDraftReferralPath.path('submit')
 
-const submittedReferralsPath = referBasePath.path('/referrals')
+const submittedReferralsPath = referBasePath.path('referrals')
 const showSubmittedReferralPath = submittedReferralsPath.path(':referralId')
 const submittedReferralPersonalDetailsPath = showSubmittedReferralPath.path('personal-details')
 const submittedReferralProgrammeHistoryPath = showSubmittedReferralPath.path('programme-history')
