@@ -1,0 +1,21 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "./partials/layout.njk" %}
+
+{% block submittedReferralContent %}
+  {% if courseParticipationSummaryListsOptions.length %}
+    {% for summaryListOptions in courseParticipationSummaryListsOptions %}
+      {{ govukSummaryList(summaryListOptions) }}
+    {% endfor %}
+  {% else %}
+    <div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title" data-testid="no-history-heading">Programme History</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+      <p class="govuk-body" data-testid="no-history-paragraph">There is no Accredited Programme history for {{ person.name }}.</p>
+    </div>
+  </div>
+  {% endif %}
+{% endblock submittedReferralContent %}

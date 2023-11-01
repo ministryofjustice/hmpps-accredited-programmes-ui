@@ -34,6 +34,26 @@ export default class ReferralsController {
     }
   }
 
+  programmeHistory(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const courseParticipationSummaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
+        req.user.token,
+        sharedPageData.person.prisonNumber,
+        sharedPageData.referral.id,
+        { change: false, remove: false },
+      )
+
+      res.render('referrals/show/programmeHistory', {
+        ...sharedPageData,
+        courseParticipationSummaryListsOptions,
+      })
+    }
+  }
+
   sentenceInformation(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

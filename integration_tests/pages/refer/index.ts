@@ -12,6 +12,7 @@ import NewReferralShowPersonPage from './new/showPerson'
 import NewReferralStartPage from './new/start'
 import NewReferralTaskListPage from './new/taskList'
 import PersonalDetailsPage from './show/personalDetails'
+import ProgrammeHistoryPage from './show/programmeHistory'
 import SentenceInformationPage from './show/sentenceInformation'
 
 export {
@@ -29,5 +30,6 @@ export {
   NewReferralStartPage,
   NewReferralTaskListPage,
   PersonalDetailsPage,
+  ProgrammeHistoryPage,
   SentenceInformationPage,
 }

@@ -7,7 +7,9 @@ import {
   prisonerFactory,
   referralFactory,
   sentenceAndOffenceDetailsFactory,
+  userFactory,
 } from '../../server/testutils/factories'
+import { StringUtils } from '../../server/utils'
 import NotFoundPage from '../pages/notFound'
 import Page from '../pages/page'
 
@@ -211,6 +213,43 @@ context('Refer', () => {
     cy.task('stubReferral', submittedReferral)
 
     const path = referPaths.show.personalDetails({ referralId: submittedReferral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
+  it("Doesn't show the programme history page for a submitted referral", () => {
+    const user = userFactory.build()
+    const courseParticipationPresenter1 = {
+      ...courseParticipationFactory.build({
+        addedBy: user.username,
+        courseName: course.name,
+        prisonNumber: prisoner.prisonerNumber,
+      }),
+      addedByDisplayName: StringUtils.convertToTitleCase(user.name),
+    }
+    const courseParticipationPresenter2 = {
+      ...courseParticipationFactory.build({
+        addedBy: user.username,
+        courseName: 'Another course name',
+        prisonNumber: prisoner.prisonerNumber,
+      }),
+      addedByDisplayName: StringUtils.convertToTitleCase(user.name),
+    }
+
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', submittedReferral)
+    cy.task('stubUserDetails', user)
+    cy.task('stubParticipationsByPerson', {
+      courseParticipations: [courseParticipationPresenter1, courseParticipationPresenter2],
+      prisonNumber: prisoner.prisonerNumber,
+    })
+
+    const path = referPaths.show.programmeHistory({ referralId: submittedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
 
     const notFoundPage = Page.verifyOnPage(NotFoundPage)
