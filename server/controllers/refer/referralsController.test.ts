@@ -2,7 +2,6 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
-import { when } from 'jest-when'
 
 import ReferralsController from './referralsController'
 import { referPaths } from '../../paths'
@@ -11,23 +10,13 @@ import {
   courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
-  courseParticipationFactory,
   organisationFactory,
   personFactory,
   referralFactory,
-  userFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import {
-  CourseParticipationUtils,
-  CourseUtils,
-  FormUtils,
-  PersonUtils,
-  ReferralUtils,
-  StringUtils,
-  TypeUtils,
-} from '../../utils'
-import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
+import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../utils'
+import type { CoursePresenter, GovukFrontendSummaryListWithRowsWithValues } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/courseUtils')
 jest.mock('../../utils/courseParticipationUtils')
@@ -237,41 +226,8 @@ describe('ReferralsController', () => {
       courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
-      const addedByUser = userFactory.build()
-
-      const earliestCourseParticipation = courseParticipationFactory.build({
-        addedBy: addedByUser.username,
-        createdAt: '2022-01-01T12:00:00.000Z',
-      })
-      const earliestCourseParticipationPresenter: CourseParticipationPresenter = {
-        ...earliestCourseParticipation,
-        addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
-      }
-      const latestCourseParticipation = courseParticipationFactory.build({
-        addedBy: addedByUser.username,
-        createdAt: '2023-01-01T12:00:00.000Z',
-      })
-      courseService.getParticipationsByPerson.mockResolvedValue([
-        latestCourseParticipation,
-        earliestCourseParticipation,
-      ])
-      const latestCourseParticipationPresenter: CourseParticipationPresenter = {
-        ...latestCourseParticipation,
-        addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
-      }
-      when(courseService.presentCourseParticipation)
-        .calledWith(token, earliestCourseParticipation)
-        .mockResolvedValue(earliestCourseParticipationPresenter)
-      when(courseService.presentCourseParticipation)
-        .calledWith(token, latestCourseParticipation)
-        .mockResolvedValue(latestCourseParticipationPresenter)
-
-      const summaryListOptions = 'summary list options'
-      ;(CourseParticipationUtils.summaryListOptions as jest.Mock).mockImplementation(
-        (_courseParticipation, _referralId, _withActions = { change: true, remove: true }) => {
-          return summaryListOptions
-        },
-      )
+      const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithValues
+      courseService.getAndPresentParticipationsByPerson.mockResolvedValue([summaryListOptions, summaryListOptions])
 
       const requestHandler = referralsController.checkAnswers()
       await requestHandler(request, response, next)
@@ -283,18 +239,13 @@ describe('ReferralsController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
-      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
-        1,
-        earliestCourseParticipationPresenter,
+      expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
+        token,
+        person.prisonNumber,
         referralId,
         { change: true, remove: false },
       )
-      expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
-        2,
-        latestCourseParticipationPresenter,
-        referralId,
-        { change: true, remove: false },
-      )
+
       expect(response.render).toHaveBeenCalledWith('referrals/checkAnswers', {
         additionalInformation: submittableReferral.additionalInformation,
         applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(

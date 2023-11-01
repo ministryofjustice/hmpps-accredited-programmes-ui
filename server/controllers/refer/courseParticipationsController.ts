@@ -64,20 +64,17 @@ export default class CourseParticipationsController {
       }
 
       const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
-      const courseParticipationPresenter = await this.courseService.presentCourseParticipation(
+      const summaryListOptions = await this.courseService.presentCourseParticipation(
         req.user.token,
         courseParticipation,
+        referralId,
+        { change: false, remove: false },
       )
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-
-      const summaryListOptions = CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, {
-        change: false,
-        remove: false,
-      })
 
       return res.render('referrals/courseParticipations/delete', {
         action: `${referPaths.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
@@ -169,18 +166,11 @@ export default class CourseParticipationsController {
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-      const sortedCourseParticipations = (
-        await this.courseService.getParticipationsByPerson(req.user.token, person.prisonNumber)
-      ).sort((participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt))
 
-      const courseParticipationsPresenter = await Promise.all(
-        sortedCourseParticipations.map(participation =>
-          this.courseService.presentCourseParticipation(req.user.token, participation),
-        ),
-      )
-
-      const summaryListsOptions = courseParticipationsPresenter.map(participation =>
-        CourseParticipationUtils.summaryListOptions(participation, referralId),
+      const summaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
+        req.user.token,
+        person.prisonNumber,
+        referralId,
       )
 
       const successMessage = req.flash('successMessage')[0]

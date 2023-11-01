@@ -3,15 +3,16 @@ import type { ResponseError } from 'superagent'
 
 import type UserService from './userService'
 import type { CourseClient, RestClientBuilder } from '../data'
-import { StringUtils } from '../utils'
+import { CourseParticipationUtils, StringUtils } from '../utils'
 import type {
   Course,
   CourseOffering,
   CourseParticipation,
   CourseParticipationUpdate,
   Person,
+  Referral,
 } from '@accredited-programmes/models'
-import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListWithRowsWithValues } from '@accredited-programmes/ui'
 
 export default class CourseService {
   constructor(
@@ -34,6 +35,26 @@ export default class CourseService {
   ): Promise<void> {
     const courseClient = this.courseClientBuilder(token)
     return courseClient.destroyParticipation(courseParticipationId)
+  }
+
+  async getAndPresentParticipationsByPerson(
+    token: Express.User['token'],
+    prisonNumber: Person['prisonNumber'],
+    referralId: Referral['id'],
+    withActions?: {
+      change: boolean
+      remove: boolean
+    },
+  ): Promise<Array<GovukFrontendSummaryListWithRowsWithValues>> {
+    const sortedCourseParticipations = (await this.getParticipationsByPerson(token, prisonNumber)).sort(
+      (participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt),
+    )
+
+    return Promise.all(
+      sortedCourseParticipations.map(participation =>
+        this.presentCourseParticipation(token, participation, referralId, withActions),
+      ),
+    )
   }
 
   async getCourse(token: Express.User['token'], courseId: Course['id']): Promise<Course> {
@@ -101,10 +122,17 @@ export default class CourseService {
   async presentCourseParticipation(
     token: Express.User['token'],
     courseParticipation: CourseParticipation,
-  ): Promise<CourseParticipationPresenter> {
+    referralId: Referral['id'],
+    withActions = { change: true, remove: true },
+  ): Promise<GovukFrontendSummaryListWithRowsWithValues> {
     const addedByUser = await this.userService.getUserFromUsername(token, courseParticipation.addedBy)
 
-    return { ...courseParticipation, addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name) }
+    const courseParticipationPresenter = {
+      ...courseParticipation,
+      addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+    }
+
+    return CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, withActions)
   }
 
   async updateParticipation(
