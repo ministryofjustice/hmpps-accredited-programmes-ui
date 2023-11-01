@@ -79,6 +79,22 @@ describe('ReferralsController', () => {
     jest.resetAllMocks()
   })
 
+  describe('additionalInformation', () => {
+    it('renders the additional information template with the correct response locals', async () => {
+      request.path = referPaths.show.additionalInformation({ referralId: referral.id })
+
+      const requestHandler = controller.additionalInformation()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
+        ...sharedPageData,
+        additionalInformation: referral.additionalInformation,
+        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+      })
+    })
+  })
+
   describe('personalDetails', () => {
     it('renders the personal details template with the correct response locals', async () => {
       request.path = referPaths.show.personalDetails({ referralId: referral.id })

@@ -11,11 +11,13 @@ import NewReferralSelectProgrammePage from './new/selectProgramme'
 import NewReferralShowPersonPage from './new/showPerson'
 import NewReferralStartPage from './new/start'
 import NewReferralTaskListPage from './new/taskList'
+import AdditionalInformationPage from './show/additionalInformation'
 import PersonalDetailsPage from './show/personalDetails'
 import ProgrammeHistoryPage from './show/programmeHistory'
 import SentenceInformationPage from './show/sentenceInformation'
 
 export {
+  AdditionalInformationPage,
   NewReferralAdditionalInformationPage,
   NewReferralCheckAnswersPage,
   NewReferralCompletePage,

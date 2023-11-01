@@ -20,6 +20,22 @@ export default class ReferralsController {
     private readonly sentenceInformationService: SentenceInformationService,
   ) {}
 
+  additionalInformation(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const { referral } = sharedPageData
+
+      res.render('referrals/show/additionalInformation', {
+        ...sharedPageData,
+        additionalInformation: sharedPageData.referral.additionalInformation,
+        submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+      })
+    }
+  }
+
   personalDetails(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

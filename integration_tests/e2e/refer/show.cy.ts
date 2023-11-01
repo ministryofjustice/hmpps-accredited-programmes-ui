@@ -13,7 +13,12 @@ import {
 } from '../../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils, StringUtils } from '../../../server/utils'
 import Page from '../../pages/page'
-import { PersonalDetailsPage, ProgrammeHistoryPage, SentenceInformationPage } from '../../pages/refer'
+import {
+  AdditionalInformationPage,
+  PersonalDetailsPage,
+  ProgrammeHistoryPage,
+  SentenceInformationPage,
+} from '../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 context('Viewing a submitted referral', () => {
@@ -174,6 +179,26 @@ context('Viewing a submitted referral', () => {
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainSentenceDetailsSummaryCard()
+    })
+  })
+
+  describe('when reviewing additional information', () => {
+    it('shows the correct information', () => {
+      const path = referPaths.show.additionalInformation({ referralId: referral.id })
+      cy.visit(path)
+
+      const additionalInformationPage = Page.verifyOnPage(AdditionalInformationPage, {
+        course,
+        referral,
+      })
+      additionalInformationPage.shouldHavePersonDetails(person)
+      additionalInformationPage.shouldContainNavigation(path)
+      additionalInformationPage.shouldContainBackLink('#')
+      additionalInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+      additionalInformationPage.shouldContainSubmissionSummaryList(referral)
+      additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      additionalInformationPage.shouldContainAdditionalInformation()
+      additionalInformationPage.shouldContainSubmittedText()
     })
   })
 })
