@@ -148,7 +148,7 @@ describe('ReferralUtils', () => {
             {
               statusTag: { classes: 'moj-task-list__task-completed', text: 'completed' },
               text: 'Confirm personal details',
-              url: `/refer/new/referrals/${referral.id}/person`,
+              url: `/refer/referrals/new/${referral.id}/person`,
             },
           ],
         },
@@ -162,7 +162,7 @@ describe('ReferralUtils', () => {
                 text: 'not started',
               },
               text: 'Review Accredited Programme history',
-              url: `/refer/new/referrals/${referral.id}/programme-history`,
+              url: `/refer/referrals/new/${referral.id}/programme-history`,
             },
             {
               statusTag: {
@@ -171,7 +171,7 @@ describe('ReferralUtils', () => {
                 text: 'not started',
               },
               text: 'Confirm the OASys information',
-              url: `/refer/new/referrals/${referral.id}/confirm-oasys`,
+              url: `/refer/referrals/new/${referral.id}/confirm-oasys`,
             },
             {
               statusTag: {
@@ -180,7 +180,7 @@ describe('ReferralUtils', () => {
                 text: 'not started',
               },
               text: 'Add additional information',
-              url: `/refer/new/referrals/${referral.id}/additional-information`,
+              url: `/refer/referrals/new/${referral.id}/additional-information`,
             },
           ],
         },
@@ -241,7 +241,7 @@ describe('ReferralUtils', () => {
       const checkAnswersSection = getTaskListSection('Check answers and submit', taskListSections)
       const checkAnswersTask = getTaskListItem('Check answers and submit', checkAnswersSection)
 
-      expect(checkAnswersTask.url).toEqual(`/refer/new/referrals/${referralWithOasysConfirmed.id}/check-answers`)
+      expect(checkAnswersTask.url).toEqual(`/refer/referrals/new/${referralWithOasysConfirmed.id}/check-answers`)
       expect(checkAnswersTask.statusTag.text).toEqual('not started')
     })
   })
@@ -249,27 +249,27 @@ describe('ReferralUtils', () => {
   describe('viewReferralNavigationItems', () => {
     it('returns navigation items for the view referral pages and sets the requested page as active', () => {
       const mockReferralId = 'mock-referral-id'
-      const currentRequestPath = referPaths.submitted.personalDetails({ referralId: mockReferralId })
+      const currentRequestPath = referPaths.show.personalDetails({ referralId: mockReferralId })
 
       expect(ReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
         {
           active: true,
-          href: referPaths.submitted.personalDetails({ referralId: mockReferralId }),
+          href: referPaths.show.personalDetails({ referralId: mockReferralId }),
           text: 'Personal details',
         },
         {
           active: false,
-          href: referPaths.submitted.programmeHistory({ referralId: mockReferralId }),
+          href: referPaths.show.programmeHistory({ referralId: mockReferralId }),
           text: 'Programme history',
         },
         {
           active: false,
-          href: referPaths.submitted.sentenceInformation({ referralId: mockReferralId }),
+          href: referPaths.show.sentenceInformation({ referralId: mockReferralId }),
           text: 'Sentence information',
         },
         {
           active: false,
-          href: referPaths.submitted.additionalInformation({ referralId: mockReferralId }),
+          href: referPaths.show.additionalInformation({ referralId: mockReferralId }),
           text: 'Additional information',
         },
       ])

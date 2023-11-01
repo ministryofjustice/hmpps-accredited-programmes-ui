@@ -13,52 +13,55 @@ export default function routes(controllers: Controllers, router: Router): Router
     put,
   } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
-    additionalInformationController,
-    courseParticipationDetailsController,
-    courseParticipationsController,
+    newReferralsAdditionalInformationController,
+    newReferralsCourseParticipationDetailsController,
+    newReferralsCourseParticipationsController,
+    newReferralsController,
+    newReferralsPeopleController,
+    newReferralsOasysConfirmationController,
     referralsController,
-    peopleController,
-    oasysConfirmationController,
-    submittedReferralsController,
   } = controllers
 
-  get(referPaths.start.pattern, referralsController.start())
-  get(referPaths.new.pattern, referralsController.new())
+  get(referPaths.new.start.pattern, newReferralsController.start())
+  get(referPaths.new.new.pattern, newReferralsController.new())
 
-  post(referPaths.people.find.pattern, peopleController.find())
-  get(referPaths.people.show.pattern, peopleController.show())
+  post(referPaths.new.people.find.pattern, newReferralsPeopleController.find())
+  get(referPaths.new.people.show.pattern, newReferralsPeopleController.show())
 
-  post(referPaths.create.pattern, referralsController.create())
-  get(referPaths.show.pattern, referralsController.show())
-  get(referPaths.showPerson.pattern, referralsController.showPerson())
+  post(referPaths.new.create.pattern, newReferralsController.create())
+  get(referPaths.new.show.pattern, newReferralsController.show())
+  get(referPaths.new.showPerson.pattern, newReferralsController.showPerson())
 
-  get(referPaths.confirmOasys.show.pattern, oasysConfirmationController.show())
-  put(referPaths.confirmOasys.update.pattern, oasysConfirmationController.update())
+  get(referPaths.new.confirmOasys.show.pattern, newReferralsOasysConfirmationController.show())
+  put(referPaths.new.confirmOasys.update.pattern, newReferralsOasysConfirmationController.update())
 
-  get(referPaths.additionalInformation.show.pattern, additionalInformationController.show())
-  put(referPaths.additionalInformation.update.pattern, additionalInformationController.update())
+  get(referPaths.new.additionalInformation.show.pattern, newReferralsAdditionalInformationController.show())
+  put(referPaths.new.additionalInformation.update.pattern, newReferralsAdditionalInformationController.update())
 
-  get(referPaths.programmeHistory.index.pattern, courseParticipationsController.index())
+  get(referPaths.new.programmeHistory.index.pattern, newReferralsCourseParticipationsController.index())
   put(
-    referPaths.programmeHistory.updateReviewedStatus.pattern,
-    courseParticipationsController.updateHasReviewedProgrammeHistory(),
+    referPaths.new.programmeHistory.updateReviewedStatus.pattern,
+    newReferralsCourseParticipationsController.updateHasReviewedProgrammeHistory(),
   )
-  get(referPaths.programmeHistory.new.pattern, courseParticipationsController.new())
-  post(referPaths.programmeHistory.create.pattern, courseParticipationsController.create())
-  get(referPaths.programmeHistory.editProgramme.pattern, courseParticipationsController.editCourse())
-  put(referPaths.programmeHistory.updateProgramme.pattern, courseParticipationsController.updateCourse())
-  get(referPaths.programmeHistory.delete.pattern, courseParticipationsController.delete())
-  deleteAction(referPaths.programmeHistory.destroy.pattern, courseParticipationsController.destroy())
+  get(referPaths.new.programmeHistory.new.pattern, newReferralsCourseParticipationsController.new())
+  post(referPaths.new.programmeHistory.create.pattern, newReferralsCourseParticipationsController.create())
+  get(referPaths.new.programmeHistory.editProgramme.pattern, newReferralsCourseParticipationsController.editCourse())
+  put(
+    referPaths.new.programmeHistory.updateProgramme.pattern,
+    newReferralsCourseParticipationsController.updateCourse(),
+  )
+  get(referPaths.new.programmeHistory.delete.pattern, newReferralsCourseParticipationsController.delete())
+  deleteAction(referPaths.new.programmeHistory.destroy.pattern, newReferralsCourseParticipationsController.destroy())
 
-  get(referPaths.programmeHistory.details.show.pattern, courseParticipationDetailsController.show())
-  put(referPaths.programmeHistory.details.update.pattern, courseParticipationDetailsController.update())
+  get(referPaths.new.programmeHistory.details.show.pattern, newReferralsCourseParticipationDetailsController.show())
+  put(referPaths.new.programmeHistory.details.update.pattern, newReferralsCourseParticipationDetailsController.update())
 
-  get(referPaths.checkAnswers.pattern, referralsController.checkAnswers())
-  get(referPaths.complete.pattern, referralsController.complete())
-  post(referPaths.submit.pattern, referralsController.submit())
+  get(referPaths.new.checkAnswers.pattern, newReferralsController.checkAnswers())
+  get(referPaths.new.complete.pattern, newReferralsController.complete())
+  post(referPaths.new.submit.pattern, newReferralsController.submit())
 
-  get(referPaths.submitted.personalDetails.pattern, submittedReferralsController.personalDetails())
-  get(referPaths.submitted.sentenceInformation.pattern, submittedReferralsController.sentenceInformation())
+  get(referPaths.show.personalDetails.pattern, referralsController.personalDetails())
+  get(referPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
 
   return router
 }

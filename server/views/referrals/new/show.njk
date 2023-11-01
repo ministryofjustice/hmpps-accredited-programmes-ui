@@ -1,0 +1,28 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% from "./_taskListSection.njk" import taskListSection %}
+{% from "../../partials/audienceTags.njk" import audienceTags %}
+
+{% extends "../../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "../_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "./_organisationAndCourse.njk" %}
+
+      {{ audienceTags(course.audienceTags) }}
+
+      <ol class="moj-task-list">
+        {% for section in taskListSections %}
+          {{ taskListSection(section) }}
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+{% endblock content %}

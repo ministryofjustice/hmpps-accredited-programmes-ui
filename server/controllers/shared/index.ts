@@ -1,10 +1,10 @@
 /* istanbul ignore file */
 
-import SubmittedReferralsController from './submittedReferralsController'
+import ReferralsController from './referralsController'
 import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
-  const submittedReferralsController = new SubmittedReferralsController(
+  const referralsController = new ReferralsController(
     services.courseService,
     services.organisationService,
     services.personService,
@@ -13,7 +13,7 @@ const controllers = (services: Services) => {
   )
 
   return {
-    submittedReferralsController,
+    referralsController,
   }
 }
 

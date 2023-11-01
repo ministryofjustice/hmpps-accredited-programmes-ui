@@ -32,7 +32,7 @@
       {% if referEnabled and user.hasReferrerRole %}
         {{ govukButton({
             text: "Make a referral",
-            href: referPaths.start({ courseOfferingId: courseOffering.id })
+            href: referPaths.new.start({ courseOfferingId: courseOffering.id })
         }) }}
       {% endif %}
     </div>

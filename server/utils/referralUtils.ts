@@ -84,7 +84,9 @@ export default class ReferralUtils {
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
     const referralId = referral.id
     const checkAnswersStatus = ReferralUtils.isReadyForSubmission(referral) ? 'not started' : 'cannot start yet'
-    const checkAnswersUrl = ReferralUtils.isReadyForSubmission(referral) ? referPaths.checkAnswers({ referralId }) : ''
+    const checkAnswersUrl = ReferralUtils.isReadyForSubmission(referral)
+      ? referPaths.new.checkAnswers({ referralId })
+      : ''
 
     return [
       {
@@ -93,7 +95,7 @@ export default class ReferralUtils {
           {
             statusTag: ReferralUtils.taskListStatusTag('completed'),
             text: 'Confirm personal details',
-            url: referPaths.showPerson({ referralId }),
+            url: referPaths.new.showPerson({ referralId }),
           },
         ],
       },
@@ -106,7 +108,7 @@ export default class ReferralUtils {
               'programme-history-tag',
             ),
             text: 'Review Accredited Programme history',
-            url: referPaths.programmeHistory.index({ referralId: referral.id }),
+            url: referPaths.new.programmeHistory.index({ referralId: referral.id }),
           },
           {
             statusTag: ReferralUtils.taskListStatusTag(
@@ -114,7 +116,7 @@ export default class ReferralUtils {
               'confirm-oasys-tag',
             ),
             text: 'Confirm the OASys information',
-            url: referPaths.confirmOasys.show({ referralId }),
+            url: referPaths.new.confirmOasys.show({ referralId }),
           },
           {
             statusTag: ReferralUtils.taskListStatusTag(
@@ -122,7 +124,7 @@ export default class ReferralUtils {
               'additional-information-tag',
             ),
             text: 'Add additional information',
-            url: referPaths.additionalInformation.show({ referralId }),
+            url: referPaths.new.additionalInformation.show({ referralId }),
           },
         ],
       },
@@ -146,19 +148,19 @@ export default class ReferralUtils {
   ): Array<MojFrontendSideNavigationItem> {
     const navigationItems = [
       {
-        href: referPaths.submitted.personalDetails({ referralId }),
+        href: referPaths.show.personalDetails({ referralId }),
         text: 'Personal details',
       },
       {
-        href: referPaths.submitted.programmeHistory({ referralId }),
+        href: referPaths.show.programmeHistory({ referralId }),
         text: 'Programme history',
       },
       {
-        href: referPaths.submitted.sentenceInformation({ referralId }),
+        href: referPaths.show.sentenceInformation({ referralId }),
         text: 'Sentence information',
       },
       {
-        href: referPaths.submitted.additionalInformation({ referralId }),
+        href: referPaths.show.additionalInformation({ referralId }),
         text: 'Additional information',
       },
     ]

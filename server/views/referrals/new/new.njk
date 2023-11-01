@@ -1,0 +1,51 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% extends "../../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: referPaths.new.start({ courseOfferingId: courseOfferingId })
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  {% if errors.list.length %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      </div>
+    </div>
+  {% endif %}
+
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="{{ referPaths.new.people.find({ courseOfferingId: courseOfferingId }) }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukInput({
+          label: {
+            text: "Enter the prison number. We'll import their details into your application."
+          },
+          hint: {
+            text: "For example, a prison number is A1234AA"
+          },
+          id: "prisonNumber",
+          name: "prisonNumber",
+          errorMessage: errors.messages.prisonNumber
+        }) }}
+
+        {{ govukButton({ text: "Continue" }) }}
+      </form>
+    </div>
+  </div>
+
+{% endblock content %}
