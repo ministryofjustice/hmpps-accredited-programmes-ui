@@ -60,6 +60,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.new.complete.pattern, newReferralsController.complete())
   post(referPaths.new.submit.pattern, newReferralsController.submit())
 
+  get(referPaths.show.additionalInformation.pattern, referralsController.additionalInformation())
   get(referPaths.show.personalDetails.pattern, referralsController.personalDetails())
   get(referPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
   get(referPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
