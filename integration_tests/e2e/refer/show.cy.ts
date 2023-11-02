@@ -3,15 +3,18 @@ import { referPaths } from '../../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   personFactory,
   prisonFactory,
   prisonerFactory,
   referralFactory,
   sentenceAndOffenceDetailsFactory,
+  userFactory,
 } from '../../../server/testutils/factories'
-import { CourseUtils, OrganisationUtils } from '../../../server/utils'
+import { CourseUtils, OrganisationUtils, StringUtils } from '../../../server/utils'
 import Page from '../../pages/page'
-import { PersonalDetailsPage, SentenceInformationPage } from '../../pages/refer'
+import { PersonalDetailsPage, ProgrammeHistoryPage, SentenceInformationPage } from '../../pages/refer'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 context('Viewing a submitted referral', () => {
   const course = courseFactory.build()
@@ -38,6 +41,24 @@ context('Viewing a submitted referral', () => {
     prisonNumber: person.prisonNumber,
   })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
+
+  const user = userFactory.build()
+  const courseParticipationPresenter1 = {
+    ...courseParticipationFactory.build({
+      addedBy: user.username,
+      courseName: course.name,
+      prisonNumber: person.prisonNumber,
+    }),
+    addedByDisplayName: StringUtils.convertToTitleCase(user.name),
+  }
+  const courseParticipationPresenter2 = {
+    ...courseParticipationFactory.build({
+      addedBy: user.username,
+      courseName: 'Another course name',
+      prisonNumber: person.prisonNumber,
+    }),
+    addedByDisplayName: StringUtils.convertToTitleCase(user.name),
+  }
 
   beforeEach(() => {
     cy.task('reset')
@@ -70,6 +91,66 @@ context('Viewing a submitted referral', () => {
       personalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       personalDetailsPage.shouldContainImportedFromText()
       personalDetailsPage.shouldContainPersonalDetailsSummaryCard()
+    })
+  })
+
+  describe('When reviewing programme history', () => {
+    beforeEach(() => {
+      cy.task('stubUserDetails', user)
+    })
+
+    describe('and there are CourseParticipation records for that user', () => {
+      it('shows the correct information, including the CourseParticipation records', () => {
+        cy.task('stubParticipationsByPerson', {
+          courseParticipations: [courseParticipationPresenter1, courseParticipationPresenter2],
+          prisonNumber: prisoner.prisonerNumber,
+        })
+
+        const path = referPaths.show.programmeHistory({ referralId: referral.id })
+        cy.visit(path)
+
+        const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
+          course,
+          person,
+        })
+
+        const courseParticipationsPresenter: Array<CourseParticipationPresenter> = [
+          courseParticipationPresenter1,
+          courseParticipationPresenter2,
+        ]
+
+        programmeHistoryPage.shouldHavePersonDetails(person)
+        programmeHistoryPage.shouldContainNavigation(path)
+        programmeHistoryPage.shouldContainBackLink('#')
+        programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+        programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id, {
+          change: false,
+          remove: false,
+        })
+      })
+    })
+
+    describe('and there are no CourseParticipation records for that user', () => {
+      it('shows the correct information, including a message that there are no CourseParticipation records', () => {
+        cy.task('stubParticipationsByPerson', {
+          courseParticipations: [],
+          prisonNumber: prisoner.prisonerNumber,
+        })
+
+        const path = referPaths.show.programmeHistory({ referralId: referral.id })
+        cy.visit(path)
+
+        const programmeHistoryPage = Page.verifyOnPage(ProgrammeHistoryPage, {
+          course,
+          person,
+        })
+
+        programmeHistoryPage.shouldHavePersonDetails(person)
+        programmeHistoryPage.shouldContainNavigation(path)
+        programmeHistoryPage.shouldContainBackLink('#')
+        programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+        programmeHistoryPage.shouldContainNoHistoryParagraph()
+      })
     })
   })
 

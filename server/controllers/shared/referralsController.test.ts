@@ -21,6 +21,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
+import type { GovukFrontendSummaryListWithRowsWithValues } from '@accredited-programmes/ui'
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -90,6 +91,32 @@ describe('ReferralsController', () => {
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         personSummaryListRows: PersonUtils.summaryListRows(person),
+      })
+    })
+  })
+
+  describe('programmeHistory', () => {
+    it('renders the programme history template with the correct response locals', async () => {
+      const courseParticipationSummaryListsOptions = [createMock<GovukFrontendSummaryListWithRowsWithValues>()]
+
+      courseService.getAndPresentParticipationsByPerson.mockResolvedValue(courseParticipationSummaryListsOptions)
+
+      request.path = referPaths.show.programmeHistory({ referralId: referral.id })
+
+      const requestHandler = controller.programmeHistory()
+      await requestHandler(request, response, next)
+
+      expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
+        request.user!.token,
+        sharedPageData.person.prisonNumber,
+        sharedPageData.referral.id,
+        { change: false, remove: false },
+      )
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/programmeHistory', {
+        ...sharedPageData,
+        courseParticipationSummaryListsOptions,
+        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
       })
     })
   })
