@@ -20,5 +20,25 @@ describe('SentenceInformationUtils', () => {
         },
       ])
     })
+
+    describe('when there is no sentence start date', () => {
+      it('returns an empty string against that field', () => {
+        const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build({
+          sentenceStartDate: undefined,
+          sentenceTypeDescription: 'Concurrent determinate sentence',
+        })
+
+        expect(SentenceInformationUtils.detailsSummaryListRows(sentenceAndOffenceDetails)).toEqual([
+          {
+            key: { text: 'Sentence type' },
+            value: { text: 'Concurrent determinate sentence' },
+          },
+          {
+            key: { text: 'Sentence start date' },
+            value: { text: '' },
+          },
+        ])
+      })
+    })
   })
 })

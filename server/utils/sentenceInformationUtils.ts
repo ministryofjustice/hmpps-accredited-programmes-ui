@@ -6,6 +6,8 @@ export default class SentenceInformationUtils {
   static detailsSummaryListRows(
     sentenceAndOffenceDetails: SentenceAndOffenceDetails,
   ): Array<GovukFrontendSummaryListRowWithValue> {
+    const { sentenceStartDate } = sentenceAndOffenceDetails
+
     return [
       {
         key: { text: 'Sentence type' },
@@ -13,7 +15,11 @@ export default class SentenceInformationUtils {
       },
       {
         key: { text: 'Sentence start date' },
-        value: { text: DateUtils.govukFormattedFullDateString(sentenceAndOffenceDetails.sentenceStartDate) },
+        value: {
+          text: sentenceStartDate
+            ? DateUtils.govukFormattedFullDateString(sentenceAndOffenceDetails.sentenceStartDate)
+            : '',
+        },
       },
     ]
   }
