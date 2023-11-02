@@ -12,8 +12,8 @@ export default class SentenceInformationUtils {
         value: { text: sentenceAndOffenceDetails.sentenceTypeDescription },
       },
       {
-        key: { text: 'Sentence date' },
-        value: { text: DateUtils.govukFormattedFullDateString(sentenceAndOffenceDetails.sentenceDate) },
+        key: { text: 'Sentence start date' },
+        value: { text: DateUtils.govukFormattedFullDateString(sentenceAndOffenceDetails.sentenceStartDate) },
       },
     ]
   }
