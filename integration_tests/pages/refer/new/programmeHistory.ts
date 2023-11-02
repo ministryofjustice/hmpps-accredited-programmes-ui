@@ -28,7 +28,7 @@ export default class NewReferralProgrammeHistoryPage extends Page {
   shouldContainNoHistoryHeading() {
     cy.get('[data-testid="no-history-heading"]').should(
       'have.text',
-      `There is no record of Accredited Programmes for ${this.person.name}.`,
+      `There is no Accredited Programme history for ${this.person.name}.`,
     )
   }
 

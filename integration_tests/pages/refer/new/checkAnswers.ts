@@ -103,7 +103,7 @@ export default class NewReferralCheckAnswersPage extends Page {
   shouldNotHaveProgrammeHistory(): void {
     cy.get('[data-testid="programme-history"] .govuk-body').should(
       'have.text',
-      `There is no record of Accredited Programmes for ${this.person.name}.`,
+      `There is no Accredited Programme history for ${this.person.name}.`,
     )
   }
 }
