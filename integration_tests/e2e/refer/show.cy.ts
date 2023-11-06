@@ -128,6 +128,8 @@ context('Viewing a submitted referral', () => {
         programmeHistoryPage.shouldContainNavigation(path)
         programmeHistoryPage.shouldContainBackLink('#')
         programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+        programmeHistoryPage.shouldContainSubmissionSummaryList(referral)
+        programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
         programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id, {
           change: false,
           remove: false,
@@ -154,6 +156,8 @@ context('Viewing a submitted referral', () => {
         programmeHistoryPage.shouldContainNavigation(path)
         programmeHistoryPage.shouldContainBackLink('#')
         programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+        programmeHistoryPage.shouldContainSubmissionSummaryList(referral)
+        programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
         programmeHistoryPage.shouldContainNoHistoryParagraph()
       })
     })
