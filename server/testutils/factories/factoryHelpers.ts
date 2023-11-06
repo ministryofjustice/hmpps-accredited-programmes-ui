@@ -12,4 +12,8 @@ export default class FactoryHelpers {
     const fullOptions: Array<T | undefined> = [undefined]
     return faker.helpers.arrayElement(fullOptions.concat(options))
   }
+
+  static optionalRandomFutureDateString(): string | undefined {
+    return FactoryHelpers.optionalArrayElement([`${faker.date.future({ years: 20 })}`.substring(0, 10)])
+  }
 }

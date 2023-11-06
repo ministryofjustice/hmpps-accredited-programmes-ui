@@ -1,41 +1,87 @@
 import PersonUtils from './personUtils'
 import { personFactory, prisonerFactory } from '../testutils/factories'
+import type { Prisoner } from '@prisoner-search'
 
 describe('PersonUtils', () => {
   describe('personFromPrisoner', () => {
+    let prisoner: Prisoner
+
+    beforeEach(() => {
+      prisoner = prisonerFactory.build({
+        bookingId: '1234567890',
+        conditionalReleaseDate: '2024-10-31',
+        dateOfBirth: '1971-07-05',
+        ethnicity: 'White',
+        firstName: 'Del',
+        gender: 'Male',
+        homeDetentionCurfewEligibilityDate: '2025-10-31',
+        indeterminateSentence: false,
+        lastName: 'Hatton',
+        paroleEligibilityDate: '2026-10-31',
+        prisonName: 'HMP Hewell',
+        prisonerNumber: 'ABC1234',
+        religion: 'Christian',
+        sentenceExpiryDate: '2027-10-31',
+        sentenceStartDate: '2010-10-31',
+        tariffDate: '2028-10-31',
+      })
+    })
+
     describe('when all fields are present on a Prisoner Search "Prisoner"', () => {
       it('returns a "Person" with those fields', () => {
-        const prisoner = prisonerFactory.build({
-          bookingId: '1234567890',
-          dateOfBirth: '1971-07-05',
-          ethnicity: 'White',
-          firstName: 'Del',
-          gender: 'Male',
-          lastName: 'Hatton',
-          prisonName: 'HMP Hewell',
-          prisonerNumber: 'ABC1234',
-          religion: 'Christian',
-          sentenceStartDate: '2010-10-31',
-        })
-
         expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
           bookingId: '1234567890',
+          conditionalReleaseDate: '2024-10-31',
           currentPrison: 'HMP Hewell',
           dateOfBirth: '5 July 1971',
+          earliestReleaseDate: '2026-10-31',
           ethnicity: 'White',
           gender: 'Male',
+          homeDetentionCurfewEligibilityDate: '2025-10-31',
           name: 'Del Hatton',
+          paroleEligibilityDate: '2026-10-31',
           prisonNumber: 'ABC1234',
           religionOrBelief: 'Christian',
+          sentenceExpiryDate: '2027-10-31',
           sentenceStartDate: '2010-10-31',
           setting: 'Custody',
+          tariffDate: '2028-10-31',
+        })
+      })
+    })
+
+    describe('earliestReleaseDate', () => {
+      describe('when the prisoner is on an indeterminate sentence', () => {
+        it('uses `tariffDate`', () => {
+          prisoner = { ...prisoner, indeterminateSentence: true }
+
+          expect(PersonUtils.personFromPrisoner(prisoner).earliestReleaseDate).toEqual(prisoner.tariffDate)
+        })
+      })
+
+      describe('when the prisoner is on a determinate sentence', () => {
+        describe('and `paroleEligibilityDate` is present', () => {
+          it('uses `paroleEligibilityDate`', () => {
+            prisoner = { ...prisoner, indeterminateSentence: false }
+
+            expect(PersonUtils.personFromPrisoner(prisoner).earliestReleaseDate).toEqual(prisoner.paroleEligibilityDate)
+          })
+        })
+
+        describe('and `paroleEligibilityDate` is `undefined`', () => {
+          it('uses `conditionalReleaseDate`', () => {
+            prisoner = { ...prisoner, paroleEligibilityDate: undefined }
+            expect(PersonUtils.personFromPrisoner(prisoner).earliestReleaseDate).toEqual(
+              prisoner.conditionalReleaseDate,
+            )
+          })
         })
       })
     })
 
     describe('name', () => {
       it("formats the person's name in title case", () => {
-        const prisoner = prisonerFactory.build({ firstName: 'DEL', lastName: 'HATTON' })
+        prisoner = { ...prisoner, firstName: 'DEL', lastName: 'HATTON' }
 
         expect(PersonUtils.personFromPrisoner(prisoner).name).toEqual('Del Hatton')
       })
@@ -43,31 +89,30 @@ describe('PersonUtils', () => {
 
     describe('when fields are missing on a Prisoner Search "Prisoner"', () => {
       it('returns a "Person" with "Not entered" or `undefined` for those fields as appropriate', () => {
-        const prisoner = prisonerFactory.build({
-          bookingId: '1234567890',
-          dateOfBirth: '1971-07-05',
+        prisoner = {
+          ...prisoner,
+          conditionalReleaseDate: undefined,
           ethnicity: undefined,
-          firstName: 'Del',
-          gender: 'Male',
-          lastName: 'Hatton',
-          prisonName: 'HMP Hewell',
-          prisonerNumber: 'ABC1234',
+          homeDetentionCurfewEligibilityDate: undefined,
+          paroleEligibilityDate: undefined,
           religion: undefined,
+          sentenceExpiryDate: undefined,
           sentenceStartDate: undefined,
-        })
+          tariffDate: undefined,
+        }
 
-        expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
-          bookingId: '1234567890',
-          currentPrison: 'HMP Hewell',
-          dateOfBirth: '5 July 1971',
-          ethnicity: 'Not entered',
-          gender: 'Male',
-          name: 'Del Hatton',
-          prisonNumber: 'ABC1234',
-          religionOrBelief: 'Not entered',
-          sentenceStartDate: undefined,
-          setting: 'Custody',
-        })
+        expect(PersonUtils.personFromPrisoner(prisoner)).toEqual(
+          expect.objectContaining({
+            conditionalReleaseDate: undefined,
+            ethnicity: 'Not entered',
+            homeDetentionCurfewEligibilityDate: undefined,
+            paroleEligibilityDate: undefined,
+            religionOrBelief: 'Not entered',
+            sentenceExpiryDate: undefined,
+            sentenceStartDate: undefined,
+            tariffDate: undefined,
+          }),
+        )
       })
     })
   })

@@ -15,14 +15,20 @@ export default Factory.define<Prisoner>(({ params }) => {
 
   return {
     bookingId: faker.string.numeric({ length: 10 }),
+    conditionalReleaseDate: FactoryHelpers.optionalRandomFutureDateString(),
     dateOfBirth: [year, month, day].join('-'),
     ethnicity: faker.lorem.word(),
     firstName: faker.person.firstName(),
     gender: faker.person.gender(),
+    homeDetentionCurfewEligibilityDate: FactoryHelpers.optionalRandomFutureDateString(),
+    indeterminateSentence: FactoryHelpers.optionalArrayElement([faker.datatype.boolean()]),
     lastName: faker.person.lastName(),
+    paroleEligibilityDate: FactoryHelpers.optionalRandomFutureDateString(),
     prisonName,
     prisonerNumber: faker.string.alphanumeric({ length: 7 }),
     religion: faker.lorem.word(),
+    sentenceExpiryDate: FactoryHelpers.optionalRandomFutureDateString(),
     sentenceStartDate: FactoryHelpers.optionalArrayElement([`${faker.date.past({ years: 20 })}`.substring(0, 10)]),
+    tariffDate: FactoryHelpers.optionalRandomFutureDateString(),
   }
 })
