@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
-import type { Prisoner } from '@prisoner-offender-search'
+import type { Prisoner } from '@prisoner-search'
 
 export default Factory.define<Prisoner>(({ params }) => {
   const county = faker.location.county()

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { stubFor } from '..'
-import { prisonerOffenderSearchPaths } from '../../server/paths'
+import { prisonerSearchPaths } from '../../server/paths'
 import { prisoners } from '../stubs'
 
 prisoners.forEach(async prisoner => {
@@ -16,7 +16,7 @@ prisoners.forEach(async prisoner => {
         },
       ],
       method: 'POST',
-      url: prisonerOffenderSearchPaths.prisoner.search({}),
+      url: prisonerSearchPaths.prisoner.search({}),
     },
 
     response: {

@@ -3,7 +3,7 @@ import type { SuperAgentRequest } from 'superagent'
 import { prisonApiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { SentenceAndOffenceDetails } from '@prison-api'
-import type { Prisoner } from '@prisoner-offender-search'
+import type { Prisoner } from '@prisoner-search'
 
 export default {
   stubSentenceAndOffenceDetails: (args: {

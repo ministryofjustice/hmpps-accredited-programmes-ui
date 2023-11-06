@@ -76,13 +76,13 @@ export default {
       },
       url: get('PRISON_REGISTER_API_URL', 'http://localhost:9092', requiredInProduction),
     },
-    prisonerOffenderSearch: {
+    prisonerSearch: {
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
       timeout: {
-        deadline: Number(get('PRISONER_OFFENDER_SEARCH_TIMEOUT_DEADLINE', 10000)),
-        response: Number(get('PRISONER_OFFENDER_SEARCH_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PRISONER_SEARCH_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('PRISONER_SEARCH_TIMEOUT_RESPONSE', 10000)),
       },
-      url: get('PRISONER_OFFENDER_SEARCH_URL', 'http://localhost:9093', requiredInProduction),
+      url: get('PRISONER_SEARCH_URL', 'http://localhost:9093', requiredInProduction),
     },
     tokenVerification: {
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),

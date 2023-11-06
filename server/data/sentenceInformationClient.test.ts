@@ -4,7 +4,7 @@ import SentenceInformationClient from './sentenceInformationClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
 import { prisonerFactory, sentenceAndOffenceDetailsFactory } from '../testutils/factories'
-import type { Prisoner } from '@prisoner-offender-search'
+import type { Prisoner } from '@prisoner-search'
 
 describe('SentenceInformationClient', () => {
   let fakePrisonApi: nock.Scope

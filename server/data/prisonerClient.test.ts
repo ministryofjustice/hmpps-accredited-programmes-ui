@@ -2,18 +2,18 @@ import nock from 'nock'
 
 import PrisonerClient from './prisonerClient'
 import config from '../config'
-import { prisonerOffenderSearchPaths } from '../paths'
+import { prisonerSearchPaths } from '../paths'
 import { prisonerFactory } from '../testutils/factories'
-import type { Prisoner } from '@prisoner-offender-search'
+import type { Prisoner } from '@prisoner-search'
 
 describe('PrisonerClient', () => {
-  let fakePrisonerOffenderSearch: nock.Scope
+  let fakePrisonerSearch: nock.Scope
   let prisonerClient: PrisonerClient
 
   const token = 'token-1'
 
   beforeEach(() => {
-    fakePrisonerOffenderSearch = nock(config.apis.prisonerOffenderSearch.url)
+    fakePrisonerSearch = nock(config.apis.prisonerSearch.url)
     prisonerClient = new PrisonerClient(token)
   })
 
@@ -30,8 +30,8 @@ describe('PrisonerClient', () => {
     const prisoner: Prisoner = prisonerFactory.build()
 
     it('searches for a prisoner by prison number and caseload IDs and returns the first match on the assumption that there will never be multiple matches', async () => {
-      fakePrisonerOffenderSearch
-        .post(prisonerOffenderSearchPaths.prisoner.search({}))
+      fakePrisonerSearch
+        .post(prisonerSearchPaths.prisoner.search({}))
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, [prisoner])
 
@@ -41,8 +41,8 @@ describe('PrisonerClient', () => {
 
     describe('when no prisoner is found', () => {
       it('returns null', async () => {
-        fakePrisonerOffenderSearch
-          .post(prisonerOffenderSearchPaths.prisoner.search({}))
+        fakePrisonerSearch
+          .post(prisonerSearchPaths.prisoner.search({}))
           .matchHeader('authorization', `Bearer ${token}`)
           .reply(200, [])
 

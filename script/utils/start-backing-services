@@ -28,7 +28,7 @@ else
   echo "==> Stubbing Prison API caseload endpoints..."
   npx ts-node --transpile-only ./wiremock/scripts/stubCaseloads.ts > /dev/null
 
-  echo "==> Stubbing Prisoner Offender Search endpoints..."
+  echo "==> Stubbing Prisoner Search endpoints..."
   npx ts-node --transpile-only ./wiremock/scripts/stubPrisoners.ts > /dev/null
 
   echo "==> Stubbing Prison API sentence information endpoints..."

@@ -2,7 +2,7 @@ import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
 import type { Person } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithValue } from '@accredited-programmes/ui'
-import type { Prisoner } from '@prisoner-offender-search'
+import type { Prisoner } from '@prisoner-search'
 
 export default class PersonUtils {
   static personFromPrisoner(prisoner: Prisoner): Person {

@@ -24,7 +24,7 @@
       "@manage-users-api": ["./server/@types/manageUsersApi/index.d.ts"],
       "@prison-api": ["./server/@types/prisonApi/index.d.ts"],
       "@prison-register-api": ["./server/@types/prisonRegisterApi/index.d.ts"],
-      "@prisoner-offender-search": ["./server/@types/prisonerOffenderSearch/index.d.ts"]
+      "@prisoner-search": ["./server/@types/prisonerSearch/index.d.ts"]
     }
   },
   "exclude": [
