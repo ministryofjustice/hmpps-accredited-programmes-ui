@@ -10,12 +10,12 @@
     {% endfor %}
   {% else %}
     <div class="govuk-summary-card">
-    <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title" data-testid="no-history-heading">Accredited Programme history</h2>
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title" data-testid="no-history-heading">Accredited Programme history</h2>
+      </div>
+      <div class="govuk-summary-card__content">
+        <p class="govuk-body" data-testid="no-history-paragraph">There is no Accredited Programme history for {{ person.name }}.</p>
+      </div>
     </div>
-    <div class="govuk-summary-card__content">
-      <p class="govuk-body" data-testid="no-history-paragraph">There is no Accredited Programme history for {{ person.name }}.</p>
-    </div>
-  </div>
   {% endif %}
 {% endblock submittedReferralContent %}
