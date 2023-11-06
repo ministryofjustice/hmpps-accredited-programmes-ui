@@ -3,7 +3,7 @@ import { personFactory, prisonerFactory } from '../testutils/factories'
 
 describe('PersonUtils', () => {
   describe('personFromPrisoner', () => {
-    describe('when all fields are present on a Prison Offender Search "Prisoner"', () => {
+    describe('when all fields are present on a Prisoner Search "Prisoner"', () => {
       it('returns a "Person" with those fields', () => {
         const prisoner = prisonerFactory.build({
           bookingId: '1234567890',
@@ -39,7 +39,7 @@ describe('PersonUtils', () => {
       })
     })
 
-    describe('when fields are missing on a Prison Offender Search "Prisoner"', () => {
+    describe('when fields are missing on a Prisoner Search "Prisoner"', () => {
       it('returns a "Person" with those "Not entered" for those fields', () => {
         const prisoner = prisonerFactory.build({
           bookingId: '1234567890',

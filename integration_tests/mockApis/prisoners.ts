@@ -1,8 +1,8 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import { prisonerOffenderSearchPaths } from '../../server/paths'
+import { prisonerSearchPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Prisoner } from '@prisoner-offender-search'
+import type { Prisoner } from '@prisoner-search'
 
 export default {
   stubPrisoner: (prisoner: Prisoner | undefined): SuperAgentRequest =>
@@ -17,7 +17,7 @@ export default {
           },
         ],
         method: 'POST',
-        url: prisonerOffenderSearchPaths.prisoner.search({}),
+        url: prisonerSearchPaths.prisoner.search({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

@@ -3,7 +3,7 @@ import type { ApiConfig } from '../config'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
 import type { SentenceAndOffenceDetails } from '@prison-api'
-import type { Prisoner } from '@prisoner-offender-search'
+import type { Prisoner } from '@prisoner-search'
 
 export default class SentenceInformationClient {
   restClient: RestClient

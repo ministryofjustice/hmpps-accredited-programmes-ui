@@ -15,4 +15,4 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api.prison.service.justice.gov.uk'
     PRISON_API_URL: 'https://api.prison.service.justice.gov.uk'
     PRISON_REGISTER_API_URL: 'https://prison-register.hmpps.service.justice.gov.uk'
-    PRISONER_OFFENDER_SEARCH_URL: 'https://prisoner-search.prison.service.justice.gov.uk'
+    PRISONER_SEARCH_URL: 'https://prisoner-search.prison.service.justice.gov.uk'
