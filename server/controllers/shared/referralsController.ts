@@ -83,7 +83,10 @@ export default class ReferralsController {
 
       res.render('referrals/show/sentenceInformation', {
         ...sharedPageData,
-        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(sentenceAndOffenceDetails),
+        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
+          sharedPageData.person.sentenceStartDate,
+          sentenceAndOffenceDetails.sentenceTypeDescription,
+        ),
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
       })
     }

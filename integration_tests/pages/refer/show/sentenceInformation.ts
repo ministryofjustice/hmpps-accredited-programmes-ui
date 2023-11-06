@@ -1,17 +1,20 @@
 import { CourseUtils, DateUtils, SentenceInformationUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course } from '@accredited-programmes/models'
+import type { Course, Person } from '@accredited-programmes/models'
 import type { SentenceAndOffenceDetails } from '@prison-api'
 
 export default class SentenceInformationPage extends Page {
+  person: Person
+
   sentenceAndOffenceDetails: SentenceAndOffenceDetails
 
-  constructor(args: { course: Course; sentenceAndOffenceDetails: SentenceAndOffenceDetails }) {
-    const { course, sentenceAndOffenceDetails } = args
+  constructor(args: { course: Course; person: Person; sentenceAndOffenceDetails: SentenceAndOffenceDetails }) {
+    const { course, person, sentenceAndOffenceDetails } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
     super(`Referral to ${coursePresenter.nameAndAlternateName}`)
 
+    this.person = person
     this.sentenceAndOffenceDetails = sentenceAndOffenceDetails
   }
 
@@ -27,7 +30,10 @@ export default class SentenceInformationPage extends Page {
       this.shouldContainSummaryCard(
         'Sentence details',
         [],
-        SentenceInformationUtils.detailsSummaryListRows(this.sentenceAndOffenceDetails),
+        SentenceInformationUtils.detailsSummaryListRows(
+          this.person.sentenceStartDate,
+          this.sentenceAndOffenceDetails.sentenceTypeDescription,
+        ),
         summaryCardElement,
       )
     })
