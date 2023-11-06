@@ -17,6 +17,7 @@ export default class PersonUtils {
       name: StringUtils.convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
       prisonNumber: prisoner.prisonerNumber,
       religionOrBelief: prisoner.religion || unavailable,
+      sentenceStartDate: prisoner.sentenceStartDate,
       setting: 'Custody',
     }
   }

@@ -15,6 +15,7 @@ describe('PersonUtils', () => {
           prisonName: 'HMP Hewell',
           prisonerNumber: 'ABC1234',
           religion: 'Christian',
+          sentenceStartDate: '2010-10-31',
         })
 
         expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
@@ -26,6 +27,7 @@ describe('PersonUtils', () => {
           name: 'Del Hatton',
           prisonNumber: 'ABC1234',
           religionOrBelief: 'Christian',
+          sentenceStartDate: '2010-10-31',
           setting: 'Custody',
         })
       })
@@ -40,7 +42,7 @@ describe('PersonUtils', () => {
     })
 
     describe('when fields are missing on a Prisoner Search "Prisoner"', () => {
-      it('returns a "Person" with those "Not entered" for those fields', () => {
+      it('returns a "Person" with "Not entered" or `undefined` for those fields as appropriate', () => {
         const prisoner = prisonerFactory.build({
           bookingId: '1234567890',
           dateOfBirth: '1971-07-05',
@@ -51,6 +53,7 @@ describe('PersonUtils', () => {
           prisonName: 'HMP Hewell',
           prisonerNumber: 'ABC1234',
           religion: undefined,
+          sentenceStartDate: undefined,
         })
 
         expect(PersonUtils.personFromPrisoner(prisoner)).toEqual({
@@ -62,6 +65,7 @@ describe('PersonUtils', () => {
           name: 'Del Hatton',
           prisonNumber: 'ABC1234',
           religionOrBelief: 'Not entered',
+          sentenceStartDate: undefined,
           setting: 'Custody',
         })
       })
