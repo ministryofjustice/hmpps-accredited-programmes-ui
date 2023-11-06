@@ -173,6 +173,7 @@ context('Viewing a submitted referral', () => {
 
       const sentenceInformationPage = Page.verifyOnPage(SentenceInformationPage, {
         course,
+        person,
         sentenceAndOffenceDetails,
       })
       sentenceInformationPage.shouldHavePersonDetails(person)

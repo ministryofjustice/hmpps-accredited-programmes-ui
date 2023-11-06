@@ -148,7 +148,10 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
         ...sharedPageData,
-        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(sentenceAndOffenceDetails),
+        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
+          sharedPageData.person.sentenceStartDate,
+          sentenceAndOffenceDetails.sentenceTypeDescription,
+        ),
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
       })

@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
+import FactoryHelpers from './factoryHelpers'
 import type { Prisoner } from '@prisoner-search'
 
 export default Factory.define<Prisoner>(({ params }) => {
@@ -22,5 +23,6 @@ export default Factory.define<Prisoner>(({ params }) => {
     prisonName,
     prisonerNumber: faker.string.alphanumeric({ length: 7 }),
     religion: faker.lorem.word(),
+    sentenceStartDate: FactoryHelpers.optionalArrayElement([`${faker.date.past({ years: 20 })}`.substring(0, 10)]),
   }
 })

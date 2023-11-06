@@ -7,7 +7,6 @@ type Caseload = {
 }
 
 type SentenceAndOffenceDetails = {
-  sentenceStartDate: string
   sentenceTypeDescription: string
 }
 

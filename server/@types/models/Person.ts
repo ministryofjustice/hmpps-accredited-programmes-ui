@@ -8,4 +8,5 @@ export type Person = {
   prisonNumber: string
   religionOrBelief: string
   setting: 'Custody'
+  sentenceStartDate?: string
 }
