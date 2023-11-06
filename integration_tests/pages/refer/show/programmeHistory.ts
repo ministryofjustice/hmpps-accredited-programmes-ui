@@ -15,7 +15,7 @@ export default class ProgrammeHistoryPage extends Page {
   }
 
   shouldContainNoHistoryHeading() {
-    cy.get('[data-testid="no-history-heading"]').should('have.text', `Programme History`)
+    cy.get('[data-testid="no-history-heading"]').should('have.text', 'Accredited Programme history')
   }
 
   shouldContainNoHistoryParagraph() {
