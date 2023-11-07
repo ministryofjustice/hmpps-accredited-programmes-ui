@@ -1,20 +1,20 @@
 import nock from 'nock'
 
-import SentenceInformationClient from './sentenceInformationClient'
+import PrisonApiClient from './prisonApiClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
 import { prisonerFactory, sentenceAndOffenceDetailsFactory } from '../testutils/factories'
 import type { Prisoner } from '@prisoner-search'
 
-describe('SentenceInformationClient', () => {
+describe('PrisonApiClient', () => {
   let fakePrisonApi: nock.Scope
-  let sentenceInformationClient: SentenceInformationClient
+  let prisonApiClient: PrisonApiClient
 
   const token = 'token-1'
 
   beforeEach(() => {
     fakePrisonApi = nock(config.apis.prisonApi.url)
-    sentenceInformationClient = new SentenceInformationClient(token)
+    prisonApiClient = new PrisonApiClient(token)
   })
 
   afterEach(() => {
@@ -36,7 +36,7 @@ describe('SentenceInformationClient', () => {
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, sentenceAndOffenceDetails)
 
-      const output = await sentenceInformationClient.findSentenceAndOffenceDetails(prisoner.bookingId)
+      const output = await prisonApiClient.findSentenceAndOffenceDetails(prisoner.bookingId)
       expect(output).toEqual(sentenceAndOffenceDetails)
     })
   })

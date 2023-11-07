@@ -1,20 +1,20 @@
 import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
-import type { RestClientBuilder, SentenceInformationClient } from '../data'
+import type { PrisonApiClient, RestClientBuilder } from '../data'
 import type { Person } from '@accredited-programmes/models'
 import type { SentenceAndOffenceDetails } from '@prison-api'
 
 export default class SentenceInformationService {
-  constructor(private readonly sentenceInformationClientBuilder: RestClientBuilder<SentenceInformationClient>) {}
+  constructor(private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>) {}
 
   async getSentenceAndOffenceDetails(
     token: Express.User['token'],
     bookingId: Person['bookingId'],
   ): Promise<SentenceAndOffenceDetails> {
     try {
-      const sentenceInformationClient = this.sentenceInformationClientBuilder(token)
-      return await sentenceInformationClient.findSentenceAndOffenceDetails(bookingId)
+      const prisonApiClient = this.prisonApiClientBuilder(token)
+      return await prisonApiClient.findSentenceAndOffenceDetails(bookingId)
     } catch (error) {
       const knownError = error as ResponseError
 

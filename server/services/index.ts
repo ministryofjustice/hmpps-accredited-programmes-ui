@@ -12,17 +12,17 @@ import {
   courseClientBuilder,
   hmppsAuthClientBuilder,
   hmppsManageUsersClientBuilder,
+  prisonApiClientBuilder,
   prisonClientBuilder,
   prisonerClientBuilder,
   referralClientBuilder,
-  sentenceInformationClientBuilder,
 } from '../data'
 
 const services = () => {
   const organisationService = new OrganisationService(prisonClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonerClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
-  const sentenceInformationService = new SentenceInformationService(sentenceInformationClientBuilder)
+  const sentenceInformationService = new SentenceInformationService(prisonApiClientBuilder)
   const userService = new UserService(hmppsManageUsersClientBuilder, caseloadClientBuilder)
   const courseService = new CourseService(courseClientBuilder, userService)
 

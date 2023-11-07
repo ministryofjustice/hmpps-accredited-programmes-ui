@@ -5,11 +5,11 @@ import { prisonApiPaths } from '../paths'
 import type { SentenceAndOffenceDetails } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
-export default class SentenceInformationClient {
+export default class PrisonApiClient {
   restClient: RestClient
 
   constructor(token: Express.User['token']) {
-    this.restClient = new RestClient('prisonerClient', config.apis.prisonApi as ApiConfig, token)
+    this.restClient = new RestClient('prisonApiClient', config.apis.prisonApi as ApiConfig, token)
   }
 
   async findSentenceAndOffenceDetails(bookingId: Prisoner['bookingId']): Promise<SentenceAndOffenceDetails> {
