@@ -19,7 +19,7 @@ import HmppsAuthClient from './hmppsAuthClient'
 import HmppsManageUsersClient from './hmppsManageUsersClient'
 import PrisonApiClient from './prisonApiClient'
 import PrisonRegisterApiClient from './prisonRegisterApiClient'
-import PrisonerClient from './prisonerClient'
+import PrisonerSearchClient from './prisonerSearchClient'
 import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
 import ReferralClient from './referralClient'
@@ -39,8 +39,8 @@ const caseloadClientBuilder: RestClientBuilder<CaseloadClient> = (token: Express
 const courseClientBuilder: RestClientBuilder<CourseClient> = (token: Express.User['token']) => new CourseClient(token)
 const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (token: Express.User['token']) =>
   new PrisonRegisterApiClient(token)
-const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: Express.User['token']) =>
-  new PrisonerClient(token)
+const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (token: Express.User['token']) =>
+  new PrisonerSearchClient(token)
 const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: Express.User['token']) =>
   new ReferralClient(token)
 const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (token: Express.User['token']) =>
@@ -53,7 +53,7 @@ export {
   HmppsManageUsersClient,
   PrisonApiClient,
   PrisonRegisterApiClient,
-  PrisonerClient,
+  PrisonerSearchClient,
   ReferralClient,
   TokenStore,
   caseloadClientBuilder,
@@ -63,7 +63,7 @@ export {
   hmppsManageUsersClientBuilder,
   prisonApiClientBuilder,
   prisonRegisterApiClientBuilder,
-  prisonerClientBuilder,
+  prisonerSearchClientBuilder,
   referralClientBuilder,
   serviceCheckFactory,
   verifyToken,
