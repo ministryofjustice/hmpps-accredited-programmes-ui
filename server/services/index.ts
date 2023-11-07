@@ -12,13 +12,13 @@ import {
   hmppsAuthClientBuilder,
   hmppsManageUsersClientBuilder,
   prisonApiClientBuilder,
-  prisonClientBuilder,
+  prisonRegisterApiClientBuilder,
   prisonerClientBuilder,
   referralClientBuilder,
 } from '../data'
 
 const services = () => {
-  const organisationService = new OrganisationService(prisonClientBuilder)
+  const organisationService = new OrganisationService(prisonRegisterApiClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
   const userService = new UserService(hmppsManageUsersClientBuilder, caseloadClientBuilder)
