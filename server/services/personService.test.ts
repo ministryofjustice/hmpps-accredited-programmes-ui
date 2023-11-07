@@ -1,14 +1,21 @@
 import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
+import { when } from 'jest-when'
 
 import PersonService from './personService'
 import type { RedisClient } from '../data'
-import { HmppsAuthClient, PrisonerClient, TokenStore } from '../data'
-import { caseloadFactory, personFactory, prisonerFactory } from '../testutils/factories'
+import { HmppsAuthClient, PrisonApiClient, PrisonerClient, TokenStore } from '../data'
+import {
+  caseloadFactory,
+  personFactory,
+  prisonerFactory,
+  sentenceAndOffenceDetailsFactory,
+} from '../testutils/factories'
 import { PersonUtils } from '../utils'
 
 jest.mock('../data/prisonerClient')
 jest.mock('../data/hmppsAuthClient')
+jest.mock('../data/prisonApiClient')
 jest.mock('../utils/personUtils')
 
 const redisClient = createMock<RedisClient>({})
@@ -27,16 +34,22 @@ describe('PersonService', () => {
   const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
   const hmppsAuthClientBuilder = jest.fn()
 
+  const prisonApiClient = new PrisonApiClient(systemToken) as jest.Mocked<PrisonApiClient>
+  const prisonApiClientBuilder = jest.fn()
+
   let service: PersonService
+
+  const bookingId = 'A-BOOKING-ID'
 
   beforeEach(() => {
     jest.resetAllMocks()
 
     prisonerClientBuilder.mockReturnValue(prisonerClient)
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
+    prisonApiClientBuilder.mockReturnValue(prisonApiClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-    service = new PersonService(hmppsAuthClientBuilder, prisonerClientBuilder)
+    service = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerClientBuilder)
   })
 
   describe('getPerson', () => {
@@ -99,6 +112,59 @@ describe('PersonService', () => {
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(prisonerClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonerClient.find).toHaveBeenCalledWith(prisonNumber, [mdiCaseload.caseLoadId, bxiCaseload.caseLoadId])
+      })
+    })
+  })
+
+  describe('getSentenceAndOffenceDetails', () => {
+    it('returns sentence and offence details for a given booking', async () => {
+      const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+
+      when(prisonApiClient.findSentenceAndOffenceDetails)
+        .calledWith(bookingId)
+        .mockResolvedValue(sentenceAndOffenceDetails)
+
+      const result = await service.getSentenceAndOffenceDetails(systemToken, bookingId)
+
+      expect(result).toEqual(sentenceAndOffenceDetails)
+
+      expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(prisonApiClient.findSentenceAndOffenceDetails).toHaveBeenCalledWith(bookingId)
+    })
+
+    describe('when the sentence details client throws a 404 error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(404)
+        prisonApiClient.findSentenceAndOffenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(
+          404,
+          `Sentence and offence details for booking with ID ${bookingId} not found.`,
+        )
+        await expect(() => service.getSentenceAndOffenceDetails(systemToken, bookingId)).rejects.toThrowError(
+          expectedError,
+        )
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findSentenceAndOffenceDetails).toHaveBeenCalledWith(bookingId)
+      })
+    })
+
+    describe('when the prison client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500)
+        prisonApiClient.findSentenceAndOffenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(
+          500,
+          `Error fetching sentence and offence details with booking ID ${bookingId}.`,
+        )
+        await expect(() => service.getSentenceAndOffenceDetails(systemToken, bookingId)).rejects.toThrowError(
+          expectedError,
+        )
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findSentenceAndOffenceDetails).toHaveBeenCalledWith(bookingId)
       })
     })
   })
