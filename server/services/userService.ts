@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
 import logger from '../../logger'
-import type { CaseloadClient, HmppsManageUsersClient, RestClientBuilder } from '../data'
+import type { HmppsManageUsersClient, PrisonApiClient, RestClientBuilder } from '../data'
 import { StringUtils } from '../utils'
 import type { UserDetails } from '@accredited-programmes/users'
 import type { User } from '@manage-users-api'
@@ -11,7 +11,7 @@ import type { Caseload } from '@prison-api'
 export default class UserService {
   constructor(
     private readonly hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient>,
-    private readonly caseloadClientBuilder: RestClientBuilder<CaseloadClient>,
+    private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>,
   ) {}
 
   async getCurrentUserWithDetails(token: Express.User['token']): Promise<UserDetails> {
@@ -43,12 +43,12 @@ export default class UserService {
   }
 
   private async getCaseloads(token: Express.User['token']): Promise<Array<Caseload>> {
-    const caseloadClient = this.caseloadClientBuilder(token)
+    const prisonApiClient = this.prisonApiClientBuilder(token)
 
     let cases: Array<Caseload> = []
 
     try {
-      cases = await caseloadClient.allByCurrentUser()
+      cases = await prisonApiClient.findCurrentUserCaseloads()
     } catch (error) {
       logger.error(error, "Failed to fetch user's caseloads")
     }

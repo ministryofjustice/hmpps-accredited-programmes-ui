@@ -3,7 +3,8 @@ import nock from 'nock'
 import PrisonApiClient from './prisonApiClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
-import { prisonerFactory, sentenceAndOffenceDetailsFactory } from '../testutils/factories'
+import { caseloadFactory, prisonerFactory, sentenceAndOffenceDetailsFactory } from '../testutils/factories'
+import type { Caseload } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
 describe('PrisonApiClient', () => {
@@ -24,6 +25,20 @@ describe('PrisonApiClient', () => {
     }
     nock.abortPendingRequests()
     nock.cleanAll()
+  })
+
+  describe('findCurrentUserCaseloads', () => {
+    const caseloads: Array<Caseload> = [caseloadFactory.active().build(), caseloadFactory.inactive().build()]
+
+    it('fetches all Caseloads for the logged in user', async () => {
+      fakePrisonApi
+        .get(prisonApiPaths.caseloads.currentUser({}))
+        .matchHeader('authorization', `Bearer ${token}`)
+        .reply(200, caseloads)
+
+      const output = await prisonApiClient.findCurrentUserCaseloads()
+      expect(output).toEqual(caseloads)
+    })
   })
 
   describe('findSentenceAndOffenceDetails', () => {

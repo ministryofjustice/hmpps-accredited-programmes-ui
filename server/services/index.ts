@@ -7,7 +7,6 @@ import PersonService from './personService'
 import ReferralService from './referralService'
 import UserService from './userService'
 import {
-  caseloadClientBuilder,
   courseClientBuilder,
   hmppsAuthClientBuilder,
   hmppsManageUsersClientBuilder,
@@ -21,7 +20,7 @@ const services = () => {
   const organisationService = new OrganisationService(prisonRegisterApiClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
   const referralService = new ReferralService(referralClientBuilder)
-  const userService = new UserService(hmppsManageUsersClientBuilder, caseloadClientBuilder)
+  const userService = new UserService(hmppsManageUsersClientBuilder, prisonApiClientBuilder)
   const courseService = new CourseService(courseClientBuilder, userService)
 
   return {

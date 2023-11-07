@@ -12,7 +12,6 @@ AppInsightsUtils.buildClient()
 
 /* eslint-enable import/order */
 
-import CaseloadClient from './caseloadClient'
 import CourseClient from './courseClient'
 import { serviceCheckFactory } from './healthCheck'
 import HmppsAuthClient from './hmppsAuthClient'
@@ -34,8 +33,6 @@ const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = (
   new HmppsAuthClient(new TokenStore(createRedisClient()))
 const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (token: Express.User['token']) =>
   new HmppsManageUsersClient(token)
-const caseloadClientBuilder: RestClientBuilder<CaseloadClient> = (token: Express.User['token']) =>
-  new CaseloadClient(token)
 const courseClientBuilder: RestClientBuilder<CourseClient> = (token: Express.User['token']) => new CourseClient(token)
 const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (token: Express.User['token']) =>
   new PrisonRegisterApiClient(token)
@@ -47,7 +44,6 @@ const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (token: Expre
   new PrisonApiClient(token)
 
 export {
-  CaseloadClient,
   CourseClient,
   HmppsAuthClient,
   HmppsManageUsersClient,
@@ -56,7 +52,6 @@ export {
   PrisonerSearchClient,
   ReferralClient,
   TokenStore,
-  caseloadClientBuilder,
   courseClientBuilder,
   createRedisClient,
   hmppsAuthClientBuilder,
