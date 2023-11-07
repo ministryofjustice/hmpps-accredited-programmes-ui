@@ -7,17 +7,31 @@ import type { Prisoner } from '@prisoner-search'
 export default class PersonUtils {
   static personFromPrisoner(prisoner: Prisoner): Person {
     const unavailable = 'Not entered'
+    let earliestReleaseDate: Person['earliestReleaseDate']
+
+    if (prisoner.indeterminateSentence) {
+      earliestReleaseDate = prisoner.tariffDate
+    } else {
+      earliestReleaseDate = prisoner.paroleEligibilityDate || prisoner.conditionalReleaseDate
+    }
 
     return {
       bookingId: prisoner.bookingId,
+      conditionalReleaseDate: prisoner.conditionalReleaseDate,
       currentPrison: prisoner.prisonName,
       dateOfBirth: DateUtils.govukFormattedFullDateString(prisoner.dateOfBirth),
+      earliestReleaseDate,
       ethnicity: prisoner.ethnicity || unavailable,
       gender: prisoner.gender,
+      homeDetentionCurfewEligibilityDate: prisoner.homeDetentionCurfewEligibilityDate,
       name: StringUtils.convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
+      paroleEligibilityDate: prisoner.paroleEligibilityDate,
       prisonNumber: prisoner.prisonerNumber,
       religionOrBelief: prisoner.religion || unavailable,
+      sentenceExpiryDate: prisoner.sentenceExpiryDate,
+      sentenceStartDate: prisoner.sentenceStartDate,
       setting: 'Custody',
+      tariffDate: prisoner.tariffDate,
     }
   }
 

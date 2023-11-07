@@ -1,24 +1,38 @@
 [
   {
-    "bookingId": "0001234567",
-    "firstName": "Del",
-    "lastName": "Hatton",
     "prisonerNumber": "ABC1234",
+    "bookingId": "0001234567",
+    "conditionalReleaseDate": "2024-10-31",
     "dateOfBirth": "1980-01-01",
     "ethnicity": "White",
+    "firstName": "Del",
     "gender": "Male",
+    "homeDetentionCurfewEligibilityDate": "2025-10-31",
+    "indeterminateSentence": false,
+    "lastName": "Hatton",
+    "paroleEligibilityDate": "2026-10-31",
+    "prisonName": "Whatton (HMP)",
     "religion": "Christian",
-    "prisonName": "Whatton (HMP)"
+    "sentenceExpiryDate": "2027-10-31",
+    "sentenceStartDate": "2010-10-31",
+    "tariffDate": "2028-10-31"
   },
   {
-    "bookingId": "0000123456",
-    "firstName": "John",
-    "lastName": "Smith",
     "prisonerNumber": "DEF1234",
+    "bookingId": "0000123456",
+    "conditionalReleaseDate": "2025-01-31",
     "dateOfBirth": "1990-10-10",
     "ethnicity": "White",
+    "firstName": "John",
     "gender": "Male",
+    "homeDetentionCurfewEligibilityDate": "2026-01-31",
+    "indeterminateSentence": true,
+    "lastName": "Smith",
+    "paroleEligibilityDate": "2027-01-31",
+    "prisonName": "Stocken (HMP)",
     "religion": "Atheist",
-    "prisonName": "Stocken (HMP)"
+    "sentenceExpiryDate": "2028-01-31",
+    "sentenceStartDate": "2014-01-31",
+    "tariffDate": "2029-01-31"
   }
 ]

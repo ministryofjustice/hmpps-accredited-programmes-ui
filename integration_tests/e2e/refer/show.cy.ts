@@ -30,6 +30,7 @@ context('Viewing a submitted referral', () => {
     dateOfBirth: '1980-01-01',
     firstName: 'Del',
     lastName: 'Hatton',
+    sentenceStartDate: '2010-10-31',
   })
   const person = personFactory.build({
     currentPrison: prisoner.prisonName,
@@ -39,6 +40,7 @@ context('Viewing a submitted referral', () => {
     name: 'Del Hatton',
     prisonNumber: prisoner.prisonerNumber,
     religionOrBelief: prisoner.religion,
+    sentenceStartDate: '2010-10-31',
     setting: 'Custody',
   })
   const referral = referralFactory.submitted().build({
