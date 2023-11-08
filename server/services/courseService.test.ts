@@ -16,7 +16,7 @@ import {
 import { CourseParticipationUtils, StringUtils } from '../utils'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
-jest.mock('../data/courseClient')
+jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../utils/courseParticipationUtils')
 
 describe('CourseService', () => {

@@ -5,7 +5,7 @@ import { ReferralClient } from '../data'
 import { referralFactory } from '../testutils/factories'
 import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
-jest.mock('../data/referralClient')
+jest.mock('../data/accreditedProgrammesApi/referralClient')
 
 describe('ReferralService', () => {
   const referralClient = new ReferralClient('token') as jest.Mocked<ReferralClient>

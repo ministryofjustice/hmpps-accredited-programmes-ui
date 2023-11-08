@@ -12,7 +12,8 @@ AppInsightsUtils.buildClient()
 
 /* eslint-enable import/order */
 
-import CourseClient from './courseClient'
+import CourseClient from './accreditedProgrammesApi/courseClient'
+import ReferralClient from './accreditedProgrammesApi/referralClient'
 import { serviceCheckFactory } from './healthCheck'
 import HmppsAuthClient from './hmppsAuthClient'
 import HmppsManageUsersClient from './hmppsManageUsersClient'
@@ -21,7 +22,6 @@ import PrisonRegisterApiClient from './prisonRegisterApiClient'
 import PrisonerSearchClient from './prisonerSearchClient'
 import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
-import ReferralClient from './referralClient'
 import TokenStore from './tokenStore'
 import type { TokenVerifier } from './tokenVerification'
 import verifyToken from './tokenVerification'

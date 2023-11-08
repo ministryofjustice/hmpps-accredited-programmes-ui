@@ -1,7 +1,7 @@
-import RestClient from './restClient'
-import type { ApiConfig } from '../config'
-import config from '../config'
-import { apiPaths } from '../paths'
+import type { ApiConfig } from '../../config'
+import config from '../../config'
+import { apiPaths } from '../../paths'
+import RestClient from '../restClient'
 import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 export default class ReferralClient {
