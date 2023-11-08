@@ -2,9 +2,9 @@ import { Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
 import ReferralClient from './referralClient'
-import config from '../config'
-import { apiPaths } from '../paths'
-import { referralFactory } from '../testutils/factories'
+import config from '../../config'
+import { apiPaths } from '../../paths'
+import { referralFactory } from '../../testutils/factories'
 import type { CreatedReferralResponse, ReferralUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {

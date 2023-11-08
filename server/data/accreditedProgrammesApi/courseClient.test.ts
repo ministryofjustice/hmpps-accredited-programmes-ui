@@ -2,9 +2,14 @@ import { Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
 import CourseClient from './courseClient'
-import config from '../config'
-import { apiPaths } from '../paths'
-import { courseFactory, courseOfferingFactory, courseParticipationFactory, personFactory } from '../testutils/factories'
+import config from '../../config'
+import { apiPaths } from '../../paths'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  courseParticipationFactory,
+  personFactory,
+} from '../../testutils/factories'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
