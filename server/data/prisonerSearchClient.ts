@@ -5,11 +5,11 @@ import { prisonerSearchPaths } from '../paths'
 import type { Caseload } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
-export default class PrisonerClient {
+export default class PrisonerSearchClient {
   restClient: RestClient
 
   constructor(token: Express.User['token']) {
-    this.restClient = new RestClient('prisonerClient', config.apis.prisonerSearch as ApiConfig, token)
+    this.restClient = new RestClient('prisonerSearchClient', config.apis.prisonerSearch as ApiConfig, token)
   }
 
   async find(

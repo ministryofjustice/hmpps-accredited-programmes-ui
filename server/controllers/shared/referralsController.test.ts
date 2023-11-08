@@ -4,13 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 
 import SubmittedReferralsController from './referralsController'
 import { referPaths } from '../../paths'
-import type {
-  CourseService,
-  OrganisationService,
-  PersonService,
-  ReferralService,
-  SentenceInformationService,
-} from '../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -34,7 +28,6 @@ describe('ReferralsController', () => {
   const organisationService = createMock<OrganisationService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
-  const sentenceInformationService = createMock<SentenceInformationService>({})
 
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
@@ -66,13 +59,7 @@ describe('ReferralsController', () => {
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
 
-    controller = new SubmittedReferralsController(
-      courseService,
-      organisationService,
-      personService,
-      referralService,
-      sentenceInformationService,
-    )
+    controller = new SubmittedReferralsController(courseService, organisationService, personService, referralService)
   })
 
   afterEach(() => {
@@ -139,7 +126,7 @@ describe('ReferralsController', () => {
 
   describe('sentenceInformation', () => {
     it('renders the sentence information template with the correct response locals', async () => {
-      sentenceInformationService.getSentenceAndOffenceDetails.mockResolvedValue(sentenceAndOffenceDetails)
+      personService.getSentenceAndOffenceDetails.mockResolvedValue(sentenceAndOffenceDetails)
 
       request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
 

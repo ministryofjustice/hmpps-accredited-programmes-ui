@@ -1,19 +1,19 @@
 import nock from 'nock'
 
-import PrisonClient from './prisonClient'
+import PrisonRegisterApiClient from './prisonRegisterApiClient'
 import config from '../config'
 import { prisonFactory } from '../testutils/factories'
 import type { Prison } from '@prison-register-api'
 
-describe('PrisonClient', () => {
+describe('PrisonRegisterApiClient', () => {
   let fakePrisonRegisterApi: nock.Scope
-  let prisonClient: PrisonClient
+  let prisonRegisterApiClient: PrisonRegisterApiClient
 
   const token = 'token-1'
 
   beforeEach(() => {
     fakePrisonRegisterApi = nock(config.apis.prisonRegisterApi.url)
-    prisonClient = new PrisonClient(token)
+    prisonRegisterApiClient = new PrisonRegisterApiClient(token)
   })
 
   afterEach(() => {
@@ -34,7 +34,7 @@ describe('PrisonClient', () => {
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, prison)
 
-      const output = await prisonClient.find(prison.prisonId)
+      const output = await prisonRegisterApiClient.find(prison.prisonId)
       expect(output).toEqual(prison)
     })
   })

@@ -4,11 +4,11 @@ import config from '../config'
 import { prisonRegisterApiPaths } from '../paths'
 import type { Prison } from '@prison-register-api'
 
-export default class PrisonClient {
+export default class PrisonRegisterApiClient {
   restClient: RestClient
 
   constructor(token: Express.User['token']) {
-    this.restClient = new RestClient('prisonClient', config.apis.prisonRegisterApi as ApiConfig, token)
+    this.restClient = new RestClient('prisonRegisterApiClient', config.apis.prisonRegisterApi as ApiConfig, token)
   }
 
   async find(prisonId: string): Promise<Prison> {

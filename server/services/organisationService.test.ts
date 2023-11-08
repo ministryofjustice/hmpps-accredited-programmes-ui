@@ -2,23 +2,23 @@ import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import OrganisationService from './organisationService'
-import { PrisonClient } from '../data'
+import { PrisonRegisterApiClient } from '../data'
 import { prisonFactory } from '../testutils/factories'
 import { OrganisationUtils } from '../utils'
 
-jest.mock('../data/prisonClient')
+jest.mock('../data/prisonRegisterApiClient')
 
 describe('OrganisationService', () => {
-  const prisonClient = new PrisonClient('token') as jest.Mocked<PrisonClient>
-  const prisonClientBuilder = jest.fn()
+  const prisonRegisterApiClient = new PrisonRegisterApiClient('token') as jest.Mocked<PrisonRegisterApiClient>
+  const prisonRegisterApiClientBuilder = jest.fn()
 
-  const service = new OrganisationService(prisonClientBuilder)
+  const service = new OrganisationService(prisonRegisterApiClientBuilder)
 
   const token = 'token'
 
   beforeEach(() => {
     jest.resetAllMocks()
-    prisonClientBuilder.mockReturnValue(prisonClient)
+    prisonRegisterApiClientBuilder.mockReturnValue(prisonRegisterApiClient)
   })
 
   describe('getOrganisation', () => {
@@ -28,7 +28,7 @@ describe('OrganisationService', () => {
           const prison = prisonFactory.build({ categories: ['A'] })
           const prisonAddress = prison.addresses[0]
 
-          prisonClient.find.mockResolvedValue(prison)
+          prisonRegisterApiClient.find.mockResolvedValue(prison)
 
           const result = await service.getOrganisation(token, prison.prisonId)
 
@@ -46,21 +46,21 @@ describe('OrganisationService', () => {
             name: prison.prisonName,
           })
 
-          expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-          expect(prisonClient.find).toHaveBeenCalledWith(prison.prisonId)
+          expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+          expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prison.prisonId)
         })
       })
 
       describe("and it's inactive", () => {
         it('throws an 404 error', async () => {
           const prison = prisonFactory.build({ active: false })
-          prisonClient.find.mockResolvedValue(prison)
+          prisonRegisterApiClient.find.mockResolvedValue(prison)
 
           const expectedError = createError(404, `Active organisation with ID ${prison.prisonId} not found.`)
           expect(() => service.getOrganisation(token, prison.prisonId)).rejects.toThrowError(expectedError)
 
-          expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-          expect(prisonClient.find).toHaveBeenCalledWith(prison.prisonId)
+          expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+          expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prison.prisonId)
         })
       })
     })
@@ -68,30 +68,30 @@ describe('OrganisationService', () => {
     describe('when the prison client throws a 404 error', () => {
       it('re-throws the error', async () => {
         const clientError = createError(404)
-        prisonClient.find.mockRejectedValue(clientError)
+        prisonRegisterApiClient.find.mockRejectedValue(clientError)
 
         const notFoundPrisonId = 'NOT-FOUND'
 
         const expectedError = createError(404, `Active organisation with ID ${notFoundPrisonId} not found.`)
         expect(() => service.getOrganisation(token, notFoundPrisonId)).rejects.toThrowError(expectedError)
 
-        expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-        expect(prisonClient.find).toHaveBeenCalledWith(notFoundPrisonId)
+        expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+        expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(notFoundPrisonId)
       })
     })
 
     describe('when the prison client throws any other error', () => {
       it('re-throws the error', async () => {
         const clientError = createError(500)
-        prisonClient.find.mockRejectedValue(clientError)
+        prisonRegisterApiClient.find.mockRejectedValue(clientError)
 
         const prisonId = '04aba287-86ac-4b2c-b98e-048b5eefddbc'
 
         const expectedError = createError(500, `Error fetching organisation ${prisonId}.`)
         expect(() => service.getOrganisation(token, prisonId)).rejects.toThrowError(expectedError)
 
-        expect(prisonClientBuilder).toHaveBeenCalledWith(token)
-        expect(prisonClient.find).toHaveBeenCalledWith(prisonId)
+        expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+        expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prisonId)
       })
     })
   })
@@ -105,14 +105,14 @@ describe('OrganisationService', () => {
 
     beforeEach(() => {
       foundPrisons.forEach(prison => {
-        when(prisonClient.find).calledWith(prison.prisonId).mockResolvedValue(prison)
+        when(prisonRegisterApiClient.find).calledWith(prison.prisonId).mockResolvedValue(prison)
       })
     })
 
     it('returns all found active prisons', async () => {
       const notFoundPrisonId = 'who-is-she'
       const notFoundClientError = createError(404)
-      when(prisonClient.find).calledWith(notFoundPrisonId).mockRejectedValue(notFoundClientError)
+      when(prisonRegisterApiClient.find).calledWith(notFoundPrisonId).mockRejectedValue(notFoundClientError)
 
       const allIds = [...activePrisonIds, inactivePrisonId, notFoundPrisonId]
 
@@ -122,7 +122,7 @@ describe('OrganisationService', () => {
       expect(result).toEqual(activeOrganisations)
 
       allIds.forEach(id => {
-        expect(prisonClient.find).toHaveBeenCalledWith(id)
+        expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(id)
       })
     })
 
@@ -130,7 +130,7 @@ describe('OrganisationService', () => {
       it('re-throws the error', () => {
         const otherErrorPrisonId = 'lo-siento-no-entiendo'
         const otherError = createError(500)
-        when(prisonClient.find).calledWith(otherErrorPrisonId).mockRejectedValue(otherError)
+        when(prisonRegisterApiClient.find).calledWith(otherErrorPrisonId).mockRejectedValue(otherError)
 
         // const allIds = [...activePrisonIds, inactivePrisonId, otherErrorPrisonId]
         const allIds = [otherErrorPrisonId]

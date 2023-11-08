@@ -2,11 +2,11 @@ import createError from 'http-errors'
 
 import UserService from './userService'
 import logger from '../../logger'
-import { CaseloadClient, HmppsManageUsersClient } from '../data'
+import { HmppsManageUsersClient, PrisonApiClient } from '../data'
 import { caseloadFactory, userFactory } from '../testutils/factories'
 
 jest.mock('../data/hmppsManageUsersClient')
-jest.mock('../data/caseloadClient')
+jest.mock('../data/prisonApiClient')
 jest.mock('../../logger')
 
 const token = 'some token'
@@ -15,8 +15,8 @@ describe('UserService', () => {
   const hmppsManageUsersClient = new HmppsManageUsersClient('token') as jest.Mocked<HmppsManageUsersClient>
   const hmppsManageUsersClientBuilder = jest.fn()
 
-  const caseloadClient = new CaseloadClient(token) as jest.Mocked<CaseloadClient>
-  const caseloadClientBuilder = jest.fn()
+  const prisonApiClient = new PrisonApiClient(token) as jest.Mocked<PrisonApiClient>
+  const prisonApiClientBuilder = jest.fn()
 
   let userService: UserService
 
@@ -27,9 +27,9 @@ describe('UserService', () => {
     jest.resetAllMocks()
 
     hmppsManageUsersClientBuilder.mockReturnValue(hmppsManageUsersClient)
-    caseloadClientBuilder.mockReturnValue(caseloadClient)
+    prisonApiClientBuilder.mockReturnValue(prisonApiClient)
 
-    userService = new UserService(hmppsManageUsersClientBuilder, caseloadClientBuilder)
+    userService = new UserService(hmppsManageUsersClientBuilder, prisonApiClientBuilder)
   })
 
   describe('getCurrentUserWithDetails', () => {
@@ -46,7 +46,7 @@ describe('UserService', () => {
 
     it('fetches caseloads for the current user', async () => {
       const caseloads = [caseloadFactory.active().build(), caseloadFactory.inactive().build()]
-      caseloadClient.allByCurrentUser.mockResolvedValue(caseloads)
+      prisonApiClient.findCurrentUserCaseloads.mockResolvedValue(caseloads)
 
       const result = await userService.getCurrentUserWithDetails(token)
 
@@ -64,7 +64,7 @@ describe('UserService', () => {
     describe('when the caseloads client throws an error', () => {
       it("logs the error but sets the user's caseloads to an empty array so the user can still access the service", async () => {
         const caseloadError = new Error('some caseload error')
-        caseloadClient.allByCurrentUser.mockRejectedValue(caseloadError)
+        prisonApiClient.findCurrentUserCaseloads.mockRejectedValue(caseloadError)
 
         const result = await userService.getCurrentUserWithDetails(token)
         expect(logger.error).toHaveBeenCalledWith(caseloadError, "Failed to fetch user's caseloads")

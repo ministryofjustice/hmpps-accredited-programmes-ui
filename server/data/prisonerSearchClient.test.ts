@@ -1,20 +1,20 @@
 import nock from 'nock'
 
-import PrisonerClient from './prisonerClient'
+import PrisonerSearchClient from './prisonerSearchClient'
 import config from '../config'
 import { prisonerSearchPaths } from '../paths'
 import { prisonerFactory } from '../testutils/factories'
 import type { Prisoner } from '@prisoner-search'
 
-describe('PrisonerClient', () => {
+describe('PrisonerSearchClient', () => {
   let fakePrisonerSearch: nock.Scope
-  let prisonerClient: PrisonerClient
+  let prisonerSearchClient: PrisonerSearchClient
 
   const token = 'token-1'
 
   beforeEach(() => {
     fakePrisonerSearch = nock(config.apis.prisonerSearch.url)
-    prisonerClient = new PrisonerClient(token)
+    prisonerSearchClient = new PrisonerSearchClient(token)
   })
 
   afterEach(() => {
@@ -35,7 +35,7 @@ describe('PrisonerClient', () => {
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, [prisoner])
 
-      const output = await prisonerClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
+      const output = await prisonerSearchClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
       expect(output).toEqual(prisoner)
     })
 
@@ -46,7 +46,7 @@ describe('PrisonerClient', () => {
           .matchHeader('authorization', `Bearer ${token}`)
           .reply(200, [])
 
-        const output = await prisonerClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
+        const output = await prisonerSearchClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
         expect(output).toEqual(null)
       })
     })

@@ -12,17 +12,16 @@ AppInsightsUtils.buildClient()
 
 /* eslint-enable import/order */
 
-import CaseloadClient from './caseloadClient'
 import CourseClient from './courseClient'
 import { serviceCheckFactory } from './healthCheck'
 import HmppsAuthClient from './hmppsAuthClient'
 import HmppsManageUsersClient from './hmppsManageUsersClient'
-import PrisonClient from './prisonClient'
-import PrisonerClient from './prisonerClient'
+import PrisonApiClient from './prisonApiClient'
+import PrisonRegisterApiClient from './prisonRegisterApiClient'
+import PrisonerSearchClient from './prisonerSearchClient'
 import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
 import ReferralClient from './referralClient'
-import SentenceInformationClient from './sentenceInformationClient'
 import TokenStore from './tokenStore'
 import type { TokenVerifier } from './tokenVerification'
 import verifyToken from './tokenVerification'
@@ -34,36 +33,33 @@ const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = (
   new HmppsAuthClient(new TokenStore(createRedisClient()))
 const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (token: Express.User['token']) =>
   new HmppsManageUsersClient(token)
-const caseloadClientBuilder: RestClientBuilder<CaseloadClient> = (token: Express.User['token']) =>
-  new CaseloadClient(token)
 const courseClientBuilder: RestClientBuilder<CourseClient> = (token: Express.User['token']) => new CourseClient(token)
-const prisonClientBuilder: RestClientBuilder<PrisonClient> = (token: Express.User['token']) => new PrisonClient(token)
-const prisonerClientBuilder: RestClientBuilder<PrisonerClient> = (token: Express.User['token']) =>
-  new PrisonerClient(token)
+const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (token: Express.User['token']) =>
+  new PrisonRegisterApiClient(token)
+const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (token: Express.User['token']) =>
+  new PrisonerSearchClient(token)
 const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: Express.User['token']) =>
   new ReferralClient(token)
-const sentenceInformationClientBuilder: RestClientBuilder<SentenceInformationClient> = (token: Express.User['token']) =>
-  new SentenceInformationClient(token)
+const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (token: Express.User['token']) =>
+  new PrisonApiClient(token)
 
 export {
-  CaseloadClient,
   CourseClient,
   HmppsAuthClient,
   HmppsManageUsersClient,
-  PrisonClient,
-  PrisonerClient,
+  PrisonApiClient,
+  PrisonRegisterApiClient,
+  PrisonerSearchClient,
   ReferralClient,
-  SentenceInformationClient,
   TokenStore,
-  caseloadClientBuilder,
   courseClientBuilder,
   createRedisClient,
   hmppsAuthClientBuilder,
   hmppsManageUsersClientBuilder,
-  prisonClientBuilder,
-  prisonerClientBuilder,
+  prisonApiClientBuilder,
+  prisonRegisterApiClientBuilder,
+  prisonerSearchClientBuilder,
   referralClientBuilder,
-  sentenceInformationClientBuilder,
   serviceCheckFactory,
   verifyToken,
 }

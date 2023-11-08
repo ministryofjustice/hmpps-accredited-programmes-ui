@@ -1,12 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import type {
-  CourseService,
-  OrganisationService,
-  PersonService,
-  ReferralService,
-  SentenceInformationService,
-} from '../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils, TypeUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithValue, MojFrontendSideNavigationItem } from '@accredited-programmes/ui'
@@ -17,7 +11,6 @@ export default class ReferralsController {
     private readonly organisationService: OrganisationService,
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
-    private readonly sentenceInformationService: SentenceInformationService,
   ) {}
 
   additionalInformation(): TypedRequestHandler<Request, Response> {
@@ -76,7 +69,7 @@ export default class ReferralsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const sentenceAndOffenceDetails = await this.sentenceInformationService.getSentenceAndOffenceDetails(
+      const sentenceAndOffenceDetails = await this.personService.getSentenceAndOffenceDetails(
         req.user.token,
         sharedPageData.person.bookingId,
       )
