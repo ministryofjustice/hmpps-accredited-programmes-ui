@@ -1,0 +1,21 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro keylessSummaryCard(title, actionItems = [], bodyText = undefined, bodyHtml = undefined, testid = '') %}
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: title
+      },
+      actions: {
+        items: actionItems
+      }
+    },
+    rows: [{
+      key: { text: "", classes: "govuk-visually-hidden" },
+      value: { text: bodyText, html: bodyHtml, classes: "govuk-!-width-full" }
+    }],
+    attributes: {
+      "data-testid": testid
+    }
+  }) }}
+{% endmacro %}

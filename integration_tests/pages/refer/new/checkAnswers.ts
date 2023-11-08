@@ -1,5 +1,6 @@
 import { referPaths } from '../../../../server/paths'
 import { CourseUtils, ReferralUtils } from '../../../../server/utils'
+import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
@@ -65,7 +66,16 @@ export default class NewReferralCheckAnswersPage extends Page {
       'Change additional information',
       referPaths.new.additionalInformation.show({ referralId: this.referral.id }),
     )
-    cy.get('[data-testid="additional-information"]').should('have.text', this.referral.additionalInformation)
+
+    cy.get('[data-testid="additional-information-summary-list"] .govuk-summary-list__value').then(
+      keylessSummaryListBodyElement => {
+        const { actual, expected } = Helpers.parseHtml(
+          keylessSummaryListBodyElement,
+          this.referral.additionalInformation,
+        )
+        expect(actual).to.equal(expected)
+      },
+    )
   }
 
   shouldHaveApplicationSummary() {
@@ -91,7 +101,15 @@ export default class NewReferralCheckAnswersPage extends Page {
   }
 
   shouldHaveOasysConfirmation(): void {
-    cy.get('[data-testid="oasys-confirmation"]').should('have.text', 'I confirm that the information is up to date.')
+    cy.get('[data-testid="oasys-confirmation-summary-list"] .govuk-summary-list__value').then(
+      keylessSummaryListBodyElement => {
+        const { actual, expected } = Helpers.parseHtml(
+          keylessSummaryListBodyElement,
+          'I confirm that the information is up to date.',
+        )
+        expect(actual).to.equal(expected)
+      },
+    )
   }
 
   shouldHaveProgrammeHistory(): void {
