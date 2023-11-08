@@ -34,10 +34,10 @@ describe('PersonUtils', () => {
           conditionalReleaseDate: '2024-10-31',
           currentPrison: 'HMP Hewell',
           dateOfBirth: '5 July 1971',
-          earliestReleaseDate: '2026-10-31',
           ethnicity: 'White',
           gender: 'Male',
           homeDetentionCurfewEligibilityDate: '2025-10-31',
+          indeterminateSentence: false,
           name: 'Del Hatton',
           paroleEligibilityDate: '2026-10-31',
           prisonNumber: 'ABC1234',
@@ -46,35 +46,6 @@ describe('PersonUtils', () => {
           sentenceStartDate: '2010-10-31',
           setting: 'Custody',
           tariffDate: '2028-10-31',
-        })
-      })
-    })
-
-    describe('earliestReleaseDate', () => {
-      describe('when the prisoner is on an indeterminate sentence', () => {
-        it('uses `tariffDate`', () => {
-          prisoner = { ...prisoner, indeterminateSentence: true }
-
-          expect(PersonUtils.personFromPrisoner(prisoner).earliestReleaseDate).toEqual(prisoner.tariffDate)
-        })
-      })
-
-      describe('when the prisoner is on a determinate sentence', () => {
-        describe('and `paroleEligibilityDate` is present', () => {
-          it('uses `paroleEligibilityDate`', () => {
-            prisoner = { ...prisoner, indeterminateSentence: false }
-
-            expect(PersonUtils.personFromPrisoner(prisoner).earliestReleaseDate).toEqual(prisoner.paroleEligibilityDate)
-          })
-        })
-
-        describe('and `paroleEligibilityDate` is `undefined`', () => {
-          it('uses `conditionalReleaseDate`', () => {
-            prisoner = { ...prisoner, paroleEligibilityDate: undefined }
-            expect(PersonUtils.personFromPrisoner(prisoner).earliestReleaseDate).toEqual(
-              prisoner.conditionalReleaseDate,
-            )
-          })
         })
       })
     })
@@ -94,6 +65,7 @@ describe('PersonUtils', () => {
           conditionalReleaseDate: undefined,
           ethnicity: undefined,
           homeDetentionCurfewEligibilityDate: undefined,
+          indeterminateSentence: undefined,
           paroleEligibilityDate: undefined,
           religion: undefined,
           sentenceExpiryDate: undefined,
@@ -106,6 +78,7 @@ describe('PersonUtils', () => {
             conditionalReleaseDate: undefined,
             ethnicity: 'Not entered',
             homeDetentionCurfewEligibilityDate: undefined,
+            indeterminateSentence: undefined,
             paroleEligibilityDate: undefined,
             religionOrBelief: 'Not entered',
             sentenceExpiryDate: undefined,
