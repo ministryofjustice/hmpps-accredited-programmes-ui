@@ -90,6 +90,146 @@ describe('PersonUtils', () => {
     })
   })
 
+  describe('releaseDatesSummaryListRows', () => {
+    const personWithAllDatesAndDeterminateSentence = personFactory.build({
+      conditionalReleaseDate: '2024-10-31',
+      homeDetentionCurfewEligibilityDate: '2025-10-31',
+      indeterminateSentence: false,
+      paroleEligibilityDate: '2026-10-31',
+      sentenceExpiryDate: '2027-10-31',
+      tariffDate: '2028-10-31',
+    })
+
+    describe('when on an indeterminate sentence', () => {
+      it('identifies tariff date as the earliest release date and formats release date information in the appropriate format for passing to a GOV.UK Summary List nunjucks macro', () => {
+        const person = { ...personWithAllDatesAndDeterminateSentence, indeterminateSentence: true }
+
+        expect(PersonUtils.releaseDatesSummaryListRows(person)).toEqual([
+          {
+            key: { text: 'Conditional release date' },
+            value: { text: '31 October 2024' },
+          },
+          {
+            key: {
+              html: 'Tariff end date<br><span class="govuk-!-font-size-16 govuk-!-font-weight-regular release-dates__earliest-indicator">(Earliest release date)</span>',
+            },
+            value: { text: '31 October 2028' },
+          },
+          {
+            key: { text: 'Sentence expiry date' },
+            value: { text: '31 October 2027' },
+          },
+          {
+            key: { text: 'Parole eligibility date' },
+            value: { text: '31 October 2026' },
+          },
+          {
+            key: { text: 'Home detention curfew eligibility date' },
+            value: { text: '31 October 2025' },
+          },
+        ])
+      })
+    })
+
+    describe('when on a determinate sentence', () => {
+      describe('and with a parole eligibility date', () => {
+        it('identifies parole eligibility date as the earliest release date and formats release date information in the appropriate format for passing to a GOV.UK Summary List nunjucks macro', () => {
+          expect(PersonUtils.releaseDatesSummaryListRows(personWithAllDatesAndDeterminateSentence)).toEqual([
+            {
+              key: { text: 'Conditional release date' },
+              value: { text: '31 October 2024' },
+            },
+            {
+              key: { text: 'Tariff end date' },
+              value: { text: '31 October 2028' },
+            },
+            {
+              key: { text: 'Sentence expiry date' },
+              value: { text: '31 October 2027' },
+            },
+            {
+              key: {
+                html: 'Parole eligibility date<br><span class="govuk-!-font-size-16 govuk-!-font-weight-regular release-dates__earliest-indicator">(Earliest release date)</span>',
+              },
+              value: { text: '31 October 2026' },
+            },
+            {
+              key: { text: 'Home detention curfew eligibility date' },
+              value: { text: '31 October 2025' },
+            },
+          ])
+        })
+      })
+
+      describe('and without a parole eligibility date', () => {
+        it('indicates that parole eligibility date is missing, identifies conditional release date as the earliest release date, and formats release date information in the appropriate format for passing to a GOV.UK Summary List nunjucks macro', () => {
+          const person = { ...personWithAllDatesAndDeterminateSentence, paroleEligibilityDate: undefined }
+
+          expect(PersonUtils.releaseDatesSummaryListRows(person)).toEqual([
+            {
+              key: {
+                html: 'Conditional release date<br><span class="govuk-!-font-size-16 govuk-!-font-weight-regular release-dates__earliest-indicator">(Earliest release date)</span>',
+              },
+              value: { text: '31 October 2024' },
+            },
+            {
+              key: { text: 'Tariff end date' },
+              value: { text: '31 October 2028' },
+            },
+            {
+              key: { text: 'Sentence expiry date' },
+              value: { text: '31 October 2027' },
+            },
+            {
+              key: { text: 'Parole eligibility date' },
+              value: { text: 'There is no record for this date' },
+            },
+            {
+              key: { text: 'Home detention curfew eligibility date' },
+              value: { text: '31 October 2025' },
+            },
+          ])
+        })
+      })
+    })
+
+    describe('when dates are missing', () => {
+      it('indicates that they are missing', () => {
+        const person = {
+          ...personWithAllDatesAndDeterminateSentence,
+          conditionalReleaseDate: undefined,
+          homeDetentionCurfewEligibilityDate: undefined,
+          paroleEligibilityDate: undefined,
+          sentenceExpiryDate: undefined,
+          tariffDate: undefined,
+        }
+
+        expect(PersonUtils.releaseDatesSummaryListRows(person)).toEqual([
+          {
+            key: { text: 'Conditional release date' },
+            value: { text: 'There is no record for this date' },
+          },
+          {
+            key: { text: 'Tariff end date' },
+            value: { text: 'There is no record for this date' },
+          },
+          {
+            key: { text: 'Sentence expiry date' },
+            value: { text: 'There is no record for this date' },
+          },
+          {
+            key: { text: 'Parole eligibility date' },
+            value: { text: 'There is no record for this date' },
+          },
+          {
+            key: { text: 'Home detention curfew eligibility date' },
+            value: { text: 'There is no record for this date' },
+          },
+        ])
+      })
+    })
+  })
+
   describe('summaryListRows', () => {
     it("formats a person's details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro", () => {
       const person = personFactory.build({
