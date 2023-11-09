@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@7.2.1
+  hmpps: ministryofjustice/hmpps@7
   slack: circleci/slack@4.12.1
   node: circleci/node@4.5.2
 
@@ -48,7 +48,8 @@ jobs:
             export BUILD_NUMBER=${DATE}.${CIRCLE_BUILD_NUM}
             export GIT_REF="$CIRCLE_SHA1"
             npm run record-build-info
-      - run: # Run linter after build because the integration test code depend on compiled typescript...
+      - run:
+          # Run linter after build because the integration test code depend on compiled typescript...
           name: Linter check
           command: npm run lint:ci
       - run: npm run typecheck
@@ -273,8 +274,8 @@ workflows:
       - tag_pact_version:
           name: 'tag_pact_version_dev'
           tag: 'deployed:dev'
-          requires: [deploy_dev]
-          context: [hmpps-common-vars]
+          requires: [ deploy_dev ]
+          context: [ hmpps-common-vars ]
 
       - request-preprod-approval:
           type: approval
@@ -292,8 +293,8 @@ workflows:
       - tag_pact_version:
           name: 'tag_pact_version_preprod'
           tag: 'deployed:preprod'
-          requires: [deploy_preprod]
-          context: [hmpps-common-vars]
+          requires: [ deploy_preprod ]
+          context: [ hmpps-common-vars ]
 
       - request-prod-approval:
           type: approval
@@ -312,8 +313,8 @@ workflows:
       - tag_pact_version:
           name: 'tag_pact_version_prod'
           tag: 'deployed:prod'
-          requires: [deploy_prod]
-          context: [hmpps-common-vars]
+          requires: [ deploy_prod ]
+          context: [ hmpps-common-vars ]
 
   security:
     triggers:
