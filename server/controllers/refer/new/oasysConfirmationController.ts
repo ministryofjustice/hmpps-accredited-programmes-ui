@@ -17,7 +17,7 @@ export default class NewReferralsOasysConfirmationController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -45,7 +45,7 @@ export default class NewReferralsOasysConfirmationController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -65,7 +65,7 @@ export default class NewReferralsOasysConfirmationController {
         oasysConfirmed,
       }
 
-      await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)
+      await this.referralService.updateReferral(req.user.username, referralId, referralUpdate)
 
       return res.redirect(referPaths.new.show({ referralId }))
     }

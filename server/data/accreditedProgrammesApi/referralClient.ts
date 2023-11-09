@@ -3,11 +3,12 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
+import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {
   restClient: RestClient
 
-  constructor(token: Express.User['token']) {
+  constructor(token: SystemToken) {
     this.restClient = new RestClient('referralClient', config.apis.accreditedProgrammesApi as ApiConfig, token)
   }
 

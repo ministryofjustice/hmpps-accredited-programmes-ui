@@ -21,7 +21,7 @@ export default class NewReferralsController {
       const { referralId } = req.params
       const { username } = req.user
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -75,7 +75,7 @@ export default class NewReferralsController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_submitted') {
         throw createError(400, {
@@ -94,10 +94,10 @@ export default class NewReferralsController {
       TypeUtils.assertHasUser(req)
 
       const { courseOfferingId, prisonNumber } = req.body
-      const { token, userId } = req.user
+      const { username, userId } = req.user
 
       const createdReferralResponse: CreatedReferralResponse = await this.referralService.createReferral(
-        token,
+        username,
         courseOfferingId,
         prisonNumber,
         userId,
@@ -129,7 +129,7 @@ export default class NewReferralsController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -161,7 +161,7 @@ export default class NewReferralsController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -215,7 +215,7 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.checkAnswers({ referralId }))
       }
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -225,7 +225,7 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.show({ referralId }))
       }
 
-      await this.referralService.submitReferral(req.user.token, referralId)
+      await this.referralService.submitReferral(req.user.username, referralId)
 
       return res.redirect(referPaths.new.complete({ referralId }))
     }

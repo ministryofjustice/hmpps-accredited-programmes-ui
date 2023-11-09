@@ -19,7 +19,7 @@ import {
 const services = () => {
   const organisationService = new OrganisationService(prisonRegisterApiClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
-  const referralService = new ReferralService(referralClientBuilder)
+  const referralService = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder)
   const userService = new UserService(hmppsManageUsersClientBuilder, prisonApiClientBuilder)
   const courseService = new CourseService(courseClientBuilder, userService)
 

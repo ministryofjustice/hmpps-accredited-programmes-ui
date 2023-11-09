@@ -16,7 +16,7 @@ export default class NewReferralsCourseParticipationDetailsController {
       TypeUtils.assertHasUser(req)
       const { courseParticipationId, referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -62,7 +62,7 @@ export default class NewReferralsCourseParticipationDetailsController {
 
       const { courseParticipationId, referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))

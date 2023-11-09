@@ -12,7 +12,7 @@ import { FormUtils } from '../../../utils'
 jest.mock('../../../utils/formUtils')
 
 describe('NewReferralsOasysConfirmationController', () => {
-  const token = 'SOME_TOKEN'
+  const username = 'SOME_USERNAME'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
@@ -33,7 +33,7 @@ describe('NewReferralsOasysConfirmationController', () => {
   let controller: NewReferralsOasysConfirmationController
 
   beforeEach(() => {
-    request = createMock<Request>({ params: { referralId }, user: { token } })
+    request = createMock<Request>({ params: { referralId }, user: { username } })
     response = Helpers.createMockResponseWithCaseloads()
     controller = new NewReferralsOasysConfirmationController(personService, referralService)
   })
@@ -55,7 +55,7 @@ describe('NewReferralsOasysConfirmationController', () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(response.render).toHaveBeenCalledWith('referrals/new/oasysConfirmation/show', {
         pageHeading: 'Confirm the OASys information',
         person,
@@ -71,7 +71,7 @@ describe('NewReferralsOasysConfirmationController', () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -86,9 +86,9 @@ describe('NewReferralsOasysConfirmationController', () => {
       const requestHandler = controller.update()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
-      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referralId, {
+      expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
         additionalInformation: draftReferral.additionalInformation,
         hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
         oasysConfirmed: true,
@@ -101,7 +101,7 @@ describe('NewReferralsOasysConfirmationController', () => {
         const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.confirmOasys.show({ referralId }))
         expect(request.flash).toHaveBeenCalledWith('oasysConfirmedError', 'Confirm the OASys information is up to date')
       })
@@ -114,7 +114,7 @@ describe('NewReferralsOasysConfirmationController', () => {
         const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
