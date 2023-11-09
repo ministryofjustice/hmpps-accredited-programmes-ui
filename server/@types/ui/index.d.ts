@@ -5,6 +5,7 @@ import type {
   GovukFrontendSummaryListCardActions,
   GovukFrontendSummaryListCardActionsItem,
   GovukFrontendSummaryListRow,
+  GovukFrontendSummaryListRowKey,
   GovukFrontendSummaryListRowValue,
   GovukFrontendTag,
 } from '@govuk-frontend'
@@ -17,10 +18,13 @@ type GovukFrontendSummaryListCardActionsWithItems = GovukFrontendSummaryListCard
   items: Array<GovukFrontendSummaryListCardActionsItem>
 }
 
-type GovukFrontendSummaryListRowWithValue = GovukFrontendSummaryListRow & { value: GovukFrontendSummaryListRowValue }
+type GovukFrontendSummaryListRowWithKeyAndValue = GovukFrontendSummaryListRow & {
+  key: GovukFrontendSummaryListRowKey
+  value: GovukFrontendSummaryListRowValue
+}
 
-type GovukFrontendSummaryListWithRowsWithValues = GovukFrontendSummaryList & {
-  rows: Array<GovukFrontendSummaryListRowWithValue>
+type GovukFrontendSummaryListWithRowsWithKeysAndValues = GovukFrontendSummaryList & {
+  rows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
 }
 
 type GovukFrontendTagWithText = GovukFrontendTag & { text: string }
@@ -42,7 +46,7 @@ type CourseParticipationPresenter = CourseParticipation & {
 type CoursePresenter = Course & {
   audienceTags: Array<GovukFrontendTagWithText>
   nameAndAlternateName: string
-  prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithValue>
+  prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
 }
 
 type OrganisationWithOfferingId = Organisation & {
@@ -50,7 +54,7 @@ type OrganisationWithOfferingId = Organisation & {
 }
 
 type OrganisationWithOfferingEmailsPresenter = Organisation & {
-  summaryListRows: Array<GovukFrontendSummaryListRowWithValue>
+  summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
 }
 
 type ReferralTaskListStatusText = 'cannot start yet' | 'completed' | 'not started'
@@ -103,8 +107,8 @@ export type {
   GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
   GovukFrontendSummaryListCardActionsWithItems,
-  GovukFrontendSummaryListRowWithValue,
-  GovukFrontendSummaryListWithRowsWithValues,
+  GovukFrontendSummaryListRowWithKeyAndValue,
+  GovukFrontendSummaryListWithRowsWithKeysAndValues,
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,

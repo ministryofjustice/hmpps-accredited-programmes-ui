@@ -1,7 +1,7 @@
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
 import type { Person } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRowWithValue } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 import type { Prisoner } from '@prisoner-search'
 
@@ -29,8 +29,8 @@ export default class PersonUtils {
     }
   }
 
-  static releaseDatesSummaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithValue> {
-    const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
+  static releaseDatesSummaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []
 
     type ReleaseDateField =
       | 'conditionalReleaseDate'
@@ -82,7 +82,7 @@ export default class PersonUtils {
     return summaryListRows
   }
 
-  static summaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithValue> {
+  static summaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
         key: { text: 'Name' },

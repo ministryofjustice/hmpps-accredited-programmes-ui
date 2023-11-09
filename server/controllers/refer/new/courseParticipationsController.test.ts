@@ -15,7 +15,7 @@ import {
 import Helpers from '../../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../../utils'
 import type { CourseParticipation } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListWithRowsWithValues } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/courseParticipationUtils')
@@ -32,7 +32,7 @@ describe('NewReferralsCourseParticipationsController', () => {
 
   let controller: NewReferralsCourseParticipationsController
 
-  const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithValues
+  const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
   const person = personFactory.build()
   const referralId = 'a-referral-id'
   const draftReferral = referralFactory.started().build({ id: referralId, prisonNumber: person.prisonNumber })

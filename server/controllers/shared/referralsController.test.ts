@@ -15,7 +15,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
-import type { GovukFrontendSummaryListWithRowsWithValues } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 describe('ReferralsController', () => {
   const token = 'SOME_TOKEN'
@@ -100,7 +100,7 @@ describe('ReferralsController', () => {
 
   describe('programmeHistory', () => {
     it('renders the programme history template with the correct response locals', async () => {
-      const courseParticipationSummaryListsOptions = [createMock<GovukFrontendSummaryListWithRowsWithValues>()]
+      const courseParticipationSummaryListsOptions = [createMock<GovukFrontendSummaryListWithRowsWithKeysAndValues>()]
 
       courseService.getAndPresentParticipationsByPerson.mockResolvedValue(courseParticipationSummaryListsOptions)
 

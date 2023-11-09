@@ -5,7 +5,7 @@ import { referPaths } from '../paths'
 import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
-  GovukFrontendSummaryListRowWithValue,
+  GovukFrontendSummaryListRowWithKeyAndValue,
   MojFrontendSideNavigationItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
@@ -19,7 +19,7 @@ export default class ReferralUtils {
     organisation: Organisation,
     person: Person,
     username: Express.User['username'],
-  ): Array<GovukFrontendSummaryListRowWithValue> {
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
         key: { text: 'Applicant name' },
@@ -51,7 +51,7 @@ export default class ReferralUtils {
   static courseOfferingSummaryListRows(
     coursePresenter: CoursePresenter,
     organisationName: Organisation['name'],
-  ): Array<GovukFrontendSummaryListRowWithValue> {
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
         key: { text: 'Programme name' },
@@ -72,7 +72,7 @@ export default class ReferralUtils {
     return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
   }
 
-  static submissionSummaryListRows(referral: Referral): Array<GovukFrontendSummaryListRowWithValue> {
+  static submissionSummaryListRows(referral: Referral): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
         key: { text: 'Date referred' },

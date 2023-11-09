@@ -13,8 +13,8 @@ import type {
 import type {
   CourseParticipationPresenter,
   GovukFrontendSummaryListCardActionsWithItems,
-  GovukFrontendSummaryListRowWithValue,
-  GovukFrontendSummaryListWithRowsWithValues,
+  GovukFrontendSummaryListRowWithKeyAndValue,
+  GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
@@ -113,7 +113,7 @@ export default class CourseParticipationUtils {
     courseParticipation: CourseParticipationPresenter,
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
-  ): GovukFrontendSummaryListWithRowsWithValues {
+  ): GovukFrontendSummaryListWithRowsWithKeysAndValues {
     const actions: GovukFrontendSummaryListCardActionsWithItems = { items: [] }
 
     if (withActions.change) {
@@ -151,7 +151,7 @@ export default class CourseParticipationUtils {
 
   private static summaryListRows(
     courseParticipation: CourseParticipationPresenter,
-  ): Array<GovukFrontendSummaryListRowWithValue> {
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       CourseParticipationUtils.summaryListRow('Programme name', [courseParticipation.courseName]),
       CourseParticipationUtils.summaryListRowSetting(courseParticipation.setting),
@@ -169,7 +169,7 @@ export default class CourseParticipationUtils {
   private static summaryListRow(
     keyText: GovukFrontendSummaryListRowKey['text'],
     valueTextItems: Array<string | undefined>,
-  ): GovukFrontendSummaryListRowWithValue {
+  ): GovukFrontendSummaryListRowWithKeyAndValue {
     const valueTextItemsWithoutBlanks = valueTextItems.filter(Boolean)
 
     return {
@@ -178,7 +178,9 @@ export default class CourseParticipationUtils {
     }
   }
 
-  private static summaryListRowOutcome(outcome?: CourseParticipationOutcome): GovukFrontendSummaryListRowWithValue {
+  private static summaryListRowOutcome(
+    outcome?: CourseParticipationOutcome,
+  ): GovukFrontendSummaryListRowWithKeyAndValue {
     const valueTextItems: Array<string> = []
 
     if (outcome?.status) {
@@ -196,7 +198,9 @@ export default class CourseParticipationUtils {
     return this.summaryListRow('Outcome', valueTextItems)
   }
 
-  private static summaryListRowSetting(setting?: CourseParticipationSetting): GovukFrontendSummaryListRowWithValue {
+  private static summaryListRowSetting(
+    setting?: CourseParticipationSetting,
+  ): GovukFrontendSummaryListRowWithKeyAndValue {
     const valueTextItems: Array<string> = []
 
     if (setting?.type) {

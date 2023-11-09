@@ -3,7 +3,10 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils, TypeUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRowWithValue, MojFrontendSideNavigationItem } from '@accredited-programmes/ui'
+import type {
+  GovukFrontendSummaryListRowWithKeyAndValue,
+  MojFrontendSideNavigationItem,
+} from '@accredited-programmes/ui'
 
 export default class ReferralsController {
   constructor(
@@ -89,12 +92,12 @@ export default class ReferralsController {
     req: Request,
     res: Response,
   ): Promise<{
-    courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithValue>
+    courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
     navigationItems: Array<MojFrontendSideNavigationItem>
     pageHeading: string
     person: Person
     referral: Referral
-    submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithValue>
+    submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
   }> {
     TypeUtils.assertHasUser(req)
 
