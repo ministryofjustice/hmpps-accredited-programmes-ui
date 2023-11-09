@@ -1,4 +1,4 @@
-import { CourseUtils, DateUtils, SentenceInformationUtils } from '../../../../server/utils'
+import { CourseUtils, DateUtils, PersonUtils, SentenceInformationUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Course, Person } from '@accredited-programmes/models'
 import type { OffenderSentenceAndOffences } from '@prison-api'
@@ -23,6 +23,17 @@ export default class SentenceInformationPage extends Page {
       'contain.text',
       `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
     )
+  }
+
+  shouldContainReleaseDatesSummaryCard(): void {
+    cy.get('[data-testid="release-dates-summary-card"]').then(summaryCardElement => {
+      this.shouldContainSummaryCard(
+        'Release dates',
+        [],
+        PersonUtils.releaseDatesSummaryListRows(this.person),
+        summaryCardElement,
+      )
+    })
   }
 
   shouldContainSentenceDetailsSummaryCard(): void {

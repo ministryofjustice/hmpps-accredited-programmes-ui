@@ -84,6 +84,7 @@ export default class ReferralsController {
           sentenceAndOffenceDetails.sentenceTypeDescription,
         ),
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+        releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
       })
     }
   }

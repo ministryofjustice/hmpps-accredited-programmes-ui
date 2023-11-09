@@ -23,4 +23,16 @@
     },
     rows: detailsSummaryListRows
   }) }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Release dates"
+      },
+      attributes: {
+        "data-testid": "release-dates-summary-card"
+      }
+    },
+    rows: releaseDatesSummaryListRows
+  }) }}
 {% endblock submittedReferralContent %}

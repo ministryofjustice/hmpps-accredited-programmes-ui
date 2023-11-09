@@ -141,6 +141,7 @@ describe('ReferralsController', () => {
         ),
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
       })
     })
   })
