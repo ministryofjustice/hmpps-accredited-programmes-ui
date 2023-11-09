@@ -18,7 +18,7 @@ import {
   PersonalDetailsPage,
   ProgrammeHistoryPage,
   SentenceInformationPage,
-} from '../../pages/refer'
+} from '../../pages/shared'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 context('Viewing a submitted referral', () => {
