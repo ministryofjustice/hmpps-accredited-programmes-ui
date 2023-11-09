@@ -21,6 +21,7 @@
       "@accredited-programmes/ui": ["./server/@types/ui/index.d.ts"],
       "@accredited-programmes/users": ["./server/@types/users/index.d.ts"],
       "@govuk-frontend": ["./server/@types/govukFrontend/index.d.ts"],
+      "@hmpps-auth": ["./server/@types/hmppsAuth/index.d.ts"],
       "@manage-users-api": ["./server/@types/manageUsersApi/index.d.ts"],
       "@prison-api": ["./server/@types/prisonApi/index.d.ts"],
       "@prison-register-api": ["./server/@types/prisonRegisterApi/index.d.ts"],
