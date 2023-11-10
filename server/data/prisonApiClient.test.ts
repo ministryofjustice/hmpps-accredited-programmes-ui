@@ -6,6 +6,7 @@ import { prisonApiPaths } from '../paths'
 import {
   caseloadFactory,
   inmateDetailFactory,
+  offenceDtoFactory,
   prisonerFactory,
   sentenceAndOffenceDetailsFactory,
 } from '../testutils/factories'
@@ -43,6 +44,18 @@ describe('PrisonApiClient', () => {
 
       const output = await prisonApiClient.findCurrentUserCaseloads()
       expect(output).toEqual(caseloads)
+    })
+  })
+
+  describe('findOffencesThatStartWith', () => {
+    const offenceCode = 'ABC123'
+    const offence = offenceDtoFactory.build()
+
+    it('fetches an offence by offence code', async () => {
+      fakePrisonApi.get(prisonApiPaths.offenceCode({ offenceCode })).reply(200, { content: [offence] })
+
+      const output = await prisonApiClient.findOffencesThatStartWith(offenceCode)
+      expect(output).toEqual({ content: [offence] })
     })
   })
 
