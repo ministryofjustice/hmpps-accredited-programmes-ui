@@ -156,6 +156,10 @@ export default class ReferralUtils {
         text: 'Programme history',
       },
       {
+        href: referPaths.show.offenceHistory({ referralId }),
+        text: 'Offence history',
+      },
+      {
         href: referPaths.show.sentenceInformation({ referralId }),
         text: 'Sentence information',
       },
