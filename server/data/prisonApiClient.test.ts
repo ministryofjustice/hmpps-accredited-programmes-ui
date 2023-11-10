@@ -3,7 +3,12 @@ import nock from 'nock'
 import PrisonApiClient from './prisonApiClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
-import { caseloadFactory, prisonerFactory, sentenceAndOffenceDetailsFactory } from '../testutils/factories'
+import {
+  caseloadFactory,
+  inmateDetailFactory,
+  prisonerFactory,
+  sentenceAndOffenceDetailsFactory,
+} from '../testutils/factories'
 import type { Caseload } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
@@ -38,6 +43,21 @@ describe('PrisonApiClient', () => {
 
       const output = await prisonApiClient.findCurrentUserCaseloads()
       expect(output).toEqual(caseloads)
+    })
+  })
+
+  describe('findOffenderBookingByOffenderNo', () => {
+    const offenderNo = 'A1234AA'
+    const offenderBooking = inmateDetailFactory.build()
+
+    it('fetches an offender booking by offender number', async () => {
+      fakePrisonApi
+        .get(prisonApiPaths.offenderBookingDetail({ offenderNo }))
+        .query({ extraInfo: 'true' })
+        .reply(200, offenderBooking)
+
+      const output = await prisonApiClient.findOffenderBookingByOffenderNo(offenderNo)
+      expect(output).toEqual(offenderBooking)
     })
   })
 
