@@ -45,6 +45,14 @@ type CoursePresenter = Course & {
   prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithValue>
 }
 
+type OffenceWithDetail = {
+  category: string
+  description: string
+  mostSerious: boolean
+  offenceCode: string
+  offenceDate: string
+}
+
 type OrganisationWithOfferingId = Organisation & {
   courseOfferingId: CourseOffering['id']
 }
@@ -109,6 +117,7 @@ export type {
   HasHtmlString,
   HasTextString,
   MojFrontendSideNavigationItem,
+  OffenceWithDetail,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
   ReferralTaskListItem,
