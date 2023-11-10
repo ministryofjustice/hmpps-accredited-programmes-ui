@@ -1,14 +1,14 @@
 import { CourseUtils, DateUtils, SentenceInformationUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Course, Person } from '@accredited-programmes/models'
-import type { SentenceAndOffenceDetails } from '@prison-api'
+import type { OffenderSentenceAndOffences } from '@prison-api'
 
 export default class SentenceInformationPage extends Page {
   person: Person
 
-  sentenceAndOffenceDetails: SentenceAndOffenceDetails
+  sentenceAndOffenceDetails: OffenderSentenceAndOffences
 
-  constructor(args: { course: Course; person: Person; sentenceAndOffenceDetails: SentenceAndOffenceDetails }) {
+  constructor(args: { course: Course; person: Person; sentenceAndOffenceDetails: OffenderSentenceAndOffences }) {
     const { course, person, sentenceAndOffenceDetails } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 

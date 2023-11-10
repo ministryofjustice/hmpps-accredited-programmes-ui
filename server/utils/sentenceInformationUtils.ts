@@ -1,12 +1,12 @@
 import DateUtils from './dateUtils'
 import type { Person } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithValue } from '@accredited-programmes/ui'
-import type { SentenceAndOffenceDetails } from '@prison-api'
+import type { OffenderSentenceAndOffences } from '@prison-api'
 
 export default class SentenceInformationUtils {
   static detailsSummaryListRows(
     startDate: Person['sentenceStartDate'],
-    type: SentenceAndOffenceDetails['sentenceTypeDescription'],
+    type: OffenderSentenceAndOffences['sentenceTypeDescription'],
   ): Array<GovukFrontendSummaryListRowWithValue> {
     return [
       {

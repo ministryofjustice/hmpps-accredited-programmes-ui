@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# script/generateApiTypes/prisonApi: Generate types for the Prison API.
+#  
+
+npx openapi-typescript https://prison-api-dev.prison.service.justice.gov.uk/v3/api-docs > server/@types/prisonApi/imported/index.d.ts

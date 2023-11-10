@@ -2,7 +2,7 @@ import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
-import type { Caseload, SentenceAndOffenceDetails } from '@prison-api'
+import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
 export default class PrisonApiClient {
@@ -18,9 +18,9 @@ export default class PrisonApiClient {
     })) as Array<Caseload>
   }
 
-  async findSentenceAndOffenceDetails(bookingId: Prisoner['bookingId']): Promise<SentenceAndOffenceDetails> {
+  async findSentenceAndOffenceDetails(bookingId: Prisoner['bookingId']): Promise<OffenderSentenceAndOffences> {
     return (await this.restClient.get({
       path: prisonApiPaths.sentenceAndOffenceDetails({ bookingId }),
-    })) as SentenceAndOffenceDetails
+    })) as OffenderSentenceAndOffences
   }
 }

@@ -19,8 +19,8 @@ class CaseloadFactory extends Factory<Caseload> {
 
 export default CaseloadFactory.define(() => ({
   caseLoadId: faker.string.alpha({ casing: 'upper', length: 3 }),
-  caseloadFunction: 'GENERAL',
+  caseloadFunction: 'GENERAL' as const,
   currentlyActive: true,
   description: `${faker.location.county()} (HMP & YOI)`,
-  type: 'INST',
+  type: 'INST' as const,
 }))

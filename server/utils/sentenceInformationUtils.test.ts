@@ -1,10 +1,10 @@
 import SentenceInformationUtils from './sentenceInformationUtils'
 import type { Person } from '@accredited-programmes/models'
-import type { SentenceAndOffenceDetails } from '@prison-api'
+import type { OffenderSentenceAndOffences } from '@prison-api'
 
 describe('SentenceInformationUtils', () => {
   describe('detailsSummaryListRows', () => {
-    const type: SentenceAndOffenceDetails['sentenceTypeDescription'] = 'Concurrent determinate sentence'
+    const type: OffenderSentenceAndOffences['sentenceTypeDescription'] = 'Concurrent determinate sentence'
 
     it('formats sentence details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro', () => {
       const startDate: Person['sentenceStartDate'] = '2010-10-31'
