@@ -46,6 +46,18 @@ describe('PrisonApiClient', () => {
     })
   })
 
+  describe('findOffencesByCode', () => {
+    const offenceCode = 'ABC123'
+    const offence = offenceHistory.build()
+
+    it('fetches an offence by offence code', async () => {
+      fakePrisonApi.get(prisonApiPaths.offenceCode({ offenceCode })).reply(200, { content: [offence] })
+
+      const output = await prisonApiClient.findOffencesByCode(offenceCode)
+      expect(output).toEqual({ content: [offence] })
+    })
+  })
+
   describe('findOffender', () => {
     const offenderNo = 'A1234AA'
     const offender: InmateDetail = {
