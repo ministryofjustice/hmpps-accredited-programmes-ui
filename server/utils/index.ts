@@ -7,6 +7,7 @@ import CourseUtils from './courseUtils'
 import DateUtils from './dateUtils'
 import FormUtils from './formUtils'
 import nunjucksSetup from './nunjucksSetup'
+import OffenceUtils from './offenceUtils'
 import OrganisationUtils from './organisationUtils'
 import PersonUtils from './personUtils'
 import ReferralUtils from './referralUtils'
@@ -21,6 +22,7 @@ export {
   CourseUtils,
   DateUtils,
   FormUtils,
+  OffenceUtils,
   OrganisationUtils,
   PersonUtils,
   ReferralUtils,
