@@ -1,13 +1,7 @@
-type Caseload = {
-  caseLoadId: string // eslint-disable-next-line @typescript-eslint/member-ordering
-  caseloadFunction: string
-  currentlyActive: boolean
-  description: string
-  type: string
-}
+import type { components } from './imported'
 
-type SentenceAndOffenceDetails = {
-  sentenceTypeDescription: string
-}
+type Caseload = components['schemas']['CaseLoad']
 
-export type { Caseload, SentenceAndOffenceDetails }
+type OffenderSentenceAndOffences = components['schemas']['OffenderSentenceAndOffences']
+
+export type { Caseload, OffenderSentenceAndOffences }

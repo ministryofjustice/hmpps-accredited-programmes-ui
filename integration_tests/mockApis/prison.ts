@@ -3,7 +3,7 @@ import type { SuperAgentRequest } from 'superagent'
 import { prisonApiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import { caseloads as defaultCaseloads } from '../../wiremock/stubs'
-import type { Caseload, SentenceAndOffenceDetails } from '@prison-api'
+import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
 export default {
@@ -35,7 +35,7 @@ export default {
 
   stubSentenceAndOffenceDetails: (args: {
     bookingId: Prisoner['bookingId']
-    sentenceAndOffenceDetails: SentenceAndOffenceDetails
+    sentenceAndOffenceDetails: OffenderSentenceAndOffences
   }): SuperAgentRequest =>
     stubFor({
       request: {

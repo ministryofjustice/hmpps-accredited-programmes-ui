@@ -10,7 +10,7 @@ import type {
 } from '../data'
 import { PersonUtils } from '../utils'
 import type { Person } from '@accredited-programmes/models'
-import type { Caseload, SentenceAndOffenceDetails } from '@prison-api'
+import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 
 export default class PersonService {
   constructor(
@@ -54,7 +54,7 @@ export default class PersonService {
   async getSentenceAndOffenceDetails(
     token: Express.User['token'],
     bookingId: Person['bookingId'],
-  ): Promise<SentenceAndOffenceDetails> {
+  ): Promise<OffenderSentenceAndOffences> {
     try {
       const prisonApiClient = this.prisonApiClientBuilder(token)
       return await prisonApiClient.findSentenceAndOffenceDetails(bookingId)
