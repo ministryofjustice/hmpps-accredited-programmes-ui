@@ -266,6 +266,11 @@ describe('ReferralUtils', () => {
           },
           {
             active: false,
+            href: referPaths.show.offenceHistory({ referralId: mockReferralId }),
+            text: 'Offence history',
+          },
+          {
+            active: false,
             href: referPaths.show.sentenceInformation({ referralId: mockReferralId }),
             text: 'Sentence information',
           },
@@ -292,6 +297,11 @@ describe('ReferralUtils', () => {
             active: false,
             href: assessPaths.show.programmeHistory({ referralId: mockReferralId }),
             text: 'Programme history',
+          },
+          {
+            active: false,
+            href: assessPaths.show.offenceHistory({ referralId: mockReferralId }),
+            text: 'Offence history',
           },
           {
             active: false,
