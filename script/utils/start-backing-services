@@ -17,6 +17,8 @@ if [ "$MOCK_API" = true ]; then
   npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts > /dev/null
   npx ts-node --transpile-only ./wiremock/scripts/stubApis.ts > /dev/null
   npx ts-node --transpile-only ./wiremock/scripts/stubCaseloads.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubOffenceCodes.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubOffenderBookings.ts > /dev/null
   npx ts-node --transpile-only ./wiremock/scripts/stubPrisoners.ts > /dev/null
   npx ts-node --transpile-only ./wiremock/scripts/stubOffenderSentenceAndOffences.ts > /dev/null
 
@@ -31,6 +33,8 @@ else
   echo "==> Stubbing Prisoner Search endpoints..."
   npx ts-node --transpile-only ./wiremock/scripts/stubPrisoners.ts > /dev/null
 
-  echo "==> Stubbing Prison API sentence information endpoints..."
+  echo "==> Stubbing Prison API endpoints..."
+  npx ts-node --transpile-only ./wiremock/scripts/stubOffenceCodes.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubOffenderBookings.ts > /dev/null
   npx ts-node --transpile-only ./wiremock/scripts/stubOffenderSentenceAndOffences.ts > /dev/null
 fi
