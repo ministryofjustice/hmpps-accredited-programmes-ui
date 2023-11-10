@@ -7,11 +7,14 @@ import type { RedisClient } from '../data'
 import { HmppsAuthClient, PrisonApiClient, PrisonerSearchClient, TokenStore } from '../data'
 import {
   caseloadFactory,
+  offenceDtoFactory,
+  offenceHistoryDetailFactory,
   personFactory,
   prisonerFactory,
   sentenceAndOffenceDetailsFactory,
 } from '../testutils/factories'
 import { PersonUtils } from '../utils'
+import type { InmateDetail } from '@prison-api'
 
 jest.mock('../data/prisonerSearchClient')
 jest.mock('../data/hmppsAuthClient')
@@ -40,6 +43,7 @@ describe('PersonService', () => {
   let service: PersonService
 
   const bookingId = 'A-BOOKING-ID'
+  const prisonerNumber = 'A1234AA'
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -50,6 +54,141 @@ describe('PersonService', () => {
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
     service = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
+  })
+
+  describe('getOffenceHistory', () => {
+    it('returns the index offence and sorted additional offences for a given booking with additional details about each offence', async () => {
+      const indexOffenceHistoryDetail = offenceHistoryDetailFactory.build({
+        mostSerious: true,
+        offenceCode: 'O2',
+        offenceDate: '2023-02-02',
+      })
+      const indexOffenceDto = offenceDtoFactory.build({ code: 'O2' })
+
+      const firstAdditionalOffenceHistoryDetail = offenceHistoryDetailFactory.build({
+        mostSerious: false,
+        offenceCode: 'O1',
+        offenceDate: '2023-01-01',
+      })
+      const firstAdditionalOffenceDto = offenceDtoFactory.build({ code: 'O1' })
+
+      const secondAdditionalOffenceHistoryDetail = offenceHistoryDetailFactory.build({
+        mostSerious: false,
+        offenceCode: 'O3',
+        offenceDate: '2023-03-03',
+      })
+      const secondAdditionalOffenceDto = offenceDtoFactory.build({ code: 'O3' })
+
+      const thirdAdditionalOffenceHistoryDetail = offenceHistoryDetailFactory.build({
+        mostSerious: false,
+        offenceCode: 'O4',
+        offenceDate: undefined,
+      })
+
+      const offenderWithOffenceHistory: InmateDetail = {
+        offenceHistory: [
+          firstAdditionalOffenceHistoryDetail,
+          secondAdditionalOffenceHistoryDetail,
+          thirdAdditionalOffenceHistoryDetail,
+          indexOffenceHistoryDetail,
+        ],
+      }
+
+      when(prisonApiClient.findOffenderBookingByOffenderNo)
+        .calledWith(prisonerNumber)
+        .mockResolvedValue(offenderWithOffenceHistory)
+
+      when(prisonApiClient.findOffencesThatStartWith)
+        .calledWith('O1')
+        .mockResolvedValue({ content: [firstAdditionalOffenceDto] })
+        .calledWith('O2')
+        .mockResolvedValue({ content: [indexOffenceDto] })
+        .calledWith('O3')
+        .mockResolvedValue({ content: [secondAdditionalOffenceDto] })
+        .calledWith('04')
+        .mockResolvedValue({ content: [] })
+
+      const result = await service.getOffenceHistory(username, prisonerNumber)
+
+      expect(result).toEqual({
+        additionalOffences: [
+          {
+            code: secondAdditionalOffenceDto.code,
+            date: secondAdditionalOffenceHistoryDetail.offenceDate,
+            description: secondAdditionalOffenceDto.description,
+            mostSerious: secondAdditionalOffenceHistoryDetail.mostSerious,
+            statuteCodeDescription: secondAdditionalOffenceDto.statuteCode.description,
+          },
+          {
+            code: firstAdditionalOffenceHistoryDetail.offenceCode,
+            date: firstAdditionalOffenceHistoryDetail.offenceDate,
+            description: firstAdditionalOffenceDto.description,
+            mostSerious: firstAdditionalOffenceHistoryDetail.mostSerious,
+            statuteCodeDescription: firstAdditionalOffenceDto.statuteCode.description,
+          },
+          {
+            code: thirdAdditionalOffenceHistoryDetail.offenceCode,
+            date: thirdAdditionalOffenceHistoryDetail.offenceDate,
+            description: undefined,
+            mostSerious: thirdAdditionalOffenceHistoryDetail.mostSerious,
+            statuteCodeDescription: undefined,
+          },
+        ],
+        indexOffence: {
+          code: indexOffenceDto.code,
+          date: indexOffenceHistoryDetail.offenceDate,
+          description: indexOffenceDto.description,
+          mostSerious: indexOffenceHistoryDetail.mostSerious,
+          statuteCodeDescription: indexOffenceDto.statuteCode?.description,
+        },
+      })
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+    })
+
+    describe('when the prison api client does not find any offence history', () => {
+      it('throws a 404', async () => {
+        const offenderWithNoOffenceHistory: InmateDetail = {}
+
+        when(prisonApiClient.findOffenderBookingByOffenderNo)
+          .calledWith(prisonerNumber)
+          .mockResolvedValue(offenderWithNoOffenceHistory)
+
+        const expectedError = createError(404, `Offence history for prisoner ${prisonerNumber} not found.`)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findOffenderBookingByOffenderNo).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the prison api client throws a 404 error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(404)
+        prisonApiClient.findOffenderBookingByOffenderNo.mockRejectedValue(clientError)
+
+        const expectedError = createError(404, `Offence history for prisoner ${prisonerNumber} not found.`)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findOffenderBookingByOffenderNo).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the prison api client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500)
+        prisonApiClient.findOffenderBookingByOffenderNo.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching offence history for prisoner ${prisonerNumber}.`)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findOffenderBookingByOffenderNo).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
   })
 
   describe('getPerson', () => {
