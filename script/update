@@ -17,3 +17,7 @@ script/bootstrap
 echo "==> Updating govuk-frontend types..."
 
 npm run generate-govuk-frontend-types
+
+echo "==> Updating Prison API types..."
+
+script/utils/generateApiTypes/prisonApi
