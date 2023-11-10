@@ -10,6 +10,7 @@ import type {
 } from '../data'
 import { PersonUtils } from '../utils'
 import type { Person } from '@accredited-programmes/models'
+import type { OffenceWithDetail } from '@accredited-programmes/ui'
 import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 
 export default class PersonService {
@@ -18,6 +19,60 @@ export default class PersonService {
     private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>,
     private readonly prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient>,
   ) {}
+
+  async getOffenceHistory(
+    token: Express.User['token'],
+    prisonNumber: Person['prisonNumber'],
+  ): Promise<Array<OffenceWithDetail>> {
+    const missingTextString = 'Not available'
+
+    try {
+      const prisonApiClient = this.prisonApiClientBuilder(token)
+
+      const offender = await prisonApiClient.findOffender(prisonNumber)
+
+      if (!offender.offenceHistory) {
+        throw createError(404)
+      }
+
+      const sortedOffenceHistory = offender.offenceHistory.sort((a, b) => {
+        if (!a.offenceDate || !b.offenceDate) {
+          return -1
+        }
+        return b.offenceDate.localeCompare(a.offenceDate)
+      })
+
+      return Promise.all(
+        sortedOffenceHistory.map(async offence => {
+          const offencesByCode = offence.offenceCode
+            ? await prisonApiClient.findOffencesByCode(offence.offenceCode)
+            : undefined
+          const offenceDetail = offencesByCode?.content?.[0]
+
+          return {
+            category: offenceDetail?.statuteCode?.description ?? missingTextString,
+            description: offenceDetail?.description ?? missingTextString,
+            mostSerious: offence.mostSerious,
+            offenceCode: offenceDetail?.code ?? missingTextString,
+            offenceDate: offence.offenceDate ?? missingTextString,
+          } as OffenceWithDetail
+        }),
+      )
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        throw createError(knownError.status, `Offence history for prisoner ${prisonNumber} not found.`)
+      }
+
+      const errorMessage =
+        knownError.message === 'Internal Server Error'
+          ? `Error fetching offence history for prisoner ${prisonNumber}.`
+          : knownError.message
+
+      throw createError(knownError.status || 500, errorMessage)
+    }
+  }
 
   async getPerson(
     username: Express.User['username'],

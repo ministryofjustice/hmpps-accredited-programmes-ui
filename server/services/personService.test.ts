@@ -7,11 +7,14 @@ import type { RedisClient } from '../data'
 import { HmppsAuthClient, PrisonApiClient, PrisonerSearchClient, TokenStore } from '../data'
 import {
   caseloadFactory,
+  offence,
+  offenceHistory,
   personFactory,
   prisonerFactory,
   sentenceAndOffenceDetailsFactory,
 } from '../testutils/factories'
 import { PersonUtils } from '../utils'
+import type { InmateDetail } from '@prison-api'
 
 jest.mock('../data/prisonerSearchClient')
 jest.mock('../data/hmppsAuthClient')
@@ -40,6 +43,7 @@ describe('PersonService', () => {
   let service: PersonService
 
   const bookingId = 'A-BOOKING-ID'
+  const prisonerNumber = 'A-PRISONER-NUMBER'
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -50,6 +54,97 @@ describe('PersonService', () => {
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
     service = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
+  })
+
+  describe('getOffenceHistory', () => {
+    it('returns offence history for a given booking', async () => {
+      const firstOffence = offenceHistory.build({ offenceCode: 'A1', offenceDate: undefined })
+      const secondOffence = offenceHistory.build({ mostSerious: true, offenceCode: 'A2', offenceDate: '2023-02-02' })
+      const offenceForSecondOffence = offence.build({ code: 'A2' })
+      const thirdOffence = offenceHistory.build({ offenceCode: 'A3', offenceDate: '2023-03-03' })
+      const offenceForThirdOffence = offence.build({ code: 'A3' })
+      const offenderWithOffenceHistory: InmateDetail = {
+        offenceHistory: [firstOffence, secondOffence, thirdOffence],
+      }
+
+      when(prisonApiClient.findOffender).calledWith(prisonerNumber).mockResolvedValue(offenderWithOffenceHistory)
+
+      when(prisonApiClient.findOffencesByCode).calledWith('A1').mockResolvedValue({ content: [] })
+      when(prisonApiClient.findOffencesByCode)
+        .calledWith(offenceForSecondOffence.code)
+        .mockResolvedValue({ content: [offenceForSecondOffence] })
+      when(prisonApiClient.findOffencesByCode)
+        .calledWith(offenceForThirdOffence.code)
+        .mockResolvedValue({ content: [offenceForThirdOffence] })
+
+      const result = await service.getOffenceHistory(systemToken, prisonerNumber)
+
+      expect(result).toEqual([
+        {
+          category: offenceForThirdOffence.statuteCode.description,
+          description: offenceForThirdOffence.description,
+          mostSerious: thirdOffence.mostSerious,
+          offenceCode: offenceForThirdOffence.code,
+          offenceDate: thirdOffence.offenceDate,
+        },
+        {
+          category: offenceForSecondOffence.statuteCode.description,
+          description: offenceForSecondOffence.description,
+          mostSerious: secondOffence.mostSerious,
+          offenceCode: offenceForSecondOffence.code,
+          offenceDate: secondOffence.offenceDate,
+        },
+        {
+          category: 'Not available',
+          description: 'Not available',
+          mostSerious: firstOffence.mostSerious,
+          offenceCode: 'Not available',
+          offenceDate: 'Not available',
+        },
+      ])
+
+      expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+    })
+
+    describe('when the offence history client does not find any offence history', () => {
+      it('throws a 404', async () => {
+        const offenderWithNoOffenceHistory: InmateDetail = {}
+
+        when(prisonApiClient.findOffender).calledWith(prisonerNumber).mockResolvedValue(offenderWithNoOffenceHistory)
+
+        const expectedError = createError(404, `Offence history for prisoner ${prisonerNumber} not found.`)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findOffender).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the prison api client throws a 404 error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(404)
+        prisonApiClient.findOffender.mockRejectedValue(clientError)
+
+        const expectedError = createError(404, `Offence history for prisoner ${prisonerNumber} not found.`)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findOffender).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the prison client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500)
+        prisonApiClient.findOffender.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching offence history for prisoner ${prisonerNumber}.`)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(prisonApiClient.findOffender).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
   })
 
   describe('getPerson', () => {
