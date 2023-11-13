@@ -4,6 +4,8 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% from "../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
 {% extends "../../partials/layout.njk" %}
 
 {% block personBanner %}
@@ -77,32 +79,19 @@
 
       <h2 class="govuk-heading-m">OASys information</h2>
 
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Confirm OASys information</h2>
-        </div>
-        <div class="govuk-summary-card__content">
-          <p class="govuk-!-margin-bottom-0" data-testid="oasys-confirmation">I confirm that the information is up to date.</p>
-        </div>
-      </div>
+      {{ keylessSummaryCard("Confirm OASys information", bodyText="I confirm that the information is up to date.", testid="oasys-confirmation-summary-list") }}
 
       <h2 class="govuk-heading-m">Additional information</h2>
 
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Add Additional information</h2>
-          <ul class="govuk-summary-card__actions">
-            <li class="govuk-summary-card__action">
-              <a class="govuk-link govuk-link--no-visited-state" href="{{ referPaths.new.additionalInformation.show({ referralId: referralId }) }}">
-                Change<span class="govuk-visually-hidden"> additional information</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="govuk-summary-card__content">
-          <p class="maintain-white-space govuk-!-margin-bottom-0" data-testid="additional-information">{{ additionalInformation }}</p>
-        </div>
-      </div>
+      {{ keylessSummaryCard(
+        "Add additional information",
+        actionItems=[{
+          html: 'Change<span class="govuk-visually-hidden"> additional information</span>',
+          href: referPaths.new.additionalInformation.show({ referralId: referralId })
+        }],
+        bodyText=additionalInformation,
+        testid="additional-information-summary-list"
+      ) }}
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
