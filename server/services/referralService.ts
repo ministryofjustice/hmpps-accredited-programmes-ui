@@ -1,44 +1,62 @@
-import type { ReferralClient, RestClientBuilder } from '../data'
+import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 export default class ReferralService {
-  constructor(private readonly referralClientBuilder: RestClientBuilder<ReferralClient>) {}
+  constructor(
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly referralClientBuilder: RestClientBuilder<ReferralClient>,
+  ) {}
 
   async createReferral(
-    token: Express.User['token'],
+    username: Express.User['username'],
     courseOfferingId: Referral['offeringId'],
     prisonNumber: Referral['prisonNumber'],
     referrerId: Referral['referrerId'],
   ): Promise<CreatedReferralResponse> {
-    const referralClient = this.referralClientBuilder(token)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
     return referralClient.create(courseOfferingId, prisonNumber, referrerId)
   }
 
-  async getReferral(token: Express.User['token'], referralId: Referral['id']): Promise<Referral> {
-    const referralClient = this.referralClientBuilder(token)
+  async getReferral(username: Express.User['username'], referralId: Referral['id']): Promise<Referral> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
     return referralClient.find(referralId)
   }
 
-  async submitReferral(token: Express.User['token'], referralId: Referral['id']): Promise<void> {
-    const referralClient = this.referralClientBuilder(token)
+  async submitReferral(username: Express.User['username'], referralId: Referral['id']): Promise<void> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
     return referralClient.submit(referralId)
   }
 
   async updateReferral(
-    token: Express.User['token'],
+    username: Express.User['username'],
     referralId: Referral['id'],
     referralUpdate: ReferralUpdate,
   ): Promise<void> {
-    const referralClient = this.referralClientBuilder(token)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
     return referralClient.update(referralId, referralUpdate)
   }
 
   async updateReferralStatus(
-    token: Express.User['token'],
+    username: Express.User['username'],
     referralId: Referral['id'],
     status: ReferralStatus,
   ): Promise<void> {
-    const referralClient = this.referralClientBuilder(token)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
     return referralClient.updateStatus(referralId, status)
   }
 }

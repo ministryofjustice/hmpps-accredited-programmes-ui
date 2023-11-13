@@ -12,7 +12,7 @@ import { FormUtils } from '../../../utils'
 jest.mock('../../../utils/formUtils')
 
 describe('NewReferralsAdditionalInformationController', () => {
-  const token = 'SOME_TOKEN'
+  const username = 'SOME_username'
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -40,7 +40,7 @@ describe('NewReferralsAdditionalInformationController', () => {
   let controller: NewReferralsAdditionalInformationController
 
   beforeEach(() => {
-    request = createMock<Request>({ params: { referralId }, user: { token } })
+    request = createMock<Request>({ params: { referralId }, user: { username } })
     response = Helpers.createMockResponseWithCaseloads()
     controller = new NewReferralsAdditionalInformationController(personService, referralService)
   })
@@ -62,7 +62,7 @@ describe('NewReferralsAdditionalInformationController', () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(response.render).toHaveBeenCalledWith('referrals/new/additionalInformation/show', {
         pageHeading: 'Add additional information',
         person,
@@ -78,7 +78,7 @@ describe('NewReferralsAdditionalInformationController', () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -92,8 +92,8 @@ describe('NewReferralsAdditionalInformationController', () => {
       const requestHandler = controller.update()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
-      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referralId, {
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
         additionalInformation: 'Some additional information\nAnother paragraph',
         hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
         oasysConfirmed: draftReferral.oasysConfirmed,
@@ -108,7 +108,7 @@ describe('NewReferralsAdditionalInformationController', () => {
         const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -120,7 +120,7 @@ describe('NewReferralsAdditionalInformationController', () => {
         const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
         expect(request.flash).toHaveBeenCalledWith('additionalInformationError', 'Enter additional information')
       })
@@ -134,7 +134,7 @@ describe('NewReferralsAdditionalInformationController', () => {
         const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
         expect(request.flash).toHaveBeenCalledWith('additionalInformationError', 'Enter additional information')
       })

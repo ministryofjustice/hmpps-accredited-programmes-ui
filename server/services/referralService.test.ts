@@ -1,23 +1,35 @@
+import { createMock } from '@golevelup/ts-jest'
 import { when } from 'jest-when'
 
 import ReferralService from './referralService'
-import { ReferralClient } from '../data'
+import type { RedisClient } from '../data'
+import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
 import { referralFactory } from '../testutils/factories'
 import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
+jest.mock('../data/hmppsAuthClient')
+
+const redisClient = createMock<RedisClient>({})
+const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const systemToken = 'some system token'
+const username = 'USERNAME'
 
 describe('ReferralService', () => {
   const referralClient = new ReferralClient('token') as jest.Mocked<ReferralClient>
   const referralClientBuilder = jest.fn()
 
-  const service = new ReferralService(referralClientBuilder)
+  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClientBuilder = jest.fn()
 
-  const token = 'token'
+  const service = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder)
 
   beforeEach(() => {
     jest.resetAllMocks()
+
+    hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     referralClientBuilder.mockReturnValue(referralClient)
+    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('createReferral', () => {
@@ -30,7 +42,7 @@ describe('ReferralService', () => {
         .mockResolvedValue(createdReferralResponse)
 
       const result = await service.createReferral(
-        token,
+        username,
         referral.offeringId,
         referral.prisonNumber,
         referral.referrerId,
@@ -38,7 +50,10 @@ describe('ReferralService', () => {
 
       expect(result).toEqual(createdReferralResponse)
 
-      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.create).toHaveBeenCalledWith(
         referral.offeringId,
         referral.prisonNumber,
@@ -52,11 +67,14 @@ describe('ReferralService', () => {
       const referral = referralFactory.build()
       when(referralClient.find).calledWith(referral.id).mockResolvedValue(referral)
 
-      const result = await service.getReferral(token, referral.id)
+      const result = await service.getReferral(username, referral.id)
 
       expect(result).toEqual(referral)
 
-      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.find).toHaveBeenCalledWith(referral.id)
     })
   })
@@ -65,9 +83,12 @@ describe('ReferralService', () => {
     it('asks the client to submit a referral', async () => {
       const referral = referralFactory.submitted().build()
 
-      await service.submitReferral(token, referral.id)
+      await service.submitReferral(username, referral.id)
 
-      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.submit).toHaveBeenCalledWith(referral.id)
     })
   })
@@ -80,9 +101,12 @@ describe('ReferralService', () => {
         oasysConfirmed: true,
       }
 
-      await service.updateReferral(token, referralId, referralUpdate)
+      await service.updateReferral(username, referralId, referralUpdate)
 
-      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.update).toHaveBeenCalledWith(referralId, referralUpdate)
     })
   })
@@ -92,9 +116,14 @@ describe('ReferralService', () => {
       const referralId = 'an-ID'
       const status: ReferralStatus = 'referral_submitted'
 
-      await service.updateReferralStatus(token, referralId, status)
+      await service.updateReferralStatus(username, referralId, status)
 
-      expect(referralClientBuilder).toHaveBeenCalledWith(token)
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.updateStatus).toHaveBeenCalledWith(referralId, status)
     })
   })

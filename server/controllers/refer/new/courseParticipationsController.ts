@@ -18,7 +18,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -57,7 +57,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { courseParticipationId, referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -92,7 +92,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { courseParticipationId, referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -116,7 +116,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { courseParticipationId, referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -155,7 +155,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -191,7 +191,7 @@ export default class NewReferralsCourseParticipationsController {
       TypeUtils.assertHasUser(req)
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -224,7 +224,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { courseParticipationId, referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -277,7 +277,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { referralId } = req.params
 
-      const referral = await this.referralService.getReferral(req.user.token, req.params.referralId)
+      const referral = await this.referralService.getReferral(req.user.username, req.params.referralId)
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
@@ -292,7 +292,7 @@ export default class NewReferralsCourseParticipationsController {
         oasysConfirmed,
       }
 
-      await this.referralService.updateReferral(req.user.token, referralId, referralUpdate)
+      await this.referralService.updateReferral(req.user.username, referralId, referralUpdate)
 
       return res.redirect(referPaths.new.show({ referralId }))
     }

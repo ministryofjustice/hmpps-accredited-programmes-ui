@@ -5,6 +5,7 @@ import type TokenStore from './tokenStore'
 import logger from '../../logger'
 import { ClientCredentials } from '../authentication'
 import config from '../config'
+import type { SystemToken } from '@hmpps-auth'
 
 const timeoutSpec = config.apis.hmppsAuth.timeout
 const hmppsAuthUrl = config.apis.hmppsAuth.url
@@ -33,7 +34,7 @@ function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagen
 export default class HmppsAuthClient {
   constructor(private readonly tokenStore: TokenStore) {}
 
-  async getSystemClientToken(username?: string): Promise<string> {
+  async getSystemClientToken(username?: string): Promise<SystemToken> {
     const key = username || '%ANONYMOUS%'
 
     const token = await this.tokenStore.getToken(key)

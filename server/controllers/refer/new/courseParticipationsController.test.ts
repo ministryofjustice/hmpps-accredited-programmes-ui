@@ -21,6 +21,7 @@ jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/courseParticipationUtils')
 
 describe('NewReferralsCourseParticipationsController', () => {
+  const username = 'SOME_USERNAME'
   const token = 'SOME_TOKEN'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -39,7 +40,7 @@ describe('NewReferralsCourseParticipationsController', () => {
   const submittedReferral = referralFactory.submitted().build({ id: referralId, prisonNumber: person.prisonNumber })
 
   beforeEach(() => {
-    request = createMock<Request>({ params: { referralId }, user: { token } })
+    request = createMock<Request>({ params: { referralId }, user: { token, username } })
     response = Helpers.createMockResponseWithCaseloads()
 
     controller = new NewReferralsCourseParticipationsController(courseService, personService, referralService)
@@ -70,7 +71,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
           request.body.otherCourseName,
@@ -105,7 +106,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
           request.body.otherCourseName,
@@ -133,7 +134,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -151,7 +152,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
           request.body.otherCourseName,
@@ -183,7 +184,8 @@ describe('NewReferralsCourseParticipationsController', () => {
       const requestHandler = controller.delete()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, request.params.referralId)
+      expect(courseService.getParticipation).toHaveBeenCalledWith(token, courseParticipationId)
       expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(token, courseParticipation, referralId, {
         change: false,
         remove: false,
@@ -204,7 +206,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.delete()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, request.params.referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, request.params.referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -220,7 +222,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       const requestHandler = controller.destroy()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(courseService.deleteParticipation).toHaveBeenCalledWith(token, courseParticipationId)
       expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully removed a programme.')
       expect(response.redirect).toHaveBeenCalledWith(referPaths.new.programmeHistory.index({ referralId }))
@@ -233,7 +235,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.destroy()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -273,7 +275,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           const { courseName } = courseParticipation
           const isKnownCourse = courseNameType === 'a known'
 
-          expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+          expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
           expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/course', {
             action: `${referPaths.new.programmeHistory.updateProgramme({
               courseParticipationId: courseParticipation.id,
@@ -298,7 +300,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.editCourse()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -319,7 +321,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       const requestHandler = controller.index()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
         token,
         person.prisonNumber,
@@ -362,7 +364,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.index()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -386,7 +388,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       const requestHandler = controller.new()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/course', {
         action: referPaths.new.programmeHistory.create({ referralId }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
@@ -406,7 +408,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.new()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -450,7 +452,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.updateCourse()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
@@ -479,7 +481,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.updateCourse()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -502,7 +504,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.updateCourse()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(courseService.getParticipation).toHaveBeenCalledWith(token, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
@@ -529,8 +531,8 @@ describe('NewReferralsCourseParticipationsController', () => {
       const requestHandler = controller.updateHasReviewedProgrammeHistory()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
-      expect(referralService.updateReferral).toHaveBeenCalledWith(token, referralId, {
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
         additionalInformation: draftReferral.additionalInformation,
         hasReviewedProgrammeHistory,
         oasysConfirmed: draftReferral.oasysConfirmed,
@@ -545,7 +547,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         const requestHandler = controller.updateHasReviewedProgrammeHistory()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(token, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
