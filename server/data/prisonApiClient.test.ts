@@ -3,7 +3,13 @@ import nock from 'nock'
 import PrisonApiClient from './prisonApiClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
-import { caseloadFactory, prisonerFactory, sentenceAndOffenceDetailsFactory } from '../testutils/factories'
+import {
+  caseloadFactory,
+  inmateDetailFactory,
+  offenceDtoFactory,
+  prisonerFactory,
+  sentenceAndOffenceDetailsFactory,
+} from '../testutils/factories'
 import type { Caseload } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
@@ -38,6 +44,33 @@ describe('PrisonApiClient', () => {
 
       const output = await prisonApiClient.findCurrentUserCaseloads()
       expect(output).toEqual(caseloads)
+    })
+  })
+
+  describe('findOffencesThatStartWith', () => {
+    const offenceCode = 'ABC123'
+    const offence = offenceDtoFactory.build()
+
+    it('fetches an offence by offence code', async () => {
+      fakePrisonApi.get(prisonApiPaths.offenceCode({ offenceCode })).reply(200, { content: [offence] })
+
+      const output = await prisonApiClient.findOffencesThatStartWith(offenceCode)
+      expect(output).toEqual({ content: [offence] })
+    })
+  })
+
+  describe('findOffenderBookingByOffenderNo', () => {
+    const offenderNo = 'A1234AA'
+    const offenderBooking = inmateDetailFactory.build()
+
+    it('fetches an offender booking by offender number', async () => {
+      fakePrisonApi
+        .get(prisonApiPaths.offenderBookingDetail({ offenderNo }))
+        .query({ extraInfo: 'true' })
+        .reply(200, offenderBooking)
+
+      const output = await prisonApiClient.findOffenderBookingByOffenderNo(offenderNo)
+      expect(output).toEqual(offenderBooking)
     })
   })
 
