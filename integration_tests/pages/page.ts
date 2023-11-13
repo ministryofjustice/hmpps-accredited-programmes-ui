@@ -9,7 +9,7 @@ import type {
   CoursePresenter,
   GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
-  GovukFrontendSummaryListRowWithValue,
+  GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
@@ -239,7 +239,7 @@ export default abstract class Page {
   shouldContainSummaryCard(
     title: GovukFrontendSummaryListCardTitle['text'],
     actions: Array<GovukFrontendSummaryListCardActionsItemWithText>,
-    rows: Array<GovukFrontendSummaryListRowWithValue>,
+    rows: Array<GovukFrontendSummaryListRowWithKeyAndValue>,
     summaryCardElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryCardElement).within(() => {
@@ -273,7 +273,7 @@ export default abstract class Page {
   }
 
   shouldContainSummaryListRows(
-    rows: Array<GovukFrontendSummaryListRowWithValue>,
+    rows: Array<GovukFrontendSummaryListRowWithKeyAndValue>,
     summaryListElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryListElement).within(() => {
@@ -282,7 +282,8 @@ export default abstract class Page {
           const row = rows[rowElementIndex]
 
           cy.get('.govuk-summary-list__key').then(summaryListKeyElement => {
-            const { actual, expected } = Helpers.parseHtml(summaryListKeyElement, (row.key as HasTextString).text)
+            const expectedValue = 'text' in row.key ? (row.key as HasTextString).text : (row.key as HasHtmlString).html
+            const { actual, expected } = Helpers.parseHtml(summaryListKeyElement, expectedValue)
             expect(actual).to.equal(expected)
           })
 

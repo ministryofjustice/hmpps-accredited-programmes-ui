@@ -9,8 +9,8 @@ export type Person = {
   religionOrBelief: string
   setting: 'Custody'
   conditionalReleaseDate?: string
-  earliestReleaseDate?: string
   homeDetentionCurfewEligibilityDate?: string
+  indeterminateSentence?: boolean
   paroleEligibilityDate?: string
   sentenceExpiryDate?: string
   sentenceStartDate?: string

@@ -1,7 +1,7 @@
 import { findPaths } from '../paths'
 import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
 import type {
-  GovukFrontendSummaryListRowWithValue,
+  GovukFrontendSummaryListRowWithKeyAndValue,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
 } from '@accredited-programmes/ui'
@@ -72,8 +72,8 @@ export default class OrganisationUtils {
     organisation: Organisation,
     offering: CourseOffering,
     courseName: Course['name'],
-  ): Array<GovukFrontendSummaryListRowWithValue> {
-    const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = [
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
       {
         key: { text: 'Prison category' },
         value: { text: organisation.category },

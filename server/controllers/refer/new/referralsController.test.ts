@@ -16,7 +16,7 @@ import {
 } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../../utils'
-import type { CoursePresenter, GovukFrontendSummaryListWithRowsWithValues } from '@accredited-programmes/ui'
+import type { CoursePresenter, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 jest.mock('../../../utils/courseUtils')
 jest.mock('../../../utils/courseParticipationUtils')
@@ -226,7 +226,7 @@ describe('NewReferralsController', () => {
       courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
-      const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithValues
+      const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
       courseService.getAndPresentParticipationsByPerson.mockResolvedValue([summaryListOptions, summaryListOptions])
 
       const requestHandler = controller.checkAnswers()

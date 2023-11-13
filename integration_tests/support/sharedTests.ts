@@ -28,21 +28,33 @@ const coursePresenter = CourseUtils.presentCourse(course)
 const courseOffering = courseOfferingFactory.build()
 const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
 const prisoner = prisonerFactory.build({
+  conditionalReleaseDate: '2024-10-31',
   dateOfBirth: '1980-01-01',
   firstName: 'Del',
+  homeDetentionCurfewEligibilityDate: '2025-10-31',
+  indeterminateSentence: false,
   lastName: 'Hatton',
+  paroleEligibilityDate: '2026-10-31',
+  sentenceExpiryDate: '2027-10-31',
   sentenceStartDate: '2010-10-31',
+  tariffDate: '2028-10-31',
 })
 const person = personFactory.build({
+  conditionalReleaseDate: '2024-10-31',
   currentPrison: prisoner.prisonName,
   dateOfBirth: '1 January 1980',
   ethnicity: prisoner.ethnicity,
   gender: prisoner.gender,
+  homeDetentionCurfewEligibilityDate: '2025-10-31',
+  indeterminateSentence: false,
   name: 'Del Hatton',
+  paroleEligibilityDate: '2026-10-31',
   prisonNumber: prisoner.prisonerNumber,
   religionOrBelief: prisoner.religion,
+  sentenceExpiryDate: '2027-10-31',
   sentenceStartDate: '2010-10-31',
   setting: 'Custody',
+  tariffDate: '2028-10-31',
 })
 const referral = referralFactory.submitted().build({
   offeringId: courseOffering.id,
@@ -205,6 +217,7 @@ const sharedTests = {
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainSentenceDetailsSummaryCard()
+      sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
     },
   },
 }

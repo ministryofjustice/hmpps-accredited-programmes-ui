@@ -12,7 +12,7 @@ import type {
   Person,
   Referral,
 } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListWithRowsWithValues } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 export default class CourseService {
   constructor(
@@ -45,7 +45,7 @@ export default class CourseService {
       change: boolean
       remove: boolean
     },
-  ): Promise<Array<GovukFrontendSummaryListWithRowsWithValues>> {
+  ): Promise<Array<GovukFrontendSummaryListWithRowsWithKeysAndValues>> {
     const sortedCourseParticipations = (await this.getParticipationsByPerson(token, prisonNumber)).sort(
       (participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt),
     )
@@ -124,7 +124,7 @@ export default class CourseService {
     courseParticipation: CourseParticipation,
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
-  ): Promise<GovukFrontendSummaryListWithRowsWithValues> {
+  ): Promise<GovukFrontendSummaryListWithRowsWithKeysAndValues> {
     const addedByUser = await this.userService.getUserFromUsername(token, courseParticipation.addedBy)
 
     const courseParticipationPresenter = {

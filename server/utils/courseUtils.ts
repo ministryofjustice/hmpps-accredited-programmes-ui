@@ -1,7 +1,7 @@
 import type { Course, CourseAudience, CoursePrerequisite } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
-  GovukFrontendSummaryListRowWithValue,
+  GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendTagWithText,
   HasTextString,
   TagColour,
@@ -50,7 +50,7 @@ export default class CourseUtils {
 
   private static prerequisiteSummaryListRows(
     prerequisites: Array<CoursePrerequisite>,
-  ): Array<GovukFrontendSummaryListRowWithValue> {
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     const order: Record<CoursePrerequisite['name'], number> = {
       Gender: 1,
       'Learning needs': 3,
@@ -58,7 +58,7 @@ export default class CourseUtils {
       Setting: 0,
     }
 
-    const summaryListRows: Array<GovukFrontendSummaryListRowWithValue> = []
+    const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []
 
     prerequisites.forEach(prerequisite => {
       const index = order[prerequisite.name]

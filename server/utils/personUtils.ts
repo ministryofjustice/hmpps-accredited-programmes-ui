@@ -1,29 +1,23 @@
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
 import type { Person } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRowWithValue } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 import type { Prisoner } from '@prisoner-search'
 
 export default class PersonUtils {
   static personFromPrisoner(prisoner: Prisoner): Person {
     const unavailable = 'Not entered'
-    let earliestReleaseDate: Person['earliestReleaseDate']
-
-    if (prisoner.indeterminateSentence) {
-      earliestReleaseDate = prisoner.tariffDate
-    } else {
-      earliestReleaseDate = prisoner.paroleEligibilityDate || prisoner.conditionalReleaseDate
-    }
 
     return {
       bookingId: prisoner.bookingId,
       conditionalReleaseDate: prisoner.conditionalReleaseDate,
       currentPrison: prisoner.prisonName,
       dateOfBirth: DateUtils.govukFormattedFullDateString(prisoner.dateOfBirth),
-      earliestReleaseDate,
       ethnicity: prisoner.ethnicity || unavailable,
       gender: prisoner.gender,
       homeDetentionCurfewEligibilityDate: prisoner.homeDetentionCurfewEligibilityDate,
+      indeterminateSentence: prisoner.indeterminateSentence,
       name: StringUtils.convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
       paroleEligibilityDate: prisoner.paroleEligibilityDate,
       prisonNumber: prisoner.prisonerNumber,
@@ -35,7 +29,60 @@ export default class PersonUtils {
     }
   }
 
-  static summaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithValue> {
+  static releaseDatesSummaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []
+
+    type ReleaseDateField =
+      | 'conditionalReleaseDate'
+      | 'homeDetentionCurfewEligibilityDate'
+      | 'paroleEligibilityDate'
+      | 'sentenceExpiryDate'
+      | 'tariffDate'
+
+    let earliestReleaseDateField: Omit<ReleaseDateField, 'homeDetentionCurfewEligibilityDate' | 'sentenceExpiryDate'>
+
+    if (person.indeterminateSentence) {
+      earliestReleaseDateField = 'tariffDate'
+    } else if (person.paroleEligibilityDate) {
+      earliestReleaseDateField = 'paroleEligibilityDate'
+    } else if (person.conditionalReleaseDate) {
+      earliestReleaseDateField = 'conditionalReleaseDate'
+    }
+
+    const keyTextAndFields: Array<{ field: ReleaseDateField; keyText: GovukFrontendSummaryListRowKey['text'] }> = [
+      { field: 'conditionalReleaseDate', keyText: 'Conditional release date' },
+      { field: 'tariffDate', keyText: 'Tariff end date' },
+      { field: 'sentenceExpiryDate', keyText: 'Sentence expiry date' },
+      { field: 'paroleEligibilityDate', keyText: 'Parole eligibility date' },
+      { field: 'homeDetentionCurfewEligibilityDate', keyText: 'Home detention curfew eligibility date' },
+    ]
+
+    keyTextAndFields.forEach(keyTextAndField => {
+      const { field, keyText } = keyTextAndField
+      let key: GovukFrontendSummaryListRowKey
+
+      if (field === earliestReleaseDateField) {
+        key = {
+          html: `${keyText}<br><span class="govuk-!-font-size-16 govuk-!-font-weight-regular release-dates__earliest-indicator">(Earliest release date)</span>`,
+        }
+      } else {
+        key = { text: keyText }
+      }
+
+      const valueText = person[field]
+        ? DateUtils.govukFormattedFullDateString(person[field])
+        : 'There is no record for this date'
+
+      summaryListRows.push({
+        key,
+        value: { text: valueText },
+      })
+    })
+
+    return summaryListRows
+  }
+
+  static summaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
         key: { text: 'Name' },
