@@ -1,6 +1,6 @@
 import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { referPaths } from '../../server/paths'
-import { courseFactory, courseOfferingFactory, prisonFactory, referralFactory } from '../../server/testutils/factories'
+import { referralFactory } from '../../server/testutils/factories'
 import AuthErrorPage from '../pages/authError'
 import Page from '../pages/page'
 import { NewReferralCompletePage } from '../pages/refer'
@@ -14,17 +14,10 @@ context('General Refer functionality', () => {
 
   describe('When the user does not have the `ROLE_ACP_REFERRER` role', () => {
     it('shows the authentication error page', () => {
-      cy.task('stubSignIn', { authorities: [] })
+      cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
       cy.signIn()
 
-      const course = courseFactory.build()
-      const courseOffering = courseOfferingFactory.build()
-      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
-
-      const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      cy.task('stubPrison', prison)
-
-      const path = referPaths.new.start({ courseOfferingId: courseOffering.id })
+      const path = referPaths.new.start({ courseOfferingId: 'an-ID' })
       cy.visit(path, { failOnStatusCode: false })
 
       const authErrorPage = Page.verifyOnPage(AuthErrorPage)

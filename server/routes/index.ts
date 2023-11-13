@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import assessRoutes from './assess'
 import findRoutes from './find'
 import referRoutes from './refer'
 import config from '../config'
@@ -15,6 +16,7 @@ export default function routes(controllers: Controllers): Router {
 
   findRoutes(controllers, router)
   if (config.flags.referEnabled) {
+    assessRoutes(controllers, router)
     referRoutes(controllers, router)
   }
 
