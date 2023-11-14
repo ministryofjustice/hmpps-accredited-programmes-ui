@@ -18,7 +18,7 @@ import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformation
 import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 describe('ReferralsController', () => {
-  const token = 'SOME_TOKEN'
+  const userToken = 'SOME_TOKEN'
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -50,7 +50,7 @@ describe('ReferralsController', () => {
   let controller: SubmittedReferralsController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token } })
+    request = createMock<Request>({ user: { token: userToken } })
     response = Helpers.createMockResponseWithCaseloads()
 
     courseService.getCourseByOffering.mockResolvedValue(course)

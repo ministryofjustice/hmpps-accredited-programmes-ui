@@ -5,8 +5,8 @@ import type { User } from '@manage-users-api'
 export default class HmppsManageUsersClient {
   restClient: RestClient
 
-  constructor(token: Express.User['token']) {
-    this.restClient = new RestClient('HMPPS Manage Users Client', config.apis.hmppsManageUsers, token)
+  constructor(userToken: Express.User['token']) {
+    this.restClient = new RestClient('HMPPS Manage Users Client', config.apis.hmppsManageUsers, userToken)
   }
 
   getCurrentUsername(): Promise<Pick<User, 'username'>> {

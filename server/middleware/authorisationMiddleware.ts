@@ -6,9 +6,9 @@ import UserUtils from '../utils/userUtils'
 
 export default function authorisationMiddleware(authorisedRoles: Array<string> = []): RequestHandler {
   return asyncMiddleware((req, res, next) => {
-    const token = res.locals.user?.token
-    if (token) {
-      const roles = UserUtils.getUserRolesFromToken(token)
+    const userToken = res.locals.user?.token
+    if (userToken) {
+      const roles = UserUtils.getUserRolesFromToken(userToken)
 
       if (authorisedRoles.length && !roles?.some(role => authorisedRoles.includes(role))) {
         logger.error('User is not authorised to access this')

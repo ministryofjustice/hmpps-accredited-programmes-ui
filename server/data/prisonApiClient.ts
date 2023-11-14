@@ -9,8 +9,8 @@ import type { Prisoner } from '@prisoner-search'
 export default class PrisonApiClient {
   restClient: RestClient
 
-  constructor(token: SystemToken) {
-    this.restClient = new RestClient('prisonApiClient', config.apis.prisonApi as ApiConfig, token)
+  constructor(systemToken: SystemToken) {
+    this.restClient = new RestClient('prisonApiClient', config.apis.prisonApi as ApiConfig, systemToken)
   }
 
   async findCurrentUserCaseloads(): Promise<Array<Caseload>> {

@@ -17,9 +17,9 @@ export default class TokenStore {
     return this.client.get(`${this.prefix}${key}`)
   }
 
-  public async setToken(key: string, token: Express.User['token'], durationSeconds: number): Promise<void> {
+  public async setToken(key: string, userToken: Express.User['token'], durationSeconds: number): Promise<void> {
     await this.ensureConnected()
-    await this.client.set(`${this.prefix}${key}`, token, { EX: durationSeconds })
+    await this.client.set(`${this.prefix}${key}`, userToken, { EX: durationSeconds })
   }
 
   private async ensureConnected() {

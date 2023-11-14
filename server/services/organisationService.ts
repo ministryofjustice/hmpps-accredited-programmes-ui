@@ -9,8 +9,8 @@ import type { Prison } from '@prison-register-api'
 export default class OrganisationService {
   constructor(private readonly prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient>) {}
 
-  async getOrganisation(token: Express.User['token'], organisationId: Organisation['id']): Promise<Organisation> {
-    const prisonRegisterApiClient = this.prisonRegisterApiClientBuilder(token)
+  async getOrganisation(userToken: Express.User['token'], organisationId: Organisation['id']): Promise<Organisation> {
+    const prisonRegisterApiClient = this.prisonRegisterApiClientBuilder(userToken)
 
     try {
       const prison = await prisonRegisterApiClient.find(organisationId)
@@ -37,10 +37,10 @@ export default class OrganisationService {
   }
 
   async getOrganisations(
-    token: Express.User['token'],
+    userToken: Express.User['token'],
     organisationIds: Array<Organisation['id']>,
   ): Promise<Array<Organisation>> {
-    const prisonRegisterApiClient = this.prisonRegisterApiClientBuilder(token)
+    const prisonRegisterApiClient = this.prisonRegisterApiClientBuilder(userToken)
 
     const prisonResults: Array<Prison | null> = await Promise.all(
       organisationIds.map(async organisationId => {

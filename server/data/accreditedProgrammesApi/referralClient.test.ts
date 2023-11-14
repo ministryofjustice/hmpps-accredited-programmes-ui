@@ -10,10 +10,10 @@ import type { CreatedReferralResponse, ReferralUpdate } from '@accredited-progra
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let referralClient: ReferralClient
 
-  const token = 'token-1'
+  const userToken = 'token-1'
 
   beforeEach(() => {
-    referralClient = new ReferralClient(token)
+    referralClient = new ReferralClient(userToken)
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
   })
 
@@ -39,7 +39,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             referrerId,
           },
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${userToken}`,
           },
           method: 'POST',
           path: apiPaths.referrals.create({}),
@@ -65,7 +65,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${userToken}`,
           },
           method: 'GET',
           path: apiPaths.referrals.show({ referralId: referral.id }),
@@ -90,7 +90,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${userToken}`,
           },
           method: 'POST',
           path: apiPaths.referrals.submit({ referralId: referral.id }),
@@ -122,7 +122,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             ...referralUpdate,
           },
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${userToken}`,
           },
           method: 'PUT',
           path: apiPaths.referrals.update({ referralId: referral.id }),
@@ -150,7 +150,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             status,
           },
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${userToken}`,
           },
           method: 'PUT',
           path: apiPaths.referrals.updateStatus({ referralId: referral.id }),

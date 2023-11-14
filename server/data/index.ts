@@ -32,16 +32,18 @@ type RestClientBuilderWithoutToken<T> = () => T
 
 const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = () =>
   new HmppsAuthClient(new TokenStore(createRedisClient()))
-const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (token: Express.User['token']) =>
-  new HmppsManageUsersClient(token)
-const courseClientBuilder: RestClientBuilder<CourseClient> = (token: Express.User['token']) => new CourseClient(token)
-const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (token: Express.User['token']) =>
-  new PrisonRegisterApiClient(token)
-const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (token: SystemToken) =>
-  new PrisonerSearchClient(token)
-const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: Express.User['token']) =>
-  new ReferralClient(token)
-const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (token: SystemToken) => new PrisonApiClient(token)
+const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (userToken: Express.User['token']) =>
+  new HmppsManageUsersClient(userToken)
+const courseClientBuilder: RestClientBuilder<CourseClient> = (userToken: Express.User['token']) =>
+  new CourseClient(userToken)
+const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (userToken: Express.User['token']) =>
+  new PrisonRegisterApiClient(userToken)
+const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (systemToken: SystemToken) =>
+  new PrisonerSearchClient(systemToken)
+const referralClientBuilder: RestClientBuilder<ReferralClient> = (userToken: Express.User['token']) =>
+  new ReferralClient(userToken)
+const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (systemToken: SystemToken) =>
+  new PrisonApiClient(systemToken)
 
 export {
   CourseClient,

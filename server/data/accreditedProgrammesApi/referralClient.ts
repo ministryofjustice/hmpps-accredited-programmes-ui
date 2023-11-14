@@ -8,8 +8,8 @@ import type { SystemToken } from '@hmpps-auth'
 export default class ReferralClient {
   restClient: RestClient
 
-  constructor(token: SystemToken) {
-    this.restClient = new RestClient('referralClient', config.apis.accreditedProgrammesApi as ApiConfig, token)
+  constructor(systemToken: SystemToken) {
+    this.restClient = new RestClient('referralClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
   async create(

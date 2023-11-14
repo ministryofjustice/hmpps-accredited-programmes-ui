@@ -6,7 +6,7 @@ import type { User } from '@manage-users-api'
 
 jest.mock('./tokenStore')
 
-const token = 'token-1'
+const userToken = 'token-1'
 
 describe('HmppsManageUsersClient', () => {
   let fakeManageUsersApiUrl: nock.Scope
@@ -14,7 +14,7 @@ describe('HmppsManageUsersClient', () => {
 
   beforeEach(() => {
     fakeManageUsersApiUrl = nock(config.apis.hmppsManageUsers.url)
-    hmppsManageUsersClient = new HmppsManageUsersClient(token)
+    hmppsManageUsersClient = new HmppsManageUsersClient(userToken)
   })
 
   afterEach(() => {
@@ -30,7 +30,7 @@ describe('HmppsManageUsersClient', () => {
     it("should return the logged-in user's username from the API", async () => {
       const response: Pick<User, 'username'> = { username: 'DEL_HATTON' }
 
-      fakeManageUsersApiUrl.get('/users/me').matchHeader('authorization', `Bearer ${token}`).reply(200, response)
+      fakeManageUsersApiUrl.get('/users/me').matchHeader('authorization', `Bearer ${userToken}`).reply(200, response)
 
       const output = await hmppsManageUsersClient.getCurrentUsername()
       expect(output).toEqual(response)
@@ -49,7 +49,7 @@ describe('HmppsManageUsersClient', () => {
 
       fakeManageUsersApiUrl
         .get('/users/JOHN_SMITH')
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer ${userToken}`)
         .reply(200, response)
 
       const output = await hmppsManageUsersClient.getUserFromUsername('JOHN_SMITH')

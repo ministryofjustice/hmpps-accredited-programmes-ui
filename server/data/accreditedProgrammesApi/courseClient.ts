@@ -13,8 +13,8 @@ import type {
 export default class CourseClient {
   restClient: RestClient
 
-  constructor(token: Express.User['token']) {
-    this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, token)
+  constructor(userToken: Express.User['token']) {
+    this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, userToken)
   }
 
   async all(): Promise<Array<Course>> {

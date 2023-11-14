@@ -14,7 +14,7 @@ describe('OrganisationService', () => {
 
   const service = new OrganisationService(prisonRegisterApiClientBuilder)
 
-  const token = 'token'
+  const userToken = 'token'
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -30,7 +30,7 @@ describe('OrganisationService', () => {
 
           prisonRegisterApiClient.find.mockResolvedValue(prison)
 
-          const result = await service.getOrganisation(token, prison.prisonId)
+          const result = await service.getOrganisation(userToken, prison.prisonId)
 
           expect(result).toEqual({
             id: prison.prisonId, // eslint-disable-next-line sort-keys
@@ -46,7 +46,7 @@ describe('OrganisationService', () => {
             name: prison.prisonName,
           })
 
-          expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+          expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
           expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prison.prisonId)
         })
       })
@@ -57,9 +57,9 @@ describe('OrganisationService', () => {
           prisonRegisterApiClient.find.mockResolvedValue(prison)
 
           const expectedError = createError(404, `Active organisation with ID ${prison.prisonId} not found.`)
-          expect(() => service.getOrganisation(token, prison.prisonId)).rejects.toThrowError(expectedError)
+          expect(() => service.getOrganisation(userToken, prison.prisonId)).rejects.toThrowError(expectedError)
 
-          expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+          expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
           expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prison.prisonId)
         })
       })
@@ -73,9 +73,9 @@ describe('OrganisationService', () => {
         const notFoundPrisonId = 'NOT-FOUND'
 
         const expectedError = createError(404, `Active organisation with ID ${notFoundPrisonId} not found.`)
-        expect(() => service.getOrganisation(token, notFoundPrisonId)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisation(userToken, notFoundPrisonId)).rejects.toThrowError(expectedError)
 
-        expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+        expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
         expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(notFoundPrisonId)
       })
     })
@@ -88,9 +88,9 @@ describe('OrganisationService', () => {
         const prisonId = '04aba287-86ac-4b2c-b98e-048b5eefddbc'
 
         const expectedError = createError(500, `Error fetching organisation ${prisonId}.`)
-        expect(() => service.getOrganisation(token, prisonId)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisation(userToken, prisonId)).rejects.toThrowError(expectedError)
 
-        expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(token)
+        expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
         expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prisonId)
       })
     })
@@ -116,7 +116,7 @@ describe('OrganisationService', () => {
 
       const allIds = [...activePrisonIds, inactivePrisonId, notFoundPrisonId]
 
-      const result = await service.getOrganisations(token, allIds)
+      const result = await service.getOrganisations(userToken, allIds)
 
       const activeOrganisations = activePrisons.map(prison => OrganisationUtils.organisationFromPrison(prison))
       expect(result).toEqual(activeOrganisations)
@@ -136,7 +136,7 @@ describe('OrganisationService', () => {
         const allIds = [otherErrorPrisonId]
 
         const expectedError = createError(500, `Error fetching organisation ${otherErrorPrisonId}.`)
-        expect(() => service.getOrganisations(token, allIds)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisations(userToken, allIds)).rejects.toThrowError(expectedError)
       })
     })
   })

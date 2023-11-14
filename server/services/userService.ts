@@ -15,17 +15,20 @@ export default class UserService {
     private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>,
   ) {}
 
-  async getCurrentUserWithDetails(token: Express.User['token']): Promise<UserDetails> {
-    const hmppsManageUsersClient = this.hmppsManageUsersClientBuilder(token)
+  async getCurrentUserWithDetails(userToken: Express.User['token']): Promise<UserDetails> {
+    const hmppsManageUsersClient = this.hmppsManageUsersClientBuilder(userToken)
     const { username } = await hmppsManageUsersClient.getCurrentUsername()
 
-    const [user, caseloads] = await Promise.all([this.getUserFromUsername(token, username), this.getCaseloads(token)])
+    const [user, caseloads] = await Promise.all([
+      this.getUserFromUsername(userToken, username),
+      this.getCaseloads(userToken),
+    ])
 
     return { ...user, caseloads, displayName: StringUtils.convertToTitleCase(user.name) }
   }
 
-  async getUserFromUsername(token: Express.User['token'], username: User['username']): Promise<User> {
-    const hmppsManageUsersClient = this.hmppsManageUsersClientBuilder(token)
+  async getUserFromUsername(userToken: Express.User['token'], username: User['username']): Promise<User> {
+    const hmppsManageUsersClient = this.hmppsManageUsersClientBuilder(userToken)
 
     try {
       return await hmppsManageUsersClient.getUserFromUsername(username)
@@ -43,8 +46,8 @@ export default class UserService {
     }
   }
 
-  private async getCaseloads(token: SystemToken): Promise<Array<Caseload>> {
-    const prisonApiClient = this.prisonApiClientBuilder(token)
+  private async getCaseloads(systemToken: SystemToken): Promise<Array<Caseload>> {
+    const prisonApiClient = this.prisonApiClientBuilder(systemToken)
 
     let cases: Array<Caseload> = []
 

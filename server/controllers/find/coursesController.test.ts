@@ -10,7 +10,7 @@ import type { Course, CourseOffering } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('CoursesController', () => {
-  const token = 'SOME_TOKEN'
+  const userToken = 'SOME_TOKEN'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
@@ -20,7 +20,7 @@ describe('CoursesController', () => {
   let controller: CoursesController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token } })
+    request = createMock<Request>({ user: { token: userToken } })
     response = createMock<Response>({})
     controller = new CoursesController(courseService, organisationService)
   })
@@ -42,7 +42,7 @@ describe('CoursesController', () => {
         pageHeading: 'List of accredited programmes',
       })
 
-      expect(courseService.getCourses).toHaveBeenCalledWith(token)
+      expect(courseService.getCourses).toHaveBeenCalledWith(userToken)
     })
   })
 
@@ -74,7 +74,7 @@ describe('CoursesController', () => {
         await requestHandler(request, response, next)
 
         const organisationIds = organisations.map(organisation => organisation.id)
-        expect(organisationService.getOrganisations).toHaveBeenCalledWith(token, organisationIds)
+        expect(organisationService.getOrganisations).toHaveBeenCalledWith(userToken, organisationIds)
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {
@@ -113,7 +113,7 @@ describe('CoursesController', () => {
         await requestHandler(request, response, next)
 
         const allOrganisationIds = allOrganisations.map(organisation => organisation.id)
-        expect(organisationService.getOrganisations).toHaveBeenCalledWith(token, allOrganisationIds)
+        expect(organisationService.getOrganisations).toHaveBeenCalledWith(userToken, allOrganisationIds)
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {

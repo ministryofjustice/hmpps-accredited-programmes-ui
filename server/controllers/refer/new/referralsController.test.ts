@@ -24,7 +24,7 @@ jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/referralUtils')
 
 describe('NewReferralsController', () => {
-  const token = 'SOME_TOKEN'
+  const userToken = 'SOME_TOKEN'
   const username = 'SOME_USERNAME'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -54,7 +54,7 @@ describe('NewReferralsController', () => {
   let controller: NewReferralsController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token, username } })
+    request = createMock<Request>({ user: { token: userToken, username } })
     response = Helpers.createMockResponseWithCaseloads()
     controller = new NewReferralsController(courseService, organisationService, personService, referralService)
     courseService.getCourseByOffering.mockResolvedValue(course)
@@ -240,7 +240,7 @@ describe('NewReferralsController', () => {
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
-        token,
+        userToken,
         person.prisonNumber,
         referralId,
         { change: true, remove: false },
