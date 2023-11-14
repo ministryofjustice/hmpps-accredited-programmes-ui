@@ -106,7 +106,7 @@ export default class ReferralsController {
     const { referralId } = req.params
     const { token, username } = req.user
 
-    const referral = await this.referralService.getReferral(token, referralId)
+    const referral = await this.referralService.getReferral(username, referralId)
     const [course, courseOffering, person] = await Promise.all([
       this.courseService.getCourseByOffering(username, referral.offeringId),
       this.courseService.getOffering(username, referral.offeringId),

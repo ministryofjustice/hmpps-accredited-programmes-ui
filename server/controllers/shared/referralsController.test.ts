@@ -51,7 +51,7 @@ describe('ReferralsController', () => {
   let controller: SubmittedReferralsController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token: userToken, username } })
+    request = createMock<Request>({ params: { referralId: referral.id }, user: { token: userToken, username } })
     response = Helpers.createMockResponseWithCaseloads()
 
     courseService.getCourseByOffering.mockResolvedValue(course)
@@ -74,6 +74,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.additionalInformation()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(personService.getPerson).toHaveBeenCalledWith(
@@ -99,6 +100,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.personalDetails()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(personService.getPerson).toHaveBeenCalledWith(
@@ -128,6 +130,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.programmeHistory()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(personService.getPerson).toHaveBeenCalledWith(
@@ -161,6 +164,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.sentenceInformation()
       await requestHandler(request, response, next)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(personService.getPerson).toHaveBeenCalledWith(
