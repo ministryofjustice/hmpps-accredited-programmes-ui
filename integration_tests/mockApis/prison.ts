@@ -33,18 +33,18 @@ export default {
       },
     }),
 
-  stubSentenceAndOffenceDetails: (args: {
+  stubOffenderSentenceAndOffences: (args: {
     bookingId: Prisoner['bookingId']
-    sentenceAndOffenceDetails: OffenderSentenceAndOffences
+    offenderSentenceAndOffences: OffenderSentenceAndOffences
   }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        url: prisonApiPaths.sentenceAndOffenceDetails({ bookingId: args.bookingId }),
+        url: prisonApiPaths.offenderSentenceAndOffences({ bookingId: args.bookingId }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: args.sentenceAndOffenceDetails,
+        jsonBody: args.offenderSentenceAndOffences,
         status: 200,
       },
     }),

@@ -72,7 +72,7 @@ export default class ReferralsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const sentenceAndOffenceDetails = await this.personService.getSentenceAndOffenceDetails(
+      const offenderSentenceAndOffences = await this.personService.getOffenderSentenceAndOffences(
         req.user.token,
         sharedPageData.person.bookingId,
       )
@@ -81,7 +81,7 @@ export default class ReferralsController {
         ...sharedPageData,
         detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
           sharedPageData.person.sentenceStartDate,
-          sentenceAndOffenceDetails.sentenceTypeDescription,
+          offenderSentenceAndOffences.sentenceTypeDescription,
         ),
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
         releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),

@@ -9,9 +9,9 @@ import {
   caseloadFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
+  offenderSentenceAndOffencesFactory,
   personFactory,
   prisonerFactory,
-  sentenceAndOffenceDetailsFactory,
 } from '../testutils/factories'
 import { PersonUtils } from '../utils'
 import type { InmateDetail } from '@prison-api'
@@ -258,17 +258,17 @@ describe('PersonService', () => {
     })
   })
 
-  describe('getSentenceAndOffenceDetails', () => {
+  describe('getOffenderSentenceAndOffences', () => {
     it('returns sentence and offence details for a given booking', async () => {
-      const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+      const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
 
       when(prisonApiClient.findSentenceAndOffenceDetails)
         .calledWith(bookingId)
-        .mockResolvedValue(sentenceAndOffenceDetails)
+        .mockResolvedValue(offenderSentenceAndOffences)
 
-      const result = await service.getSentenceAndOffenceDetails(systemToken, bookingId)
+      const result = await service.getOffenderSentenceAndOffences(systemToken, bookingId)
 
-      expect(result).toEqual(sentenceAndOffenceDetails)
+      expect(result).toEqual(offenderSentenceAndOffences)
 
       expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(prisonApiClient.findSentenceAndOffenceDetails).toHaveBeenCalledWith(bookingId)
@@ -283,7 +283,7 @@ describe('PersonService', () => {
           404,
           `Sentence and offence details for booking with ID ${bookingId} not found.`,
         )
-        await expect(() => service.getSentenceAndOffenceDetails(systemToken, bookingId)).rejects.toThrowError(
+        await expect(() => service.getOffenderSentenceAndOffences(systemToken, bookingId)).rejects.toThrowError(
           expectedError,
         )
 
@@ -301,7 +301,7 @@ describe('PersonService', () => {
           500,
           `Error fetching sentence and offence details with booking ID ${bookingId}.`,
         )
-        await expect(() => service.getSentenceAndOffenceDetails(systemToken, bookingId)).rejects.toThrowError(
+        await expect(() => service.getOffenderSentenceAndOffences(systemToken, bookingId)).rejects.toThrowError(
           expectedError,
         )
 

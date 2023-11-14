@@ -7,8 +7,8 @@ import {
   caseloadFactory,
   inmateDetailFactory,
   offenceDtoFactory,
+  offenderSentenceAndOffencesFactory,
   prisonerFactory,
-  sentenceAndOffenceDetailsFactory,
 } from '../testutils/factories'
 import type { Caseload } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
@@ -76,16 +76,16 @@ describe('PrisonApiClient', () => {
 
   describe('findSentenceAndOffenceDetails', () => {
     const prisoner: Prisoner = prisonerFactory.build()
-    const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+    const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
 
     it("searches for a prisoner's sentence and offence details by booking ID", async () => {
       fakePrisonApi
-        .get(prisonApiPaths.sentenceAndOffenceDetails({ bookingId: prisoner.bookingId }))
+        .get(prisonApiPaths.offenderSentenceAndOffences({ bookingId: prisoner.bookingId }))
         .matchHeader('authorization', `Bearer ${token}`)
-        .reply(200, sentenceAndOffenceDetails)
+        .reply(200, offenderSentenceAndOffences)
 
       const output = await prisonApiClient.findSentenceAndOffenceDetails(prisoner.bookingId)
-      expect(output).toEqual(sentenceAndOffenceDetails)
+      expect(output).toEqual(offenderSentenceAndOffences)
     })
   })
 })

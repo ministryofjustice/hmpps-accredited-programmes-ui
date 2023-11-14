@@ -8,10 +8,10 @@ import type { CourseService, OrganisationService, PersonService, ReferralService
 import {
   courseFactory,
   courseOfferingFactory,
+  offenderSentenceAndOffencesFactory,
   organisationFactory,
   personFactory,
   referralFactory,
-  sentenceAndOffenceDetailsFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
@@ -37,7 +37,7 @@ describe('ReferralsController', () => {
   const referral = referralFactory
     .submitted()
     .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-  const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+  const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
 
   const sharedPageData = {
     courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
@@ -126,7 +126,7 @@ describe('ReferralsController', () => {
 
   describe('sentenceInformation', () => {
     it('renders the sentence information template with the correct response locals', async () => {
-      personService.getSentenceAndOffenceDetails.mockResolvedValue(sentenceAndOffenceDetails)
+      personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
 
       request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
 
@@ -137,7 +137,7 @@ describe('ReferralsController', () => {
         ...sharedPageData,
         detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
           sharedPageData.person.sentenceStartDate,
-          sentenceAndOffenceDetails.sentenceTypeDescription,
+          offenderSentenceAndOffences.sentenceTypeDescription,
         ),
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),

@@ -7,6 +7,7 @@ import coursePrerequisiteFactory from './coursePrerequisite'
 import inmateDetailFactory from './inmateDetail'
 import offenceDtoFactory from './offenceDto'
 import offenceHistoryDetailFactory from './offenceHistoryDetail'
+import offenderSentenceAndOffencesFactory from './offenderSentenceAndOffences'
 import organisationFactory from './organisation'
 import organisationAddressFactory from './organisationAddress'
 import personFactory from './person'
@@ -14,7 +15,6 @@ import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
 import prisonerFactory from './prisoner'
 import referralFactory from './referral'
-import sentenceAndOffenceDetailsFactory from './sentenceAndOffenceDetails'
 import userFactory from './user'
 
 export {
@@ -27,6 +27,7 @@ export {
   inmateDetailFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
+  offenderSentenceAndOffencesFactory,
   organisationAddressFactory,
   organisationFactory,
   personFactory,
@@ -34,6 +35,5 @@ export {
   prisonFactory,
   prisonerFactory,
   referralFactory,
-  sentenceAndOffenceDetailsFactory,
   userFactory,
 }

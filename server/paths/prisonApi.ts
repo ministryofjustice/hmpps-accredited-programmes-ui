@@ -4,7 +4,7 @@ const apiBasePath = path('/api')
 const caseloadsPath = apiBasePath.path('users/me/caseLoads')
 const offenceCodePath = apiBasePath.path('offences/code/:offenceCode')
 const offenderBookingDetailPath = apiBasePath.path('bookings/offenderNo/:offenderNo')
-const sentenceAndOffenceDetailsPath = apiBasePath.path('offender-sentences/booking/:bookingId/sentences-and-offences')
+const offenderSentenceAndOffencesPath = apiBasePath.path('offender-sentences/booking/:bookingId/sentences-and-offences')
 
 export default {
   caseloads: {
@@ -12,5 +12,5 @@ export default {
   },
   offenceCode: offenceCodePath,
   offenderBookingDetail: offenderBookingDetailPath,
-  sentenceAndOffenceDetails: sentenceAndOffenceDetailsPath,
+  offenderSentenceAndOffences: offenderSentenceAndOffencesPath,
 }

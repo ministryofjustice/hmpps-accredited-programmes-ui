@@ -4,18 +4,18 @@ import type { Course, Person } from '@accredited-programmes/models'
 import type { OffenderSentenceAndOffences } from '@prison-api'
 
 export default class SentenceInformationPage extends Page {
+  offenderSentenceAndOffences: OffenderSentenceAndOffences
+
   person: Person
 
-  sentenceAndOffenceDetails: OffenderSentenceAndOffences
-
-  constructor(args: { course: Course; person: Person; sentenceAndOffenceDetails: OffenderSentenceAndOffences }) {
-    const { course, person, sentenceAndOffenceDetails } = args
+  constructor(args: { course: Course; offenderSentenceAndOffences: OffenderSentenceAndOffences; person: Person }) {
+    const { course, person, offenderSentenceAndOffences } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
     super(`Referral to ${coursePresenter.nameAndAlternateName}`)
 
     this.person = person
-    this.sentenceAndOffenceDetails = sentenceAndOffenceDetails
+    this.offenderSentenceAndOffences = offenderSentenceAndOffences
   }
 
   shouldContainImportedFromText(): void {
@@ -43,7 +43,7 @@ export default class SentenceInformationPage extends Page {
         [],
         SentenceInformationUtils.detailsSummaryListRows(
           this.person.sentenceStartDate,
-          this.sentenceAndOffenceDetails.sentenceTypeDescription,
+          this.offenderSentenceAndOffences.sentenceTypeDescription,
         ),
         summaryCardElement,
       )
