@@ -74,15 +74,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.additionalInformation()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
-      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        person.prisonNumber,
-        response.locals.user.caseloads,
-      )
-      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+      assertSharedDataServicesAreCalledWithExpectedArguments()
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
@@ -100,15 +92,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.personalDetails()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
-      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        person.prisonNumber,
-        response.locals.user.caseloads,
-      )
-      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+      assertSharedDataServicesAreCalledWithExpectedArguments()
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/personalDetails', {
         ...sharedPageData,
@@ -130,15 +114,8 @@ describe('ReferralsController', () => {
       const requestHandler = controller.programmeHistory()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
-      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        person.prisonNumber,
-        response.locals.user.caseloads,
-      )
-      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
         username,
         userToken,
@@ -164,15 +141,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.sentenceInformation()
       await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
-      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        person.prisonNumber,
-        response.locals.user.caseloads,
-      )
-      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+      assertSharedDataServicesAreCalledWithExpectedArguments()
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
         ...sharedPageData,
@@ -186,4 +155,12 @@ describe('ReferralsController', () => {
       })
     })
   })
+
+  function assertSharedDataServicesAreCalledWithExpectedArguments() {
+    expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
+    expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
+    expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
+    expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
+    expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+  }
 })
