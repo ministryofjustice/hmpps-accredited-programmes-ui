@@ -115,7 +115,7 @@ const sharedTests = {
       additionalInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       additionalInformationPage.shouldContainSubmissionSummaryList(referral)
       additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      additionalInformationPage.shouldContainAdditionalInformation()
+      additionalInformationPage.shouldContainAdditionalInformationSummaryCard()
       additionalInformationPage.shouldContainSubmittedText()
     },
 
@@ -140,7 +140,7 @@ const sharedTests = {
       programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       programmeHistoryPage.shouldContainSubmissionSummaryList(referral)
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      programmeHistoryPage.shouldContainNoHistoryParagraph()
+      programmeHistoryPage.shouldContainNoHistorySummaryCard()
     },
 
     showsPersonalDetailsPage: (role: ApplicationRole): void => {

@@ -1,6 +1,8 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% from "../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
 {% extends "./partials/layout.njk" %}
 
 {% block submittedReferralContent %}
@@ -12,12 +14,5 @@
     }
   }) }}
 
-  <div class="govuk-summary-card">
-    <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title">Additional information</h2>
-    </div>
-    <div class="govuk-summary-card__content">
-      <p class="maintain-white-space govuk-!-margin-bottom-0" data-testid="additional-information">{{ additionalInformation }}</p>
-    </div>
-  </div>
+  {{ keylessSummaryCard("Additional information", bodyText=additionalInformation, testId="additional-information-summary-card") }}
 {% endblock submittedReferralContent %}

@@ -15,8 +15,14 @@ export default class AdditionalInformationPage extends Page {
     this.referral = referral
   }
 
-  shouldContainAdditionalInformation() {
-    cy.get('[data-testid="additional-information"]').should('have.text', this.referral.additionalInformation)
+  shouldContainAdditionalInformationSummaryCard() {
+    cy.get('[data-testid="additional-information-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Additional information',
+        this.referral.additionalInformation,
+        summaryCardElement,
+      )
+    })
   }
 
   shouldContainSubmittedText() {

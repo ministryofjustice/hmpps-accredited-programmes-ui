@@ -1,6 +1,8 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% from "../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
 {% extends "./partials/layout.njk" %}
 
 {% block submittedReferralContent %}
@@ -9,13 +11,7 @@
       {{ govukSummaryList(summaryListOptions) }}
     {% endfor %}
   {% else %}
-    <div class="govuk-summary-card">
-      <div class="govuk-summary-card__title-wrapper">
-        <h2 class="govuk-summary-card__title" data-testid="no-history-heading">Accredited Programme history</h2>
-      </div>
-      <div class="govuk-summary-card__content">
-        <p class="govuk-body" data-testid="no-history-paragraph">There is no Accredited Programme history for {{ person.name }}.</p>
-      </div>
-    </div>
+    {% set bodyText = "There is no Accredited Programme history for " + person.name + "." %}
+    {{ keylessSummaryCard("Accredited Programme history", bodyText=bodyText, testId="no-programme-history-summary-card") }}
   {% endif %}
 {% endblock submittedReferralContent %}
