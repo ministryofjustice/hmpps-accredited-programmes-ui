@@ -74,12 +74,19 @@ export default class ReferralsController {
         sharedPageData.person.bookingId,
       )
 
+      const hasSentenceDetails: boolean = !!(
+        sharedPageData.person.sentenceStartDate || offenderSentenceAndOffences.sentenceTypeDescription
+      )
+
       res.render('referrals/show/sentenceInformation', {
         ...sharedPageData,
-        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
-          sharedPageData.person.sentenceStartDate,
-          offenderSentenceAndOffences.sentenceTypeDescription,
-        ),
+        detailsSummaryListRows: hasSentenceDetails
+          ? SentenceInformationUtils.detailsSummaryListRows(
+              sharedPageData.person.sentenceStartDate,
+              offenderSentenceAndOffences.sentenceTypeDescription,
+            )
+          : [],
+        hasSentenceDetails,
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
         releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
       })

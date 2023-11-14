@@ -1,6 +1,8 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% from "../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
 {% extends "./partials/layout.njk" %}
 
 {% block submittedReferralContent %}
@@ -12,17 +14,21 @@
     }
   }) }}
 
-  {{ govukSummaryList({
-    card: {
-      title: {
-        text: "Sentence details"
+  {% if hasSentenceDetails %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Sentence details"
+        },
+        attributes: {
+          "data-testid": "sentence-details-summary-card"
+        }
       },
-      attributes: {
-        "data-testid": "sentence-details-summary-card"
-      }
-    },
-    rows: detailsSummaryListRows
-  }) }}
+      rows: detailsSummaryListRows
+    }) }}
+  {% else %}
+    {{ keylessSummaryCard("Sentence details", bodyText="There are no sentence details for this person.", testId="no-sentence-information-summary-card") }}
+  {% endif %}
 
   {{ govukSummaryList({
     card: {

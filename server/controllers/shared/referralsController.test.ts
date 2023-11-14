@@ -166,6 +166,61 @@ describe('ReferralsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
           detailsSummaryListRows,
+          hasSentenceDetails: true,
+          importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+        })
+      })
+    })
+
+    describe('when there are some but not all sentence details', () => {
+      it('renders the sentence information template with the present sentence details', async () => {
+        person.sentenceStartDate = '2023-01-02'
+        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
+          sentenceTypeDescription: undefined,
+        })
+        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
+        ;(SentenceInformationUtils.detailsSummaryListRows as jest.Mock).mockReturnValue(detailsSummaryListRows)
+
+        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+
+        const requestHandler = controller.sentenceInformation()
+        await requestHandler(request, response, next)
+
+        expect(SentenceInformationUtils.detailsSummaryListRows).toHaveBeenCalledWith(
+          sharedPageData.person.sentenceStartDate,
+          offenderSentenceAndOffences.sentenceTypeDescription,
+        )
+        expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
+          ...sharedPageData,
+          detailsSummaryListRows,
+          hasSentenceDetails: true,
+          importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+        })
+      })
+    })
+
+    describe('when there are no sentence details', () => {
+      it('renders the sentence information template with no sentence details', async () => {
+        person.sentenceStartDate = undefined
+        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
+          sentenceTypeDescription: undefined,
+        })
+        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
+
+        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+
+        const requestHandler = controller.sentenceInformation()
+        await requestHandler(request, response, next)
+
+        expect(SentenceInformationUtils.detailsSummaryListRows).not.toHaveBeenCalled()
+        expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
+          ...sharedPageData,
+          detailsSummaryListRows: [],
+          hasSentenceDetails: false,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
