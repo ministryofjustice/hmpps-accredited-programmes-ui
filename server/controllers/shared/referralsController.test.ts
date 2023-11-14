@@ -17,9 +17,12 @@ import Helpers from '../../testutils/helpers'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type {
+  GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
   ReferralSharedPageData,
 } from '@accredited-programmes/ui'
+
+jest.mock('../../utils/sentenceInformationUtils')
 
 describe('ReferralsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -138,6 +141,8 @@ describe('ReferralsController', () => {
   })
 
   describe('sentenceInformation', () => {
+    const detailsSummaryListRows = [createMock<GovukFrontendSummaryListRowWithKeyAndValue>()]
+
     describe('when all sentence information is present', () => {
       it('renders the sentence information template with the correct response locals', async () => {
         person.sentenceStartDate = '2023-01-02'
@@ -145,6 +150,7 @@ describe('ReferralsController', () => {
           sentenceTypeDescription: 'a description',
         })
         personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
+        ;(SentenceInformationUtils.detailsSummaryListRows as jest.Mock).mockReturnValue(detailsSummaryListRows)
 
         request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
 
@@ -153,12 +159,13 @@ describe('ReferralsController', () => {
 
         assertSharedDataServicesAreCalledWithExpectedArguments()
 
+        expect(SentenceInformationUtils.detailsSummaryListRows).toHaveBeenCalledWith(
+          sharedPageData.person.sentenceStartDate,
+          offenderSentenceAndOffences.sentenceTypeDescription,
+        )
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
-          detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
-            sharedPageData.person.sentenceStartDate,
-            offenderSentenceAndOffences.sentenceTypeDescription,
-          ),
+          detailsSummaryListRows,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
