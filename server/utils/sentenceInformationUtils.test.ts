@@ -5,10 +5,9 @@ import type { OffenderSentenceAndOffences } from '@prison-api'
 describe('SentenceInformationUtils', () => {
   describe('detailsSummaryListRows', () => {
     const type: OffenderSentenceAndOffences['sentenceTypeDescription'] = 'Concurrent determinate sentence'
+    const startDate: Person['sentenceStartDate'] = '2010-10-31'
 
     it('formats sentence details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro', () => {
-      const startDate: Person['sentenceStartDate'] = '2010-10-31'
-
       expect(SentenceInformationUtils.detailsSummaryListRows(startDate, type)).toEqual([
         {
           key: { text: 'Sentence type' },
@@ -21,8 +20,23 @@ describe('SentenceInformationUtils', () => {
       ])
     })
 
+    describe('when there is no sentence type', () => {
+      it('returns a message for that field', () => {
+        expect(SentenceInformationUtils.detailsSummaryListRows(startDate, undefined)).toEqual([
+          {
+            key: { text: 'Sentence type' },
+            value: { text: 'There is no sentence type for this person.' },
+          },
+          {
+            key: { text: 'Sentence start date' },
+            value: { text: '31 October 2010' },
+          },
+        ])
+      })
+    })
+
     describe('when there is no sentence start date', () => {
-      it('returns an empty string against that field', () => {
+      it('returns a message for that field', () => {
         expect(SentenceInformationUtils.detailsSummaryListRows(undefined, type)).toEqual([
           {
             key: { text: 'Sentence type' },
@@ -30,7 +44,7 @@ describe('SentenceInformationUtils', () => {
           },
           {
             key: { text: 'Sentence start date' },
-            value: { text: '' },
+            value: { text: 'There is no sentence start date for this person.' },
           },
         ])
       })
