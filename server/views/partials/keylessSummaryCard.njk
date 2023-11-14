@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro keylessSummaryCard(title, actionItems = [], bodyText = undefined, bodyHtml = undefined, testid = '') %}
+{% macro keylessSummaryCard(title, actionItems = [], bodyText = undefined, bodyHtml = undefined, testId = '') %}
   {{ govukSummaryList({
     card: {
       title: {
@@ -10,7 +10,7 @@
         items: actionItems
       },
       attributes: {
-        "data-testid": testid
+        "data-testid": testId
       }
     },
     rows: [{
