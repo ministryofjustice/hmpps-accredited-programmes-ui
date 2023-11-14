@@ -196,9 +196,11 @@ const sharedTests = {
       })
     },
 
-    showsSentenceInformationPage: (role: ApplicationRole): void => {
+    showsSentenceInformationPageWithAllData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
-      const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
+      const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
+        sentenceTypeDescription: 'a description',
+      })
       cy.task('stubOffenderSentenceAndOffences', { bookingId: prisoner.bookingId, offenderSentenceAndOffences })
 
       const path = pathsByRole(role).show.sentenceInformation({ referralId: referral.id })
