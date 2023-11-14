@@ -1,4 +1,11 @@
-import type { Course, CourseOffering, CourseParticipation, Organisation } from '@accredited-programmes/models'
+import type {
+  Course,
+  CourseOffering,
+  CourseParticipation,
+  Organisation,
+  Person,
+  Referral,
+} from '@accredited-programmes/models'
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryList,
@@ -71,6 +78,15 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
   summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
 }
 
+type ReferralSharedPageData = {
+  courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
+  navigationItems: Array<MojFrontendSideNavigationItem>
+  pageHeading: string
+  person: Person
+  referral: Referral
+  submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
+}
+
 type ReferralTaskListStatusText = 'cannot start yet' | 'completed' | 'not started'
 
 type ReferralTaskListStatusTagCompleted = GovukFrontendTagWithText & {
@@ -131,6 +147,7 @@ export type {
   OffenceHistory,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
+  ReferralSharedPageData,
   ReferralTaskListItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
