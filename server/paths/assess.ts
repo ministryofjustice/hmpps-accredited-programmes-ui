@@ -6,6 +6,7 @@ const referralShowPathBase = assessPathBase.path('referrals/:referralId')
 export default {
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),
+    offenceHistory: referralShowPathBase.path('offence-history'),
     personalDetails: referralShowPathBase.path('personal-details'),
     programmeHistory: referralShowPathBase.path('programme-history'),
     sentenceInformation: referralShowPathBase.path('sentence-information'),
