@@ -158,10 +158,5 @@
   },
   "optionalDependencies": {
     "djlint": "^1.27.0"
-  },
-  "overrides": {
-    "prettier-plugin-jinja-template": {
-      "prettier": "^3.0.0"
-    }
   }
 }
