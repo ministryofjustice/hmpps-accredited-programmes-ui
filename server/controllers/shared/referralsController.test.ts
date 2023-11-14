@@ -19,6 +19,7 @@ import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredi
 
 describe('ReferralsController', () => {
   const userToken = 'SOME_TOKEN'
+  const username = 'USERNAME'
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -50,7 +51,7 @@ describe('ReferralsController', () => {
   let controller: SubmittedReferralsController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token: userToken } })
+    request = createMock<Request>({ user: { token: userToken, username } })
     response = Helpers.createMockResponseWithCaseloads()
 
     courseService.getCourseByOffering.mockResolvedValue(course)
@@ -73,6 +74,15 @@ describe('ReferralsController', () => {
       const requestHandler = controller.additionalInformation()
       await requestHandler(request, response, next)
 
+      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        person.prisonNumber,
+        response.locals.user.caseloads,
+      )
+      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
         additionalInformation: referral.additionalInformation,
@@ -88,6 +98,15 @@ describe('ReferralsController', () => {
 
       const requestHandler = controller.personalDetails()
       await requestHandler(request, response, next)
+
+      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        person.prisonNumber,
+        response.locals.user.caseloads,
+      )
+      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/personalDetails', {
         ...sharedPageData,
@@ -109,8 +128,17 @@ describe('ReferralsController', () => {
       const requestHandler = controller.programmeHistory()
       await requestHandler(request, response, next)
 
+      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        person.prisonNumber,
+        response.locals.user.caseloads,
+      )
+      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
-        request.user!.token,
+        username,
+        userToken,
         sharedPageData.person.prisonNumber,
         sharedPageData.referral.id,
         { change: false, remove: false },
@@ -132,6 +160,15 @@ describe('ReferralsController', () => {
 
       const requestHandler = controller.sentenceInformation()
       await requestHandler(request, response, next)
+
+      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        person.prisonNumber,
+        response.locals.user.caseloads,
+      )
+      expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
         ...sharedPageData,

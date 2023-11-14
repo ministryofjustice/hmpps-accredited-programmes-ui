@@ -35,7 +35,7 @@ export default class NewReferralsCourseParticipationsController {
       }
 
       const courseParticipation = await this.courseService.createParticipation(
-        req.user.token,
+        req.user.username,
         referral.prisonNumber,
         courseName as CourseParticipation['courseName'],
       )
@@ -63,7 +63,7 @@ export default class NewReferralsCourseParticipationsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+      const courseParticipation = await this.courseService.getParticipation(req.user.username, courseParticipationId)
       const summaryListOptions = await this.courseService.presentCourseParticipation(
         req.user.token,
         courseParticipation,
@@ -98,7 +98,7 @@ export default class NewReferralsCourseParticipationsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      await this.courseService.deleteParticipation(req.user.token, courseParticipationId)
+      await this.courseService.deleteParticipation(req.user.username, courseParticipationId)
 
       req.flash('successMessage', 'You have successfully removed a programme.')
 
@@ -122,13 +122,13 @@ export default class NewReferralsCourseParticipationsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+      const courseParticipation = await this.courseService.getParticipation(req.user.username, courseParticipationId)
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
         res.locals.user.caseloads,
       )
-      const courseNames = await this.courseService.getCourseNames(req.user.token)
+      const courseNames = await this.courseService.getCourseNames(req.user.username)
 
       FormUtils.setFieldErrors(req, res, ['courseName', 'otherCourseName'])
 
@@ -168,6 +168,7 @@ export default class NewReferralsCourseParticipationsController {
       )
 
       const summaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
+        req.user.username,
         req.user.token,
         person.prisonNumber,
         referralId,
@@ -197,7 +198,7 @@ export default class NewReferralsCourseParticipationsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      const courseNames = await this.courseService.getCourseNames(req.user.token)
+      const courseNames = await this.courseService.getCourseNames(req.user.username)
       const person = await this.personService.getPerson(
         req.user.username,
         referral.prisonNumber,
@@ -231,7 +232,7 @@ export default class NewReferralsCourseParticipationsController {
       }
 
       const currentCourseParticipation = await this.courseService.getParticipation(
-        req.user.token,
+        req.user.username,
         courseParticipationId,
       )
 
@@ -252,7 +253,7 @@ export default class NewReferralsCourseParticipationsController {
 
       const { detail, outcome, setting, source } = currentCourseParticipation
 
-      await this.courseService.updateParticipation(req.user.token, courseParticipationId, {
+      await this.courseService.updateParticipation(req.user.username, courseParticipationId, {
         courseName: courseName as CourseParticipation['courseName'],
         detail,
         outcome,

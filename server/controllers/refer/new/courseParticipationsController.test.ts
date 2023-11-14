@@ -77,11 +77,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           request.body.otherCourseName,
           request,
         )
-        expect(courseService.createParticipation).toHaveBeenCalledWith(
-          userToken,
-          draftReferral.prisonNumber,
-          courseName,
-        )
+        expect(courseService.createParticipation).toHaveBeenCalledWith(username, draftReferral.prisonNumber, courseName)
         expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully added a programme.')
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.new.programmeHistory.details.show({
@@ -117,7 +113,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           request,
         )
         expect(courseService.createParticipation).toHaveBeenCalledWith(
-          userToken,
+          username,
           draftReferral.prisonNumber,
           otherCourseName,
         )
@@ -189,7 +185,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, request.params.referralId)
-      expect(courseService.getParticipation).toHaveBeenCalledWith(userToken, courseParticipationId)
+      expect(courseService.getParticipation).toHaveBeenCalledWith(username, courseParticipationId)
       expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
         userToken,
         courseParticipation,
@@ -232,7 +228,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-      expect(courseService.deleteParticipation).toHaveBeenCalledWith(userToken, courseParticipationId)
+      expect(courseService.deleteParticipation).toHaveBeenCalledWith(username, courseParticipationId)
       expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully removed a programme.')
       expect(response.redirect).toHaveBeenCalledWith(referPaths.new.programmeHistory.index({ referralId }))
     })
@@ -332,6 +328,7 @@ describe('NewReferralsCourseParticipationsController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
+        username,
         userToken,
         person.prisonNumber,
         referralId,
@@ -462,14 +459,14 @@ describe('NewReferralsCourseParticipationsController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(courseService.getParticipation).toHaveBeenCalledWith(userToken, request.params.courseParticipationId)
+        expect(courseService.getParticipation).toHaveBeenCalledWith(username, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
           request.body.otherCourseName,
           request,
         )
         expect(courseService.updateParticipation).toHaveBeenCalledWith(
-          userToken,
+          username,
           courseParticipation.id,
           courseParticipationUpdate,
         )
@@ -514,7 +511,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(courseService.getParticipation).toHaveBeenCalledWith(userToken, request.params.courseParticipationId)
+        expect(courseService.getParticipation).toHaveBeenCalledWith(username, request.params.courseParticipationId)
         expect(CourseParticipationUtils.processCourseFormData).toHaveBeenCalledWith(
           request.body.courseName,
           request.body.otherCourseName,

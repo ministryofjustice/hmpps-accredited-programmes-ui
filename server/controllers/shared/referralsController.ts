@@ -53,6 +53,7 @@ export default class ReferralsController {
       const sharedPageData = await this.sharedPageData(req, res)
 
       const courseParticipationSummaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
+        req.user.username,
         req.user.token,
         sharedPageData.person.prisonNumber,
         sharedPageData.referral.id,
@@ -107,8 +108,8 @@ export default class ReferralsController {
 
     const referral = await this.referralService.getReferral(token, referralId)
     const [course, courseOffering, person] = await Promise.all([
-      this.courseService.getCourseByOffering(token, referral.offeringId),
-      this.courseService.getOffering(token, referral.offeringId),
+      this.courseService.getCourseByOffering(username, referral.offeringId),
+      this.courseService.getOffering(username, referral.offeringId),
       this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
     ])
 

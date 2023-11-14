@@ -19,7 +19,6 @@ jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/courseParticipationUtils')
 
 describe('NewReferralsCourseParticipationDetailsController', () => {
-  const userToken = 'SOME_TOKEN'
   const username = 'SOME_USERNAME'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -44,7 +43,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
         courseParticipationId,
         referralId,
       },
-      user: { token: userToken, username },
+      user: { username },
     })
     response = Helpers.createMockResponseWithCaseloads()
 
@@ -192,13 +191,13 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-      expect(courseService.getParticipation).toHaveBeenCalledWith(userToken, courseParticipationId)
+      expect(courseService.getParticipation).toHaveBeenCalledWith(username, courseParticipationId)
       expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
         request,
         courseParticipation.courseName,
       )
       expect(courseService.updateParticipation).toHaveBeenCalledWith(
-        userToken,
+        username,
         courseParticipationId,
         courseParticipationUpdate,
       )
@@ -229,7 +228,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(courseService.getParticipation).toHaveBeenCalledWith(userToken, courseParticipationId)
+        expect(courseService.getParticipation).toHaveBeenCalledWith(username, courseParticipationId)
         expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
           request,
           courseParticipation.courseName,

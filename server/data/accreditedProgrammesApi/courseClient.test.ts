@@ -15,10 +15,10 @@ import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
 
-  const userToken = 'token-1'
+  const systemToken = 'token-1'
 
   beforeEach(() => {
-    courseClient = new CourseClient(userToken)
+    courseClient = new CourseClient(systemToken)
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
   })
 
@@ -64,7 +64,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.courses.index({}),
@@ -96,7 +96,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         withRequest: {
           body: { courseName, prisonNumber },
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'POST',
           path: apiPaths.participations.create({}),
@@ -126,7 +126,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'DELETE',
           path: apiPaths.participations.delete({ courseParticipationId: courseParticipationToDestroy.id }),
@@ -150,7 +150,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.courses.show({ courseId: course1.id }),
@@ -176,7 +176,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.offerings.course({ courseOfferingId: courseOffering1.id }),
@@ -202,7 +202,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.courses.offerings({ courseId: course1.id }),
@@ -230,7 +230,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.courses.names({}),
@@ -256,7 +256,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.offerings.show({ courseOfferingId: courseOffering1.id }),
@@ -284,7 +284,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.participations.show({ courseParticipationId: courseParticipation.id }),
@@ -311,7 +311,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         },
         withRequest: {
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'GET',
           path: apiPaths.people.participations({ prisonNumber }),
@@ -353,7 +353,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         withRequest: {
           body: courseParticipationUpdate,
           headers: {
-            authorization: `Bearer ${userToken}`,
+            authorization: `Bearer ${systemToken}`,
           },
           method: 'PUT',
           path: apiPaths.participations.update({ courseParticipationId: courseParticipation.id }),
