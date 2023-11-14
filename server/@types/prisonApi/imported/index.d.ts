@@ -460,18 +460,6 @@ export interface paths {
      */
     post: operations["getOffenderCategorisationsSystem"];
   };
-  "/api/offender-assessments/category/{agencyId}": {
-    /**
-     * Returns category information on Offenders at a prison.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations["getOffenderCategorisations_1"];
-    /**
-     * Returns Categorisation details for supplied Offenders - POST version to allow large offender lists.
-     * @description Categorisation details for supplied Offenders where agencyId is their create agency and is in the caseload<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations["getOffenderCategorisations"];
-  };
   "/api/offences/unlink-from-schedule": {
     /**
      * Unlink offence from schedule
@@ -652,13 +640,6 @@ export interface paths {
      * @description Offender detail for offenders<p>This endpoint uses the REPLICA database.</p>
      */
     post: operations["getBasicInmateDetailsForOffenders"];
-  };
-  "/api/bookings/offenders/{agencyId}/list": {
-    /**
-     * Basic offender details by booking ids - POST version to allow for large numbers
-     * @description Basic offender details by booking ids<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations["getBasicInmateDetailsByBookingIds"];
   };
   "/api/bookings/offenderNo/{offenderNo}/relationships": {
     /**
@@ -1285,6 +1266,13 @@ export interface paths {
     /** Retrieves details of a single CSRA assessment. */
     get: operations["getOffenderCsraAssessment"];
   };
+  "/api/offender-assessments/category/{agencyId}": {
+    /**
+     * Returns category information on Offenders at a prison.
+     * @description <p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations["getOffenderCategorisations"];
+  };
   "/api/offender-assessments/assessments": {
     /**
      * Returns assessment information on Offenders at a prison.
@@ -1586,34 +1574,6 @@ export interface paths {
      * @description List of active property containers
      */
     get: operations["getOffenderPropertyContainers"];
-  };
-  "/api/bookings/{bookingId}/profileInformation": {
-    /**
-     * Profile Information
-     * @description Profile Information
-     */
-    get: operations["getProfileInformation"];
-  };
-  "/api/bookings/{bookingId}/physicalMarks": {
-    /**
-     * Physical Mark Information
-     * @description Physical Mark Information
-     */
-    get: operations["getPhysicalMarks"];
-  };
-  "/api/bookings/{bookingId}/physicalCharacteristics": {
-    /**
-     * Physical Characteristics
-     * @description Physical Characteristics
-     */
-    get: operations["getPhysicalCharacteristics"];
-  };
-  "/api/bookings/{bookingId}/physicalAttributes": {
-    /**
-     * Offender Physical Attributes.
-     * @description Offender Physical Attributes.
-     */
-    get: operations["getPhysicalAttributes"];
   };
   "/api/bookings/{bookingId}/military-records": {
     /**
@@ -7199,8 +7159,8 @@ export interface components {
       pageSize?: number;
       /** Format: int32 */
       pageNumber?: number;
-      paged?: boolean;
       unpaged?: boolean;
+      paged?: boolean;
     };
     SortObject: {
       empty?: boolean;
@@ -13921,61 +13881,6 @@ export interface operations {
     };
   };
   /**
-   * Returns category information on Offenders at a prison.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
-  getOffenderCategorisations_1: {
-    parameters: {
-      query: {
-        /** @description Indicates which type of category information is required.<li>UNCATEGORISED: Offenders who need to be categorised,</li><li>CATEGORISED: Offenders who have an approved categorisation,</li><li>RECATEGORISATIONS: Offenders who will soon require recategorisation</li> */
-        type: string;
-        /** @description For type CATEGORISED: The past date from which categorisations are returned.<br />For type RECATEGORISATIONS: the future cutoff date: list includes all prisoners who require re-categorisation on or before this date.<br />For type UNCATEGORISED: Ignored; do not set this parameter. */
-        date?: string;
-      };
-      path: {
-        /** @description Prison id */
-        agencyId: string;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["OffenderCategorise"][];
-        };
-      };
-    };
-  };
-  /**
-   * Returns Categorisation details for supplied Offenders - POST version to allow large offender lists.
-   * @description Categorisation details for supplied Offenders where agencyId is their create agency and is in the caseload<p>This endpoint uses the REPLICA database.</p>
-   */
-  getOffenderCategorisations: {
-    parameters: {
-      query?: {
-        /** @description Only get the latest category for each booking */
-        latestOnly?: boolean;
-      };
-      path: {
-        /** @description Prison id */
-        agencyId: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": number[];
-      };
-    };
-    responses: {
-      /** @description The list of offenders with categorisation details is returned if categorisation record exists and their create agency is in the caseload */
-      200: {
-        content: {
-          "application/json": components["schemas"]["OffenderCategorise"][];
-        };
-      };
-    };
-  };
-  /**
    * Unlink offence from schedule
    * @description Requires UPDATE_OFFENCE_SCHEDULES role
    */
@@ -14950,49 +14855,6 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": string[];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["InmateBasicDetails"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Basic offender details by booking ids - POST version to allow for large numbers
-   * @description Basic offender details by booking ids<p>This endpoint uses the REPLICA database.</p>
-   */
-  getBasicInmateDetailsByBookingIds: {
-    parameters: {
-      path: {
-        /** @description The prison where the offenders are booked - the response is restricted to bookings at this prison */
-        agencyId: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": number[];
       };
     };
     responses: {
@@ -18635,6 +18497,32 @@ export interface operations {
     };
   };
   /**
+   * Returns category information on Offenders at a prison.
+   * @description <p>This endpoint uses the REPLICA database.</p>
+   */
+  getOffenderCategorisations: {
+    parameters: {
+      query: {
+        /** @description Indicates which type of category information is required.<li>UNCATEGORISED: Offenders who need to be categorised,</li><li>CATEGORISED: Offenders who have an approved categorisation,</li><li>RECATEGORISATIONS: Offenders who will soon require recategorisation</li> */
+        type: string;
+        /** @description For type CATEGORISED: The past date from which categorisations are returned.<br />For type RECATEGORISATIONS: the future cutoff date: list includes all prisoners who require re-categorisation on or before this date.<br />For type UNCATEGORISED: Ignored; do not set this parameter. */
+        date?: string;
+      };
+      path: {
+        /** @description Prison id */
+        agencyId: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["OffenderCategorise"][];
+        };
+      };
+    };
+  };
+  /**
    * Returns assessment information on Offenders at a prison.
    * @description <p>This endpoint uses the REPLICA database.</p>
    */
@@ -20515,158 +20403,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["PropertyContainer"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Profile Information
-   * @description Profile Information
-   */
-  getProfileInformation: {
-    parameters: {
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ProfileInformation"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Physical Mark Information
-   * @description Physical Mark Information
-   */
-  getPhysicalMarks: {
-    parameters: {
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PhysicalMark"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Physical Characteristics
-   * @description Physical Characteristics
-   */
-  getPhysicalCharacteristics: {
-    parameters: {
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PhysicalCharacteristic"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Offender Physical Attributes.
-   * @description Offender Physical Attributes.
-   */
-  getPhysicalAttributes: {
-    parameters: {
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PhysicalAttributes"];
         };
       };
       /** @description Invalid request. */
