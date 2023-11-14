@@ -5,6 +5,7 @@ import logger from '../../logger'
 import type { HmppsManageUsersClient, PrisonApiClient, RestClientBuilder } from '../data'
 import { StringUtils } from '../utils'
 import type { UserDetails } from '@accredited-programmes/users'
+import type { SystemToken } from '@hmpps-auth'
 import type { User } from '@manage-users-api'
 import type { Caseload } from '@prison-api'
 
@@ -42,7 +43,7 @@ export default class UserService {
     }
   }
 
-  private async getCaseloads(token: Express.User['token']): Promise<Array<Caseload>> {
+  private async getCaseloads(token: SystemToken): Promise<Array<Caseload>> {
     const prisonApiClient = this.prisonApiClientBuilder(token)
 
     let cases: Array<Caseload> = []

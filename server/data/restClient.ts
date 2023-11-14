@@ -9,6 +9,7 @@ import logger from '../../logger'
 import type { ApiConfig } from '../config'
 import type { UnsanitisedError } from '../sanitisedError'
 import sanitiseError from '../sanitisedError'
+import type { SystemToken } from '@hmpps-auth'
 
 interface GetRequest {
   headers?: Record<string, string>
@@ -42,7 +43,7 @@ export default class RestClient {
   constructor(
     private readonly name: string,
     private readonly config: ApiConfig,
-    private readonly token: Express.User['token'],
+    private readonly token: Express.User['token'] | SystemToken,
   ) {
     this.agent = config.url.startsWith('https') ? new HttpsAgent(config.agent) : new Agent(config.agent)
   }
