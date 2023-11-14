@@ -10,6 +10,7 @@ import type {
 } from '../data'
 import { PersonUtils } from '../utils'
 import type { Person } from '@accredited-programmes/models'
+import type { OffenceDetails, OffenceHistory } from '@accredited-programmes/ui'
 import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 
 export default class PersonService {
@@ -18,6 +19,67 @@ export default class PersonService {
     private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>,
     private readonly prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient>,
   ) {}
+
+  async getOffenceHistory(
+    username: Express.User['username'],
+    prisonNumber: Person['prisonNumber'],
+  ): Promise<OffenceHistory> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+
+    try {
+      const prisonApiClient = this.prisonApiClientBuilder(systemToken)
+
+      const offenderBooking = await prisonApiClient.findOffenderBookingByOffenderNo(prisonNumber)
+
+      if (!offenderBooking.offenceHistory) {
+        throw createError(404)
+      }
+
+      const offenceHistoryWithDetail: Array<OffenceDetails> = await Promise.all(
+        offenderBooking.offenceHistory.map(async offence => {
+          const offencesByCode = offence.offenceCode
+            ? await prisonApiClient.findOffencesThatStartWith(offence.offenceCode)
+            : undefined
+          const offenceDetail = offencesByCode?.content?.[0]
+
+          return {
+            code: offence.offenceCode,
+            date: offence.offenceDate,
+            description: offenceDetail?.description,
+            mostSerious: offence.mostSerious,
+            statuteCodeDescription: offenceDetail?.statuteCode?.description,
+          }
+        }),
+      )
+
+      return {
+        additionalOffences: offenceHistoryWithDetail
+          .filter(offence => !offence.mostSerious)
+          .sort((a, b) => {
+            if (!a.date) return 1
+
+            if (!b.date) return -1
+
+            return b.date.localeCompare(a.date)
+          }),
+        indexOffence: offenceHistoryWithDetail.find(offence => offence.mostSerious),
+      }
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        throw createError(knownError.status, `Offence history for prisoner ${prisonNumber} not found.`)
+      }
+
+      const errorMessage =
+        knownError.message === 'Internal Server Error'
+          ? `Error fetching offence history for prisoner ${prisonNumber}.`
+          : knownError.message
+
+      throw createError(knownError.status || 500, errorMessage)
+    }
+  }
 
   async getPerson(
     username: Express.User['username'],

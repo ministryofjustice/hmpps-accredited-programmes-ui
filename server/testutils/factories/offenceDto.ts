@@ -3,9 +3,11 @@ import { Factory } from 'fishery'
 
 import type { OffenceDto } from '@prison-api'
 
-export default Factory.define<Partial<OffenceDto>>(() => ({
+export default Factory.define<OffenceDto>(() => ({
+  activeFlag: 'Y',
   code: faker.string.alphanumeric({ casing: 'upper', length: 6 }),
   description: faker.lorem.sentence(),
+  severityRanking: faker.string.numeric({ length: 1 }),
   statuteCode: {
     activeFlag: 'Y',
     code: faker.string.alphanumeric({ casing: 'upper', length: 4 }),

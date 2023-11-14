@@ -9,6 +9,7 @@ import type {
   GovukFrontendSummaryListRowValue,
   GovukFrontendTag,
 } from '@govuk-frontend'
+import type { OffenceDto, OffenceHistoryDetail } from '@prison-api'
 
 type GovukFrontendRadiosItemWithLabel = GovukFrontendRadiosItem & { label: string }
 
@@ -47,6 +48,19 @@ type CoursePresenter = Course & {
   audienceTags: Array<GovukFrontendTagWithText>
   nameAndAlternateName: string
   prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
+}
+
+type OffenceDetails = {
+  code?: OffenceHistoryDetail['offenceCode']
+  date?: OffenceHistoryDetail['offenceDate']
+  description?: OffenceDto['description']
+  mostSerious?: OffenceHistoryDetail['mostSerious']
+  statuteCodeDescription?: OffenceDto['statuteCode']['description']
+}
+
+type OffenceHistory = {
+  additionalOffences: Array<OffenceDetails>
+  indexOffence?: OffenceDetails
 }
 
 type OrganisationWithOfferingId = Organisation & {
@@ -113,6 +127,8 @@ export type {
   HasHtmlString,
   HasTextString,
   MojFrontendSideNavigationItem,
+  OffenceDetails,
+  OffenceHistory,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
   ReferralTaskListItem,
