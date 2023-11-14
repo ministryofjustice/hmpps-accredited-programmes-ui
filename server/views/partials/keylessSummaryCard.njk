@@ -8,14 +8,14 @@
       },
       actions: {
         items: actionItems
+      },
+      attributes: {
+        "data-testid": testid
       }
     },
     rows: [{
       key: { text: "", classes: "govuk-visually-hidden" },
       value: { text: bodyText, html: bodyHtml, classes: "govuk-!-width-full" }
-    }],
-    attributes: {
-      "data-testid": testid
-    }
+    }]
   }) }}
 {% endmacro %}
