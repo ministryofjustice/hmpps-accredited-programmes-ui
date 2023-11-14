@@ -8,13 +8,14 @@ import type { CourseService, OrganisationService, PersonService, ReferralService
 import {
   courseFactory,
   courseOfferingFactory,
+  offenceDetailsFactory,
   offenderSentenceAndOffencesFactory,
   organisationFactory,
   personFactory,
   referralFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
+import { CourseUtils, DateUtils, OffenceUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -89,6 +90,60 @@ describe('ReferralsController', () => {
         additionalInformation: referral.additionalInformation,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+      })
+    })
+  })
+
+  describe('offenceHistory', () => {
+    it('renders the offence history template with the correct response locals', async () => {
+      const additionalOffences = [offenceDetailsFactory.build({ mostSerious: false })]
+      const indexOffence = offenceDetailsFactory.build({ mostSerious: true })
+
+      personService.getOffenceHistory.mockResolvedValue({
+        additionalOffences,
+        indexOffence,
+      })
+
+      request.path = referPaths.show.offenceHistory({ referralId: referral.id })
+
+      const requestHandler = controller.offenceHistory()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/offenceHistory', {
+        ...sharedPageData,
+        additionalOffencesSummaryLists: [
+          {
+            summaryListRows: OffenceUtils.summaryListRows(additionalOffences[0]),
+            titleText: `Additional offence (${additionalOffences[0].code})`,
+          },
+        ],
+        hasOffenceHistory: true,
+        importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+        indexOffenceSummaryListRows: OffenceUtils.summaryListRows(indexOffence),
+        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+      })
+    })
+
+    describe('when there is no offence history', () => {
+      it('renders the offence history template with the correct response locals', async () => {
+        personService.getOffenceHistory.mockResolvedValue({
+          additionalOffences: [],
+          indexOffence: undefined,
+        })
+
+        request.path = referPaths.show.offenceHistory({ referralId: referral.id })
+
+        const requestHandler = controller.offenceHistory()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/offenceHistory', {
+          ...sharedPageData,
+          additionalOffencesSummaryLists: [],
+          hasOffenceHistory: false,
+          importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+          indexOffenceSummaryListRows: null,
+          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        })
       })
     })
   })

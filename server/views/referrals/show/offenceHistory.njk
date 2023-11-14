@@ -1,0 +1,50 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "./partials/layout.njk" %}
+
+{% block submittedReferralContent %}
+  {% set noOffenceHistoryString = "There is no Offence history for " + person.name + "." %}
+
+  {{ govukInsetText({
+    classes: "govuk-!-margin-top-0",
+    text: importedFromText,
+    attributes: {
+      "data-testid": "imported-from-text"
+    }
+  }) }}
+
+  {% if hasOffenceHistory %}
+    {% if indexOffenceSummaryListRows.length %}
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Index offence"
+          },
+          attributes: {
+            "data-testid": "index-offence-summary-card"
+          }
+        },
+        rows: indexOffenceSummaryListRows
+      }) }}
+    {% endif %}
+
+    {% for additionalOffence in additionalOffencesSummaryLists %}
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: additionalOffence.titleText
+          },
+          attributes: {
+            "data-testid": "additional-offence-summary-card-" + loop.index
+          }
+        },
+        rows: additionalOffence.summaryListRows
+      }) }}
+    {% endfor %}
+  {% else %}
+    {{ keylessSummaryCard("Offence history", bodyText=noOffenceHistoryString, testId="no-offence-history-summary-card") }}
+  {% endif %}
+{% endblock submittedReferralContent %}

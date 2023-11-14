@@ -1,7 +1,15 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils, TypeUtils } from '../../utils'
+import {
+  CourseUtils,
+  DateUtils,
+  OffenceUtils,
+  PersonUtils,
+  ReferralUtils,
+  SentenceInformationUtils,
+  TypeUtils,
+} from '../../utils'
 import type { ReferralSharedPageData } from '@accredited-programmes/ui'
 
 export default class ReferralsController {
@@ -24,6 +32,30 @@ export default class ReferralsController {
         ...sharedPageData,
         additionalInformation: sharedPageData.referral.additionalInformation,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+      })
+    }
+  }
+
+  offenceHistory(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const { additionalOffences, indexOffence } = await this.personService.getOffenceHistory(
+        req.user.username,
+        sharedPageData.person.prisonNumber,
+      )
+
+      res.render('referrals/show/offenceHistory', {
+        ...sharedPageData,
+        additionalOffencesSummaryLists: additionalOffences.map(offence => ({
+          summaryListRows: OffenceUtils.summaryListRows(offence),
+          titleText: `Additional offence (${offence.code})`,
+        })),
+        hasOffenceHistory: Boolean(indexOffence) || additionalOffences.length > 0,
+        importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+        indexOffenceSummaryListRows: indexOffence ? OffenceUtils.summaryListRows(indexOffence) : null,
       })
     }
   }
