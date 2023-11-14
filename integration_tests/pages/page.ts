@@ -140,6 +140,21 @@ export default abstract class Page {
       })
   }
 
+  shouldContainKeylessSummaryCard(
+    title: GovukFrontendSummaryListCardTitle['text'],
+    body: string,
+    summaryCardElement: JQuery<HTMLElement>,
+  ): void {
+    cy.wrap(summaryCardElement).within(() => {
+      cy.get('.govuk-summary-card__title').should('have.text', title)
+
+      cy.get('.govuk-summary-list__value').then(keylessSummaryCardBodyElement => {
+        const { actual, expected } = Helpers.parseHtml(keylessSummaryCardBodyElement, body)
+        expect(actual).to.equal(expected)
+      })
+    })
+  }
+
   shouldContainLink(text: string, href: string): void {
     cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }

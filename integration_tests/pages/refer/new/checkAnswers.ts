@@ -1,6 +1,5 @@
 import { referPaths } from '../../../../server/paths'
 import { CourseUtils, ReferralUtils } from '../../../../server/utils'
-import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
@@ -67,15 +66,13 @@ export default class NewReferralCheckAnswersPage extends Page {
       referPaths.new.additionalInformation.show({ referralId: this.referral.id }),
     )
 
-    cy.get('[data-testid="additional-information-summary-list"] .govuk-summary-list__value').then(
-      keylessSummaryListBodyElement => {
-        const { actual, expected } = Helpers.parseHtml(
-          keylessSummaryListBodyElement,
-          this.referral.additionalInformation,
-        )
-        expect(actual).to.equal(expected)
-      },
-    )
+    cy.get('[data-testid="additional-information-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Add additional information',
+        this.referral.additionalInformation,
+        summaryCardElement,
+      )
+    })
   }
 
   shouldHaveApplicationSummary() {
@@ -101,15 +98,13 @@ export default class NewReferralCheckAnswersPage extends Page {
   }
 
   shouldHaveOasysConfirmation(): void {
-    cy.get('[data-testid="oasys-confirmation-summary-list"] .govuk-summary-list__value').then(
-      keylessSummaryListBodyElement => {
-        const { actual, expected } = Helpers.parseHtml(
-          keylessSummaryListBodyElement,
-          'I confirm that the information is up to date.',
-        )
-        expect(actual).to.equal(expected)
-      },
-    )
+    cy.get('[data-testid="oasys-confirmation-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Confirm OASys information',
+        'I confirm that the information is up to date.',
+        summaryCardElement,
+      )
+    })
   }
 
   shouldHaveProgrammeHistory(): void {
