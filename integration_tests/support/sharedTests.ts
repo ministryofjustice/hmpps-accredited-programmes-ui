@@ -19,7 +19,9 @@ import {
   ProgrammeHistoryPage,
   SentenceInformationPage,
 } from '../pages/shared'
+import type { Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { Prisoner } from '@prisoner-search'
 
 type ApplicationRole = `${ApplicationRoles}`
 
@@ -27,7 +29,8 @@ const course = courseFactory.build()
 const coursePresenter = CourseUtils.presentCourse(course)
 const courseOffering = courseOfferingFactory.build()
 const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-const prisoner = prisonerFactory.build({
+let prisoner: Prisoner
+const defaultPrisoner = prisonerFactory.build({
   conditionalReleaseDate: '2024-10-31',
   dateOfBirth: '1980-01-01',
   firstName: 'Del',
@@ -39,45 +42,29 @@ const prisoner = prisonerFactory.build({
   sentenceStartDate: '2010-10-31',
   tariffDate: '2028-10-31',
 })
-const person = personFactory.build({
+let person: Person
+const defaultPerson = personFactory.build({
   conditionalReleaseDate: '2024-10-31',
-  currentPrison: prisoner.prisonName,
+  currentPrison: defaultPrisoner.prisonName,
   dateOfBirth: '1 January 1980',
-  ethnicity: prisoner.ethnicity,
-  gender: prisoner.gender,
-  homeDetentionCurfewEligibilityDate: '2025-10-31',
+  ethnicity: defaultPrisoner.ethnicity,
+  gender: defaultPrisoner.gender,
+  homeDetentionCurfewEligibilityDate: defaultPrisoner.homeDetentionCurfewEligibilityDate,
   indeterminateSentence: false,
   name: 'Del Hatton',
-  paroleEligibilityDate: '2026-10-31',
-  prisonNumber: prisoner.prisonerNumber,
-  religionOrBelief: prisoner.religion,
-  sentenceExpiryDate: '2027-10-31',
-  sentenceStartDate: '2010-10-31',
+  paroleEligibilityDate: defaultPrisoner.paroleEligibilityDate,
+  prisonNumber: defaultPrisoner.prisonerNumber,
+  religionOrBelief: defaultPrisoner.religion,
+  sentenceExpiryDate: defaultPrisoner.sentenceExpiryDate,
+  sentenceStartDate: defaultPrisoner.sentenceStartDate,
   setting: 'Custody',
-  tariffDate: '2028-10-31',
+  tariffDate: defaultPrisoner.tariffDate,
 })
-const referral = referralFactory.submitted().build({
-  offeringId: courseOffering.id,
-  prisonNumber: person.prisonNumber,
-})
+let referral: Referral
 const organisation = OrganisationUtils.organisationFromPrison(prison)
 const user = userFactory.build()
-const courseParticipationPresenter1 = {
-  ...courseParticipationFactory.build({
-    addedBy: user.username,
-    courseName: course.name,
-    prisonNumber: person.prisonNumber,
-  }),
-  addedByDisplayName: StringUtils.convertToTitleCase(user.name),
-}
-const courseParticipationPresenter2 = {
-  ...courseParticipationFactory.build({
-    addedBy: user.username,
-    courseName: 'Another course name',
-    prisonNumber: person.prisonNumber,
-  }),
-  addedByDisplayName: StringUtils.convertToTitleCase(user.name),
-}
+let courseParticipationPresenter1: CourseParticipationPresenter
+let courseParticipationPresenter2: CourseParticipationPresenter
 
 const pathsByRole = (role: ApplicationRole): typeof assessPaths | typeof referPaths => {
   return role === 'ROLE_ACP_PROGRAMME_TEAM' ? assessPaths : referPaths
@@ -85,7 +72,30 @@ const pathsByRole = (role: ApplicationRole): typeof assessPaths | typeof referPa
 
 const sharedTests = {
   referrals: {
-    beforeEach: (role: ApplicationRole): void => {
+    beforeEach: (role: ApplicationRole, data?: { person?: Person; prisoner?: Prisoner }): void => {
+      prisoner = data?.prisoner || defaultPrisoner
+      person = data?.person || defaultPerson
+      referral = referralFactory.submitted().build({
+        offeringId: courseOffering.id,
+        prisonNumber: person.prisonNumber,
+      })
+      courseParticipationPresenter1 = {
+        ...courseParticipationFactory.build({
+          addedBy: user.username,
+          courseName: course.name,
+          prisonNumber: person.prisonNumber,
+        }),
+        addedByDisplayName: StringUtils.convertToTitleCase(user.name),
+      }
+      courseParticipationPresenter2 = {
+        ...courseParticipationFactory.build({
+          addedBy: user.username,
+          courseName: 'Another course name',
+          prisonNumber: person.prisonNumber,
+        }),
+        addedByDisplayName: StringUtils.convertToTitleCase(user.name),
+      }
+
       cy.task('reset')
       cy.task('stubSignIn', { authorities: [role] })
       cy.task('stubAuthUser')
@@ -219,6 +229,35 @@ const sharedTests = {
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainSentenceDetailsSummaryCard()
+      sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
+    },
+
+    showsSentenceInformationPageWithoutSentenceDetails: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role, {
+        person: { ...defaultPerson, sentenceStartDate: undefined },
+        prisoner: { ...defaultPrisoner, sentenceStartDate: undefined },
+      })
+      const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
+        sentenceTypeDescription: undefined,
+      })
+      cy.task('stubOffenderSentenceAndOffences', { bookingId: prisoner.bookingId, offenderSentenceAndOffences })
+
+      const path = pathsByRole(role).show.sentenceInformation({ referralId: referral.id })
+      cy.visit(path)
+
+      const sentenceInformationPage = Page.verifyOnPage(SentenceInformationPage, {
+        course,
+        offenderSentenceAndOffences,
+        person,
+      })
+      sentenceInformationPage.shouldHavePersonDetails(person)
+      sentenceInformationPage.shouldContainNavigation(path)
+      sentenceInformationPage.shouldContainBackLink('#')
+      sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+      sentenceInformationPage.shouldContainSubmissionSummaryList(referral)
+      sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      sentenceInformationPage.shouldContainImportedFromText()
+      sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()
       sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
     },
   },

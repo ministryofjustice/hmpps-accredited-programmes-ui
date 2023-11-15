@@ -2,11 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils, TypeUtils } from '../../utils'
-import type { Person, Referral } from '@accredited-programmes/models'
-import type {
-  GovukFrontendSummaryListRowWithKeyAndValue,
-  MojFrontendSideNavigationItem,
-} from '@accredited-programmes/ui'
+import type { ReferralSharedPageData } from '@accredited-programmes/ui'
 
 export default class ReferralsController {
   constructor(
@@ -78,29 +74,26 @@ export default class ReferralsController {
         sharedPageData.person.bookingId,
       )
 
+      const hasSentenceDetails: boolean = !!(
+        sharedPageData.person.sentenceStartDate || offenderSentenceAndOffences.sentenceTypeDescription
+      )
+
       res.render('referrals/show/sentenceInformation', {
         ...sharedPageData,
-        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
-          sharedPageData.person.sentenceStartDate,
-          offenderSentenceAndOffences.sentenceTypeDescription,
-        ),
+        detailsSummaryListRows: hasSentenceDetails
+          ? SentenceInformationUtils.detailsSummaryListRows(
+              sharedPageData.person.sentenceStartDate,
+              offenderSentenceAndOffences.sentenceTypeDescription,
+            )
+          : [],
+        hasSentenceDetails,
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
         releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
       })
     }
   }
 
-  private async sharedPageData(
-    req: Request,
-    res: Response,
-  ): Promise<{
-    courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
-    navigationItems: Array<MojFrontendSideNavigationItem>
-    pageHeading: string
-    person: Person
-    referral: Referral
-    submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
-  }> {
+  private async sharedPageData(req: Request, res: Response): Promise<ReferralSharedPageData> {
     TypeUtils.assertHasUser(req)
 
     const { referralId } = req.params

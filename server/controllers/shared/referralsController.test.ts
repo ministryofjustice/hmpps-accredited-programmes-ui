@@ -15,7 +15,14 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, DateUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
-import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
+import type { Person, Referral } from '@accredited-programmes/models'
+import type {
+  GovukFrontendSummaryListRowWithKeyAndValue,
+  GovukFrontendSummaryListWithRowsWithKeysAndValues,
+  ReferralSharedPageData,
+} from '@accredited-programmes/ui'
+
+jest.mock('../../utils/sentenceInformationUtils')
 
 describe('ReferralsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -34,25 +41,23 @@ describe('ReferralsController', () => {
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
-  const person = personFactory.build()
-  const referral = referralFactory
-    .submitted()
-    .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-  const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
-
-  const sharedPageData = {
-    courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
-    pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
-    person,
-    referral,
-    submissionSummaryListRows: ReferralUtils.submissionSummaryListRows(referral),
-  }
+  let person: Person
+  let referral: Referral
+  let sharedPageData: Omit<ReferralSharedPageData, 'navigationItems'>
 
   let controller: SubmittedReferralsController
 
   beforeEach(() => {
-    request = createMock<Request>({ params: { referralId: referral.id }, user: { token: userToken, username } })
-    response = Helpers.createMockResponseWithCaseloads()
+    person = personFactory.build()
+    referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+
+    sharedPageData = {
+      courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
+      pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      person,
+      referral,
+      submissionSummaryListRows: ReferralUtils.submissionSummaryListRows(referral),
+    }
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
@@ -61,6 +66,9 @@ describe('ReferralsController', () => {
     referralService.getReferral.mockResolvedValue(referral)
 
     controller = new SubmittedReferralsController(courseService, organisationService, personService, referralService)
+
+    request = createMock<Request>({ params: { referralId: referral.id }, user: { token: userToken, username } })
+    response = Helpers.createMockResponseWithCaseloads()
   })
 
   afterEach(() => {
@@ -133,25 +141,90 @@ describe('ReferralsController', () => {
   })
 
   describe('sentenceInformation', () => {
-    it('renders the sentence information template with the correct response locals', async () => {
-      personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
+    const detailsSummaryListRows = [createMock<GovukFrontendSummaryListRowWithKeyAndValue>()]
 
-      request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+    describe('when all sentence information is present', () => {
+      it('renders the sentence information template with the correct response locals', async () => {
+        person.sentenceStartDate = '2023-01-02'
+        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
+          sentenceTypeDescription: 'a description',
+        })
+        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
+        ;(SentenceInformationUtils.detailsSummaryListRows as jest.Mock).mockReturnValue(detailsSummaryListRows)
 
-      const requestHandler = controller.sentenceInformation()
-      await requestHandler(request, response, next)
+        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+        const requestHandler = controller.sentenceInformation()
+        await requestHandler(request, response, next)
 
-      expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
-        ...sharedPageData,
-        detailsSummaryListRows: SentenceInformationUtils.detailsSummaryListRows(
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(SentenceInformationUtils.detailsSummaryListRows).toHaveBeenCalledWith(
           sharedPageData.person.sentenceStartDate,
           offenderSentenceAndOffences.sentenceTypeDescription,
-        ),
-        importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-        releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+        )
+        expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
+          ...sharedPageData,
+          detailsSummaryListRows,
+          hasSentenceDetails: true,
+          importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+        })
+      })
+    })
+
+    describe('when there are some but not all sentence details', () => {
+      it('renders the sentence information template with the present sentence details', async () => {
+        person.sentenceStartDate = '2023-01-02'
+        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
+          sentenceTypeDescription: undefined,
+        })
+        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
+        ;(SentenceInformationUtils.detailsSummaryListRows as jest.Mock).mockReturnValue(detailsSummaryListRows)
+
+        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+
+        const requestHandler = controller.sentenceInformation()
+        await requestHandler(request, response, next)
+
+        expect(SentenceInformationUtils.detailsSummaryListRows).toHaveBeenCalledWith(
+          sharedPageData.person.sentenceStartDate,
+          offenderSentenceAndOffences.sentenceTypeDescription,
+        )
+        expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
+          ...sharedPageData,
+          detailsSummaryListRows,
+          hasSentenceDetails: true,
+          importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+        })
+      })
+    })
+
+    describe('when there are no sentence details', () => {
+      it('renders the sentence information template with no sentence details', async () => {
+        person.sentenceStartDate = undefined
+        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
+          sentenceTypeDescription: undefined,
+        })
+        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
+
+        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+
+        const requestHandler = controller.sentenceInformation()
+        await requestHandler(request, response, next)
+
+        expect(SentenceInformationUtils.detailsSummaryListRows).not.toHaveBeenCalled()
+        expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
+          ...sharedPageData,
+          detailsSummaryListRows: [],
+          hasSentenceDetails: false,
+          importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+        })
       })
     })
   })
