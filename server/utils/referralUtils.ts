@@ -1,7 +1,8 @@
 import type { Request } from 'express'
 
 import DateUtils from './dateUtils'
-import { referPaths } from '../paths'
+import { assessPaths, referPaths } from '../paths'
+import { assessPathBase } from '../paths/assess'
 import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
@@ -146,21 +147,23 @@ export default class ReferralUtils {
     currentPath: Request['path'],
     referralId: Referral['id'],
   ): Array<MojFrontendSideNavigationItem> {
+    const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
+
     const navigationItems = [
       {
-        href: referPaths.show.personalDetails({ referralId }),
+        href: paths.show.personalDetails({ referralId }),
         text: 'Personal details',
       },
       {
-        href: referPaths.show.programmeHistory({ referralId }),
+        href: paths.show.programmeHistory({ referralId }),
         text: 'Programme history',
       },
       {
-        href: referPaths.show.sentenceInformation({ referralId }),
+        href: paths.show.sentenceInformation({ referralId }),
         text: 'Sentence information',
       },
       {
-        href: referPaths.show.additionalInformation({ referralId }),
+        href: paths.show.additionalInformation({ referralId }),
         text: 'Additional information',
       },
     ]
