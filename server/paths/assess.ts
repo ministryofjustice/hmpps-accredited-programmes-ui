@@ -11,3 +11,5 @@ export default {
     sentenceInformation: referralShowPathBase.path('sentence-information'),
   },
 }
+
+export { assessPathBase }

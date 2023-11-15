@@ -1,6 +1,8 @@
 import type { AxeRules } from '@accredited-programmes/integration-tests'
 
 import { referPaths } from '../../server/paths'
+import { assessPathBase } from '../../server/paths/assess'
+import { referPathBase } from '../../server/paths/refer'
 import { CourseParticipationUtils, PersonUtils, ReferralUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { Organisation, Person, Referral } from '@accredited-programmes/models'
@@ -216,7 +218,10 @@ export default abstract class Page {
   }
 
   shouldContainSubmittedReferralSideNavigation(currentPath: string, referralId: Referral['id']): void {
-    const navigationItems = ReferralUtils.viewReferralNavigationItems('/', referralId)
+    const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
+      ? assessPathBase.pattern
+      : referPathBase.pattern
+    const navigationItems = ReferralUtils.viewReferralNavigationItems(currentBasePath, referralId)
 
     cy.get('.moj-side-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
       const { href, text } = navigationItems[navigationItemElementIndex]

@@ -1,6 +1,6 @@
 import CourseUtils from './courseUtils'
 import ReferralUtils from './referralUtils'
-import { referPaths } from '../paths'
+import { assessPaths, referPaths } from '../paths'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -247,32 +247,64 @@ describe('ReferralUtils', () => {
   })
 
   describe('viewReferralNavigationItems', () => {
-    it('returns navigation items for the view referral pages and sets the requested page as active', () => {
-      const mockReferralId = 'mock-referral-id'
-      const currentRequestPath = referPaths.show.personalDetails({ referralId: mockReferralId })
+    const mockReferralId = 'mock-referral-id'
 
-      expect(ReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
-        {
-          active: true,
-          href: referPaths.show.personalDetails({ referralId: mockReferralId }),
-          text: 'Personal details',
-        },
-        {
-          active: false,
-          href: referPaths.show.programmeHistory({ referralId: mockReferralId }),
-          text: 'Programme history',
-        },
-        {
-          active: false,
-          href: referPaths.show.sentenceInformation({ referralId: mockReferralId }),
-          text: 'Sentence information',
-        },
-        {
-          active: false,
-          href: referPaths.show.additionalInformation({ referralId: mockReferralId }),
-          text: 'Additional information',
-        },
-      ])
+    describe('when viewing the referral on the refer journey', () => {
+      it('returns navigation items for the view referral pages with the refer paths and sets the requested page as active', () => {
+        const currentRequestPath = referPaths.show.personalDetails({ referralId: mockReferralId })
+
+        expect(ReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
+          {
+            active: true,
+            href: referPaths.show.personalDetails({ referralId: mockReferralId }),
+            text: 'Personal details',
+          },
+          {
+            active: false,
+            href: referPaths.show.programmeHistory({ referralId: mockReferralId }),
+            text: 'Programme history',
+          },
+          {
+            active: false,
+            href: referPaths.show.sentenceInformation({ referralId: mockReferralId }),
+            text: 'Sentence information',
+          },
+          {
+            active: false,
+            href: referPaths.show.additionalInformation({ referralId: mockReferralId }),
+            text: 'Additional information',
+          },
+        ])
+      })
+    })
+
+    describe('when viewing the referral on the assess journey', () => {
+      it('returns navigation items for the view referral pages with the assess paths and sets the requested page as active', () => {
+        const currentRequestPath = assessPaths.show.personalDetails({ referralId: mockReferralId })
+
+        expect(ReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
+          {
+            active: true,
+            href: assessPaths.show.personalDetails({ referralId: mockReferralId }),
+            text: 'Personal details',
+          },
+          {
+            active: false,
+            href: assessPaths.show.programmeHistory({ referralId: mockReferralId }),
+            text: 'Programme history',
+          },
+          {
+            active: false,
+            href: assessPaths.show.sentenceInformation({ referralId: mockReferralId }),
+            text: 'Sentence information',
+          },
+          {
+            active: false,
+            href: assessPaths.show.additionalInformation({ referralId: mockReferralId }),
+            text: 'Additional information',
+          },
+        ])
+      })
     })
   })
 })
