@@ -9,8 +9,8 @@ import type { Prisoner } from '@prisoner-search'
 export default class PrisonerSearchClient {
   restClient: RestClient
 
-  constructor(token: SystemToken) {
-    this.restClient = new RestClient('prisonerSearchClient', config.apis.prisonerSearch as ApiConfig, token)
+  constructor(systemToken: SystemToken) {
+    this.restClient = new RestClient('prisonerSearchClient', config.apis.prisonerSearch as ApiConfig, systemToken)
   }
 
   async find(

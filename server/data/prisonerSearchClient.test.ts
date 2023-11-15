@@ -10,11 +10,11 @@ describe('PrisonerSearchClient', () => {
   let fakePrisonerSearch: nock.Scope
   let prisonerSearchClient: PrisonerSearchClient
 
-  const token = 'token-1'
+  const systemToken = 'token-1'
 
   beforeEach(() => {
     fakePrisonerSearch = nock(config.apis.prisonerSearch.url)
-    prisonerSearchClient = new PrisonerSearchClient(token)
+    prisonerSearchClient = new PrisonerSearchClient(systemToken)
   })
 
   afterEach(() => {
@@ -32,7 +32,7 @@ describe('PrisonerSearchClient', () => {
     it('searches for a prisoner by prison number and caseload IDs and returns the first match on the assumption that there will never be multiple matches', async () => {
       fakePrisonerSearch
         .post(prisonerSearchPaths.prisoner.search({}))
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, [prisoner])
 
       const output = await prisonerSearchClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
@@ -43,7 +43,7 @@ describe('PrisonerSearchClient', () => {
       it('returns null', async () => {
         fakePrisonerSearch
           .post(prisonerSearchPaths.prisoner.search({}))
-          .matchHeader('authorization', `Bearer ${token}`)
+          .matchHeader('authorization', `Bearer ${systemToken}`)
           .reply(200, [])
 
         const output = await prisonerSearchClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])

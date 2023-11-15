@@ -17,11 +17,11 @@ describe('PrisonApiClient', () => {
   let fakePrisonApi: nock.Scope
   let prisonApiClient: PrisonApiClient
 
-  const token = 'token-1'
+  const systemToken = 'token-1'
 
   beforeEach(() => {
     fakePrisonApi = nock(config.apis.prisonApi.url)
-    prisonApiClient = new PrisonApiClient(token)
+    prisonApiClient = new PrisonApiClient(systemToken)
   })
 
   afterEach(() => {
@@ -39,7 +39,7 @@ describe('PrisonApiClient', () => {
     it('fetches all Caseloads for the logged in user', async () => {
       fakePrisonApi
         .get(prisonApiPaths.caseloads.currentUser({}))
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, caseloads)
 
       const output = await prisonApiClient.findCurrentUserCaseloads()
@@ -81,7 +81,7 @@ describe('PrisonApiClient', () => {
     it("searches for a prisoner's sentence and offence details by booking ID", async () => {
       fakePrisonApi
         .get(prisonApiPaths.offenderSentenceAndOffences({ bookingId: prisoner.bookingId }))
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, offenderSentenceAndOffences)
 
       const output = await prisonApiClient.findSentenceAndOffenceDetails(prisoner.bookingId)

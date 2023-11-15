@@ -13,7 +13,7 @@ import PersonUtils from '../../../utils/personUtils'
 jest.mock('../../../utils/personUtils')
 
 describe('NewReferralsPeopleController', () => {
-  const token = 'SOME_TOKEN'
+  const username = 'VBASHIR123'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
@@ -23,7 +23,7 @@ describe('NewReferralsPeopleController', () => {
   let controller: NewReferralsPeopleController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token } })
+    request = createMock<Request>({ user: { username } })
     response = Helpers.createMockResponseWithCaseloads()
     controller = new NewReferralsPeopleController(personService)
   })

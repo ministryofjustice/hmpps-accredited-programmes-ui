@@ -82,11 +82,14 @@ export default class PersonService {
   }
 
   async getOffenderSentenceAndOffences(
-    token: Express.User['token'],
+    username: Express.User['username'],
     bookingId: Person['bookingId'],
   ): Promise<OffenderSentenceAndOffences> {
     try {
-      const prisonApiClient = this.prisonApiClientBuilder(token)
+      const hmppsAuthClient = this.hmppsAuthClientBuilder()
+      const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+      const prisonApiClient = this.prisonApiClientBuilder(systemToken)
+
       return await prisonApiClient.findSentenceAndOffenceDetails(bookingId)
     } catch (error) {
       const knownError = error as ResponseError

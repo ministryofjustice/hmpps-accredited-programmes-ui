@@ -5,6 +5,7 @@
  * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
  * In particular, applicationinsights automatically collects bunyan logs
  */
+import type { SystemToken } from '@hmpps-auth'
 import AppInsightsUtils from '../utils/appInsightsUtils'
 
 AppInsightsUtils.initialiseAppInsights()
@@ -26,22 +27,23 @@ import TokenStore from './tokenStore'
 import type { TokenVerifier } from './tokenVerification'
 import verifyToken from './tokenVerification'
 
-type RestClientBuilder<T> = (token: Express.User['token']) => T
+type RestClientBuilder<T> = (token: Express.User['token'] | SystemToken) => T
 type RestClientBuilderWithoutToken<T> = () => T
 
 const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = () =>
   new HmppsAuthClient(new TokenStore(createRedisClient()))
-const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (token: Express.User['token']) =>
-  new HmppsManageUsersClient(token)
-const courseClientBuilder: RestClientBuilder<CourseClient> = (token: Express.User['token']) => new CourseClient(token)
-const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (token: Express.User['token']) =>
-  new PrisonRegisterApiClient(token)
-const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (token: Express.User['token']) =>
-  new PrisonerSearchClient(token)
-const referralClientBuilder: RestClientBuilder<ReferralClient> = (token: Express.User['token']) =>
-  new ReferralClient(token)
-const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (token: Express.User['token']) =>
-  new PrisonApiClient(token)
+const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (userToken: Express.User['token']) =>
+  new HmppsManageUsersClient(userToken)
+const courseClientBuilder: RestClientBuilder<CourseClient> = (userToken: Express.User['token']) =>
+  new CourseClient(userToken)
+const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (userToken: Express.User['token']) =>
+  new PrisonRegisterApiClient(userToken)
+const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (systemToken: SystemToken) =>
+  new PrisonerSearchClient(systemToken)
+const referralClientBuilder: RestClientBuilder<ReferralClient> = (userToken: Express.User['token']) =>
+  new ReferralClient(userToken)
+const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (systemToken: SystemToken) =>
+  new PrisonApiClient(systemToken)
 
 export {
   CourseClient,

@@ -7,8 +7,8 @@ import type { Prison } from '@prison-register-api'
 export default class PrisonRegisterApiClient {
   restClient: RestClient
 
-  constructor(token: Express.User['token']) {
-    this.restClient = new RestClient('prisonRegisterApiClient', config.apis.prisonRegisterApi as ApiConfig, token)
+  constructor(userToken: Express.User['token']) {
+    this.restClient = new RestClient('prisonRegisterApiClient', config.apis.prisonRegisterApi as ApiConfig, userToken)
   }
 
   async find(prisonId: string): Promise<Prison> {

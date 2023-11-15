@@ -9,13 +9,14 @@ jest.mock('../data/hmppsManageUsersClient')
 jest.mock('../data/prisonApiClient')
 jest.mock('../../logger')
 
-const token = 'some token'
+const systemToken = 'a system token'
+const userToken = 'a user token'
 
 describe('UserService', () => {
-  const hmppsManageUsersClient = new HmppsManageUsersClient('token') as jest.Mocked<HmppsManageUsersClient>
+  const hmppsManageUsersClient = new HmppsManageUsersClient(userToken) as jest.Mocked<HmppsManageUsersClient>
   const hmppsManageUsersClientBuilder = jest.fn()
 
-  const prisonApiClient = new PrisonApiClient(token) as jest.Mocked<PrisonApiClient>
+  const prisonApiClient = new PrisonApiClient(systemToken) as jest.Mocked<PrisonApiClient>
   const prisonApiClientBuilder = jest.fn()
 
   let userService: UserService
@@ -39,7 +40,7 @@ describe('UserService', () => {
     })
 
     it('retrieves user and formats name', async () => {
-      const result = await userService.getCurrentUserWithDetails(token)
+      const result = await userService.getCurrentUserWithDetails(userToken)
 
       expect(result.displayName).toEqual('John Smith')
     })
@@ -48,7 +49,7 @@ describe('UserService', () => {
       const caseloads = [caseloadFactory.active().build(), caseloadFactory.inactive().build()]
       prisonApiClient.findCurrentUserCaseloads.mockResolvedValue(caseloads)
 
-      const result = await userService.getCurrentUserWithDetails(token)
+      const result = await userService.getCurrentUserWithDetails(userToken)
 
       expect(result.caseloads).toEqual(caseloads)
     })
@@ -57,7 +58,7 @@ describe('UserService', () => {
       it('propagates the error', async () => {
         hmppsManageUsersClient.getCurrentUsername.mockRejectedValue(new Error('some error'))
 
-        await expect(userService.getCurrentUserWithDetails(token)).rejects.toEqual(new Error('some error'))
+        await expect(userService.getCurrentUserWithDetails(userToken)).rejects.toEqual(new Error('some error'))
       })
     })
 
@@ -66,7 +67,7 @@ describe('UserService', () => {
         const caseloadError = new Error('some caseload error')
         prisonApiClient.findCurrentUserCaseloads.mockRejectedValue(caseloadError)
 
-        const result = await userService.getCurrentUserWithDetails(token)
+        const result = await userService.getCurrentUserWithDetails(userToken)
         expect(logger.error).toHaveBeenCalledWith(caseloadError, "Failed to fetch user's caseloads")
         expect(result.caseloads).toEqual([])
       })
@@ -79,10 +80,10 @@ describe('UserService', () => {
     })
 
     it('returns the requested user', async () => {
-      const result = await userService.getUserFromUsername(token, username)
+      const result = await userService.getUserFromUsername(userToken, username)
 
       expect(result).toEqual(user)
-      expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(token)
+      expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(userToken)
       expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
     })
 
@@ -92,9 +93,9 @@ describe('UserService', () => {
         hmppsManageUsersClient.getUserFromUsername.mockRejectedValue(clientError)
 
         const expectedError = createError(404, `User with username ${username} not found.`)
-        await expect(userService.getUserFromUsername(token, username)).rejects.toEqual(expectedError)
+        await expect(userService.getUserFromUsername(userToken, username)).rejects.toEqual(expectedError)
 
-        expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(token)
+        expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(userToken)
         expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
       })
     })
@@ -105,9 +106,9 @@ describe('UserService', () => {
         hmppsManageUsersClient.getUserFromUsername.mockRejectedValue(clientError)
 
         const expectedError = createError(500, `Error fetching user ${username}.`)
-        await expect(userService.getUserFromUsername(token, username)).rejects.toEqual(expectedError)
+        await expect(userService.getUserFromUsername(userToken, username)).rejects.toEqual(expectedError)
 
-        expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(token)
+        expect(hmppsManageUsersClientBuilder).toHaveBeenCalledWith(userToken)
         expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
       })
     })

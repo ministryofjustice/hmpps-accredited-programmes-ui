@@ -2,14 +2,15 @@ import RestClient from './restClient'
 import type { ApiConfig } from '../config'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
+import type { SystemToken } from '@hmpps-auth'
 import type { Caseload, InmateDetail, OffenceDto, OffenderSentenceAndOffences, PageOffenceDto } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
 export default class PrisonApiClient {
   restClient: RestClient
 
-  constructor(token: Express.User['token']) {
-    this.restClient = new RestClient('prisonApiClient', config.apis.prisonApi as ApiConfig, token)
+  constructor(systemToken: SystemToken) {
+    this.restClient = new RestClient('prisonApiClient', config.apis.prisonApi as ApiConfig, systemToken)
   }
 
   async findCurrentUserCaseloads(): Promise<Array<Caseload>> {

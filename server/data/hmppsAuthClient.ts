@@ -37,9 +37,9 @@ export default class HmppsAuthClient {
   async getSystemClientToken(username?: string): Promise<SystemToken> {
     const key = username || '%ANONYMOUS%'
 
-    const token = await this.tokenStore.getToken(key)
-    if (token) {
-      return token
+    const systemToken = await this.tokenStore.getToken(key)
+    if (systemToken) {
+      return systemToken
     }
 
     const newToken = await getSystemClientTokenFromHmppsAuth(username)

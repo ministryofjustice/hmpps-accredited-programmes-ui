@@ -9,11 +9,11 @@ describe('PrisonRegisterApiClient', () => {
   let fakePrisonRegisterApi: nock.Scope
   let prisonRegisterApiClient: PrisonRegisterApiClient
 
-  const token = 'token-1'
+  const userToken = 'token-1'
 
   beforeEach(() => {
     fakePrisonRegisterApi = nock(config.apis.prisonRegisterApi.url)
-    prisonRegisterApiClient = new PrisonRegisterApiClient(token)
+    prisonRegisterApiClient = new PrisonRegisterApiClient(userToken)
   })
 
   afterEach(() => {
@@ -31,7 +31,7 @@ describe('PrisonRegisterApiClient', () => {
     it('fetches the given prison', async () => {
       fakePrisonRegisterApi
         .get(`/prisons/id/${prison.prisonId}`)
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer ${userToken}`)
         .reply(200, prison)
 
       const output = await prisonRegisterApiClient.find(prison.prisonId)

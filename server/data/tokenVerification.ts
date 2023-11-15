@@ -8,10 +8,10 @@ import config from '../config'
 import sanitiseError from '../sanitisedError'
 import { TypeUtils } from '../utils'
 
-function getApiClientToken(token: Express.User['token']) {
+function getApiClientToken(userToken: Express.User['token']) {
   return superagent
     .post(`${config.apis.tokenVerification.url}/token/verify`)
-    .auth(token, { type: 'bearer' })
+    .auth(userToken, { type: 'bearer' })
     .timeout(config.apis.tokenVerification.timeout)
     .then(response => Boolean(response.body && response.body.active))
     .catch(error => {
