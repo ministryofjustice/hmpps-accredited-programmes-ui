@@ -16,7 +16,7 @@ const systemToken = 'some system token'
 const username = 'USERNAME'
 
 describe('ReferralService', () => {
-  const referralClient = new ReferralClient('token') as jest.Mocked<ReferralClient>
+  const referralClient = new ReferralClient(systemToken) as jest.Mocked<ReferralClient>
   const referralClientBuilder = jest.fn()
 
   const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>

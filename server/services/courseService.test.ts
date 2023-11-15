@@ -25,7 +25,11 @@ const redisClient = createMock<RedisClient>({})
 const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
 
 describe('CourseService', () => {
-  const courseClient = new CourseClient('token') as jest.Mocked<CourseClient>
+  const userToken = 'user token'
+  const systemToken = 'system token'
+  const username = 'USERNAME'
+
+  const courseClient = new CourseClient(systemToken) as jest.Mocked<CourseClient>
   const courseClientBuilder = jest.fn()
 
   const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
@@ -33,10 +37,6 @@ describe('CourseService', () => {
 
   const userService = createMock<UserService>()
   const service = new CourseService(courseClientBuilder, hmppsAuthClientBuilder, userService)
-
-  const userToken = 'user token'
-  const systemToken = 'system token'
-  const username = 'USERNAME'
 
   beforeEach(() => {
     jest.resetAllMocks()

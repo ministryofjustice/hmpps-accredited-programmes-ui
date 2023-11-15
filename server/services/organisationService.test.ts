@@ -9,12 +9,12 @@ import { OrganisationUtils } from '../utils'
 jest.mock('../data/prisonRegisterApiClient')
 
 describe('OrganisationService', () => {
-  const prisonRegisterApiClient = new PrisonRegisterApiClient('token') as jest.Mocked<PrisonRegisterApiClient>
+  const userToken = 'token'
+
+  const prisonRegisterApiClient = new PrisonRegisterApiClient(userToken) as jest.Mocked<PrisonRegisterApiClient>
   const prisonRegisterApiClientBuilder = jest.fn()
 
   const service = new OrganisationService(prisonRegisterApiClientBuilder)
-
-  const userToken = 'token'
 
   beforeEach(() => {
     jest.resetAllMocks()
