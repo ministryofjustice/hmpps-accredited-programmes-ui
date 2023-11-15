@@ -41,6 +41,7 @@ export default class NewReferralsController {
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
 
       const participationSummaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
+        req.user.username,
         req.user.token,
         person.prisonNumber,
         referralId,

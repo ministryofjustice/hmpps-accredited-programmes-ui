@@ -9,12 +9,13 @@ import type {
   CourseParticipationUpdate,
   Person,
 } from '@accredited-programmes/models'
+import type { SystemToken } from '@hmpps-auth'
 
 export default class CourseClient {
   restClient: RestClient
 
-  constructor(userToken: Express.User['token']) {
-    this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, userToken)
+  constructor(systemToken: SystemToken) {
+    this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
   async all(): Promise<Array<Course>> {

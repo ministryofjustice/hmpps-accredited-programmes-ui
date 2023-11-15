@@ -9,11 +9,11 @@ export default function populateCurrentUser(userService: UserService): RequestHa
   return async (req, res, next) => {
     try {
       if (res.locals.user) {
-        const { token } = res.locals.user
-        req.session.user ||= await userService.getCurrentUserWithDetails(token)
+        const { token: userToken } = res.locals.user
+        req.session.user ||= await userService.getCurrentUserWithDetails(userToken)
 
         if (req.session.user) {
-          const roles = UserUtils.getUserRolesFromToken(token)
+          const roles = UserUtils.getUserRolesFromToken(userToken)
           res.locals.user = {
             ...res.locals.user,
             ...req.session.user,

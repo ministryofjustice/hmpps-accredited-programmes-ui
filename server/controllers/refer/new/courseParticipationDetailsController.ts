@@ -23,7 +23,7 @@ export default class NewReferralsCourseParticipationDetailsController {
       }
 
       const { detail, outcome, setting, source } = await this.courseService.getParticipation(
-        req.user.token,
+        req.user.username,
         courseParticipationId,
       )
 
@@ -68,7 +68,7 @@ export default class NewReferralsCourseParticipationDetailsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      const courseParticipation = await this.courseService.getParticipation(req.user.token, courseParticipationId)
+      const courseParticipation = await this.courseService.getParticipation(req.user.username, courseParticipationId)
 
       const processedFormData = CourseParticipationUtils.processDetailsFormData(req, courseParticipation.courseName)
 
@@ -77,7 +77,7 @@ export default class NewReferralsCourseParticipationDetailsController {
       }
 
       await this.courseService.updateParticipation(
-        req.user.token,
+        req.user.username,
         courseParticipationId,
         processedFormData.courseParticipationUpdate,
       )

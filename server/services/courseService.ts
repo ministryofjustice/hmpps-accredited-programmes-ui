@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
 import type UserService from './userService'
-import type { CourseClient, RestClientBuilder } from '../data'
+import type { CourseClient, HmppsAuthClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import { CourseParticipationUtils, StringUtils } from '../utils'
 import type {
   Course,
@@ -17,27 +17,35 @@ import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredi
 export default class CourseService {
   constructor(
     private readonly courseClientBuilder: RestClientBuilder<CourseClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly userService: UserService,
   ) {}
 
   async createParticipation(
-    userToken: Express.User['token'],
+    username: Express.User['username'],
     prisonNumber: CourseParticipation['prisonNumber'],
     courseName: CourseParticipation['courseName'],
   ): Promise<CourseParticipation> {
-    const courseClient = this.courseClientBuilder(userToken)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.createParticipation(prisonNumber, courseName)
   }
 
   async deleteParticipation(
-    userToken: Express.User['token'],
+    username: Express.User['username'],
     courseParticipationId: CourseParticipation['id'],
   ): Promise<void> {
-    const courseClient = this.courseClientBuilder(userToken)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.destroyParticipation(courseParticipationId)
   }
 
   async getAndPresentParticipationsByPerson(
+    username: Express.User['username'],
     userToken: Express.User['token'],
     prisonNumber: Person['prisonNumber'],
     referralId: Referral['id'],
@@ -46,7 +54,7 @@ export default class CourseService {
       remove: boolean
     },
   ): Promise<Array<GovukFrontendSummaryListWithRowsWithKeysAndValues>> {
-    const sortedCourseParticipations = (await this.getParticipationsByPerson(userToken, prisonNumber)).sort(
+    const sortedCourseParticipations = (await this.getParticipationsByPerson(username, prisonNumber)).sort(
       (participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt),
     )
 
@@ -57,41 +65,67 @@ export default class CourseService {
     )
   }
 
-  async getCourse(userToken: Express.User['token'], courseId: Course['id']): Promise<Course> {
-    const courseClient = this.courseClientBuilder(userToken)
+  async getCourse(username: Express.User['username'], courseId: Course['id']): Promise<Course> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.find(courseId)
   }
 
-  async getCourseByOffering(userToken: Express.User['token'], courseOfferingId: CourseOffering['id']) {
-    const courseClient = this.courseClientBuilder(userToken)
+  async getCourseByOffering(username: Express.User['username'], courseOfferingId: CourseOffering['id']) {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.findCourseByOffering(courseOfferingId)
   }
 
-  async getCourseNames(userToken: Express.User['token']): Promise<Array<Course['name']>> {
-    const courseClient = this.courseClientBuilder(userToken)
+  async getCourseNames(username: Express.User['username']): Promise<Array<Course['name']>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.findCourseNames()
   }
 
-  async getCourses(userToken: Express.User['token']): Promise<Array<Course>> {
-    const courseClient = this.courseClientBuilder(userToken)
+  async getCourses(username: Express.User['username']): Promise<Array<Course>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.all()
   }
 
-  async getOffering(userToken: Express.User['token'], courseOfferingId: CourseOffering['id']): Promise<CourseOffering> {
-    const courseClient = this.courseClientBuilder(userToken)
+  async getOffering(
+    username: Express.User['username'],
+    courseOfferingId: CourseOffering['id'],
+  ): Promise<CourseOffering> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.findOffering(courseOfferingId)
   }
 
-  async getOfferingsByCourse(userToken: Express.User['token'], courseId: Course['id']): Promise<Array<CourseOffering>> {
-    const courseClient = this.courseClientBuilder(userToken)
+  async getOfferingsByCourse(
+    username: Express.User['username'],
+    courseId: Course['id'],
+  ): Promise<Array<CourseOffering>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.findOfferings(courseId)
   }
 
   async getParticipation(
-    userToken: Express.User['token'],
+    username: Express.User['username'],
     courseParticipationId: CourseParticipation['id'],
   ): Promise<CourseParticipation> {
-    const courseClient = this.courseClientBuilder(userToken)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
 
     try {
       const courseParticipation = await courseClient.findParticipation(courseParticipationId)
@@ -112,10 +146,13 @@ export default class CourseService {
   }
 
   async getParticipationsByPerson(
-    userToken: Express.User['token'],
+    username: Express.User['username'],
     prisonNumber: Person['prisonNumber'],
   ): Promise<Array<CourseParticipation>> {
-    const courseClient = this.courseClientBuilder(userToken)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.findParticipationsByPerson(prisonNumber)
   }
 
@@ -136,11 +173,14 @@ export default class CourseService {
   }
 
   async updateParticipation(
-    userToken: Express.User['token'],
+    username: Express.User['username'],
     courseParticipationId: CourseParticipation['id'],
     courseParticipationUpdate: CourseParticipationUpdate,
   ): Promise<CourseParticipation> {
-    const courseClient = this.courseClientBuilder(userToken)
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
     return courseClient.updateParticipation(courseParticipationId, courseParticipationUpdate)
   }
 }

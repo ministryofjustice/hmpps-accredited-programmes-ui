@@ -240,6 +240,7 @@ describe('NewReferralsController', () => {
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
+        username,
         userToken,
         person.prisonNumber,
         referralId,

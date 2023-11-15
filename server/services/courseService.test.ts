@@ -5,7 +5,8 @@ import { when } from 'jest-when'
 
 import CourseService from './courseService'
 import type UserService from './userService'
-import { CourseClient } from '../data'
+import type { RedisClient } from '../data'
+import { CourseClient, HmppsAuthClient, TokenStore } from '../data'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -17,20 +18,32 @@ import { CourseParticipationUtils, StringUtils } from '../utils'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
+jest.mock('../data/hmppsAuthClient')
 jest.mock('../utils/courseParticipationUtils')
 
+const redisClient = createMock<RedisClient>({})
+const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+
 describe('CourseService', () => {
-  const courseClient = new CourseClient('token') as jest.Mocked<CourseClient>
+  const userToken = 'user token'
+  const systemToken = 'system token'
+  const username = 'USERNAME'
+
+  const courseClient = new CourseClient(systemToken) as jest.Mocked<CourseClient>
   const courseClientBuilder = jest.fn()
 
-  const userService = createMock<UserService>()
-  const service = new CourseService(courseClientBuilder, userService)
+  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClientBuilder = jest.fn()
 
-  const userToken = 'token'
+  const userService = createMock<UserService>()
+  const service = new CourseService(courseClientBuilder, hmppsAuthClientBuilder, userService)
 
   beforeEach(() => {
     jest.resetAllMocks()
+
     courseClientBuilder.mockReturnValue(courseClient)
+    hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
+    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('createParticipation', () => {
@@ -43,11 +56,11 @@ describe('CourseService', () => {
         .calledWith(person.prisonNumber, courseName)
         .mockResolvedValue(courseParticipation)
 
-      const result = await service.createParticipation(userToken, person.prisonNumber, courseName)
+      const result = await service.createParticipation(username, person.prisonNumber, courseName)
 
       expect(result).toEqual(courseParticipation)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.createParticipation).toHaveBeenCalledWith(person.prisonNumber, courseName)
     })
   })
@@ -56,9 +69,9 @@ describe('CourseService', () => {
     it('asks the client to delete a course participation', async () => {
       const courseParticipation = courseParticipationFactory.build()
 
-      await service.deleteParticipation(userToken, courseParticipation.id)
+      await service.deleteParticipation(username, courseParticipation.id)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.destroyParticipation).toHaveBeenCalledWith(courseParticipation.id)
     })
   })
@@ -69,11 +82,11 @@ describe('CourseService', () => {
       const courseNames = courses.map(course => course.name)
       courseClient.findCourseNames.mockResolvedValue(courseNames)
 
-      const result = await service.getCourseNames(userToken)
+      const result = await service.getCourseNames(username)
 
       expect(result).toEqual(courseNames)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findCourseNames).toHaveBeenCalled()
     })
   })
@@ -119,6 +132,7 @@ describe('CourseService', () => {
           .mockReturnValue('course participation 2 options')
 
         const result = await service.getAndPresentParticipationsByPerson(
+          username,
           userToken,
           person.prisonNumber,
           'a-referral-id',
@@ -130,7 +144,7 @@ describe('CourseService', () => {
 
     describe('when actions are passed', () => {
       it('uses the specified actions when creating options for the summary list Nunjucks macro', async () => {
-        await service.getAndPresentParticipationsByPerson(userToken, person.prisonNumber, 'a-referral-id', {
+        await service.getAndPresentParticipationsByPerson(username, userToken, person.prisonNumber, 'a-referral-id', {
           change: false,
           remove: false,
         })
@@ -163,11 +177,11 @@ describe('CourseService', () => {
       const courses = courseFactory.buildList(3)
       courseClient.all.mockResolvedValue(courses)
 
-      const result = await service.getCourses(userToken)
+      const result = await service.getCourses(username)
 
       expect(result).toEqual(courses)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.all).toHaveBeenCalled()
     })
   })
@@ -177,11 +191,11 @@ describe('CourseService', () => {
       const course = courseFactory.build()
       when(courseClient.find).calledWith(course.id).mockResolvedValue(course)
 
-      const result = await service.getCourse(userToken, course.id)
+      const result = await service.getCourse(username, course.id)
 
       expect(result).toEqual(course)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.find).toHaveBeenCalledWith(course.id)
     })
   })
@@ -192,11 +206,11 @@ describe('CourseService', () => {
       const courseOffering = courseOfferingFactory.build()
       when(courseClient.findCourseByOffering).calledWith(courseOffering.id).mockResolvedValue(course)
 
-      const result = await service.getCourseByOffering(userToken, courseOffering.id)
+      const result = await service.getCourseByOffering(username, courseOffering.id)
 
       expect(result).toEqual(course)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findCourseByOffering).toHaveBeenCalledWith(courseOffering.id)
     })
   })
@@ -207,11 +221,11 @@ describe('CourseService', () => {
       const courseOfferings = courseOfferingFactory.buildList(3)
       when(courseClient.findOfferings).calledWith(course.id).mockResolvedValue(courseOfferings)
 
-      const result = await service.getOfferingsByCourse(userToken, course.id)
+      const result = await service.getOfferingsByCourse(username, course.id)
 
       expect(result).toEqual(courseOfferings)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findOfferings).toHaveBeenCalledWith(course.id)
     })
   })
@@ -222,11 +236,11 @@ describe('CourseService', () => {
 
       when(courseClient.findOffering).calledWith(courseOffering.id).mockResolvedValue(courseOffering)
 
-      const result = await service.getOffering(userToken, courseOffering.id)
+      const result = await service.getOffering(username, courseOffering.id)
 
       expect(result).toEqual(courseOffering)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findOffering).toHaveBeenCalledWith(courseOffering.id)
     })
   })
@@ -237,11 +251,11 @@ describe('CourseService', () => {
 
       when(courseClient.findParticipation).calledWith(courseParticipation.id).mockResolvedValue(courseParticipation)
 
-      const result = await service.getParticipation(userToken, courseParticipation.id)
+      const result = await service.getParticipation(username, courseParticipation.id)
 
       expect(result).toEqual(courseParticipation)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findParticipation).toHaveBeenCalledWith(courseParticipation.id)
     })
 
@@ -252,11 +266,11 @@ describe('CourseService', () => {
 
         const notFoundCourseParticipationId = 'NOT-FOUND'
 
-        await expect(() => service.getParticipation(userToken, notFoundCourseParticipationId)).rejects.toThrowError(
+        await expect(() => service.getParticipation(username, notFoundCourseParticipationId)).rejects.toThrowError(
           `Course participation with ID ${notFoundCourseParticipationId} not found.`,
         )
 
-        expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(courseClient.findParticipation).toHaveBeenCalledWith(notFoundCourseParticipationId)
       })
     })
@@ -268,11 +282,11 @@ describe('CourseService', () => {
 
         const courseParticipationId = faker.string.uuid()
 
-        await expect(() => service.getParticipation(userToken, courseParticipationId)).rejects.toThrowError(
+        await expect(() => service.getParticipation(username, courseParticipationId)).rejects.toThrowError(
           `Error fetching course participation with ID ${courseParticipationId}.`,
         )
 
-        expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(courseClient.findParticipation).toHaveBeenCalledWith(courseParticipationId)
       })
     })
@@ -291,11 +305,11 @@ describe('CourseService', () => {
         .calledWith(person.prisonNumber)
         .mockResolvedValue(courseParticipations)
 
-      const result = await service.getParticipationsByPerson(userToken, person.prisonNumber)
+      const result = await service.getParticipationsByPerson(username, person.prisonNumber)
 
       expect(result).toEqual(courseParticipations)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findParticipationsByPerson).toHaveBeenCalledWith(person.prisonNumber)
     })
 
@@ -303,11 +317,11 @@ describe('CourseService', () => {
       it('returns an empty array', async () => {
         when(courseClient.findParticipationsByPerson).calledWith(person.prisonNumber).mockResolvedValue([])
 
-        const result = await service.getParticipationsByPerson(userToken, person.prisonNumber)
+        const result = await service.getParticipationsByPerson(username, person.prisonNumber)
 
         expect(result).toEqual([])
 
-        expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(courseClient.findParticipationsByPerson).toHaveBeenCalledWith(person.prisonNumber)
       })
     })
@@ -359,11 +373,11 @@ describe('CourseService', () => {
         .calledWith(courseParticipation.id, courseParticipationUpdate)
         .mockResolvedValue(updatedCourseParticipation)
 
-      const result = await service.updateParticipation(userToken, courseParticipation.id, courseParticipationUpdate)
+      const result = await service.updateParticipation(username, courseParticipation.id, courseParticipationUpdate)
 
       expect(result).toEqual(updatedCourseParticipation)
 
-      expect(courseClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.updateParticipation).toHaveBeenCalledWith(courseParticipation.id, courseParticipationUpdate)
     })
   })
