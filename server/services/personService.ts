@@ -81,6 +81,29 @@ export default class PersonService {
     }
   }
 
+  async getOffenderSentenceAndOffences(
+    token: Express.User['token'],
+    bookingId: Person['bookingId'],
+  ): Promise<OffenderSentenceAndOffences> {
+    try {
+      const prisonApiClient = this.prisonApiClientBuilder(token)
+      return await prisonApiClient.findSentenceAndOffenceDetails(bookingId)
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        throw createError(knownError.status, `Sentence and offence details for booking with ID ${bookingId} not found.`)
+      }
+
+      const errorMessage =
+        knownError.message === 'Internal Server Error'
+          ? `Error fetching sentence and offence details with booking ID ${bookingId}.`
+          : knownError.message
+
+      throw createError(knownError.status || 500, errorMessage)
+    }
+  }
+
   async getPerson(
     username: Express.User['username'],
     prisonNumber: Person['prisonNumber'],
@@ -110,29 +133,6 @@ export default class PersonService {
       throw createError(knownError.status || 500, knownError, {
         userMessage: `Error fetching prisoner ${prisonNumber}.`,
       })
-    }
-  }
-
-  async getSentenceAndOffenceDetails(
-    token: Express.User['token'],
-    bookingId: Person['bookingId'],
-  ): Promise<OffenderSentenceAndOffences> {
-    try {
-      const prisonApiClient = this.prisonApiClientBuilder(token)
-      return await prisonApiClient.findSentenceAndOffenceDetails(bookingId)
-    } catch (error) {
-      const knownError = error as ResponseError
-
-      if (knownError.status === 404) {
-        throw createError(knownError.status, `Sentence and offence details for booking with ID ${bookingId} not found.`)
-      }
-
-      const errorMessage =
-        knownError.message === 'Internal Server Error'
-          ? `Error fetching sentence and offence details with booking ID ${bookingId}.`
-          : knownError.message
-
-      throw createError(knownError.status || 500, errorMessage)
     }
   }
 }

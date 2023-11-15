@@ -2,19 +2,19 @@
 
 import { stubFor } from '..'
 import { prisonApiPaths } from '../../server/paths'
-import { prisoners, sentenceAndOffenceDetails } from '../stubs'
+import { offenderSentenceAndOffences, prisoners } from '../stubs'
 
 prisoners.forEach(prisoner => {
   stubFor({
     request: {
       method: 'GET',
-      url: prisonApiPaths.sentenceAndOffenceDetails({ bookingId: prisoner.bookingId }),
+      url: prisonApiPaths.offenderSentenceAndOffences({ bookingId: prisoner.bookingId }),
     },
     response: {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: sentenceAndOffenceDetails,
+      jsonBody: offenderSentenceAndOffences,
       status: 200,
     },
   }).then(response => {

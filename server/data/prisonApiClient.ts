@@ -35,7 +35,7 @@ export default class PrisonApiClient {
 
   async findSentenceAndOffenceDetails(bookingId: Prisoner['bookingId']): Promise<OffenderSentenceAndOffences> {
     return (await this.restClient.get({
-      path: prisonApiPaths.sentenceAndOffenceDetails({ bookingId }),
+      path: prisonApiPaths.offenderSentenceAndOffences({ bookingId }),
     })) as OffenderSentenceAndOffences
   }
 }

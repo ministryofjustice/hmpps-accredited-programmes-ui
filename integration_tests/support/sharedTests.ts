@@ -4,11 +4,11 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  offenderSentenceAndOffencesFactory,
   personFactory,
   prisonFactory,
   prisonerFactory,
   referralFactory,
-  sentenceAndOffenceDetailsFactory,
   userFactory,
 } from '../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
@@ -198,16 +198,16 @@ const sharedTests = {
 
     showsSentenceInformationPage: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
-      const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
-      cy.task('stubSentenceAndOffenceDetails', { bookingId: prisoner.bookingId, sentenceAndOffenceDetails })
+      const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
+      cy.task('stubOffenderSentenceAndOffences', { bookingId: prisoner.bookingId, offenderSentenceAndOffences })
 
       const path = pathsByRole(role).show.sentenceInformation({ referralId: referral.id })
       cy.visit(path)
 
       const sentenceInformationPage = Page.verifyOnPage(SentenceInformationPage, {
         course,
+        offenderSentenceAndOffences,
         person,
-        sentenceAndOffenceDetails,
       })
       sentenceInformationPage.shouldHavePersonDetails(person)
       sentenceInformationPage.shouldContainNavigation(path)

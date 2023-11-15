@@ -4,10 +4,10 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  offenderSentenceAndOffencesFactory,
   prisonFactory,
   prisonerFactory,
   referralFactory,
-  sentenceAndOffenceDetailsFactory,
   userFactory,
 } from '../../server/testutils/factories'
 import { StringUtils } from '../../server/utils'
@@ -273,13 +273,13 @@ context('Refer', () => {
   })
 
   it("Doesn't show the sentence information page for a submitted referral", () => {
-    const sentenceAndOffenceDetails = sentenceAndOffenceDetailsFactory.build()
+    const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubOffering', { courseId: course.id, courseOffering })
     cy.task('stubPrison', prison)
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', submittedReferral)
-    cy.task('stubSentenceAndOffenceDetails', { bookingId: prisoner.bookingId, sentenceAndOffenceDetails })
+    cy.task('stubOffenderSentenceAndOffences', { bookingId: prisoner.bookingId, offenderSentenceAndOffences })
 
     const path = referPaths.show.sentenceInformation({ referralId: submittedReferral.id })
     cy.visit(path, { failOnStatusCode: false })
