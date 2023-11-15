@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro keylessSummaryCard(title, actionItems = [], bodyText = undefined, bodyHtml = undefined, testid = '') %}
+{% macro keylessSummaryCard(title, actionItems = [], bodyText = undefined, bodyHtml = undefined, testId = '') %}
   {{ govukSummaryList({
     card: {
       title: {
@@ -8,14 +8,14 @@
       },
       actions: {
         items: actionItems
+      },
+      attributes: {
+        "data-testid": testId
       }
     },
     rows: [{
       key: { text: "", classes: "govuk-visually-hidden" },
       value: { text: bodyText, html: bodyHtml, classes: "govuk-!-width-full" }
-    }],
-    attributes: {
-      "data-testid": testid
-    }
+    }]
   }) }}
 {% endmacro %}

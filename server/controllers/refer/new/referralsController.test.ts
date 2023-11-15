@@ -19,7 +19,6 @@ import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '.
 import type { CoursePresenter, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 jest.mock('../../../utils/courseUtils')
-jest.mock('../../../utils/courseParticipationUtils')
 jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/referralUtils')
 

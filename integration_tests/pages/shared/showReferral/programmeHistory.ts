@@ -14,14 +14,13 @@ export default class ProgrammeHistoryPage extends Page {
     this.person = person
   }
 
-  shouldContainNoHistoryHeading() {
-    cy.get('[data-testid="no-history-heading"]').should('have.text', 'Accredited Programme history')
-  }
-
-  shouldContainNoHistoryParagraph() {
-    cy.get('[data-testid="no-history-paragraph"]').should(
-      'have.text',
-      `There is no Accredited Programme history for ${this.person.name}.`,
-    )
+  shouldContainNoHistorySummaryCard() {
+    cy.get('[data-testid="no-programme-history-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Accredited Programme history',
+        `There is no Accredited Programme history for ${this.person.name}.`,
+        summaryCardElement,
+      )
+    })
   }
 }

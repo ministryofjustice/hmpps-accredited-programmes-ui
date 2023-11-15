@@ -24,7 +24,7 @@ context('Viewing a submitted referral', () => {
 
   describe('When reviewing sentence information', () => {
     it('shows the correct information', () => {
-      sharedTests.referrals.showsSentenceInformationPage(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      sharedTests.referrals.showsSentenceInformationPageWithAllData(ApplicationRoles.ACP_PROGRAMME_TEAM)
     })
   })
 
