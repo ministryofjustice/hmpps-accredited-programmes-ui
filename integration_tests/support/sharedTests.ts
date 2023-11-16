@@ -4,6 +4,9 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  inmateDetailFactory,
+  offenceDtoFactory,
+  offenceHistoryDetailFactory,
   offenderSentenceAndOffencesFactory,
   personFactory,
   prisonFactory,
@@ -15,6 +18,7 @@ import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
 import Page from '../pages/page'
 import {
   AdditionalInformationPage,
+  OffenceHistoryPage,
   PersonalDetailsPage,
   ProgrammeHistoryPage,
   SentenceInformationPage,
@@ -129,6 +133,33 @@ const sharedTests = {
       additionalInformationPage.shouldContainSubmittedText()
     },
 
+    showsEmptyOffenceHistoryPage: (role: ApplicationRole): void => {
+      const offenderBooking = inmateDetailFactory.build({
+        offenceHistory: [],
+        offenderNo: prisoner.prisonerNumber,
+      })
+
+      sharedTests.referrals.beforeEach(role)
+      cy.task('stubOffenderBooking', offenderBooking)
+
+      const path = pathsByRole(role).show.offenceHistory({ referralId: referral.id })
+      cy.visit(path)
+
+      const offenceHistoryPage = Page.verifyOnPage(OffenceHistoryPage, {
+        course,
+        offenderBooking,
+        person,
+      })
+      offenceHistoryPage.shouldHavePersonDetails(person)
+      offenceHistoryPage.shouldContainNavigation(path)
+      offenceHistoryPage.shouldContainBackLink('#')
+      offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+      offenceHistoryPage.shouldContainSubmissionSummaryList(referral)
+      offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      offenceHistoryPage.shouldContainImportedFromText()
+      offenceHistoryPage.shouldContainNoOffenceHistoryMessage()
+    },
+
     showsEmptyProgrammeHistoryPage: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
       cy.task('stubParticipationsByPerson', {
@@ -151,6 +182,50 @@ const sharedTests = {
       programmeHistoryPage.shouldContainSubmissionSummaryList(referral)
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainNoHistorySummaryCard()
+    },
+
+    showsOffenceHistoryPage: (role: ApplicationRole): void => {
+      const offenceCodeOne = offenceDtoFactory.build({ code: 'O1', description: 'Offence 1' })
+      const offenceCodeTwo = offenceDtoFactory.build({ code: 'O2', description: 'Offence 2' })
+      const offenderBooking = inmateDetailFactory.build({
+        offenceHistory: [
+          offenceHistoryDetailFactory.build({
+            mostSerious: true,
+            offenceCode: offenceCodeOne.code,
+            offenceDate: '2023-01-01',
+          }),
+          offenceHistoryDetailFactory.build({
+            mostSerious: false,
+            offenceCode: offenceCodeTwo.code,
+            offenceDate: '2023-02-02',
+          }),
+        ],
+        offenderNo: prisoner.prisonerNumber,
+      })
+
+      sharedTests.referrals.beforeEach(role)
+      cy.task('stubOffenderBooking', offenderBooking)
+      cy.task('stubOffenceCode', offenceCodeOne)
+      cy.task('stubOffenceCode', offenceCodeTwo)
+
+      const path = pathsByRole(role).show.offenceHistory({ referralId: referral.id })
+      cy.visit(path)
+
+      const offenceHistoryPage = Page.verifyOnPage(OffenceHistoryPage, {
+        course,
+        offenceCodes: [offenceCodeOne, offenceCodeTwo],
+        offenderBooking,
+        person,
+      })
+      offenceHistoryPage.shouldHavePersonDetails(person)
+      offenceHistoryPage.shouldContainNavigation(path)
+      offenceHistoryPage.shouldContainBackLink('#')
+      offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
+      offenceHistoryPage.shouldContainSubmissionSummaryList(referral)
+      offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      offenceHistoryPage.shouldContainImportedFromText()
+      offenceHistoryPage.shouldContainIndexOffenceSummaryCard()
+      offenceHistoryPage.shouldContainAdditionalOffenceSummaryCards()
     },
 
     showsPersonalDetailsPage: (role: ApplicationRole): void => {

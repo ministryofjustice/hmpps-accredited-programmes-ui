@@ -97,6 +97,24 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
+  it("Doesn't show the offence history page for a submitted referral", () => {
+    cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+    cy.task('stubOffering', { courseId: course.id, courseOffering })
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
+    cy.task('stubReferral', submittedReferral)
+    cy.task('stubOffenderBooking', {
+      offenceHistory: [],
+      offenderNo: prisoner.prisonerNumber,
+    })
+
+    const path = assessPaths.show.offenceHistory({ referralId: submittedReferral.id })
+    cy.visit(path, { failOnStatusCode: false })
+
+    const notFoundPage = Page.verifyOnPage(NotFoundPage)
+    notFoundPage.shouldContain404H2()
+  })
+
   it("Doesn't show the sentence information page for a submitted referral", () => {
     const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })

@@ -11,6 +11,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   const { referralsController } = controllers
 
   get(assessPaths.show.additionalInformation.pattern, referralsController.additionalInformation())
+  get(assessPaths.show.offenceHistory.pattern, referralsController.offenceHistory())
   get(assessPaths.show.personalDetails.pattern, referralsController.personalDetails())
   get(assessPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
   get(assessPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())

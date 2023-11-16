@@ -22,6 +22,20 @@ context('Viewing a submitted referral', () => {
     })
   })
 
+  describe('When reviewing offence history', () => {
+    describe('and there is an offence history', () => {
+      it('shows the correct information, including the offence history', () => {
+        sharedTests.referrals.showsOffenceHistoryPage(ApplicationRoles.ACP_REFERRER)
+      })
+    })
+
+    describe('and there is no offence history', () => {
+      it('shows the correct information, including a message that there is no offence history', () => {
+        sharedTests.referrals.showsEmptyOffenceHistoryPage(ApplicationRoles.ACP_REFERRER)
+      })
+    })
+  })
+
   describe('When reviewing sentence information', () => {
     describe('and there are sentence details and release dates for that user', () => {
       it('shows the correct information, including the sentence details and release dates', () => {

@@ -5,6 +5,7 @@ import courseOfferingFactory from './courseOffering'
 import courseParticipationFactory from './courseParticipation'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import inmateDetailFactory from './inmateDetail'
+import offenceDetailsFactory from './offenceDetails'
 import offenceDtoFactory from './offenceDto'
 import offenceHistoryDetailFactory from './offenceHistoryDetail'
 import offenderSentenceAndOffencesFactory from './offenderSentenceAndOffences'
@@ -25,6 +26,7 @@ export {
   courseParticipationFactory,
   coursePrerequisiteFactory,
   inmateDetailFactory,
+  offenceDetailsFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
   offenderSentenceAndOffencesFactory,
