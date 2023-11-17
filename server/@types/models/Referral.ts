@@ -1,3 +1,4 @@
+import type { Course } from './Course'
 import type { CourseOffering } from './CourseOffering'
 import type { Person } from './Person'
 
@@ -25,4 +26,13 @@ type ReferralUpdate = {
 
 type ReferralStatus = 'assessment_started' | 'awaiting_assesment' | 'referral_started' | 'referral_submitted'
 
-export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate }
+type ReferralSummary = {
+  id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
+  audiences: Course['audiences']
+  courseName: Course['name']
+  prisonNumber: Person['prisonNumber']
+  status: ReferralStatus
+  submittedOn?: Referral['submittedOn']
+}
+
+export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralSummary, ReferralUpdate }
