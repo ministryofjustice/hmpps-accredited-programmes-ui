@@ -641,18 +641,6 @@ export interface paths {
      */
     post: operations["getBasicInmateDetailsForOffenders"];
   };
-  "/api/bookings/offenderNo/{offenderNo}/relationships": {
-    /**
-     * The contact details and their relationship to the offender
-     * @description The contact details and their relationship to the offender
-     */
-    get: operations["getRelationshipsByOffenderNo"];
-    /**
-     * Create a relationship with an offender
-     * @description Create a relationship with an offender
-     */
-    post: operations["createRelationshipByOffenderNo"];
-  };
   "/api/bookings/offenderNo/{agencyId}/alerts": {
     /**
      * Get alerts for a list of offenders at a prison
@@ -1743,13 +1731,6 @@ export interface paths {
      */
     get: operations["getBookingActivities"];
   };
-  "/api/bookings/{bookingId}/activities/today": {
-    /**
-     * Today's scheduled activities for offender.
-     * @description Today's scheduled activities for offender.<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations["getBookingActivitiesForToday"];
-  };
   "/api/bookings/v2": {
     /**
      * Prisoners Booking Summary
@@ -1782,7 +1763,7 @@ export interface paths {
     /**
      * Key worker details.
      * @deprecated
-     * @description Key worker details. This should not be used - call keywork API instead
+     * @description Key worker details. This should not be used - call keyworker API instead
      */
     get: operations["getKeyworkerByOffenderNo"];
   };
@@ -7159,8 +7140,8 @@ export interface components {
       pageSize?: number;
       /** Format: int32 */
       pageNumber?: number;
-      unpaged?: boolean;
       paged?: boolean;
+      unpaged?: boolean;
     };
     SortObject: {
       empty?: boolean;
@@ -14885,73 +14866,6 @@ export interface operations {
     };
   };
   /**
-   * The contact details and their relationship to the offender
-   * @description The contact details and their relationship to the offender
-   */
-  getRelationshipsByOffenderNo: {
-    parameters: {
-      query: {
-        /** @description filter by the relationship type */
-        relationshipType: string;
-      };
-      path: {
-        /** @description The offender Offender No */
-        offenderNo: string;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["Contact"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Create a relationship with an offender
-   * @description Create a relationship with an offender
-   */
-  createRelationshipByOffenderNo: {
-    parameters: {
-      path: {
-        /** @description The offender Offender No */
-        offenderNo: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OffenderRelationship"];
-      };
-    };
-    responses: {
-      /** @description If successful the Contact object is returned. */
-      201: {
-        content: {
-          "application/json": components["schemas"]["Contact"];
-        };
-      };
-    };
-  };
-  /**
    * Get alerts for a list of offenders at a prison
    * @description <p>This endpoint uses the REPLICA database.</p>
    */
@@ -21482,50 +21396,6 @@ export interface operations {
     };
   };
   /**
-   * Today's scheduled activities for offender.
-   * @description Today's scheduled activities for offender.<p>This endpoint uses the REPLICA database.</p>
-   */
-  getBookingActivitiesForToday: {
-    parameters: {
-      header?: {
-        /** @description Comma separated list of one or more of the following fields - <b>eventDate, startTime, endTime, eventLocation</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ScheduledEvent"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
    * Prisoners Booking Summary
    * @description Returns data that is available to the users caseload privileges, at least one attribute of a prisonId, bookingId or offenderNo must be specified
    */
@@ -21707,7 +21577,7 @@ export interface operations {
   /**
    * Key worker details.
    * @deprecated
-   * @description Key worker details. This should not be used - call keywork API instead
+   * @description Key worker details. This should not be used - call keyworker API instead
    */
   getKeyworkerByOffenderNo: {
     parameters: {

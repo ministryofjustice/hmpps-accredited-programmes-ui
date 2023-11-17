@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import createError from 'http-errors'
 
 import SubmittedReferralsController from './referralsController'
 import { referPaths } from '../../paths'
@@ -87,9 +88,20 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
-        additionalInformation: referral.additionalInformation,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+      })
+    })
+
+    describe('when the referral has not been submitted', () => {
+      it('responds with a 400', async () => {
+        referral.status = 'referral_started'
+        request.path = referPaths.show.additionalInformation({ referralId: referral.id })
+
+        const requestHandler = controller.additionalInformation()
+        const expectedError = createError(400, 'Referral has not been submitted.')
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
@@ -153,6 +165,18 @@ describe('ReferralsController', () => {
         })
       })
     })
+
+    describe('when the referral has not been submitted', () => {
+      it('responds with a 400', async () => {
+        referral.status = 'referral_started'
+        request.path = referPaths.show.offenceHistory({ referralId: referral.id })
+
+        const requestHandler = controller.offenceHistory()
+        const expectedError = createError(400, 'Referral has not been submitted.')
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
   })
 
   describe('personalDetails', () => {
@@ -169,6 +193,18 @@ describe('ReferralsController', () => {
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         personSummaryListRows: PersonUtils.summaryListRows(person),
+      })
+    })
+
+    describe('when the referral has not been submitted', () => {
+      it('responds with a 400', async () => {
+        referral.status = 'referral_started'
+        request.path = referPaths.show.personalDetails({ referralId: referral.id })
+
+        const requestHandler = controller.personalDetails()
+        const expectedError = createError(400, 'Referral has not been submitted.')
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
@@ -198,6 +234,18 @@ describe('ReferralsController', () => {
         ...sharedPageData,
         courseParticipationSummaryListsOptions,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+      })
+    })
+
+    describe('when the referral has not been submitted', () => {
+      it('responds with a 400', async () => {
+        referral.status = 'referral_started'
+        request.path = referPaths.show.programmeHistory({ referralId: referral.id })
+
+        const requestHandler = controller.programmeHistory()
+        const expectedError = createError(400, 'Referral has not been submitted.')
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })
@@ -287,6 +335,18 @@ describe('ReferralsController', () => {
           navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
         })
+      })
+    })
+
+    describe('when the referral has not been submitted', () => {
+      it('responds with a 400', async () => {
+        referral.status = 'referral_started'
+        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+
+        const requestHandler = controller.sentenceInformation()
+        const expectedError = createError(400, 'Referral has not been submitted.')
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })

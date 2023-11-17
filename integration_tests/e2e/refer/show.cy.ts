@@ -55,4 +55,10 @@ context('Viewing a submitted referral', () => {
       sharedTests.referrals.showsAdditionalInformationPage(ApplicationRoles.ACP_REFERRER)
     })
   })
+
+  describe('When the referral is not submitted', () => {
+    it('shows the auth error page', () => {
+      sharedTests.referrals.showsErrorPageIfReferralNotSubmitted(ApplicationRoles.ACP_REFERRER)
+    })
+  })
 })

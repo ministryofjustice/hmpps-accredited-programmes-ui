@@ -13,7 +13,7 @@ context('General Refer functionality', () => {
   })
 
   describe('When the user does not have the `ROLE_ACP_REFERRER` role', () => {
-    it('shows the authentication error page', () => {
+    it('shows the auth error page', () => {
       cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
       cy.signIn()
 
