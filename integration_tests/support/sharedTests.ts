@@ -15,6 +15,7 @@ import {
   userFactory,
 } from '../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
+import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
   AdditionalInformationPage,
@@ -76,12 +77,16 @@ const pathsByRole = (role: ApplicationRole): typeof assessPaths | typeof referPa
 
 const sharedTests = {
   referrals: {
-    beforeEach: (role: ApplicationRole, data?: { person?: Person; prisoner?: Prisoner }): void => {
+    beforeEach: (
+      role: ApplicationRole,
+      data?: { person?: Person; prisoner?: Prisoner; referral?: Partial<Referral> },
+    ): void => {
       prisoner = data?.prisoner || defaultPrisoner
       person = data?.person || defaultPerson
       referral = referralFactory.submitted().build({
         offeringId: courseOffering.id,
         prisonNumber: person.prisonNumber,
+        ...(data?.referral || {}),
       })
       courseParticipationPresenter1 = {
         ...courseParticipationFactory.build({
@@ -182,6 +187,16 @@ const sharedTests = {
       programmeHistoryPage.shouldContainSubmissionSummaryList(referral)
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainNoHistorySummaryCard()
+    },
+
+    showsErrorPageIfReferralNotSubmitted: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role, { referral: { status: 'referral_started' } })
+
+      const path = pathsByRole(role).show.additionalInformation({ referralId: referral.id })
+      cy.visit(path, { failOnStatusCode: false })
+
+      const badRequestPage = Page.verifyOnPage(BadRequestPage, { errorMessage: 'Referral has not been submitted.' })
+      badRequestPage.shouldContain400Heading()
     },
 
     showsOffenceHistoryPage: (role: ApplicationRole): void => {
