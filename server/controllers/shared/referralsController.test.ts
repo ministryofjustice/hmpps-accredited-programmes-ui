@@ -87,7 +87,6 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
-        additionalInformation: referral.additionalInformation,
         navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })

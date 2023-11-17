@@ -30,7 +30,6 @@ export default class ReferralsController {
 
       res.render('referrals/show/additionalInformation', {
         ...sharedPageData,
-        additionalInformation: sharedPageData.referral.additionalInformation,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     }
