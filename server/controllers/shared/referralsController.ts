@@ -1,4 +1,5 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
+import createError from 'http-errors'
 
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
 import {
@@ -25,10 +26,13 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const sharedPageData = await this.sharedPageData(req, res)
-
       const { referral } = sharedPageData
 
-      res.render('referrals/show/additionalInformation', {
+      if (referral.status === 'referral_started') {
+        throw createError(400, 'Referral has not been submitted.')
+      }
+
+      return res.render('referrals/show/additionalInformation', {
         ...sharedPageData,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
@@ -40,13 +44,18 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const sharedPageData = await this.sharedPageData(req, res)
+      const { referral } = sharedPageData
+
+      if (referral.status === 'referral_started') {
+        throw createError(400, 'Referral has not been submitted.')
+      }
 
       const { additionalOffences, indexOffence } = await this.personService.getOffenceHistory(
         req.user.username,
         sharedPageData.person.prisonNumber,
       )
 
-      res.render('referrals/show/offenceHistory', {
+      return res.render('referrals/show/offenceHistory', {
         ...sharedPageData,
         additionalOffencesSummaryLists: additionalOffences.map(offence => ({
           summaryListRows: OffenceUtils.summaryListRows(offence),
@@ -64,8 +73,13 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const sharedPageData = await this.sharedPageData(req, res)
+      const { referral } = sharedPageData
 
-      res.render('referrals/show/personalDetails', {
+      if (referral.status === 'referral_started') {
+        throw createError(400, 'Referral has not been submitted.')
+      }
+
+      return res.render('referrals/show/personalDetails', {
         ...sharedPageData,
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         personSummaryListRows: PersonUtils.summaryListRows(sharedPageData.person),
@@ -78,6 +92,11 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const sharedPageData = await this.sharedPageData(req, res)
+      const { referral } = sharedPageData
+
+      if (referral.status === 'referral_started') {
+        throw createError(400, 'Referral has not been submitted.')
+      }
 
       const courseParticipationSummaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
         req.user.username,
@@ -87,7 +106,7 @@ export default class ReferralsController {
         { change: false, remove: false },
       )
 
-      res.render('referrals/show/programmeHistory', {
+      return res.render('referrals/show/programmeHistory', {
         ...sharedPageData,
         courseParticipationSummaryListsOptions,
       })
@@ -99,6 +118,11 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const sharedPageData = await this.sharedPageData(req, res)
+      const { referral } = sharedPageData
+
+      if (referral.status === 'referral_started') {
+        throw createError(400, 'Referral has not been submitted.')
+      }
 
       const offenderSentenceAndOffences = await this.personService.getOffenderSentenceAndOffences(
         req.user.token,
@@ -109,7 +133,7 @@ export default class ReferralsController {
         sharedPageData.person.sentenceStartDate || offenderSentenceAndOffences.sentenceTypeDescription
       )
 
-      res.render('referrals/show/sentenceInformation', {
+      return res.render('referrals/show/sentenceInformation', {
         ...sharedPageData,
         detailsSummaryListRows: hasSentenceDetails
           ? SentenceInformationUtils.detailsSummaryListRows(
