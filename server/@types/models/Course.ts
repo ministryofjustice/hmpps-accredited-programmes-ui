@@ -8,4 +8,5 @@ export type Course = {
   coursePrerequisites: Array<CoursePrerequisite>
   description: string
   name: string
+  referable: boolean
 }
