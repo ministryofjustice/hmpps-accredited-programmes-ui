@@ -133,9 +133,7 @@ export default class PersonService {
         throw knownError
       }
 
-      throw createError(knownError.status || 500, knownError, {
-        userMessage: `Error fetching prisoner ${prisonNumber}.`,
-      })
+      throw createError(knownError.status || 500, knownError, `Error fetching prisoner ${prisonNumber}.`)
     }
   }
 }

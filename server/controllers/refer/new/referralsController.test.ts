@@ -409,7 +409,7 @@ describe('NewReferralsController', () => {
         request.params.referralId = referralId
 
         const requestHandler = controller.complete()
-        const expectedError = createError(400)
+        const expectedError = createError(400, 'Referral has not been submitted.')
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
