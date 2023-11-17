@@ -51,7 +51,7 @@ export default class ReferralsController {
         ...sharedPageData,
         additionalOffencesSummaryLists: additionalOffences.map(offence => ({
           summaryListRows: OffenceUtils.summaryListRows(offence),
-          titleText: `Additional offence (${offence.code})`,
+          titleText: `Additional offence${offence.code ? ` (${offence.code})` : ''}`,
         })),
         hasOffenceHistory: Boolean(indexOffence) || additionalOffences.length > 0,
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,

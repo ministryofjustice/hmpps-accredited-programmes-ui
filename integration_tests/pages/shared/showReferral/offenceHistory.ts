@@ -34,7 +34,7 @@ export default class OffenceHistoryPage extends Page {
 
       cy.get(`[data-testid="additional-offence-summary-card-${index + 1}"]`).then(summaryCardElement => {
         this.shouldContainSummaryCard(
-          `Additional offence (${offenceCode?.code})`,
+          `Additional offence${offenceCode?.code ? ` (${offenceCode.code})` : ''}`,
           [],
           OffenceUtils.summaryListRows({
             code: offenceCode?.code,

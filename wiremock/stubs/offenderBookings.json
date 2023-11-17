@@ -30,6 +30,16 @@
         "primaryResultConviction": false,
         "secondaryResultConviction": true,
         "caseId": 2
+      },
+      {
+        "bookingId": 1234567,
+        "offenceDescription": "Cause another to use a vehicle where the seat belt buckle/other fastening was not maintained so that the belt could be readily fastened or unfastened/kept free from temporary or permanent obstruction/readily accessible to a person sitting in the seat.",
+        "mostSerious": false,
+        "secondaryResultCode": "1006",
+        "secondaryResultDescription": "Detention Centre",
+        "primaryResultConviction": false,
+        "secondaryResultConviction": true,
+        "caseId": 2
       }
     ]
   }

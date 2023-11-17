@@ -199,6 +199,11 @@ const sharedTests = {
             offenceCode: offenceCodeTwo.code,
             offenceDate: '2023-02-02',
           }),
+          offenceHistoryDetailFactory.build({
+            mostSerious: false,
+            offenceCode: undefined,
+            offenceDate: undefined,
+          }),
         ],
         offenderNo: prisoner.prisonerNumber,
       })
