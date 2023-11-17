@@ -6,15 +6,23 @@ export default class OffenceUtils {
     return [
       {
         key: { text: 'Offence' },
-        value: { text: `${offence.description} - ${offence.code}` },
+        value: {
+          text:
+            [offence.description, offence.code].filter(string => string).join(' - ') ||
+            'There are no offence details for this person.',
+        },
       },
       {
         key: { text: 'Category' },
-        value: { text: offence.statuteCodeDescription },
+        value: { text: offence.statuteCodeDescription || 'There is no offence category for this person.' },
       },
       {
         key: { text: 'Offence date' },
-        value: { text: DateUtils.govukFormattedFullDateString(offence.date) },
+        value: {
+          text: offence.date
+            ? DateUtils.govukFormattedFullDateString(offence.date)
+            : 'There is no offence date for this person.',
+        },
       },
     ]
   }

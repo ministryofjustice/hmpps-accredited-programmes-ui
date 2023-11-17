@@ -26,5 +26,31 @@ describe('OffenceUtils', () => {
         },
       ])
     })
+
+    describe('when there is missing offence data', () => {
+      it('formats a relevant message in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
+        const offenceDetails = offenceDetailsFactory.build({
+          code: undefined,
+          date: undefined,
+          description: undefined,
+          statuteCodeDescription: undefined,
+        })
+
+        expect(OffenceUtils.summaryListRows(offenceDetails)).toEqual([
+          {
+            key: { text: 'Offence' },
+            value: { text: 'There are no offence details for this person.' },
+          },
+          {
+            key: { text: 'Category' },
+            value: { text: 'There is no offence category for this person.' },
+          },
+          {
+            key: { text: 'Offence date' },
+            value: { text: 'There is no offence date for this person.' },
+          },
+        ])
+      })
+    })
   })
 })

@@ -96,7 +96,10 @@ describe('ReferralsController', () => {
 
   describe('offenceHistory', () => {
     it('renders the offence history template with the correct response locals', async () => {
-      const additionalOffences = [offenceDetailsFactory.build({ mostSerious: false })]
+      const additionalOffences = [
+        offenceDetailsFactory.build({ code: 'RC123', mostSerious: false }),
+        offenceDetailsFactory.build({ code: undefined, mostSerious: false }),
+      ]
       const indexOffence = offenceDetailsFactory.build({ mostSerious: true })
 
       personService.getOffenceHistory.mockResolvedValue({
@@ -115,6 +118,10 @@ describe('ReferralsController', () => {
           {
             summaryListRows: OffenceUtils.summaryListRows(additionalOffences[0]),
             titleText: `Additional offence (${additionalOffences[0].code})`,
+          },
+          {
+            summaryListRows: OffenceUtils.summaryListRows(additionalOffences[1]),
+            titleText: 'Additional offence',
           },
         ],
         hasOffenceHistory: true,
