@@ -119,32 +119,52 @@ context('Find', () => {
   })
 
   describe('For a user with the `ROLE_ACP_REFERRER` role', () => {
-    it('shows the "Make a referral" button on an offering', () => {
+    const courseOffering = courseOfferingFactory.build()
+    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const organisation = OrganisationUtils.organisationFromPrison(prison)
+    const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
+
+    beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
       cy.task('stubAuthUser')
       cy.task('stubDefaultCaseloads')
       cy.signIn()
 
-      const courseOffering = courseOfferingFactory.build({
-        secondaryContactEmail: null,
-      })
-      cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
       cy.task('stubOffering', { courseOffering })
-
-      const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = OrganisationUtils.organisationFromPrison(prison)
       cy.task('stubPrison', prison)
+    })
 
-      const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
-      cy.visit(path)
+    describe('and a referable course', () => {
+      it('shows the "Make a referral" button on an offering', () => {
+        const referableCourse = courseFactory.build({ referable: true })
+        cy.task('stubCourseByOffering', { course: referableCourse, courseOfferingId: courseOffering.id })
 
-      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-        course: courses[0],
-        courseOffering,
-        organisation,
+        cy.visit(path)
+
+        const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
+          course: referableCourse,
+          courseOffering,
+          organisation,
+        })
+        courseOfferingPage.shouldContainMakeAReferralButtonLink()
       })
-      courseOfferingPage.shouldContainMakeAReferralButtonLink()
+    })
+
+    describe('and a non-referable course', () => {
+      it('does not show the "Make a referral" button on an offering', () => {
+        const nonReferableCourse = courseFactory.build({ referable: false })
+        cy.task('stubCourseByOffering', { course: nonReferableCourse, courseOfferingId: courseOffering.id })
+
+        cy.visit(path)
+
+        const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
+          course: nonReferableCourse,
+          courseOffering,
+          organisation,
+        })
+        courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
+      })
     })
   })
 })

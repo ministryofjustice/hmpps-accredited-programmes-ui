@@ -29,7 +29,7 @@
         rows: organisation.summaryListRows
       }) }}
 
-      {% if referEnabled and user.hasReferrerRole %}
+      {% if referEnabled and user.hasReferrerRole and course.referable %}
         {{ govukButton({
             text: "Make a referral",
             href: referPaths.new.start({ courseOfferingId: courseOffering.id })

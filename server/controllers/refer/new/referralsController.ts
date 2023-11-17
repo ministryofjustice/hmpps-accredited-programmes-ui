@@ -79,9 +79,7 @@ export default class NewReferralsController {
       const referral = await this.referralService.getReferral(req.user.username, referralId)
 
       if (referral.status !== 'referral_submitted') {
-        throw createError(400, {
-          userMessage: 'Referral has not been submitted.',
-        })
+        throw createError(400, 'Referral has not been submitted.')
       }
 
       res.render('referrals/new/complete', {
@@ -96,6 +94,11 @@ export default class NewReferralsController {
 
       const { courseOfferingId, prisonNumber } = req.body
       const { username, userId } = req.user
+
+      const course = await this.courseService.getCourseByOffering(req.user.username, courseOfferingId)
+      if (!course.referable) {
+        throw createError(400, 'Course is not referable.')
+      }
 
       const createdReferralResponse: CreatedReferralResponse = await this.referralService.createReferral(
         username,
