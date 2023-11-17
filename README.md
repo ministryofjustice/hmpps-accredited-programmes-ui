@@ -61,9 +61,14 @@ There are three user accounts with different roles that can be used when running
 
 ### Seeded resources
 
-The local copy of the Accredited Programmes API has various seeds in place providing data to work with in local development. These include courses, course offerings, and associated data, as well as one referral. This referral is at the stage of having just been created, and can be used to jump to the task list part of the Refer journey.
+The local copy of the Accredited Programmes API has various seeds in place providing data to work with in local development. These include courses, course offerings, and associated data, as well as one draft and one submitted referral.
 
-Seeded referral ID and local server link: [c11fab18-dc8d-420c-9c82-d0edd373732d](http://localhost:3000/refer/referrals/new/c11fab18-dc8d-420c-9c82-d0edd373732d)
+The draft referral is at the stage of having just been created, and can be used to jump to the task list part of the Refer journey. The submitted referral has additional information, but may not have programme history: the person is the same as in the draft referral, so the draft referral link can be used to add to the programme history if needed.
+
+| Status    | ID                                     | Links                                                                                                                                                                                                                            |
+| --------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Draft     | `c11fab18-dc8d-420c-9c82-d0edd373732d` | Task list: [Refer](http://localhost:3000/refer/referrals/new/c11fab18-dc8d-420c-9c82-d0edd373732d)                                                                                                                               |
+| Submitted | `9d38204c-bfe9-42e6-b751-f46cec067e57` | Personal details: [Refer](http://localhost:3000/refer/referrals/9d38204c-bfe9-42e6-b751-f46cec067e57/personal-details) \| [Assess](http://localhost:3000/assess/referrals/9d38204c-bfe9-42e6-b751-f46cec067e57/personal-details) |
 
 ## Running the tests
 
