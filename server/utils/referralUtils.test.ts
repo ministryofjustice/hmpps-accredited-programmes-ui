@@ -7,6 +7,7 @@ import {
   organisationFactory,
   personFactory,
   referralFactory,
+  referralSummaryFactory,
 } from '../testutils/factories'
 import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
 
@@ -56,6 +57,48 @@ describe('ReferralUtils', () => {
           key: { text: 'Contact email address' },
           value: { text: 'nobody-hmp-what@digital.justice.gov.uk' },
         },
+      ])
+    })
+  })
+
+  describe('caseListTableRows', () => {
+    it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
+      const referralSummaries = [
+        referralSummaryFactory.build({
+          courseName: 'Test Course 1',
+          id: 'referral-123',
+          prisonNumber: 'ABC1234',
+          status: 'referral_started',
+          submittedOn: undefined,
+        }),
+        referralSummaryFactory.build({
+          courseName: 'Test Course 2',
+          id: 'referral-456',
+          prisonNumber: 'DEF1234',
+          status: 'referral_submitted',
+          submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
+        }),
+      ]
+
+      expect(ReferralUtils.caseListTableRows(referralSummaries)).toEqual([
+        [
+          {
+            attributes: { 'data-sort-value': 'ABC1234' },
+            html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>',
+          },
+          { text: 'N/A' },
+          { text: 'Test Course 1' },
+          { text: 'referral_started' },
+        ],
+        [
+          {
+            attributes: { 'data-sort-value': 'DEF1234' },
+            html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
+          },
+          { text: '1 January 2021' },
+          { text: 'Test Course 2' },
+          { text: 'referral_submitted' },
+        ],
       ])
     })
   })
