@@ -2,7 +2,14 @@ import type { ApiConfig } from '../../config'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
-import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
+import type {
+  CreatedReferralResponse,
+  Paginated,
+  Referral,
+  ReferralStatus,
+  ReferralSummary,
+  ReferralUpdate,
+} from '@accredited-programmes/models'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {
@@ -27,6 +34,15 @@ export default class ReferralClient {
     return (await this.restClient.get({
       path: apiPaths.referrals.show({ referralId }),
     })) as Referral
+  }
+
+  async findReferralSummaries(organisationId: string): Promise<Paginated<ReferralSummary>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.dashboard({ organisationId }),
+      query: {
+        size: '999',
+      },
+    })) as Paginated<ReferralSummary>
   }
 
   async submit(referralId: Referral['id']): Promise<void> {

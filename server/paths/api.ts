@@ -12,6 +12,7 @@ const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
 const updateStatusPath = referralPath.path('status')
 const submitPath = referralPath.path('submit')
+const dashboardPath = referralsPath.path('organisation/:organisationId/dashboard')
 
 const participationsByPersonPath = path('/people/:prisonNumber/course-participations')
 const participationsPath = path('/course-participations')
@@ -39,6 +40,7 @@ export default {
   },
   referrals: {
     create: referralsPath,
+    dashboard: dashboardPath,
     show: referralPath,
     submit: submitPath,
     update: referralPath,

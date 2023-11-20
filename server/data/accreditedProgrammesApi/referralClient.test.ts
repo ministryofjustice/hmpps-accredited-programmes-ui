@@ -4,8 +4,8 @@ import { pactWith } from 'jest-pact'
 import ReferralClient from './referralClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
-import { referralFactory } from '../../testutils/factories'
-import type { CreatedReferralResponse, ReferralUpdate } from '@accredited-programmes/models'
+import { referralFactory, referralSummaryFactory } from '../../testutils/factories'
+import type { CreatedReferralResponse, Paginated, ReferralSummary, ReferralUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let referralClient: ReferralClient
@@ -77,6 +77,45 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await referralClient.find(referral.id)
 
       expect(result).toEqual(referral)
+    })
+  })
+
+  describe('findReferralSummaries', () => {
+    const organisationId = 'a026cc07-8e0b-40dd-9b66-1b3dacecc63d'
+    const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+      content: referralSummaryFactory.buildList(2),
+      pageIsEmpty: false,
+      pageNumber: 0,
+      pageSize: 10,
+      totalElements: 2,
+      totalPages: 1,
+    }
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: `Referral summaries exist for an organisation with the ID ${organisationId}`,
+        uponReceiving: `A request for the summaries for an organisation with the ID ${organisationId}`,
+        willRespondWith: {
+          body: Matchers.like(paginatedReferralSummaries),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${userToken}`,
+          },
+          method: 'GET',
+          path: apiPaths.referrals.dashboard({ organisationId }),
+          query: {
+            size: '999',
+          },
+        },
+      })
+    })
+
+    it('fetches referral summaries for a given organisation ID', async () => {
+      const result = await referralClient.findReferralSummaries(organisationId)
+
+      expect(result).toEqual(paginatedReferralSummaries)
     })
   })
 

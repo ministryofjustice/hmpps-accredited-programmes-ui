@@ -10,8 +10,9 @@ import type {
 import type { CoursePrerequisite } from './CoursePrerequisite'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
+import type { Paginated } from './Paginated'
 import type { Person } from './Person'
-import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate } from './Referral'
+import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralSummary, ReferralUpdate } from './Referral'
 
 export type {
   Course,
@@ -25,8 +26,10 @@ export type {
   CreatedReferralResponse,
   Organisation,
   OrganisationAddress,
+  Paginated,
   Person,
   Referral,
   ReferralStatus,
+  ReferralSummary,
   ReferralUpdate,
 }

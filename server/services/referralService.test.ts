@@ -4,7 +4,7 @@ import { when } from 'jest-when'
 import ReferralService from './referralService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
-import { referralFactory } from '../testutils/factories'
+import { referralFactory, referralSummaryFactory } from '../testutils/factories'
 import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
@@ -76,6 +76,36 @@ describe('ReferralService', () => {
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.find).toHaveBeenCalledWith(referral.id)
+    })
+  })
+
+  describe('getReferralSummaries', () => {
+    const organisationId = 'organisation-id'
+
+    it('returns a list of referral summaries for a given organisation', async () => {
+      const referralSummaries = referralSummaryFactory.buildList(3)
+      const paginatedReferralSummariesResponse = {
+        content: referralSummaries,
+        pageIsEmpty: false,
+        pageNumber: 1,
+        pageSize: 10,
+        totalElements: referralSummaries.length,
+        totalPages: 1,
+      }
+
+      when(referralClient.findReferralSummaries)
+        .calledWith(organisationId)
+        .mockResolvedValue(paginatedReferralSummariesResponse)
+
+      const result = await service.getReferralSummaries(username, organisationId)
+
+      expect(result).toEqual(paginatedReferralSummariesResponse)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId)
     })
   })
 
