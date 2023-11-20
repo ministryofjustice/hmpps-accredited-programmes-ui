@@ -3,7 +3,7 @@ import type { Request } from 'express'
 import DateUtils from './dateUtils'
 import { assessPaths, referPaths } from '../paths'
 import { assessPathBase } from '../paths/assess'
-import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation, Person, Referral, ReferralSummary } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -12,6 +12,7 @@ import type {
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class ReferralUtils {
   static applicationSummaryListRows(
@@ -47,6 +48,28 @@ export default class ReferralUtils {
         value: { text: courseOffering.contactEmail },
       },
     ]
+  }
+
+  static caseListTableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
+    return referralSummary.map(summary => [
+      {
+        attributes: {
+          'data-sort-value': summary.prisonNumber,
+        },
+        html: `<a class="govuk-link" href="${assessPaths.show.personalDetails({ referralId: summary.id })}">${
+          summary.prisonNumber
+        }</a>`,
+      },
+      {
+        text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
+      },
+      {
+        text: summary.courseName,
+      },
+      {
+        text: summary.status,
+      },
+    ])
   }
 
   static courseOfferingSummaryListRows(
