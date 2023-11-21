@@ -1,3 +1,4 @@
+import CaseListPage from './caseList'
 import AdditionalInformationPage from './showReferral/additionalInformation'
 import OffenceHistoryPage from './showReferral/offenceHistory'
 import PersonalDetailsPage from './showReferral/personalDetails'
@@ -6,6 +7,7 @@ import SentenceInformationPage from './showReferral/sentenceInformation'
 
 export {
   AdditionalInformationPage,
+  CaseListPage,
   OffenceHistoryPage,
   PersonalDetailsPage,
   ProgrammeHistoryPage,
