@@ -69,6 +69,9 @@ export default class ReferralUtils {
         }</a>`,
       },
       {
+        attributes: {
+          'data-sort-value': summary.submittedOn,
+        },
         text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
       },
       {
