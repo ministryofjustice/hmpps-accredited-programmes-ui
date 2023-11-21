@@ -9,6 +9,7 @@ import {
   referralFactory,
   referralSummaryFactory,
 } from '../testutils/factories'
+import type { ReferralStatus } from '@accredited-programmes/models'
 import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
 
 describe('ReferralUtils', () => {
@@ -88,7 +89,10 @@ describe('ReferralUtils', () => {
           },
           { text: 'N/A' },
           { text: 'Test Course 1' },
-          { text: 'referral_started' },
+          {
+            attributes: { 'data-sort-value': 'referral_started' },
+            html: ReferralUtils.statusTagHtml('referral_started'),
+          },
         ],
         [
           {
@@ -97,7 +101,10 @@ describe('ReferralUtils', () => {
           },
           { text: '1 January 2021' },
           { text: 'Test Course 2' },
-          { text: 'referral_submitted' },
+          {
+            attributes: { 'data-sort-value': 'referral_submitted' },
+            html: ReferralUtils.statusTagHtml('referral_submitted'),
+          },
         ],
       ])
     })
@@ -165,6 +172,22 @@ describe('ReferralUtils', () => {
 
       expect(ReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)
     })
+  })
+
+  describe('statusTagHtml', () => {
+    it.each([
+      ['assessment_started', 'yellow', 'Assessment started'],
+      ['awaiting_assesment', 'orange', 'Awaiting assessment'],
+      ['referral_submitted', 'red', 'Referral submitted'],
+      ['referral_started', 'grey', 'referral_started'],
+    ])(
+      'should return the correct HTML for status "%s"',
+      (status: string, expectedColour: string, expectedText: string) => {
+        const result = ReferralUtils.statusTagHtml(status as ReferralStatus)
+
+        expect(result).toBe(`<strong class="govuk-tag govuk-tag--${expectedColour}">${expectedText}</strong>`)
+      },
+    )
   })
 
   describe('submissionSummaryListRows', () => {
