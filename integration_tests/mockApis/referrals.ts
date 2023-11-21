@@ -2,7 +2,7 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Referral } from '@accredited-programmes/models'
+import type { Referral, ReferralSummary } from '@accredited-programmes/models'
 
 interface ReferralAndScenarioOptions {
   referral: Referral
@@ -22,6 +22,34 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: { referralId: referral.id },
         status: 201,
+      },
+    }),
+
+  stubFindReferralSummaries: (args: {
+    organisationId: string
+    referralSummaries: Array<ReferralSummary>
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        queryParameters: {
+          size: {
+            equalTo: '999',
+          },
+        },
+        urlPath: apiPaths.referrals.dashboard({ organisationId: 'MRI' }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          content: args.referralSummaries,
+          pageIsEmpty: false,
+          pageNumber: 0,
+          pageSize: 10,
+          totalElements: args.referralSummaries.length,
+          totalPages: 1,
+        },
+        status: 200,
       },
     }),
 

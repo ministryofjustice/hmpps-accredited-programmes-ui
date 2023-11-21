@@ -87,7 +87,10 @@ describe('ReferralUtils', () => {
             attributes: { 'data-sort-value': 'ABC1234' },
             html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>',
           },
-          { text: 'N/A' },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
           { text: 'Test Course 1' },
           {
             attributes: { 'data-sort-value': 'referral_started' },
@@ -99,7 +102,10 @@ describe('ReferralUtils', () => {
             attributes: { 'data-sort-value': 'DEF1234' },
             html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
           },
-          { text: '1 January 2021' },
+          {
+            attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
+            text: '1 January 2021',
+          },
           { text: 'Test Course 2' },
           {
             attributes: { 'data-sort-value': 'referral_submitted' },
