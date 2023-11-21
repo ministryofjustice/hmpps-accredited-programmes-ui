@@ -3,7 +3,14 @@ import type { Request } from 'express'
 import DateUtils from './dateUtils'
 import { assessPaths, referPaths } from '../paths'
 import { assessPathBase } from '../paths/assess'
-import type { CourseOffering, Organisation, Person, Referral, ReferralSummary } from '@accredited-programmes/models'
+import type {
+  CourseOffering,
+  Organisation,
+  Person,
+  Referral,
+  ReferralStatus,
+  ReferralSummary,
+} from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -11,6 +18,7 @@ import type {
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
+  TagColour,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendTableRow } from '@govuk-frontend'
 
@@ -67,7 +75,10 @@ export default class ReferralUtils {
         text: summary.courseName,
       },
       {
-        text: summary.status,
+        attributes: {
+          'data-sort-value': summary.status,
+        },
+        html: this.statusTagHtml(summary.status),
       },
     ])
   }
@@ -94,6 +105,32 @@ export default class ReferralUtils {
 
   static isReadyForSubmission(referral: Referral): boolean {
     return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
+  }
+
+  static statusTagHtml(status: ReferralStatus): string {
+    let colour: TagColour
+    let text: string
+
+    switch (status) {
+      case 'assessment_started':
+        colour = 'yellow'
+        text = 'Assessment started'
+        break
+      case 'awaiting_assesment':
+        colour = 'orange'
+        text = 'Awaiting assessment'
+        break
+      case 'referral_submitted':
+        colour = 'red'
+        text = 'Referral submitted'
+        break
+      default:
+        colour = 'grey'
+        text = status
+        break
+    }
+
+    return `<strong class="govuk-tag govuk-tag--${colour}">${text}</strong>`
   }
 
   static submissionSummaryListRows(referral: Referral): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
