@@ -30,15 +30,19 @@
     {{ keylessSummaryCard("Sentence details", bodyText="There are no sentence details for this person.", testId="no-sentence-information-summary-card") }}
   {% endif %}
 
-  {{ govukSummaryList({
-    card: {
-      title: {
-        text: "Release dates"
+  {% if hasReleaseDates %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Release dates"
+        },
+        attributes: {
+          "data-testid": "release-dates-summary-card"
+        }
       },
-      attributes: {
-        "data-testid": "release-dates-summary-card"
-      }
-    },
-    rows: releaseDatesSummaryListRows
-  }) }}
+      rows: releaseDatesSummaryListRows
+    }) }}
+  {% else %}
+    {{ keylessSummaryCard("Release dates", bodyText="There are no release dates for this person.", testId="no-release-dates-summary-card") }}
+  {% endif %}
 {% endblock submittedReferralContent %}

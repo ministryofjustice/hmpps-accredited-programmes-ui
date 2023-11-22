@@ -17,6 +17,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, DateUtils, OffenceUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
+import { releaseDateFields } from '../../utils/personUtils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -276,6 +277,7 @@ describe('ReferralsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
           detailsSummaryListRows,
+          hasReleaseDates: true,
           hasSentenceDetails: true,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
@@ -284,8 +286,9 @@ describe('ReferralsController', () => {
       })
     })
 
-    describe('when there are some but not all sentence details', () => {
-      it('renders the sentence information template with the present sentence details', async () => {
+    describe('when there are some but not all sentence details and release dates', () => {
+      it('renders the sentence information template with the present sentence details and release dates', async () => {
+        person.conditionalReleaseDate = undefined
         person.sentenceStartDate = '2023-01-02'
         const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
           sentenceTypeDescription: undefined,
@@ -305,6 +308,7 @@ describe('ReferralsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
           detailsSummaryListRows,
+          hasReleaseDates: true,
           hasSentenceDetails: true,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
@@ -313,8 +317,11 @@ describe('ReferralsController', () => {
       })
     })
 
-    describe('when there are no sentence details', () => {
-      it('renders the sentence information template with no sentence details', async () => {
+    describe('when there are no sentence details or release dates', () => {
+      it('renders the sentence information template with no sentence details and no release dates', async () => {
+        releaseDateFields.forEach(field => {
+          person[field] = undefined
+        })
         person.sentenceStartDate = undefined
         const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
           sentenceTypeDescription: undefined,
@@ -330,10 +337,11 @@ describe('ReferralsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
           detailsSummaryListRows: [],
+          hasReleaseDates: false,
           hasSentenceDetails: false,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-          releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+          releaseDatesSummaryListRows: [],
         })
       })
     })
