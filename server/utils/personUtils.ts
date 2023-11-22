@@ -5,6 +5,14 @@ import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-pro
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 import type { Prisoner } from '@prisoner-search'
 
+export const releaseDateFields = [
+  'conditionalReleaseDate',
+  'homeDetentionCurfewEligibilityDate',
+  'paroleEligibilityDate',
+  'sentenceExpiryDate',
+  'tariffDate',
+] as const
+
 export default class PersonUtils {
   static personFromPrisoner(prisoner: Prisoner): Person {
     const unavailable = 'Not entered'
@@ -32,12 +40,7 @@ export default class PersonUtils {
   static releaseDatesSummaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []
 
-    type ReleaseDateField =
-      | 'conditionalReleaseDate'
-      | 'homeDetentionCurfewEligibilityDate'
-      | 'paroleEligibilityDate'
-      | 'sentenceExpiryDate'
-      | 'tariffDate'
+    type ReleaseDateField = (typeof releaseDateFields)[number]
 
     let earliestReleaseDateField: Omit<ReleaseDateField, 'homeDetentionCurfewEligibilityDate' | 'sentenceExpiryDate'>
 

@@ -9,13 +9,13 @@ context('Viewing a submitted referral', () => {
   })
 
   describe('When reviewing programme history', () => {
-    describe('and there are CourseParticipation records for that user', () => {
+    describe('and there are CourseParticipation records for that person', () => {
       it('shows the correct information, including the CourseParticipation records', () => {
         sharedTests.referrals.showsProgrammeHistoryPage(ApplicationRoles.ACP_REFERRER)
       })
     })
 
-    describe('and there are no CourseParticipation records for that user', () => {
+    describe('and there are no CourseParticipation records for that person', () => {
       it('shows the correct information, including a message that there are no CourseParticipation records', () => {
         sharedTests.referrals.showsEmptyProgrammeHistoryPage(ApplicationRoles.ACP_REFERRER)
       })
@@ -37,15 +37,15 @@ context('Viewing a submitted referral', () => {
   })
 
   describe('When reviewing sentence information', () => {
-    describe('and there are sentence details and release dates for that user', () => {
+    describe('and there are sentence details and release dates for that person', () => {
       it('shows the correct information, including the sentence details and release dates', () => {
         sharedTests.referrals.showsSentenceInformationPageWithAllData(ApplicationRoles.ACP_REFERRER)
       })
     })
 
-    describe('and there are release dates but no sentence details for that user', () => {
-      it('shows the correct information, including the release dates, and a message for the missing sentence details', () => {
-        sharedTests.referrals.showsSentenceInformationPageWithoutSentenceDetails(ApplicationRoles.ACP_REFERRER)
+    describe('and there are no sentence details and no release dates for that person', () => {
+      it('shows the correct information, including a message for the missing sentence details and a message for the missing release dates', () => {
+        sharedTests.referrals.showsSentenceInformationPageWithoutAllData(ApplicationRoles.ACP_REFERRER)
       })
     })
   })

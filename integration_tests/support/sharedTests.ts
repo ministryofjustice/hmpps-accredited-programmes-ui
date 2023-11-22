@@ -15,6 +15,7 @@ import {
   userFactory,
 } from '../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
+import { releaseDateFields } from '../../server/utils/personUtils'
 import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
@@ -327,10 +328,15 @@ const sharedTests = {
       sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
     },
 
-    showsSentenceInformationPageWithoutSentenceDetails: (role: ApplicationRole): void => {
+    showsSentenceInformationPageWithoutAllData: (role: ApplicationRole): void => {
+      let undefinedReleaseDates = {}
+      releaseDateFields.forEach(date => {
+        undefinedReleaseDates = { ...undefinedReleaseDates, [date]: undefined }
+      })
+
       sharedTests.referrals.beforeEach(role, {
-        person: { ...defaultPerson, sentenceStartDate: undefined },
-        prisoner: { ...defaultPrisoner, sentenceStartDate: undefined },
+        person: { ...defaultPerson, sentenceStartDate: undefined, ...undefinedReleaseDates },
+        prisoner: { ...defaultPrisoner, sentenceStartDate: undefined, ...undefinedReleaseDates },
       })
       const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
         sentenceTypeDescription: undefined,
@@ -353,7 +359,7 @@ const sharedTests = {
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()
-      sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
+      sentenceInformationPage.shouldContainNoReleaseDatesSummaryCard()
     },
   },
 }
