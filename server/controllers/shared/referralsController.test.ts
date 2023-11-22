@@ -289,6 +289,7 @@ describe('ReferralsController', () => {
     describe('when there are some but not all sentence details and release dates', () => {
       it('renders the sentence information template with the present sentence details and release dates', async () => {
         person.conditionalReleaseDate = undefined
+        person.paroleEligibilityDate = '2024-01-02'
         person.sentenceStartDate = '2023-01-02'
         const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
           sentenceTypeDescription: undefined,
