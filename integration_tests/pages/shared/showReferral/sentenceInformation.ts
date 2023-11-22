@@ -25,6 +25,16 @@ export default class SentenceInformationPage extends Page {
     )
   }
 
+  shouldContainNoReleaseDatesSummaryCard(): void {
+    cy.get('[data-testid="no-release-dates-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Release dates',
+        'There are no release dates for this person.',
+        summaryCardElement,
+      )
+    })
+  }
+
   shouldContainNoSentenceDetailsSummaryCard(): void {
     cy.get('[data-testid="no-sentence-information-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
