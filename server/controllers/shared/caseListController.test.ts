@@ -5,13 +5,11 @@ import type { NextFunction, Request, Response } from 'express'
 import CaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
-import { caseloadFactory, referralSummaryFactory } from '../../testutils/factories'
+import { referralSummaryFactory } from '../../testutils/factories'
 import { ReferralUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
-import type { Caseload } from '@prison-api'
 
 describe('CaseListController', () => {
-  let caseloads: Array<Caseload>
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
 
@@ -25,11 +23,6 @@ describe('CaseListController', () => {
   let controller: CaseListController
 
   beforeEach(() => {
-    caseloads = [
-      caseloadFactory.build({ caseLoadId: activeCaseLoadId, currentlyActive: true }),
-      caseloadFactory.build({ currentlyActive: false }),
-    ]
-
     const referralSummaries = referralSummaryFactory.buildList(3)
     paginatedReferralSummaries = {
       content: referralSummaries,
@@ -45,7 +38,7 @@ describe('CaseListController', () => {
     controller = new CaseListController(referralService)
 
     request = createMock<Request>({ user: { username } })
-    response = createMock<Response>({ locals: { user: { caseloads, username } } })
+    response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
   })
 
   afterEach(() => {
