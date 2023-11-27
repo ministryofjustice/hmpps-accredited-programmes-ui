@@ -1,4 +1,5 @@
 import type { Course } from './Course'
+import type { CourseAudience } from './CourseAudience'
 import type { CourseOffering } from './CourseOffering'
 import type { Person } from './Person'
 
@@ -28,7 +29,7 @@ type ReferralStatus = 'assessment_started' | 'awaiting_assessment' | 'referral_s
 
 type ReferralSummary = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
-  audiences: Course['audiences']
+  audiences: Array<CourseAudience['value']>
   courseName: Course['name']
   prisonNumber: Person['prisonNumber']
   status: ReferralStatus

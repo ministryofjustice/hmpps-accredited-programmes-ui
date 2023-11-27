@@ -66,6 +66,7 @@ describe('ReferralUtils', () => {
     it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
       const referralSummaries = [
         referralSummaryFactory.build({
+          audiences: ['General offence'],
           courseName: 'Test Course 1',
           id: 'referral-123',
           prisonNumber: 'ABC1234',
@@ -73,6 +74,7 @@ describe('ReferralUtils', () => {
           submittedOn: undefined,
         }),
         referralSummaryFactory.build({
+          audiences: ['General offence', 'Extremism offence'],
           courseName: 'Test Course 2',
           id: 'referral-456',
           prisonNumber: 'DEF1234',
@@ -93,6 +95,9 @@ describe('ReferralUtils', () => {
           },
           { text: 'Test Course 1' },
           {
+            text: 'General offence',
+          },
+          {
             attributes: { 'data-sort-value': 'referral_started' },
             html: ReferralUtils.statusTagHtml('referral_started'),
           },
@@ -107,6 +112,9 @@ describe('ReferralUtils', () => {
             text: '1 January 2021',
           },
           { text: 'Test Course 2' },
+          {
+            text: 'General offence, Extremism offence',
+          },
           {
             attributes: { 'data-sort-value': 'referral_submitted' },
             html: ReferralUtils.statusTagHtml('referral_submitted'),

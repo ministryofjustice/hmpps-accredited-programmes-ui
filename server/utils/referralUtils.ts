@@ -78,6 +78,9 @@ export default class ReferralUtils {
         text: summary.courseName,
       },
       {
+        text: summary.audiences.map(audience => audience).join(', '),
+      },
+      {
         attributes: {
           'data-sort-value': summary.status,
         },

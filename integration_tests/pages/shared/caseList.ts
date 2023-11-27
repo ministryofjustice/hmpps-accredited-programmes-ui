@@ -31,7 +31,8 @@ export default class CaseListPage extends Page {
             summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
           )
           cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', summary.courseName)
-          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.html', ReferralUtils.statusTagHtml(summary.status))
+          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', summary.audiences.join(', '))
+          cy.get('.govuk-table__cell:nth-of-type(5)').should('have.html', ReferralUtils.statusTagHtml(summary.status))
         })
       })
     })

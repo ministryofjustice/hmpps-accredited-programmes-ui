@@ -9,7 +9,7 @@ import type { ReferralSummary } from '@accredited-programmes/models'
 
 export default Factory.define<ReferralSummary>(({ params }) => ({
   id: faker.string.uuid(), // eslint-disable-next-line sort-keys
-  audiences: FactoryHelpers.buildListBetween(courseAudienceFactory, { max: 3, min: 1 }),
+  audiences: FactoryHelpers.buildListBetween(courseAudienceFactory, { max: 3, min: 1 }).map(audience => audience.value),
   courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
   prisonNumber: faker.string.alphanumeric({ length: 7 }),
   status,
