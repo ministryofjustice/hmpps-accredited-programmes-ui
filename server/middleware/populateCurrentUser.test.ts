@@ -30,7 +30,11 @@ describe('populateCurrentUser', () => {
   })
 
   describe('when the user variable is set', () => {
-    const caseloads = [caseloadFactory.build()]
+    const activeCaseLoadId = 'MDI'
+    const caseloads = [
+      caseloadFactory.active().build({ caseLoadId: activeCaseLoadId }),
+      caseloadFactory.inactive().build(),
+    ]
     const res: DeepMocked<Response> = createMock<Response>({
       locals: {
         user: {
@@ -60,6 +64,7 @@ describe('populateCurrentUser', () => {
 
           expect(res.locals.user).toEqual({
             active: true,
+            activeCaseLoadId,
             authSource: 'nomis',
             caseloads,
             displayName: 'Del Hatton',

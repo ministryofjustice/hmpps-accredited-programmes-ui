@@ -12,11 +12,14 @@ export default function populateCurrentUser(userService: UserService): RequestHa
         const { token: userToken } = res.locals.user
         req.session.user ||= await userService.getCurrentUserWithDetails(userToken)
 
+        const activeCaseLoadId = req.session.user?.caseloads.find(caseload => caseload.currentlyActive)?.caseLoadId
+
         if (req.session.user) {
           const roles = UserUtils.getUserRolesFromToken(userToken)
           res.locals.user = {
             ...res.locals.user,
             ...req.session.user,
+            activeCaseLoadId,
             hasReferrerRole: roles?.includes(ApplicationRoles.ACP_REFERRER),
             roles,
           }
