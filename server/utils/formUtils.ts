@@ -1,8 +1,23 @@
 import type { Request, Response } from 'express'
 
-import type { GovukFrontendErrorMessage, GovukFrontendErrorSummaryErrorListElement } from '@govuk-frontend'
+import type {
+  GovukFrontendErrorMessage,
+  GovukFrontendErrorSummaryErrorListElement,
+  GovukFrontendSelectItem,
+} from '@govuk-frontend'
 
 export default class FormUtils {
+  static getSelectItems(items: Record<string, string>, selectedValue?: string): Array<GovukFrontendSelectItem> {
+    return [
+      { selected: Boolean(!selectedValue), text: 'Select', value: '' },
+      ...Object.entries(items).map(([value, text]) => ({
+        selected: value === selectedValue,
+        text,
+        value,
+      })),
+    ]
+  }
+
   static setFieldErrors(req: Request, res: Response, fields: Array<string>): void {
     const list: Array<GovukFrontendErrorSummaryErrorListElement> = []
     const messages: Record<string, GovukFrontendErrorMessage> = {}

@@ -16,6 +16,28 @@ describe('FormUtils', () => {
     jest.resetAllMocks()
   })
 
+  describe('getSelectItems', () => {
+    const items = { optionA: 'Option A', optionB: 'Option B' }
+
+    it('marks the Select option as selected and formats the options in the appropriate format for passing to a GOV.UK Select nunjucks macro', () => {
+      expect(FormUtils.getSelectItems(items)).toEqual([
+        { selected: true, text: 'Select', value: '' },
+        { selected: false, text: 'Option A', value: 'optionA' },
+        { selected: false, text: 'Option B', value: 'optionB' },
+      ])
+    })
+
+    describe('when a selected value is provided', () => {
+      it('marks the selected value as selected and formats the options in the appropriate format for passing to a GOV.UK Select nunjucks macro', () => {
+        expect(FormUtils.getSelectItems(items, 'optionB')).toEqual([
+          { selected: false, text: 'Select', value: '' },
+          { selected: false, text: 'Option A', value: 'optionA' },
+          { selected: true, text: 'Option B', value: 'optionB' },
+        ])
+      })
+    })
+  })
+
   describe('setFieldErrors', () => {
     it("adds errors to a response's locals for displaying in the UI", () => {
       const someFieldErrorMessage = 'You must fill in some field'
