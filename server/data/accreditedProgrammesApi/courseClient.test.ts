@@ -159,6 +159,34 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('findCourseNames', () => {
+    const courseNames = ['Super Course', 'Custom Course', 'RAPID Course']
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'In order, the names of all the courses are Super Course, Custom Course, and RAPID Course',
+        uponReceiving: 'A request for all course names',
+        willRespondWith: {
+          body: Matchers.like(courseNames),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${systemToken}`,
+          },
+          method: 'GET',
+          path: apiPaths.courses.names({}),
+        },
+      })
+    })
+
+    it('fetches all course names', async () => {
+      const result = await courseClient.findCourseNames()
+
+      expect(result).toEqual(courseNames)
+    })
+  })
+
   describe('findOfferings', () => {
     const courseOfferings = [
       courseOfferingFactory.build({ id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537' }),
@@ -188,34 +216,6 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await courseClient.findOfferings('d3abc217-75ee-46e9-a010-368f30282367')
 
       expect(result).toEqual(courseOfferings)
-    })
-  })
-
-  describe('findCourseNames', () => {
-    const courseNames = ['Super Course', 'Custom Course', 'RAPID Course']
-
-    beforeEach(() => {
-      provider.addInteraction({
-        state: 'In order, the names of all the courses are Super Course, Custom Course, and RAPID Course',
-        uponReceiving: 'A request for all course names',
-        willRespondWith: {
-          body: Matchers.like(courseNames),
-          status: 200,
-        },
-        withRequest: {
-          headers: {
-            authorization: `Bearer ${systemToken}`,
-          },
-          method: 'GET',
-          path: apiPaths.courses.names({}),
-        },
-      })
-    })
-
-    it('fetches all course names', async () => {
-      const result = await courseClient.findCourseNames()
-
-      expect(result).toEqual(courseNames)
     })
   })
 
