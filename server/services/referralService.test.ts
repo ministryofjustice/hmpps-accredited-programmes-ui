@@ -94,10 +94,10 @@ describe('ReferralService', () => {
       }
 
       when(referralClient.findReferralSummaries)
-        .calledWith(organisationId)
+        .calledWith(organisationId, undefined)
         .mockResolvedValue(paginatedReferralSummariesResponse)
 
-      const result = await service.getReferralSummaries(username, organisationId)
+      const result = await service.getReferralSummaries(username, organisationId, undefined)
 
       expect(result).toEqual(paginatedReferralSummariesResponse)
 
@@ -105,7 +105,18 @@ describe('ReferralService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId)
+      expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId, undefined)
+    })
+
+    describe('with filter values', () => {
+      it('makes the correct call to the referral client', async () => {
+        const filterValues = { audience: 'General offence', status: 'REFERRAL_SUBMITTED' }
+
+        await service.getReferralSummaries(username, organisationId, filterValues)
+
+        expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId, filterValues)
+      })
     })
   })
 
