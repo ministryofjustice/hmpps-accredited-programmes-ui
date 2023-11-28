@@ -147,6 +147,7 @@
         "semi": false
       }
     ],
+    "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": "off",
     "sort-exports/sort-exports": ["error", { "sortExportKindFirst": "value" }],
     "sort-imports": [
