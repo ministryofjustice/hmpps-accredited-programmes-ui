@@ -35,17 +35,34 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     alternateName: null,
   })
   const allCourses = [course1, course2, course3]
-  const courseOffering1 = courseOfferingFactory.build({
-    id: '7fffcc6a-11f8-4713-be35-cf5ff1aee517', // eslint-disable-next-line sort-keys
+
+  const courseOffering1 = courseOfferingFactory.build({ id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537' })
+  const courseOffering2 = courseOfferingFactory.build({ id: '39b77a2f-7398-4d5f-b744-cdcefca12671' })
+  const courseOffering3 = courseOfferingFactory.build({
+    id: '7fffcc6a-11f8-4713-be35-cf5ff1aee517',
     secondaryContactEmail: 'nobody2-mdi@digital.justice.gov.uk',
   })
-  const courseOffering2 = courseOfferingFactory.build({
-    id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537',
+  const courseOffering4 = courseOfferingFactory.build({
+    id: '7f98826a-616c-4414-a278-525fc02505a0',
+    secondaryContactEmail: 'nobody2-mdi@digital.justice.gov.uk',
   })
-  const courseOffering3 = courseOfferingFactory.build({
-    id: '39b77a2f-7398-4d5f-b744-cdcefca12671',
+  const courseOffering5 = courseOfferingFactory.build({
+    id: 'fee62dde-87f5-4dfd-9a44-e80d48f64be9',
+    secondaryContactEmail: 'nobody2-mdi@digital.justice.gov.uk',
   })
-  const allCourseOfferings = [courseOffering1, courseOffering2, courseOffering3]
+  const courseOffering6 = courseOfferingFactory.build({
+    id: 'be1d407c-3cb5-4c7e-bfee-d104bc79213f',
+    secondaryContactEmail: 'nobody2-mdi@digital.justice.gov.uk',
+  })
+  const allCourseOfferings = [
+    courseOffering1,
+    courseOffering2,
+    courseOffering3,
+    courseOffering4,
+    courseOffering5,
+    courseOffering6,
+  ]
+
   const person = personFactory.build({ prisonNumber: 'A1234AA' })
   const courseParticipations = [
     courseParticipationFactory.build({ id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004', prisonNumber: person.prisonNumber }),
