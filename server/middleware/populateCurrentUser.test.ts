@@ -174,7 +174,7 @@ describe('populateCurrentUser', () => {
       userService.getCurrentUserWithDetails.mockRejectedValue(error)
       await populateCurrentUser(userService)(req, res, next)
 
-      expect(logger.error).toBeCalledWith(error, `Failed to retrieve user for: MY_USERNAME`)
+      expect(logger.error).toBeCalledWith(error, 'Failed to retrieve user for: MY_USERNAME')
       expect(next).toHaveBeenCalled()
     })
   })

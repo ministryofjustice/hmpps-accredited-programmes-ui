@@ -26,20 +26,20 @@ export default class NewReferralSelectProgrammePage extends Page {
 
   shouldDisplayOtherCourseInput() {
     cy.get('[data-testid="other-course-option"]').check()
-    cy.get(`input[name="otherCourseName"]`).should('be.visible')
+    cy.get('input[name="otherCourseName"]').should('be.visible')
   }
 
   shouldHaveSelectedCourse(courseName: CourseParticipation['courseName'], isKnownCourse: boolean) {
     if (isKnownCourse) {
       cy.get(`.govuk-radios__input[value="${courseName}"]`).should('be.checked')
     } else {
-      cy.get(`.govuk-radios__input[value="Other"]`).should('be.checked')
+      cy.get('.govuk-radios__input[value="Other"]').should('be.checked')
       cy.get('#otherCourseName').should('have.value', courseName)
     }
   }
 
   shouldNotDisplayOtherCourseInput() {
-    cy.get(`input[name="otherCourseName"]`).should('not.be.visible')
+    cy.get('input[name="otherCourseName"]').should('not.be.visible')
   }
 
   submitSelection(courseParticipation: CourseParticipation, selectedCourseName: Course['name']) {
