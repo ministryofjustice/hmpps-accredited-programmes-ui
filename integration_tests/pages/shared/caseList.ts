@@ -37,4 +37,28 @@ export default class CaseListPage extends Page {
       })
     })
   }
+
+  shouldFilter(
+    programmeStrandSelectedValue: string,
+    referralStatusSelectedValue: string,
+    filteredReferralSummaries: Array<ReferralSummary>,
+  ) {
+    cy.task('stubFindReferralSummaries', {
+      organisationId: 'MRI',
+      queryParameters: {
+        audience: { equalTo: programmeStrandSelectedValue },
+        status: { equalTo: referralStatusSelectedValue },
+      },
+      referralSummaries: filteredReferralSummaries,
+    })
+
+    this.selectSelectItem('programme-strand-select', programmeStrandSelectedValue)
+    this.selectSelectItem('referral-status-select', referralStatusSelectedValue)
+    this.shouldContainButton('Apply filters').click()
+  }
+
+  shouldHaveSelectedFilterValues(programmeStrandSelectedValue: string, referralStatusSelectedValue: string) {
+    this.shouldHaveSelectValue('programme-strand-select', programmeStrandSelectedValue)
+    this.shouldHaveSelectValue('referral-status-select', referralStatusSelectedValue)
+  }
 }
