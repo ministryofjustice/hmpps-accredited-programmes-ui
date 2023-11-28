@@ -91,31 +91,68 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       totalPages: 1,
     }
 
-    beforeEach(() => {
-      provider.addInteraction({
-        state: `Referral summaries exist for an organisation with the ID ${organisationId}`,
-        uponReceiving: `A request for the summaries for an organisation with the ID ${organisationId}`,
-        willRespondWith: {
-          body: Matchers.like(paginatedReferralSummaries),
-          status: 200,
-        },
-        withRequest: {
-          headers: {
-            authorization: `Bearer ${userToken}`,
+    describe('without query parameters', () => {
+      beforeEach(() => {
+        provider.addInteraction({
+          state: `Referral summaries exist for an organisation with the ID ${organisationId}`,
+          uponReceiving: `A request for the summaries for an organisation with the ID ${organisationId}`,
+          willRespondWith: {
+            body: Matchers.like(paginatedReferralSummaries),
+            status: 200,
           },
-          method: 'GET',
-          path: apiPaths.referrals.dashboard({ organisationId }),
-          query: {
-            size: '999',
+          withRequest: {
+            headers: {
+              authorization: `Bearer ${userToken}`,
+            },
+            method: 'GET',
+            path: apiPaths.referrals.dashboard({ organisationId }),
+            query: {
+              size: '999',
+            },
           },
-        },
+        })
+      })
+
+      it('fetches referral summaries for a given organisation ID', async () => {
+        const result = await referralClient.findReferralSummaries(organisationId, {})
+
+        expect(result).toEqual(paginatedReferralSummaries)
       })
     })
 
-    it('fetches referral summaries for a given organisation ID', async () => {
-      const result = await referralClient.findReferralSummaries(organisationId)
+    describe('with query parameters', () => {
+      const query = {
+        audience: 'General offence',
+        status: 'REFERRAL_SUBMITTED',
+      }
 
-      expect(result).toEqual(paginatedReferralSummaries)
+      beforeEach(() => {
+        provider.addInteraction({
+          state: `Referral summaries exist for an organisation with the ID ${organisationId} with query parameters`,
+          uponReceiving: `A request for the summaries for an organisation with the ID ${organisationId} with query parameters`,
+          willRespondWith: {
+            body: Matchers.like(paginatedReferralSummaries),
+            status: 200,
+          },
+          withRequest: {
+            headers: {
+              authorization: `Bearer ${userToken}`,
+            },
+            method: 'GET',
+            path: apiPaths.referrals.dashboard({ organisationId }),
+            query: {
+              ...query,
+              size: '999',
+            },
+          },
+        })
+      })
+
+      it('fetches referral summaries for a given organisation ID with specified query parameters', async () => {
+        const result = await referralClient.findReferralSummaries(organisationId, query)
+
+        expect(result).toEqual(paginatedReferralSummaries)
+      })
     })
   })
 
