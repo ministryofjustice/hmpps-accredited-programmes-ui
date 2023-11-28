@@ -1,6 +1,7 @@
 import type { Request } from 'express'
 
 import DateUtils from './dateUtils'
+import FormUtils from './formUtils'
 import { assessPaths, referPaths } from '../paths'
 import { assessPathBase } from '../paths/assess'
 import type {
@@ -20,7 +21,7 @@ import type {
   ReferralTaskListStatusText,
   TagColour,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendTableRow } from '@govuk-frontend'
+import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class ReferralUtils {
   static applicationSummaryListRows(
@@ -56,6 +57,22 @@ export default class ReferralUtils {
         value: { text: courseOffering.contactEmail },
       },
     ]
+  }
+
+  static audienceSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
+    const audienceValues = [
+      'Extremism offence',
+      'Gang offence',
+      'General offence',
+      'General violence offence',
+      'Intimate partner violence offence',
+      'Sexual offence',
+    ]
+
+    return FormUtils.getSelectItems(
+      Object.fromEntries(audienceValues.map(audience => [audience, audience])),
+      selectedValue,
+    )
   }
 
   static caseListTableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
@@ -111,6 +128,18 @@ export default class ReferralUtils {
 
   static isReadyForSubmission(referral: Referral): boolean {
     return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
+  }
+
+  static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
+    return FormUtils.getSelectItems(
+      {
+        ASSESSMENT_STARTED: 'Assessment started',
+        AWAITING_ASSESSMENT: 'Awaiting assessment',
+        REFERRAL_STARTED: 'Referral started',
+        REFERRAL_SUBMITTED: 'Referral submitted',
+      },
+      selectedValue,
+    )
   }
 
   static statusTagHtml(status: ReferralStatus): string {

@@ -1,4 +1,5 @@
 import CourseUtils from './courseUtils'
+import FormUtils from './formUtils'
 import ReferralUtils from './referralUtils'
 import { assessPaths, referPaths } from '../paths'
 import {
@@ -11,6 +12,8 @@ import {
 } from '../testutils/factories'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
+
+jest.mock('./formUtils')
 
 describe('ReferralUtils', () => {
   describe('applicationSummaryListRows', () => {
@@ -59,6 +62,31 @@ describe('ReferralUtils', () => {
           value: { text: 'nobody-hmp-what@digital.justice.gov.uk' },
         },
       ])
+    })
+  })
+
+  describe('audienceSelectItems', () => {
+    const expectedItems = {
+      'Extremism offence': 'Extremism offence',
+      'Gang offence': 'Gang offence',
+      'General offence': 'General offence',
+      'General violence offence': 'General violence offence',
+      'Intimate partner violence offence': 'Intimate partner violence offence',
+      'Sexual offence': 'Sexual offence',
+    }
+
+    it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
+      ReferralUtils.audienceSelectItems()
+
+      expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
+    })
+
+    describe('when a selected value is provided', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
+        ReferralUtils.audienceSelectItems('General offence')
+
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'General offence')
+      })
     })
   })
 
@@ -185,6 +213,29 @@ describe('ReferralUtils', () => {
       const submittableReferral = referralFactory.submittable().build()
 
       expect(ReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)
+    })
+  })
+
+  describe('statusSelectItems', () => {
+    const expectedItems = {
+      ASSESSMENT_STARTED: 'Assessment started',
+      AWAITING_ASSESSMENT: 'Awaiting assessment',
+      REFERRAL_STARTED: 'Referral started',
+      REFERRAL_SUBMITTED: 'Referral submitted',
+    }
+
+    it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
+      ReferralUtils.statusSelectItems()
+
+      expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
+    })
+
+    describe('when a selected value is provided', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
+        ReferralUtils.statusSelectItems('REFERRAL_SUBMITTED')
+
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'REFERRAL_SUBMITTED')
+      })
     })
   })
 
