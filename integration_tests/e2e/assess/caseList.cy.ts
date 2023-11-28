@@ -20,7 +20,7 @@ context('Referral case lists', () => {
     referralSummaries = [
       referralSummaryFactory.build({ prisonNumber: 'ABC123', status: 'assessment_started' }),
       referralSummaryFactory.build({ prisonNumber: 'ABC789', status: 'referral_started' }),
-      referralSummaryFactory.build({ prisonNumber: 'ABC456', status: 'awaiting_assesment' }),
+      referralSummaryFactory.build({ prisonNumber: 'ABC456', status: 'awaiting_assessment' }),
       referralSummaryFactory.build({ prisonNumber: 'ABC000', status: 'referral_submitted' }),
     ]
 

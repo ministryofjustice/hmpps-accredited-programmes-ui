@@ -24,7 +24,7 @@ type ReferralUpdate = {
   additionalInformation?: Referral['additionalInformation']
 }
 
-type ReferralStatus = 'assessment_started' | 'awaiting_assesment' | 'referral_started' | 'referral_submitted'
+type ReferralStatus = 'assessment_started' | 'awaiting_assessment' | 'referral_started' | 'referral_submitted'
 
 type ReferralSummary = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering

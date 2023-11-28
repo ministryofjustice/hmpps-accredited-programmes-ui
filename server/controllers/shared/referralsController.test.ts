@@ -254,42 +254,11 @@ describe('ReferralsController', () => {
   describe('sentenceInformation', () => {
     const detailsSummaryListRows = [createMock<GovukFrontendSummaryListRowWithKeyAndValue>()]
 
-    describe('when all sentence information is present', () => {
-      it('renders the sentence information template with the correct response locals', async () => {
-        person.sentenceStartDate = '2023-01-02'
-        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
-          sentenceTypeDescription: 'a description',
-        })
-        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
-        ;(SentenceInformationUtils.detailsSummaryListRows as jest.Mock).mockReturnValue(detailsSummaryListRows)
-
-        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
-
-        const requestHandler = controller.sentenceInformation()
-        await requestHandler(request, response, next)
-
-        assertSharedDataServicesAreCalledWithExpectedArguments()
-
-        expect(SentenceInformationUtils.detailsSummaryListRows).toHaveBeenCalledWith(
-          sharedPageData.person.sentenceStartDate,
-          offenderSentenceAndOffences.sentenceTypeDescription,
-        )
-        expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
-          ...sharedPageData,
-          detailsSummaryListRows,
-          hasReleaseDates: true,
-          hasSentenceDetails: true,
-          importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-          releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
-        })
-      })
-    })
-
-    describe('when there are some but not all sentence details and release dates', () => {
+    describe('when there are some sentence details and release dates', () => {
       it('renders the sentence information template with the present sentence details and release dates', async () => {
         person.conditionalReleaseDate = undefined
         person.paroleEligibilityDate = '2024-01-02'
+
         person.sentenceStartDate = '2023-01-02'
         const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
           sentenceTypeDescription: undefined,

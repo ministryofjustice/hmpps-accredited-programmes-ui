@@ -183,7 +183,7 @@ describe('ReferralUtils', () => {
   describe('statusTagHtml', () => {
     it.each([
       ['assessment_started', 'yellow', 'Assessment started'],
-      ['awaiting_assesment', 'orange', 'Awaiting assessment'],
+      ['awaiting_assessment', 'orange', 'Awaiting assessment'],
       ['referral_submitted', 'red', 'Referral submitted'],
       ['referral_started', 'grey', 'referral_started'],
     ])(
