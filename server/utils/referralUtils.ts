@@ -119,7 +119,7 @@ export default class ReferralUtils {
         colour = 'yellow'
         text = 'Assessment started'
         break
-      case 'awaiting_assesment':
+      case 'awaiting_assessment':
         colour = 'orange'
         text = 'Awaiting assessment'
         break

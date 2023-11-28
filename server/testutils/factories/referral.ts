@@ -36,7 +36,7 @@ class ReferralFactory extends Factory<Referral> {
 }
 
 export const status = faker.helpers.arrayElement([
-  'awaiting_assesment',
+  'awaiting_assessment',
   'assessment_started',
   'referral_started',
   'referral_submitted',
