@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker/locale/en_GB'
 import { Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
@@ -17,27 +18,21 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
   })
 
-  const referral = referralFactory
-    .started()
-    .build({ id: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa', offeringId: 'be1d407c-3cb5-4c7e-bfee-d104bc79213f' })
-  const { offeringId, prisonNumber, referrerId } = referral
-  const createdReferralResponse: CreatedReferralResponse = { referralId: referral.id }
-
   describe('create', () => {
+    const createdReferralResponse: CreatedReferralResponse = { referralId: faker.string.uuid() }
+    const prisonNumber = 'A1234AA'
+    const referrerId = faker.string.numeric({ length: 6 })
+
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral can be created',
-        uponReceiving: 'A request to create a referral',
+        state: 'Offering 790a2dfe-7de5-4504-bb9c-83e6e53a6537 exists',
+        uponReceiving: 'A request to create a referral to offering 790a2dfe-7de5-4504-bb9c-83e6e53a6537',
         willRespondWith: {
           body: Matchers.like(createdReferralResponse),
           status: 201,
         },
         withRequest: {
-          body: {
-            offeringId,
-            prisonNumber,
-            referrerId,
-          },
+          body: { offeringId: '790a2dfe-7de5-4504-bb9c-83e6e53a6537', prisonNumber, referrerId },
           headers: {
             authorization: `Bearer ${userToken}`,
           },
@@ -48,17 +43,19 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('creates a referral and returns a referral ID wrapper', async () => {
-      const result = await referralClient.create(offeringId, prisonNumber, referrerId)
+      const result = await referralClient.create('790a2dfe-7de5-4504-bb9c-83e6e53a6537', prisonNumber, referrerId)
 
       expect(result).toEqual(createdReferralResponse)
     })
   })
 
   describe('find', () => {
+    const referral = referralFactory.build({ id: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa' })
+
     beforeEach(() => {
       provider.addInteraction({
-        state: `A referral exists with ID ${referral.id}`,
-        uponReceiving: `A request for referral "${referral.id}"`,
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists',
+        uponReceiving: 'A request for referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
           body: Matchers.like(referral),
           status: 200,
@@ -68,20 +65,19 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${userToken}`,
           },
           method: 'GET',
-          path: apiPaths.referrals.show({ referralId: referral.id }),
+          path: apiPaths.referrals.show({ referralId: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa' }),
         },
       })
     })
 
     it('fetches the given referral', async () => {
-      const result = await referralClient.find(referral.id)
+      const result = await referralClient.find('0c46ed09-170b-4c0f-aee8-a24eeaeeddaa')
 
       expect(result).toEqual(referral)
     })
   })
 
   describe('findReferralSummaries', () => {
-    const organisationId = 'a026cc07-8e0b-40dd-9b66-1b3dacecc63d'
     const paginatedReferralSummaries: Paginated<ReferralSummary> = {
       content: referralSummaryFactory.buildList(2),
       pageIsEmpty: false,
@@ -93,8 +89,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: `Referral summaries exist for an organisation with the ID ${organisationId}`,
-        uponReceiving: `A request for the summaries for an organisation with the ID ${organisationId}`,
+        state: 'Referral summaries exist for organisation a026cc07-8e0b-40dd-9b66-1b3dacecc63d',
+        uponReceiving: "A request for organisation a026cc07-8e0b-40dd-9b66-1b3dacecc63d's referral summaries",
         willRespondWith: {
           body: Matchers.like(paginatedReferralSummaries),
           status: 200,
@@ -104,7 +100,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${userToken}`,
           },
           method: 'GET',
-          path: apiPaths.referrals.dashboard({ organisationId }),
+          path: apiPaths.referrals.dashboard({ organisationId: 'a026cc07-8e0b-40dd-9b66-1b3dacecc63d' }),
           query: {
             size: '999',
           },
@@ -112,8 +108,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
     })
 
-    it('fetches referral summaries for a given organisation ID', async () => {
-      const result = await referralClient.findReferralSummaries(organisationId)
+    it("fetches the given organisation's referral summaries", async () => {
+      const result = await referralClient.findReferralSummaries('a026cc07-8e0b-40dd-9b66-1b3dacecc63d')
 
       expect(result).toEqual(paginatedReferralSummaries)
     })
@@ -122,8 +118,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('submit', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral can be submitted',
-        uponReceiving: 'A request to submit a referral',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status referral_started',
+        uponReceiving: 'A request to submit referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
           status: 204,
         },
@@ -132,13 +128,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${userToken}`,
           },
           method: 'POST',
-          path: apiPaths.referrals.submit({ referralId: referral.id }),
+          path: apiPaths.referrals.submit({ referralId: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa' }),
         },
       })
     })
 
-    it('submits a referral', async () => {
-      await referralClient.submit(referral.id)
+    it('submits the given referral', async () => {
+      await referralClient.submit('0c46ed09-170b-4c0f-aee8-a24eeaeeddaa')
     })
   })
 
@@ -151,8 +147,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral can be updated',
-        uponReceiving: 'A request to update a referral',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status referral_started',
+        uponReceiving: 'A request to update referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
           status: 204,
         },
@@ -164,41 +160,42 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${userToken}`,
           },
           method: 'PUT',
-          path: apiPaths.referrals.update({ referralId: referral.id }),
+          path: apiPaths.referrals.update({ referralId: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa' }),
         },
       })
     })
 
-    it('updates a referral', async () => {
-      await referralClient.update(referral.id, referralUpdate)
+    it('updates the given referral', async () => {
+      await referralClient.update('0c46ed09-170b-4c0f-aee8-a24eeaeeddaa', referralUpdate)
     })
   })
 
   describe('updateStatus', () => {
-    const status = 'referral_submitted'
+    const newStatus = 'referral_submitted'
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral status can be updated',
-        uponReceiving: 'A request to update a referral status',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status referral_started',
+        uponReceiving:
+          "A request to update a referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa's status to referral_submitted",
         willRespondWith: {
           status: 204,
         },
         withRequest: {
           body: {
-            status,
+            status: newStatus,
           },
           headers: {
             authorization: `Bearer ${userToken}`,
           },
           method: 'PUT',
-          path: apiPaths.referrals.updateStatus({ referralId: referral.id }),
+          path: apiPaths.referrals.updateStatus({ referralId: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa' }),
         },
       })
     })
 
     it('updates a referral status', async () => {
-      await referralClient.updateStatus(referral.id, status)
+      await referralClient.updateStatus('0c46ed09-170b-4c0f-aee8-a24eeaeeddaa', newStatus)
     })
   })
 })
