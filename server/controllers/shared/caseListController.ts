@@ -10,15 +10,20 @@ export default class CaseListController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { audience, status } = req.query as Record<string, string>
+
       const { activeCaseLoadId, username } = res.locals.user
 
-      const paginatedReferralSummaries = await this.referralService.getReferralSummaries(username, activeCaseLoadId)
-
-      const tableRows = ReferralUtils.caseListTableRows(paginatedReferralSummaries.content)
+      const paginatedReferralSummaries = await this.referralService.getReferralSummaries(username, activeCaseLoadId, {
+        audience,
+        status,
+      })
 
       return res.render('referrals/caseList/show', {
+        audienceSelectItems: ReferralUtils.audienceSelectItems(audience),
         pageHeading: 'My referrals',
-        tableRows,
+        referralStatusSelectItems: ReferralUtils.statusSelectItems(status),
+        tableRows: ReferralUtils.caseListTableRows(paginatedReferralSummaries.content),
       })
     }
   }
