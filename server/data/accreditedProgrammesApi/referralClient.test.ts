@@ -50,11 +50,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('find', () => {
-    const referral = referralFactory.build({ id: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa' })
+    const referral = referralFactory.started().build({
+      id: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
+    })
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with a status of referral_started',
         uponReceiving: 'A request for referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
           body: Matchers.like(referral),
