@@ -231,7 +231,10 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findOffering', () => {
-    const courseOffering = courseOfferingFactory.build({ id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537' })
+    const courseOffering = courseOfferingFactory.build({
+      id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537',
+      secondaryContactEmail: 'nobody2-bwn@digital.justice.gov.uk',
+    })
 
     beforeEach(() => {
       provider.addInteraction({
@@ -259,7 +262,10 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findParticipation', () => {
-    const courseParticipation = courseParticipationFactory.build({ id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004' })
+    const courseParticipation = courseParticipationFactory.build({
+      id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
+      outcome: courseParticipationOutcomeFactory.incomplete().build(),
+    })
 
     beforeEach(() => {
       provider.addInteraction({
@@ -290,7 +296,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const courseParticipations = [
       courseParticipationFactory.build({
         id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
-        outcome: courseParticipationOutcomeFactory.complete().build(),
+        outcome: courseParticipationOutcomeFactory.incomplete().build(),
         prisonNumber: 'A1234AA',
       }),
       courseParticipationFactory.build({
@@ -327,7 +333,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('updateParticipation', () => {
-    const courseParticipation = courseParticipationFactory.build({ id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004' })
+    const courseParticipation = courseParticipationFactory.build({
+      id: 'cc8eb19e-050a-4aa9-92e0-c654e5cfe281',
+      outcome: courseParticipationOutcomeFactory.incomplete().build(),
+    })
+
     const courseParticipationUpdate: CourseParticipationUpdate = {
       courseName: 'learnings that are good',
       detail: 'nice',
@@ -345,8 +355,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Participation 0cff5da9-1e90-4ee2-a5cb-94dc49c4b004 exists',
-        uponReceiving: 'A request to update participation 0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
+        state: 'Participation cc8eb19e-050a-4aa9-92e0-c654e5cfe281 exists',
+        uponReceiving: 'A request to update participation cc8eb19e-050a-4aa9-92e0-c654e5cfe281',
         willRespondWith: {
           body: Matchers.like(updatedCourseParticipation),
           status: 200,
@@ -357,14 +367,14 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${systemToken}`,
           },
           method: 'PUT',
-          path: apiPaths.participations.update({ courseParticipationId: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004' }),
+          path: apiPaths.participations.update({ courseParticipationId: 'cc8eb19e-050a-4aa9-92e0-c654e5cfe281' }),
         },
       })
     })
 
     it('updates the given participation', async () => {
       const result = await courseClient.updateParticipation(
-        '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
+        'cc8eb19e-050a-4aa9-92e0-c654e5cfe281',
         courseParticipationUpdate,
       )
 

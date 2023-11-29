@@ -25,14 +25,14 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Offering 790a2dfe-7de5-4504-bb9c-83e6e53a6537 exists',
-        uponReceiving: 'A request to create a referral to offering 790a2dfe-7de5-4504-bb9c-83e6e53a6537',
+        state: 'Offering 7fffcc6a-11f8-4713-be35-cf5ff1aee517 exists',
+        uponReceiving: 'A request to create a referral to offering 7fffcc6a-11f8-4713-be35-cf5ff1aee517',
         willRespondWith: {
           body: Matchers.like(createdReferralResponse),
           status: 201,
         },
         withRequest: {
-          body: { offeringId: '790a2dfe-7de5-4504-bb9c-83e6e53a6537', prisonNumber, referrerId },
+          body: { offeringId: '7fffcc6a-11f8-4713-be35-cf5ff1aee517', prisonNumber, referrerId },
           headers: {
             authorization: `Bearer ${userToken}`,
           },
@@ -43,7 +43,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('creates a referral and returns a referral ID wrapper', async () => {
-      const result = await referralClient.create('790a2dfe-7de5-4504-bb9c-83e6e53a6537', prisonNumber, referrerId)
+      const result = await referralClient.create('7fffcc6a-11f8-4713-be35-cf5ff1aee517', prisonNumber, referrerId)
 
       expect(result).toEqual(createdReferralResponse)
     })
@@ -86,7 +86,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 10,
-        totalElements: 2,
+        totalElements: 1,
         totalPages: 1,
       }
 
@@ -112,7 +112,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       })
 
       it("fetches the given organisation's referral summaries", async () => {
-        const result = await referralClient.findReferralSummaries('BWN', {})
+        const result = await referralClient.findReferralSummaries('BWN')
 
         expect(result).toEqual(paginatedReferralSummaries)
       })
