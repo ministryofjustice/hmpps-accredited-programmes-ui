@@ -4,7 +4,12 @@ import { pactWith } from 'jest-pact'
 import CourseClient from './courseClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
-import { courseFactory, courseOfferingFactory, courseParticipationFactory } from '../../testutils/factories'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  courseParticipationFactory,
+  courseParticipationOutcomeFactory,
+} from '../../testutils/factories'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
@@ -83,8 +88,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('destroyParticipation', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Course participation 0cff5da9-1e90-4ee2-a5cb-94dc49c4b004 exists',
-        uponReceiving: 'A request to destroy participation 0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
+        state: 'Participation 882a5a16-bcb8-4d8b-9692-a3006dcecffb exists',
+        uponReceiving: 'A request to destroy participation 882a5a16-bcb8-4d8b-9692-a3006dcecffb',
         willRespondWith: {
           status: 204,
         },
@@ -93,13 +98,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             authorization: `Bearer ${systemToken}`,
           },
           method: 'DELETE',
-          path: apiPaths.participations.delete({ courseParticipationId: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004' }),
+          path: apiPaths.participations.delete({ courseParticipationId: '882a5a16-bcb8-4d8b-9692-a3006dcecffb' }),
         },
       })
     })
 
     it('destroys the given participation', async () => {
-      await courseClient.destroyParticipation('0cff5da9-1e90-4ee2-a5cb-94dc49c4b004')
+      await courseClient.destroyParticipation('882a5a16-bcb8-4d8b-9692-a3006dcecffb')
     })
   })
 
@@ -279,10 +284,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const courseParticipations = [
       courseParticipationFactory.build({
         id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
+        outcome: courseParticipationOutcomeFactory.complete().build(),
         prisonNumber: 'A1234AA',
       }),
       courseParticipationFactory.build({
         id: 'eb357e5d-5416-43bf-a8d2-0dc8fd92162e',
+        outcome: courseParticipationOutcomeFactory.incomplete().build(),
         prisonNumber: 'A1234AA',
       }),
     ]
