@@ -1,9 +1,44 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% extends "../../partials/layout.njk" %}
 
 {% block content %}
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="filters">
+    <h2 class="govuk-heading-m">Filters</h2>
+    <form class="form-controls">
+      {{ govukSelect({
+        id: "audience",
+        name: "audience",
+        label: {
+          text: "Programme strand"
+        },
+        items: audienceSelectItems,
+         attributes: {
+          "data-testid": "programme-strand-select"
+        }
+      }) }}
+
+      {{ govukSelect({
+        id: "status",
+        name: "status",
+        label: {
+          text: "Referral status"
+        },
+        items: referralStatusSelectItems,
+        attributes: {
+          "data-testid": "referral-status-select"
+        }
+      }) }}
+
+      {{ govukButton({
+        text: "Apply filters"
+      }) }}
+    </form>
+  </div>
 
   {{ govukTable({
     attributes: {
@@ -24,6 +59,12 @@
       },
       {
         text: "Programme name",
+        attributes: {
+          "aria-sort": "none"
+        }
+      },
+      {
+        text: "Programme strand",
         attributes: {
           "aria-sort": "none"
         }

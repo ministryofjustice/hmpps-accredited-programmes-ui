@@ -31,9 +31,34 @@ export default class CaseListPage extends Page {
             summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
           )
           cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', summary.courseName)
-          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.html', ReferralUtils.statusTagHtml(summary.status))
+          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', summary.audiences.join(', '))
+          cy.get('.govuk-table__cell:nth-of-type(5)').should('have.html', ReferralUtils.statusTagHtml(summary.status))
         })
       })
     })
+  }
+
+  shouldFilter(
+    programmeStrandSelectedValue: string,
+    referralStatusSelectedValue: string,
+    filteredReferralSummaries: Array<ReferralSummary>,
+  ) {
+    cy.task('stubFindReferralSummaries', {
+      organisationId: 'MRI',
+      queryParameters: {
+        audience: { equalTo: programmeStrandSelectedValue },
+        status: { equalTo: referralStatusSelectedValue },
+      },
+      referralSummaries: filteredReferralSummaries,
+    })
+
+    this.selectSelectItem('programme-strand-select', programmeStrandSelectedValue)
+    this.selectSelectItem('referral-status-select', referralStatusSelectedValue)
+    this.shouldContainButton('Apply filters').click()
+  }
+
+  shouldHaveSelectedFilterValues(programmeStrandSelectedValue: string, referralStatusSelectedValue: string) {
+    this.shouldHaveSelectValue('programme-strand-select', programmeStrandSelectedValue)
+    this.shouldHaveSelectValue('referral-status-select', referralStatusSelectedValue)
   }
 }

@@ -28,6 +28,7 @@ export default {
   stubFindReferralSummaries: (args: {
     organisationId: string
     referralSummaries: Array<ReferralSummary>
+    queryParameters?: Record<string, string>
   }): SuperAgentRequest =>
     stubFor({
       request: {
@@ -36,6 +37,7 @@ export default {
           size: {
             equalTo: '999',
           },
+          ...args.queryParameters,
         },
         urlPath: apiPaths.referrals.dashboard({ organisationId: 'MRI' }),
       },

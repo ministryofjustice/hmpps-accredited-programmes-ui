@@ -51,6 +51,10 @@ export default abstract class Page {
     cy.get(`.govuk-radios__input[name="${name}"][value="${value}"]`).check()
   }
 
+  selectSelectItem(testId: string, value: string): void {
+    cy.get(`[data-testid="${testId}"]`).select(value)
+  }
+
   shouldContainAudienceTags(audienceTags: CoursePresenter['audienceTags']) {
     cy.get('.govuk-main-wrapper').within(() => {
       cy.get('p:first-of-type').then(tagContainerElement => {
@@ -375,6 +379,10 @@ export default abstract class Page {
       const { actual, expected } = Helpers.parseHtml(detailsElement, detailsText)
       expect(actual).to.equal(expected)
     })
+  }
+
+  shouldHaveSelectValue(testId: string, value: string): void {
+    cy.get(`[data-testid="${testId}"]`).should('have.value', value)
   }
 
   shouldNotContainButtonLink(): void {

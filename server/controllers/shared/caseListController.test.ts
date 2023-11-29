@@ -53,11 +53,41 @@ describe('CaseListController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
+        audienceSelectItems: ReferralUtils.audienceSelectItems(),
         pageHeading: 'My referrals',
+        referralStatusSelectItems: ReferralUtils.statusSelectItems(),
         tableRows: ReferralUtils.caseListTableRows(paginatedReferralSummaries.content),
       })
 
-      expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId)
+      expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
+        audience: undefined,
+        status: undefined,
+      })
+    })
+
+    describe('when there are query parameters', () => {
+      it('renders the show template with the correct response locals', async () => {
+        request.path = assessPaths.caseList.show({})
+        request.query = {
+          audience: 'General offence',
+          status: 'REFERRAL_SUBMITTED',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
+          audienceSelectItems: ReferralUtils.audienceSelectItems('General offence'),
+          pageHeading: 'My referrals',
+          referralStatusSelectItems: ReferralUtils.statusSelectItems('REFERRAL_SUBMITTED'),
+          tableRows: ReferralUtils.caseListTableRows(paginatedReferralSummaries.content),
+        })
+
+        expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
+          audience: 'General offence',
+          status: 'REFERRAL_SUBMITTED',
+        })
+      })
     })
   })
 })

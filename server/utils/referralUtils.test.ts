@@ -1,4 +1,5 @@
 import CourseUtils from './courseUtils'
+import FormUtils from './formUtils'
 import ReferralUtils from './referralUtils'
 import { assessPaths, referPaths } from '../paths'
 import {
@@ -11,6 +12,8 @@ import {
 } from '../testutils/factories'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
+
+jest.mock('./formUtils')
 
 describe('ReferralUtils', () => {
   describe('applicationSummaryListRows', () => {
@@ -62,10 +65,36 @@ describe('ReferralUtils', () => {
     })
   })
 
+  describe('audienceSelectItems', () => {
+    const expectedItems = {
+      'Extremism offence': 'Extremism offence',
+      'Gang offence': 'Gang offence',
+      'General offence': 'General offence',
+      'General violence offence': 'General violence offence',
+      'Intimate partner violence offence': 'Intimate partner violence offence',
+      'Sexual offence': 'Sexual offence',
+    }
+
+    it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
+      ReferralUtils.audienceSelectItems()
+
+      expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
+    })
+
+    describe('when a selected value is provided', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
+        ReferralUtils.audienceSelectItems('General offence')
+
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'General offence')
+      })
+    })
+  })
+
   describe('caseListTableRows', () => {
     it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
       const referralSummaries = [
         referralSummaryFactory.build({
+          audiences: ['General offence'],
           courseName: 'Test Course 1',
           id: 'referral-123',
           prisonNumber: 'ABC1234',
@@ -73,6 +102,7 @@ describe('ReferralUtils', () => {
           submittedOn: undefined,
         }),
         referralSummaryFactory.build({
+          audiences: ['General offence', 'Extremism offence'],
           courseName: 'Test Course 2',
           id: 'referral-456',
           prisonNumber: 'DEF1234',
@@ -93,6 +123,9 @@ describe('ReferralUtils', () => {
           },
           { text: 'Test Course 1' },
           {
+            text: 'General offence',
+          },
+          {
             attributes: { 'data-sort-value': 'referral_started' },
             html: ReferralUtils.statusTagHtml('referral_started'),
           },
@@ -107,6 +140,9 @@ describe('ReferralUtils', () => {
             text: '1 January 2021',
           },
           { text: 'Test Course 2' },
+          {
+            text: 'General offence, Extremism offence',
+          },
           {
             attributes: { 'data-sort-value': 'referral_submitted' },
             html: ReferralUtils.statusTagHtml('referral_submitted'),
@@ -177,6 +213,29 @@ describe('ReferralUtils', () => {
       const submittableReferral = referralFactory.submittable().build()
 
       expect(ReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)
+    })
+  })
+
+  describe('statusSelectItems', () => {
+    const expectedItems = {
+      ASSESSMENT_STARTED: 'Assessment started',
+      AWAITING_ASSESSMENT: 'Awaiting assessment',
+      REFERRAL_STARTED: 'Referral started',
+      REFERRAL_SUBMITTED: 'Referral submitted',
+    }
+
+    it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
+      ReferralUtils.statusSelectItems()
+
+      expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
+    })
+
+    describe('when a selected value is provided', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
+        ReferralUtils.statusSelectItems('REFERRAL_SUBMITTED')
+
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'REFERRAL_SUBMITTED')
+      })
     })
   })
 
