@@ -195,7 +195,10 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('findOfferings', () => {
     const courseOfferings = [
       courseOfferingFactory.build({ id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537' }),
-      courseOfferingFactory.build({ id: '7fffcc6a-11f8-4713-be35-cf5ff1aee517' }),
+      courseOfferingFactory.build({
+        id: '7fffcc6a-11f8-4713-be35-cf5ff1aee517',
+        secondaryContactEmail: 'nobody2-mdi@digital.justice.gov.uk',
+      }),
     ]
 
     beforeEach(() => {
