@@ -4,7 +4,12 @@ import { pactWith } from 'jest-pact'
 import CourseClient from './courseClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
-import { courseFactory, courseOfferingFactory, courseParticipationFactory } from '../../testutils/factories'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  courseParticipationFactory,
+  courseParticipationOutcomeFactory,
+} from '../../testutils/factories'
 import type { CourseParticipationUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
@@ -279,10 +284,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const courseParticipations = [
       courseParticipationFactory.build({
         id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
+        outcome: courseParticipationOutcomeFactory.complete().build(),
         prisonNumber: 'A1234AA',
       }),
       courseParticipationFactory.build({
         id: 'eb357e5d-5416-43bf-a8d2-0dc8fd92162e',
+        outcome: courseParticipationOutcomeFactory.incomplete().build(),
         prisonNumber: 'A1234AA',
       }),
     ]
