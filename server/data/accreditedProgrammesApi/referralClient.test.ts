@@ -56,7 +56,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with a status of referral_started',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status REFERRAL_STARTED',
         uponReceiving: 'A request for referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
           body: Matchers.like(referral),
@@ -167,7 +167,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('submit', () => {
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status referral_started',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status REFERRAL_STARTED',
         uponReceiving: 'A request to submit referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
           status: 204,
@@ -196,7 +196,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status referral_started',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status REFERRAL_STARTED',
         uponReceiving: 'A request to update referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
           status: 204,
@@ -224,7 +224,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     beforeEach(() => {
       provider.addInteraction({
-        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status referral_started',
+        state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status REFERRAL_STARTED',
         uponReceiving:
           "A request to update a referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa's status to referral_submitted",
         willRespondWith: {
