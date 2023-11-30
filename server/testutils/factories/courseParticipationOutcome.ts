@@ -14,12 +14,14 @@ const outcomeTypes = {
     return {
       status: 'complete',
       yearCompleted: FactoryHelpers.optionalArrayElement(randomValidYear()),
+      yearStarted: undefined,
     }
   },
 
   incomplete(): CourseParticipationOutcome {
     return {
       status: 'incomplete',
+      yearCompleted: undefined,
       yearStarted: FactoryHelpers.optionalArrayElement(randomValidYear()),
     }
   },
