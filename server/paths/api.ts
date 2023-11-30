@@ -14,6 +14,9 @@ const updateStatusPath = referralPath.path('status')
 const submitPath = referralPath.path('submit')
 const dashboardPath = referralsPath.path('organisation/:organisationId/dashboard')
 
+const organisationsPath = path('/organisations')
+const coursesByOrganisationPath = organisationsPath.path(':organisationId/courses')
+
 const participationsByPersonPath = path('/people/:prisonNumber/course-participations')
 const participationsPath = path('/course-participations')
 const participationPath = participationsPath.path(':courseParticipationId')
@@ -28,6 +31,9 @@ export default {
   offerings: {
     course: courseByOfferingPath,
     show: offeringPath,
+  },
+  organisations: {
+    courses: coursesByOrganisationPath,
   },
   participations: {
     create: participationsPath,

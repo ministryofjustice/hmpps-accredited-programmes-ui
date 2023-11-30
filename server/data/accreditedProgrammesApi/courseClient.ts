@@ -54,6 +54,12 @@ export default class CourseClient {
     })) as Array<Course['name']>
   }
 
+  async findCoursesByOrganisation(organisationId: string): Promise<Array<Course>> {
+    return (await this.restClient.get({
+      path: apiPaths.organisations.courses({ organisationId }),
+    })) as Array<Course>
+  }
+
   async findOffering(courseOfferingId: CourseOffering['id']): Promise<CourseOffering> {
     return (await this.restClient.get({
       path: apiPaths.offerings.show({ courseOfferingId }),
