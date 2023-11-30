@@ -1,11 +1,13 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import createError from 'http-errors'
+import { when } from 'jest-when'
 
 import CaseListController from './caseListController'
 import { assessPaths } from '../../paths'
-import type { ReferralService } from '../../services'
-import { referralSummaryFactory } from '../../testutils/factories'
+import type { CourseService, ReferralService } from '../../services'
+import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
 
@@ -14,11 +16,13 @@ jest.mock('../../utils/pathUtils')
 describe('CaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
+  const courseNameSlug = 'lime-course'
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const courseService = createMock<CourseService>({})
   const referralService = createMock<ReferralService>({})
   let paginatedReferralSummaries: Paginated<ReferralSummary>
 
@@ -37,7 +41,7 @@ describe('CaseListController', () => {
 
     referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
 
-    controller = new CaseListController(referralService)
+    controller = new CaseListController(courseService, referralService)
 
     request = createMock<Request>({ user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
@@ -48,13 +52,15 @@ describe('CaseListController', () => {
   })
 
   describe('filter', () => {
-    const redirectPathBase = assessPaths.caseList.show({})
+    const redirectPathBase = assessPaths.caseList.show({ courseName: courseNameSlug })
     const pathWithQuery = 'path-with-query'
     const audience = 'General violence offence'
     const status = 'ASSESSMENT_STARTED'
 
     beforeEach(() => {
       ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
+
+      request.params = { courseName: courseNameSlug }
     })
 
     describe('when `req.body.audience` and `req.body.status` are provided', () => {
@@ -114,29 +120,37 @@ describe('CaseListController', () => {
   })
 
   describe('show', () => {
-    it('renders the show template with the correct response locals', async () => {
-      request.path = assessPaths.caseList.show({})
+    const courses = [courseFactory.build({ name: 'Lime Course' }), courseFactory.build({ name: 'Orange Course' })]
+    const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
 
+    beforeEach(() => {
+      request.params = { courseName: courseNameSlug }
+
+      when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
+    })
+
+    it('renders the show template with the correct response locals', async () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
-        action: assessPaths.caseList.filter({}),
+        action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(),
-        pageHeading: 'My referrals',
+        pageHeading: 'Lime Course (LC)',
+        primaryNavigationItems: CaseListUtils.caseListPrimaryNavigationItems(request.path, sortedCourses),
         referralStatusSelectItems: CaseListUtils.statusSelectItems(),
         tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
       })
 
       expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
         audience: undefined,
+        courseName: 'Lime Course',
         status: undefined,
       })
     })
 
     describe('when there are query parameters', () => {
       it('renders the show template with the correct response locals', async () => {
-        request.path = assessPaths.caseList.show({})
         request.query = {
           status: 'referral submitted',
           strand: 'general offence',
@@ -146,17 +160,31 @@ describe('CaseListController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
-          action: assessPaths.caseList.filter({}),
+          action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
           audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
-          pageHeading: 'My referrals',
+          pageHeading: 'Lime Course (LC)',
+          primaryNavigationItems: CaseListUtils.caseListPrimaryNavigationItems(request.path, sortedCourses),
           referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
           tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
         })
 
         expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: 'General offence',
+          courseName: 'Lime Course',
           status: 'REFERRAL_SUBMITTED',
         })
+      })
+    })
+
+    describe('when the course name is not found', () => {
+      it('throws a 404 error', async () => {
+        request.params = { courseName: 'not-a-course' }
+
+        const requestHandler = controller.show()
+        const expectedError = createError(404, 'Not A Course not found.')
+
+        await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
+        expect(referralService.getReferralSummaries).not.toHaveBeenCalled()
       })
     })
   })

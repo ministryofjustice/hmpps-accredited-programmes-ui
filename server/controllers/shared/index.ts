@@ -5,7 +5,7 @@ import ReferralsController from './referralsController'
 import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
-  const caseListController = new CaseListController(services.referralService)
+  const caseListController = new CaseListController(services.courseService, services.referralService)
   const referralsController = new ReferralsController(
     services.courseService,
     services.organisationService,

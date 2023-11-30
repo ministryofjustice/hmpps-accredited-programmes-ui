@@ -1,7 +1,7 @@
 import { path } from 'static-path'
 
 const assessPathBase = path('/assess')
-const caseListPath = assessPathBase.path('referrals/case-list')
+const caseListPath = assessPathBase.path('referrals/:courseName/case-list')
 const referralShowPathBase = assessPathBase.path('referrals/:referralId')
 
 export default {
