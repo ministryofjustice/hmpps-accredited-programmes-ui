@@ -215,6 +215,21 @@ describe('CourseService', () => {
     })
   })
 
+  describe('getCoursesByOrganisation', () => {
+    it('returns a list of courses for a given organisation', async () => {
+      const organisationId = faker.string.uuid()
+      const courses = courseFactory.buildList(3)
+      when(courseClient.findCoursesByOrganisation).calledWith(organisationId).mockResolvedValue(courses)
+
+      const result = await service.getCoursesByOrganisation(username, organisationId)
+
+      expect(result).toEqual(courses)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.findCoursesByOrganisation).toHaveBeenCalledWith(organisationId)
+    })
+  })
+
   describe('getOfferingsByCourse', () => {
     it('returns a list of offerings for a given course', async () => {
       const course = courseFactory.build()
