@@ -125,6 +125,12 @@ type ReferralTaskListSection = {
   items: Array<ReferralTaskListItem>
 }
 
+type MojFrontendPrimaryNavigationItem = {
+  active: boolean
+  href: string
+  text: string
+}
+
 type MojFrontendSideNavigationItem = {
   active: boolean
   href: string
@@ -147,6 +153,7 @@ export type {
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
+  MojFrontendPrimaryNavigationItem,
   MojFrontendSideNavigationItem,
   OffenceDetails,
   OffenceHistory,
