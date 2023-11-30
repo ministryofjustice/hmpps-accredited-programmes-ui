@@ -31,6 +31,24 @@ export default class CaseListController {
     }
   }
 
+  indexRedirect(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+      const { activeCaseLoadId, username } = res.locals.user
+
+      const courses = await this.courseService.getCoursesByOrganisation(username, activeCaseLoadId)
+
+      if (!courses.length) {
+        throw createError(404, 'No courses found.')
+      }
+
+      const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+      const firstCourseName = StringUtils.convertToUrlSlug(sortedCourses[0].name)
+
+      res.redirect(assessPaths.caseList.show({ courseName: firstCourseName }))
+    }
+  }
+
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)

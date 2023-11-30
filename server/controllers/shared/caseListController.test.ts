@@ -28,6 +28,8 @@ describe('CaseListController', () => {
 
   let controller: CaseListController
 
+  const courses = [courseFactory.build({ name: 'Orange Course' }), courseFactory.build({ name: 'Lime Course' })]
+
   beforeEach(() => {
     const referralSummaries = referralSummaryFactory.buildList(3)
     paginatedReferralSummaries = {
@@ -49,6 +51,28 @@ describe('CaseListController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
+  })
+
+  describe('indexRedirect', () => {
+    it('redirects to the first course case list page', async () => {
+      when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
+
+      const requestHandler = controller.indexRedirect()
+      await requestHandler(request, response, next)
+
+      expect(response.redirect).toHaveBeenCalledWith(assessPaths.caseList.show({ courseName: 'lime-course' }))
+    })
+
+    describe('when there are no courses', () => {
+      it('throws a 404 error', async () => {
+        when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue([])
+
+        const requestHandler = controller.indexRedirect()
+        const expectedError = createError(404, 'No courses found.')
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
+      })
+    })
   })
 
   describe('filter', () => {
@@ -120,7 +144,6 @@ describe('CaseListController', () => {
   })
 
   describe('show', () => {
-    const courses = [courseFactory.build({ name: 'Lime Course' }), courseFactory.build({ name: 'Orange Course' })]
     const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
 
     beforeEach(() => {
