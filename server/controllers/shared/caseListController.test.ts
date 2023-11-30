@@ -58,7 +58,7 @@ describe('CaseListController', () => {
     })
 
     describe('when `req.body.audience` and `req.body.status` are provided', () => {
-      it('asks PathUtils to generate a path with both as query params and redirects to the result', async () => {
+      it('asks PathUtils to generate a path with both as query params - audience renamed "strand" - and redirects to the result', async () => {
         request.body.audience = audience
         request.body.status = status
 
@@ -66,7 +66,7 @@ describe('CaseListController', () => {
         await requestHandler(request, response, next)
 
         expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [
-          { key: 'audience', value: audience },
+          { key: 'strand', value: audience },
           { key: 'status', value: status },
         ])
         expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
@@ -87,16 +87,14 @@ describe('CaseListController', () => {
     })
 
     describe('when `req.body.status` is undefined', () => {
-      it('asks PathUtils to generate a path with audience as a query param and redirects to the result', async () => {
+      it('asks PathUtils to generate a path with audience as a query param - renamed "strand" - and redirects to the result', async () => {
         request.body.audience = audience
         request.body.status = undefined
 
         const requestHandler = controller.filter()
         await requestHandler(request, response, next)
 
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [
-          { key: 'audience', value: audience },
-        ])
+        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [{ key: 'strand', value: audience }])
         expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
       })
     })
@@ -140,8 +138,8 @@ describe('CaseListController', () => {
       it('renders the show template with the correct response locals', async () => {
         request.path = assessPaths.caseList.show({})
         request.query = {
-          audience: 'General offence',
           status: 'REFERRAL_SUBMITTED',
+          strand: 'General offence',
         }
 
         const requestHandler = controller.show()

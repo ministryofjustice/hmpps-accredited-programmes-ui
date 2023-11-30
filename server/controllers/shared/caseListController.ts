@@ -15,7 +15,7 @@ export default class CaseListController {
       const queryParams: Array<QueryParam> = []
 
       if (req.body.audience) {
-        queryParams.push({ key: 'audience', value: req.body.audience })
+        queryParams.push({ key: 'strand', value: req.body.audience })
       }
 
       if (req.body.status) {
@@ -30,7 +30,7 @@ export default class CaseListController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { audience, status } = req.query as Record<string, string>
+      const { status, strand: audience } = req.query as Record<string, string>
 
       const { activeCaseLoadId, username } = res.locals.user
 
