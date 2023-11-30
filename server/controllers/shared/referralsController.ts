@@ -7,8 +7,8 @@ import {
   DateUtils,
   OffenceUtils,
   PersonUtils,
-  ReferralUtils,
   SentenceInformationUtils,
+  ShowReferralUtils,
   TypeUtils,
 } from '../../utils'
 import { releaseDateFields } from '../../utils/personUtils'
@@ -170,12 +170,15 @@ export default class ReferralsController {
     const coursePresenter = CourseUtils.presentCourse(course)
 
     return {
-      courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
-      navigationItems: ReferralUtils.viewReferralNavigationItems(req.path, referral.id),
+      courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
+        coursePresenter,
+        organisation.name,
+      ),
+      navigationItems: ShowReferralUtils.viewReferralNavigationItems(req.path, referral.id),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       person,
       referral,
-      submissionSummaryListRows: ReferralUtils.submissionSummaryListRows(referral),
+      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral),
     }
   }
 }

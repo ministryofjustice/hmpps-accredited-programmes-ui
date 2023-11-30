@@ -1,5 +1,5 @@
 import { referPaths } from '../../../../server/paths'
-import { CourseUtils, ReferralUtils } from '../../../../server/utils'
+import { CourseUtils, NewReferralUtils } from '../../../../server/utils'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { Course, CourseOffering, Organisation, Referral } from '@accredited-programmes/models'
@@ -40,7 +40,7 @@ export default class NewReferralTaskListPage extends Page {
   }
 
   shouldContainTaskList() {
-    const taskListSections = ReferralUtils.taskListSections(this.referral)
+    const taskListSections = NewReferralUtils.taskListSections(this.referral)
 
     taskListSections.forEach((section, sectionIndex) => {
       cy.get(`.moj-task-list > li:nth-child(${sectionIndex + 1})`).within(() => {

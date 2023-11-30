@@ -15,12 +15,12 @@ import {
   referralFactory,
 } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
-import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../../utils'
+import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
 import type { CoursePresenter, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 jest.mock('../../../utils/courseUtils')
 jest.mock('../../../utils/formUtils')
-jest.mock('../../../utils/referralUtils')
+jest.mock('../../../utils/referrals/newReferralUtils')
 
 describe('NewReferralsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -181,7 +181,7 @@ describe('NewReferralsController', () => {
         organisation,
         pageHeading: 'Make a referral',
         person,
-        taskListSections: ReferralUtils.taskListSections(draftReferral),
+        taskListSections: NewReferralUtils.taskListSections(draftReferral),
       })
     })
 
@@ -240,7 +240,7 @@ describe('NewReferralsController', () => {
 
       request.params.referralId = referralId
       referralService.getReferral.mockResolvedValue(submittableReferral)
-      ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
+      ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
 
       TypeUtils.assertHasUser(request)
 
@@ -276,7 +276,7 @@ describe('NewReferralsController', () => {
       )
       expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
         additionalInformation: submittableReferral.additionalInformation,
-        applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
+        applicationSummaryListRows: NewReferralUtils.applicationSummaryListRows(
           courseOffering,
           coursePresenter,
           organisation,
@@ -308,7 +308,7 @@ describe('NewReferralsController', () => {
       it('redirects to the show referral action', async () => {
         request.params.referralId = draftReferral.id
         referralService.getReferral.mockResolvedValue(draftReferral)
-        ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
+        ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
 
         TypeUtils.assertHasUser(request)
 
@@ -331,7 +331,7 @@ describe('NewReferralsController', () => {
       request.body.confirmation = 'true'
 
       request.params.referralId = referralId
-      ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
+      ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
 
       const requestHandler = controller.submit()
       await requestHandler(request, response, next)
@@ -376,7 +376,7 @@ describe('NewReferralsController', () => {
 
         referralService.getReferral.mockResolvedValue(draftReferral)
         request.params.referralId = referralId
-        ;(ReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
+        ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)

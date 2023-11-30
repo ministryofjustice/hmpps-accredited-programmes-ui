@@ -6,7 +6,7 @@ import CaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { referralSummaryFactory } from '../../testutils/factories'
-import { PathUtils, ReferralUtils } from '../../utils'
+import { CaseListUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
 
 jest.mock('../../utils/pathUtils')
@@ -122,10 +122,10 @@ describe('CaseListController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
         action: assessPaths.caseList.filter({}),
-        audienceSelectItems: ReferralUtils.audienceSelectItems(),
+        audienceSelectItems: CaseListUtils.audienceSelectItems(),
         pageHeading: 'My referrals',
-        referralStatusSelectItems: ReferralUtils.statusSelectItems(),
-        tableRows: ReferralUtils.caseListTableRows(paginatedReferralSummaries.content),
+        referralStatusSelectItems: CaseListUtils.statusSelectItems(),
+        tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
       })
 
       expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
@@ -147,10 +147,10 @@ describe('CaseListController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
           action: assessPaths.caseList.filter({}),
-          audienceSelectItems: ReferralUtils.audienceSelectItems('general offence'),
+          audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
           pageHeading: 'My referrals',
-          referralStatusSelectItems: ReferralUtils.statusSelectItems('referral submitted'),
-          tableRows: ReferralUtils.caseListTableRows(paginatedReferralSummaries.content),
+          referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
+          tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
         })
 
         expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {

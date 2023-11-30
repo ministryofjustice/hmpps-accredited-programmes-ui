@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { referPaths } from '../../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../../services'
-import { CourseUtils, FormUtils, PersonUtils, ReferralUtils, TypeUtils } from '../../../utils'
+import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
 import type { CreatedReferralResponse } from '@accredited-programmes/models'
 
 export default class NewReferralsController {
@@ -27,7 +27,7 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      if (!ReferralUtils.isReadyForSubmission(referral)) {
+      if (!NewReferralUtils.isReadyForSubmission(referral)) {
         return res.redirect(referPaths.new.show({ referralId }))
       }
 
@@ -54,7 +54,7 @@ export default class NewReferralsController {
 
       return res.render('referrals/new/checkAnswers', {
         additionalInformation: referral.additionalInformation,
-        applicationSummaryListRows: ReferralUtils.applicationSummaryListRows(
+        applicationSummaryListRows: NewReferralUtils.applicationSummaryListRows(
           courseOffering,
           coursePresenter,
           organisation,
@@ -154,7 +154,7 @@ export default class NewReferralsController {
         organisation,
         pageHeading: 'Make a referral',
         person,
-        taskListSections: ReferralUtils.taskListSections(referral),
+        taskListSections: NewReferralUtils.taskListSections(referral),
       })
     }
   }
@@ -225,7 +225,7 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      if (!ReferralUtils.isReadyForSubmission(referral)) {
+      if (!NewReferralUtils.isReadyForSubmission(referral)) {
         return res.redirect(referPaths.new.show({ referralId }))
       }
 
