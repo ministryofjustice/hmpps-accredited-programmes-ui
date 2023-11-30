@@ -35,8 +35,8 @@ export default class CaseListController {
       const { activeCaseLoadId, username } = res.locals.user
 
       const paginatedReferralSummaries = await this.referralService.getReferralSummaries(username, activeCaseLoadId, {
-        audience,
-        status,
+        audience: ReferralUtils.uiToApiAudienceQueryParam(audience),
+        status: ReferralUtils.uiToApiStatusQueryParam(status),
       })
 
       return res.render('referrals/caseList/show', {

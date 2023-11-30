@@ -138,8 +138,8 @@ describe('CaseListController', () => {
       it('renders the show template with the correct response locals', async () => {
         request.path = assessPaths.caseList.show({})
         request.query = {
-          status: 'REFERRAL_SUBMITTED',
-          strand: 'General offence',
+          status: 'referral submitted',
+          strand: 'general offence',
         }
 
         const requestHandler = controller.show()
@@ -147,9 +147,9 @@ describe('CaseListController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
           action: assessPaths.caseList.filter({}),
-          audienceSelectItems: ReferralUtils.audienceSelectItems('General offence'),
+          audienceSelectItems: ReferralUtils.audienceSelectItems('general offence'),
           pageHeading: 'My referrals',
-          referralStatusSelectItems: ReferralUtils.statusSelectItems('REFERRAL_SUBMITTED'),
+          referralStatusSelectItems: ReferralUtils.statusSelectItems('referral submitted'),
           tableRows: ReferralUtils.caseListTableRows(paginatedReferralSummaries.content),
         })
 
