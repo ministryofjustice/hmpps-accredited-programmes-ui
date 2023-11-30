@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# script/generateApiTypes/prisonerSearch: Generate types for the Prisoner Search.
+
+npx openapi-typescript https://prisoner-search-dev.prison.service.justice.gov.uk/v3/api-docs > server/@types/prisonerSearch/imported/index.d.ts
