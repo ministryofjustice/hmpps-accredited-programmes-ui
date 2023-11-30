@@ -10,6 +10,7 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   const { referralsController, caseListController } = controllers
 
+  get(assessPaths.caseList.index.pattern, caseListController.assessIndex())
   get(assessPaths.caseList.show.pattern, caseListController.show())
   post(assessPaths.caseList.filter.pattern, caseListController.filter())
 

@@ -1,13 +1,15 @@
 import { path } from 'static-path'
 
 const assessPathBase = path('/assess')
-const caseListPath = assessPathBase.path('referrals/:courseName/case-list')
+const caseListIndex = assessPathBase.path('referrals/case-list')
+const courseCaseListPath = assessPathBase.path('referrals/:courseName/case-list')
 const referralShowPathBase = assessPathBase.path('referrals/:referralId')
 
 export default {
   caseList: {
-    filter: caseListPath,
-    show: caseListPath,
+    filter: courseCaseListPath,
+    index: caseListIndex,
+    show: courseCaseListPath,
   },
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),
