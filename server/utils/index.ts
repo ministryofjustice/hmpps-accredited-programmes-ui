@@ -9,6 +9,7 @@ import FormUtils from './formUtils'
 import nunjucksSetup from './nunjucksSetup'
 import OffenceUtils from './offenceUtils'
 import OrganisationUtils from './organisationUtils'
+import PathUtils from './pathUtils'
 import PersonUtils from './personUtils'
 import ReferralUtils from './referralUtils'
 import RouteUtils from './routeUtils'
@@ -24,6 +25,7 @@ export {
   FormUtils,
   OffenceUtils,
   OrganisationUtils,
+  PathUtils,
   PersonUtils,
   ReferralUtils,
   RouteUtils,

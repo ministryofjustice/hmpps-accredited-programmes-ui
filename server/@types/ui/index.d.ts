@@ -131,6 +131,11 @@ type MojFrontendSideNavigationItem = {
   text: string
 }
 
+type QueryParam = {
+  key: string
+  value: string
+}
+
 export type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -147,6 +152,7 @@ export type {
   OffenceHistory,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
+  QueryParam,
   ReferralSharedPageData,
   ReferralTaskListItem,
   ReferralTaskListSection,
