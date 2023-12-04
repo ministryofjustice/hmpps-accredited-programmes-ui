@@ -16,7 +16,14 @@ import {
   referralFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseUtils, DateUtils, OffenceUtils, PersonUtils, ReferralUtils, SentenceInformationUtils } from '../../utils'
+import {
+  CourseUtils,
+  DateUtils,
+  OffenceUtils,
+  PersonUtils,
+  SentenceInformationUtils,
+  ShowReferralUtils,
+} from '../../utils'
 import { releaseDateFields } from '../../utils/personUtils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type {
@@ -55,11 +62,14 @@ describe('ReferralsController', () => {
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
     sharedPageData = {
-      courseOfferingSummaryListRows: ReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name),
+      courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
+        coursePresenter,
+        organisation.name,
+      ),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       person,
       referral,
-      submissionSummaryListRows: ReferralUtils.submissionSummaryListRows(referral),
+      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral),
     }
 
     courseService.getCourseByOffering.mockResolvedValue(course)
@@ -89,7 +99,7 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
-        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     })
@@ -140,7 +150,7 @@ describe('ReferralsController', () => {
         hasOffenceHistory: true,
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         indexOffenceSummaryListRows: OffenceUtils.summaryListRows(indexOffence),
-        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
       })
     })
 
@@ -162,7 +172,7 @@ describe('ReferralsController', () => {
           hasOffenceHistory: false,
           importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
           indexOffenceSummaryListRows: null,
-          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         })
       })
     })
@@ -192,7 +202,7 @@ describe('ReferralsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/personalDetails', {
         ...sharedPageData,
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
-        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         personSummaryListRows: PersonUtils.summaryListRows(person),
       })
     })
@@ -234,7 +244,7 @@ describe('ReferralsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/programmeHistory', {
         ...sharedPageData,
         courseParticipationSummaryListsOptions,
-        navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
       })
     })
 
@@ -281,7 +291,7 @@ describe('ReferralsController', () => {
           hasReleaseDates: true,
           hasSentenceDetails: true,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
         })
       })
@@ -310,7 +320,7 @@ describe('ReferralsController', () => {
           hasReleaseDates: false,
           hasSentenceDetails: false,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-          navigationItems: ReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: [],
         })
       })

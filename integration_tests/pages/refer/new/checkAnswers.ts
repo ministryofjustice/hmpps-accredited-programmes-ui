@@ -1,5 +1,5 @@
 import { referPaths } from '../../../../server/paths'
-import { CourseUtils, ReferralUtils } from '../../../../server/utils'
+import { CourseUtils, NewReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
@@ -78,7 +78,7 @@ export default class NewReferralCheckAnswersPage extends Page {
   shouldHaveApplicationSummary() {
     cy.get('[data-testid="application-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
-        ReferralUtils.applicationSummaryListRows(
+        NewReferralUtils.applicationSummaryListRows(
           this.courseOffering,
           this.course,
           this.organisation,

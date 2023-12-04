@@ -1,5 +1,5 @@
 import { assessPaths } from '../../../server/paths'
-import { DateUtils, ReferralUtils } from '../../../server/utils'
+import { CaseListUtils, DateUtils } from '../../../server/utils'
 import Page from '../page'
 import type { ReferralSummary } from '@accredited-programmes/models'
 
@@ -32,7 +32,7 @@ export default class CaseListPage extends Page {
           )
           cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', summary.courseName)
           cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', summary.audiences.join(', '))
-          cy.get('.govuk-table__cell:nth-of-type(5)').should('have.html', ReferralUtils.statusTagHtml(summary.status))
+          cy.get('.govuk-table__cell:nth-of-type(5)').should('have.html', CaseListUtils.statusTagHtml(summary.status))
         })
       })
     })
@@ -46,8 +46,8 @@ export default class CaseListPage extends Page {
     cy.task('stubFindReferralSummaries', {
       organisationId: 'MRI',
       queryParameters: {
-        audience: { equalTo: ReferralUtils.uiToApiAudienceQueryParam(programmeStrandSelectedValue) },
-        status: { equalTo: ReferralUtils.uiToApiStatusQueryParam(referralStatusSelectedValue) },
+        audience: { equalTo: CaseListUtils.uiToApiAudienceQueryParam(programmeStrandSelectedValue) },
+        status: { equalTo: CaseListUtils.uiToApiStatusQueryParam(referralStatusSelectedValue) },
       },
       referralSummaries: filteredReferralSummaries,
     })

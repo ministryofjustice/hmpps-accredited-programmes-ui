@@ -1,9 +1,8 @@
 import type { AxeRules } from '@accredited-programmes/integration-tests'
 
-import { referPaths } from '../../server/paths'
-import { assessPathBase } from '../../server/paths/assess'
+import { assessPathBase, referPaths } from '../../server/paths'
 import { referPathBase } from '../../server/paths/refer'
-import { CourseParticipationUtils, PersonUtils, ReferralUtils } from '../../server/utils'
+import { CourseParticipationUtils, PersonUtils, ShowReferralUtils } from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
@@ -85,7 +84,7 @@ export default abstract class Page {
   shouldContainCourseOfferingSummaryList(course: CoursePresenter, organisationName: Organisation['name']) {
     cy.get('[data-testid="course-offering-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
-        ReferralUtils.courseOfferingSummaryListRows(course, organisationName),
+        ShowReferralUtils.courseOfferingSummaryListRows(course, organisationName),
         summaryListElement,
       )
     })
@@ -232,7 +231,7 @@ export default abstract class Page {
 
   shouldContainSubmissionSummaryList(referral: Referral): void {
     cy.get('[data-testid="submission-summary-list"]').then(summaryListElement => {
-      this.shouldContainSummaryListRows(ReferralUtils.submissionSummaryListRows(referral), summaryListElement)
+      this.shouldContainSummaryListRows(ShowReferralUtils.submissionSummaryListRows(referral), summaryListElement)
     })
   }
 
@@ -240,7 +239,7 @@ export default abstract class Page {
     const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
       ? assessPathBase.pattern
       : referPathBase.pattern
-    const navigationItems = ReferralUtils.viewReferralNavigationItems(currentBasePath, referralId)
+    const navigationItems = ShowReferralUtils.viewReferralNavigationItems(currentBasePath, referralId)
 
     cy.get('.moj-side-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
       const { href, text } = navigationItems[navigationItemElementIndex]
