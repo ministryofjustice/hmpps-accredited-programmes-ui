@@ -26,17 +26,23 @@
         iconFallbackText: "Warning"
       }) }}
 
-      <form action="{{ referPaths.new.create({}) }}" method="post">
+      <form id="newReferralForm" action="{{ referPaths.new.create({}) }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
         <input type="hidden" name="courseOfferingId" value="{{ courseOfferingId }}"/>
         <input type="hidden" name="prisonNumber" value="{{ prisonNumber }}"/>
-
-        {{ govukButton({ text: "Continue" }) }}
       </form>
 
-      <a href="{{ referPaths.new.new({ courseOfferingId: courseOfferingId }) }}" class="govuk-link">
+      <div class="govuk-button-group">
+        {{ govukButton({ 
+          text: "Continue",
+          attributes: {
+            form: "newReferralForm"
+          }
+        }) }}
+        <a href="{{ referPaths.new.new({ courseOfferingId: courseOfferingId }) }}" class="govuk-link">
         Enter a different identifier
       </a>
+      </div>
     </div>
   </div>
 
