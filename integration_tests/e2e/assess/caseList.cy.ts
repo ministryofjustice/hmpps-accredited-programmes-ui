@@ -3,7 +3,7 @@ import { assessPaths } from '../../../server/paths'
 import { referralSummaryFactory } from '../../../server/testutils/factories'
 import Page from '../../pages/page'
 import { CaseListPage } from '../../pages/shared'
-import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
+import type { ReferralSummary } from '@accredited-programmes/models'
 
 context('Referral case lists', () => {
   const referralSummaries: Array<ReferralSummary> = [
@@ -46,13 +46,13 @@ context('Referral case lists', () => {
       })
       caseListPage.shouldContainTableOfReferralSummaries()
 
-      const programmeStrandSelectedValue = 'General offence'
-      const referralStatusSelectedValue = 'ASSESSMENT_STARTED'
+      const programmeStrandSelectedValue = 'general offence'
+      const referralStatusSelectedValue = 'assessment started'
       const filteredReferralSummaries = [
         referralSummaryFactory.build({
-          audiences: [programmeStrandSelectedValue],
+          audiences: ['General offence'],
           prisonNumber: 'ABC123',
-          status: referralStatusSelectedValue.toLowerCase() as ReferralStatus,
+          status: 'assessment_started',
         }),
       ]
 

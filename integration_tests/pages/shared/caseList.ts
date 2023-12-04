@@ -46,8 +46,8 @@ export default class CaseListPage extends Page {
     cy.task('stubFindReferralSummaries', {
       organisationId: 'MRI',
       queryParameters: {
-        audience: { equalTo: programmeStrandSelectedValue },
-        status: { equalTo: referralStatusSelectedValue },
+        audience: { equalTo: ReferralUtils.uiToApiAudienceQueryParam(programmeStrandSelectedValue) },
+        status: { equalTo: ReferralUtils.uiToApiStatusQueryParam(referralStatusSelectedValue) },
       },
       referralSummaries: filteredReferralSummaries,
     })

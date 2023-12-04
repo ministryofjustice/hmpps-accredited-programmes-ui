@@ -2,6 +2,7 @@ import type { Request } from 'express'
 
 import DateUtils from './dateUtils'
 import FormUtils from './formUtils'
+import StringUtils from './stringUtils'
 import { assessPaths, referPaths } from '../paths'
 import { assessPathBase } from '../paths/assess'
 import type {
@@ -60,17 +61,15 @@ export default class ReferralUtils {
   }
 
   static audienceSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
-    const audienceValues = [
-      'Extremism offence',
-      'Gang offence',
-      'General offence',
-      'General violence offence',
-      'Intimate partner violence offence',
-      'Sexual offence',
-    ]
-
-    return FormUtils.getSelectItems(
-      Object.fromEntries(audienceValues.map(audience => [audience, audience])),
+    return this.caseListSelectItems(
+      [
+        'Extremism offence',
+        'Gang offence',
+        'General offence',
+        'General violence offence',
+        'Intimate partner violence offence',
+        'Sexual offence',
+      ],
       selectedValue,
     )
   }
@@ -131,13 +130,8 @@ export default class ReferralUtils {
   }
 
   static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return FormUtils.getSelectItems(
-      {
-        ASSESSMENT_STARTED: 'Assessment started',
-        AWAITING_ASSESSMENT: 'Awaiting assessment',
-        REFERRAL_STARTED: 'Referral started',
-        REFERRAL_SUBMITTED: 'Referral submitted',
-      },
+    return this.caseListSelectItems(
+      ['Assessment started', 'Awaiting assessment', 'Referral started', 'Referral submitted'],
       selectedValue,
     )
   }
@@ -238,6 +232,14 @@ export default class ReferralUtils {
     ]
   }
 
+  static uiToApiAudienceQueryParam(uiAudienceQueryParam: string | undefined): string | undefined {
+    return uiAudienceQueryParam ? StringUtils.properCase(uiAudienceQueryParam) : undefined
+  }
+
+  static uiToApiStatusQueryParam(uiStatusQueryParam: string | undefined): string | undefined {
+    return uiStatusQueryParam ? uiStatusQueryParam.toUpperCase().replace(/\s/g, '_') : undefined
+  }
+
   static viewReferralNavigationItems(
     currentPath: Request['path'],
     referralId: Referral['id'],
@@ -271,6 +273,13 @@ export default class ReferralUtils {
       ...item,
       active: currentPath === item.href,
     }))
+  }
+
+  private static caseListSelectItems(values: Array<string>, selectedValue?: string): Array<GovukFrontendSelectItem> {
+    return FormUtils.getSelectItems(
+      Object.fromEntries(values.map(value => [value.toLowerCase(), value])),
+      selectedValue,
+    )
   }
 
   private static taskListStatusTag(text: ReferralTaskListStatusText, dataTestId?: string): ReferralTaskListStatusTag {

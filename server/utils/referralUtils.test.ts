@@ -67,12 +67,12 @@ describe('ReferralUtils', () => {
 
   describe('audienceSelectItems', () => {
     const expectedItems = {
-      'Extremism offence': 'Extremism offence',
-      'Gang offence': 'Gang offence',
-      'General offence': 'General offence',
-      'General violence offence': 'General violence offence',
-      'Intimate partner violence offence': 'Intimate partner violence offence',
-      'Sexual offence': 'Sexual offence',
+      'extremism offence': 'Extremism offence',
+      'gang offence': 'Gang offence',
+      'general offence': 'General offence',
+      'general violence offence': 'General violence offence',
+      'intimate partner violence offence': 'Intimate partner violence offence',
+      'sexual offence': 'Sexual offence',
     }
 
     it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
@@ -83,9 +83,9 @@ describe('ReferralUtils', () => {
 
     describe('when a selected value is provided', () => {
       it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        ReferralUtils.audienceSelectItems('General offence')
+        ReferralUtils.audienceSelectItems('general offence')
 
-        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'General offence')
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'general offence')
       })
     })
   })
@@ -218,10 +218,10 @@ describe('ReferralUtils', () => {
 
   describe('statusSelectItems', () => {
     const expectedItems = {
-      ASSESSMENT_STARTED: 'Assessment started',
-      AWAITING_ASSESSMENT: 'Awaiting assessment',
-      REFERRAL_STARTED: 'Referral started',
-      REFERRAL_SUBMITTED: 'Referral submitted',
+      'assessment started': 'Assessment started',
+      'awaiting assessment': 'Awaiting assessment',
+      'referral started': 'Referral started',
+      'referral submitted': 'Referral submitted',
     }
 
     it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
@@ -232,9 +232,9 @@ describe('ReferralUtils', () => {
 
     describe('when a selected value is provided', () => {
       it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        ReferralUtils.statusSelectItems('REFERRAL_SUBMITTED')
+        ReferralUtils.statusSelectItems('referral submitted')
 
-        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'REFERRAL_SUBMITTED')
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'referral submitted')
       })
     })
   })
@@ -374,6 +374,30 @@ describe('ReferralUtils', () => {
 
       expect(checkAnswersTask.url).toEqual(`/refer/referrals/new/${referralWithOasysConfirmed.id}/check-answers`)
       expect(checkAnswersTask.statusTag.text).toEqual('not started')
+    })
+  })
+
+  describe('uiToApiAudienceQueryParam', () => {
+    it('returns the UI query param formatted to match the API data', () => {
+      expect(ReferralUtils.uiToApiAudienceQueryParam('general violence offence')).toEqual('General violence offence')
+    })
+
+    describe('when the param is falsey', () => {
+      it('returns `undefined`', () => {
+        expect(ReferralUtils.uiToApiAudienceQueryParam(undefined)).toEqual(undefined)
+      })
+    })
+  })
+
+  describe('uiToApiStatusQueryParam', () => {
+    it('returns the UI query param formatted to match the API data', () => {
+      expect(ReferralUtils.uiToApiStatusQueryParam('referral submitted')).toEqual('REFERRAL_SUBMITTED')
+    })
+
+    describe('when the param is falsey', () => {
+      it('returns `undefined`', () => {
+        expect(ReferralUtils.uiToApiStatusQueryParam(undefined)).toEqual(undefined)
+      })
     })
   })
 

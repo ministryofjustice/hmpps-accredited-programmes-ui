@@ -6,6 +6,7 @@ const referralShowPathBase = assessPathBase.path('referrals/:referralId')
 
 export default {
   caseList: {
+    filter: caseListPath,
     show: caseListPath,
   },
   show: {

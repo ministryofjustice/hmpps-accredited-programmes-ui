@@ -6,8 +6,10 @@ import CaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { referralSummaryFactory } from '../../testutils/factories'
-import { ReferralUtils } from '../../utils'
+import { PathUtils, ReferralUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
+
+jest.mock('../../utils/pathUtils')
 
 describe('CaseListController', () => {
   const username = 'USERNAME'
@@ -45,6 +47,72 @@ describe('CaseListController', () => {
     jest.resetAllMocks()
   })
 
+  describe('filter', () => {
+    const redirectPathBase = assessPaths.caseList.show({})
+    const pathWithQuery = 'path-with-query'
+    const audience = 'General violence offence'
+    const status = 'ASSESSMENT_STARTED'
+
+    beforeEach(() => {
+      ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
+    })
+
+    describe('when `req.body.audience` and `req.body.status` are provided', () => {
+      it('asks PathUtils to generate a path with both as query params - audience renamed "strand" - and redirects to the result', async () => {
+        request.body.audience = audience
+        request.body.status = status
+
+        const requestHandler = controller.filter()
+        await requestHandler(request, response, next)
+
+        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [
+          { key: 'strand', value: audience },
+          { key: 'status', value: status },
+        ])
+        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
+      })
+    })
+
+    describe('when `req.body.audience` is undefined', () => {
+      it('asks PathUtils to generate a path with status as a query param and redirects to the result', async () => {
+        request.body.audience = undefined
+        request.body.status = status
+
+        const requestHandler = controller.filter()
+        await requestHandler(request, response, next)
+
+        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [{ key: 'status', value: status }])
+        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
+      })
+    })
+
+    describe('when `req.body.status` is undefined', () => {
+      it('asks PathUtils to generate a path with audience as a query param - renamed "strand" - and redirects to the result', async () => {
+        request.body.audience = audience
+        request.body.status = undefined
+
+        const requestHandler = controller.filter()
+        await requestHandler(request, response, next)
+
+        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [{ key: 'strand', value: audience }])
+        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
+      })
+    })
+
+    describe('when `req.body.audience` and `req.body.status` are both `undefined`', () => {
+      it('asks PathUtils to generate a path without any query params and redirects to the result', async () => {
+        request.body.audience = undefined
+        request.body.status = undefined
+
+        const requestHandler = controller.filter()
+        await requestHandler(request, response, next)
+
+        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [])
+        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
+      })
+    })
+  })
+
   describe('show', () => {
     it('renders the show template with the correct response locals', async () => {
       request.path = assessPaths.caseList.show({})
@@ -53,6 +121,7 @@ describe('CaseListController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
+        action: assessPaths.caseList.filter({}),
         audienceSelectItems: ReferralUtils.audienceSelectItems(),
         pageHeading: 'My referrals',
         referralStatusSelectItems: ReferralUtils.statusSelectItems(),
@@ -69,17 +138,18 @@ describe('CaseListController', () => {
       it('renders the show template with the correct response locals', async () => {
         request.path = assessPaths.caseList.show({})
         request.query = {
-          audience: 'General offence',
-          status: 'REFERRAL_SUBMITTED',
+          status: 'referral submitted',
+          strand: 'general offence',
         }
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
-          audienceSelectItems: ReferralUtils.audienceSelectItems('General offence'),
+          action: assessPaths.caseList.filter({}),
+          audienceSelectItems: ReferralUtils.audienceSelectItems('general offence'),
           pageHeading: 'My referrals',
-          referralStatusSelectItems: ReferralUtils.statusSelectItems('REFERRAL_SUBMITTED'),
+          referralStatusSelectItems: ReferralUtils.statusSelectItems('referral submitted'),
           tableRows: ReferralUtils.caseListTableRows(paginatedReferralSummaries.content),
         })
 

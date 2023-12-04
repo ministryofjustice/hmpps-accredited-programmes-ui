@@ -9,7 +9,9 @@
 
   <div class="filters">
     <h2 class="govuk-heading-m">Filters</h2>
-    <form class="form-controls">
+    <form class="form-controls" action="{{ action }}" method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
       {{ govukSelect({
         id: "audience",
         name: "audience",
@@ -17,7 +19,7 @@
           text: "Programme strand"
         },
         items: audienceSelectItems,
-         attributes: {
+          attributes: {
           "data-testid": "programme-strand-select"
         }
       }) }}
