@@ -108,14 +108,14 @@ describe('ReferralService', () => {
       expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId, undefined)
     })
 
-    describe('with filter values', () => {
+    describe('with query values', () => {
       it('makes the correct call to the referral client', async () => {
-        const filterValues = { audience: 'General offence', status: 'REFERRAL_SUBMITTED' }
+        const query = { audience: 'General offence', courseName: 'Lime Course', status: 'REFERRAL_SUBMITTED' }
 
-        await service.getReferralSummaries(username, organisationId, filterValues)
+        await service.getReferralSummaries(username, organisationId, query)
 
         expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId, filterValues)
+        expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId, query)
       })
     })
   })

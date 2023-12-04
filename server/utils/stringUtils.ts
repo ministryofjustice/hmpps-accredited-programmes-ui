@@ -1,8 +1,19 @@
 export default class StringUtils {
+  static convertFromUrlSlug(slug: string): string {
+    return slug
+      .split('-')
+      .map(word => this.properCase(word))
+      .join(' ')
+  }
+
   static convertToTitleCase(sentence: string | null): string {
     return sentence === null || StringUtils.isBlank(sentence)
       ? ''
       : sentence.split(' ').map(StringUtils.properCaseName).join(' ')
+  }
+
+  static convertToUrlSlug(string: string): string {
+    return string.toLowerCase().replace(/\s/g, '-')
   }
 
   static initialiseName(fullName?: string): string | null {

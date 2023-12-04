@@ -1,5 +1,5 @@
 import CaseListUtils from './caseListUtils'
-import { referralSummaryFactory } from '../../testutils/factories'
+import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
 
@@ -28,6 +28,36 @@ describe('CaseListUtils', () => {
 
         expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'general offence')
       })
+    })
+  })
+
+  describe('caseListPrimaryNavigationItems', () => {
+    it('returns primary navigation items, with no duplicate course names, sorted alphabetically by course name and sets the correct item as active', () => {
+      const courses = [
+        courseFactory.build({ name: 'Lime Course' }),
+        courseFactory.build({ name: 'Orange Course' }),
+        courseFactory.build({ name: 'Blue Course' }),
+      ]
+
+      expect(
+        CaseListUtils.caseListPrimaryNavigationItems('/assess/referrals/orange-course/case-list', courses),
+      ).toEqual([
+        {
+          active: false,
+          href: '/assess/referrals/blue-course/case-list',
+          text: 'Blue Course referrals',
+        },
+        {
+          active: false,
+          href: '/assess/referrals/lime-course/case-list',
+          text: 'Lime Course referrals',
+        },
+        {
+          active: true,
+          href: '/assess/referrals/orange-course/case-list',
+          text: 'Orange Course referrals',
+        },
+      ])
     })
   })
 

@@ -2,6 +2,24 @@ import CourseUtils from './courseUtils'
 import { courseAudienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
 
 describe('CourseUtils', () => {
+  describe('courseNameWithAlternateName', () => {
+    describe('when a course has an `alternateName`', () => {
+      it('returns the `name` and `alternateName` in brackets', () => {
+        const course = courseFactory.build({ alternateName: 'LC', name: 'Lime Course' })
+
+        expect(CourseUtils.courseNameWithAlternateName(course)).toEqual('Lime Course (LC)')
+      })
+    })
+
+    describe('when a course has no `alternateName`', () => {
+      it('just returns the `name`', () => {
+        const course = courseFactory.build({ alternateName: null, name: 'Lime Course' })
+
+        expect(CourseUtils.courseNameWithAlternateName(course)).toEqual('Lime Course')
+      })
+    })
+  })
+
   describe('courseRadioOptions', () => {
     it('returns a formatted array of courses to use with UI radios', () => {
       const courses = courseFactory.buildList(2)

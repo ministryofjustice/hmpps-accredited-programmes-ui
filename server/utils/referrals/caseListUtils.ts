@@ -1,9 +1,11 @@
+import type { Request } from 'express'
+
 import { assessPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
-import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
-import type { TagColour } from '@accredited-programmes/ui'
+import type { Course, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
+import type { MojFrontendPrimaryNavigationItem, TagColour } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -19,6 +21,26 @@ export default class CaseListUtils {
       ],
       selectedValue,
     )
+  }
+
+  static caseListPrimaryNavigationItems(
+    currentPath: Request['path'],
+    courses: Array<Course>,
+  ): Array<MojFrontendPrimaryNavigationItem> {
+    const coursesWithDuplicatesRemoved = courses.filter(
+      (course, index, self) => self.findIndex(c => c.name === course.name) === index,
+    )
+    const sortedCourses = coursesWithDuplicatesRemoved.sort((a, b) => a.name.localeCompare(b.name))
+
+    return sortedCourses.map(course => {
+      const path = assessPaths.caseList.show({ courseName: StringUtils.convertToUrlSlug(course.name) })
+
+      return {
+        active: currentPath === path,
+        href: path,
+        text: `${course.name} referrals`,
+      }
+    })
   }
 
   static caseListTableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {

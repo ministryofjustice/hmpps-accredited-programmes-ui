@@ -1,17 +1,46 @@
 import { assessPaths } from '../../../server/paths'
-import { CaseListUtils, DateUtils } from '../../../server/utils'
+import { CaseListUtils, CourseUtils, DateUtils, StringUtils } from '../../../server/utils'
+import Helpers from '../../support/helpers'
 import Page from '../page'
-import type { ReferralSummary } from '@accredited-programmes/models'
+import type { Course, ReferralSummary } from '@accredited-programmes/models'
 
 export default class CaseListPage extends Page {
   referralSummaries: Array<ReferralSummary>
 
-  constructor(args: { referralSummaries: Array<ReferralSummary> }) {
-    const { referralSummaries } = args
+  constructor(args: { referralSummaries: Array<ReferralSummary>; course?: Course }) {
+    const { course, referralSummaries } = args
 
-    super('My referrals')
+    super(course ? CourseUtils.courseNameWithAlternateName(course) : 'My referrals')
 
     this.referralSummaries = referralSummaries
+  }
+
+  shouldContainCourseNavigation(currentPath: string, courses: Array<Course>): void {
+    const navigationItems = courses
+      .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+      .map(course => {
+        return {
+          href: assessPaths.caseList.show({ courseName: StringUtils.convertToUrlSlug(course.name) }),
+          text: `${course.name} referrals`,
+        }
+      })
+
+    cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
+      const { href, text } = navigationItems[navigationItemElementIndex]
+
+      const { actual, expected } = Helpers.parseHtml(navigationItemElement, text)
+      expect(actual).to.equal(expected)
+
+      cy.wrap(navigationItemElement).within(() => {
+        cy.get('a').should('have.attr', 'href', href)
+
+        if (currentPath === href) {
+          cy.get('a').should('have.attr', 'aria-current', 'page')
+        } else {
+          cy.get('a').should('not.have.attr', 'aria-current', 'page')
+        }
+      })
+    })
   }
 
   shouldContainTableOfReferralSummaries() {

@@ -8,6 +8,10 @@ import type {
 } from '@accredited-programmes/ui'
 
 export default class CourseUtils {
+  static courseNameWithAlternateName(course: Course): string {
+    return course.alternateName ? `${course.name} (${course.alternateName})` : course.name
+  }
+
   static courseRadioOptions(courseNames: Array<Course['name']>): Array<GovukFrontendTagWithText> {
     return courseNames.map(courseName => {
       return {
@@ -18,12 +22,10 @@ export default class CourseUtils {
   }
 
   static presentCourse(course: Course): CoursePresenter {
-    const nameAndAlternateName = course.alternateName ? `${course.name} (${course.alternateName})` : course.name
-
     return {
       ...course,
       audienceTags: CourseUtils.audienceTags(course.audiences),
-      nameAndAlternateName,
+      nameAndAlternateName: this.courseNameWithAlternateName(course),
       prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
   }

@@ -192,6 +192,39 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('findCoursesByOrganisation', () => {
+    const courses = [
+      courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
+      courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }),
+      courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }),
+    ]
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state:
+          'Organisation BWN has courses d3abc217-75ee-46e9-a010-368f30282367, 28e47d30-30bf-4dab-a8eb-9fda3f6400e8, and 1811faa6-d568-4fc4-83ce-41118b90242e and no others',
+        uponReceiving: "A request for organisation BWN's courses",
+        willRespondWith: {
+          body: Matchers.like(courses),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${systemToken}`,
+          },
+          method: 'GET',
+          path: apiPaths.organisations.courses({ organisationId: 'BWN' }),
+        },
+      })
+    })
+
+    it("fetches the given organisation's courses", async () => {
+      const result = await courseClient.findCoursesByOrganisation('BWN')
+
+      expect(result).toEqual(courses)
+    })
+  })
+
   describe('findOfferings', () => {
     const courseOfferings = [
       courseOfferingFactory.build({

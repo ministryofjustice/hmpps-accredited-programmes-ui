@@ -120,7 +120,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     describe('with query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
+        content: [
+          referralSummaryFactory.build({
+            audiences: ['General offence'],
+            courseName: 'Super Course',
+            status: 'referral_submitted',
+          }),
+        ],
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 10,
@@ -131,9 +137,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       beforeEach(() => {
         provider.addInteraction({
           state:
-            'Referral(s) exist for organisation BWM with status REFERRAL_SUBMITTED to offerings for courses with audience General offence',
+            'Super Course referral(s) exist for organisation BWM with status REFERRAL_SUBMITTED to offerings for courses with audience General offence',
           uponReceiving:
-            "A request for organistion BWM's referral summaries with status REFERRAL_SUBMITTED to offerings for courses with audience General offence",
+            "A request for organistion BWM's Super Course referral summaries with status REFERRAL_SUBMITTED to offerings for courses with audience General offence",
           willRespondWith: {
             body: Matchers.like(paginatedReferralSummaries),
             status: 200,
@@ -146,6 +152,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             path: apiPaths.referrals.dashboard({ organisationId: 'BWM' }),
             query: {
               audience: 'General offence',
+              courseName: 'Super Course',
               size: '999',
               status: 'REFERRAL_SUBMITTED',
             },
@@ -156,6 +163,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       it("fetches the given organisation's referral summaries matching the given query parameters", async () => {
         const result = await referralClient.findReferralSummaries('BWM', {
           audience: 'General offence',
+          courseName: 'Super Course',
           status: 'REFERRAL_SUBMITTED',
         })
 

@@ -1,6 +1,12 @@
 import StringUtils from './stringUtils'
 
 describe('utils', () => {
+  describe('convertFromUrlSlug', () => {
+    it('formats a lowercase, hyphenated string to capitalised words', () => {
+      expect(StringUtils.convertFromUrlSlug('a-url-slug')).toEqual('A Url Slug')
+    })
+  })
+
   describe('convertToTitleCase', () => {
     it.each([
       [null, null, ''],
@@ -14,6 +20,12 @@ describe('utils', () => {
       ['hyphenation', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
     ])('handles %s: %s -> %s', (_inputType: string | null, input: string | null, expectedOutput: string) => {
       expect(StringUtils.convertToTitleCase(input)).toEqual(expectedOutput)
+    })
+  })
+
+  describe('convertToUrlSlug', () => {
+    it('formats a string by making it lowercase and replacing the spaces with a hyphen', () => {
+      expect(StringUtils.convertToUrlSlug('The course name')).toEqual('the-course-name')
     })
   })
 
