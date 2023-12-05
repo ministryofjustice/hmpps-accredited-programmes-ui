@@ -9,18 +9,25 @@ import {
   coursePrerequisiteFactory,
   referralFactory,
 } from '../../../server/testutils/factories'
+import { StringUtils } from '../../../server/utils'
 import prisoners from '../../../wiremock/stubs/prisoners.json'
 
 const course: TableDefinition = {
   properties: [
     { api: 'course_id', ui: 'id' },
     { api: 'name', ui: 'name' },
-    { api: 'identifier', ui: 'alternateName' },
+    { api: 'identifier', ui: 'identifier' },
     { api: 'description', ui: 'description' },
     { api: 'alternate_name', ui: 'alternateName' },
     { api: 'referable', ui: 'referable' },
   ],
-  records: courseFactory.buildList(10),
+  records: courseFactory.buildList(10).map((courseRecord, courseRecordIndex) => ({
+    ...courseRecord,
+    // this might not be the most realistic implementation of identifier, but
+    // really we just need it to be unique: the initialised title is a bit of
+    // realism dressing on an otherwise simple unique value generator
+    identifier: StringUtils.initialiseTitle(courseRecord.name) + courseRecordIndex,
+  })),
   tableName: 'course',
 }
 
@@ -110,13 +117,13 @@ const referral = {
     const recordsArray = []
 
     while (recordsArray.length < 100) {
-      recordsArray.push(
-        referralFactory.build({
-          offeringId: faker.helpers.arrayElement(offering.records).id,
-          prisonNumber: faker.helpers.arrayElement(prisoners).prisonerNumber,
-          referrerId: faker.helpers.arrayElement(validReferrerIds),
-        }),
-      )
+      const referralRecord = referralFactory.build({
+        offeringId: faker.helpers.arrayElement(offering.records).id,
+        prisonNumber: faker.helpers.arrayElement(prisoners).prisonerNumber,
+        referrerId: faker.helpers.arrayElement(validReferrerIds),
+      })
+
+      recordsArray.push({ ...referralRecord, status: referralRecord.status.toUpperCase() })
     }
 
     return recordsArray
