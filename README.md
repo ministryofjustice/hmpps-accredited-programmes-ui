@@ -60,14 +60,17 @@ There are three user accounts with different roles that can be used when running
 
 ### Seeded resources
 
-The local copy of the Accredited Programmes API has various seeds in place providing data to work with in local development. These include courses, course offerings, and associated data, as well as one draft and one submitted referral.
+The local copy of the Accredited Programmes API has various seeds in place providing data to work with in local development. These include courses, course offerings, referrals, and associated data.
 
-The draft referral is at the stage of having just been created, and can be used to jump to the task list part of the Refer journey. The submitted referral has additional information, but may not have programme history: the person is the same as in the draft referral, so the draft referral link can be used to add to the programme history if needed.
+The SQL used to generate the seed data can be viewed at [hmpps-accredited-programmes-api/blob/main/src/main/resources/seed/db/migration/R\_\_Seed_Data.sql](https://github.com/ministryofjustice/hmpps-accredited-programmes-api/blob/main/src/main/resources/seed/db/migration/R__Seed_Data.sql).
 
-| Status    | ID                                     | Links                                                                                                                                                                                                                            |
-| --------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Draft     | `c11fab18-dc8d-420c-9c82-d0edd373732d` | Task list: [Refer](http://localhost:3000/refer/referrals/new/c11fab18-dc8d-420c-9c82-d0edd373732d)                                                                                                                               |
-| Submitted | `9d38204c-bfe9-42e6-b751-f46cec067e57` | Personal details: [Refer](http://localhost:3000/refer/referrals/9d38204c-bfe9-42e6-b751-f46cec067e57/personal-details) \| [Assess](http://localhost:3000/assess/referrals/9d38204c-bfe9-42e6-b751-f46cec067e57/personal-details) |
+If the seeds no longer meet our needs and need updating, the process is as follows:
+
+1. update the relevant parts of [generate-api-seeds/script/utils/generateApiSeeds](https://github.com/ministryofjustice/hmpps-accredited-programmes-ui/blob/main/script/utils/generateApiSeeds)
+1. run `generate-api-seeds`, which will output a new API SQL script to the terminal
+1. copy this output into the API seed file (linked above) and open a pull request with the changes
+1. merge the pull request and await completion of the `build_docker` CircleCI job
+1. update the API Docker image in your local copy of the the UI repository
 
 ## Running the tests
 

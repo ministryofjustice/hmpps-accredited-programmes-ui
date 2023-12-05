@@ -14,6 +14,6 @@ export default class FactoryHelpers {
   }
 
   static optionalRandomFutureDateString(): string | undefined {
-    return FactoryHelpers.optionalArrayElement([`${faker.date.future({ years: 20 })}`.substring(0, 10)])
+    return FactoryHelpers.optionalArrayElement(faker.date.future({ years: 20 }).toISOString().substring(0, 10))
   }
 }
