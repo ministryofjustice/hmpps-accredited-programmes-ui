@@ -176,8 +176,13 @@ export default class NewReferralsCourseParticipationsController {
 
       const successMessage = req.flash('successMessage')[0]
 
+      const historyText = summaryListsOptions.length
+        ? `The history shows ${person.name} has previously started or completed an Accredited Programme.`
+        : `There is no record of Accredited Programmes for ${person.name}.`
+
       return res.render('referrals/new/courseParticipations/index', {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
+        historyText,
         pageHeading: 'Accredited Programme history',
         person,
         referralId,

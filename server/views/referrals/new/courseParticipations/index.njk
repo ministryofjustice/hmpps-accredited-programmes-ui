@@ -1,31 +1,10 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "moj/components/banner/macro.njk" import mojBanner %}
 
 {% extends "../../../partials/layout.njk" %}
-
-{% macro actionForm(secondaryActionText) %}
-  <form action="{{ action }}" method="post">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-    <input type="hidden" name="hasReviewedProgrammeHistory" value="true"/>
-
-    <div class="govuk-button-group">
-      {{ govukButton({
-        text: "Continue"
-      }) }}
-
-      {{ govukButton({
-        text: secondaryActionText,
-        classes: "govuk-button--secondary",
-        href: referPaths.new.programmeHistory.new({ referralId: referralId }),
-        attributes: {
-          "data-testid": "add-history-button"
-        }
-      }) }}
-    </div>
-  </form>
-{% endmacro %}
 
 {% block personBanner %}
   {% include "../../_personBanner.njk" %}
@@ -54,21 +33,45 @@
         }) }}
       {% endif %}
 
+      {{ govukInsetText({
+        classes: "govuk-!-margin-top-0",
+        text: historyText,
+        attributes: {
+          "data-testid": "history-text"
+        }
+      }) }}
+
       {% if summaryListsOptions.length %}
-        <p class="govuk-body" data-testid="pre-history-paragraph">The history below shows {{ person.name }}'s history of Accredited Programmes. Add another programme if you know that they started or completed a programme which is not listed below.</p>
-
-        {% for summaryListOptions in summaryListsOptions %}
-          {{ govukSummaryList(summaryListOptions) }}
-        {% endfor %}
-
-        {{ actionForm(secondaryActionText="Add another") }}
+        <p class="govuk-body" data-testid="pre-history-paragraph">Add another programme if you know that they started or completed a programme which is not listed below or skip this section of the referral if the history is not known.</p>
       {% else %}
-        <h2 class="govuk-heading-m" data-testid="no-history-heading">There is no Accredited Programme history for {{ person.name }}.</h2>
+        <p class="govuk-body" data-testid="no-history-paragraph-1">The programme team may use information about a person's Accredited Programme history to assess whether they are suitable.</p>
 
-        <p class="govuk-body" data-testid="no-history-paragraph">The programme team may use information about a person's Accredited Programme history to assess whether they are suitable. You can add a programme to this history or continue with the referral if the {{ person.name }}'s history is unknown.</p>
-
-        {{ actionForm(secondaryActionText="Add a programme") }}
+        <p class="govuk-body" data-testid="no-history-paragraph-2">You can continue by adding a programme history or skip this section of the referral if the history is not known.</p>
       {% endif %}
+
+      {% for summaryListOptions in summaryListsOptions %}
+        {{ govukSummaryList(summaryListOptions) }}
+      {% endfor %}
+
+      <form action="{{ action }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+        <input type="hidden" name="hasReviewedProgrammeHistory" value="true"/>
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Add a programme",
+            href: referPaths.new.programmeHistory.new({ referralId: referralId }),
+            attributes: {
+              "data-testid": "add-history-button"
+            }
+          }) }}
+
+          {{ govukButton({
+            text: "Skip this section",
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
+      </form>
     </div>
   </div>
 {% endblock content %}

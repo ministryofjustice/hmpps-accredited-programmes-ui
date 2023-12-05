@@ -22,32 +22,52 @@ export default class NewReferralProgrammeHistoryPage extends Page {
     this.referral = { ...this.referral, hasReviewedProgrammeHistory: true }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)
-    this.shouldContainButton('Continue').click()
+    this.shouldContainButton('Skip this section').click()
   }
 
-  shouldContainNoHistoryHeading() {
-    cy.get('[data-testid="no-history-heading"]').should(
+  shouldContainNoHistoryParagraphs() {
+    cy.get('[data-testid="no-history-paragraph-1"]').should(
       'have.text',
-      `There is no Accredited Programme history for ${this.person.name}.`,
+      "The programme team may use information about a person's Accredited Programme history to assess whether they are suitable.",
+    )
+
+    cy.get('[data-testid="no-history-paragraph-2"]').should(
+      'have.text',
+      'You can continue by adding a programme history or skip this section of the referral if the history is not known.',
     )
   }
 
-  shouldContainNoHistoryParagraph() {
-    cy.get('[data-testid="no-history-paragraph"]').should(
-      'have.text',
-      `The programme team may use information about a person's Accredited Programme history to assess whether they are suitable. You can add a programme to this history or continue with the referral if the ${this.person.name}'s history is unknown.`,
+  shouldContainNoHistoryText() {
+    cy.get('[data-testid="history-text"]').should(
+      'contain.text',
+      `There is no record of Accredited Programmes for ${this.person.name}.`,
     )
   }
 
   shouldContainPreHistoryParagraph() {
     cy.get('[data-testid="pre-history-paragraph"]').should(
       'have.text',
-      `The history below shows ${this.person.name}'s history of Accredited Programmes. Add another programme if you know that they started or completed a programme which is not listed below.`,
+      'Add another programme if you know that they started or completed a programme which is not listed below or skip this section of the referral if the history is not known.',
+    )
+  }
+
+  shouldContainPreHistoryText() {
+    cy.get('[data-testid="history-text"]').should(
+      'contain.text',
+      `The history shows ${this.person.name} has previously started or completed an Accredited Programme.`,
     )
   }
 
   shouldContainSuccessMessage(message: string) {
     cy.get('[data-testid="success-banner"]').should('contain.text', message)
+  }
+
+  shouldNotContainNoHistoryParagraphs() {
+    cy.get('[data-testid="no-history-paragraph"]').should('not.exist')
+  }
+
+  shouldNotContainPreHistoryParagraph() {
+    cy.get('[data-testid="pre-history-paragraph"]').should('not.exist')
   }
 
   shouldNotContainSuccessMessage() {
