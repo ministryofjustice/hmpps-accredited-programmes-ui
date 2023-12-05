@@ -35,21 +35,26 @@ class ReferralFactory extends Factory<Referral> {
   }
 }
 
-export const status = faker.helpers.arrayElement([
-  'awaiting_assessment',
-  'assessment_started',
-  'referral_started',
-  'referral_submitted',
-]) as ReferralStatus
+export const randomStatus = () =>
+  faker.helpers.arrayElement([
+    'awaiting_assessment',
+    'assessment_started',
+    'referral_started',
+    'referral_submitted',
+  ]) as ReferralStatus
 
-export default ReferralFactory.define(({ params }) => ({
-  id: faker.string.uuid(), // eslint-disable-next-line sort-keys
-  additionalInformation: faker.lorem.paragraph({ max: 5, min: 0 }),
-  hasReviewedProgrammeHistory: faker.datatype.boolean(),
-  oasysConfirmed: faker.datatype.boolean(),
-  offeringId: faker.string.uuid(),
-  prisonNumber: faker.string.alphanumeric({ length: 7 }),
-  referrerId: faker.string.numeric({ length: 6 }),
-  status,
-  submittedOn: (params.status || status) !== 'referral_started' ? faker.date.past().toISOString() : undefined,
-}))
+export default ReferralFactory.define(({ params }) => {
+  const status = params.status || randomStatus()
+
+  return {
+    id: faker.string.uuid(), // eslint-disable-next-line sort-keys
+    additionalInformation: faker.lorem.paragraph({ max: 5, min: 0 }),
+    hasReviewedProgrammeHistory: faker.datatype.boolean(),
+    oasysConfirmed: faker.datatype.boolean(),
+    offeringId: faker.string.uuid(),
+    prisonNumber: faker.string.alphanumeric({ length: 7 }),
+    referrerId: faker.string.numeric({ length: 6 }),
+    status,
+    submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
+  }
+})
