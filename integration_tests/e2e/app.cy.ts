@@ -27,11 +27,7 @@ context('App', () => {
       expect(actual).to.equal(expected)
 
       cy.wrap(phaseBannerTextElement).within(() => {
-        cy.get('a').should(
-          'have.attr',
-          'href',
-          'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2E8JCpI91GZDsQ5Hyq26MrZUQVQ5VFBIU0tKMUlZTDhLNUpZR01CQ0U5Uy4u',
-        )
+        cy.get('a').should('have.attr', 'href', 'https://eu.surveymonkey.com/r/P76THLY')
       })
     })
   })

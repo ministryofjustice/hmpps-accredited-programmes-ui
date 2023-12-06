@@ -14,8 +14,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Accredited Programmes'
-  app.locals.feedbackUrl =
-    'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2E8JCpI91GZDsQ5Hyq26MrZUQVQ5VFBIU0tKMUlZTDhLNUpZR01CQ0U5Uy4u'
+  app.locals.feedbackUrl = 'https://eu.surveymonkey.com/r/P76THLY'
   app.locals.enableApplicationInsights = config.enableApplicationInsights
   app.locals.applicationInsightsConnectionString = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || ''
 
