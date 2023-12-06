@@ -98,14 +98,23 @@ const offering: TableDefinition = {
   tableName: 'offering',
 }
 
-// ACP_POM_USER or ACP_PT_REFERRER_USER
-const validReferrerIds = ['3F2504E0-4F89-41D3-9A0C-0305E82C3301', '3F2504E0-4F89-41D3-9A0C-0305E82C3302']
+const validReferrers = [
+  { id: '3F2504E0-4F89-41D3-9A0C-0305E82C3301', username: 'ACP_POM_USER' },
+  { id: '3F2504E0-4F89-41D3-9A0C-0305E82C3302', username: 'ACP_PT_REFERRER_USER' },
+]
+
+const referrerUser = {
+  properties: [{ api: 'referrer_username', ui: 'referrerUsername' }],
+  records: [{ referrerUsername: validReferrers[0].username }, { referrerUsername: validReferrers[1].username }],
+  tableName: 'referrer_user',
+}
 
 const referral = {
   properties: [
     { api: 'referral_id', ui: 'id' },
     { api: 'offering_id', ui: 'offeringId' },
     { api: 'prison_number', ui: 'prisonNumber' },
+    { api: 'referrer_username', ui: 'referrerUsername' },
     { api: 'referrer_id', ui: 'referrerId' },
     { api: 'additional_information', ui: 'additionalInformation' },
     { api: 'oasys_confirmed', ui: 'oasysConfirmed' },
@@ -117,13 +126,18 @@ const referral = {
     const recordsArray = []
 
     while (recordsArray.length < 100) {
+      const referrer = faker.helpers.arrayElement(validReferrers)
       const referralRecord = referralFactory.build({
         offeringId: faker.helpers.arrayElement(offering.records).id,
         prisonNumber: faker.helpers.arrayElement(prisoners).prisonerNumber,
-        referrerId: faker.helpers.arrayElement(validReferrerIds),
+        referrerId: referrer.id,
       })
 
-      recordsArray.push({ ...referralRecord, status: referralRecord.status.toUpperCase() })
+      recordsArray.push({
+        ...referralRecord,
+        referrerUsername: referrer.username,
+        status: referralRecord.status.toUpperCase(),
+      })
     }
 
     return recordsArray
@@ -131,4 +145,4 @@ const referral = {
   tableName: 'referral',
 }
 
-export { audience, course, courseAudience, offering, prerequisite, referral }
+export { audience, course, courseAudience, offering, prerequisite, referral, referrerUser }

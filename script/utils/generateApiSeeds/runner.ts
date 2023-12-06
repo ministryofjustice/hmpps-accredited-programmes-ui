@@ -1,7 +1,7 @@
-import { audience, course, courseAudience, offering, prerequisite, referral } from './tableDefinitions'
+import { audience, course, courseAudience, offering, prerequisite, referral, referrerUser } from './tableDefinitions'
 import tableSql from './tableSql'
 
-const insertSql = [course, prerequisite, audience, courseAudience, offering, referral]
+const insertSql = [course, prerequisite, audience, courseAudience, offering, referrerUser, referral]
   .map(tableDefinition => tableSql(tableDefinition))
   .join('\n\n')
 
@@ -9,6 +9,7 @@ const sql = `-- Changes to this script should ideally be made by updating and re
 -- https://github.com/ministryofjustice/hmpps-accredited-programmes-ui/blob/main/README.md#seeded-resources
 
 DELETE from referral;
+DELETE from referrer_user;
 DELETE from offering;
 DELETE from course_audience;
 DELETE from audience;
