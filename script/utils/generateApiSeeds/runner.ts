@@ -1,7 +1,15 @@
-import { audience, course, courseAudience, offering, prerequisite, referral, referrerUser } from './tableDefinitions'
+import TableDefinitions from './tableDefinitions'
 import tableSql from './tableSql'
 
-const insertSql = [course, prerequisite, audience, courseAudience, offering, referrerUser, referral]
+const insertSql = [
+  TableDefinitions.course(),
+  TableDefinitions.prerequisite(),
+  TableDefinitions.audience(),
+  TableDefinitions.courseAudience(),
+  TableDefinitions.offering(),
+  TableDefinitions.referrerUser(),
+  TableDefinitions.referral(),
+]
   .map(tableDefinition => tableSql(tableDefinition))
   .join('\n\n')
 
