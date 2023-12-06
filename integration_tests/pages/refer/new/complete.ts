@@ -10,11 +10,7 @@ export default class NewReferralCompletePage extends Page {
     cy.get('[data-testid="feedback-paragraph"]').within(() => {
       cy.get('.govuk-link')
         .should('have.text', 'What did you think of this service?')
-        .should(
-          'have.attr',
-          'href',
-          'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2E8JCpI91GZDsQ5Hyq26MrZUQVQ5VFBIU0tKMUlZTDhLNUpZR01CQ0U5Uy4u',
-        )
+        .should('have.attr', 'href', 'https://eu.surveymonkey.com/r/P76THLY')
     })
   }
 
