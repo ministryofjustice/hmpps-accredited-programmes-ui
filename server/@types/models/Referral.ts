@@ -11,6 +11,7 @@ type Referral = {
   offeringId: CourseOffering['id']
   prisonNumber: Person['prisonNumber']
   referrerId: Express.User['userId']
+  referrerUsername: Express.User['username']
   status: ReferralStatus
   submittedOn?: string
 }
