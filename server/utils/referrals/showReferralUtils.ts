@@ -8,6 +8,7 @@ import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
   MojFrontendSideNavigationItem,
 } from '@accredited-programmes/ui'
+import type { User } from '@manage-users-api'
 
 export default class ShowReferralUtils {
   static courseOfferingSummaryListRows(
@@ -30,11 +31,20 @@ export default class ShowReferralUtils {
     ]
   }
 
-  static submissionSummaryListRows(referral: Referral): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+  static submissionSummaryListRows(
+    referralSubmissionDate: Referral['submittedOn'],
+    referrerName: User['name'],
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
         key: { text: 'Date referred' },
-        value: { text: DateUtils.govukFormattedFullDateString(referral.submittedOn) },
+        value: {
+          text: DateUtils.govukFormattedFullDateString(referralSubmissionDate),
+        },
+      },
+      {
+        key: { text: 'Referrer name' },
+        value: { text: referrerName },
       },
     ]
   }
