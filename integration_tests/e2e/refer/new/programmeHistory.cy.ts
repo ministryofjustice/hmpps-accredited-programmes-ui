@@ -103,10 +103,11 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
         programmeHistoryPage.shouldNotContainSuccessMessage()
+        programmeHistoryPage.shouldContainPreHistoryText()
         programmeHistoryPage.shouldContainPreHistoryParagraph()
         programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id)
-        programmeHistoryPage.shouldContainButton('Continue')
-        programmeHistoryPage.shouldContainButtonLink('Add another', newParticipationPath)
+        programmeHistoryPage.shouldContainButtonLink('Add a programme', newParticipationPath)
+        programmeHistoryPage.shouldContainButton('Skip this section')
       })
 
       describe('and the programme history has been reviewed', () => {
@@ -159,10 +160,10 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
         programmeHistoryPage.shouldNotContainSuccessMessage()
-        programmeHistoryPage.shouldContainNoHistoryHeading()
-        programmeHistoryPage.shouldContainNoHistoryParagraph()
-        programmeHistoryPage.shouldContainButton('Continue')
+        programmeHistoryPage.shouldContainNoHistoryText()
+        programmeHistoryPage.shouldContainNoHistoryParagraphs()
         programmeHistoryPage.shouldContainButtonLink('Add a programme', newParticipationPath)
+        programmeHistoryPage.shouldContainButton('Skip this section')
       })
 
       describe('and the programme history has been reviewed', () => {

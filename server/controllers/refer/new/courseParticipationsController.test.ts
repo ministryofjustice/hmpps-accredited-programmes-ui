@@ -336,11 +336,38 @@ describe('NewReferralsCourseParticipationsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/index', {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId })}?_method=PUT`,
+        historyText: `The history shows ${person.name} has previously started or completed an Accredited Programme.`,
         pageHeading: 'Accredited Programme history',
         person,
         referralId,
         successMessage: undefined,
         summaryListsOptions: [summaryListOptions, summaryListOptions],
+      })
+    })
+
+    describe('when there is no programme history for a person', () => {
+      it('renders the index template with the correct response locals for `historyText` and `summaryListsOptions`', async () => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        courseService.getAndPresentParticipationsByPerson.mockResolvedValue([])
+
+        const requestHandler = controller.index()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
+          username,
+          userToken,
+          person.prisonNumber,
+          referralId,
+        )
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/new/courseParticipations/index',
+          expect.objectContaining({
+            historyText: `There is no record of Accredited Programmes for ${person.name}.`,
+            summaryListsOptions: [],
+          }),
+        )
       })
     })
 
