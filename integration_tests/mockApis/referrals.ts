@@ -45,7 +45,7 @@ export default {
         method: 'GET',
         queryParameters: {
           size: {
-            equalTo: '999',
+            equalTo: '15',
           },
           ...args.queryParameters,
         },
