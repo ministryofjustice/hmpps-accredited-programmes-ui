@@ -6,17 +6,19 @@ import CaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { referralSummaryFactory } from '../../testutils/factories'
-import { CaseListUtils, PathUtils } from '../../utils'
+import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
-import type { QueryParam } from '@accredited-programmes/ui'
+import type { GovukFrontendPaginationWithItems, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
+jest.mock('../../utils/paginationUtils')
 jest.mock('../../utils/pathUtils')
 jest.mock('../../utils/referrals/caseListUtils')
 
 describe('CaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
+  const queryParamsExcludingPage: Array<QueryParam> = []
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -42,7 +44,6 @@ describe('CaseListController', () => {
     const pathWithQuery = 'path-with-query'
     const audience = 'General violence offence'
     const status = 'ASSESSMENT_STARTED'
-    const queryParamsExcludingPage: Array<QueryParam> = []
 
     beforeEach(() => {
       ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
@@ -67,6 +68,7 @@ describe('CaseListController', () => {
     const audienceSelectItems = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const statusSelectItems = 'bbb' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const caseListTableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
+    const pagination = 'ddd' as unknown as jest.Mocked<GovukFrontendPaginationWithItems>
 
     beforeEach(() => {
       const referralSummaries = referralSummaryFactory.buildList(3)
@@ -82,6 +84,8 @@ describe('CaseListController', () => {
       ;(CaseListUtils.audienceSelectItems as jest.Mock).mockReturnValue(audienceSelectItems)
       ;(CaseListUtils.statusSelectItems as jest.Mock).mockReturnValue(statusSelectItems)
       ;(CaseListUtils.caseListTableRows as jest.Mock).mockReturnValue(caseListTableRows)
+      ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
+      ;(PaginationUtils.pagination as jest.Mock).mockReturnValue(pagination)
     })
 
     it('renders the show template with the correct response locals', async () => {
@@ -96,6 +100,7 @@ describe('CaseListController', () => {
         action: assessPaths.caseList.filter({}),
         audienceSelectItems,
         pageHeading: 'My referrals',
+        pagination,
         referralStatusSelectItems: CaseListUtils.statusSelectItems(),
         tableRows: caseListTableRows,
       })
@@ -105,6 +110,13 @@ describe('CaseListController', () => {
         audience: undefined,
         status: undefined,
       })
+      expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(undefined, undefined)
+      expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
+        request.path,
+        queryParamsExcludingPage,
+        paginatedReferralSummaries.pageNumber,
+        paginatedReferralSummaries.totalPages,
+      )
       expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
       expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(undefined)
       expect(CaseListUtils.caseListTableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
@@ -131,6 +143,7 @@ describe('CaseListController', () => {
           action: assessPaths.caseList.filter({}),
           audienceSelectItems,
           pageHeading: 'My referrals',
+          pagination,
           referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
           tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
         })
@@ -140,6 +153,16 @@ describe('CaseListController', () => {
           audience: apiAudienceQueryParam,
           status: apiStatusQueryParam,
         })
+        expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
+          uiAudienceQueryParam,
+          uiStatusQueryParam,
+        )
+        expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
+          request.path,
+          queryParamsExcludingPage,
+          paginatedReferralSummaries.pageNumber,
+          paginatedReferralSummaries.totalPages,
+        )
         expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
         expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(uiStatusQueryParam)
         expect(CaseListUtils.caseListTableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
