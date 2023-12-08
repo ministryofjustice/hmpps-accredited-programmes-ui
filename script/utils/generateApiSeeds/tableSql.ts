@@ -5,7 +5,7 @@ const valuesSql = (records: Array<Record<string, string>>, uiProperties: Array<P
     const propertyStrings = uiProperties.map(uiProperty => {
       const value = record[uiProperty]
 
-      if (typeof value === 'undefined') {
+      if (value === null || typeof value === 'undefined') {
         return 'null'
       }
       if (typeof value === 'boolean') {
