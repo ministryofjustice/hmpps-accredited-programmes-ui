@@ -7,6 +7,8 @@ import type {
   Referral,
 } from '@accredited-programmes/models'
 import type {
+  GovukFrontendPagination,
+  GovukFrontendPaginationItem,
   GovukFrontendRadiosItem,
   GovukFrontendSummaryList,
   GovukFrontendSummaryListCardActions,
@@ -36,6 +38,8 @@ type GovukFrontendSummaryListWithRowsWithKeysAndValues = GovukFrontendSummaryLis
 }
 
 type GovukFrontendTagWithText = GovukFrontendTag & { text: string }
+
+type GovukFrontendPaginationWithItems = GovukFrontendPagination & { items: Array<GovukFrontendPaginationItem> }
 
 type HasTextString = {
   text: string
@@ -145,6 +149,7 @@ type QueryParam = {
 export type {
   CourseParticipationPresenter,
   CoursePresenter,
+  GovukFrontendPaginationWithItems,
   GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
   GovukFrontendSummaryListCardActionsWithItems,
