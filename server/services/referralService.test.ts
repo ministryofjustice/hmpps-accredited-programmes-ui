@@ -110,7 +110,7 @@ describe('ReferralService', () => {
 
     describe('with filter values', () => {
       it('makes the correct call to the referral client', async () => {
-        const filterValues = { audience: 'General offence', status: 'REFERRAL_SUBMITTED' }
+        const filterValues = { audience: 'General offence', page: '1', status: 'REFERRAL_SUBMITTED' }
 
         await service.getReferralSummaries(username, organisationId, filterValues)
 
