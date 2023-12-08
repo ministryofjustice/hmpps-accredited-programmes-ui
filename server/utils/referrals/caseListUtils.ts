@@ -2,8 +2,8 @@ import { assessPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
-import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
-import type { TagColour } from '@accredited-programmes/ui'
+import type { CourseAudience, Referral, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
+import type { QueryParam, TagColour } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -50,6 +50,20 @@ export default class CaseListUtils {
         html: this.statusTagHtml(summary.status),
       },
     ])
+  }
+
+  static queryParamsExcludingPage(audience?: CourseAudience['value'], status?: Referral['status']): Array<QueryParam> {
+    const queryParams: Array<QueryParam> = []
+
+    if (audience) {
+      queryParams.push({ key: 'strand', value: audience })
+    }
+
+    if (status) {
+      queryParams.push({ key: 'status', value: status })
+    }
+
+    return queryParams
   }
 
   static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {

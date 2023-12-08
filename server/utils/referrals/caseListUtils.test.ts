@@ -93,6 +93,42 @@ describe('CaseListUtils', () => {
     })
   })
 
+  describe('queryParamsExcludingPage', () => {
+    const audienceQueryParam = { key: 'audience', value: 'general violence offence' }
+    const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
+
+    describe('when both audience and status are provided', () => {
+      it('returns an array with one `QueryParam` for each, converting audience to "strand"', async () => {
+        expect(CaseListUtils.queryParamsExcludingPage(audienceQueryParam.value, statusQueryParam.value)).toEqual([
+          { key: 'strand', value: audienceQueryParam.value },
+          { key: 'status', value: statusQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when audience is undefined', () => {
+      it('returns an array with a status `QueryParam`', async () => {
+        expect(CaseListUtils.queryParamsExcludingPage(undefined, statusQueryParam.value)).toEqual([
+          { key: 'status', value: statusQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when status is undefined', () => {
+      it('returns an array with a strand `QueryParam`, converted from "audience"', async () => {
+        expect(CaseListUtils.queryParamsExcludingPage(audienceQueryParam.value, undefined)).toEqual([
+          { key: 'strand', value: audienceQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when both are undefined', () => {
+      it('returns an empty array', async () => {
+        expect(CaseListUtils.queryParamsExcludingPage(undefined, undefined)).toEqual([])
+      })
+    })
+  })
+
   describe('statusSelectItems', () => {
     const expectedItems = {
       'assessment started': 'Assessment started',

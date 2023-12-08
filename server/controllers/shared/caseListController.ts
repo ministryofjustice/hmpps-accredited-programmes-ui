@@ -3,7 +3,6 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { CaseListUtils, PathUtils, TypeUtils } from '../../utils'
-import type { QueryParam } from '@accredited-programmes/ui'
 
 export default class CaseListController {
   constructor(private readonly referralService: ReferralService) {}
@@ -12,17 +11,12 @@ export default class CaseListController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const queryParams: Array<QueryParam> = []
-
-      if (req.body.audience) {
-        queryParams.push({ key: 'strand', value: req.body.audience })
-      }
-
-      if (req.body.status) {
-        queryParams.push({ key: 'status', value: req.body.status })
-      }
-
-      return res.redirect(PathUtils.pathWithQuery(assessPaths.caseList.show({}), queryParams))
+      return res.redirect(
+        PathUtils.pathWithQuery(
+          assessPaths.caseList.show({}),
+          CaseListUtils.queryParamsExcludingPage(req.body.audience, req.body.status),
+        ),
+      )
     }
   }
 
