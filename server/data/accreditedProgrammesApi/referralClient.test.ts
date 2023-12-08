@@ -6,6 +6,7 @@ import ReferralClient from './referralClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import { referralFactory, referralSummaryFactory } from '../../testutils/factories'
+import FactoryHelpers from '../../testutils/factories/factoryHelpers'
 import type { CreatedReferralResponse, Paginated, ReferralSummary, ReferralUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
@@ -85,7 +86,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
         pageIsEmpty: false,
         pageNumber: 0,
-        pageSize: 10,
+        pageSize: 15,
         totalElements: 1,
         totalPages: 1,
       }
@@ -105,7 +106,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             method: 'GET',
             path: apiPaths.referrals.dashboard({ organisationId: 'BWN' }),
             query: {
-              size: '999',
+              size: '15',
             },
           },
         })
@@ -120,20 +121,23 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     describe('with query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
+        content: FactoryHelpers.buildListWith(
+          referralSummaryFactory,
+          { audiences: ['General offence'], status: 'referral_started' },
+          16,
+        ),
         pageIsEmpty: false,
-        pageNumber: 0,
-        pageSize: 10,
-        totalElements: 1,
-        totalPages: 1,
+        pageNumber: 1,
+        pageSize: 15,
+        totalElements: 16,
+        totalPages: 2,
       }
 
       beforeEach(() => {
         provider.addInteraction({
-          state:
-            'Referral(s) exist for organisation BWM with status REFERRAL_SUBMITTED to offerings for courses with audience General offence',
+          state: 'Referral(s) exist for organisation BWN',
           uponReceiving:
-            "A request for organistion BWM's referral summaries with status REFERRAL_SUBMITTED to offerings for courses with audience General offence",
+            "A request for the second (15 length) page of organistion BWM's referral summaries with status REFERRAL_SUBMITTED to offerings for courses with audience General offence",
           willRespondWith: {
             body: Matchers.like(paginatedReferralSummaries),
             status: 200,
@@ -146,7 +150,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             path: apiPaths.referrals.dashboard({ organisationId: 'BWM' }),
             query: {
               audience: 'General offence',
-              size: '999',
+              page: '1',
+              size: '15',
               status: 'REFERRAL_SUBMITTED',
             },
           },
@@ -156,6 +161,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       it("fetches the given organisation's referral summaries matching the given query parameters", async () => {
         const result = await referralClient.findReferralSummaries('BWM', {
           audience: 'General offence',
+          page: '1',
           status: 'REFERRAL_SUBMITTED',
         })
 
