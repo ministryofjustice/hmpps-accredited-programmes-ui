@@ -71,7 +71,7 @@ export interface paths {
     put: operations["moveToCellOrReception"];
   };
   "/api/offenders/{offenderNo}/discharge-to-hospital": {
-    /** *** BETA *** Discharges a prisoner to hospital, requires the RELEASE_PRISONER role */
+    /** Discharges a prisoner to hospital, requires the RELEASE_PRISONER role */
     put: operations["dischargePrisonerToHospital"];
   };
   "/api/offenders/{offenderNo}/court-transfer-out": {
@@ -302,6 +302,10 @@ export interface paths {
     /** Sets imprisonment status smoke test data for this offender */
     post: operations["imprisonmentDataSetup"];
   };
+  "/api/smoketest/offenders/{offenderNo}/details": {
+    /** Updates the offender details for this offender, with smoke test data */
+    post: operations["updatePrisonerDetails"];
+  };
   "/api/service-prisons/{serviceCode}/prison/{prisonId}": {
     /** Activates a prison for the given service */
     post: operations["addServicePrison"];
@@ -439,26 +443,12 @@ export interface paths {
      */
     post: operations["postOffenderAssessmentsAssessmentCode"];
   };
-  "/api/offender-assessments/csra/rating": {
-    /**
-     * Retrieves CSRA ratings for multiple offenders - POST version to allow large offender lists.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations["postOffenderAssessmentsCsraRatings"];
-  };
   "/api/offender-assessments/csra/list": {
     /**
      * Retrieves Offender CSRAs for multiple offenders - POST version to allow large offender lists.
      * @description <p>This endpoint uses the REPLICA database.</p>
      */
     post: operations["postOffenderAssessmentsCsraList"];
-  };
-  "/api/offender-assessments/category": {
-    /**
-     * Returns Categorisation details for supplied Offenders - POST version to allow large offender lists.
-     * @description Categorisation details for all supplied Offenders using SYSTEM access<p>This endpoint uses the REPLICA database.</p>
-     */
-    post: operations["getOffenderCategorisationsSystem"];
   };
   "/api/offences/unlink-from-schedule": {
     /**
@@ -494,7 +484,10 @@ export interface paths {
      * @description Returns a list of recently released or moved offender nos and the associated timestamp.
      */
     get: operations["getRecentMovementsByDate"];
-    /** Create a new external movement for inactive bookings only, requires the INACTIVE_BOOKINGS role */
+    /**
+     * Create a new external movement for inactive bookings only
+     * @description requires the INACTIVE_BOOKINGS role
+     */
     post: operations["createExternalMovement"];
   };
   "/api/movements/offenders": {
@@ -620,11 +613,6 @@ export interface paths {
   };
   "/api/bookings/{bookingId}/appointments": {
     /**
-     * All scheduled appointments for offender.
-     * @description All scheduled appointments for offender.
-     */
-    get: operations["getBookingsBookingIdAppointments"];
-    /**
      * Create appointment for offender.
      * @description Create appointment for offender.
      */
@@ -739,7 +727,6 @@ export interface paths {
      * Retrieve a single financial transaction using client unique ref.
      * @description All transaction amounts are represented as pence values.<br/>
      * Requires NOMIS_API_V1 or UNILINK role.
-     * <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getTransactionByClientUniqueRef"];
   };
@@ -756,17 +743,15 @@ export interface paths {
      * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
      * All balance values are represented as pence values.<br/>
      * Requires NOMIS_API_V1 or UNILINK role.
-     * <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getAccountBalance"];
   };
   "/api/v1/prison/{prison_id}/offenders/{noms_id}/accounts/{account_code}/transactions": {
     /**
      * Retrieve an offender's financial transaction history for cash, spends or savings.
-     * @description Transactions are returned in NOMIS ordee (Descending date followed by id).<br/>
+     * @description Transactions are returned in NOMIS order (Descending date followed by id).<br/>
      * All transaction amounts are represented as pence values.<br/>
      * Requires NOMIS_API_V1 or UNILINK role.
-     * <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getAccountTransactions"];
   };
@@ -777,7 +762,6 @@ export interface paths {
      * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
      * All balance values are represented as pence values.<br/>
      * Requires NOMIS_API_V1 or UNILINK role.
-     * <p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getAccountBalanceTrailingSlash"];
   };
@@ -967,6 +951,10 @@ export interface paths {
     /** Retrieve a list of prisons switched on for the service code */
     get: operations["getServicePrisons"];
   };
+  "/api/schedules/{prisonerNumber}/scheduled-transfers": {
+    /** @description <p>This endpoint uses the REPLICA database.</p> */
+    get: operations["getScheduledTransfersForPrisoner"];
+  };
   "/api/schedules/{agencyId}/suspended-activities-by-date-range": {
     /**
      * Get all Prisoner activities for given date.
@@ -980,13 +968,6 @@ export interface paths {
      * @description Get all Prisoner events for given date at location.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getLocationEvents"];
-  };
-  "/api/schedules/{agencyId}/activities-by-date-range": {
-    /**
-     * Get all Prisoner activities for given date.
-     * @description Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations["getActivitiesAtAllLocationsByDateRange"];
   };
   "/api/schedules/locations/{locationId}/activities": {
     /**
@@ -1065,8 +1046,8 @@ export interface paths {
      */
     get: operations["getPrisonerNumbers"];
   };
-  "/api/prison/{establishmentId}/booking/latest/calculable-sentence-envelope": {
-    /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences at a particular establishment */
+  "/api/prison/{establishmentId}/booking/latest/paged/calculable-sentence-envelope": {
+    /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences at a particular establishment (paged response) */
     get: operations["getCalculableSentenceEnvelopeByEstablishment"];
   };
   "/api/persons/{personId}/phones": {
@@ -1261,13 +1242,6 @@ export interface paths {
      */
     get: operations["getOffenderCategorisations"];
   };
-  "/api/offender-assessments/assessments": {
-    /**
-     * Returns assessment information on Offenders at a prison.
-     * @description <p>This endpoint uses the REPLICA database.</p>
-     */
-    get: operations["getAssessments"];
-  };
   "/api/offender-activities/{offenderNo}/attendance-history": {
     /**
      * The activities that this offender attended over a time period.
@@ -1283,7 +1257,11 @@ export interface paths {
     get: operations["getRecentStartedActivities"];
   };
   "/api/offences/code/{offenceCode}": {
-    /** Paged List of all offences where the offence code starts with the passed in offenceCode param */
+    /**
+     * Paged List of all offences where the offence code starts with the passed in offenceCode param
+     * @deprecated
+     * @description Deprecated - use https://manage-offences-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html
+     */
     get: operations["getOffencesThatStartWith"];
   };
   "/api/movements/{agencyId}/out/{isoDate}": {
@@ -1313,7 +1291,7 @@ export interface paths {
   "/api/movements/upcomingCourtAppearances": {
     /**
      * Get future court hearings for all offenders
-     * @description <p>This endpoint uses the REPLICA database.</p>
+     * @description Requires role VIEW_COURT_EVENTS.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getUpcomingCourtAppearances"];
   };
@@ -1351,18 +1329,21 @@ export interface paths {
   "/api/movements/livingUnit/{livingUnitId}/currently-out": {
     /**
      * Information on offenders currently out.
-     * @description Information on offenders currently out.<p>This endpoint uses the REPLICA database.</p>
+     * @description Requires role ESTABLISHMENT_ROLL.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getOffendersCurrentlyOut"];
   };
   "/api/movements/agency/{agencyId}/temporary-absences": {
-    /** Information about the set of offenders at an agency who are currently out due to temporary absence. */
+    /**
+     * Information about the set of offenders at an agency who are currently out due to temporary absence.
+     * @description Requires role ESTABLISHMENT_ROLL.
+     */
     get: operations["getTemporaryAbsences"];
   };
   "/api/movements/agency/{agencyId}/currently-out": {
     /**
      * Information on offenders currently out.
-     * @description Information on offenders currently out.
+     * @description Requires role ESTABLISHMENT_ROLL.
      */
     get: operations["getOffendersCurrentlyOut_1"];
   };
@@ -1376,14 +1357,14 @@ export interface paths {
   "/api/locations/{locationId}/inmates": {
     /**
      * List of offenders at location.
-     * @description List of offenders at location.<p>This endpoint uses the REPLICA database.</p>
+     * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getOffendersAtLocation"];
   };
   "/api/locations/description/{locationPrefix}/inmates": {
     /**
      * List of offenders at location.
-     * @description List of offenders at location.<p>This endpoint uses the REPLICA database.</p>
+     * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getOffendersAtLocationDescription"];
   };
@@ -1408,7 +1389,7 @@ export interface paths {
   "/api/incidents/{incidentId}": {
     /**
      * Return an Incident for a given incident ID
-     * @description Requires the VIEW_PRISONER_DATA role.
+     * @description Requires the VIEW_INCIDENTS role.
      */
     get: operations["getIncident"];
   };
@@ -1429,13 +1410,6 @@ export interface paths {
   "/api/gang/non-associations/{offenderNo}": {
     /** Returns a list of gangs for a prisoner and the gang non-associations and their members */
     get: operations["getNonAssociationGangsForPrisoner"];
-  };
-  "/api/employment/prisoner/{offenderNo}": {
-    /**
-     * A list of offender employments.
-     * @description A list of offender employments.
-     */
-    get: operations["getPrisonerEmployments"];
   };
   "/api/education/prisoner/{offenderNo}": {
     /**
@@ -1459,14 +1433,21 @@ export interface paths {
     get: operations["getCourtDateResults_1"];
   };
   "/api/cell/{locationId}/history": {
-    /** @description <p>This endpoint uses the REPLICA database.</p> */
+    /**
+     * Get occupancy history of a location.
+     * @description Requires role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
+     */
     get: operations["getBedAssignmentsHistory"];
   };
   "/api/cell/{locationId}/attributes": {
+    /** Get details of a location. */
     get: operations["getCellAttributes"];
   };
   "/api/cell/{agencyId}/history/{assignmentDate}": {
-    /** @description <p>This endpoint uses the REPLICA database.</p> */
+    /**
+     * Get occupancy of locations in a prison on a date.
+     * @description Requires agency to be in caseload or role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
+     */
     get: operations["getBedAssignmentsHistoryByDateForAgency"];
   };
   "/api/case-notes/events": {
@@ -1482,20 +1463,6 @@ export interface paths {
      * @description Offender detail.
      */
     get: operations["getOffenderBooking"];
-  };
-  "/api/bookings/{bookingId}/visits": {
-    /**
-     * All scheduled visits for offender.
-     * @description All scheduled visits for offender.
-     */
-    get: operations["getBookingVisits"];
-  };
-  "/api/bookings/{bookingId}/visits/today": {
-    /**
-     * Today's scheduled visits for offender.
-     * @description Today's scheduled visits for offender.
-     */
-    get: operations["getBookingVisitsForToday"];
   };
   "/api/bookings/{bookingId}/visits/summary": {
     /**
@@ -1673,7 +1640,7 @@ export interface paths {
      * Assessment Information
      * @description Assessment Information
      */
-    get: operations["getAssessments_1"];
+    get: operations["getAssessments"];
   };
   "/api/bookings/{bookingId}/assessment/{assessmentCode}": {
     /**
@@ -1681,27 +1648,6 @@ export interface paths {
      * @description Offender assessment detail.
      */
     get: operations["getAssessmentByCode"];
-  };
-  "/api/bookings/{bookingId}/appointments/today": {
-    /**
-     * Today's scheduled appointments for offender.
-     * @description Today's scheduled appointments for offender.
-     */
-    get: operations["getBookingAppointmentsForToday"];
-  };
-  "/api/bookings/{bookingId}/appointments/thisWeek": {
-    /**
-     * Scheduled appointments for offender for coming week (from current day).
-     * @description Scheduled appointments for offender for coming week (from current day).
-     */
-    get: operations["getBookingAppointmentsForThisWeek"];
-  };
-  "/api/bookings/{bookingId}/appointments/nextWeek": {
-    /**
-     * Scheduled appointments for offender for following week.
-     * @description Scheduled appointments for offender for following week.
-     */
-    get: operations["getBookingAppointmentsForNextWeek"];
   };
   "/api/bookings/{bookingId}/aliases": {
     /**
@@ -3179,16 +3125,16 @@ export interface components {
       ltdCalculatedDate?: string;
       /**
        * Format: date
-       * @description Offender's home detention curfew end date - calculated as one day before the releaseDate.
-       * @example 2019-04-01
-       */
-      homeDetentionCurfewEndDate?: string;
-      /**
-       * Format: date
        * @description Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set.
        * @example 2019-04-01
        */
       topupSupervisionStartDate?: string;
+      /**
+       * Format: date
+       * @description Offender's home detention curfew end date - calculated as one day before the releaseDate.
+       * @example 2019-04-01
+       */
+      homeDetentionCurfewEndDate?: string;
     };
     /** @description Represents the data required for receiving a prisoner transfer */
     RequestToTransferIn: {
@@ -3370,12 +3316,7 @@ export interface components {
        * @description The time the release occurred, if not supplied it will be the current time. Note: Time can be in the past but not before the last movement
        * @example 2021-07-05T10:35:17
        */
-      dischargeTime: string;
-      /**
-       * @description Additional comments about the release
-       * @example Prisoner was released on bail
-       */
-      commentText?: string;
+      dischargeTime?: string;
       /**
        * @description Supporting Prison for POM, can be null if prisoner is already in a prison, for prisoners already released this field will be ignored
        * @example MDI
@@ -4309,6 +4250,12 @@ export interface components {
        */
       active: boolean;
     };
+    UpdatePrisonerDetails: {
+      /** @example John */
+      firstName: string;
+      /** @example Smith */
+      lastName: string;
+    };
     /** @description Prison details */
     PrisonDetails: {
       /**
@@ -5020,81 +4967,6 @@ export interface components {
       comment?: string;
       /** @description Is true, when there are no dates to be recorded in NOMIS */
       noDates?: boolean;
-    };
-    /** @description AssessmentRating */
-    AssessmentClassification: {
-      /**
-       * @description Offender number (e.g. NOMS Number).
-       * @example GV09876N
-       */
-      offenderNo: string;
-      /**
-       * @description The current classification code. This will not have a value if np assessment has been completed
-       * @example STANDARD
-       */
-      classificationCode?: string;
-      /**
-       * Format: date
-       * @description The date that the current classification was made. This will not have a value if np assessment has been completed
-       * @example 2018-02-11
-       */
-      classificationDate?: string;
-    };
-    /** @description Prisoner with categorisation data */
-    OffenderCategorise: {
-      /** @description Display Prisoner Number */
-      offenderNo: string;
-      /** Format: int64 */
-      bookingId: number;
-      /** @description Prisoner First Name */
-      firstName: string;
-      /** @description Prisoner Last Name */
-      lastName: string;
-      /**
-       * Format: date
-       * @description Categorisation date if any
-       */
-      assessmentDate?: string;
-      /**
-       * Format: date
-       * @description Date categorisation was approved if any
-       */
-      approvalDate?: string;
-      /**
-       * Format: int32
-       * @description Sequence number within booking
-       */
-      assessmentSeq?: number;
-      /**
-       * Format: int64
-       * @description assessment type
-       */
-      assessmentTypeId?: number;
-      /**
-       * @description Categorisation status
-       * @enum {string}
-       */
-      assessStatus?: "P" | "A" | "I";
-      /** @description Categoriser First Name */
-      categoriserFirstName?: string;
-      /** @description Categoriser Last Name */
-      categoriserLastName?: string;
-      /** @description Approver First Name if any */
-      approverFirstName?: string;
-      /** @description Approver Last Name if any */
-      approverLastName?: string;
-      /** @description Categorisation */
-      category?: string;
-      /**
-       * Format: date
-       * @description Next Review Date - for recategorisations
-       */
-      nextReviewDate?: string;
-      /**
-       * @description Where in the categorisation workflow the prisoner is
-       * @enum {string}
-       */
-      status: "UNCATEGORISED" | "AWAITING_APPROVAL";
     };
     /** @description Categorisation details */
     CategorisationDetail: {
@@ -6945,6 +6817,37 @@ export interface components {
        */
       hoursPerWeek?: number;
     };
+    /** @description Prisoner Prison Schedule */
+    PrisonerPrisonSchedule: {
+      /** @description Offender number (e.g. NOMS Number) */
+      offenderNo: string;
+      /** @description Offender first name */
+      firstName: string;
+      /** @description Offender last name */
+      lastName: string;
+      /** @description Event code */
+      event: string;
+      /** @description Event type, e.g. VISIT, APP, PRISON_ACT */
+      eventType: string;
+      /** @description Description of event code */
+      eventDescription: string;
+      /** @description Location of the event */
+      eventLocation: string;
+      /** @description The event's status. Includes 'CANC', meaning cancelled for 'VISIT' */
+      eventStatus: string;
+      /** @description Comment */
+      comment: string;
+      /**
+       * @description Date and time at which event starts
+       * @example 2021-07-05T10:35:17
+       */
+      startTime: string;
+      /**
+       * @description Date and time at which event ends
+       * @example 2021-07-05T10:35:17
+       */
+      endTime?: string;
+    };
     /** @description Scheduled appointment */
     ScheduledAppointmentDto: {
       /**
@@ -7354,6 +7257,24 @@ export interface components {
       days?: number;
       /** @description The sentence term code, indicating if this is the term of imprisonment or license */
       code?: string;
+    };
+    PageCalculableSentenceEnvelope: {
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
+      first?: boolean;
+      last?: boolean;
+      /** Format: int32 */
+      size?: number;
+      content?: components["schemas"]["CalculableSentenceEnvelope"][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components["schemas"]["SortObject"];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
+      empty?: boolean;
     };
     /** @description The identifiers of a person necessary for a calculation */
     Person: {
@@ -8364,16 +8285,16 @@ export interface components {
       tariffEarlyRemovalSchemeEligibilityDate?: string;
       /**
        * Format: date
-       * @description Offender's home detention curfew end date - calculated as one day before the releaseDate.
-       * @example 2019-04-01
-       */
-      homeDetentionCurfewEndDate?: string;
-      /**
-       * Format: date
        * @description Top-up supervision start date for offender - calculated as licence end date + 1 day or releaseDate if licence end date not set.
        * @example 2019-04-01
        */
       topupSupervisionStartDate?: string;
+      /**
+       * Format: date
+       * @description Offender's home detention curfew end date - calculated as one day before the releaseDate.
+       * @example 2019-04-01
+       */
+      homeDetentionCurfewEndDate?: string;
     };
     /** @description Prison Term */
     PrisonTerm: {
@@ -8940,6 +8861,62 @@ export interface components {
       answer?: string;
       /** @description If a question has more than one answer, all but the first answer will be in this property */
       additionalAnswers?: string[];
+    };
+    /** @description Prisoner with categorisation data */
+    OffenderCategorise: {
+      /** @description Display Prisoner Number */
+      offenderNo: string;
+      /** Format: int64 */
+      bookingId: number;
+      /** @description Prisoner First Name */
+      firstName: string;
+      /** @description Prisoner Last Name */
+      lastName: string;
+      /**
+       * Format: date
+       * @description Categorisation date if any
+       */
+      assessmentDate?: string;
+      /**
+       * Format: date
+       * @description Date categorisation was approved if any
+       */
+      approvalDate?: string;
+      /**
+       * Format: int32
+       * @description Sequence number within booking
+       */
+      assessmentSeq?: number;
+      /**
+       * Format: int64
+       * @description assessment type
+       */
+      assessmentTypeId?: number;
+      /**
+       * @description Categorisation status
+       * @enum {string}
+       */
+      assessStatus?: "P" | "A" | "I";
+      /** @description Categoriser First Name */
+      categoriserFirstName?: string;
+      /** @description Categoriser Last Name */
+      categoriserLastName?: string;
+      /** @description Approver First Name if any */
+      approverFirstName?: string;
+      /** @description Approver Last Name if any */
+      approverLastName?: string;
+      /** @description Categorisation */
+      category?: string;
+      /**
+       * Format: date
+       * @description Next Review Date - for recategorisations
+       */
+      nextReviewDate?: string;
+      /**
+       * @description Where in the categorisation workflow the prisoner is
+       * @enum {string}
+       */
+      status: "UNCATEGORISED" | "AWAITING_APPROVAL";
     };
     PageOffenceDto: {
       /** Format: int64 */
@@ -9717,113 +9694,6 @@ export interface components {
        * @example 15
        */
       numberOfMembers: number;
-    };
-    /** @description Offender Employment */
-    Employment: {
-      /**
-       * Format: int64
-       * @description Offender booking id.
-       * @example 14
-       */
-      bookingId: number;
-      /**
-       * Format: date
-       * @description Start date of employment
-       * @example 2018-02-11
-       */
-      startDate: string;
-      /**
-       * Format: date
-       * @description End date of employment
-       * @example 2018-05-11
-       */
-      endDate?: string;
-      /**
-       * @description The employment post type condition
-       * @example Full Time
-       */
-      postType?: string;
-      /**
-       * @description The name of the employer
-       * @example Greggs
-       */
-      employerName?: string;
-      /**
-       * @description The name of the supervisor in the employment
-       * @example John Smith
-       */
-      supervisorName?: string;
-      /**
-       * @description Position held on job
-       * @example Supervisor
-       */
-      position?: string;
-      /**
-       * @description The reason for leaving job
-       * @example End of contract
-       */
-      terminationReason?: string;
-      /**
-       * @description Amount the offender was earning
-       * @example 10
-       */
-      wage?: number;
-      /**
-       * @description The frequency of wage payments
-       * @example Hourly
-       */
-      wagePeriod?: string;
-      /**
-       * @description The occupation name of the offender
-       * @example builder
-       */
-      occupation?: string;
-      /**
-       * @description A comment about the employment
-       * @example The employment is going well
-       */
-      comment?: string;
-      /**
-       * @description The employment schedule
-       * @example Fortnightly
-       */
-      schedule?: string;
-      /**
-       * Format: int32
-       * @description The hours worked per week
-       * @example 32
-       */
-      hoursWeek?: number;
-      /**
-       * @description Whether the employer is aware of the offender's charges
-       * @example true
-       */
-      isEmployerAware: boolean;
-      /**
-       * @description Whether the employer can be contacted or not
-       * @example false
-       */
-      isEmployerContactable: boolean;
-      /** @description A list of addresses associated with the employment */
-      addresses: components["schemas"]["AddressDto"][];
-    };
-    PageEmployment: {
-      /** Format: int64 */
-      totalElements?: number;
-      /** Format: int32 */
-      totalPages?: number;
-      first?: boolean;
-      last?: boolean;
-      /** Format: int32 */
-      size?: number;
-      content?: components["schemas"]["Employment"][];
-      /** Format: int32 */
-      number?: number;
-      sort?: components["schemas"]["SortObject"];
-      /** Format: int32 */
-      numberOfElements?: number;
-      pageable?: components["schemas"]["PageableObject"];
-      empty?: boolean;
     };
     PageEducation: {
       /** Format: int64 */
@@ -11323,7 +11193,7 @@ export interface operations {
       };
     };
   };
-  /** *** BETA *** Discharges a prisoner to hospital, requires the RELEASE_PRISONER role */
+  /** Discharges a prisoner to hospital, requires the RELEASE_PRISONER role */
   dischargePrisonerToHospital: {
     parameters: {
       path: {
@@ -12819,6 +12689,41 @@ export interface operations {
       };
     };
   };
+  /** Updates the offender details for this offender, with smoke test data */
+  updatePrisonerDetails: {
+    parameters: {
+      path: {
+        /**
+         * @description offenderNo
+         * @example A1234AA
+         */
+        offenderNo: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdatePrisonerDetails"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+      /** @description Requires role ROLE_SMOKE_TEST */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Requested resource not found. */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
   /** Activates a prison for the given service */
   addServicePrison: {
     parameters: {
@@ -13799,25 +13704,6 @@ export interface operations {
     };
   };
   /**
-   * Retrieves CSRA ratings for multiple offenders - POST version to allow large offender lists.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
-  postOffenderAssessmentsCsraRatings: {
-    requestBody: {
-      content: {
-        "application/json": string[];
-      };
-    };
-    responses: {
-      /** @description The current CSRA rating for each offender. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["AssessmentClassification"][];
-        };
-      };
-    };
-  };
-  /**
    * Retrieves Offender CSRAs for multiple offenders - POST version to allow large offender lists.
    * @description <p>This endpoint uses the REPLICA database.</p>
    */
@@ -13832,31 +13718,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["Assessment"][];
-        };
-      };
-    };
-  };
-  /**
-   * Returns Categorisation details for supplied Offenders - POST version to allow large offender lists.
-   * @description Categorisation details for all supplied Offenders using SYSTEM access<p>This endpoint uses the REPLICA database.</p>
-   */
-  getOffenderCategorisationsSystem: {
-    parameters: {
-      query?: {
-        /** @description Only get the latest category for each booking */
-        latestOnly?: boolean;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": number[];
-      };
-    };
-    responses: {
-      /** @description The list of offenders with categorisation details is returned if categorisation record exists */
-      200: {
-        content: {
-          "application/json": components["schemas"]["OffenderCategorise"][];
         };
       };
     };
@@ -13991,7 +13852,10 @@ export interface operations {
       };
     };
   };
-  /** Create a new external movement for inactive bookings only, requires the INACTIVE_BOOKINGS role */
+  /**
+   * Create a new external movement for inactive bookings only
+   * @description requires the INACTIVE_BOOKINGS role
+   */
   createExternalMovement: {
     requestBody: {
       content: {
@@ -14722,42 +14586,6 @@ export interface operations {
     };
   };
   /**
-   * All scheduled appointments for offender.
-   * @description All scheduled appointments for offender.
-   */
-  getBookingsBookingIdAppointments: {
-    parameters: {
-      query?: {
-        /** @description Returned appointments must be scheduled on or after this date (in YYYY-MM-DD format). */
-        fromDate?: string;
-        /** @description Returned appointments must be scheduled on or before this date (in YYYY-MM-DD format). */
-        toDate?: string;
-      };
-      header?: {
-        /** @description Requested offset of first record in returned collection of appointment records. */
-        "Page-Offset"?: number;
-        /** @description Requested limit to number of appointment records returned. */
-        "Page-Limit"?: number;
-        /** @description Comma separated list of one or more of the following fields - <b>eventDate, startTime, endTime, eventLocation</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ScheduledEvent"][];
-        };
-      };
-    };
-  };
-  /**
    * Create appointment for offender.
    * @description Create appointment for offender.
    */
@@ -15391,7 +15219,6 @@ export interface operations {
    * Retrieve a single financial transaction using client unique ref.
    * @description All transaction amounts are represented as pence values.<br/>
    * Requires NOMIS_API_V1 or UNILINK role.
-   * <p>This endpoint uses the REPLICA database.</p>
    */
   getTransactionByClientUniqueRef: {
     parameters: {
@@ -15500,7 +15327,6 @@ export interface operations {
    * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
    * All balance values are represented as pence values.<br/>
    * Requires NOMIS_API_V1 or UNILINK role.
-   * <p>This endpoint uses the REPLICA database.</p>
    */
   getAccountBalance: {
     parameters: {
@@ -15546,10 +15372,9 @@ export interface operations {
   };
   /**
    * Retrieve an offender's financial transaction history for cash, spends or savings.
-   * @description Transactions are returned in NOMIS ordee (Descending date followed by id).<br/>
+   * @description Transactions are returned in NOMIS order (Descending date followed by id).<br/>
    * All transaction amounts are represented as pence values.<br/>
    * Requires NOMIS_API_V1 or UNILINK role.
-   * <p>This endpoint uses the REPLICA database.</p>
    */
   getAccountTransactions: {
     parameters: {
@@ -15616,7 +15441,6 @@ export interface operations {
    * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
    * All balance values are represented as pence values.<br/>
    * Requires NOMIS_API_V1 or UNILINK role.
-   * <p>This endpoint uses the REPLICA database.</p>
    */
   getAccountBalanceTrailingSlash: {
     parameters: {
@@ -16677,6 +16501,22 @@ export interface operations {
       };
     };
   };
+  /** @description <p>This endpoint uses the REPLICA database.</p> */
+  getScheduledTransfersForPrisoner: {
+    parameters: {
+      path: {
+        prisonerNumber: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["PrisonerPrisonSchedule"][];
+        };
+      };
+    };
+  };
   /**
    * Get all Prisoner activities for given date.
    * @description Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
@@ -16748,60 +16588,6 @@ export interface operations {
         locationId: number;
         /** @description The locationUsage code from the location object - one of the INTERNAL_LOCATION_USAGE reference codes. */
         usage: string;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PrisonerSchedule"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Get all Prisoner activities for given date.
-   * @description Get all Prisoner activities for given date range<p>This endpoint uses the REPLICA database.</p>
-   */
-  getActivitiesAtAllLocationsByDateRange: {
-    parameters: {
-      query?: {
-        /** @description From date of whereabouts list, default today */
-        fromDate?: string;
-        /** @description To Date of whereabouts list, default from date */
-        toDate?: string;
-        /** @description AM, PM or ED */
-        timeSlot?: "AM" | "PM" | "ED";
-        /** @description Include suspended scheduled activity - defaults to false */
-        includeSuspended?: boolean;
-      };
-      header?: {
-        /** @description Comma separated list of one or more of the following fields - <b>cellLocation or lastName</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The prison. */
-        agencyId: string;
       };
     };
     responses: {
@@ -17258,9 +17044,15 @@ export interface operations {
       };
     };
   };
-  /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences at a particular establishment */
+  /** Details of the active sentence envelope, a combination of the person information, the active booking and calculable sentences at a particular establishment (paged response) */
   getCalculableSentenceEnvelopeByEstablishment: {
     parameters: {
+      query?: {
+        /** @description The page number to retrieve of the paged results (starts at zero) */
+        page?: number;
+        /** @description Requested limit of the page size (i.e. the number of bookings in response) */
+        size?: number;
+      };
       path: {
         /** @description The identifier of the establishment(prison) to get the active bookings for */
         establishmentId: string;
@@ -17270,7 +17062,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "application/json": components["schemas"]["CalculableSentenceEnvelope"][];
+          "application/json": components["schemas"]["PageCalculableSentenceEnvelope"];
         };
       };
       /** @description Invalid request. */
@@ -18417,9 +18209,18 @@ export interface operations {
   getOffenderCategorisations: {
     parameters: {
       query: {
-        /** @description Indicates which type of category information is required.<li>UNCATEGORISED: Offenders who need to be categorised,</li><li>CATEGORISED: Offenders who have an approved categorisation,</li><li>RECATEGORISATIONS: Offenders who will soon require recategorisation</li> */
+        /**
+         * @description Indicates which type of category information is required.
+         *     <li>UNCATEGORISED: Offenders who need to be categorised,</li>
+         *     <li>CATEGORISED: Offenders who have an approved categorisation,</li>
+         *     <li>RECATEGORISATIONS: Offenders who will soon require recategorisation</li>
+         */
         type: string;
-        /** @description For type CATEGORISED: The past date from which categorisations are returned.<br />For type RECATEGORISATIONS: the future cutoff date: list includes all prisoners who require re-categorisation on or before this date.<br />For type UNCATEGORISED: Ignored; do not set this parameter. */
+        /**
+         * @description For type CATEGORISED: The past date from which categorisations are returned.<br />
+         * For type RECATEGORISATIONS: the future cutoff date: list includes all prisoners who require re-categorisation on or before this date.<br />
+         * For type UNCATEGORISED: Ignored; do not set this parameter.
+         */
         date?: string;
       };
       path: {
@@ -18432,38 +18233,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["OffenderCategorise"][];
-        };
-      };
-    };
-  };
-  /**
-   * Returns assessment information on Offenders at a prison.
-   * @description <p>This endpoint uses the REPLICA database.</p>
-   */
-  getAssessments: {
-    parameters: {
-      query: {
-        /** @description The required offender numbers Ids (mandatory) */
-        offenderNo: string[];
-        /** @description Returns only assessments for the current sentence if true, otherwise assessments for all previous sentences are included */
-        latestOnly?: boolean;
-        /** @description Returns only active assessments if true, otherwise inactive and pending assessments are included */
-        activeOnly?: boolean;
-        /** @description Returns only the last assessment per sentence if true, otherwise all assessments for the booking are included */
-        mostRecentOnly?: boolean;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["Assessment"][];
-        };
-      };
-      /** @description Invalid request - e.g. no offender numbers provided. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -18541,7 +18310,11 @@ export interface operations {
       };
     };
   };
-  /** Paged List of all offences where the offence code starts with the passed in offenceCode param */
+  /**
+   * Paged List of all offences where the offence code starts with the passed in offenceCode param
+   * @deprecated
+   * @description Deprecated - use https://manage-offences-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html
+   */
   getOffencesThatStartWith: {
     parameters: {
       query?: {
@@ -18751,7 +18524,7 @@ export interface operations {
   };
   /**
    * Get future court hearings for all offenders
-   * @description <p>This endpoint uses the REPLICA database.</p>
+   * @description Requires role VIEW_COURT_EVENTS.<p>This endpoint uses the REPLICA database.</p>
    */
   getUpcomingCourtAppearances: {
     responses: {
@@ -18795,18 +18568,6 @@ export interface operations {
       };
       /** @description Invalid agency identifiers, or from time after the to time, or a time period greater than 24 hours specified, or parameter format not correct. */
       400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description The token presented did not contain the necessary role to access this resource. */
-      401: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description The token presented has expired. */
-      403: {
         content: {
           "application/json": components["schemas"]["ErrorResponse"];
         };
@@ -18975,7 +18736,7 @@ export interface operations {
   };
   /**
    * Information on offenders currently out.
-   * @description Information on offenders currently out.<p>This endpoint uses the REPLICA database.</p>
+   * @description Requires role ESTABLISHMENT_ROLL.<p>This endpoint uses the REPLICA database.</p>
    */
   getOffendersCurrentlyOut: {
     parameters: {
@@ -19011,7 +18772,10 @@ export interface operations {
       };
     };
   };
-  /** Information about the set of offenders at an agency who are currently out due to temporary absence. */
+  /**
+   * Information about the set of offenders at an agency who are currently out due to temporary absence.
+   * @description Requires role ESTABLISHMENT_ROLL.
+   */
   getTemporaryAbsences: {
     parameters: {
       path: {
@@ -19026,18 +18790,6 @@ export interface operations {
           "application/json": components["schemas"]["OutOnTemporaryAbsenceSummary"][];
         };
       };
-      /** @description The token presented did not contain the necessary role to access this resource. */
-      401: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description The token presented has expired. */
-      403: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
       /** @description Unrecoverable error occurred whilst processing request. */
       500: {
         content: {
@@ -19048,7 +18800,7 @@ export interface operations {
   };
   /**
    * Information on offenders currently out.
-   * @description Information on offenders currently out.
+   * @description Requires role ESTABLISHMENT_ROLL.
    */
   getOffendersCurrentlyOut_1: {
     parameters: {
@@ -19128,7 +18880,7 @@ export interface operations {
   };
   /**
    * List of offenders at location.
-   * @description List of offenders at location.<p>This endpoint uses the REPLICA database.</p>
+   * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
    */
   getOffendersAtLocation: {
     parameters: {
@@ -19176,7 +18928,7 @@ export interface operations {
   };
   /**
    * List of offenders at location.
-   * @description List of offenders at location.<p>This endpoint uses the REPLICA database.</p>
+   * @description Requires role VIEW_PRISONER_DATA and a user in the token.<p>This endpoint uses the REPLICA database.</p>
    */
   getOffendersAtLocationDescription: {
     parameters: {
@@ -19362,7 +19114,7 @@ export interface operations {
   };
   /**
    * Return an Incident for a given incident ID
-   * @description Requires the VIEW_PRISONER_DATA role.
+   * @description Requires the VIEW_INCIDENTS role.
    */
   getIncident: {
     parameters: {
@@ -19511,50 +19263,6 @@ export interface operations {
     };
   };
   /**
-   * A list of offender employments.
-   * @description A list of offender employments.
-   */
-  getPrisonerEmployments: {
-    parameters: {
-      query?: {
-        /** @description The page number of the paged results */
-        page?: number;
-        /** @description Requested limit to number of results returned. */
-        size?: number;
-      };
-      path: {
-        /** @description List of offender NOMS numbers. NOMS numbers have the format:<b>ANNNNAA</b> */
-        offenderNo: string;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PageEmployment"];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
    * A list of offender educations.
    * @description A list of offender educations.
    */
@@ -19650,7 +19358,10 @@ export interface operations {
       };
     };
   };
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
+  /**
+   * Get occupancy history of a location.
+   * @description Requires role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
+   */
   getBedAssignmentsHistory: {
     parameters: {
       query: {
@@ -19697,6 +19408,7 @@ export interface operations {
       };
     };
   };
+  /** Get details of a location. */
   getCellAttributes: {
     parameters: {
       path: {
@@ -19731,7 +19443,10 @@ export interface operations {
       };
     };
   };
-  /** @description <p>This endpoint uses the REPLICA database.</p> */
+  /**
+   * Get occupancy of locations in a prison on a date.
+   * @description Requires agency to be in caseload or role MAINTAIN_CELL_MOVEMENTS.<p>This endpoint uses the REPLICA database.</p>
+   */
   getBedAssignmentsHistoryByDateForAgency: {
     parameters: {
       path: {
@@ -19838,104 +19553,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["InmateDetail"];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * All scheduled visits for offender.
-   * @description All scheduled visits for offender.
-   */
-  getBookingVisits: {
-    parameters: {
-      query?: {
-        /** @description Returned visits must be scheduled on or after this date (in YYYY-MM-DD format). */
-        fromDate?: string;
-        /** @description Returned visits must be scheduled on or before this date (in YYYY-MM-DD format). */
-        toDate?: string;
-      };
-      header?: {
-        /** @description Requested offset of first record in returned collection of visit records. */
-        "Page-Offset"?: number;
-        /** @description Requested limit to number of visit records returned. */
-        "Page-Limit"?: number;
-        /** @description Comma separated list of one or more of the following fields - <b>eventDate, startTime, endTime, eventLocation</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ScheduledEvent"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Today's scheduled visits for offender.
-   * @description Today's scheduled visits for offender.
-   */
-  getBookingVisitsForToday: {
-    parameters: {
-      header?: {
-        /** @description Comma separated list of one or more of the following fields - <b>eventDate, startTime, endTime, eventLocation</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ScheduledEvent"][];
         };
       };
       /** @description Invalid request. */
@@ -20981,7 +20598,7 @@ export interface operations {
    * Assessment Information
    * @description Assessment Information
    */
-  getAssessments_1: {
+  getAssessments: {
     parameters: {
       path: {
         /** @description The offender booking id */
@@ -21033,138 +20650,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["Assessment"];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Today's scheduled appointments for offender.
-   * @description Today's scheduled appointments for offender.
-   */
-  getBookingAppointmentsForToday: {
-    parameters: {
-      header?: {
-        /** @description Comma separated list of one or more of the following fields - <b>eventDate, startTime, endTime, eventLocation</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ScheduledEvent"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Scheduled appointments for offender for coming week (from current day).
-   * @description Scheduled appointments for offender for coming week (from current day).
-   */
-  getBookingAppointmentsForThisWeek: {
-    parameters: {
-      header?: {
-        /** @description Comma separated list of one or more of the following fields - <b>eventDate, startTime, endTime, eventLocation</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ScheduledEvent"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Scheduled appointments for offender for following week.
-   * @description Scheduled appointments for offender for following week.
-   */
-  getBookingAppointmentsForNextWeek: {
-    parameters: {
-      header?: {
-        /** @description Comma separated list of one or more of the following fields - <b>eventDate, startTime, endTime, eventLocation</b> */
-        "Sort-Fields"?: string;
-        /** @description Sort order (ASC or DESC) - defaults to ASC. */
-        "Sort-Order"?: "ASC" | "DESC";
-      };
-      path: {
-        /** @description The offender booking id */
-        bookingId: number;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ScheduledEvent"][];
         };
       };
       /** @description Invalid request. */
