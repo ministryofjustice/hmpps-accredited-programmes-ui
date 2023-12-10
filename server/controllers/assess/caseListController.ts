@@ -6,7 +6,7 @@ import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
 import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
 
-export default class CaseListController {
+export default class AssessCaseListController {
   constructor(
     private readonly courseService: CourseService,
     private readonly referralService: ReferralService,
@@ -77,7 +77,7 @@ export default class CaseListController {
         paginatedReferralSummaries.totalPages,
       )
 
-      return res.render('referrals/caseList/show', {
+      return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseName }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
         pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),

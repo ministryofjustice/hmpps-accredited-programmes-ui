@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import CaseListController from './caseListController'
+import AssessCaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
@@ -21,7 +21,7 @@ jest.mock('../../utils/paginationUtils')
 jest.mock('../../utils/pathUtils')
 jest.mock('../../utils/referrals/caseListUtils')
 
-describe('CaseListController', () => {
+describe('AssessCaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
   const courseNameSlug = 'lime-course'
@@ -34,12 +34,12 @@ describe('CaseListController', () => {
   const courseService = createMock<CourseService>({})
   const referralService = createMock<ReferralService>({})
 
-  let controller: CaseListController
+  let controller: AssessCaseListController
 
   const courses = [courseFactory.build({ name: 'Orange Course' }), courseFactory.build({ name: 'Lime Course' })]
 
   beforeEach(() => {
-    controller = new CaseListController(courseService, referralService)
+    controller = new AssessCaseListController(courseService, referralService)
 
     request = createMock<Request>({ user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
@@ -136,7 +136,7 @@ describe('CaseListController', () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
-      expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
+      expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
         audienceSelectItems,
         pageHeading: 'Lime Course (LC)',
@@ -181,7 +181,7 @@ describe('CaseListController', () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
+        expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
           audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
           pageHeading: 'Lime Course (LC)',
