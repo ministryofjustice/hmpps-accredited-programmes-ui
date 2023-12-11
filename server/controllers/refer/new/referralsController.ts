@@ -93,7 +93,7 @@ export default class NewReferralsController {
       TypeUtils.assertHasUser(req)
 
       const { courseOfferingId, prisonNumber } = req.body
-      const { username, userId } = req.user
+      const { username } = req.user
 
       const course = await this.courseService.getCourseByOffering(req.user.username, courseOfferingId)
       if (!course.referable) {
@@ -104,7 +104,6 @@ export default class NewReferralsController {
         username,
         courseOfferingId,
         prisonNumber,
-        userId,
       )
 
       res.redirect(referPaths.new.show({ referralId: createdReferralResponse.referralId }))

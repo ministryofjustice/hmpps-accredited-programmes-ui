@@ -121,7 +121,6 @@ describe('NewReferralsController', () => {
       courseService.getCourseByOffering.mockResolvedValue(referableCourse)
 
       TypeUtils.assertHasUser(request)
-      request.user.userId = draftReferral.referrerId
 
       referralService.createReferral.mockResolvedValue({ referralId })
 
@@ -134,7 +133,6 @@ describe('NewReferralsController', () => {
         username,
         draftReferral.offeringId,
         draftReferral.prisonNumber,
-        draftReferral.referrerId,
       )
     })
 
@@ -147,7 +145,6 @@ describe('NewReferralsController', () => {
         courseService.getCourseByOffering.mockResolvedValue(nonReferableCourse)
 
         TypeUtils.assertHasUser(request)
-        request.user.userId = draftReferral.referrerId
 
         const requestHandler = controller.create()
         const expectedError = createError(400, 'Course is not referable.')

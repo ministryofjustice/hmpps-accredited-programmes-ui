@@ -24,10 +24,9 @@ export default class ReferralClient {
   async create(
     courseOfferingId: Referral['offeringId'],
     prisonNumber: Referral['prisonNumber'],
-    referrerId: Referral['referrerId'],
   ): Promise<CreatedReferralResponse> {
     return (await this.restClient.post({
-      data: { offeringId: courseOfferingId, prisonNumber, referrerId },
+      data: { offeringId: courseOfferingId, prisonNumber },
       path: apiPaths.referrals.create({}),
     })) as CreatedReferralResponse
   }

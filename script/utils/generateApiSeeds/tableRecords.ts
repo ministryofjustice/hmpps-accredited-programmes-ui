@@ -193,11 +193,10 @@ export default class TableRecords {
     const referral = referralFactory.build({
       offeringId,
       prisonNumber,
-      referrerId: referrer.id,
+      referrerUsername: referrer.username,
     })
     return {
       ...referral,
-      referrerUsername: referrer.username,
       status: referral.status.toUpperCase() as ReferralRecord['status'],
     }
   }

@@ -21,13 +21,12 @@ export default class ReferralService {
     username: Express.User['username'],
     courseOfferingId: Referral['offeringId'],
     prisonNumber: Referral['prisonNumber'],
-    referrerId: Referral['referrerId'],
   ): Promise<CreatedReferralResponse> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
-    return referralClient.create(courseOfferingId, prisonNumber, referrerId)
+    return referralClient.create(courseOfferingId, prisonNumber)
   }
 
   async getReferral(username: Express.User['username'], referralId: Referral['id']): Promise<Referral> {

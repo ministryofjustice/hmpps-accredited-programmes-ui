@@ -38,15 +38,10 @@ describe('ReferralService', () => {
       const createdReferralResponse: CreatedReferralResponse = { referralId: referral.id }
 
       when(referralClient.create)
-        .calledWith(referral.offeringId, referral.prisonNumber, referral.referrerId)
+        .calledWith(referral.offeringId, referral.prisonNumber)
         .mockResolvedValue(createdReferralResponse)
 
-      const result = await service.createReferral(
-        username,
-        referral.offeringId,
-        referral.prisonNumber,
-        referral.referrerId,
-      )
+      const result = await service.createReferral(username, referral.offeringId, referral.prisonNumber)
 
       expect(result).toEqual(createdReferralResponse)
 
@@ -54,11 +49,7 @@ describe('ReferralService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(referralClient.create).toHaveBeenCalledWith(
-        referral.offeringId,
-        referral.prisonNumber,
-        referral.referrerId,
-      )
+      expect(referralClient.create).toHaveBeenCalledWith(referral.offeringId, referral.prisonNumber)
     })
   })
 
