@@ -148,7 +148,7 @@
     "prettier-plugin-jinja-template": "^1.0.0",
     "sass": "^1.61.0",
     "start-server-and-test": "^2.0.0",
-    "stylelint": "^15.8.0",
+    "stylelint": "^16.0.0",
     "stylelint-config-clean-order": "^5.0.1",
     "stylelint-config-standard-scss": "^11.0.0",
     "stylelint-selector-bem-pattern": "^3.0.0",
