@@ -7,7 +7,11 @@ const newReferralPeoplePathBase = offeringReferralPathBase.path('people')
 
 const referPathBase = path('/refer')
 
-const newReferralsPath = referPathBase.path('referrals/new')
+const referralsPath = referPathBase.path('referrals')
+
+const caseListPath = referralsPath.path('case-list')
+
+const newReferralsPath = referralsPath.path('new')
 const newReferralShowPath = newReferralsPath.path(':referralId')
 const newReferralProgrammeHistoryPath = newReferralShowPath.path('programme-history')
 const newReferralProgrammeHistoryShowPath = newReferralProgrammeHistoryPath.path(':courseParticipationId')
@@ -15,9 +19,12 @@ const newReferralProgrammeHistoryProgrammePath = newReferralProgrammeHistoryShow
 const newReferralConfirmOasysPath = newReferralShowPath.path('confirm-oasys')
 const newReferralAdditionalInformationPath = newReferralShowPath.path('additional-information')
 
-const referralShowPathBase = referPathBase.path('referrals/:referralId')
+const referralShowPathBase = referralsPath.path(':referralId')
 
 export default {
+  caseList: {
+    show: caseListPath.path(':referralStatusGroup'),
+  },
   new: {
     additionalInformation: {
       show: newReferralAdditionalInformationPath,
