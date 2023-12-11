@@ -10,11 +10,7 @@ import type { CourseService, ReferralService } from '../../services'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
-import type {
-  GovukFrontendPaginationWithItems,
-  MojFrontendPrimaryNavigationItem,
-  QueryParam,
-} from '@accredited-programmes/ui'
+import type { GovukFrontendPaginationWithItems, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 jest.mock('../../utils/paginationUtils')
@@ -103,7 +99,7 @@ describe('AssessCaseListController', () => {
     const audienceSelectItems = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const referralStatusSelectItems = 'bbb' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const tableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
-    const primaryNavigationItems = 'ddd' as unknown as jest.Mocked<Array<MojFrontendPrimaryNavigationItem>>
+    const primaryNavigationItems = 'ddd' as unknown as jest.Mocked<Array<MojFrontendNavigationItem>>
     const pagination = 'eee' as unknown as jest.Mocked<GovukFrontendPaginationWithItems>
 
     beforeEach(() => {
