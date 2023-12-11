@@ -51,6 +51,21 @@ describe('ShowReferralUtils', () => {
         },
       ])
     })
+
+    describe('when the referral has no submission date', () => {
+      it("returns submission details with 'Not known' for the 'Date referred' value", () => {
+        const referral = referralFactory.submitted().build({ submittedOn: undefined })
+
+        expect(ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, 'Test User')).toEqual(
+          expect.arrayContaining([
+            {
+              key: { text: 'Date referred' },
+              value: { text: 'Not known' },
+            },
+          ]),
+        )
+      })
+    })
   })
 
   describe('viewReferralNavigationItems', () => {

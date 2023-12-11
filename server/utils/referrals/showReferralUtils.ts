@@ -39,7 +39,7 @@ export default class ShowReferralUtils {
       {
         key: { text: 'Date referred' },
         value: {
-          text: DateUtils.govukFormattedFullDateString(referralSubmissionDate),
+          text: referralSubmissionDate ? DateUtils.govukFormattedFullDateString(referralSubmissionDate) : 'Not known',
         },
       },
       {
