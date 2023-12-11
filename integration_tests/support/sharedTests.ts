@@ -27,6 +27,7 @@ import {
 } from '../pages/shared'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { User } from '@manage-users-api'
 import type { Prisoner } from '@prisoner-search'
 
 type ApplicationRole = `${ApplicationRoles}`
@@ -67,6 +68,7 @@ const defaultPerson = personFactory.build({
   tariffDate: defaultPrisoner.tariffDate,
 })
 let referral: Referral
+let referringUser: User
 const organisation = OrganisationUtils.organisationFromPrison(prison)
 const user = userFactory.build()
 let courseParticipationPresenter1: CourseParticipationPresenter
@@ -89,6 +91,7 @@ const sharedTests = {
         prisonNumber: person.prisonNumber,
         ...(data?.referral || {}),
       })
+      referringUser = userFactory.build({ name: 'Referring User', username: referral.referrerUsername })
       courseParticipationPresenter1 = {
         ...courseParticipationFactory.build({
           addedBy: user.username,
@@ -117,6 +120,7 @@ const sharedTests = {
       cy.task('stubPrison', prison)
       cy.task('stubPrisoner', prisoner)
       cy.task('stubReferral', referral)
+      cy.task('stubUserDetails', referringUser)
     },
 
     showsAdditionalInformationPage: (role: ApplicationRole): void => {
@@ -133,7 +137,7 @@ const sharedTests = {
       additionalInformationPage.shouldContainNavigation(path)
       additionalInformationPage.shouldContainBackLink('#')
       additionalInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      additionalInformationPage.shouldContainSubmissionSummaryList(referral)
+      additionalInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       additionalInformationPage.shouldContainAdditionalInformationSummaryCard()
       additionalInformationPage.shouldContainSubmittedText()
@@ -160,7 +164,7 @@ const sharedTests = {
       offenceHistoryPage.shouldContainNavigation(path)
       offenceHistoryPage.shouldContainBackLink('#')
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      offenceHistoryPage.shouldContainSubmissionSummaryList(referral)
+      offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       offenceHistoryPage.shouldContainImportedFromText()
       offenceHistoryPage.shouldContainNoOffenceHistoryMessage()
@@ -185,7 +189,7 @@ const sharedTests = {
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink('#')
       programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      programmeHistoryPage.shouldContainSubmissionSummaryList(referral)
+      programmeHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainNoHistorySummaryCard()
     },
@@ -242,7 +246,7 @@ const sharedTests = {
       offenceHistoryPage.shouldContainNavigation(path)
       offenceHistoryPage.shouldContainBackLink('#')
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      offenceHistoryPage.shouldContainSubmissionSummaryList(referral)
+      offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       offenceHistoryPage.shouldContainImportedFromText()
       offenceHistoryPage.shouldContainIndexOffenceSummaryCard()
@@ -263,7 +267,7 @@ const sharedTests = {
       personalDetailsPage.shouldContainNavigation(path)
       personalDetailsPage.shouldContainBackLink('#')
       personalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      personalDetailsPage.shouldContainSubmissionSummaryList(referral)
+      personalDetailsPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       personalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       personalDetailsPage.shouldContainImportedFromText()
       personalDetailsPage.shouldContainPersonalDetailsSummaryCard()
@@ -294,7 +298,7 @@ const sharedTests = {
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink('#')
       programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      programmeHistoryPage.shouldContainSubmissionSummaryList(referral)
+      programmeHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id, {
         change: false,
@@ -321,7 +325,7 @@ const sharedTests = {
       sentenceInformationPage.shouldContainNavigation(path)
       sentenceInformationPage.shouldContainBackLink('#')
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      sentenceInformationPage.shouldContainSubmissionSummaryList(referral)
+      sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainSentenceDetailsSummaryCard()
@@ -355,7 +359,7 @@ const sharedTests = {
       sentenceInformationPage.shouldContainNavigation(path)
       sentenceInformationPage.shouldContainBackLink('#')
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      sentenceInformationPage.shouldContainSubmissionSummaryList(referral)
+      sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()

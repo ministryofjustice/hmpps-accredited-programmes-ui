@@ -11,6 +11,7 @@ const controllers = (services: Services) => {
     services.organisationService,
     services.personService,
     services.referralService,
+    services.userService,
   )
 
   return {

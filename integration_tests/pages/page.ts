@@ -16,6 +16,7 @@ import type {
   HasTextString,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListCardTitle, GovukFrontendWarningText } from '@govuk-frontend'
+import type { User } from '@manage-users-api'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -229,9 +230,15 @@ export default abstract class Page {
     })
   }
 
-  shouldContainSubmissionSummaryList(referral: Referral): void {
+  shouldContainSubmissionSummaryList(
+    referralSubmissionDate: Referral['submittedOn'],
+    referrerName: User['name'],
+  ): void {
     cy.get('[data-testid="submission-summary-list"]').then(summaryListElement => {
-      this.shouldContainSummaryListRows(ShowReferralUtils.submissionSummaryListRows(referral), summaryListElement)
+      this.shouldContainSummaryListRows(
+        ShowReferralUtils.submissionSummaryListRows(referralSubmissionDate, referrerName),
+        summaryListElement,
+      )
     })
   }
 

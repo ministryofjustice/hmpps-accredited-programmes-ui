@@ -5,7 +5,7 @@ import createError from 'http-errors'
 
 import SubmittedReferralsController from './referralsController'
 import { referPaths } from '../../paths'
-import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -14,6 +14,7 @@ import {
   organisationFactory,
   personFactory,
   referralFactory,
+  userFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import {
@@ -31,6 +32,7 @@ import type {
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
   ReferralSharedPageData,
 } from '@accredited-programmes/ui'
+import type { User } from '@manage-users-api'
 
 jest.mock('../../utils/sentenceInformationUtils')
 
@@ -46,6 +48,7 @@ describe('ReferralsController', () => {
   const organisationService = createMock<OrganisationService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
+  const userService = createMock<UserService>({})
 
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
@@ -53,6 +56,7 @@ describe('ReferralsController', () => {
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
   let person: Person
   let referral: Referral
+  let referringUser: User
   let sharedPageData: Omit<ReferralSharedPageData, 'navigationItems'>
 
   let controller: SubmittedReferralsController
@@ -60,6 +64,7 @@ describe('ReferralsController', () => {
   beforeEach(() => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    referringUser = userFactory.build({ name: 'Referring user', username: referral.referrerUsername })
 
     sharedPageData = {
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
@@ -69,7 +74,7 @@ describe('ReferralsController', () => {
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       person,
       referral,
-      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral),
+      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, referringUser.name),
     }
 
     courseService.getCourseByOffering.mockResolvedValue(course)
@@ -77,8 +82,15 @@ describe('ReferralsController', () => {
     organisationService.getOrganisation.mockResolvedValue(organisation)
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
+    userService.getUserFromUsername.mockResolvedValue(referringUser)
 
-    controller = new SubmittedReferralsController(courseService, organisationService, personService, referralService)
+    controller = new SubmittedReferralsController(
+      courseService,
+      organisationService,
+      personService,
+      referralService,
+      userService,
+    )
 
     request = createMock<Request>({ params: { referralId: referral.id }, user: { token: userToken, username } })
     response = Helpers.createMockResponseWithCaseloads()

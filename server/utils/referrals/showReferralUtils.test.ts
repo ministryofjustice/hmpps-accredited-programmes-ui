@@ -40,12 +40,31 @@ describe('ShowReferralUtils', () => {
     it('returns submission details relating to a referral in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       const referral = referralFactory.submitted().build({ submittedOn: '2023-10-31T00:00:00.000000' })
 
-      expect(ShowReferralUtils.submissionSummaryListRows(referral)).toEqual([
+      expect(ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, 'Test User')).toEqual([
         {
           key: { text: 'Date referred' },
           value: { text: '31 October 2023' },
         },
+        {
+          key: { text: 'Referrer name' },
+          value: { text: 'Test User' },
+        },
       ])
+    })
+
+    describe('when the referral has no submission date', () => {
+      it("returns submission details with 'Not known' for the 'Date referred' value", () => {
+        const referral = referralFactory.submitted().build({ submittedOn: undefined })
+
+        expect(ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, 'Test User')).toEqual(
+          expect.arrayContaining([
+            {
+              key: { text: 'Date referred' },
+              value: { text: 'Not known' },
+            },
+          ]),
+        )
+      })
     })
   })
 
