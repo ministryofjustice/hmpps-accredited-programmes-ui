@@ -1,6 +1,6 @@
 import type { Request } from 'express'
 
-import { assessPaths } from '../../paths'
+import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
@@ -85,6 +85,22 @@ export default class CaseListUtils {
     }
 
     return `<strong class="govuk-tag govuk-tag--${colour}">${text}</strong>`
+  }
+
+  static subNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
+    return [
+      'open',
+      // 'closed',
+      // 'draft'
+    ].map(referralStatusGroup => {
+      const path = referPaths.caseList.show({ referralStatusGroup })
+
+      return {
+        active: currentPath === path,
+        href: path,
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+      }
+    })
   }
 
   static tableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
