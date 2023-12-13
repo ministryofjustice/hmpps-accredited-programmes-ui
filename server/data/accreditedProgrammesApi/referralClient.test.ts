@@ -21,7 +21,6 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('create', () => {
     const createdReferralResponse: CreatedReferralResponse = { referralId: faker.string.uuid() }
     const prisonNumber = 'A1234AA'
-    const referrerId = faker.string.numeric({ length: 6 })
 
     beforeEach(() => {
       provider.addInteraction({
@@ -32,7 +31,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
           status: 201,
         },
         withRequest: {
-          body: { offeringId: '7fffcc6a-11f8-4713-be35-cf5ff1aee517', prisonNumber, referrerId },
+          body: { offeringId: '7fffcc6a-11f8-4713-be35-cf5ff1aee517', prisonNumber },
           headers: {
             authorization: `Bearer ${userToken}`,
           },
@@ -43,7 +42,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('creates a referral and returns a referral ID wrapper', async () => {
-      const result = await referralClient.create('7fffcc6a-11f8-4713-be35-cf5ff1aee517', prisonNumber, referrerId)
+      const result = await referralClient.create('7fffcc6a-11f8-4713-be35-cf5ff1aee517', prisonNumber)
 
       expect(result).toEqual(createdReferralResponse)
     })

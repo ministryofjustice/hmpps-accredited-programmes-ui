@@ -53,7 +53,6 @@ export default ReferralFactory.define(({ params }) => {
     oasysConfirmed: faker.datatype.boolean(),
     offeringId: faker.string.uuid(),
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
-    referrerId: faker.string.numeric({ length: 6 }),
     referrerUsername: faker.internet.userName(),
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,

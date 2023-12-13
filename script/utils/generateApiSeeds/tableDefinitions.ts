@@ -72,7 +72,6 @@ export default class TableDefinitions {
         { api: 'offering_id', ui: 'offeringId' },
         { api: 'prison_number', ui: 'prisonNumber' },
         { api: 'referrer_username', ui: 'referrerUsername' },
-        { api: 'referrer_id', ui: 'referrerId' },
         { api: 'additional_information', ui: 'additionalInformation' },
         { api: 'oasys_confirmed', ui: 'oasysConfirmed' },
         { api: 'has_reviewed_programme_history', ui: 'hasReviewedProgrammeHistory' },
