@@ -10,7 +10,7 @@ import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-fron
 
 export default class CaseListUtils {
   static audienceSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return this.caseListSelectItems(
+    return this.selectItems(
       [
         'Extremism offence',
         'Gang offence',
@@ -23,7 +23,7 @@ export default class CaseListUtils {
     )
   }
 
-  static caseListPrimaryNavigationItems(
+  static primaryNavigationItems(
     currentPath: Request['path'],
     courses: Array<Course>,
   ): Array<MojFrontendPrimaryNavigationItem> {
@@ -43,39 +43,8 @@ export default class CaseListUtils {
     })
   }
 
-  static caseListTableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
-    return referralSummary.map(summary => [
-      {
-        attributes: {
-          'data-sort-value': summary.prisonNumber,
-        },
-        html: `<a class="govuk-link" href="${assessPaths.show.personalDetails({ referralId: summary.id })}">${
-          summary.prisonNumber
-        }</a>`,
-      },
-      {
-        attributes: {
-          'data-sort-value': summary.submittedOn,
-        },
-        text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
-      },
-      {
-        text: summary.courseName,
-      },
-      {
-        text: summary.audiences.map(audience => audience).join(', '),
-      },
-      {
-        attributes: {
-          'data-sort-value': summary.status,
-        },
-        html: this.statusTagHtml(summary.status),
-      },
-    ])
-  }
-
   static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return this.caseListSelectItems(
+    return this.selectItems(
       ['Assessment started', 'Awaiting assessment', 'Referral started', 'Referral submitted'],
       selectedValue,
     )
@@ -107,6 +76,37 @@ export default class CaseListUtils {
     return `<strong class="govuk-tag govuk-tag--${colour}">${text}</strong>`
   }
 
+  static tableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
+    return referralSummary.map(summary => [
+      {
+        attributes: {
+          'data-sort-value': summary.prisonNumber,
+        },
+        html: `<a class="govuk-link" href="${assessPaths.show.personalDetails({ referralId: summary.id })}">${
+          summary.prisonNumber
+        }</a>`,
+      },
+      {
+        attributes: {
+          'data-sort-value': summary.submittedOn,
+        },
+        text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
+      },
+      {
+        text: summary.courseName,
+      },
+      {
+        text: summary.audiences.map(audience => audience).join(', '),
+      },
+      {
+        attributes: {
+          'data-sort-value': summary.status,
+        },
+        html: this.statusTagHtml(summary.status),
+      },
+    ])
+  }
+
   static uiToApiAudienceQueryParam(uiAudienceQueryParam: string | undefined): string | undefined {
     return uiAudienceQueryParam ? StringUtils.properCase(uiAudienceQueryParam) : undefined
   }
@@ -115,7 +115,7 @@ export default class CaseListUtils {
     return uiStatusQueryParam ? uiStatusQueryParam.toUpperCase().replace(/\s/g, '_') : undefined
   }
 
-  private static caseListSelectItems(values: Array<string>, selectedValue?: string): Array<GovukFrontendSelectItem> {
+  private static selectItems(values: Array<string>, selectedValue?: string): Array<GovukFrontendSelectItem> {
     return FormUtils.getSelectItems(
       Object.fromEntries(values.map(value => [value.toLowerCase(), value])),
       selectedValue,

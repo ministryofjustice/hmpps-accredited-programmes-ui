@@ -160,9 +160,9 @@ describe('CaseListController', () => {
         action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(),
         pageHeading: 'Lime Course (LC)',
-        primaryNavigationItems: CaseListUtils.caseListPrimaryNavigationItems(request.path, sortedCourses),
+        primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
         referralStatusSelectItems: CaseListUtils.statusSelectItems(),
-        tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
+        tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
       })
 
       expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
@@ -186,9 +186,9 @@ describe('CaseListController', () => {
           action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
           audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
           pageHeading: 'Lime Course (LC)',
-          primaryNavigationItems: CaseListUtils.caseListPrimaryNavigationItems(request.path, sortedCourses),
+          primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
           referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
-          tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
+          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
         })
 
         expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
