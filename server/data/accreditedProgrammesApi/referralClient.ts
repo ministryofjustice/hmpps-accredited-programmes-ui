@@ -39,15 +39,16 @@ export default class ReferralClient {
 
   async findReferralSummaries(
     organisationId: string,
-    query?: { audience?: CourseAudience['value']; courseName?: Course['name']; status?: string },
+    query?: { audience?: CourseAudience['value']; courseName?: Course['name']; page?: string; status?: string },
   ): Promise<Paginated<ReferralSummary>> {
     return (await this.restClient.get({
       path: apiPaths.referrals.dashboard({ organisationId }),
       query: {
         ...(query?.audience && { audience: query.audience }),
         ...(query?.courseName && { courseName: query.courseName }),
+        ...(query?.page && { page: query.page }),
         ...(query?.status && { status: query.status }),
-        size: '999',
+        size: '15',
       },
     })) as Paginated<ReferralSummary>
   }
