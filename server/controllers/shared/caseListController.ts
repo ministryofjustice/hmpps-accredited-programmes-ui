@@ -1,9 +1,10 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
+import type { Referral } from '../../@types/models/Referral'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
-import { CaseListUtils, CourseUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
+import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
 
 export default class CaseListController {
   constructor(
@@ -49,7 +50,7 @@ export default class CaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseName } = req.params
-      const { status, strand: audience } = req.query as Record<string, string>
+      const { page, status, strand: audience } = req.query as Record<string, string>
 
       const { activeCaseLoadId, username } = res.locals.user
 
@@ -65,13 +66,22 @@ export default class CaseListController {
       const paginatedReferralSummaries = await this.referralService.getReferralSummaries(username, activeCaseLoadId, {
         audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
         courseName: selectedCourse.name,
+        page: page ? (Number(page) - 1).toString() : undefined,
         status: CaseListUtils.uiToApiStatusQueryParam(status),
       })
+
+      const pagination = PaginationUtils.pagination(
+        req.path,
+        CaseListUtils.queryParamsExcludingPage(audience, status as Referral['status']),
+        paginatedReferralSummaries.pageNumber,
+        paginatedReferralSummaries.totalPages,
+      )
 
       return res.render('referrals/caseList/show', {
         action: assessPaths.caseList.filter({ courseName }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
         pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),
+        pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusSelectItems: CaseListUtils.statusSelectItems(status),
         tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
