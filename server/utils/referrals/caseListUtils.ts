@@ -58,10 +58,7 @@ export default class CaseListUtils {
   }
 
   static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return this.selectItems(
-      ['Assessment started', 'Awaiting assessment', 'Referral started', 'Referral submitted'],
-      selectedValue,
-    )
+    return this.selectItems(['Assessment started', 'Awaiting assessment', 'Referral submitted'], selectedValue)
   }
 
   static statusTagHtml(status: ReferralStatus): string {
