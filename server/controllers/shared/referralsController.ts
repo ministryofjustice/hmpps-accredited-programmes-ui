@@ -160,11 +160,11 @@ export default class ReferralsController {
     const { token: userToken, username } = req.user
 
     const referral = await this.referralService.getReferral(username, referralId)
-    const [course, courseOffering, person, referrerUser] = await Promise.all([
+    const [course, courseOffering, person, referrerUserFullName] = await Promise.all([
       this.courseService.getCourseByOffering(username, referral.offeringId),
       this.courseService.getOffering(username, referral.offeringId),
       this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
-      this.userService.getUserFromUsername(userToken, referral.referrerUsername),
+      this.userService.getFullNameFromUsername(userToken, referral.referrerUsername),
     ])
 
     const organisation = await this.organisationService.getOrganisation(userToken, courseOffering.organisationId)
@@ -180,7 +180,10 @@ export default class ReferralsController {
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       person,
       referral,
-      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, referrerUser.name),
+      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(
+        referral.submittedOn,
+        referrerUserFullName,
+      ),
     }
   }
 }

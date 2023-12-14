@@ -113,7 +113,7 @@ describe('CourseService', () => {
         earliestCourseParticipation,
       ])
 
-      userService.getUserFromUsername.mockResolvedValue(addedByUser)
+      userService.getFullNameFromUsername.mockResolvedValue(addedByDisplayName)
     })
 
     describe('when no actions are passed', () => {
@@ -349,9 +349,9 @@ describe('CourseService', () => {
     const referralId = 'a-referral-id'
 
     it('fetches the creator, then formats the participation and creator in the appropriate for passing to a GOV.UK summary list Nunjucks macro', async () => {
-      when(userService.getUserFromUsername)
+      when(userService.getFullNameFromUsername)
         .calledWith(userToken, courseParticipation.addedBy)
-        .mockResolvedValue(addedByUser)
+        .mockResolvedValue(addedByDisplayName)
 
       when(CourseParticipationUtils.summaryListOptions as jest.Mock)
         .calledWith({ ...courseParticipation, addedByDisplayName }, referralId, {
