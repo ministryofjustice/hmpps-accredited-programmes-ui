@@ -2,7 +2,7 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Referral, ReferralSummary } from '@accredited-programmes/models'
+import type { Paginated, Referral, ReferralSummary } from '@accredited-programmes/models'
 
 interface ReferralAndScenarioOptions {
   referral: Referral
@@ -29,8 +29,18 @@ export default {
     organisationId: string
     referralSummaries: Array<ReferralSummary>
     queryParameters?: Record<string, { equalTo: string }>
-  }): SuperAgentRequest =>
-    stubFor({
+    totalElements?: number
+    totalPages?: Paginated<ReferralSummary>['totalPages']
+  }): SuperAgentRequest => {
+    const pageNumber = Number(args.queryParameters?.page?.equalTo || 0)
+    const pageSize = 15
+    const totalPages = args.totalPages || 1
+    const totalElements = Object.prototype.hasOwnProperty.call(args, 'totalElements')
+      ? Number(args.totalElements)
+      : pageSize * totalPages
+    const lastPage = Math.ceil(totalElements / pageSize) - 1
+
+    return stubFor({
       request: {
         method: 'GET',
         queryParameters: {
@@ -45,15 +55,16 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           content: args.referralSummaries,
-          pageIsEmpty: false,
-          pageNumber: 0,
-          pageSize: 10,
-          totalElements: args.referralSummaries.length,
-          totalPages: 1,
+          pageIsEmpty: pageNumber > lastPage,
+          pageNumber,
+          pageSize,
+          totalElements,
+          totalPages,
         },
         status: 200,
       },
-    }),
+    })
+  },
 
   stubReferral: (referral: Referral): SuperAgentRequest =>
     stubFor({
