@@ -28,7 +28,7 @@ export default {
   stubFindReferralSummaries: (args: {
     organisationId: string
     referralSummaries: Array<ReferralSummary>
-    queryParameters?: Record<string, string>
+    queryParameters?: Record<string, { equalTo: string }>
   }): SuperAgentRequest =>
     stubFor({
       request: {
