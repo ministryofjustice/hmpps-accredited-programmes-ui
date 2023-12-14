@@ -82,6 +82,7 @@ describe('ReferCaseListController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
+          isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
           subNavigationItems: CaseListUtils.subNavigationItems(request.path),

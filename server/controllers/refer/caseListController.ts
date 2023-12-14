@@ -51,6 +51,7 @@ export default class ReferCaseListController {
       )
 
       return res.render('referrals/caseList/refer/show', {
+        isMyReferralsPage: true,
         pageHeading: 'My referrals',
         pagination,
         subNavigationItems: CaseListUtils.subNavigationItems(req.path),

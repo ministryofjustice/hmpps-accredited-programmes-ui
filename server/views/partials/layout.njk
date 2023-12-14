@@ -55,15 +55,31 @@
   }) }}
 
   {% block primaryNavigation %}
+    {% set primaryNavigationItems = [
+      {
+        text: 'List of programmes',
+        href: findPaths.index({}),
+        active: currentPath === (findPaths.index({}))
+      }
+    ] %}
+
+    {% for role in user.roles %}
+      {% if role === 'ROLE_POM' %}
+        {% set primaryNavigationItems = primaryNavigationItems.concat([
+          {
+            text: 'My referrals',
+            href: referPaths
+              .caseList
+              .index({}),
+            active: isMyReferralsPage
+          }
+        ]) %}
+      {% endif %}
+    {% endfor %}
+
     {{ mojPrimaryNavigation({
       label: 'Primary navigation',
-      items: [
-        {
-          text: 'List of programmes',
-          href: findPaths.index({}),
-          active: currentPath === (findPaths.index({}))
-        }
-      ]
+      items: primaryNavigationItems
     }) }}
   {% endblock primaryNavigation %}
 
