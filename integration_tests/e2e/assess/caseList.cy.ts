@@ -2,6 +2,7 @@ import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMidd
 import { assessPaths } from '../../../server/paths'
 import { courseFactory, referralSummaryFactory } from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
+import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
 import { CaseListPage } from '../../pages/shared'
 
@@ -47,6 +48,42 @@ context('Referral case lists', () => {
     caseListPage.shouldContainCourseNavigation(path, courses)
     caseListPage.shouldHaveSelectedFilterValues('', '')
     caseListPage.shouldContainTableOfReferralSummaries()
+  })
+
+  it('includes pagination', () => {
+    cy.task('stubFindReferralSummaries', {
+      organisationId: 'MRI',
+      queryParameters: { page: { equalTo: '3' } },
+      referralSummaries: limeCourseReferralSummaries,
+      totalPages: 7,
+    })
+    cy.task('stubFindReferralSummaries', {
+      organisationId: 'MRI',
+      queryParameters: { page: { equalTo: '4' } },
+      referralSummaries: limeCourseReferralSummaries,
+      totalPages: 7,
+    })
+
+    const path = PathUtils.pathWithQuery(assessPaths.caseList.show({ courseName: 'lime-course' }), [
+      { key: 'page', value: '4' },
+    ])
+    cy.visit(path)
+
+    const caseListPage = Page.verifyOnPage(CaseListPage, {
+      course: limeCourse,
+      referralSummaries: limeCourseReferralSummaries,
+    })
+    caseListPage.shouldContainPaginationPreviousButtonLink()
+    caseListPage.shouldContainPaginationNextButtonLink()
+    caseListPage.shouldContainPaginationItems(['1', '&ctdot;', '3', '4', '5', '&ctdot;', '7'])
+    caseListPage.shouldBeOnPaginationPage(4)
+
+    caseListPage.clickPaginationNextButton()
+    caseListPage.shouldBeOnPaginationPage(5)
+    caseListPage.clickPaginationPreviousButton()
+    caseListPage.shouldBeOnPaginationPage(4)
+    caseListPage.clickPaginationPage(5)
+    caseListPage.shouldBeOnPaginationPage(5)
   })
 
   describe('when using the filters', () => {
