@@ -24,25 +24,12 @@ describe('CaseListController', () => {
 
   const courseService = createMock<CourseService>({})
   const referralService = createMock<ReferralService>({})
-  let paginatedReferralSummaries: Paginated<ReferralSummary>
 
   let controller: CaseListController
 
   const courses = [courseFactory.build({ name: 'Orange Course' }), courseFactory.build({ name: 'Lime Course' })]
 
   beforeEach(() => {
-    const referralSummaries = referralSummaryFactory.buildList(3)
-    paginatedReferralSummaries = {
-      content: referralSummaries,
-      pageIsEmpty: false,
-      pageNumber: 0,
-      pageSize: 10,
-      totalElements: referralSummaries.length,
-      totalPages: 1,
-    }
-
-    referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
-
     controller = new CaseListController(courseService, referralService)
 
     request = createMock<Request>({ user: { username } })
@@ -145,11 +132,23 @@ describe('CaseListController', () => {
 
   describe('show', () => {
     const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+    let paginatedReferralSummaries: Paginated<ReferralSummary>
 
     beforeEach(() => {
       request.params = { courseName: courseNameSlug }
 
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
+
+      const referralSummaries = referralSummaryFactory.buildList(3)
+      paginatedReferralSummaries = {
+        content: referralSummaries,
+        pageIsEmpty: false,
+        pageNumber: 0,
+        pageSize: 10,
+        totalElements: referralSummaries.length,
+        totalPages: 1,
+      }
+      referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
     })
 
     it('renders the show template with the correct response locals', async () => {
