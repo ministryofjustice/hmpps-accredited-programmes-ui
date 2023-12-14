@@ -4,6 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import ReferCaseListController from './caseListController'
+import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils } from '../../utils'
@@ -36,6 +37,15 @@ describe('ReferCaseListController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
+  })
+
+  describe('indexRedirect', () => {
+    it('redirects to the show action with the open referral state', async () => {
+      const requestHandler = controller.indexRedirect()
+      await requestHandler(request, response, next)
+
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.caseList.show({ referralStatusGroup: 'open' }))
+    })
   })
 
   describe('show', () => {
