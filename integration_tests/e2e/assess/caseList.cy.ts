@@ -38,7 +38,6 @@ context('Referral case lists', () => {
 
   it('shows the correct information', () => {
     const path = assessPaths.caseList.show({ courseName: 'lime-course' })
-    // cy.task('log', `set the path as ${path}`)
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
