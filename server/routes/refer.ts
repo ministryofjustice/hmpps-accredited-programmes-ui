@@ -23,6 +23,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     referralsController,
   } = controllers
 
+  get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
   get(referPaths.caseList.show.pattern, referCaseListController.show())
 
   get(referPaths.new.start.pattern, newReferralsController.start())

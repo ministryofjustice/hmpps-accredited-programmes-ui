@@ -23,6 +23,7 @@ const referralShowPathBase = referralsPath.path(':referralId')
 
 export default {
   caseList: {
+    index: caseListPath,
     show: caseListPath.path(':referralStatusGroup'),
   },
   new: {
