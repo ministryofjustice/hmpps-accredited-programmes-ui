@@ -11,5 +11,5 @@ script/utils/launch-docker
 
 echo "==> Installing application dependencies..."
 
-nodenv install --skip-existing
+npm_config_yes=true npx @nodenv/nodenv install --skip-existing
 npm install
