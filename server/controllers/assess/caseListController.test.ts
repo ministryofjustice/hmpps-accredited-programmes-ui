@@ -126,8 +126,10 @@ describe('AssessCaseListController', () => {
     })
 
     it('renders the show template with the correct response locals', async () => {
+      const apiStatusQuery = 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
+
       ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(undefined)
-      ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(undefined)
+      ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiStatusQuery)
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
@@ -142,11 +144,11 @@ describe('AssessCaseListController', () => {
         tableRows,
       })
       expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(undefined)
-      expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(undefined)
+      expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiStatusQuery.toLowerCase())
       expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
         audience: undefined,
         courseName: 'Lime Course',
-        status: undefined,
+        status: apiStatusQuery,
       })
       expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(undefined, undefined)
       expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
