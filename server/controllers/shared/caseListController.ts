@@ -4,7 +4,6 @@ import createError from 'http-errors'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
 import { CaseListUtils, CourseUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
-import type { QueryParam } from '@accredited-programmes/ui'
 
 export default class CaseListController {
   constructor(
@@ -17,17 +16,13 @@ export default class CaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseName } = req.params
-      const queryParams: Array<QueryParam> = []
 
-      if (req.body.audience) {
-        queryParams.push({ key: 'strand', value: req.body.audience })
-      }
-
-      if (req.body.status) {
-        queryParams.push({ key: 'status', value: req.body.status })
-      }
-
-      return res.redirect(PathUtils.pathWithQuery(assessPaths.caseList.show({ courseName }), queryParams))
+      return res.redirect(
+        PathUtils.pathWithQuery(
+          assessPaths.caseList.show({ courseName }),
+          CaseListUtils.queryParamsExcludingPage(req.body.audience, req.body.status),
+        ),
+      )
     }
   }
 

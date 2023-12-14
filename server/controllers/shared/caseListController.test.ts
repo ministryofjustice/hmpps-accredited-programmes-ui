@@ -10,7 +10,7 @@ import type { CourseService, ReferralService } from '../../services'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
-import type { MojFrontendPrimaryNavigationItem } from '@accredited-programmes/ui'
+import type { MojFrontendPrimaryNavigationItem, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 jest.mock('../../utils/pathUtils')
@@ -70,66 +70,25 @@ describe('CaseListController', () => {
     const pathWithQuery = 'path-with-query'
     const audience = 'General violence offence'
     const status = 'ASSESSMENT_STARTED'
+    const queryParamsExcludingPage: Array<QueryParam> = []
 
     beforeEach(() => {
       ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
+      ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
 
       request.params = { courseName: courseNameSlug }
     })
 
-    describe('when `req.body.audience` and `req.body.status` are provided', () => {
-      it('asks PathUtils to generate a path with both as query params - audience renamed "strand" - and redirects to the result', async () => {
-        request.body.audience = audience
-        request.body.status = status
+    it('uses utils to generate a path to the show action with the request body converted to query params, then redirects there', async () => {
+      request.body.audience = audience
+      request.body.status = status
 
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
+      const requestHandler = controller.filter()
+      await requestHandler(request, response, next)
 
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [
-          { key: 'strand', value: audience },
-          { key: 'status', value: status },
-        ])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
-    })
-
-    describe('when `req.body.audience` is undefined', () => {
-      it('asks PathUtils to generate a path with status as a query param and redirects to the result', async () => {
-        request.body.audience = undefined
-        request.body.status = status
-
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
-
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [{ key: 'status', value: status }])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
-    })
-
-    describe('when `req.body.status` is undefined', () => {
-      it('asks PathUtils to generate a path with audience as a query param - renamed "strand" - and redirects to the result', async () => {
-        request.body.audience = audience
-        request.body.status = undefined
-
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
-
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [{ key: 'strand', value: audience }])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
-    })
-
-    describe('when `req.body.audience` and `req.body.status` are both `undefined`', () => {
-      it('asks PathUtils to generate a path without any query params and redirects to the result', async () => {
-        request.body.audience = undefined
-        request.body.status = undefined
-
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
-
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
+      expect(CaseListUtils.queryParamsExcludingPage)
+      expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, queryParamsExcludingPage)
+      expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
     })
   })
 
