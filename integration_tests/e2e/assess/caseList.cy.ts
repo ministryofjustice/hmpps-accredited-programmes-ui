@@ -1,23 +1,24 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
 import { courseFactory, referralSummaryFactory } from '../../../server/testutils/factories'
+import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
 import Page from '../../pages/page'
 import { CaseListPage } from '../../pages/shared'
-import type { Course, ReferralSummary } from '@accredited-programmes/models'
-
-const createReferralSummaries = (courseName: Course['name']): Array<ReferralSummary> => [
-  referralSummaryFactory.build({ courseName, prisonNumber: 'ABC123', status: 'assessment_started' }),
-  referralSummaryFactory.build({ courseName, prisonNumber: 'ABC789', status: 'referral_started' }),
-  referralSummaryFactory.build({ courseName, prisonNumber: 'ABC456', status: 'awaiting_assessment' }),
-  referralSummaryFactory.build({ courseName, prisonNumber: 'ABC000', status: 'referral_submitted' }),
-]
 
 context('Referral case lists', () => {
   const limeCourse = courseFactory.build({ name: 'Lime Course' })
   const orangeCourse = courseFactory.build({ name: 'Blue Course' })
   const courses = [limeCourse, orangeCourse]
-  const limeCourseReferralSummaries = createReferralSummaries(limeCourse.name)
-  const orangeCourseReferralSummaries = createReferralSummaries(orangeCourse.name)
+  const limeCourseReferralSummaries = FactoryHelpers.buildListWith(
+    referralSummaryFactory,
+    { courseName: limeCourse.name },
+    15,
+  )
+  const orangeCourseReferralSummaries = FactoryHelpers.buildListWith(
+    referralSummaryFactory,
+    { courseName: orangeCourse.name },
+    15,
+  )
 
   beforeEach(() => {
     cy.task('reset')
@@ -37,6 +38,7 @@ context('Referral case lists', () => {
 
   it('shows the correct information', () => {
     const path = assessPaths.caseList.show({ courseName: 'lime-course' })
+    // cy.task('log', `set the path as ${path}`)
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -67,7 +69,6 @@ context('Referral case lists', () => {
         referralSummaryFactory.build({
           audiences: [programmeStrandSelectedValue],
           courseName: limeCourse.name,
-          prisonNumber: 'ABC123',
           status: 'assessment_started',
         }),
       ]
