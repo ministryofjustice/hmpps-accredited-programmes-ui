@@ -40,7 +40,7 @@ export default class ReferralService {
   async getReferralSummaries(
     username: Express.User['username'],
     organisationId: Organisation['id'],
-    query?: { audience?: CourseAudience['value']; courseName?: Course['name']; status?: string },
+    query?: { audience?: CourseAudience['value']; courseName?: Course['name']; page?: string; status?: string },
   ): Promise<Paginated<ReferralSummary>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)

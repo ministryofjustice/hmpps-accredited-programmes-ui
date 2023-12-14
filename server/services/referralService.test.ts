@@ -101,7 +101,12 @@ describe('ReferralService', () => {
 
     describe('with query values', () => {
       it('makes the correct call to the referral client', async () => {
-        const query = { audience: 'General offence', courseName: 'Lime Course', status: 'REFERRAL_SUBMITTED' }
+        const query = {
+          audience: 'General offence',
+          courseName: 'Lime Course',
+          page: '1',
+          status: 'REFERRAL_SUBMITTED',
+        }
 
         await service.getReferralSummaries(username, organisationId, query)
 
