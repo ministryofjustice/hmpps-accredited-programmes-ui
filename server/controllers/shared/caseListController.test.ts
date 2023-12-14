@@ -10,8 +10,11 @@ import type { CourseService, ReferralService } from '../../services'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
+import type { MojFrontendPrimaryNavigationItem } from '@accredited-programmes/ui'
+import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 jest.mock('../../utils/pathUtils')
+jest.mock('../../utils/referrals/caseListUtils')
 
 describe('CaseListController', () => {
   const username = 'USERNAME'
@@ -24,25 +27,12 @@ describe('CaseListController', () => {
 
   const courseService = createMock<CourseService>({})
   const referralService = createMock<ReferralService>({})
-  let paginatedReferralSummaries: Paginated<ReferralSummary>
 
   let controller: CaseListController
 
   const courses = [courseFactory.build({ name: 'Orange Course' }), courseFactory.build({ name: 'Lime Course' })]
 
   beforeEach(() => {
-    const referralSummaries = referralSummaryFactory.buildList(3)
-    paginatedReferralSummaries = {
-      content: referralSummaries,
-      pageIsEmpty: false,
-      pageNumber: 0,
-      pageSize: 10,
-      totalElements: referralSummaries.length,
-      totalPages: 1,
-    }
-
-    referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
-
     controller = new CaseListController(courseService, referralService)
 
     request = createMock<Request>({ user: { username } })
@@ -145,31 +135,59 @@ describe('CaseListController', () => {
 
   describe('show', () => {
     const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+    let paginatedReferralSummaries: Paginated<ReferralSummary>
+    const audienceSelectItems = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
+    const referralStatusSelectItems = 'bbb' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
+    const tableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
+    const primaryNavigationItems = 'ddd' as unknown as jest.Mocked<Array<MojFrontendPrimaryNavigationItem>>
 
     beforeEach(() => {
       request.params = { courseName: courseNameSlug }
 
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
+
+      const referralSummaries = referralSummaryFactory.buildList(3)
+      paginatedReferralSummaries = {
+        content: referralSummaries,
+        pageIsEmpty: false,
+        pageNumber: 0,
+        pageSize: 10,
+        totalElements: referralSummaries.length,
+        totalPages: 1,
+      }
+      referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
+      ;(CaseListUtils.audienceSelectItems as jest.Mock).mockReturnValue(audienceSelectItems)
+      ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(primaryNavigationItems)
+      ;(CaseListUtils.statusSelectItems as jest.Mock).mockReturnValue(referralStatusSelectItems)
+      ;(CaseListUtils.tableRows as jest.Mock).mockReturnValue(tableRows)
     })
 
     it('renders the show template with the correct response locals', async () => {
+      ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(undefined)
+      ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(undefined)
+
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/caseList/show', {
         action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
-        audienceSelectItems: CaseListUtils.audienceSelectItems(),
+        audienceSelectItems,
         pageHeading: 'Lime Course (LC)',
-        primaryNavigationItems: CaseListUtils.caseListPrimaryNavigationItems(request.path, sortedCourses),
-        referralStatusSelectItems: CaseListUtils.statusSelectItems(),
-        tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
+        primaryNavigationItems,
+        referralStatusSelectItems,
+        tableRows,
       })
-
+      expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(undefined)
+      expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(undefined)
       expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
         audience: undefined,
         courseName: 'Lime Course',
         status: undefined,
       })
+      expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
+      expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
+      expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(undefined)
+      expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
     })
 
     describe('when there are query parameters', () => {
@@ -178,6 +196,12 @@ describe('CaseListController', () => {
           status: 'referral submitted',
           strand: 'general offence',
         }
+        const uiAudienceQueryParam = 'general offence'
+        const uiStatusQueryParam = 'referral submitted'
+        const apiAudienceQueryParam = 'General offence'
+        const apiStatusQueryParam = 'REFERRAL_SUBMITTED'
+        ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(apiAudienceQueryParam)
+        ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiStatusQueryParam)
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -186,16 +210,21 @@ describe('CaseListController', () => {
           action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
           audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
           pageHeading: 'Lime Course (LC)',
-          primaryNavigationItems: CaseListUtils.caseListPrimaryNavigationItems(request.path, sortedCourses),
+          primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
           referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
-          tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
+          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
         })
-
+        expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(uiAudienceQueryParam)
+        expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(uiStatusQueryParam)
         expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
-          audience: 'General offence',
+          audience: apiAudienceQueryParam,
           courseName: 'Lime Course',
-          status: 'REFERRAL_SUBMITTED',
+          status: apiStatusQueryParam,
         })
+        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
+        expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(uiStatusQueryParam)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
       })
     })
 

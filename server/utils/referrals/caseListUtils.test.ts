@@ -31,7 +31,7 @@ describe('CaseListUtils', () => {
     })
   })
 
-  describe('caseListPrimaryNavigationItems', () => {
+  describe('primaryNavigationItems', () => {
     it('returns primary navigation items, with no duplicate course names, sorted alphabetically by course name and sets the correct item as active', () => {
       const courses = [
         courseFactory.build({ name: 'Lime Course' }),
@@ -39,9 +39,7 @@ describe('CaseListUtils', () => {
         courseFactory.build({ name: 'Blue Course' }),
       ]
 
-      expect(
-        CaseListUtils.caseListPrimaryNavigationItems('/assess/referrals/orange-course/case-list', courses),
-      ).toEqual([
+      expect(CaseListUtils.primaryNavigationItems('/assess/referrals/orange-course/case-list', courses)).toEqual([
         {
           active: false,
           href: '/assess/referrals/blue-course/case-list',
@@ -57,68 +55,6 @@ describe('CaseListUtils', () => {
           href: '/assess/referrals/orange-course/case-list',
           text: 'Orange Course referrals',
         },
-      ])
-    })
-  })
-
-  describe('caseListTableRows', () => {
-    it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
-      const referralSummaries = [
-        referralSummaryFactory.build({
-          audiences: ['General offence'],
-          courseName: 'Test Course 1',
-          id: 'referral-123',
-          prisonNumber: 'ABC1234',
-          status: 'referral_started',
-          submittedOn: undefined,
-        }),
-        referralSummaryFactory.build({
-          audiences: ['General offence', 'Extremism offence'],
-          courseName: 'Test Course 2',
-          id: 'referral-456',
-          prisonNumber: 'DEF1234',
-          status: 'referral_submitted',
-          submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
-        }),
-      ]
-
-      expect(CaseListUtils.caseListTableRows(referralSummaries)).toEqual([
-        [
-          {
-            attributes: { 'data-sort-value': 'ABC1234' },
-            html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          { text: 'Test Course 1' },
-          {
-            text: 'General offence',
-          },
-          {
-            attributes: { 'data-sort-value': 'referral_started' },
-            html: CaseListUtils.statusTagHtml('referral_started'),
-          },
-        ],
-        [
-          {
-            attributes: { 'data-sort-value': 'DEF1234' },
-            html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
-          },
-          {
-            attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
-            text: '1 January 2021',
-          },
-          { text: 'Test Course 2' },
-          {
-            text: 'General offence, Extremism offence',
-          },
-          {
-            attributes: { 'data-sort-value': 'referral_submitted' },
-            html: CaseListUtils.statusTagHtml('referral_submitted'),
-          },
-        ],
       ])
     })
   })
@@ -160,6 +96,68 @@ describe('CaseListUtils', () => {
         expect(result).toBe(`<strong class="govuk-tag govuk-tag--${expectedColour}">${expectedText}</strong>`)
       },
     )
+  })
+
+  describe('tableRows', () => {
+    it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
+      const referralSummaries = [
+        referralSummaryFactory.build({
+          audiences: ['General offence'],
+          courseName: 'Test Course 1',
+          id: 'referral-123',
+          prisonNumber: 'ABC1234',
+          status: 'referral_started',
+          submittedOn: undefined,
+        }),
+        referralSummaryFactory.build({
+          audiences: ['General offence', 'Extremism offence'],
+          courseName: 'Test Course 2',
+          id: 'referral-456',
+          prisonNumber: 'DEF1234',
+          status: 'referral_submitted',
+          submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
+        }),
+      ]
+
+      expect(CaseListUtils.tableRows(referralSummaries)).toEqual([
+        [
+          {
+            attributes: { 'data-sort-value': 'ABC1234' },
+            html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>',
+          },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          { text: 'Test Course 1' },
+          {
+            text: 'General offence',
+          },
+          {
+            attributes: { 'data-sort-value': 'referral_started' },
+            html: CaseListUtils.statusTagHtml('referral_started'),
+          },
+        ],
+        [
+          {
+            attributes: { 'data-sort-value': 'DEF1234' },
+            html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
+          },
+          {
+            attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
+            text: '1 January 2021',
+          },
+          { text: 'Test Course 2' },
+          {
+            text: 'General offence, Extremism offence',
+          },
+          {
+            attributes: { 'data-sort-value': 'referral_submitted' },
+            html: CaseListUtils.statusTagHtml('referral_submitted'),
+          },
+        ],
+      ])
+    })
   })
 
   describe('uiToApiAudienceQueryParam', () => {

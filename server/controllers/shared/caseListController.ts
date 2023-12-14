@@ -77,9 +77,9 @@ export default class CaseListController {
         action: assessPaths.caseList.filter({ courseName }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
         pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),
-        primaryNavigationItems: CaseListUtils.caseListPrimaryNavigationItems(req.path, courses),
+        primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusSelectItems: CaseListUtils.statusSelectItems(status),
-        tableRows: CaseListUtils.caseListTableRows(paginatedReferralSummaries.content),
+        tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
       })
     }
   }
