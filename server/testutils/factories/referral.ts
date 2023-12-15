@@ -35,13 +35,10 @@ class ReferralFactory extends Factory<Referral> {
   }
 }
 
-export const randomStatus = () =>
-  faker.helpers.arrayElement([
-    'awaiting_assessment',
-    'assessment_started',
-    'referral_started',
-    'referral_submitted',
-  ]) as ReferralStatus
+export const randomStatus = (availableStatuses?: Array<ReferralStatus>) =>
+  faker.helpers.arrayElement(
+    availableStatuses || ['awaiting_assessment', 'assessment_started', 'referral_started', 'referral_submitted'],
+  ) as ReferralStatus
 
 export default ReferralFactory.define(({ params }) => {
   const status = params.status || randomStatus()
