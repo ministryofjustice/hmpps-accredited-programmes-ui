@@ -13,11 +13,13 @@ context('Referral case lists', () => {
   const limeCourseReferralSummaries = FactoryHelpers.buildListWith(
     referralSummaryFactory,
     { courseName: limeCourse.name },
+    {},
     15,
   )
   const orangeCourseReferralSummaries = FactoryHelpers.buildListWith(
     referralSummaryFactory,
     { courseName: orangeCourse.name },
+    {},
     15,
   )
 
