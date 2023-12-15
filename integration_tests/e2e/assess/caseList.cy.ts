@@ -10,16 +10,17 @@ context('Referral case lists', () => {
   const limeCourse = courseFactory.build({ name: 'Lime Course' })
   const orangeCourse = courseFactory.build({ name: 'Blue Course' })
   const courses = [limeCourse, orangeCourse]
+  const availableStatuses = ['assessment_started', 'awaiting_assessment', 'referral_submitted']
   const limeCourseReferralSummaries = FactoryHelpers.buildListWith(
     referralSummaryFactory,
     { courseName: limeCourse.name },
-    {},
+    { transient: { availableStatuses } },
     15,
   )
   const orangeCourseReferralSummaries = FactoryHelpers.buildListWith(
     referralSummaryFactory,
     { courseName: orangeCourse.name },
-    {},
+    { transient: { availableStatuses } },
     15,
   )
 

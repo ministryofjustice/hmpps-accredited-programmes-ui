@@ -5,10 +5,15 @@ import courseAudienceFactory from './courseAudience'
 import FactoryHelpers from './factoryHelpers'
 import { randomStatus } from './referral'
 import { StringUtils } from '../../utils'
-import type { ReferralSummary } from '@accredited-programmes/models'
+import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
 
-export default Factory.define<ReferralSummary>(({ params }) => {
-  const status = params.status || randomStatus()
+interface ReferralSummaryTransientParams {
+  availableStatuses: Array<ReferralStatus>
+}
+
+export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>(({ params, transientParams }) => {
+  const { availableStatuses } = transientParams
+  const status = params.status || randomStatus(availableStatuses)
 
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
