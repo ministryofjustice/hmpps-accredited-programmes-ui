@@ -6,7 +6,7 @@ import type { Organisation, Referral } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
-  MojFrontendSideNavigationItem,
+  MojFrontendNavigationItem,
 } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 
@@ -52,7 +52,7 @@ export default class ShowReferralUtils {
   static viewReferralNavigationItems(
     currentPath: Request['path'],
     referralId: Referral['id'],
-  ): Array<MojFrontendSideNavigationItem> {
+  ): Array<MojFrontendNavigationItem> {
     const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
 
     const navigationItems = [

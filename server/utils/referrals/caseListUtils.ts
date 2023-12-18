@@ -5,7 +5,7 @@ import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
 import type { Course, CourseAudience, Referral, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
-import type { MojFrontendPrimaryNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
+import type { MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -26,7 +26,7 @@ export default class CaseListUtils {
   static primaryNavigationItems(
     currentPath: Request['path'],
     courses: Array<Course>,
-  ): Array<MojFrontendPrimaryNavigationItem> {
+  ): Array<MojFrontendNavigationItem> {
     const coursesWithDuplicatesRemoved = courses.filter(
       (course, index, self) => self.findIndex(c => c.name === course.name) === index,
     )

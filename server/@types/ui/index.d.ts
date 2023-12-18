@@ -84,7 +84,7 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
 
 type ReferralSharedPageData = {
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
-  navigationItems: Array<MojFrontendSideNavigationItem>
+  navigationItems: Array<MojFrontendNavigationItem>
   pageHeading: string
   person: Person
   referral: Referral
@@ -129,13 +129,7 @@ type ReferralTaskListSection = {
   items: Array<ReferralTaskListItem>
 }
 
-type MojFrontendPrimaryNavigationItem = {
-  active: boolean
-  href: string
-  text: string
-}
-
-type MojFrontendSideNavigationItem = {
+type MojFrontendNavigationItem = {
   active: boolean
   href: string
   text: string
@@ -158,8 +152,7 @@ export type {
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
-  MojFrontendPrimaryNavigationItem,
-  MojFrontendSideNavigationItem,
+  MojFrontendNavigationItem,
   OffenceDetails,
   OffenceHistory,
   OrganisationWithOfferingEmailsPresenter,

@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import assessControllers from './assess'
 import DashboardController from './dashboardController'
 import findControllers from './find'
 import referNewControllers from './refer/new'
@@ -11,6 +12,7 @@ export const controllers = (services: Services) => {
 
   return {
     dashboardController,
+    ...assessControllers(services),
     ...findControllers(services),
     ...referNewControllers(services),
     ...sharedControllers(services),

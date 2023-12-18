@@ -8,11 +8,11 @@ import { RouteUtils } from '../utils'
 export default function routes(controllers: Controllers, router: Router): Router {
   const { get, post } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
 
-  const { referralsController, caseListController } = controllers
+  const { assessCaseListController, referralsController } = controllers
 
-  get(assessPaths.caseList.index.pattern, caseListController.indexRedirect())
-  get(assessPaths.caseList.show.pattern, caseListController.show())
-  post(assessPaths.caseList.filter.pattern, caseListController.filter())
+  get(assessPaths.caseList.index.pattern, assessCaseListController.indexRedirect())
+  get(assessPaths.caseList.show.pattern, assessCaseListController.show())
+  post(assessPaths.caseList.filter.pattern, assessCaseListController.filter())
 
   get(assessPaths.show.additionalInformation.pattern, referralsController.additionalInformation())
   get(assessPaths.show.offenceHistory.pattern, referralsController.offenceHistory())
