@@ -227,18 +227,18 @@ describe('PersonUtils', () => {
   })
 
   describe('summaryListRows', () => {
-    it("formats a person's details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro", () => {
-      const person = personFactory.build({
-        currentPrison: 'HMP Hewell',
-        dateOfBirth: '5 July 1971',
-        ethnicity: 'White',
-        gender: 'Male',
-        name: 'Del Hatton',
-        prisonNumber: 'ABC1234',
-        religionOrBelief: 'Christian',
-        setting: 'Custody',
-      })
+    const person = personFactory.build({
+      currentPrison: 'HMP Hewell',
+      dateOfBirth: '5 July 1971',
+      ethnicity: 'White',
+      gender: 'Male',
+      name: 'Del Hatton',
+      prisonNumber: 'ABC1234',
+      religionOrBelief: 'Christian',
+      setting: 'Custody',
+    })
 
+    it("formats a person's details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro", () => {
       expect(PersonUtils.summaryListRows(person)).toEqual([
         {
           key: { text: 'Name' },
@@ -273,6 +273,15 @@ describe('PersonUtils', () => {
           value: { text: 'HMP Hewell' },
         },
       ])
+    })
+
+    describe('when `currentPrison` is `undefined`', () => {
+      it('returns "Not entered" as the value text for the current prison', () => {
+        const summaryListRows = PersonUtils.summaryListRows({ ...person, currentPrison: undefined })
+        const currentPrisonRow = summaryListRows.find(summaryListRow => summaryListRow.key.text === 'Current prison')
+
+        expect(currentPrisonRow?.value.text).toEqual('Not entered')
+      })
     })
   })
 })

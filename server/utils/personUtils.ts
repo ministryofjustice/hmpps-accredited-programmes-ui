@@ -115,7 +115,7 @@ export default class PersonUtils {
       },
       {
         key: { text: 'Current prison' },
-        value: { text: person.currentPrison },
+        value: { text: person.currentPrison || 'Not entered' },
       },
     ]
   }
