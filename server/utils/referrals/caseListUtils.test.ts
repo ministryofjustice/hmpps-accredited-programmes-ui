@@ -99,7 +99,6 @@ describe('CaseListUtils', () => {
     const expectedItems = {
       'assessment started': 'Assessment started',
       'awaiting assessment': 'Awaiting assessment',
-      'referral started': 'Referral started',
       'referral submitted': 'Referral submitted',
     }
 

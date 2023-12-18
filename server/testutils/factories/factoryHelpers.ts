@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
-import type { DeepPartial, Factory } from 'fishery'
+import type { BuildOptions, DeepPartial, Factory } from 'fishery'
 
 export default class FactoryHelpers {
   static buildListBetween<T>(factory: Factory<T>, options: { max: number; min?: number }): Array<T> {
@@ -8,11 +8,16 @@ export default class FactoryHelpers {
     return factory.buildList(quantity)
   }
 
-  static buildListWith<T>(factory: Factory<T>, properties: DeepPartial<T>, count: number): Array<T> {
+  static buildListWith<T>(
+    factory: Factory<T>,
+    properties: DeepPartial<T>,
+    options: BuildOptions<T, unknown>,
+    count: number,
+  ): Array<T> {
     const built: Array<T> = []
 
     while (built.length < count) {
-      built.push(factory.build(properties))
+      built.push(factory.build(properties, options))
     }
 
     return built

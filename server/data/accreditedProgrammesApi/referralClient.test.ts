@@ -123,6 +123,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         content: FactoryHelpers.buildListWith(
           referralSummaryFactory,
           { audiences: ['General offence'], courseName: 'Super Course', status: 'referral_submitted' },
+          {},
           16,
         ),
         pageIsEmpty: false,

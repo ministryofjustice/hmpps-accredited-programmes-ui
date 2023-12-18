@@ -63,11 +63,13 @@ export default class AssessCaseListController {
         throw createError(404, `${formattedCourseName} not found.`)
       }
 
+      const statusQuery = status || ['assessment_started', 'awaiting_assessment', 'referral_submitted'].join(',')
+
       const paginatedReferralSummaries = await this.referralService.getReferralSummaries(username, activeCaseLoadId, {
         audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
         courseName: selectedCourse.name,
         page: page ? (Number(page) - 1).toString() : undefined,
-        status: CaseListUtils.uiToApiStatusQueryParam(status),
+        status: CaseListUtils.uiToApiStatusQueryParam(statusQuery),
       })
 
       const pagination = PaginationUtils.pagination(
