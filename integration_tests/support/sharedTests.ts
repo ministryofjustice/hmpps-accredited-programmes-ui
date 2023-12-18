@@ -28,7 +28,7 @@ import {
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
-import type { Prisoner } from '@prisoner-search'
+import type { PrisonerWithBookingId } from '@prisoner-search'
 
 type ApplicationRole = `${ApplicationRoles}`
 
@@ -36,8 +36,9 @@ const course = courseFactory.build()
 const coursePresenter = CourseUtils.presentCourse(course)
 const courseOffering = courseOfferingFactory.build()
 const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-let prisoner: Prisoner
-const defaultPrisoner = prisonerFactory.build({
+let prisoner: PrisonerWithBookingId
+const defaultPrisoner = prisonerFactory.withBookingId().build({
+  bookingId: 'A-BOOKING-ID',
   conditionalReleaseDate: '2024-10-31',
   dateOfBirth: '1980-01-01',
   firstName: 'Del',
@@ -48,7 +49,7 @@ const defaultPrisoner = prisonerFactory.build({
   sentenceExpiryDate: '2027-10-31',
   sentenceStartDate: '2010-10-31',
   tariffDate: '2028-10-31',
-})
+}) as PrisonerWithBookingId
 let person: Person
 const defaultPerson = personFactory.build({
   conditionalReleaseDate: '2024-10-31',
@@ -82,7 +83,7 @@ const sharedTests = {
   referrals: {
     beforeEach: (
       role: ApplicationRole,
-      data?: { person?: Person; prisoner?: Prisoner; referral?: Partial<Referral> },
+      data?: { person?: Person; prisoner?: PrisonerWithBookingId; referral?: Partial<Referral> },
     ): void => {
       prisoner = data?.prisoner || defaultPrisoner
       person = data?.person || defaultPerson

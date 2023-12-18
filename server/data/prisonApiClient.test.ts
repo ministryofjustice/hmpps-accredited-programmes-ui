@@ -11,7 +11,7 @@ import {
   prisonerFactory,
 } from '../testutils/factories'
 import type { Caseload } from '@prison-api'
-import type { Prisoner } from '@prisoner-search'
+import type { PrisonerWithBookingId } from '@prisoner-search'
 
 describe('PrisonApiClient', () => {
   let fakePrisonApi: nock.Scope
@@ -75,7 +75,7 @@ describe('PrisonApiClient', () => {
   })
 
   describe('findSentenceAndOffenceDetails', () => {
-    const prisoner: Prisoner = prisonerFactory.build()
+    const prisoner = prisonerFactory.withBookingId().build() as PrisonerWithBookingId
     const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build()
 
     it("searches for a prisoner's sentence and offence details by booking ID", async () => {

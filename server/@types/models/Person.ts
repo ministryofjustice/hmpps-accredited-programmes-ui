@@ -1,6 +1,4 @@
 export type Person = {
-  bookingId: string
-  currentPrison: string
   dateOfBirth: string
   ethnicity: string
   gender: string
@@ -8,7 +6,9 @@ export type Person = {
   prisonNumber: string
   religionOrBelief: string
   setting: 'Custody'
+  bookingId?: string
   conditionalReleaseDate?: string
+  currentPrison?: string
   homeDetentionCurfewEligibilityDate?: string
   indeterminateSentence?: boolean
   paroleEligibilityDate?: string

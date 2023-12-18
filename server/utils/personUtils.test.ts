@@ -59,15 +59,13 @@ describe('PersonUtils', () => {
     })
 
     describe('when fields are missing on a Prisoner Search "Prisoner"', () => {
-      it('returns a "Person" with "Not entered" or `undefined` for those fields as appropriate', () => {
+      it('returns a `Person` with `undefined` for those fields', () => {
         prisoner = {
           ...prisoner,
           conditionalReleaseDate: undefined,
-          ethnicity: undefined,
           homeDetentionCurfewEligibilityDate: undefined,
           indeterminateSentence: undefined,
           paroleEligibilityDate: undefined,
-          religion: undefined,
           sentenceExpiryDate: undefined,
           sentenceStartDate: undefined,
           tariffDate: undefined,
@@ -76,11 +74,9 @@ describe('PersonUtils', () => {
         expect(PersonUtils.personFromPrisoner(prisoner)).toEqual(
           expect.objectContaining({
             conditionalReleaseDate: undefined,
-            ethnicity: 'Not entered',
             homeDetentionCurfewEligibilityDate: undefined,
             indeterminateSentence: undefined,
             paroleEligibilityDate: undefined,
-            religionOrBelief: 'Not entered',
             sentenceExpiryDate: undefined,
             sentenceStartDate: undefined,
             tariffDate: undefined,

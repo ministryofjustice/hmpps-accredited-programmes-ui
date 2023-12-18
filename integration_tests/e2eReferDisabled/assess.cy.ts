@@ -13,11 +13,12 @@ import {
 import { StringUtils } from '../../server/utils'
 import NotFoundPage from '../pages/notFound'
 import Page from '../pages/page'
+import type { PrisonerWithBookingId } from '@prisoner-search'
 
 context('Refer', () => {
   const course = courseFactory.build()
   const courseOffering = courseOfferingFactory.build({})
-  const prisoner = prisonerFactory.build()
+  const prisoner = prisonerFactory.withBookingId().build() as PrisonerWithBookingId
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const submittedReferral = referralFactory.submitted().build({
     offeringId: courseOffering.id,
