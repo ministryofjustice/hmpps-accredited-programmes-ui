@@ -45,6 +45,18 @@ export default abstract class Page {
     }
   }
 
+  clickPaginationNextButton(): void {
+    this.shouldContainPaginationNextButtonLink().click()
+  }
+
+  clickPaginationPage(pageNumber: number): void {
+    cy.get('.govuk-pagination__link').contains(pageNumber).click()
+  }
+
+  clickPaginationPreviousButton(): void {
+    this.shouldContainPaginationPreviousButtonLink().click()
+  }
+
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
   selectRadioButton(name: string, value: string): void {
@@ -53,6 +65,13 @@ export default abstract class Page {
 
   selectSelectItem(testId: string, value: string): void {
     cy.get(`[data-testid="${testId}"]`).select(value)
+  }
+
+  shouldBeOnPaginationPage(pageNumber: number): void {
+    cy.get('.govuk-pagination__item--current .govuk-pagination__link').then(paginationItemLinkElement => {
+      const { actual, expected } = Helpers.parseHtml(paginationItemLinkElement, pageNumber.toString())
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldContainAudienceTags(audienceTags: CoursePresenter['audienceTags']) {
@@ -204,6 +223,21 @@ export default abstract class Page {
       const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
     })
+  }
+
+  shouldContainPaginationItems(items: Array<string>): void {
+    cy.get('.govuk-pagination__item').each((paginationItemElement, paginationItemElementIndex) => {
+      const { actual, expected } = Helpers.parseHtml(paginationItemElement, items[paginationItemElementIndex])
+      expect(actual).to.equal(expected)
+    })
+  }
+
+  shouldContainPaginationNextButtonLink(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('.govuk-pagination__next .govuk-pagination__link').should('exist')
+  }
+
+  shouldContainPaginationPreviousButtonLink(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.get('.govuk-pagination__prev .govuk-pagination__link').should('exist')
   }
 
   shouldContainPanel(text: string): void {

@@ -8,11 +8,16 @@ import CaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
-import { CaseListUtils, PathUtils } from '../../utils'
+import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
-import type { MojFrontendPrimaryNavigationItem } from '@accredited-programmes/ui'
+import type {
+  GovukFrontendPaginationWithItems,
+  MojFrontendPrimaryNavigationItem,
+  QueryParam,
+} from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
+jest.mock('../../utils/paginationUtils')
 jest.mock('../../utils/pathUtils')
 jest.mock('../../utils/referrals/caseListUtils')
 
@@ -20,6 +25,7 @@ describe('CaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
   const courseNameSlug = 'lime-course'
+  const queryParamsExcludingPage: Array<QueryParam> = []
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -73,63 +79,21 @@ describe('CaseListController', () => {
 
     beforeEach(() => {
       ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
+      ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
 
       request.params = { courseName: courseNameSlug }
     })
 
-    describe('when `req.body.audience` and `req.body.status` are provided', () => {
-      it('asks PathUtils to generate a path with both as query params - audience renamed "strand" - and redirects to the result', async () => {
-        request.body.audience = audience
-        request.body.status = status
+    it('uses utils to generate a path to the show action with the request body converted to query params, then redirects there', async () => {
+      request.body.audience = audience
+      request.body.status = status
 
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
+      const requestHandler = controller.filter()
+      await requestHandler(request, response, next)
 
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [
-          { key: 'strand', value: audience },
-          { key: 'status', value: status },
-        ])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
-    })
-
-    describe('when `req.body.audience` is undefined', () => {
-      it('asks PathUtils to generate a path with status as a query param and redirects to the result', async () => {
-        request.body.audience = undefined
-        request.body.status = status
-
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
-
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [{ key: 'status', value: status }])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
-    })
-
-    describe('when `req.body.status` is undefined', () => {
-      it('asks PathUtils to generate a path with audience as a query param - renamed "strand" - and redirects to the result', async () => {
-        request.body.audience = audience
-        request.body.status = undefined
-
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
-
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [{ key: 'strand', value: audience }])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
-    })
-
-    describe('when `req.body.audience` and `req.body.status` are both `undefined`', () => {
-      it('asks PathUtils to generate a path without any query params and redirects to the result', async () => {
-        request.body.audience = undefined
-        request.body.status = undefined
-
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
-
-        expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, [])
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
+      expect(CaseListUtils.queryParamsExcludingPage)
+      expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, queryParamsExcludingPage)
+      expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
     })
   })
 
@@ -140,6 +104,7 @@ describe('CaseListController', () => {
     const referralStatusSelectItems = 'bbb' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const tableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
     const primaryNavigationItems = 'ddd' as unknown as jest.Mocked<Array<MojFrontendPrimaryNavigationItem>>
+    const pagination = 'eee' as unknown as jest.Mocked<GovukFrontendPaginationWithItems>
 
     beforeEach(() => {
       request.params = { courseName: courseNameSlug }
@@ -158,8 +123,10 @@ describe('CaseListController', () => {
       referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
       ;(CaseListUtils.audienceSelectItems as jest.Mock).mockReturnValue(audienceSelectItems)
       ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(primaryNavigationItems)
+      ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
       ;(CaseListUtils.statusSelectItems as jest.Mock).mockReturnValue(referralStatusSelectItems)
       ;(CaseListUtils.tableRows as jest.Mock).mockReturnValue(tableRows)
+      ;(PaginationUtils.pagination as jest.Mock).mockReturnValue(pagination)
     })
 
     it('renders the show template with the correct response locals', async () => {
@@ -173,6 +140,7 @@ describe('CaseListController', () => {
         action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
         audienceSelectItems,
         pageHeading: 'Lime Course (LC)',
+        pagination,
         primaryNavigationItems,
         referralStatusSelectItems,
         tableRows,
@@ -184,6 +152,13 @@ describe('CaseListController', () => {
         courseName: 'Lime Course',
         status: undefined,
       })
+      expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(undefined, undefined)
+      expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
+        request.path,
+        queryParamsExcludingPage,
+        paginatedReferralSummaries.pageNumber,
+        paginatedReferralSummaries.totalPages,
+      )
       expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
       expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
       expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(undefined)
@@ -210,6 +185,7 @@ describe('CaseListController', () => {
           action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
           audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
           pageHeading: 'Lime Course (LC)',
+          pagination,
           primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
           referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
           tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
@@ -221,6 +197,16 @@ describe('CaseListController', () => {
           courseName: 'Lime Course',
           status: apiStatusQueryParam,
         })
+        expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
+          uiAudienceQueryParam,
+          uiStatusQueryParam,
+        )
+        expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
+          request.path,
+          queryParamsExcludingPage,
+          paginatedReferralSummaries.pageNumber,
+          paginatedReferralSummaries.totalPages,
+        )
         expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
         expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
         expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(uiStatusQueryParam)
