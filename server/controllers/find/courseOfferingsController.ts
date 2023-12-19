@@ -2,6 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
+import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 
 export default class CourseOfferingsController {
   constructor(
@@ -13,9 +14,21 @@ export default class CourseOfferingsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const course = await this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId)
-      const courseOffering = await this.courseService.getOffering(req.user.token, req.params.courseOfferingId)
-      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+      const [course, [courseOffering, organisation]] = await Promise.all([
+        this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId),
+        // eslint-disable-next-line
+        this.courseService.getOffering(req.user.token, req.params.courseOfferingId).then(async _courseOffering => {
+          // eslint-disable-next-line
+          const _organisation = await this.organisationService.getOrganisation(
+            req.user.token,
+            // eslint-disable-next-line
+            _courseOffering.organisationId,
+          )
+          // eslint-disable-next-line
+          return [_courseOffering, _organisation] as [CourseOffering, Organisation]
+        }),
+      ])
+
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/offerings/show', {
