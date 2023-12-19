@@ -1,11 +1,88 @@
 /* eslint-disable no-console */
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../index'
+import organizations from '../linkage/organizations.json'
 import { courseOfferings, courseParticipations, courses, prisoners, referrals } from '../stubs'
+import referralSummaries from '../stubs/referralSummaries.json'
 
 const stubs = []
 
-stubs.push(async () =>
+organizations.forEach(({ id: organisationId, courses: myCourses }) => {
+  stubs.push(
+    // organisation/:orgId/courses
+    () =>
+      stubFor({
+        request: {
+          method: 'GET',
+          url: apiPaths.organisations.courses({ organisationId }),
+        },
+        response: {
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+          },
+          jsonBody: myCourses.map(courseId => courses.find(course => courseId === course.id)),
+          status: 200,
+        },
+      }),
+    // referral/organisation/:orgId/dashboard
+    () =>
+      stubFor({
+        request: {
+          method: 'GET',
+          url: apiPaths.referrals.dashboard({ organisationId }),
+        },
+        response: {
+          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+          jsonBody: {
+            content: referrals,
+            pageIsEmpty: false,
+            pageNumber: 1,
+            pageSize: 100,
+            totalElements: referrals.length,
+            totalPages: 1,
+          },
+          status: 200,
+        },
+      }),
+    // courses
+    ...myCourses.map(myCourseId => {
+      const myCourseData = courses.find(course => myCourseId === course.id)
+
+      if (!myCourseData) {
+        throw new Error(`CourseID ${myCourseId} doesn't exist for organisation`)
+      }
+
+      const myReferrals = referralSummaries.filter(({ courseName }) => courseName === myCourseData.name)
+
+      // organisation/:orgId/courses?courseName=...
+      return () =>
+        stubFor({
+          request: {
+            method: 'GET',
+            url: `${apiPaths.referrals.dashboard({ organisationId })}?courseName=${encodeURIComponent(
+              myCourseData.name,
+            )}&size=999`,
+          },
+          response: {
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+            },
+            jsonBody: {
+              content: myReferrals,
+              pageIsEmpty: false,
+              pageNumber: 1,
+              pageSize: 100,
+              totalElements: myReferrals.length,
+              totalPages: 1,
+            },
+            status: 200,
+          },
+        })
+    }),
+  )
+})
+
+stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
@@ -22,7 +99,7 @@ stubs.push(async () =>
 )
 
 courses.forEach(course => {
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -38,7 +115,7 @@ courses.forEach(course => {
     }),
   )
 
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -56,7 +133,7 @@ courses.forEach(course => {
 })
 
 courseOfferings.forEach(courseOffering => {
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -70,7 +147,7 @@ courseOfferings.forEach(courseOffering => {
     }),
   )
 
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -85,7 +162,7 @@ courseOfferings.forEach(courseOffering => {
   )
 })
 
-stubs.push(async () =>
+stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
@@ -100,7 +177,7 @@ stubs.push(async () =>
 )
 
 referrals.forEach(referral => {
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -114,7 +191,7 @@ referrals.forEach(referral => {
     }),
   )
 
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'PUT',
