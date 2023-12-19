@@ -86,6 +86,10 @@ export default class PersonService {
     bookingId: Person['bookingId'],
   ): Promise<OffenderSentenceAndOffences> {
     try {
+      if (!bookingId) {
+        throw createError(400, 'No booking ID found: cannot request sentence and offence details.')
+      }
+
       const hmppsAuthClient = this.hmppsAuthClientBuilder()
       const systemToken = await hmppsAuthClient.getSystemClientToken(username)
       const prisonApiClient = this.prisonApiClientBuilder(systemToken)

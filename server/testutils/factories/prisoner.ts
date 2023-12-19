@@ -5,7 +5,18 @@ import FactoryHelpers from './factoryHelpers'
 import { StringUtils } from '../../utils'
 import type { Prisoner } from '@prisoner-search'
 
-export default Factory.define<Prisoner>(({ params }) => {
+const generateBookingId = () => faker.string.numeric({ length: 10 })
+
+class PrisonerFactory extends Factory<Prisoner> {
+  // returns a `PrisonerWithBookingId`
+  withBookingId(bookingId?: Prisoner['bookingId']) {
+    return this.params({
+      bookingId: bookingId || generateBookingId(),
+    })
+  }
+}
+
+export default PrisonerFactory.define(({ params }) => {
   const county = faker.location.county()
   const prisonName = params.prisonName || `${county} (HMP)`
 
@@ -15,7 +26,7 @@ export default Factory.define<Prisoner>(({ params }) => {
   const day = dateOfBirth.getDate()
 
   return {
-    bookingId: faker.string.numeric({ length: 10 }),
+    bookingId: FactoryHelpers.optionalArrayElement(generateBookingId()),
     conditionalReleaseDate: FactoryHelpers.optionalRandomFutureDateString(),
     dateOfBirth: [year, month, day].join('-'),
     ethnicity: StringUtils.properCase(faker.lorem.word()),

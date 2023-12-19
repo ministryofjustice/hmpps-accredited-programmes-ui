@@ -21,3 +21,7 @@ npm run generate-govuk-frontend-types
 echo "==> Updating Prison API types..."
 
 script/utils/generateApiTypes/prisonApi
+
+echo "==> Updating Prisoner Search types..."
+
+script/utils/generateApiTypes/prisonerSearch

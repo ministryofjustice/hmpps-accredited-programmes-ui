@@ -4,7 +4,7 @@ import config from '../config'
 import { prisonApiPaths } from '../paths'
 import type { SystemToken } from '@hmpps-auth'
 import type { Caseload, InmateDetail, OffenceDto, OffenderSentenceAndOffences, PageOffenceDto } from '@prison-api'
-import type { Prisoner } from '@prisoner-search'
+import type { Prisoner, PrisonerWithBookingId } from '@prisoner-search'
 
 export default class PrisonApiClient {
   restClient: RestClient
@@ -34,7 +34,9 @@ export default class PrisonApiClient {
     })) as InmateDetail
   }
 
-  async findSentenceAndOffenceDetails(bookingId: Prisoner['bookingId']): Promise<OffenderSentenceAndOffences> {
+  async findSentenceAndOffenceDetails(
+    bookingId: PrisonerWithBookingId['bookingId'],
+  ): Promise<OffenderSentenceAndOffences> {
     return (await this.restClient.get({
       path: prisonApiPaths.offenderSentenceAndOffences({ bookingId }),
     })) as OffenderSentenceAndOffences

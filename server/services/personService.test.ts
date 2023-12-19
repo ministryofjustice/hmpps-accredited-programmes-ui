@@ -274,6 +274,15 @@ describe('PersonService', () => {
       expect(prisonApiClient.findSentenceAndOffenceDetails).toHaveBeenCalledWith(bookingId)
     })
 
+    describe('when the booking ID is undefined', () => {
+      it('throws a 400 error', async () => {
+        const expectedError = createError(400, 'No booking ID found: cannot request sentence and offence details.')
+        await expect(() => service.getOffenderSentenceAndOffences(systemToken, undefined)).rejects.toThrowError(
+          expectedError,
+        )
+      })
+    })
+
     describe('when the sentence details client throws a 404 error', () => {
       it('re-throws the error', async () => {
         const clientError = createError(404)

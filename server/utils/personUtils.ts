@@ -15,21 +15,19 @@ export const releaseDateFields = [
 
 export default class PersonUtils {
   static personFromPrisoner(prisoner: Prisoner): Person {
-    const unavailable = 'Not entered'
-
     return {
       bookingId: prisoner.bookingId,
       conditionalReleaseDate: prisoner.conditionalReleaseDate,
       currentPrison: prisoner.prisonName,
       dateOfBirth: DateUtils.govukFormattedFullDateString(prisoner.dateOfBirth),
-      ethnicity: prisoner.ethnicity || unavailable,
+      ethnicity: prisoner.ethnicity,
       gender: prisoner.gender,
       homeDetentionCurfewEligibilityDate: prisoner.homeDetentionCurfewEligibilityDate,
       indeterminateSentence: prisoner.indeterminateSentence,
       name: StringUtils.convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
       paroleEligibilityDate: prisoner.paroleEligibilityDate,
       prisonNumber: prisoner.prisonerNumber,
-      religionOrBelief: prisoner.religion || unavailable,
+      religionOrBelief: prisoner.religion,
       sentenceExpiryDate: prisoner.sentenceExpiryDate,
       sentenceStartDate: prisoner.sentenceStartDate,
       setting: 'Custody',
@@ -117,7 +115,7 @@ export default class PersonUtils {
       },
       {
         key: { text: 'Current prison' },
-        value: { text: person.currentPrison },
+        value: { text: person.currentPrison || 'Not entered' },
       },
     ]
   }
