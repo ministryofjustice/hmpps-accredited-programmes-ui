@@ -91,6 +91,8 @@ type ReferralSharedPageData = {
   submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
 }
 
+type ReferralStatusGroup = 'closed' | 'draft' | 'open'
+
 type ReferralTaskListStatusText = 'cannot start yet' | 'completed' | 'not started'
 
 type ReferralTaskListStatusTagCompleted = GovukFrontendTagWithText & {
@@ -159,6 +161,7 @@ export type {
   OrganisationWithOfferingId,
   QueryParam,
   ReferralSharedPageData,
+  ReferralStatusGroup,
   ReferralTaskListItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,

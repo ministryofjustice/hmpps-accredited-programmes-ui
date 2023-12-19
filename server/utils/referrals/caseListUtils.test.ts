@@ -133,6 +133,31 @@ describe('CaseListUtils', () => {
     )
   })
 
+  describe('subNavigationItems', () => {
+    it('returns an array of sub navigation items for my referrals', () => {
+      const currentPath = '/refer/referrals/case-list/open'
+      const expectedItems = [
+        {
+          active: true,
+          href: '/refer/referrals/case-list/open',
+          text: 'Open referrals',
+        },
+        // {
+        //   active: false,
+        //   href: '/refer/referrals/case-list/closed',
+        //   text: 'Closed referrals',
+        // },
+        // {
+        //   active: false,
+        //   href: '/refer/referrals/case-list/draft',
+        //   text: 'Draft referrals',
+        // },
+      ]
+
+      expect(CaseListUtils.subNavigationItems(currentPath)).toEqual(expectedItems)
+    })
+  })
+
   describe('tableRows', () => {
     it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
       const referralSummaries = [

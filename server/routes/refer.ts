@@ -13,6 +13,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     put,
   } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
+    referCaseListController,
     newReferralsAdditionalInformationController,
     newReferralsCourseParticipationDetailsController,
     newReferralsCourseParticipationsController,
@@ -21,6 +22,9 @@ export default function routes(controllers: Controllers, router: Router): Router
     newReferralsOasysConfirmationController,
     referralsController,
   } = controllers
+
+  get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
+  get(referPaths.caseList.show.pattern, referCaseListController.show())
 
   get(referPaths.new.start.pattern, newReferralsController.start())
   get(referPaths.new.new.pattern, newReferralsController.new())
