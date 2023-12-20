@@ -1,0 +1,35 @@
+version: '3.1'
+
+networks:
+  hmpps: null
+  
+services:
+
+  redis:
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    image: redis:6.2
+    networks:
+      - hmpps
+    ports:
+      - '6379:6379'
+
+  app:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile.dev
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - REDIS_HOST=redis
+    env_file:
+      - .env
+      - .env.dev.live
+    networks:
+      - hmpps
+    depends_on:
+      - redis
+    ports:
+      - '3000:3000'
+      - '3001:3001'
+    restart: always

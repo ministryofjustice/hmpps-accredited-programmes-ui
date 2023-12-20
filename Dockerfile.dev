@@ -1,0 +1,20 @@
+# Stage: base image
+FROM node:20.9-bullseye-slim as base
+
+ENV TZ=Europe/London
+RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
+
+RUN addgroup --gid 2000 --system appgroup && \
+        adduser --uid 2000 --system appuser --gid 2000
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+COPY package-lock.json ./
+
+RUN npm i
+
+EXPOSE 3000 3001
+USER 2000
+
+CMD [ "npm", "run", "start:dev" ]
