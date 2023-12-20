@@ -82,7 +82,7 @@ describe('ReferralsController', () => {
     organisationService.getOrganisation.mockResolvedValue(organisation)
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
-    userService.getUserFromUsername.mockResolvedValue(referringUser)
+    userService.getFullNameFromUsername.mockResolvedValue(referringUser.name)
 
     controller = new SubmittedReferralsController(
       courseService,

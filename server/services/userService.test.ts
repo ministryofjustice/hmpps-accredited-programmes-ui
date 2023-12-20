@@ -4,10 +4,12 @@ import UserService from './userService'
 import logger from '../../logger'
 import { HmppsManageUsersClient, PrisonApiClient } from '../data'
 import { caseloadFactory, userFactory } from '../testutils/factories'
+import { StringUtils } from '../utils'
 
 jest.mock('../data/hmppsManageUsersClient')
 jest.mock('../data/prisonApiClient')
 jest.mock('../../logger')
+jest.mock('../utils')
 
 const systemToken = 'a system token'
 const userToken = 'a user token'
@@ -22,11 +24,13 @@ describe('UserService', () => {
   let userService: UserService
 
   const username = 'JOHN_SMITH'
-  const user = userFactory.build({ name: 'john smith', username })
+  const userFullName = 'john smith'
+  const userFullNameCapitalised = 'John Smith'
+  const user = userFactory.build({ name: userFullName, username })
 
   beforeEach(() => {
     jest.resetAllMocks()
-
+    ;(StringUtils.convertToTitleCase as jest.Mock).mockReturnValue(userFullNameCapitalised)
     hmppsManageUsersClientBuilder.mockReturnValue(hmppsManageUsersClient)
     prisonApiClientBuilder.mockReturnValue(prisonApiClient)
 
@@ -71,6 +75,27 @@ describe('UserService', () => {
         expect(logger.error).toHaveBeenCalledWith(caseloadError, "Failed to fetch user's caseloads")
         expect(result.caseloads).toEqual([])
       })
+    })
+  })
+
+  describe('getFullNameFromUsername', () => {
+    beforeEach(() => {
+      hmppsManageUsersClient.getUserFromUsername.mockResolvedValue(user)
+    })
+
+    it('returns a username in capitalised form', async () => {
+      const result = await userService.getFullNameFromUsername(userToken, username)
+      expect(result).toEqual(userFullNameCapitalised)
+      expect(StringUtils.convertToTitleCase).toHaveBeenCalledWith(user.name)
+      expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
+    })
+
+    it('returns the expected string when missing', async () => {
+      const clientError = createError(404)
+      hmppsManageUsersClient.getUserFromUsername.mockRejectedValue(clientError)
+      const result = await userService.getFullNameFromUsername(userToken, username)
+      expect(result).toEqual(`User '${username}' not found`)
+      expect(hmppsManageUsersClient.getUserFromUsername).toHaveBeenCalledWith(username)
     })
   })
 

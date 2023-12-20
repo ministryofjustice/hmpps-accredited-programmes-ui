@@ -3,7 +3,7 @@ import type { ResponseError } from 'superagent'
 
 import type UserService from './userService'
 import type { CourseClient, HmppsAuthClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
-import { CourseParticipationUtils, StringUtils } from '../utils'
+import { CourseParticipationUtils } from '../utils'
 import type {
   Course,
   CourseOffering,
@@ -174,11 +174,11 @@ export default class CourseService {
     referralId: Referral['id'],
     withActions = { change: true, remove: true },
   ): Promise<GovukFrontendSummaryListWithRowsWithKeysAndValues> {
-    const addedByUser = await this.userService.getUserFromUsername(userToken, courseParticipation.addedBy)
+    const addedByDisplayName = await this.userService.getFullNameFromUsername(userToken, courseParticipation.addedBy)
 
     const courseParticipationPresenter = {
       ...courseParticipation,
-      addedByDisplayName: StringUtils.convertToTitleCase(addedByUser.name),
+      addedByDisplayName,
     }
 
     return CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, withActions)
