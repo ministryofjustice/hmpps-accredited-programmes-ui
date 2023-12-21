@@ -33,6 +33,7 @@ type ReferralSummary = {
   courseName: Course['name']
   prisonNumber: Person['prisonNumber']
   status: ReferralStatus
+  earliestReleaseDate?: string
   submittedOn?: Referral['submittedOn']
 }
 

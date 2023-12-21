@@ -57,6 +57,40 @@ export default class CaseListUtils {
     return queryParams
   }
 
+  static referTableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
+    return referralSummary.map(summary => [
+      {
+        attributes: {
+          'data-sort-value': summary.prisonNumber,
+        },
+        html: `<a class="govuk-link" href="${referPaths.show.personalDetails({ referralId: summary.id })}">${
+          summary.prisonNumber
+        }</a>`,
+      },
+      {
+        attributes: {
+          'data-sort-value': summary.submittedOn,
+        },
+        text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
+      },
+      {
+        attributes: {
+          'data-sort-value': summary.earliestReleaseDate,
+        },
+        text: summary.earliestReleaseDate ? DateUtils.govukFormattedFullDateString(summary.earliestReleaseDate) : 'N/A',
+      },
+      {
+        text: summary.courseName,
+      },
+      {
+        attributes: {
+          'data-sort-value': summary.status,
+        },
+        html: this.statusTagHtml(summary.status),
+      },
+    ])
+  }
+
   static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
     return this.selectItems(['Assessment started', 'Awaiting assessment', 'Referral submitted'], selectedValue)
   }

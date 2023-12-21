@@ -21,6 +21,7 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
       audience => audience.value,
     ),
     courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
+    earliestReleaseDate: FactoryHelpers.optionalArrayElement(faker.date.future().toISOString()),
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,

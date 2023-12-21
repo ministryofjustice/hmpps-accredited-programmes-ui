@@ -66,7 +66,7 @@ describe('ReferCaseListController', () => {
       }
       referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
       ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(subNavigationItems)
-      ;(CaseListUtils.tableRows as jest.Mock).mockReturnValue(tableRows)
+      ;(CaseListUtils.referTableRows as jest.Mock).mockReturnValue(tableRows)
       ;(PaginationUtils.pagination as jest.Mock).mockReturnValue(pagination)
     })
 
@@ -86,7 +86,7 @@ describe('ReferCaseListController', () => {
           pageHeading: 'My referrals',
           pagination,
           subNavigationItems: CaseListUtils.subNavigationItems(request.path),
-          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+          tableRows: CaseListUtils.referTableRows(paginatedReferralSummaries.content),
         })
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiOpenStatusQuery.toLowerCase())
         expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
@@ -99,7 +99,7 @@ describe('ReferCaseListController', () => {
           paginatedReferralSummaries.totalPages,
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
+        expect(CaseListUtils.referTableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
       })
     })
 

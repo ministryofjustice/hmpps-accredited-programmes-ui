@@ -55,7 +55,7 @@ export default class ReferCaseListController {
         pageHeading: 'My referrals',
         pagination,
         subNavigationItems: CaseListUtils.subNavigationItems(req.path),
-        tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+        tableRows: CaseListUtils.referTableRows(paginatedReferralSummaries.content),
       })
     }
   }

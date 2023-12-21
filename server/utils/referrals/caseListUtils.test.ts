@@ -95,6 +95,72 @@ describe('CaseListUtils', () => {
     })
   })
 
+  describe('referTableRows', () => {
+    it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
+      const referralSummaries = [
+        referralSummaryFactory.build({
+          audiences: ['General offence'],
+          courseName: 'Test Course 1',
+          earlierReleaseDate: undefined,
+          id: 'referral-123',
+          prisonNumber: 'ABC1234',
+          status: 'referral_started',
+          submittedOn: undefined,
+        }),
+        referralSummaryFactory.build({
+          audiences: ['General offence', 'Extremism offence'],
+          courseName: 'Test Course 2',
+          earliestReleaseDate: new Date('2035-01-01T00:00:00.000000').toISOString(),
+          id: 'referral-456',
+          prisonNumber: 'DEF1234',
+          status: 'referral_submitted',
+          submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
+        }),
+      ]
+
+      expect(CaseListUtils.referTableRows(referralSummaries)).toEqual([
+        [
+          {
+            attributes: { 'data-sort-value': 'ABC1234' },
+            html: '<a class="govuk-link" href="/refer/referrals/referral-123/personal-details">ABC1234</a>',
+          },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          { text: 'Test Course 1' },
+          {
+            attributes: { 'data-sort-value': 'referral_started' },
+            html: CaseListUtils.statusTagHtml('referral_started'),
+          },
+        ],
+        [
+          {
+            attributes: { 'data-sort-value': 'DEF1234' },
+            html: '<a class="govuk-link" href="/refer/referrals/referral-456/personal-details">DEF1234</a>',
+          },
+          {
+            attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
+            text: '1 January 2021',
+          },
+          {
+            attributes: { 'data-sort-value': '2035-01-01T00:00:00.000Z' },
+            text: '1 January 2035',
+          },
+          { text: 'Test Course 2' },
+          {
+            attributes: { 'data-sort-value': 'referral_submitted' },
+            html: CaseListUtils.statusTagHtml('referral_submitted'),
+          },
+        ],
+      ])
+    })
+  })
+
   describe('statusSelectItems', () => {
     const expectedItems = {
       'assessment started': 'Assessment started',
