@@ -86,7 +86,14 @@ export default class AssessCaseListController {
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusSelectItems: CaseListUtils.statusSelectItems(status),
-        tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+        tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content, [
+          'Name / Prison number',
+          'Conditional release date',
+          'Parole eligibility date',
+          'Tariff end date',
+          'Programme strand',
+          'Referral status',
+        ]),
       })
     }
   }

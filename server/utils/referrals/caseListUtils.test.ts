@@ -159,126 +159,259 @@ describe('CaseListUtils', () => {
   })
 
   describe('tableRows', () => {
-    it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro', () => {
-      const referralSummaries = [
-        referralSummaryFactory.build({
-          audiences: ['General offence'],
-          courseName: 'Test Course 1',
-          id: 'referral-123',
-          prisonName: 'Whatton (HMP)',
-          prisonNumber: 'ABC1234',
-          prisonerName: { firstName: 'Del', lastName: 'Hatton' },
-          sentence: {
-            conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
-            paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
-            tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
-          },
-          status: 'referral_started',
-          submittedOn: undefined,
-        }),
-        referralSummaryFactory.build({
-          audiences: ['General offence', 'Extremism offence'],
-          courseName: 'Test Course 2',
-          id: 'referral-456',
-          prisonName: undefined,
-          prisonNumber: 'DEF1234',
-          prisonerName: undefined,
-          sentence: {},
-          status: 'referral_submitted',
-          submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
-        }),
-      ]
+    const referralSummaries = [
+      referralSummaryFactory.build({
+        audiences: ['General offence'],
+        courseName: 'Test Course 1',
+        earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
+        id: 'referral-123',
+        prisonName: 'Whatton (HMP)',
+        prisonNumber: 'ABC1234',
+        prisonerName: { firstName: 'Del', lastName: 'Hatton' },
+        sentence: {
+          conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
+          paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
+          tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
+        },
+        status: 'referral_started',
+        submittedOn: undefined,
+        tasksCompleted: 2,
+      }),
+      referralSummaryFactory.build({
+        audiences: ['General offence', 'Extremism offence'],
+        courseName: 'Test Course 2',
+        earliestReleaseDate: undefined,
+        id: 'referral-456',
+        prisonName: undefined,
+        prisonNumber: 'DEF1234',
+        prisonerName: undefined,
+        sentence: {},
+        status: 'referral_submitted',
+        submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
+        tasksCompleted: 4,
+      }),
+    ]
 
-      expect(CaseListUtils.tableRows(referralSummaries)).toEqual([
-        [
-          {
-            attributes: { 'data-sort-value': 'Del Hatton' },
-            html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          {
-            attributes: {
-              'data-sort-value': '2022-01-01T00:00:00.000Z',
+    describe('when passed the headings for Assess case lists', () => {
+      it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro, based on the provided headings', () => {
+        expect(
+          CaseListUtils.tableRows(referralSummaries, [
+            'Name / Prison number',
+            'Conditional release date',
+            'Parole eligibility date',
+            'Tariff end date',
+            'Programme strand',
+            'Referral status',
+          ]),
+        ).toEqual([
+          [
+            {
+              attributes: { 'data-sort-value': 'Del Hatton' },
+              html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
             },
-            text: '1 January 2022',
-          },
-          {
-            attributes: {
-              'data-sort-value': undefined,
+            {
+              attributes: { 'data-sort-value': '2023-01-01T00:00:00.000Z' },
+              text: '1 January 2023',
             },
-            text: 'N/A',
-          },
-          {
-            attributes: { 'data-sort-value': '2023-01-01T00:00:00.000Z' },
-            text: '1 January 2023',
-          },
-          {
-            attributes: { 'data-sort-value': '2022-01-01T00:00:00.000Z' },
-            text: '1 January 2022',
-          },
-          {
-            attributes: { 'data-sort-value': '2024-01-01T00:00:00.000Z' },
-            text: '1 January 2024',
-          },
-          {
-            attributes: { 'data-sort-value': 'Whatton (HMP)' },
-            text: 'Whatton (HMP)',
-          },
-          { text: 'Test Course 1' },
-          {
-            text: 'General offence',
-          },
-          {
-            attributes: { 'data-sort-value': 'referral_started' },
-            html: CaseListUtils.statusTagHtml('referral_started'),
-          },
-        ],
-        [
-          {
-            attributes: { 'data-sort-value': '' },
-            html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
-          },
-          {
-            attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
-            text: '1 January 2021',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: 'N/A',
-          },
-          { text: 'Test Course 2' },
-          {
-            text: 'General offence, Extremism offence',
-          },
-          {
-            attributes: { 'data-sort-value': 'referral_submitted' },
-            html: CaseListUtils.statusTagHtml('referral_submitted'),
-          },
-        ],
-      ])
+            {
+              attributes: { 'data-sort-value': '2022-01-01T00:00:00.000Z' },
+              text: '1 January 2022',
+            },
+            {
+              attributes: { 'data-sort-value': '2024-01-01T00:00:00.000Z' },
+              text: '1 January 2024',
+            },
+            {
+              text: 'General offence',
+            },
+            {
+              attributes: { 'data-sort-value': 'referral_started' },
+              html: CaseListUtils.statusTagHtml('referral_started'),
+            },
+          ],
+          [
+            {
+              attributes: { 'data-sort-value': '' },
+              html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              text: 'General offence, Extremism offence',
+            },
+            {
+              attributes: { 'data-sort-value': 'referral_submitted' },
+              html: CaseListUtils.statusTagHtml('referral_submitted'),
+            },
+          ],
+        ])
+      })
+    })
+
+    describe('when passed the headings for the Refer open referrals case list', () => {
+      it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro, based on the provided headings', () => {
+        expect(
+          CaseListUtils.tableRows(referralSummaries, [
+            'Name / Prison number',
+            'Date referred',
+            'Earliest release date',
+            'Release date type',
+            'Programme location',
+            'Programme name',
+            'Referral status',
+          ]),
+        ).toEqual([
+          [
+            {
+              attributes: { 'data-sort-value': 'Del Hatton' },
+              html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: {
+                'data-sort-value': '2022-01-01T00:00:00.000Z',
+              },
+              text: '1 January 2022',
+            },
+            {
+              attributes: {
+                'data-sort-value': undefined,
+              },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': 'Whatton (HMP)' },
+              text: 'Whatton (HMP)',
+            },
+            {
+              text: 'Test Course 1',
+            },
+            {
+              attributes: { 'data-sort-value': 'referral_started' },
+              html: CaseListUtils.statusTagHtml('referral_started'),
+            },
+          ],
+          [
+            {
+              attributes: { 'data-sort-value': '' },
+              html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
+            },
+            {
+              attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
+              text: '1 January 2021',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              text: 'Test Course 2',
+            },
+            {
+              attributes: { 'data-sort-value': 'referral_submitted' },
+              html: CaseListUtils.statusTagHtml('referral_submitted'),
+            },
+          ],
+        ])
+      })
+    })
+
+    describe('when passed the headings for the Refer draft referrals case list', () => {
+      it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro, based on the provided headings', () => {
+        expect(
+          CaseListUtils.tableRows(referralSummaries, [
+            'Name / Prison number',
+            'Date referred',
+            'Earliest release date',
+            'Release date type',
+            'Programme location',
+            'Programme name',
+            'Progress',
+          ]),
+        ).toEqual([
+          [
+            {
+              attributes: { 'data-sort-value': 'Del Hatton' },
+              html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: {
+                'data-sort-value': '2022-01-01T00:00:00.000Z',
+              },
+              text: '1 January 2022',
+            },
+            {
+              attributes: {
+                'data-sort-value': undefined,
+              },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': 'Whatton (HMP)' },
+              text: 'Whatton (HMP)',
+            },
+            {
+              text: 'Test Course 1',
+            },
+            {
+              text: '2 out of 4 tasks complete',
+            },
+          ],
+          [
+            {
+              attributes: { 'data-sort-value': '' },
+              html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
+            },
+            {
+              attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
+              text: '1 January 2021',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: 'N/A',
+            },
+            {
+              text: 'Test Course 2',
+            },
+            {
+              text: '4 out of 4 tasks complete',
+            },
+          ],
+        ])
+      })
     })
   })
 

@@ -5,7 +5,7 @@ import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { CaseListUtils, PaginationUtils, TypeUtils } from '../../utils'
 import type { ReferralStatus } from '@accredited-programmes/models'
-import type { ReferralStatusGroup } from '@accredited-programmes/ui'
+import type { CaseListColumnHeader, ReferralStatusGroup } from '@accredited-programmes/ui'
 
 export default class ReferCaseListController {
   constructor(private readonly referralService: ReferralService) {}
@@ -52,7 +52,11 @@ export default class ReferCaseListController {
         paginatedReferralSummaries.totalPages,
       )
 
+      let finalColumnHeader: CaseListColumnHeader = 'Referral status'
+
       if (referralStatusGroup === 'draft') {
+        finalColumnHeader = 'Progress'
+
         paginatedReferralSummariesContent = await Promise.all(
           paginatedReferralSummariesContent.map(async referralSummary => {
             const tasksCompleted = await this.referralService.getNumberOfTasksCompleted(username, referralSummary.id)
@@ -62,11 +66,20 @@ export default class ReferCaseListController {
       }
 
       return res.render('referrals/caseList/refer/show', {
+        finalColumnHeader,
         isMyReferralsPage: true,
         pageHeading: 'My referrals',
         pagination,
         subNavigationItems: CaseListUtils.subNavigationItems(req.path),
-        tableRows: CaseListUtils.tableRows(paginatedReferralSummariesContent),
+        tableRows: CaseListUtils.tableRows(paginatedReferralSummariesContent, [
+          'Name / Prison number',
+          'Date referred',
+          'Earliest release date',
+          'Release date type',
+          'Programme location',
+          'Programme name',
+          finalColumnHeader,
+        ]),
       })
     }
   }

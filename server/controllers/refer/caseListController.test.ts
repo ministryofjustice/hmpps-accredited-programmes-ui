@@ -10,7 +10,11 @@ import type { ReferralService } from '../../services'
 import { referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
-import type { GovukFrontendPaginationWithItems, MojFrontendNavigationItem } from '@accredited-programmes/ui'
+import type {
+  CaseListColumnHeader,
+  GovukFrontendPaginationWithItems,
+  MojFrontendNavigationItem,
+} from '@accredited-programmes/ui'
 import type { GovukFrontendTableRow } from '@govuk-frontend'
 
 jest.mock('../../utils/paginationUtils')
@@ -76,18 +80,28 @@ describe('ReferCaseListController', () => {
         request.params = { referralStatusGroup: 'open' }
 
         const apiOpenStatusQuery = 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
-
         ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiOpenStatusQuery)
+
+        const columnsToInclude: Array<CaseListColumnHeader> = [
+          'Name / Prison number',
+          'Date referred',
+          'Earliest release date',
+          'Release date type',
+          'Programme location',
+          'Programme name',
+          'Referral status',
+        ]
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
+          finalColumnHeader: 'Referral status',
           isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
           subNavigationItems: CaseListUtils.subNavigationItems(request.path),
-          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+          tableRows,
         })
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiOpenStatusQuery.toLowerCase())
         expect(referralService.getMyReferralSummaries).toHaveBeenCalledWith(username, {
@@ -100,7 +114,7 @@ describe('ReferCaseListController', () => {
           paginatedReferralSummaries.totalPages,
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content, columnsToInclude)
         expect(referralService.getNumberOfTasksCompleted).not.toHaveBeenCalled()
       })
     })
@@ -110,8 +124,17 @@ describe('ReferCaseListController', () => {
         request.params = { referralStatusGroup: 'draft' }
 
         const apiDraftStatusQuery = 'REFERRAL_STARTED'
-
         ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiDraftStatusQuery)
+
+        const columnsToInclude: Array<CaseListColumnHeader> = [
+          'Name / Prison number',
+          'Date referred',
+          'Earliest release date',
+          'Release date type',
+          'Programme location',
+          'Programme name',
+          'Progress',
+        ]
 
         when(referralService.getNumberOfTasksCompleted)
           .calledWith(username, paginatedReferralSummaries.content[0].id)
@@ -133,6 +156,7 @@ describe('ReferCaseListController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
+          finalColumnHeader: 'Progress',
           isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
@@ -150,7 +174,10 @@ describe('ReferCaseListController', () => {
           paginatedReferralSummaries.totalPages,
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(expectedPaginatedReferralSummariesContent)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
+          expectedPaginatedReferralSummariesContent,
+          columnsToInclude,
+        )
         expect(referralService.getNumberOfTasksCompleted).toHaveBeenCalledTimes(
           paginatedReferralSummaries.content.length,
         )
