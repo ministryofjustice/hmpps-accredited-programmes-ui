@@ -16,7 +16,7 @@ npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts > /dev/null
 
 if [ "$MOCK_API" = true ]; then
   echo "==> Stubbing API endpoints..."
-  npx ts-node --transpile-only ./wiremock/scripts/stubApis.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubAccreditedProgrammesApi.ts > /dev/null
 fi
 
 echo "==> Stubbing Prison API caseload endpoints..."
