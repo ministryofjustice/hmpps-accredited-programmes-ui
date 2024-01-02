@@ -164,35 +164,73 @@ describe('CaseListUtils', () => {
         referralSummaryFactory.build({
           audiences: ['General offence'],
           courseName: 'Test Course 1',
+          earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
           id: 'referral-123',
+          prisonName: 'Whatton (HMP)',
           prisonNumber: 'ABC1234',
+          prisonerName: { firstName: 'DEL', lastName: 'HATTON' },
+          sentence: {
+            conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
+            nonDtoReleaseDateType: 'ARD',
+            paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
+            tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
+          },
           status: 'referral_started',
           submittedOn: undefined,
+          tasksCompleted: 2,
         }),
         referralSummaryFactory.build({
           audiences: ['General offence', 'Extremism offence'],
           courseName: 'Test Course 2',
+          earliestReleaseDate: undefined,
           id: 'referral-456',
+          prisonName: undefined,
           prisonNumber: 'DEF1234',
+          prisonerName: undefined,
+          sentence: {},
           status: 'referral_submitted',
           submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
+          tasksCompleted: undefined,
         }),
       ]
 
       expect(CaseListUtils.tableRows(referralSummaries)).toEqual([
         [
           {
-            attributes: { 'data-sort-value': 'ABC1234' },
-            html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>',
+            attributes: { 'data-sort-value': 'Del Hatton' },
+            html: '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
           },
           {
             attributes: { 'data-sort-value': undefined },
             text: 'N/A',
           },
-          { text: 'Test Course 1' },
           {
-            text: 'General offence',
+            attributes: { 'data-sort-value': '2022-01-01T00:00:00.000Z' },
+            text: '1 January 2022',
           },
+          {
+            attributes: { 'data-sort-value': 'ARD' },
+            text: 'Automatic Release Date',
+          },
+          {
+            attributes: { 'data-sort-value': '2023-01-01T00:00:00.000Z' },
+            text: '1 January 2023',
+          },
+          {
+            attributes: { 'data-sort-value': '2022-01-01T00:00:00.000Z' },
+            text: '1 January 2022',
+          },
+          {
+            attributes: { 'data-sort-value': '2024-01-01T00:00:00.000Z' },
+            text: '1 January 2024',
+          },
+          {
+            attributes: { 'data-sort-value': 'Whatton (HMP)' },
+            text: 'Whatton (HMP)',
+          },
+          { text: 'Test Course 1' },
+          { text: 'General offence' },
+          { text: '2 out of 4 tasks complete' },
           {
             attributes: { 'data-sort-value': 'referral_started' },
             html: CaseListUtils.statusTagHtml('referral_started'),
@@ -200,17 +238,40 @@ describe('CaseListUtils', () => {
         ],
         [
           {
-            attributes: { 'data-sort-value': 'DEF1234' },
+            attributes: { 'data-sort-value': '' },
             html: '<a class="govuk-link" href="/assess/referrals/referral-456/personal-details">DEF1234</a>',
           },
           {
             attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
             text: '1 January 2021',
           },
-          { text: 'Test Course 2' },
           {
-            text: 'General offence, Extremism offence',
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
           },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          {
+            attributes: { 'data-sort-value': undefined },
+            text: 'N/A',
+          },
+          { text: 'Test Course 2' },
+          { text: 'General offence, Extremism offence' },
+          { text: '0 out of 4 tasks complete' },
           {
             attributes: { 'data-sort-value': 'referral_submitted' },
             html: CaseListUtils.statusTagHtml('referral_submitted'),

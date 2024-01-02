@@ -104,34 +104,76 @@ export default class CaseListUtils {
   }
 
   static tableRows(referralSummaries: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
-    return referralSummaries.map(summary => [
-      {
-        attributes: {
-          'data-sort-value': summary.prisonNumber,
+    return referralSummaries.map(summary => {
+      const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${assessPaths.show.personalDetails({
+        referralId: summary.id,
+      })}">`
+      const prisonerName = StringUtils.convertToTitleCase(
+        [summary.prisonerName?.firstName, summary.prisonerName?.lastName]
+          .filter(nameComponent => nameComponent)
+          .join(' '),
+      )
+      const nameAndPrisonNumberHtmlEnd = prisonerName
+        ? `${prisonerName}</a><br>${summary.prisonNumber}`
+        : `${summary.prisonNumber}</a>`
+
+      return [
+        {
+          attributes: { 'data-sort-value': prisonerName },
+          html: nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd,
         },
-        html: `<a class="govuk-link" href="${assessPaths.show.personalDetails({ referralId: summary.id })}">${
-          summary.prisonNumber
-        }</a>`,
-      },
-      {
-        attributes: {
-          'data-sort-value': summary.submittedOn,
+        {
+          attributes: { 'data-sort-value': summary.submittedOn },
+          text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
         },
-        text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
-      },
-      {
-        text: summary.courseName,
-      },
-      {
-        text: summary.audiences.map(audience => audience).join(', '),
-      },
-      {
-        attributes: {
-          'data-sort-value': summary.status,
+        {
+          attributes: { 'data-sort-value': summary.earliestReleaseDate },
+          text: summary.earliestReleaseDate
+            ? DateUtils.govukFormattedFullDateString(summary.earliestReleaseDate)
+            : 'N/A',
         },
-        html: this.statusTagHtml(summary.status),
-      },
-    ])
+        {
+          attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
+          text: summary.sentence?.nonDtoReleaseDateType
+            ? {
+                ARD: 'Automatic Release Date',
+                CRD: 'Conditional Release Date',
+                NPD: 'Non Parole Date',
+                PRRD: 'Post Recall Release Date',
+              }[summary.sentence.nonDtoReleaseDateType]
+            : 'N/A',
+        },
+        {
+          attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
+          text: summary.sentence?.conditionalReleaseDate
+            ? DateUtils.govukFormattedFullDateString(summary.sentence.conditionalReleaseDate)
+            : 'N/A',
+        },
+        {
+          attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
+          text: summary.sentence?.paroleEligibilityDate
+            ? DateUtils.govukFormattedFullDateString(summary.sentence.paroleEligibilityDate)
+            : 'N/A',
+        },
+        {
+          attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
+          text: summary.sentence?.tariffExpiryDate
+            ? DateUtils.govukFormattedFullDateString(summary.sentence.tariffExpiryDate)
+            : 'N/A',
+        },
+        {
+          attributes: { 'data-sort-value': summary.prisonName },
+          text: summary.prisonName || 'N/A',
+        },
+        { text: summary.courseName },
+        { text: summary.audiences.map(audience => audience).join(', ') },
+        { text: `${summary.tasksCompleted || 0} out of 4 tasks complete` },
+        {
+          attributes: { 'data-sort-value': summary.status },
+          html: this.statusTagHtml(summary.status),
+        },
+      ]
+    })
   }
 
   static uiToApiAudienceQueryParam(uiAudienceQueryParam: string | undefined): string | undefined {
