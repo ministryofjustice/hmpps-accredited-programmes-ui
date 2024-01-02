@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import type { Response, SuperAgentRequest } from 'superagent'
 import superagent from 'superagent'
 
@@ -13,4 +15,15 @@ const getMatchingRequests = (body: object) => superagent.post(`${url}/requests/f
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-export { getMatchingRequests, resetStubs, stubFor }
+type ReturnsSuperAgentRequest = () => SuperAgentRequest
+
+const processStubs = (stubs: Array<ReturnsSuperAgentRequest>): void => {
+  stubs.forEach(stub =>
+    stub().then(response => {
+      console.log(`Stubbed ${response.body.request.method} ${response.body.request.url}`)
+    }),
+  )
+}
+
+export { getMatchingRequests, processStubs, resetStubs, stubFor }
+export type { ReturnsSuperAgentRequest }
