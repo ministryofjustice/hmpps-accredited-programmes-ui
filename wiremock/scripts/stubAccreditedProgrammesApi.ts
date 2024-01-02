@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
+
+import type { ReturnsSuperAgentRequest } from '..'
+import { processStubs, stubFor } from '..'
 import { apiPaths } from '../../server/paths'
-import { stubFor } from '../index'
 import { courseOfferings, courseParticipations, courses, prisoners, referrals } from '../stubs'
 
-const stubs = []
+const stubs: Array<ReturnsSuperAgentRequest> = []
 
 stubs.push(() =>
   stubFor({
@@ -128,10 +130,5 @@ referrals.forEach(referral => {
   )
 })
 
-console.log('Stubbing APIs')
-
-stubs.forEach(stub =>
-  stub().then(response => {
-    console.log(`Stubbed ${response.body.request.method} ${response.body.request.url}`)
-  }),
-)
+console.log('Stubbing Accredited Programmes API')
+processStubs(stubs)
