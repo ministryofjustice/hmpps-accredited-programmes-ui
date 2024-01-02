@@ -5,7 +5,7 @@ import { courseOfferings, courseParticipations, courses, prisoners, referrals } 
 
 const stubs = []
 
-stubs.push(async () =>
+stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
@@ -22,7 +22,7 @@ stubs.push(async () =>
 )
 
 courses.forEach(course => {
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -38,7 +38,7 @@ courses.forEach(course => {
     }),
   )
 
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -56,7 +56,7 @@ courses.forEach(course => {
 })
 
 courseOfferings.forEach(courseOffering => {
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -70,7 +70,7 @@ courseOfferings.forEach(courseOffering => {
     }),
   )
 
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -85,7 +85,7 @@ courseOfferings.forEach(courseOffering => {
   )
 })
 
-stubs.push(async () =>
+stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
@@ -100,7 +100,7 @@ stubs.push(async () =>
 )
 
 referrals.forEach(referral => {
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'GET',
@@ -114,7 +114,7 @@ referrals.forEach(referral => {
     }),
   )
 
-  stubs.push(async () =>
+  stubs.push(() =>
     stubFor({
       request: {
         method: 'PUT',
