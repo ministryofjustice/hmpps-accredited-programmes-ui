@@ -5,7 +5,7 @@ import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
 import type { Course, CourseAudience, Referral, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
-import type { MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
+import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -103,76 +103,98 @@ export default class CaseListUtils {
     })
   }
 
-  static tableRows(referralSummaries: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
+  static tableRows(
+    referralSummaries: Array<ReferralSummary>,
+    columnsToInclude: Array<CaseListColumnHeader>,
+  ): Array<GovukFrontendTableRow> {
     return referralSummaries.map(summary => {
-      const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${assessPaths.show.personalDetails({
-        referralId: summary.id,
-      })}">`
-      const prisonerName = StringUtils.convertToTitleCase(
-        [summary.prisonerName?.firstName, summary.prisonerName?.lastName]
-          .filter(nameComponent => nameComponent)
-          .join(' '),
-      )
-      const nameAndPrisonNumberHtmlEnd = prisonerName
-        ? `${prisonerName}</a><br>${summary.prisonNumber}`
-        : `${summary.prisonNumber}</a>`
+      const row: GovukFrontendTableRow = []
 
-      return [
-        {
-          attributes: { 'data-sort-value': prisonerName },
-          html: nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd,
-        },
-        {
-          attributes: { 'data-sort-value': summary.submittedOn },
-          text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
-        },
-        {
-          attributes: { 'data-sort-value': summary.earliestReleaseDate },
-          text: summary.earliestReleaseDate
-            ? DateUtils.govukFormattedFullDateString(summary.earliestReleaseDate)
-            : 'N/A',
-        },
-        {
-          attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
-          text: summary.sentence?.nonDtoReleaseDateType
-            ? {
-                ARD: 'Automatic Release Date',
-                CRD: 'Conditional Release Date',
-                NPD: 'Non Parole Date',
-                PRRD: 'Post Recall Release Date',
-              }[summary.sentence.nonDtoReleaseDateType]
-            : 'N/A',
-        },
-        {
-          attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
-          text: summary.sentence?.conditionalReleaseDate
-            ? DateUtils.govukFormattedFullDateString(summary.sentence.conditionalReleaseDate)
-            : 'N/A',
-        },
-        {
-          attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
-          text: summary.sentence?.paroleEligibilityDate
-            ? DateUtils.govukFormattedFullDateString(summary.sentence.paroleEligibilityDate)
-            : 'N/A',
-        },
-        {
-          attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
-          text: summary.sentence?.tariffExpiryDate
-            ? DateUtils.govukFormattedFullDateString(summary.sentence.tariffExpiryDate)
-            : 'N/A',
-        },
-        {
-          attributes: { 'data-sort-value': summary.prisonName },
-          text: summary.prisonName || 'N/A',
-        },
-        { text: summary.courseName },
-        { text: summary.audiences.map(audience => audience).join(', ') },
-        { text: `${summary.tasksCompleted || 0} out of 4 tasks complete` },
-        {
-          attributes: { 'data-sort-value': summary.status },
-          html: this.statusTagHtml(summary.status),
-        },
-      ]
+      columnsToInclude.forEach(column => {
+        switch (column) {
+          case 'Conditional release date':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
+              text: summary.sentence?.conditionalReleaseDate
+                ? DateUtils.govukFormattedFullDateString(summary.sentence.conditionalReleaseDate)
+                : 'N/A',
+            })
+            break
+          case 'Date referred':
+            row.push({
+              attributes: { 'data-sort-value': summary.submittedOn },
+              text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
+            })
+            break
+          case 'Earliest release date':
+            row.push({
+              attributes: { 'data-sort-value': summary.earliestReleaseDate },
+              text: summary.earliestReleaseDate
+                ? DateUtils.govukFormattedFullDateString(summary.earliestReleaseDate)
+                : 'N/A',
+            })
+            break
+          case 'Name / Prison number':
+            row.push({
+              attributes: { 'data-sort-value': CaseListUtils.formattedPrisonerName(summary.prisonerName) },
+              html: CaseListUtils.nameAndPrisonNumberHtml(summary),
+            })
+            break
+          case 'Parole eligibility date':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
+              text: summary.sentence?.paroleEligibilityDate
+                ? DateUtils.govukFormattedFullDateString(summary.sentence.paroleEligibilityDate)
+                : 'N/A',
+            })
+            break
+          case 'Programme location':
+            row.push({
+              attributes: { 'data-sort-value': summary.prisonName },
+              text: summary.prisonName || 'N/A',
+            })
+            break
+          case 'Programme name':
+            row.push({ text: summary.courseName })
+            break
+          case 'Programme strand':
+            row.push({ text: summary.audiences.map(audience => audience).join(', ') })
+            break
+          case 'Progress':
+            row.push({ text: `${summary.tasksCompleted || 0} out of 4 tasks complete` })
+            break
+          case 'Referral status':
+            row.push({
+              attributes: { 'data-sort-value': summary.status },
+              html: this.statusTagHtml(summary.status),
+            })
+            break
+          case 'Release date type':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
+              text: summary.sentence?.nonDtoReleaseDateType
+                ? {
+                    ARD: 'Automatic Release Date',
+                    CRD: 'Conditional Release Date',
+                    NPD: 'Non Parole Date',
+                    PRRD: 'Post Recall Release Date',
+                  }[summary.sentence.nonDtoReleaseDateType]
+                : 'N/A',
+            })
+            break
+          case 'Tariff end date':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
+              text: summary.sentence?.tariffExpiryDate
+                ? DateUtils.govukFormattedFullDateString(summary.sentence.tariffExpiryDate)
+                : 'N/A',
+            })
+            break
+          default:
+        }
+      })
+
+      return row
     })
   }
 
@@ -182,6 +204,24 @@ export default class CaseListUtils {
 
   static uiToApiStatusQueryParam(uiStatusQueryParam: string | undefined): string | undefined {
     return uiStatusQueryParam ? uiStatusQueryParam.toUpperCase().replace(/\s/g, '_') : undefined
+  }
+
+  private static formattedPrisonerName(prisonerName: ReferralSummary['prisonerName']): string {
+    return StringUtils.convertToTitleCase(
+      [prisonerName?.firstName, prisonerName?.lastName].filter(nameComponent => nameComponent).join(' '),
+    )
+  }
+
+  private static nameAndPrisonNumberHtml(referralSummary: ReferralSummary): string {
+    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${assessPaths.show.personalDetails({
+      referralId: referralSummary.id,
+    })}">`
+    const prisonerName = CaseListUtils.formattedPrisonerName(referralSummary.prisonerName)
+    const nameAndPrisonNumberHtmlEnd = prisonerName
+      ? `${prisonerName}</a><br>${referralSummary.prisonNumber}`
+      : `${referralSummary.prisonNumber}</a>`
+
+    return nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd
   }
 
   private static selectItems(values: Array<string>, selectedValue?: string): Array<GovukFrontendSelectItem> {

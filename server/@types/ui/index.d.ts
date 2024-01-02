@@ -51,6 +51,20 @@ type HasHtmlString = {
 
 type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
 
+type CaseListColumnHeader =
+  | 'Conditional release date'
+  | 'Date referred'
+  | 'Earliest release date'
+  | 'Name / Prison number'
+  | 'Parole eligibility date'
+  | 'Programme location'
+  | 'Programme name'
+  | 'Programme strand'
+  | 'Progress'
+  | 'Referral status'
+  | 'Release date type'
+  | 'Tariff end date'
+
 type CourseParticipationPresenter = CourseParticipation & {
   addedByDisplayName: string
 }
@@ -143,6 +157,7 @@ type QueryParam = {
 }
 
 export type {
+  CaseListColumnHeader,
   CourseParticipationPresenter,
   CoursePresenter,
   GovukFrontendPaginationWithItems,
