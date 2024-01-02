@@ -1,0 +1,42 @@
+[
+  {
+    "id": "4261ad11-279e-4698-b1bb-90241ec036b9",
+    "audiences": ["Intimate partner violence offence", "General violence offence"],
+    "courseName": "Becoming New Me Plus",
+    "earliestReleaseDate": "2024-09-16",
+    "organisationId": "MRI",
+    "prisonerName": { "firstName": "Savannah", "lastName": "Fritsch" },
+    "prisonName": "County Tyrone (HMP)",
+    "prisonNumber": "Y7RLN5A",
+    "referrerUsername": "STUBBED_USER",
+    "sentence": {
+      "conditionalReleaseDate": "2025-10-12",
+      "indeterminateSentence": false,
+      "nonDtoReleaseDateType": "CRD",
+      "paroleEligibilityDate": "2024-09-16",
+      "tariffExpiryDate": "2026-07-13"
+    },
+    "status": "referral_started",
+    "submittedOn": null
+  },
+  {
+    "id": "fc70b23a-47bf-4015-9c1e-18b5b8bffcf7",
+    "audiences": ["Intimate partner violence offence", "General violence offence"],
+    "courseName": "Becoming New Me Plus",
+    "earliestReleaseDate": "2024-09-16",
+    "organisationId": "MRI",
+    "prisonerName": { "firstName": "Savannah", "lastName": "Fritsch" },
+    "prisonName": "County Tyrone (HMP)",
+    "prisonNumber": "Y7RLN5A",
+    "referrerUsername": "STUBBED_USER",
+    "sentence": {
+      "conditionalReleaseDate": "2025-10-12",
+      "indeterminateSentence": false,
+      "nonDtoReleaseDateType": "CRD",
+      "paroleEligibilityDate": "2024-09-16",
+      "tariffExpiryDate": "2026-07-13"
+    },
+    "status": "referral_submitted",
+    "submittedOn": "2022-12-22T22:18:38.345"
+  }
+]

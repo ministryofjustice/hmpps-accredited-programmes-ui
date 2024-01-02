@@ -5,8 +5,18 @@
     "hasReviewedProgrammeHistory": false,
     "oasysConfirmed": false,
     "offeringId": "e78237cd-8244-4256-a1e8-8fb29b1f2f76",
-    "prisonNumber": "DEF1234",
+    "prisonNumber": "Y7RLN5A",
     "referrerUsername": "STUBBED_USER",
     "status": "referral_started"
+  },
+  {
+    "id": "fc70b23a-47bf-4015-9c1e-18b5b8bffcf7",
+    "additionalInformation": "Some additional information",
+    "hasReviewedProgrammeHistory": true,
+    "oasysConfirmed": true,
+    "offeringId": "e78237cd-8244-4256-a1e8-8fb29b1f2f76",
+    "prisonNumber": "Y7RLN5A",
+    "referrerUsername": "STUBBED_USER",
+    "status": "referral_submitted"
   }
 ]
