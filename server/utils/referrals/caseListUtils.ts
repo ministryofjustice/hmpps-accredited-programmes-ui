@@ -103,8 +103,8 @@ export default class CaseListUtils {
     })
   }
 
-  static tableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
-    return referralSummary.map(summary => [
+  static tableRows(referralSummaries: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
+    return referralSummaries.map(summary => [
       {
         attributes: {
           'data-sort-value': summary.prisonNumber,
