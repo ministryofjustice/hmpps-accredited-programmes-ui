@@ -6,6 +6,7 @@ import offenceCodes from './offenceCodes.json'
 import offenderBookings from './offenderBookings.json'
 import offenderSentenceAndOffences from './offenderSentenceAndOffences.json'
 import prisoners from './prisoners.json'
+import referralSummaries from './referralSummaries.json'
 import referrals from './referrals.json'
 
 export {
@@ -17,5 +18,6 @@ export {
   offenderBookings,
   offenderSentenceAndOffences,
   prisoners,
+  referralSummaries,
   referrals,
 }
