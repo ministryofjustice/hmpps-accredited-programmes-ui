@@ -53,6 +53,48 @@ describe('ReferralService', () => {
     })
   })
 
+  describe('getMyReferralSummaries', () => {
+    it('returns a list of referral summaries for the logged in user', async () => {
+      const referralSummaries = referralSummaryFactory.buildList(3)
+      const paginatedReferralSummariesResponse = {
+        content: referralSummaries,
+        pageIsEmpty: false,
+        pageNumber: 0,
+        pageSize: 10,
+        totalElements: referralSummaries.length,
+        totalPages: 1,
+      }
+
+      when(referralClient.findMyReferralSummaries)
+        .calledWith(undefined)
+        .mockResolvedValue(paginatedReferralSummariesResponse)
+
+      const result = await service.getMyReferralSummaries(username, undefined)
+
+      expect(result).toEqual(paginatedReferralSummariesResponse)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findMyReferralSummaries).toHaveBeenCalledWith(undefined)
+    })
+
+    describe('with query values', () => {
+      it('makes the correct call to the referral client', async () => {
+        const query = {
+          page: '1',
+          status: 'REFERRAL_SUBMITTED',
+        }
+
+        await service.getMyReferralSummaries(username, query)
+
+        expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(referralClient.findMyReferralSummaries).toHaveBeenCalledWith(query)
+      })
+    })
+  })
+
   describe('getReferral', () => {
     it('returns a given referral', async () => {
       const referral = referralFactory.build()
