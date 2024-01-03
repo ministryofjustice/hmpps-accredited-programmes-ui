@@ -29,6 +29,17 @@ export default class ReferralService {
     return referralClient.create(courseOfferingId, prisonNumber)
   }
 
+  async getMyReferralSummaries(
+    username: Express.User['username'],
+    query?: { page?: string; status?: string },
+  ): Promise<Paginated<ReferralSummary>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.findMyReferralSummaries(query)
+  }
+
   async getReferral(username: Express.User['username'], referralId: Referral['id']): Promise<Referral> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)

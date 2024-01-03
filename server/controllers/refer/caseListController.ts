@@ -29,7 +29,7 @@ export default class ReferCaseListController {
       }
 
       const { page } = req.query as Record<string, string>
-      const { activeCaseLoadId, username } = res.locals.user
+      const { username } = res.locals.user
       const { referralStatusGroup } = req.params
 
       const referralStatuses = referralStatusGroups[referralStatusGroup as ReferralStatusGroup]
@@ -38,7 +38,7 @@ export default class ReferCaseListController {
         throw createHttpError(404, 'Not found')
       }
 
-      const paginatedReferralSummaries = await this.referralService.getReferralSummaries(username, activeCaseLoadId, {
+      const paginatedReferralSummaries = await this.referralService.getMyReferralSummaries(username, {
         page: page ? (Number(page) - 1).toString() : undefined,
         status: CaseListUtils.uiToApiStatusQueryParam(referralStatuses.join(',')),
       })

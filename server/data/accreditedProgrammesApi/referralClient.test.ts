@@ -79,6 +79,90 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('findMyReferralSummaries', () => {
+    describe('without query parameters', () => {
+      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+        content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
+        pageIsEmpty: false,
+        pageNumber: 0,
+        pageSize: 15,
+        totalElements: 1,
+        totalPages: 1,
+      }
+
+      beforeEach(() => {
+        provider.addInteraction({
+          state: 'Referral(s) exist for the logged in user',
+          uponReceiving: "A request for the logged in user's referral summaries",
+          willRespondWith: {
+            body: Matchers.like(paginatedReferralSummaries),
+            status: 200,
+          },
+          withRequest: {
+            headers: {
+              authorization: `Bearer ${userToken}`,
+            },
+            method: 'GET',
+            path: apiPaths.referrals.myDashboard({}),
+            query: {
+              size: '15',
+            },
+          },
+        })
+      })
+
+      it("fetches the logged in user's referral summaries", async () => {
+        const result = await referralClient.findMyReferralSummaries()
+
+        expect(result).toEqual(paginatedReferralSummaries)
+      })
+    })
+
+    describe('with query parameters', () => {
+      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+        content: FactoryHelpers.buildListWith(referralSummaryFactory, { status: 'referral_submitted' }, {}, 1),
+        pageIsEmpty: false,
+        pageNumber: 1,
+        pageSize: 15,
+        totalElements: 16,
+        totalPages: 2,
+      }
+
+      beforeEach(() => {
+        provider.addInteraction({
+          state: 'Referral(s) exist for logged in user with status REFERRAL_SUBMITTED',
+          uponReceiving:
+            "A request for the second (15 length) page of the logged in user's referral summaries with status REFERRAL_SUBMITTED",
+          willRespondWith: {
+            body: Matchers.like(paginatedReferralSummaries),
+            status: 200,
+          },
+          withRequest: {
+            headers: {
+              authorization: `Bearer ${userToken}`,
+            },
+            method: 'GET',
+            path: apiPaths.referrals.myDashboard({}),
+            query: {
+              page: '1',
+              size: '15',
+              status: 'REFERRAL_SUBMITTED',
+            },
+          },
+        })
+      })
+
+      it("fetches the logged in user's referral summaries matching the given query parameters", async () => {
+        const result = await referralClient.findMyReferralSummaries({
+          page: '1',
+          status: 'REFERRAL_SUBMITTED',
+        })
+
+        expect(result).toEqual(paginatedReferralSummaries)
+      })
+    })
+  })
+
   describe('findReferralSummaries', () => {
     describe('without query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {

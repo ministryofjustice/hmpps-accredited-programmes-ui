@@ -37,6 +37,17 @@ export default class ReferralClient {
     })) as Referral
   }
 
+  async findMyReferralSummaries(query?: { page?: string; status?: string }): Promise<Paginated<ReferralSummary>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.myDashboard({}),
+      query: {
+        ...(query?.page && { page: query.page }),
+        ...(query?.status && { status: query.status }),
+        size: '15',
+      },
+    })) as Paginated<ReferralSummary>
+  }
+
   async findReferralSummaries(
     organisationId: string,
     query?: { audience?: CourseAudience['value']; courseName?: Course['name']; page?: string; status?: string },
