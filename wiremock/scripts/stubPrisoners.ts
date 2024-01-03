@@ -30,3 +30,19 @@ prisoners.forEach(async prisoner => {
 
   console.log(`Stubbed ${response.body.request.method} ${response.body.request.url}`)
 })
+
+stubFor({
+  request: {
+    method: 'POST',
+    urlPattern: '/prisoner-search/prisoner-numbers',
+  },
+  response: {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+    jsonBody: prisoners,
+    status: 200,
+  },
+}).then(response => {
+  console.log(`Stubbed ${response.body.request.method} ${response.body.request.url}`)
+})
