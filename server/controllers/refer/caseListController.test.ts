@@ -64,7 +64,7 @@ describe('ReferCaseListController', () => {
         totalElements: referralSummaries.length,
         totalPages: 1,
       }
-      referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
+      referralService.getMyReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
       ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(subNavigationItems)
       ;(CaseListUtils.tableRows as jest.Mock).mockReturnValue(tableRows)
       ;(PaginationUtils.pagination as jest.Mock).mockReturnValue(pagination)
@@ -89,7 +89,7 @@ describe('ReferCaseListController', () => {
           tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
         })
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiOpenStatusQuery.toLowerCase())
-        expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
+        expect(referralService.getMyReferralSummaries).toHaveBeenCalledWith(username, {
           status: apiOpenStatusQuery,
         })
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
@@ -111,7 +111,7 @@ describe('ReferCaseListController', () => {
         const expectedError = createError(404, 'Not found')
 
         await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
-        expect(referralService.getReferralSummaries).not.toHaveBeenCalled()
+        expect(referralService.getMyReferralSummaries).not.toHaveBeenCalled()
       })
     })
   })
