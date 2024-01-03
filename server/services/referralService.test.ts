@@ -120,7 +120,7 @@ describe('ReferralService', () => {
       const paginatedReferralSummariesResponse = {
         content: referralSummaries,
         pageIsEmpty: false,
-        pageNumber: 1,
+        pageNumber: 0,
         pageSize: 10,
         totalElements: referralSummaries.length,
         totalPages: 1,
