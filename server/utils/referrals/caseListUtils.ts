@@ -103,6 +103,52 @@ export default class CaseListUtils {
     })
   }
 
+  static tableRowContent(referralSummary: ReferralSummary, column: CaseListColumnHeader): string {
+    switch (column) {
+      case 'Conditional release date':
+        return referralSummary.sentence?.conditionalReleaseDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.conditionalReleaseDate)
+          : 'N/A'
+      case 'Date referred':
+        return referralSummary.submittedOn ? DateUtils.govukFormattedFullDateString(referralSummary.submittedOn) : 'N/A'
+      case 'Earliest release date':
+        return referralSummary.earliestReleaseDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.earliestReleaseDate)
+          : 'N/A'
+      case 'Name / Prison number':
+        return CaseListUtils.nameAndPrisonNumberHtml(referralSummary)
+      case 'Parole eligibility date':
+        return referralSummary.sentence?.paroleEligibilityDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.paroleEligibilityDate)
+          : 'N/A'
+      case 'Programme location':
+        return referralSummary.prisonName || 'N/A'
+      case 'Programme name':
+        return referralSummary.courseName
+      case 'Programme strand':
+        return referralSummary.audiences.map(audience => audience).join(', ')
+      case 'Progress':
+        return `${referralSummary.tasksCompleted || 0} out of 4 tasks complete`
+      case 'Referral status':
+        return CaseListUtils.statusTagHtml(referralSummary.status)
+      case 'Release date type':
+        return referralSummary.sentence?.nonDtoReleaseDateType
+          ? {
+              ARD: 'Automatic Release Date',
+              CRD: 'Conditional Release Date',
+              NPD: 'Non Parole Date',
+              PRRD: 'Post Recall Release Date',
+            }[referralSummary.sentence.nonDtoReleaseDateType]
+          : 'N/A'
+      case 'Tariff end date':
+        return referralSummary.sentence?.tariffExpiryDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.tariffExpiryDate)
+          : 'N/A'
+      default:
+        return ''
+    }
+  }
+
   static tableRows(
     referralSummaries: Array<ReferralSummary>,
     columnsToInclude: Array<CaseListColumnHeader>,
@@ -115,25 +161,19 @@ export default class CaseListUtils {
           case 'Conditional release date':
             row.push({
               attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
-              text: summary.sentence?.conditionalReleaseDate
-                ? DateUtils.govukFormattedFullDateString(summary.sentence.conditionalReleaseDate)
-                : 'N/A',
+              text: CaseListUtils.tableRowContent(summary, 'Conditional release date'),
             })
             break
           case 'Date referred':
             row.push({
               attributes: { 'data-sort-value': summary.submittedOn },
-              text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
+              text: CaseListUtils.tableRowContent(summary, 'Date referred'),
             })
             break
           case 'Earliest release date':
             row.push({
-              attributes: {
-                'data-sort-value': summary.earliestReleaseDate,
-              },
-              text: summary.earliestReleaseDate
-                ? DateUtils.govukFormattedFullDateString(summary.earliestReleaseDate)
-                : 'N/A',
+              attributes: { 'data-sort-value': summary.earliestReleaseDate },
+              text: CaseListUtils.tableRowContent(summary, 'Earliest release date'),
             })
             break
           case 'Name / Prison number':
@@ -141,67 +181,52 @@ export default class CaseListUtils {
               attributes: {
                 'data-sort-value': CaseListUtils.formattedPrisonerName(summary.prisonerName),
               },
-              html: CaseListUtils.nameAndPrisonNumberHtml(summary),
+              html: CaseListUtils.tableRowContent(summary, 'Name / Prison number'),
             })
             break
           case 'Parole eligibility date':
             row.push({
               attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
-              text: summary.sentence?.paroleEligibilityDate
-                ? DateUtils.govukFormattedFullDateString(summary.sentence.paroleEligibilityDate)
-                : 'N/A',
+              text: CaseListUtils.tableRowContent(summary, 'Parole eligibility date'),
             })
             break
           case 'Programme location':
             row.push({
               attributes: { 'data-sort-value': summary.prisonName },
-              text: summary.prisonName || 'N/A',
+              text: CaseListUtils.tableRowContent(summary, 'Programme location'),
             })
             break
           case 'Programme name':
             row.push({
-              text: summary.courseName,
+              text: CaseListUtils.tableRowContent(summary, 'Programme name'),
             })
             break
           case 'Programme strand':
             row.push({
-              text: summary.audiences.map(audience => audience).join(', '),
+              text: CaseListUtils.tableRowContent(summary, 'Programme strand'),
             })
             break
           case 'Progress':
             row.push({
-              text: `${summary.tasksCompleted || 0} out of 4 tasks complete`,
+              text: CaseListUtils.tableRowContent(summary, 'Progress'),
             })
             break
           case 'Referral status':
             row.push({
-              attributes: {
-                'data-sort-value': summary.status,
-              },
-              html: this.statusTagHtml(summary.status),
+              attributes: { 'data-sort-value': summary.status },
+              html: CaseListUtils.tableRowContent(summary, 'Referral status'),
             })
             break
           case 'Release date type':
             row.push({
-              attributes: {
-                'data-sort-value': summary.sentence?.nonDtoReleaseDateType,
-              },
-              text: summary.sentence?.nonDtoReleaseDateType
-                ? {
-                    ARD: 'Automatic Release Date',
-                    CRD: 'Conditional Release Date',
-                    NPD: 'Non Parole Date',
-                    PRRD: 'Post Recall Release Date',
-                  }[summary.sentence.nonDtoReleaseDateType]
-                : 'N/A',
+              attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
+              text: CaseListUtils.tableRowContent(summary, 'Release date type'),
             })
             break
           case 'Tariff end date':
             row.push({
               attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
-              text: summary.sentence?.tariffExpiryDate
-                ? DateUtils.govukFormattedFullDateString(summary.sentence.tariffExpiryDate)
-                : 'N/A',
+              text: CaseListUtils.tableRowContent(summary, 'Tariff end date'),
             })
             break
           default:
