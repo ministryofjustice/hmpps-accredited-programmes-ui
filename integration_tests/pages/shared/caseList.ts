@@ -1,17 +1,25 @@
 import { assessPaths } from '../../../server/paths'
-import { CaseListUtils, CourseUtils, DateUtils, StringUtils } from '../../../server/utils'
+import { CaseListUtils, CourseUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
 import type { Course, ReferralSummary } from '@accredited-programmes/models'
+import type { CaseListColumnHeader } from '@accredited-programmes/ui'
 
 export default class CaseListPage extends Page {
+  columnHeaders: Array<CaseListColumnHeader>
+
   referralSummaries: Array<ReferralSummary>
 
-  constructor(args: { referralSummaries: Array<ReferralSummary>; course?: Course }) {
-    const { course, referralSummaries } = args
+  constructor(args: {
+    columnHeaders: Array<CaseListColumnHeader>
+    referralSummaries: Array<ReferralSummary>
+    course?: Course
+  }) {
+    const { columnHeaders, course, referralSummaries } = args
 
     super(course ? CourseUtils.courseNameWithAlternateName(course) : 'My referrals')
 
+    this.columnHeaders = columnHeaders
     this.referralSummaries = referralSummaries
   }
 
@@ -44,24 +52,90 @@ export default class CaseListPage extends Page {
   }
 
   shouldContainTableOfReferralSummaries() {
+    this.columnHeaders.forEach((columnHeader, columnHeaderIndex) => {
+      cy.get('.govuk-table__header').eq(columnHeaderIndex).should('have.text', columnHeader)
+    })
+
     cy.get('.govuk-table__body').within(() => {
       cy.get('.govuk-table__row').each((tableRowElement, tableRowElementIndex) => {
         const summary = this.referralSummaries[tableRowElementIndex]
 
         cy.wrap(tableRowElement).within(() => {
-          cy.get('.govuk-table__cell:first-of-type').should(
-            'have.html',
-            `<a class="govuk-link" href="${assessPaths.show.personalDetails({ referralId: summary.id })}">${
-              summary.prisonNumber
-            }</a>`,
-          )
-          cy.get('.govuk-table__cell:nth-of-type(2)').should(
-            'have.text',
-            summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
-          )
-          cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', summary.courseName)
-          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', summary.audiences.join(', '))
-          cy.get('.govuk-table__cell:nth-of-type(5)').should('have.html', CaseListUtils.statusTagHtml(summary.status))
+          this.columnHeaders.forEach((column, columnIndex) => {
+            cy.get('.govuk-table__cell')
+              .eq(columnIndex)
+              .then(tableCellElement => {
+                switch (column) {
+                  case 'Conditional release date':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Conditional release date'),
+                    )
+                    break
+                  case 'Date referred':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Date referred'),
+                    )
+                    break
+                  case 'Earliest release date':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Earliest release date'),
+                    )
+                    break
+                  case 'Name / Prison number':
+                    cy.wrap(tableCellElement).should(
+                      'have.html',
+                      CaseListUtils.tableRowContent(summary, 'Name / Prison number'),
+                    )
+                    break
+                  case 'Parole eligibility date':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Parole eligibility date'),
+                    )
+                    break
+                  case 'Programme location':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Programme location'),
+                    )
+                    break
+                  case 'Programme name':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Programme name'),
+                    )
+                    break
+                  case 'Programme strand':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Programme strand'),
+                    )
+                    break
+                  case 'Referral status':
+                    cy.wrap(tableCellElement).should(
+                      'have.html',
+                      CaseListUtils.tableRowContent(summary, 'Referral status'),
+                    )
+                    break
+                  case 'Release date type':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Release date type'),
+                    )
+                    break
+                  case 'Tariff end date':
+                    cy.wrap(tableCellElement).should(
+                      'have.text',
+                      CaseListUtils.tableRowContent(summary, 'Tariff end date'),
+                    )
+                    break
+                  default:
+                }
+              })
+          })
         })
       })
     })

@@ -5,6 +5,7 @@ import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
 import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
 import { CaseListPage } from '../../pages/shared'
+import type { CaseListColumnHeader } from '@accredited-programmes/ui'
 
 context('Referral case lists', () => {
   const limeCourse = courseFactory.build({ name: 'Lime Course' })
@@ -23,6 +24,14 @@ context('Referral case lists', () => {
     { transient: { availableStatuses } },
     15,
   )
+  const columnHeaders: Array<CaseListColumnHeader> = [
+    'Name / Prison number',
+    'Conditional release date',
+    'Parole eligibility date',
+    'Tariff end date',
+    'Programme strand',
+    'Referral status',
+  ]
 
   beforeEach(() => {
     cy.task('reset')
@@ -45,6 +54,7 @@ context('Referral case lists', () => {
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
+      columnHeaders,
       course: limeCourse,
       referralSummaries: limeCourseReferralSummaries,
     })
@@ -73,6 +83,7 @@ context('Referral case lists', () => {
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
+      columnHeaders,
       course: limeCourse,
       referralSummaries: limeCourseReferralSummaries,
     })
@@ -95,6 +106,7 @@ context('Referral case lists', () => {
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders,
         course: limeCourse,
         referralSummaries: limeCourseReferralSummaries,
       })
@@ -115,6 +127,7 @@ context('Referral case lists', () => {
       caseListPage.shouldFilter(programmeStrandSelectedValue, referralStatusSelectedValue, filteredReferralSummaries)
 
       const filteredCaseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders,
         course: limeCourse,
         referralSummaries: filteredReferralSummaries,
       })
@@ -138,6 +151,7 @@ context('Referral case lists', () => {
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders,
         course: orangeCourse,
         referralSummaries: orangeCourseReferralSummaries,
       })
