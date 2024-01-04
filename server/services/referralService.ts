@@ -40,6 +40,19 @@ export default class ReferralService {
     return referralClient.findMyReferralSummaries(query)
   }
 
+  async getNumberOfTasksCompleted(username: Express.User['username'], referralId: Referral['id']): Promise<number> {
+    const referralProgressIndicatorKeys = [
+      'additionalInformation',
+      'hasReviewedProgrammeHistory',
+      'oasysConfirmed',
+      'prisonNumber',
+    ] as const
+
+    const referral = await this.getReferral(username, referralId)
+
+    return referralProgressIndicatorKeys.filter(item => referral[item]).length
+  }
+
   async getReferral(username: Express.User['username'], referralId: Referral['id']): Promise<Referral> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)

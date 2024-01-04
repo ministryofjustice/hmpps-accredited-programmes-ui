@@ -2,6 +2,7 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
+import { when } from 'jest-when'
 
 import ReferCaseListController from './caseListController'
 import { referPaths } from '../../paths'
@@ -100,6 +101,7 @@ describe('ReferCaseListController', () => {
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
+        expect(referralService.getNumberOfTasksCompleted).not.toHaveBeenCalled()
       })
     })
 
@@ -111,6 +113,22 @@ describe('ReferCaseListController', () => {
 
         ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiDraftStatusQuery)
 
+        when(referralService.getNumberOfTasksCompleted)
+          .calledWith(username, paginatedReferralSummaries.content[0].id)
+          .mockResolvedValue(1)
+        when(referralService.getNumberOfTasksCompleted)
+          .calledWith(username, paginatedReferralSummaries.content[1].id)
+          .mockResolvedValue(2)
+        when(referralService.getNumberOfTasksCompleted)
+          .calledWith(username, paginatedReferralSummaries.content[2].id)
+          .mockResolvedValue(3)
+
+        const expectedPaginatedReferralSummariesContent = [
+          { ...paginatedReferralSummaries.content[0], tasksCompleted: 1 },
+          { ...paginatedReferralSummaries.content[1], tasksCompleted: 2 },
+          { ...paginatedReferralSummaries.content[2], tasksCompleted: 3 },
+        ]
+
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
@@ -119,7 +137,7 @@ describe('ReferCaseListController', () => {
           pageHeading: 'My referrals',
           pagination,
           subNavigationItems: CaseListUtils.subNavigationItems(request.path),
-          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+          tableRows,
         })
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiDraftStatusQuery.toLowerCase())
         expect(referralService.getMyReferralSummaries).toHaveBeenCalledWith(username, {
@@ -132,7 +150,10 @@ describe('ReferCaseListController', () => {
           paginatedReferralSummaries.totalPages,
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(expectedPaginatedReferralSummariesContent)
+        expect(referralService.getNumberOfTasksCompleted).toHaveBeenCalledTimes(
+          paginatedReferralSummaries.content.length,
+        )
       })
     })
 

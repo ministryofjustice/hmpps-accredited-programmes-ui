@@ -112,6 +112,35 @@ describe('ReferralService', () => {
     })
   })
 
+  describe('getNumberOfTasksCompleted', () => {
+    let referralService: ReferralService
+
+    beforeEach(() => {
+      referralService = createMock<ReferralService>(service)
+    })
+
+    it.each`
+      referralFormFields                                                                                          | expectedTasksCompleted
+      ${{ additionalInformation: '', hasReviewedProgrammeHistory: false, oasysConfirmed: false }}                 | ${1}
+      ${{ additionalInformation: 'Some information', hasReviewedProgrammeHistory: false, oasysConfirmed: false }} | ${2}
+      ${{ additionalInformation: 'Some information', hasReviewedProgrammeHistory: true, oasysConfirmed: false }}  | ${3}
+      ${{ additionalInformation: 'Some information', hasReviewedProgrammeHistory: true, oasysConfirmed: true }}   | ${4}
+    `(
+      'returns $expectedTasksCompleted when $referralFormFields',
+      async ({ referralFormFields, expectedTasksCompleted }) => {
+        const referral = referralFactory.started().build({
+          ...referralFormFields,
+        })
+
+        when(referralService.getReferral).calledWith(username, referral.id).mockResolvedValue(referral)
+
+        const result = await referralService.getNumberOfTasksCompleted(username, referral.id)
+
+        expect(result).toEqual(expectedTasksCompleted)
+      },
+    )
+  })
+
   describe('getReferralSummaries', () => {
     const organisationId = 'organisation-id'
 

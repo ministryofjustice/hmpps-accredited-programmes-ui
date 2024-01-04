@@ -43,6 +43,8 @@ export default class ReferCaseListController {
         status: CaseListUtils.uiToApiStatusQueryParam(referralStatuses.join(',')),
       })
 
+      let paginatedReferralSummariesContent = paginatedReferralSummaries.content
+
       const pagination = PaginationUtils.pagination(
         req.path,
         [],
@@ -50,12 +52,21 @@ export default class ReferCaseListController {
         paginatedReferralSummaries.totalPages,
       )
 
+      if (referralStatusGroup === 'draft') {
+        paginatedReferralSummariesContent = await Promise.all(
+          paginatedReferralSummariesContent.map(async referralSummary => {
+            const tasksCompleted = await this.referralService.getNumberOfTasksCompleted(username, referralSummary.id)
+            return { ...referralSummary, tasksCompleted }
+          }),
+        )
+      }
+
       return res.render('referrals/caseList/refer/show', {
         isMyReferralsPage: true,
         pageHeading: 'My referrals',
         pagination,
         subNavigationItems: CaseListUtils.subNavigationItems(req.path),
-        tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+        tableRows: CaseListUtils.tableRows(paginatedReferralSummariesContent),
       })
     }
   }
