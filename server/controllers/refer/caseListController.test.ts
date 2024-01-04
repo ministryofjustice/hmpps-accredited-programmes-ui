@@ -103,6 +103,39 @@ describe('ReferCaseListController', () => {
       })
     })
 
+    describe('when the referral status group is "draft"', () => {
+      it('renders the show template with the correct response locals', async () => {
+        request.params = { referralStatusGroup: 'draft' }
+
+        const apiDraftStatusQuery = 'REFERRAL_STARTED'
+
+        ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiDraftStatusQuery)
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
+          isMyReferralsPage: true,
+          pageHeading: 'My referrals',
+          pagination,
+          subNavigationItems: CaseListUtils.subNavigationItems(request.path),
+          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+        })
+        expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiDraftStatusQuery.toLowerCase())
+        expect(referralService.getMyReferralSummaries).toHaveBeenCalledWith(username, {
+          status: apiDraftStatusQuery,
+        })
+        expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
+          request.path,
+          [],
+          paginatedReferralSummaries.pageNumber,
+          paginatedReferralSummaries.totalPages,
+        )
+        expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
+      })
+    })
+
     describe('when the referral status group is not valid', () => {
       it('throws a 404 error', async () => {
         request.params = { referralStatusGroup: 'invalid-group' }

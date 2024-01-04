@@ -91,7 +91,7 @@ export default class CaseListUtils {
     return [
       'open',
       // 'closed',
-      // 'draft'
+      'draft',
     ].map(referralStatusGroup => {
       const path = referPaths.caseList.show({ referralStatusGroup })
 
