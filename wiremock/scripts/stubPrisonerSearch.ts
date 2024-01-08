@@ -35,7 +35,7 @@ stubs.push(() =>
   stubFor({
     request: {
       method: 'POST',
-      urlPattern: '/prisoner-search/prisoner-numbers',
+      url: '/prisoner-search/prisoner-numbers',
     },
     response: {
       headers: {
