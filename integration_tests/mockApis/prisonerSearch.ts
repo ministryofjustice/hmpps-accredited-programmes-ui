@@ -17,7 +17,7 @@ export default {
           },
         ],
         method: 'POST',
-        url: prisonerSearchPaths.prisoner.search({}),
+        url: prisonerSearchPaths.prisoner.searchByCriteria({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

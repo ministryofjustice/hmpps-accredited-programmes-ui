@@ -20,7 +20,7 @@ prisoners.forEach(prisoner => {
           },
         ],
         method: 'POST',
-        url: prisonerSearchPaths.prisoner.search({}),
+        url: prisonerSearchPaths.prisoner.searchByCriteria({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
@@ -35,7 +35,7 @@ stubs.push(() =>
   stubFor({
     request: {
       method: 'POST',
-      url: '/prisoner-search/prisoner-numbers',
+      url: prisonerSearchPaths.prisoner.searchByPrisonNumbers({}),
     },
     response: {
       headers: {

@@ -22,7 +22,7 @@ export default class PrisonerSearchClient {
         prisonIds: caseloadIds,
         prisonerIdentifier: prisonNumber,
       },
-      path: prisonerSearchPaths.prisoner.search({}),
+      path: prisonerSearchPaths.prisoner.searchByCriteria({}),
     })) as Array<Prisoner>
 
     if (!prisoners.length) {

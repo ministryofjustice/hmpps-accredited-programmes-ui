@@ -31,7 +31,7 @@ describe('PrisonerSearchClient', () => {
 
     it('searches for a prisoner by prison number and caseload IDs and returns the first match on the assumption that there will never be multiple matches', async () => {
       fakePrisonerSearch
-        .post(prisonerSearchPaths.prisoner.search({}))
+        .post(prisonerSearchPaths.prisoner.searchByCriteria({}))
         .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, [prisoner])
 
@@ -42,7 +42,7 @@ describe('PrisonerSearchClient', () => {
     describe('when no prisoner is found', () => {
       it('returns null', async () => {
         fakePrisonerSearch
-          .post(prisonerSearchPaths.prisoner.search({}))
+          .post(prisonerSearchPaths.prisoner.searchByCriteria({}))
           .matchHeader('authorization', `Bearer ${systemToken}`)
           .reply(200, [])
 
