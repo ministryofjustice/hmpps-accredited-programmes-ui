@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import ReferralsController from './referralsController'
+import RisksAndNeedsController from './risksAndNeedsController'
 import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
@@ -11,9 +12,15 @@ const controllers = (services: Services) => {
     services.referralService,
     services.userService,
   )
+  const risksAndNeedsController = new RisksAndNeedsController(
+    services.courseService,
+    services.personService,
+    services.referralService,
+  )
 
   return {
     referralsController,
+    risksAndNeedsController,
   }
 }
 
