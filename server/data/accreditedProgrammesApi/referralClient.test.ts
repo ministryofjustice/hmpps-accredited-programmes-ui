@@ -80,7 +80,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findMyReferralSummaries', () => {
-    describe('without query parameters', () => {
+    // TODO: enable this once Provider tests are refactored
+    // see https://github.com/ministryofjustice/hmpps-accredited-programmes-api/pull/223) for details
+    describe.skip('without query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
         content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
         pageIsEmpty: false,
