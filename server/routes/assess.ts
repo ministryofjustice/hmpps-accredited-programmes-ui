@@ -8,7 +8,7 @@ import { RouteUtils } from '../utils'
 export default function routes(controllers: Controllers, router: Router): Router {
   const { get, post } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
 
-  const { assessCaseListController, referralsController } = controllers
+  const { assessCaseListController, referralsController, risksAndNeedsController } = controllers
 
   get(assessPaths.caseList.index.pattern, assessCaseListController.indexRedirect())
   get(assessPaths.caseList.show.pattern, assessCaseListController.show())
@@ -19,6 +19,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.personalDetails.pattern, referralsController.personalDetails())
   get(assessPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
   get(assessPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
+
+  get(assessPaths.show.risksAndNeeds.offenceAnalysis.pattern, risksAndNeedsController.offenceAnalysis())
 
   return router
 }
