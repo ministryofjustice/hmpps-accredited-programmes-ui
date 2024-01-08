@@ -5,7 +5,7 @@ import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
 import type { Course, CourseAudience, Referral, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
-import type { MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
+import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -103,35 +103,130 @@ export default class CaseListUtils {
     })
   }
 
-  static tableRows(referralSummary: Array<ReferralSummary>): Array<GovukFrontendTableRow> {
-    return referralSummary.map(summary => [
-      {
-        attributes: {
-          'data-sort-value': summary.prisonNumber,
-        },
-        html: `<a class="govuk-link" href="${assessPaths.show.personalDetails({ referralId: summary.id })}">${
-          summary.prisonNumber
-        }</a>`,
-      },
-      {
-        attributes: {
-          'data-sort-value': summary.submittedOn,
-        },
-        text: summary.submittedOn ? DateUtils.govukFormattedFullDateString(summary.submittedOn) : 'N/A',
-      },
-      {
-        text: summary.courseName,
-      },
-      {
-        text: summary.audiences.map(audience => audience).join(', '),
-      },
-      {
-        attributes: {
-          'data-sort-value': summary.status,
-        },
-        html: this.statusTagHtml(summary.status),
-      },
-    ])
+  static tableRowContent(referralSummary: ReferralSummary, column: CaseListColumnHeader): string {
+    switch (column) {
+      case 'Conditional release date':
+        return referralSummary.sentence?.conditionalReleaseDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.conditionalReleaseDate)
+          : 'N/A'
+      case 'Date referred':
+        return referralSummary.submittedOn ? DateUtils.govukFormattedFullDateString(referralSummary.submittedOn) : 'N/A'
+      case 'Earliest release date':
+        return referralSummary.earliestReleaseDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.earliestReleaseDate)
+          : 'N/A'
+      case 'Name / Prison number':
+        return CaseListUtils.nameAndPrisonNumberHtml(referralSummary)
+      case 'Parole eligibility date':
+        return referralSummary.sentence?.paroleEligibilityDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.paroleEligibilityDate)
+          : 'N/A'
+      case 'Programme location':
+        return referralSummary.prisonName || 'N/A'
+      case 'Programme name':
+        return referralSummary.courseName
+      case 'Programme strand':
+        return referralSummary.audiences.map(audience => audience).join(', ')
+      case 'Progress':
+        return `${referralSummary.tasksCompleted || 0} out of 4 tasks complete`
+      case 'Referral status':
+        return CaseListUtils.statusTagHtml(referralSummary.status)
+      case 'Release date type':
+        return referralSummary.sentence?.nonDtoReleaseDateType
+          ? {
+              ARD: 'Automatic Release Date',
+              CRD: 'Conditional Release Date',
+              NPD: 'Non Parole Date',
+              PRRD: 'Post Recall Release Date',
+            }[referralSummary.sentence.nonDtoReleaseDateType]
+          : 'N/A'
+      case 'Tariff end date':
+        return referralSummary.sentence?.tariffExpiryDate
+          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.tariffExpiryDate)
+          : 'N/A'
+      default:
+        return ''
+    }
+  }
+
+  static tableRows(
+    referralSummaries: Array<ReferralSummary>,
+    columnsToInclude: Array<CaseListColumnHeader>,
+  ): Array<GovukFrontendTableRow> {
+    return referralSummaries.map(summary => {
+      const row: GovukFrontendTableRow = []
+
+      columnsToInclude.forEach(column => {
+        switch (column) {
+          case 'Conditional release date':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
+              text: CaseListUtils.tableRowContent(summary, 'Conditional release date'),
+            })
+            break
+          case 'Date referred':
+            row.push({
+              attributes: { 'data-sort-value': summary.submittedOn },
+              text: CaseListUtils.tableRowContent(summary, 'Date referred'),
+            })
+            break
+          case 'Earliest release date':
+            row.push({
+              attributes: { 'data-sort-value': summary.earliestReleaseDate },
+              text: CaseListUtils.tableRowContent(summary, 'Earliest release date'),
+            })
+            break
+          case 'Name / Prison number':
+            row.push({
+              attributes: { 'data-sort-value': CaseListUtils.formattedPrisonerName(summary.prisonerName) },
+              html: CaseListUtils.tableRowContent(summary, 'Name / Prison number'),
+            })
+            break
+          case 'Parole eligibility date':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
+              text: CaseListUtils.tableRowContent(summary, 'Parole eligibility date'),
+            })
+            break
+          case 'Programme location':
+            row.push({
+              attributes: { 'data-sort-value': summary.prisonName },
+              text: CaseListUtils.tableRowContent(summary, 'Programme location'),
+            })
+            break
+          case 'Programme name':
+            row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme name') })
+            break
+          case 'Programme strand':
+            row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme strand') })
+            break
+          case 'Progress':
+            row.push({ text: CaseListUtils.tableRowContent(summary, 'Progress') })
+            break
+          case 'Referral status':
+            row.push({
+              attributes: { 'data-sort-value': summary.status },
+              html: CaseListUtils.tableRowContent(summary, 'Referral status'),
+            })
+            break
+          case 'Release date type':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
+              text: CaseListUtils.tableRowContent(summary, 'Release date type'),
+            })
+            break
+          case 'Tariff end date':
+            row.push({
+              attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
+              text: CaseListUtils.tableRowContent(summary, 'Tariff end date'),
+            })
+            break
+          default:
+        }
+      })
+
+      return row
+    })
   }
 
   static uiToApiAudienceQueryParam(uiAudienceQueryParam: string | undefined): string | undefined {
@@ -140,6 +235,24 @@ export default class CaseListUtils {
 
   static uiToApiStatusQueryParam(uiStatusQueryParam: string | undefined): string | undefined {
     return uiStatusQueryParam ? uiStatusQueryParam.toUpperCase().replace(/\s/g, '_') : undefined
+  }
+
+  private static formattedPrisonerName(prisonerName: ReferralSummary['prisonerName']): string {
+    return StringUtils.convertToTitleCase(
+      [prisonerName?.firstName, prisonerName?.lastName].filter(nameComponent => nameComponent).join(' '),
+    )
+  }
+
+  private static nameAndPrisonNumberHtml(referralSummary: ReferralSummary): string {
+    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${assessPaths.show.personalDetails({
+      referralId: referralSummary.id,
+    })}">`
+    const prisonerName = CaseListUtils.formattedPrisonerName(referralSummary.prisonerName)
+    const nameAndPrisonNumberHtmlEnd = prisonerName
+      ? `${prisonerName}</a><br>${referralSummary.prisonNumber}`
+      : `${referralSummary.prisonNumber}</a>`
+
+    return nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd
   }
 
   private static selectItems(values: Array<string>, selectedValue?: string): Array<GovukFrontendSelectItem> {

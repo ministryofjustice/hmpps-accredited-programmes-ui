@@ -46,7 +46,7 @@ To run the application as above but with a mocked Accredited Programmes API (por
 script/server --mock-api
 ```
 
-API endpoint stubbing is set up in `/wiremock/scripts/stubApis.ts`.
+API endpoint stubbing is set up in `/wiremock/scripts/stubAccreditedProgrammesApi.ts`.
 
 ### Local user accounts
 

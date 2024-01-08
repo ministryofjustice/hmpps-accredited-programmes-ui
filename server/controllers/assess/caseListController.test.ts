@@ -10,7 +10,12 @@ import type { CourseService, ReferralService } from '../../services'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
-import type { GovukFrontendPaginationWithItems, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
+import type {
+  CaseListColumnHeader,
+  GovukFrontendPaginationWithItems,
+  MojFrontendNavigationItem,
+  QueryParam,
+} from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 jest.mock('../../utils/paginationUtils')
@@ -101,6 +106,14 @@ describe('AssessCaseListController', () => {
     const tableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
     const primaryNavigationItems = 'ddd' as unknown as jest.Mocked<Array<MojFrontendNavigationItem>>
     const pagination = 'eee' as unknown as jest.Mocked<GovukFrontendPaginationWithItems>
+    const columnsToInclude: Array<CaseListColumnHeader> = [
+      'Name / Prison number',
+      'Conditional release date',
+      'Parole eligibility date',
+      'Tariff end date',
+      'Programme strand',
+      'Referral status',
+    ]
 
     beforeEach(() => {
       request.params = { courseName: courseNameSlug }
@@ -160,7 +173,7 @@ describe('AssessCaseListController', () => {
       expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
       expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
       expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(undefined)
-      expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
+      expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content, columnsToInclude)
     })
 
     describe('when there are query parameters', () => {
@@ -186,7 +199,7 @@ describe('AssessCaseListController', () => {
           pagination,
           primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
           referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
-          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content),
+          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content, columnsToInclude),
         })
         expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(uiAudienceQueryParam)
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(uiStatusQueryParam)
@@ -208,7 +221,7 @@ describe('AssessCaseListController', () => {
         expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
         expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
         expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(uiStatusQueryParam)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content, columnsToInclude)
       })
     })
 

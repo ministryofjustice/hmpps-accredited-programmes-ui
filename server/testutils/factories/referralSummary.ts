@@ -12,6 +12,11 @@ interface ReferralSummaryTransientParams {
 }
 
 export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>(({ params, transientParams }) => {
+  const conditionalReleaseDate = FactoryHelpers.optionalRandomFutureDateString()
+  const paroleEligibilityDate = FactoryHelpers.optionalRandomFutureDateString()
+  const tariffExpiryDate = FactoryHelpers.optionalRandomFutureDateString()
+  const indeterminateSentence = FactoryHelpers.optionalArrayElement(faker.datatype.boolean())
+
   const { availableStatuses } = transientParams
   const status = params.status || randomStatus(availableStatuses)
 
@@ -21,8 +26,32 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
       audience => audience.value,
     ),
     courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
+    earliestReleaseDate: indeterminateSentence ? tariffExpiryDate : paroleEligibilityDate || conditionalReleaseDate,
+    organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),
+    prisonName: Object.prototype.hasOwnProperty.call(params, 'prisonName')
+      ? params.prisonName
+      : `${faker.location.county()} (HMP)`,
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
+    prisonerName: Object.prototype.hasOwnProperty.call(params, 'prisonerName')
+      ? params.prisonerName
+      : {
+          firstName: FactoryHelpers.optionalArrayElement(faker.person.firstName()),
+          lastName: FactoryHelpers.optionalArrayElement(faker.person.lastName()),
+        },
+    referrerUsername: faker.internet.userName(),
+    sentence: Object.prototype.hasOwnProperty.call(params, 'sentence')
+      ? params.sentence
+      : FactoryHelpers.optionalArrayElement({
+          conditionalReleaseDate,
+          indeterminateSentence,
+          nonDtoReleaseDateType: FactoryHelpers.optionalArrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
+          paroleEligibilityDate,
+          tariffExpiryDate,
+        }),
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
+    tasksCompleted: Object.prototype.hasOwnProperty.call(params, 'tasksCompleted')
+      ? params.tasksCompleted
+      : FactoryHelpers.optionalArrayElement(faker.number.int({ max: 4, min: 1 })),
   }
 })

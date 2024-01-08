@@ -11,21 +11,11 @@ done
 echo "==> Starting the backing services in Docker..."
 docker compose up $DOCKER_PARAM -d
 
-echo "==> Resetting stubs..."
+echo "==> Stubbing API endpoints..."
 npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts > /dev/null
+npx ts-node --transpile-only ./wiremock/scripts/stubPrisonApi.ts > /dev/null
+npx ts-node --transpile-only ./wiremock/scripts/stubPrisonerSearch.ts > /dev/null
 
 if [ "$MOCK_API" = true ]; then
-  echo "==> Stubbing API endpoints..."
-  npx ts-node --transpile-only ./wiremock/scripts/stubApis.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubAccreditedProgrammesApi.ts > /dev/null
 fi
-
-echo "==> Stubbing Prison API caseload endpoints..."
-npx ts-node --transpile-only ./wiremock/scripts/stubCaseloads.ts > /dev/null
-
-echo "==> Stubbing Prisoner Search endpoints..."
-npx ts-node --transpile-only ./wiremock/scripts/stubPrisoners.ts > /dev/null
-
-echo "==> Stubbing Prison API endpoints..."
-npx ts-node --transpile-only ./wiremock/scripts/stubOffenceCodes.ts > /dev/null
-npx ts-node --transpile-only ./wiremock/scripts/stubOffenderBookings.ts > /dev/null
-npx ts-node --transpile-only ./wiremock/scripts/stubOffenderSentenceAndOffences.ts > /dev/null
