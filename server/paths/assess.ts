@@ -5,6 +5,8 @@ const caseListIndex = assessPathBase.path('referrals/case-list')
 const courseCaseListPath = assessPathBase.path('referrals/:courseName/case-list')
 const referralShowPathBase = assessPathBase.path('referrals/:referralId')
 
+const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
+
 export default {
   caseList: {
     filter: courseCaseListPath,
@@ -16,6 +18,9 @@ export default {
     offenceHistory: referralShowPathBase.path('offence-history'),
     personalDetails: referralShowPathBase.path('personal-details'),
     programmeHistory: referralShowPathBase.path('programme-history'),
+    risksAndNeeds: {
+      offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
+    },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
   },
 }

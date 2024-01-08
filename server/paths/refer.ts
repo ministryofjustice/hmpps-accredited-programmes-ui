@@ -21,6 +21,8 @@ const newReferralAdditionalInformationPath = newReferralShowPath.path('additiona
 
 const referralShowPathBase = referralsPath.path(':referralId')
 
+const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
+
 export default {
   caseList: {
     index: caseListPath,
@@ -68,6 +70,9 @@ export default {
     offenceHistory: referralShowPathBase.path('offence-history'),
     personalDetails: referralShowPathBase.path('personal-details'),
     programmeHistory: referralShowPathBase.path('programme-history'),
+    risksAndNeeds: {
+      offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
+    },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
   },
 }
