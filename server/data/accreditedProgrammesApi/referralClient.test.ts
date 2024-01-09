@@ -173,7 +173,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('findReferralSummaries', () => {
     describe('without query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: [referralSummaryFactory.build({ status: 'referral_submitted', tasksCompleted: undefined })],
+        content: [
+          referralSummaryFactory.build({
+            earliestReleaseDate: undefined,
+            status: 'referral_submitted',
+            tasksCompleted: undefined,
+          }),
+        ],
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
