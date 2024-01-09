@@ -1,0 +1,21 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "./rootLayout.njk" %}
+
+{% block supportingContent %}
+  {{ govukSummaryList({
+    classes: 'govuk-summary-list--no-border',
+    rows: courseOfferingSummaryListRows,
+    attributes: {
+      "data-testid": "course-offering-summary-list"
+    }
+  }) }}
+
+  {{ govukSummaryList({
+    classes: 'govuk-summary-list--no-border govuk-!-margin-bottom-0',
+    rows: submissionSummaryListRows,
+    attributes: {
+      "data-testid": "submission-summary-list"
+    }
+  }) }}
+{% endblock supportingContent %}

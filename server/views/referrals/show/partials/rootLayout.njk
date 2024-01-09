@@ -1,0 +1,52 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "moj/components/side-navigation/macro.njk" import mojSideNavigation %}
+{% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "../../_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back to my referrals",
+    href: "#"
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+    </div>
+  </div>
+
+  {{ mojSubNavigation({
+    label: 'Sub navigation',
+    items: subNavigationItems
+  }) }}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">{{ pageSubHeading }}</h2>
+
+      {% block supportingContent %}{% endblock supportingContent %}
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      {{ mojSideNavigation({
+        label: 'Side navigation',
+        items: navigationItems
+      }) }}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
+      {% block primaryContent %}{% endblock primaryContent %}
+    </div>
+  </div>
+{% endblock content%}
