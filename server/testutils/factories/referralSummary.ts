@@ -17,6 +17,23 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
   const tariffExpiryDate = FactoryHelpers.optionalRandomFutureDateString()
   const indeterminateSentence = FactoryHelpers.optionalArrayElement(faker.datatype.boolean())
 
+  const sentence: ReferralSummary['sentence'] = Object.prototype.hasOwnProperty.call(params, 'sentence')
+    ? params.sentence
+    : FactoryHelpers.optionalArrayElement({
+        conditionalReleaseDate,
+        indeterminateSentence,
+        nonDtoReleaseDateType: FactoryHelpers.optionalArrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
+        paroleEligibilityDate,
+        tariffExpiryDate,
+      })
+
+  let earliestReleaseDate: ReferralSummary['earliestReleaseDate']
+  if (sentence) {
+    earliestReleaseDate = sentence.indeterminateSentence
+      ? sentence.tariffExpiryDate
+      : sentence.paroleEligibilityDate || sentence.conditionalReleaseDate
+  }
+
   const { availableStatuses } = transientParams
   const status = params.status || randomStatus(availableStatuses)
 
@@ -26,7 +43,7 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
       audience => audience.value,
     ),
     courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
-    earliestReleaseDate: indeterminateSentence ? tariffExpiryDate : paroleEligibilityDate || conditionalReleaseDate,
+    earliestReleaseDate,
     organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),
     prisonName: Object.prototype.hasOwnProperty.call(params, 'prisonName')
       ? params.prisonName
@@ -39,15 +56,7 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
           lastName: FactoryHelpers.optionalArrayElement(faker.person.lastName()),
         },
     referrerUsername: faker.internet.userName(),
-    sentence: Object.prototype.hasOwnProperty.call(params, 'sentence')
-      ? params.sentence
-      : FactoryHelpers.optionalArrayElement({
-          conditionalReleaseDate,
-          indeterminateSentence,
-          nonDtoReleaseDateType: FactoryHelpers.optionalArrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
-          paroleEligibilityDate,
-          tariffExpiryDate,
-        }),
+    sentence,
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
     tasksCompleted: Object.prototype.hasOwnProperty.call(params, 'tasksCompleted')
