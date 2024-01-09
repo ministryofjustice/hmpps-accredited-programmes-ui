@@ -71,15 +71,19 @@ export default class ReferCaseListController {
         pageHeading: 'My referrals',
         pagination,
         subNavigationItems: CaseListUtils.subNavigationItems(req.path),
-        tableRows: CaseListUtils.tableRows(paginatedReferralSummariesContent, [
-          'Name / Prison number',
-          'Date referred',
-          'Earliest release date',
-          'Release date type',
-          'Programme location',
-          'Programme name',
-          finalColumnHeader,
-        ]),
+        tableRows: CaseListUtils.tableRows(
+          paginatedReferralSummariesContent,
+          [
+            'Name / Prison number',
+            'Date referred',
+            'Earliest release date',
+            'Release date type',
+            'Programme location',
+            'Programme name',
+            finalColumnHeader,
+          ],
+          referPaths,
+        ),
       })
     }
   }

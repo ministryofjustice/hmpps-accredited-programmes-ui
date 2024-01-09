@@ -103,7 +103,11 @@ export default class CaseListUtils {
     })
   }
 
-  static tableRowContent(referralSummary: ReferralSummary, column: CaseListColumnHeader): string {
+  static tableRowContent(
+    referralSummary: ReferralSummary,
+    column: CaseListColumnHeader,
+    paths: typeof assessPaths | typeof referPaths = assessPaths,
+  ): string {
     switch (column) {
       case 'Conditional release date':
         return referralSummary.sentence?.conditionalReleaseDate
@@ -116,7 +120,7 @@ export default class CaseListUtils {
           ? DateUtils.govukFormattedFullDateString(referralSummary.earliestReleaseDate)
           : 'N/A'
       case 'Name / Prison number':
-        return CaseListUtils.nameAndPrisonNumberHtml(referralSummary)
+        return CaseListUtils.nameAndPrisonNumberHtml(referralSummary, paths)
       case 'Parole eligibility date':
         return referralSummary.sentence?.paroleEligibilityDate
           ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.paroleEligibilityDate)
@@ -152,6 +156,7 @@ export default class CaseListUtils {
   static tableRows(
     referralSummaries: Array<ReferralSummary>,
     columnsToInclude: Array<CaseListColumnHeader>,
+    paths: typeof assessPaths | typeof referPaths = assessPaths,
   ): Array<GovukFrontendTableRow> {
     return referralSummaries.map(summary => {
       const row: GovukFrontendTableRow = []
@@ -179,7 +184,7 @@ export default class CaseListUtils {
           case 'Name / Prison number':
             row.push({
               attributes: { 'data-sort-value': CaseListUtils.formattedPrisonerName(summary.prisonerName) },
-              html: CaseListUtils.tableRowContent(summary, 'Name / Prison number'),
+              html: CaseListUtils.tableRowContent(summary, 'Name / Prison number', paths),
             })
             break
           case 'Parole eligibility date':
@@ -243,8 +248,11 @@ export default class CaseListUtils {
     )
   }
 
-  private static nameAndPrisonNumberHtml(referralSummary: ReferralSummary): string {
-    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${assessPaths.show.personalDetails({
+  private static nameAndPrisonNumberHtml(
+    referralSummary: ReferralSummary,
+    paths: typeof assessPaths | typeof referPaths,
+  ): string {
+    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${paths.show.personalDetails({
       referralId: referralSummary.id,
     })}">`
     const prisonerName = CaseListUtils.formattedPrisonerName(referralSummary.prisonerName)

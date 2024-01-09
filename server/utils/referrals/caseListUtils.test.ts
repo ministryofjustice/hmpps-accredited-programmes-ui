@@ -1,4 +1,5 @@
 import CaseListUtils from './caseListUtils'
+import { referPaths } from '../../paths'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
@@ -240,6 +241,14 @@ describe('CaseListUtils', () => {
         expect(CaseListUtils.tableRowContent(referralSummary, 'Name / Prison number')).toEqual(
           '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
         )
+      })
+
+      describe('when referPaths is passed in as the paths argument', () => {
+        it('links to a Refer show referral page', () => {
+          expect(CaseListUtils.tableRowContent(referralSummary, 'Name / Prison number', referPaths)).toEqual(
+            '<a class="govuk-link" href="/refer/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
+          )
+        })
       })
 
       describe('when `prisonerName` is `undefined`', () => {
@@ -562,6 +571,35 @@ describe('CaseListUtils', () => {
           },
         ],
       ])
+    })
+
+    describe('when referPaths is passed in as the paths argument', () => {
+      it('passes the paths to `tableRowContent` for that row', () => {
+        expect(
+          CaseListUtils.tableRows(referralSummaries, ['Name / Prison number', 'Date referred'], referPaths),
+        ).toEqual([
+          [
+            {
+              attributes: { 'data-sort-value': 'Del Hatton' },
+              html: CaseListUtils.tableRowContent(referralSummaries[0], 'Name / Prison number', referPaths),
+            },
+            {
+              attributes: { 'data-sort-value': undefined },
+              text: CaseListUtils.tableRowContent(referralSummaries[0], 'Date referred'),
+            },
+          ],
+          [
+            {
+              attributes: { 'data-sort-value': '' },
+              html: CaseListUtils.tableRowContent(referralSummaries[1], 'Name / Prison number', referPaths),
+            },
+            {
+              attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
+              text: CaseListUtils.tableRowContent(referralSummaries[1], 'Date referred'),
+            },
+          ],
+        ])
+      })
     })
   })
 
