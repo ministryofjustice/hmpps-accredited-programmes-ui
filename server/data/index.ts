@@ -14,6 +14,7 @@ AppInsightsUtils.buildClient()
 /* eslint-enable import/order */
 
 import CourseClient from './accreditedProgrammesApi/courseClient'
+import OasysClient from './accreditedProgrammesApi/oasysClient'
 import ReferralClient from './accreditedProgrammesApi/referralClient'
 import { serviceCheckFactory } from './healthCheck'
 import HmppsAuthClient from './hmppsAuthClient'
@@ -36,6 +37,7 @@ const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> =
   new HmppsManageUsersClient(userToken)
 const courseClientBuilder: RestClientBuilder<CourseClient> = (userToken: Express.User['token']) =>
   new CourseClient(userToken)
+const oasysClientBuilder: RestClientBuilder<OasysClient> = (systemToken: SystemToken) => new OasysClient(systemToken)
 const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (userToken: Express.User['token']) =>
   new PrisonRegisterApiClient(userToken)
 const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (systemToken: SystemToken) =>
@@ -49,6 +51,7 @@ export {
   CourseClient,
   HmppsAuthClient,
   HmppsManageUsersClient,
+  OasysClient,
   PrisonApiClient,
   PrisonRegisterApiClient,
   PrisonerSearchClient,
@@ -58,6 +61,7 @@ export {
   createRedisClient,
   hmppsAuthClientBuilder,
   hmppsManageUsersClientBuilder,
+  oasysClientBuilder,
   prisonApiClientBuilder,
   prisonRegisterApiClientBuilder,
   prisonerSearchClientBuilder,

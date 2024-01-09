@@ -8,6 +8,9 @@ const offeringsByCoursePath = coursePath.path('offerings')
 const offeringPath = path('/offerings/:courseOfferingId')
 const courseByOfferingPath = offeringPath.path('course')
 
+const oasysBasePath = path('/oasys/:prisonNumber')
+const offenceDetailsPath = oasysBasePath.path('offence-details')
+
 const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
 const updateStatusPath = referralPath.path('status')
@@ -28,6 +31,9 @@ export default {
     names: courseNamesPath,
     offerings: offeringsByCoursePath,
     show: coursePath,
+  },
+  oasys: {
+    offenceDetails: offenceDetailsPath,
   },
   offerings: {
     course: courseByOfferingPath,

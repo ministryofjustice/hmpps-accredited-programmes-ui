@@ -8,6 +8,7 @@ import type {
   CourseParticipationUpdate,
 } from './CourseParticipation'
 import type { CoursePrerequisite } from './CoursePrerequisite'
+import type { OffenceDetail } from './OffenceDetail'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
 import type { Paginated } from './Paginated'
@@ -24,6 +25,7 @@ export type {
   CourseParticipationUpdate,
   CoursePrerequisite,
   CreatedReferralResponse,
+  OffenceDetail,
   Organisation,
   OrganisationAddress,
   Paginated,
