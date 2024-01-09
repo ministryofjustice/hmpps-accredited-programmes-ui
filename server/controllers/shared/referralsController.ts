@@ -178,8 +178,10 @@ export default class ReferralsController {
       ),
       navigationItems: ShowReferralUtils.viewReferralNavigationItems(req.path, referral.id),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageSubHeading: 'Referral summary',
       person,
       referral,
+      subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'referral', referral.id),
       submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(
         referral.submittedOn,
         referrerUserFullName,

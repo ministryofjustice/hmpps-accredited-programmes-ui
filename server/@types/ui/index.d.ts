@@ -100,9 +100,11 @@ type ReferralSharedPageData = {
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
   navigationItems: Array<MojFrontendNavigationItem>
   pageHeading: string
+  pageSubHeading: string
   person: Person
   referral: Referral
   submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
+  subNavigationItems: Array<MojFrontendNavigationItem>
 }
 
 type ReferralStatusGroup = 'closed' | 'draft' | 'open'
@@ -143,8 +145,10 @@ type ReferralTaskListItem = {
 type RisksAndNeedsSharedPageData = {
   navigationItems: Array<MojFrontendNavigationItem>
   pageHeading: string
+  pageSubHeading: string
   person: Person
   referral: Referral
+  subNavigationItems: Array<MojFrontendNavigationItem>
 }
 
 type ReferralTaskListSection = {

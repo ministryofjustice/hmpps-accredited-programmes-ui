@@ -13,11 +13,12 @@ import {
   referralFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseUtils, DateUtils, ShowRisksAndNeedsUtils } from '../../utils'
+import { CourseUtils, DateUtils, ShowReferralUtils, ShowRisksAndNeedsUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/dateUtils')
+jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
 
 describe('RisksAndNeedsController', () => {
@@ -37,10 +38,11 @@ describe('RisksAndNeedsController', () => {
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
   const importedFromDate = '10 January 2024'
-  const navigationItems = [{ href: 'some-href', text: 'some-text' }]
+  const navigationItems = [{ href: 'nav-href', text: 'Nav Item' }]
+  const subNavigationItems = [{ href: 'sub-nav-href', text: 'Sub Nav Item' }]
   let person: Person
   let referral: Referral
-  let sharedPageData: Omit<RisksAndNeedsSharedPageData, 'navigationItems'>
+  let sharedPageData: Omit<RisksAndNeedsSharedPageData, 'navigationItems' | 'subNavigationItems'>
 
   let controller: RisksAndNeedsController
 
@@ -49,9 +51,11 @@ describe('RisksAndNeedsController', () => {
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
     ;(DateUtils.govukFormattedFullDateString as jest.Mock).mockReturnValue(importedFromDate)
     ;(ShowRisksAndNeedsUtils.navigationItems as jest.Mock).mockReturnValue(navigationItems)
+    ;(ShowReferralUtils.subNavigationItems as jest.Mock).mockReturnValue(subNavigationItems)
 
     sharedPageData = {
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageSubHeading: 'Risks and needs',
       person,
       referral,
     }
@@ -84,6 +88,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
+        subNavigationItems,
       })
     })
   })

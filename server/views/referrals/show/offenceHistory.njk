@@ -3,9 +3,9 @@
 
 {% from "../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
 
-{% extends "./partials/layout.njk" %}
+{% extends "./partials/referralLayout.njk" %}
 
-{% block submittedReferralContent %}
+{% block primaryContent %}
   {% set noOffenceHistoryString = "There is no Offence history for " + person.name + "." %}
 
   {{ govukInsetText({
@@ -47,4 +47,4 @@
   {% else %}
     {{ keylessSummaryCard("Offence history", bodyText=noOffenceHistoryString, testId="no-offence-history-summary-card") }}
   {% endif %}
-{% endblock submittedReferralContent %}
+{% endblock primaryContent %}

@@ -1,9 +1,9 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% extends "./partials/layout.njk" %}
+{% extends "./partials/referralLayout.njk" %}
 
-{% block submittedReferralContent %}
+{% block primaryContent %}
   {{ govukInsetText({
     classes: "govuk-!-margin-top-0",
     text: importedFromText,
@@ -23,4 +23,4 @@
     },
     rows: personSummaryListRows
   }) }}
-{% endblock submittedReferralContent %}
+{% endblock primaryContent %}

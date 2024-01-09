@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, DateUtils, ShowRisksAndNeedsUtils, TypeUtils } from '../../utils'
+import { CourseUtils, DateUtils, ShowReferralUtils, ShowRisksAndNeedsUtils, TypeUtils } from '../../utils'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 export default class RisksAndNeedsController {
@@ -42,8 +42,10 @@ export default class RisksAndNeedsController {
     return {
       navigationItems: ShowRisksAndNeedsUtils.navigationItems(req.path, referral.id),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageSubHeading: 'Risks and needs',
       person,
       referral,
+      subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'risksAndNeeds', referral.id),
     }
   }
 }

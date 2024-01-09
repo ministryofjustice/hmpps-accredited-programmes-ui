@@ -3,9 +3,9 @@
 
 {% from "../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
 
-{% extends "./partials/layout.njk" %}
+{% extends "./partials/referralLayout.njk" %}
 
-{% block submittedReferralContent %}
+{% block primaryContent %}
   {{ govukInsetText({
     classes: "govuk-!-margin-top-0",
     text: importedFromText,
@@ -45,4 +45,4 @@
   {% else %}
     {{ keylessSummaryCard("Release dates", bodyText="There are no release dates for this person.", testId="no-release-dates-summary-card") }}
   {% endif %}
-{% endblock submittedReferralContent %}
+{% endblock primaryContent %}
