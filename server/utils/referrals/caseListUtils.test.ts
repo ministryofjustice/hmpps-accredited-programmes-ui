@@ -249,30 +249,6 @@ describe('CaseListUtils', () => {
           ).toEqual('<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>')
         })
       })
-
-      describe('when `prisonerName.firstName` is `undefined`', () => {
-        it('just uses the last name for the name', () => {
-          expect(
-            CaseListUtils.tableRowContent(
-              { ...referralSummary, prisonerName: { ...referralSummary.prisonerName, firstName: undefined } },
-              'Name / Prison number',
-            ),
-          ).toEqual(
-            '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Hatton</a><br>ABC1234',
-          )
-        })
-      })
-
-      describe('when `prisonerName.lastName` is `undefined`', () => {
-        it('just uses the first name for the name', () => {
-          expect(
-            CaseListUtils.tableRowContent(
-              { ...referralSummary, prisonerName: { ...referralSummary.prisonerName, lastName: undefined } },
-              'Name / Prison number',
-            ),
-          ).toEqual('<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del</a><br>ABC1234')
-        })
-      })
     })
 
     describe('Parole eligibility date', () => {

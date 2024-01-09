@@ -49,12 +49,10 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
       ? params.prisonName
       : `${faker.location.county()} (HMP)`,
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
-    prisonerName: Object.prototype.hasOwnProperty.call(params, 'prisonerName')
-      ? params.prisonerName
-      : {
-          firstName: FactoryHelpers.optionalArrayElement(faker.person.firstName()),
-          lastName: FactoryHelpers.optionalArrayElement(faker.person.lastName()),
-        },
+    prisonerName: {
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+    },
     referrerUsername: faker.internet.userName(),
     sentence,
     status,

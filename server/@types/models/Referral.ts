@@ -40,8 +40,8 @@ type ReferralSummary = {
   earliestReleaseDate?: Person['conditionalReleaseDate'] | Person['paroleEligibilityDate'] | Person['tariffDate']
   organisationId?: Organisation['id']
   prisonerName?: {
-    firstName?: Prisoner['firstName']
-    lastName?: Prisoner['lastName']
+    firstName: Prisoner['firstName']
+    lastName: Prisoner['lastName']
   }
   prisonName?: Organisation['name']
   sentence?: {
