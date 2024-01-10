@@ -49,6 +49,27 @@ export default class ShowReferralUtils {
     ]
   }
 
+  static subNavigationItems(
+    currentPath: Request['path'],
+    currentSection: 'referral' | 'risksAndNeeds',
+    referralId: Referral['id'],
+  ): Array<MojFrontendNavigationItem> {
+    const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
+
+    return [
+      {
+        active: currentSection === 'referral',
+        href: paths.show.personalDetails({ referralId }),
+        text: 'Referral details',
+      },
+      {
+        active: currentSection === 'risksAndNeeds',
+        href: paths.show.risksAndNeeds.offenceAnalysis({ referralId }),
+        text: 'Risks and needs',
+      },
+    ]
+  }
+
   static viewReferralNavigationItems(
     currentPath: Request['path'],
     referralId: Referral['id'],

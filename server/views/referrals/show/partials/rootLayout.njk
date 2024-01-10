@@ -1,15 +1,16 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "moj/components/side-navigation/macro.njk" import mojSideNavigation %}
+{% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
-{% extends "../../../../partials/layout.njk" %}
+{% extends "../../../partials/layout.njk" %}
 
 {% block personBanner %}
-  {% include "../../../_personBanner.njk" %}
+  {% include "../../_personBanner.njk" %}
 {% endblock personBanner %}
 
 {% block backLink %}
   {{ govukBackLink({
-    text: "Back to referrals",
+    text: "Back to my referrals",
     href: "#"
   }) }}
 {% endblock backLink %}
@@ -18,10 +19,19 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+    </div>
+  </div>
 
-      <h2 class="govuk-heading-m">Risks and needs</h2>
+  {{ mojSubNavigation({
+    label: 'Sub navigation',
+    items: subNavigationItems
+  }) }}
 
-      <p>Relevant sections from OASys to support the referral. The full Layer 3 assessment is available in OASys. Information is accurate at the time of the referral being submitted.</p>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">{{ pageSubHeading }}</h2>
+
+      {% block supportingContent %}{% endblock supportingContent %}
     </div>
   </div>
 
@@ -36,7 +46,7 @@
     </div>
 
     <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
-      {% block risksAndNeedsContent %}{% endblock risksAndNeedsContent %}
+      {% block primaryContent %}{% endblock primaryContent %}
     </div>
   </div>
-{% endblock content %}
+{% endblock content%}

@@ -1,15 +1,7 @@
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% extends "../partials/risksAndNeedsLayout.njk" %}
 
-{% extends "./partials/layout.njk" %}
-
-{% block risksAndNeedsContent %}
-  {{ govukInsetText({
-    classes: "govuk-!-margin-top-0",
-    text: importedFromText,
-    attributes: {
-      "data-testid": "imported-from-text"
-    }
-  }) }}
+{% block primaryContent %}
+  {{ super() }}
 
   <p>Offence analysis content</p>
-{% endblock risksAndNeedsContent %}
+{% endblock primaryContent %}

@@ -35,6 +35,7 @@ import type {
 import type { User } from '@manage-users-api'
 
 jest.mock('../../utils/sentenceInformationUtils')
+jest.mock('../../utils/referrals/showReferralUtils')
 
 describe('ReferralsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -54,10 +55,11 @@ describe('ReferralsController', () => {
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
+  const subNavigationItems = [{ href: 'sub-nav-href', text: 'Sub Nav Item' }]
   let person: Person
   let referral: Referral
   let referringUser: User
-  let sharedPageData: Omit<ReferralSharedPageData, 'navigationItems'>
+  let sharedPageData: Omit<ReferralSharedPageData, 'navigationItems' | 'subNavigationItems'>
 
   let controller: SubmittedReferralsController
 
@@ -65,6 +67,7 @@ describe('ReferralsController', () => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
     referringUser = userFactory.build({ name: 'Referring user', username: referral.referrerUsername })
+    ;(ShowReferralUtils.subNavigationItems as jest.Mock).mockReturnValue(subNavigationItems)
 
     sharedPageData = {
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
@@ -72,6 +75,7 @@ describe('ReferralsController', () => {
         organisation.name,
       ),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageSubHeading: 'Referral summary',
       person,
       referral,
       submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, referringUser.name),
@@ -112,6 +116,7 @@ describe('ReferralsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
         navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        subNavigationItems,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     })
@@ -163,6 +168,7 @@ describe('ReferralsController', () => {
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         indexOffenceSummaryListRows: OffenceUtils.summaryListRows(indexOffence),
         navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        subNavigationItems,
       })
     })
 
@@ -185,6 +191,7 @@ describe('ReferralsController', () => {
           importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
           indexOffenceSummaryListRows: null,
           navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          subNavigationItems,
         })
       })
     })
@@ -216,6 +223,7 @@ describe('ReferralsController', () => {
         importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         personSummaryListRows: PersonUtils.summaryListRows(person),
+        subNavigationItems,
       })
     })
 
@@ -257,6 +265,7 @@ describe('ReferralsController', () => {
         ...sharedPageData,
         courseParticipationSummaryListsOptions,
         navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+        subNavigationItems,
       })
     })
 
@@ -305,6 +314,7 @@ describe('ReferralsController', () => {
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+          subNavigationItems,
         })
       })
     })
@@ -334,6 +344,7 @@ describe('ReferralsController', () => {
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: [],
+          subNavigationItems,
         })
       })
     })
