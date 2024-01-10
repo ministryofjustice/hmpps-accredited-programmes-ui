@@ -14,6 +14,7 @@ const controllers = (services: Services) => {
   )
   const risksAndNeedsController = new RisksAndNeedsController(
     services.courseService,
+    services.oasysService,
     services.personService,
     services.referralService,
   )

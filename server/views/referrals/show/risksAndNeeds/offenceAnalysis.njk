@@ -1,7 +1,63 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
 {% extends "../partials/risksAndNeedsLayout.njk" %}
 
 {% block primaryContent %}
   {{ super() }}
 
-  <p>Offence analysis content</p>
+  {{ keylessSummaryCard("Section 2.1 - Brief offence details", bodyText=offenceDetailsText, testId="brief-offence-details-summary-card") }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Section 2.3 - Victims and partners"
+      },
+      attributes: {
+        "data-testid": "victims-and-partners-summary-list"
+      }
+    },
+    rows: victimsAndPartnersSummaryListRows
+  }) }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Section 2.6 - Impact and consequences"
+      },
+      attributes: {
+        "data-testid": "impact-and-consequences-summary-list"
+      }
+    },
+    rows: impactAndConsequencesSummaryListRows
+  }) }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Section 2.7 - Other offenders and influences"
+      },
+      attributes: {
+        "data-testid": "other-offenders-and-influences-summary-list"
+      }
+    },
+    rows: otherOffendersAndInfluencesSummaryListRows
+  }) }}
+
+  {{ keylessSummaryCard("Section 2.8 - Motivation and triggers", bodyText=motivationAndTriggersText, testId="motivation-and-triggers-summary-card") }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Section 2.11 - Responsibility"
+      },
+      attributes: {
+        "data-testid": "responsibility-summary-list"
+      }
+    },
+    rows: responsibilitySummaryListRows
+  }) }}
+
+  {{ keylessSummaryCard("Section 2.12 - Pattern of offending", bodyText=patternOffendingText, testId="pattern-offending-summary-card") }}
 {% endblock primaryContent %}

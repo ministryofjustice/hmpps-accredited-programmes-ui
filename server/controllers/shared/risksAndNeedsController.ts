@@ -1,12 +1,20 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import type { CourseService, PersonService, ReferralService } from '../../services'
-import { CourseUtils, DateUtils, ShowReferralUtils, ShowRisksAndNeedsUtils, TypeUtils } from '../../utils'
+import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
+import {
+  CourseUtils,
+  DateUtils,
+  OffenceAnalysisUtils,
+  ShowReferralUtils,
+  ShowRisksAndNeedsUtils,
+  TypeUtils,
+} from '../../utils'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 export default class RisksAndNeedsController {
   constructor(
     private readonly courseService: CourseService,
+    private readonly oasysService: OasysService,
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
@@ -17,9 +25,22 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
+      const offenceDetails = await this.oasysService.getOffenceDetails(
+        req.user.username,
+        sharedPageData.referral.prisonNumber,
+      )
+
       return res.render('referrals/show/risksAndNeeds/offenceAnalysis', {
         ...sharedPageData,
+        impactAndConsequencesSummaryListRows: OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+        motivationAndTriggersText: OffenceAnalysisUtils.textValue(offenceDetails.motivationAndTriggers),
+        offenceDetailsText: OffenceAnalysisUtils.textValue(offenceDetails.offenceDetails),
+        otherOffendersAndInfluencesSummaryListRows:
+          OffenceAnalysisUtils.otherOffendersAndInfluencesSummaryListRows(offenceDetails),
+        patternOffendingText: OffenceAnalysisUtils.textValue(offenceDetails.patternOffending),
+        responsibilitySummaryListRows: OffenceAnalysisUtils.responsibilitySummaryListRows(offenceDetails),
+        victimsAndPartnersSummaryListRows: OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetails),
       })
     }
   }
