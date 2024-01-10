@@ -21,6 +21,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     newReferralsPeopleController,
     newReferralsOasysConfirmationController,
     referralsController,
+    risksAndNeedsController,
   } = controllers
 
   get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
@@ -69,6 +70,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.show.personalDetails.pattern, referralsController.personalDetails())
   get(referPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
   get(referPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
+
+  get(referPaths.show.risksAndNeeds.offenceAnalysis.pattern, risksAndNeedsController.offenceAnalysis())
 
   return router
 }

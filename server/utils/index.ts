@@ -15,6 +15,7 @@ import PersonUtils from './personUtils'
 import CaseListUtils from './referrals/caseListUtils'
 import NewReferralUtils from './referrals/newReferralUtils'
 import ShowReferralUtils from './referrals/showReferralUtils'
+import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
 import RouteUtils from './routeUtils'
 import SentenceInformationUtils from './sentenceInformationUtils'
 import StringUtils from './stringUtils'
@@ -36,6 +37,7 @@ export {
   RouteUtils,
   SentenceInformationUtils,
   ShowReferralUtils,
+  ShowRisksAndNeedsUtils,
   StringUtils,
   TypeUtils,
   UserUtils,

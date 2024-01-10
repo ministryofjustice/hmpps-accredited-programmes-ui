@@ -140,6 +140,13 @@ type ReferralTaskListItem = {
   url?: string
 }
 
+type RisksAndNeedsSharedPageData = {
+  navigationItems: Array<MojFrontendNavigationItem>
+  pageHeading: string
+  person: Person
+  referral: Referral
+}
+
 type ReferralTaskListSection = {
   heading: string
   items: Array<ReferralTaskListItem>
@@ -181,5 +188,6 @@ export type {
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
+  RisksAndNeedsSharedPageData,
   TagColour,
 }
