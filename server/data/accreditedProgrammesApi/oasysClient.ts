@@ -12,9 +12,9 @@ export default class OasysClient {
     this.restClient = new RestClient('oasysClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
-  async findOffenceDetails(prisonNumber: Referral['prisonNumber']): Promise<Array<OffenceDetail>> {
+  async findOffenceDetails(prisonNumber: Referral['prisonNumber']): Promise<OffenceDetail> {
     return (await this.restClient.get({
       path: apiPaths.oasys.offenceDetails({ prisonNumber }),
-    })) as Array<OffenceDetail>
+    })) as OffenceDetail
   }
 }
