@@ -1,5 +1,5 @@
 import CaseListUtils from './caseListUtils'
-import { referPaths } from '../../paths'
+import { assessPaths, referPaths } from '../../paths'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
@@ -241,6 +241,18 @@ describe('CaseListUtils', () => {
         expect(CaseListUtils.tableRowContent(referralSummary, 'Name / Prison number')).toEqual(
           '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
         )
+      })
+
+      describe('with an unsubmitted referral', () => {
+        it('links to the Refer new referral show page', () => {
+          expect(
+            CaseListUtils.tableRowContent(
+              { ...referralSummary, status: 'referral_started', submittedOn: undefined },
+              'Name / Prison number',
+              assessPaths,
+            ),
+          ).toEqual('<a class="govuk-link" href="/refer/referrals/new/referral-123">Del Hatton</a><br>ABC1234')
+        })
       })
 
       describe('when referPaths is passed in as the paths argument', () => {

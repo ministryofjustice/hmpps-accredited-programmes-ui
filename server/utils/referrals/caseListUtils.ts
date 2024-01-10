@@ -252,9 +252,13 @@ export default class CaseListUtils {
     referralSummary: ReferralSummary,
     paths: typeof assessPaths | typeof referPaths,
   ): string {
-    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${paths.show.personalDetails({
-      referralId: referralSummary.id,
-    })}">`
+    const path =
+      referralSummary.status === 'referral_started'
+        ? referPaths.new.show({ referralId: referralSummary.id })
+        : paths.show.personalDetails({
+            referralId: referralSummary.id,
+          })
+    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${path}">`
     const prisonerName = CaseListUtils.formattedPrisonerName(referralSummary.prisonerName)
     const nameAndPrisonNumberHtmlEnd = prisonerName
       ? `${prisonerName}</a><br>${referralSummary.prisonNumber}`
