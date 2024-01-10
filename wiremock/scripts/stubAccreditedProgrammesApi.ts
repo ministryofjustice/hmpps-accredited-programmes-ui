@@ -8,6 +8,7 @@ import {
   courseOfferings,
   courseParticipations,
   courses,
+  oasysOffenceDetail,
   prisoners,
   referralSummaries,
   referrals,
@@ -226,6 +227,24 @@ stubs.push(() =>
     },
   }),
 )
+
+prisoners.forEach(prisoner => {
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.offenceDetails({ prisonNumber: prisoner.prisonerNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: oasysOffenceDetail,
+        status: 200,
+      },
+    }),
+  )
+})
 
 console.log('Stubbing Accredited Programmes API')
 processStubs(stubs)

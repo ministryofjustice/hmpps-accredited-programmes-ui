@@ -1,0 +1,18 @@
+{
+  "offenceDetails": "Details about the offence",
+  "contactTargeting": false,
+  "raciallyMotivated": false,
+  "revenge": false,
+  "domesticViolence": false,
+  "repeatVictimisation": false,
+  "victimWasStranger": false,
+  "stalking": false,
+  "recognisesImpact": false,
+  "numberOfOthersInvolved": 2,
+  "othersInvolvedDetail": "Detail about the others involved",
+  "peerGroupInfluences": "Detail about influences",
+  "motivationAndTriggers": "Detail about motivation and triggers",
+  "acceptsResponsibility": false,
+  "acceptsResponsibilityDetail": "Detail about the persons acceptance",
+  "patternOffending": "Detail about the pattern of offending"
+}
