@@ -84,7 +84,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     // see https://github.com/ministryofjustice/hmpps-accredited-programmes-api/pull/223) for details
     describe.skip('without query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
+        content: [referralSummaryFactory.build({ status: 'referral_submitted', tasksCompleted: undefined })],
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
@@ -122,7 +122,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     describe('with query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: FactoryHelpers.buildListWith(referralSummaryFactory, { status: 'referral_submitted' }, {}, 1),
+        content: FactoryHelpers.buildListWith(
+          referralSummaryFactory,
+          { status: 'referral_submitted', tasksCompleted: undefined },
+          {},
+          1,
+        ),
         pageIsEmpty: false,
         pageNumber: 1,
         pageSize: 15,
@@ -168,7 +173,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('findReferralSummaries', () => {
     describe('without query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
+        content: [
+          referralSummaryFactory.build({
+            earliestReleaseDate: undefined,
+            status: 'referral_submitted',
+            tasksCompleted: undefined,
+          }),
+        ],
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
@@ -208,7 +219,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
         content: FactoryHelpers.buildListWith(
           referralSummaryFactory,
-          { audiences: ['General offence'], courseName: 'Super Course', status: 'referral_submitted' },
+          {
+            audiences: ['General offence'],
+            courseName: 'Super Course',
+            status: 'referral_submitted',
+            tasksCompleted: undefined,
+          },
           {},
           16,
         ),
