@@ -27,20 +27,20 @@ export default PrisonerFactory.define(({ params }) => {
 
   return {
     bookingId: generateBookingId(),
-    conditionalReleaseDate: FactoryHelpers.optionalRandomFutureDateString(),
+    conditionalReleaseDate: FactoryHelpers.randomFutureDateString(),
     dateOfBirth: [year, month, day].join('-'),
     ethnicity: StringUtils.properCase(faker.lorem.word()),
     firstName: faker.person.firstName(),
     gender: faker.person.gender(),
-    homeDetentionCurfewEligibilityDate: FactoryHelpers.optionalRandomFutureDateString(),
+    homeDetentionCurfewEligibilityDate: FactoryHelpers.randomFutureDateString(),
     indeterminateSentence: faker.datatype.boolean(),
     lastName: faker.person.lastName(),
-    paroleEligibilityDate: FactoryHelpers.optionalRandomFutureDateString(),
+    paroleEligibilityDate: FactoryHelpers.randomFutureDateString(),
     prisonName,
     prisonerNumber: faker.string.alphanumeric({ casing: 'upper', length: 7 }),
     religion: StringUtils.properCase(faker.lorem.word()),
-    sentenceExpiryDate: FactoryHelpers.optionalRandomFutureDateString(),
+    sentenceExpiryDate: FactoryHelpers.randomFutureDateString(),
     sentenceStartDate: `${faker.date.past({ years: 20 })}`.substring(0, 10),
-    tariffDate: FactoryHelpers.optionalRandomFutureDateString(),
+    tariffDate: FactoryHelpers.randomFutureDateString(),
   }
 })

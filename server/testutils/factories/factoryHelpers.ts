@@ -28,7 +28,7 @@ export default class FactoryHelpers {
     return faker.helpers.arrayElement(fullOptions.concat(options))
   }
 
-  static optionalRandomFutureDateString(): string | undefined {
-    return FactoryHelpers.optionalArrayElement(faker.date.future({ years: 20 }).toISOString().substring(0, 10))
+  static randomFutureDateString(): string | undefined {
+    return faker.date.future({ years: 20 }).toISOString().substring(0, 10)
   }
 }

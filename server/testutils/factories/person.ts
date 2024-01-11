@@ -8,10 +8,10 @@ export default Factory.define<Person>(({ params }) => {
   const county = faker.location.county()
   const currentPrison = params.currentPrison || `${county} (HMP)`
   const conditionalReleaseDate =
-    'conditionalReleaseDate' in params ? params.conditionalReleaseDate : FactoryHelpers.optionalRandomFutureDateString()
+    'conditionalReleaseDate' in params ? params.conditionalReleaseDate : FactoryHelpers.randomFutureDateString()
   const paroleEligibilityDate =
-    'paroleEligibilityDate' in params ? params.conditionalReleaseDate : FactoryHelpers.optionalRandomFutureDateString()
-  const tariffDate = 'tariffDate' in params ? params.tariffDate : FactoryHelpers.optionalRandomFutureDateString()
+    'paroleEligibilityDate' in params ? params.conditionalReleaseDate : FactoryHelpers.randomFutureDateString()
+  const tariffDate = 'tariffDate' in params ? params.tariffDate : FactoryHelpers.randomFutureDateString()
 
   return {
     bookingId: faker.string.numeric({ length: 10 }),
@@ -20,13 +20,13 @@ export default Factory.define<Person>(({ params }) => {
     dateOfBirth: faker.date.birthdate().toDateString(),
     ethnicity: faker.lorem.word(),
     gender: faker.person.gender(),
-    homeDetentionCurfewEligibilityDate: FactoryHelpers.optionalRandomFutureDateString(),
+    homeDetentionCurfewEligibilityDate: FactoryHelpers.randomFutureDateString(),
     indeterminateSentence: faker.datatype.boolean(),
     name: `${faker.person.firstName()} ${faker.person.lastName()}`,
     paroleEligibilityDate,
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
     religionOrBelief: faker.lorem.word(),
-    sentenceExpiryDate: FactoryHelpers.optionalRandomFutureDateString(),
+    sentenceExpiryDate: FactoryHelpers.randomFutureDateString(),
     sentenceStartDate: `${faker.date.past({ years: 20 })}`.substring(0, 10),
     setting: 'Custody',
     tariffDate,

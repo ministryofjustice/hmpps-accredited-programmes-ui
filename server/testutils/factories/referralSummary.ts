@@ -12,9 +12,9 @@ interface ReferralSummaryTransientParams {
 }
 
 export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>(({ params, transientParams }) => {
-  const conditionalReleaseDate = FactoryHelpers.optionalRandomFutureDateString()
-  const paroleEligibilityDate = FactoryHelpers.optionalRandomFutureDateString()
-  const tariffExpiryDate = FactoryHelpers.optionalRandomFutureDateString()
+  const conditionalReleaseDate = FactoryHelpers.randomFutureDateString()
+  const paroleEligibilityDate = FactoryHelpers.randomFutureDateString()
+  const tariffExpiryDate = FactoryHelpers.randomFutureDateString()
   const indeterminateSentence = faker.datatype.boolean()
 
   const sentence: ReferralSummary['sentence'] = Object.prototype.hasOwnProperty.call(params, 'sentence')
