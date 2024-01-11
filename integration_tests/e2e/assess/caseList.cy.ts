@@ -60,7 +60,7 @@ context('Referral case lists', () => {
     })
     caseListPage.shouldContainCourseNavigation(path, courses)
     caseListPage.shouldHaveSelectedFilterValues('', '')
-    caseListPage.shouldContainTableOfReferralSummaries()
+    caseListPage.shouldContainTableOfReferralSummaries(assessPaths)
   })
 
   it('includes pagination', () => {
@@ -112,7 +112,7 @@ context('Referral case lists', () => {
       })
       caseListPage.shouldContainCourseNavigation(path, courses)
       caseListPage.shouldHaveSelectedFilterValues('', '')
-      caseListPage.shouldContainTableOfReferralSummaries()
+      caseListPage.shouldContainTableOfReferralSummaries(assessPaths)
 
       const programmeStrandSelectedValue = 'general offence'
       const referralStatusSelectedValue = 'assessment started'
@@ -133,7 +133,7 @@ context('Referral case lists', () => {
       })
       filteredCaseListPage.shouldContainCourseNavigation(path, courses)
       filteredCaseListPage.shouldHaveSelectedFilterValues(programmeStrandSelectedValue, referralStatusSelectedValue)
-      filteredCaseListPage.shouldContainTableOfReferralSummaries()
+      filteredCaseListPage.shouldContainTableOfReferralSummaries(assessPaths)
     })
   })
 
@@ -157,7 +157,7 @@ context('Referral case lists', () => {
       })
       caseListPage.shouldContainCourseNavigation(assessPaths.caseList.show({ courseName: 'blue-course' }), courses)
       caseListPage.shouldHaveSelectedFilterValues('', '')
-      caseListPage.shouldContainTableOfReferralSummaries()
+      caseListPage.shouldContainTableOfReferralSummaries(assessPaths)
     })
   })
 })

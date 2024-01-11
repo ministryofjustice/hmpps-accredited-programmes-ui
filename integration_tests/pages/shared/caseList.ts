@@ -1,4 +1,4 @@
-import { assessPaths } from '../../../server/paths'
+import { assessPaths, referPaths } from '../../../server/paths'
 import { CaseListUtils, CourseUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
@@ -51,7 +51,7 @@ export default class CaseListPage extends Page {
     })
   }
 
-  shouldContainTableOfReferralSummaries() {
+  shouldContainTableOfReferralSummaries(paths: typeof assessPaths | typeof referPaths) {
     this.columnHeaders.forEach((columnHeader, columnHeaderIndex) => {
       cy.get('.govuk-table__header').eq(columnHeaderIndex).should('have.text', columnHeader)
     })
@@ -87,7 +87,7 @@ export default class CaseListPage extends Page {
                   case 'Name / Prison number':
                     cy.wrap(tableCellElement).should(
                       'have.html',
-                      CaseListUtils.tableRowContent(summary, 'Name / Prison number'),
+                      CaseListUtils.tableRowContent(summary, 'Name / Prison number', paths),
                     )
                     break
                   case 'Parole eligibility date':
