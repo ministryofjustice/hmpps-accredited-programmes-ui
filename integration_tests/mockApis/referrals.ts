@@ -3,12 +3,32 @@ import type { SuperAgentRequest } from 'superagent'
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { Paginated, Referral, ReferralSummary } from '@accredited-programmes/models'
+import type { ReferralStatusGroup } from '@accredited-programmes/ui'
 
 interface ReferralAndScenarioOptions {
   referral: Referral
   requiredScenarioState: string
   scenarioName: string
   newScenarioState?: string
+}
+
+type QueryParameters = Record<string, { equalTo: string }>
+
+const referralSummariesMetadata = (stubArgs: {
+  queryParameters?: QueryParameters
+  totalElements?: number
+  totalPages?: Paginated<ReferralSummary>['totalPages']
+}): { pageIsEmpty: boolean; pageNumber: number; pageSize: number; totalElements: number; totalPages: number } => {
+  const pageNumber = Number(stubArgs.queryParameters?.page?.equalTo || 0)
+  const pageSize = 15
+  const totalPages = stubArgs.totalPages || 1
+  const totalElements = Object.prototype.hasOwnProperty.call(stubArgs, 'totalElements')
+    ? Number(stubArgs.totalElements)
+    : pageSize * totalPages
+  const lastPage = Math.ceil(totalElements / pageSize) - 1
+  const pageIsEmpty = pageNumber > lastPage
+
+  return { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages }
 }
 
 export default {
@@ -25,20 +45,55 @@ export default {
       },
     }),
 
+  stubFindMyReferralSummaries: (args: {
+    referralStatusGroup: ReferralStatusGroup
+    referralSummaries: Array<ReferralSummary>
+    queryParameters?: QueryParameters
+    totalElements?: number
+    totalPages?: Paginated<ReferralSummary>['totalPages']
+  }) => {
+    const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralSummariesMetadata(args)
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        queryParameters: {
+          size: {
+            equalTo: '15',
+          },
+          status: {
+            equalTo:
+              args.referralStatusGroup === 'open'
+                ? 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
+                : 'REFERRAL_STARTED',
+          },
+          ...args.queryParameters,
+        },
+        urlPath: apiPaths.referrals.myDashboard({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          content: args.referralSummaries,
+          pageIsEmpty,
+          pageNumber,
+          pageSize,
+          totalElements,
+          totalPages,
+        },
+        status: 200,
+      },
+    })
+  },
+
   stubFindReferralSummaries: (args: {
     organisationId: string
     referralSummaries: Array<ReferralSummary>
-    queryParameters?: Record<string, { equalTo: string }>
+    queryParameters?: QueryParameters
     totalElements?: number
     totalPages?: Paginated<ReferralSummary>['totalPages']
   }): SuperAgentRequest => {
-    const pageNumber = Number(args.queryParameters?.page?.equalTo || 0)
-    const pageSize = 15
-    const totalPages = args.totalPages || 1
-    const totalElements = Object.prototype.hasOwnProperty.call(args, 'totalElements')
-      ? Number(args.totalElements)
-      : pageSize * totalPages
-    const lastPage = Math.ceil(totalElements / pageSize) - 1
+    const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralSummariesMetadata(args)
 
     return stubFor({
       request: {
@@ -55,7 +110,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           content: args.referralSummaries,
-          pageIsEmpty: pageNumber > lastPage,
+          pageIsEmpty,
           pageNumber,
           pageSize,
           totalElements,
