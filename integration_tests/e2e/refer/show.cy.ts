@@ -61,4 +61,12 @@ context('Viewing a submitted referral', () => {
       sharedTests.referrals.showsErrorPageIfReferralNotSubmitted(ApplicationRoles.ACP_REFERRER)
     })
   })
+
+  context('And reviewing risks and needs', () => {
+    describe('When reviewing Section 2 - Offence analysis', () => {
+      it('shows the correct information', () => {
+        sharedTests.risksAndNeeds.showsOffenceAnalysisPage(ApplicationRoles.ACP_REFERRER)
+      })
+    })
+  })
 })
