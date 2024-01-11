@@ -5,6 +5,7 @@ import {
   courseOfferingFactory,
   courseParticipationFactory,
   inmateDetailFactory,
+  offenceDetailFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
   offenderSentenceAndOffencesFactory,
@@ -20,6 +21,7 @@ import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
   AdditionalInformationPage,
+  OffenceAnalysisPage,
   OffenceHistoryPage,
   PersonalDetailsPage,
   ProgrammeHistoryPage,
@@ -365,6 +367,40 @@ const sharedTests = {
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()
       sentenceInformationPage.shouldContainNoReleaseDatesSummaryCard()
+    },
+  },
+  risksAndNeeds: {
+    showsOffenceAnalysisPage: (role: ApplicationRole): void => {
+      const offenceDetail = offenceDetailFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubOffenceDetails', {
+        offenceDetail,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.offenceAnalysis({ referralId: referral.id })
+      cy.visit(path)
+
+      const offenceAnalysisPage = Page.verifyOnPage(OffenceAnalysisPage, {
+        course,
+        offenceDetail,
+      })
+      offenceAnalysisPage.shouldHavePersonDetails(person)
+      offenceAnalysisPage.shouldContainNavigation(path)
+      offenceAnalysisPage.shouldContainBackLink('#')
+      offenceAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      offenceAnalysisPage.shouldContainShowReferralSubHeading()
+      offenceAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
+      offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      offenceAnalysisPage.shouldContainImportedFromOasysText()
+      offenceAnalysisPage.shouldContainBriefOffenceDetailsSummaryCard()
+      offenceAnalysisPage.shouldContainVictimsAndPartnersSummaryList()
+      offenceAnalysisPage.shouldContainImpactAndConsequencesSummaryList()
+      offenceAnalysisPage.shouldContainOtherOffendersAndInfluencesSummaryList()
+      offenceAnalysisPage.shouldContainMotivationAndTriggersSummaryCard()
+      offenceAnalysisPage.shouldContainResponsibilitySummaryList()
+      offenceAnalysisPage.shouldContainPatternOffendingSummaryCard()
     },
   },
 }
