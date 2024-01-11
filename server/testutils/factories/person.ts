@@ -27,7 +27,7 @@ export default Factory.define<Person>(({ params }) => {
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
     religionOrBelief: faker.lorem.word(),
     sentenceExpiryDate: FactoryHelpers.optionalRandomFutureDateString(),
-    sentenceStartDate: FactoryHelpers.optionalArrayElement([`${faker.date.past({ years: 20 })}`.substring(0, 10)]),
+    sentenceStartDate: `${faker.date.past({ years: 20 })}`.substring(0, 10),
     setting: 'Custody',
     tariffDate,
   }

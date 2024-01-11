@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
-import FactoryHelpers from './factoryHelpers'
 import type { CourseParticipationOutcome } from '@accredited-programmes/models'
 
 const randomValidYear = (): number => {
@@ -13,7 +12,7 @@ const outcomeTypes = {
   complete(): CourseParticipationOutcome {
     return {
       status: 'complete',
-      yearCompleted: FactoryHelpers.optionalArrayElement(randomValidYear()),
+      yearCompleted: randomValidYear(),
       yearStarted: undefined,
     }
   },
@@ -22,7 +21,7 @@ const outcomeTypes = {
     return {
       status: 'incomplete',
       yearCompleted: undefined,
-      yearStarted: FactoryHelpers.optionalArrayElement(randomValidYear()),
+      yearStarted: randomValidYear(),
     }
   },
 

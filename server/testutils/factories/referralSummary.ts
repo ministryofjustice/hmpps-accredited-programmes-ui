@@ -15,17 +15,17 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
   const conditionalReleaseDate = FactoryHelpers.optionalRandomFutureDateString()
   const paroleEligibilityDate = FactoryHelpers.optionalRandomFutureDateString()
   const tariffExpiryDate = FactoryHelpers.optionalRandomFutureDateString()
-  const indeterminateSentence = FactoryHelpers.optionalArrayElement(faker.datatype.boolean())
+  const indeterminateSentence = faker.datatype.boolean()
 
   const sentence: ReferralSummary['sentence'] = Object.prototype.hasOwnProperty.call(params, 'sentence')
     ? params.sentence
-    : FactoryHelpers.optionalArrayElement({
+    : {
         conditionalReleaseDate,
         indeterminateSentence,
-        nonDtoReleaseDateType: FactoryHelpers.optionalArrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
+        nonDtoReleaseDateType: faker.helpers.arrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
         paroleEligibilityDate,
         tariffExpiryDate,
-      })
+      }
 
   let earliestReleaseDate: ReferralSummary['earliestReleaseDate']
   if (sentence) {
@@ -59,6 +59,6 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
     tasksCompleted: Object.prototype.hasOwnProperty.call(params, 'tasksCompleted')
       ? params.tasksCompleted
-      : FactoryHelpers.optionalArrayElement(faker.number.int({ max: 4, min: 1 })),
+      : faker.number.int({ max: 4, min: 1 }),
   }
 })
