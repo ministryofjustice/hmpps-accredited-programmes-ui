@@ -23,11 +23,6 @@ export default class FactoryHelpers {
     return built
   }
 
-  static optionalArrayElement<T>(options: Array<T> | T): T | undefined {
-    const fullOptions: Array<T | undefined> = [undefined]
-    return faker.helpers.arrayElement(fullOptions.concat(options))
-  }
-
   static randomFutureDateString(): string | undefined {
     return faker.date.future({ years: 20 }).toISOString().substring(0, 10)
   }
