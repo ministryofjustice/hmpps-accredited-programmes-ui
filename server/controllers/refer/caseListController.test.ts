@@ -114,7 +114,11 @@ describe('ReferCaseListController', () => {
           paginatedReferralSummaries.totalPages,
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content, columnsToInclude)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
+          paginatedReferralSummaries.content,
+          columnsToInclude,
+          referPaths,
+        )
         expect(referralService.getNumberOfTasksCompleted).not.toHaveBeenCalled()
       })
     })
@@ -177,6 +181,7 @@ describe('ReferCaseListController', () => {
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
           expectedPaginatedReferralSummariesContent,
           columnsToInclude,
+          referPaths,
         )
         expect(referralService.getNumberOfTasksCompleted).toHaveBeenCalledTimes(
           paginatedReferralSummaries.content.length,
