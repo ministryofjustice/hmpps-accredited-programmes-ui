@@ -3,7 +3,7 @@ import { CaseListUtils, CourseUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
 import type { Course, ReferralSummary } from '@accredited-programmes/models'
-import type { CaseListColumnHeader } from '@accredited-programmes/ui'
+import type { CaseListColumnHeader, ReferralStatusGroup } from '@accredited-programmes/ui'
 
 export default class CaseListPage extends Page {
   columnHeaders: Array<CaseListColumnHeader>
@@ -48,6 +48,34 @@ export default class CaseListPage extends Page {
           cy.get('a').should('not.have.attr', 'aria-current', 'page')
         }
       })
+    })
+  }
+
+  shouldContainStatusNavigation(currentReferralStatusGroup: ReferralStatusGroup) {
+    const referralStatusGroups: Array<ReferralStatusGroup> = ['open', 'draft']
+
+    referralStatusGroups.forEach((referralStatusGroup, referralStatusGroupIndex) => {
+      cy.get('.moj-sub-navigation__item')
+        .eq(referralStatusGroupIndex)
+        .within(subNavigationItemElement => {
+          const { actual, expected } = Helpers.parseHtml(
+            subNavigationItemElement,
+            `${StringUtils.properCase(referralStatusGroup)} referrals`,
+          )
+          expect(actual).to.equal(expected)
+
+          cy.get('.moj-sub-navigation__link').then(subNavigationItemLinkElement => {
+            cy.wrap(subNavigationItemLinkElement).should(
+              'have.attr',
+              'href',
+              referPaths.caseList.show({ referralStatusGroup }),
+            )
+
+            if (currentReferralStatusGroup === referralStatusGroup) {
+              cy.wrap(subNavigationItemLinkElement).should('have.attr', 'aria-current', 'page')
+            }
+          })
+        })
     })
   }
 
