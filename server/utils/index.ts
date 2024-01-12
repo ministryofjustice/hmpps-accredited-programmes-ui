@@ -16,6 +16,7 @@ import CaseListUtils from './referrals/caseListUtils'
 import NewReferralUtils from './referrals/newReferralUtils'
 import ShowReferralUtils from './referrals/showReferralUtils'
 import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
+import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
 import RouteUtils from './routeUtils'
 import SentenceInformationUtils from './sentenceInformationUtils'
 import StringUtils from './stringUtils'
@@ -29,6 +30,7 @@ export {
   DateUtils,
   FormUtils,
   NewReferralUtils,
+  OffenceAnalysisUtils,
   OffenceUtils,
   OrganisationUtils,
   PaginationUtils,

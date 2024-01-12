@@ -5,7 +5,6 @@ import OasysService from './oasysService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
 import { offenceDetailFactory, referralFactory } from '../testutils/factories'
-import type { OffenceDetail } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/oasysClient')
 jest.mock('../data/hmppsAuthClient')
@@ -35,7 +34,7 @@ describe('OasysService', () => {
   describe('getOffenceDetails', () => {
     it('returns offence details for given prison number', async () => {
       const referral = referralFactory.build()
-      const offenceDetails: Array<OffenceDetail> = offenceDetailFactory.buildList(3)
+      const offenceDetails = offenceDetailFactory.build()
 
       when(oasysClient.findOffenceDetails).calledWith(referral.prisonNumber).mockResolvedValue(offenceDetails)
 

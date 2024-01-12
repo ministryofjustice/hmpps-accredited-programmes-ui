@@ -10,7 +10,7 @@ export default class OasysService {
   async getOffenceDetails(
     username: Express.User['username'],
     prisonNumber: Referral['prisonNumber'],
-  ): Promise<Array<OffenceDetail>> {
+  ): Promise<OffenceDetail> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)

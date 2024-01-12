@@ -2,6 +2,7 @@ import caseloads from './caseloads.json'
 import courseOfferings from './courseOfferings.json'
 import courseParticipations from './courseParticipations.json'
 import courses from './courses.json'
+import oasysOffenceDetail from './oasysOffenceDetail.json'
 import offenceCodes from './offenceCodes.json'
 import offenderBookings from './offenderBookings.json'
 import offenderSentenceAndOffences from './offenderSentenceAndOffences.json'
@@ -14,6 +15,7 @@ export {
   courseOfferings,
   courseParticipations,
   courses,
+  oasysOffenceDetail,
   offenceCodes,
   offenderBookings,
   offenderSentenceAndOffences,
