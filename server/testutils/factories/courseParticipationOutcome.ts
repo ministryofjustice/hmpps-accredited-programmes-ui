@@ -10,35 +10,39 @@ const randomValidYear = (): number => {
 }
 
 const outcomeTypes = {
-  complete(): CourseParticipationOutcome {
+  complete(requireOptionalFields = false): CourseParticipationOutcome {
     return {
       status: 'complete',
-      yearCompleted: FactoryHelpers.optionalArrayElement(randomValidYear()),
+      yearCompleted: requireOptionalFields ? randomValidYear() : FactoryHelpers.optionalArrayElement(randomValidYear()),
       yearStarted: undefined,
     }
   },
 
-  incomplete(): CourseParticipationOutcome {
+  incomplete(requireOptionalFields = false): CourseParticipationOutcome {
     return {
       status: 'incomplete',
       yearCompleted: undefined,
-      yearStarted: FactoryHelpers.optionalArrayElement(randomValidYear()),
+      yearStarted: requireOptionalFields ? randomValidYear() : FactoryHelpers.optionalArrayElement(randomValidYear()),
     }
   },
 
-  random() {
+  random(requireOptionalFields = false) {
     const type = faker.helpers.arrayElement<'complete' | 'incomplete'>(['complete', 'incomplete'])
-    return this[type]()
+    return this[type](requireOptionalFields)
   },
 }
 
 class CourseParticipationOutcomeFactory extends Factory<CourseParticipationOutcome> {
-  complete() {
-    return this.params(outcomeTypes.complete())
+  complete(requireOptionalFields = false) {
+    return this.params(outcomeTypes.complete(requireOptionalFields))
   }
 
-  incomplete() {
-    return this.params(outcomeTypes.incomplete())
+  incomplete(requireOptionalFields = false) {
+    return this.params(outcomeTypes.incomplete(requireOptionalFields))
+  }
+
+  withAllOptionalFields() {
+    return this.params(outcomeTypes.random(true))
   }
 }
 

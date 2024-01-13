@@ -295,9 +295,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findParticipation', () => {
-    const courseParticipation = courseParticipationFactory.build({
+    const courseParticipation = courseParticipationFactory.withAllOptionalFields().build({
       id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
-      outcome: courseParticipationOutcomeFactory.incomplete().build(),
+      outcome: courseParticipationOutcomeFactory.incomplete(true).build(),
     })
 
     beforeEach(() => {
@@ -327,14 +327,14 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('findParticipationsByPerson', () => {
     const courseParticipations = [
-      courseParticipationFactory.build({
+      courseParticipationFactory.withAllOptionalFields().build({
         id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
-        outcome: courseParticipationOutcomeFactory.incomplete().build(),
+        outcome: courseParticipationOutcomeFactory.incomplete(true).build(),
         prisonNumber: 'A1234AA',
       }),
-      courseParticipationFactory.build({
+      courseParticipationFactory.withAllOptionalFields().build({
         id: 'eb357e5d-5416-43bf-a8d2-0dc8fd92162e',
-        outcome: courseParticipationOutcomeFactory.incomplete().build(),
+        outcome: courseParticipationOutcomeFactory.incomplete(true).build(),
         prisonNumber: 'A1234AA',
       }),
     ]

@@ -9,23 +9,50 @@ import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/mod
 
 interface ReferralSummaryTransientParams {
   availableStatuses: Array<ReferralStatus>
+  requireOptionalFields?: boolean
 }
 
-export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>(({ params, transientParams }) => {
-  const conditionalReleaseDate = FactoryHelpers.optionalRandomFutureDateString()
-  const paroleEligibilityDate = FactoryHelpers.optionalRandomFutureDateString()
-  const tariffExpiryDate = FactoryHelpers.optionalRandomFutureDateString()
-  const indeterminateSentence = FactoryHelpers.optionalArrayElement(faker.datatype.boolean())
+class ReferralSummaryFactory extends Factory<ReferralSummary, ReferralSummaryTransientParams> {
+  withAllOptionalFields() {
+    return this.transient({ requireOptionalFields: true })
+  }
+}
 
-  const sentence: ReferralSummary['sentence'] = Object.prototype.hasOwnProperty.call(params, 'sentence')
-    ? params.sentence
-    : FactoryHelpers.optionalArrayElement({
-        conditionalReleaseDate,
-        indeterminateSentence,
-        nonDtoReleaseDateType: FactoryHelpers.optionalArrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
-        paroleEligibilityDate,
-        tariffExpiryDate,
-      })
+export default ReferralSummaryFactory.define(({ params, transientParams }) => {
+  const { availableStatuses, requireOptionalFields } = transientParams
+
+  const conditionalReleaseDate = requireOptionalFields
+    ? FactoryHelpers.randomFutureDateString()
+    : FactoryHelpers.optionalRandomFutureDateString()
+  const paroleEligibilityDate = requireOptionalFields
+    ? FactoryHelpers.randomFutureDateString()
+    : FactoryHelpers.optionalRandomFutureDateString()
+  const tariffExpiryDate = requireOptionalFields
+    ? FactoryHelpers.randomFutureDateString()
+    : FactoryHelpers.optionalRandomFutureDateString()
+  const indeterminateSentence = requireOptionalFields
+    ? faker.datatype.boolean()
+    : FactoryHelpers.optionalArrayElement(faker.datatype.boolean())
+
+  let { prisonName, sentence, tasksCompleted } = params
+
+  if (requireOptionalFields || !Object.prototype.hasOwnProperty.call(params, 'sentence')) {
+    sentence ||= {
+      conditionalReleaseDate,
+      indeterminateSentence,
+      nonDtoReleaseDateType: FactoryHelpers.optionalArrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
+      paroleEligibilityDate,
+      tariffExpiryDate,
+    }
+  }
+
+  if (requireOptionalFields || !Object.prototype.hasOwnProperty.call(params, 'prisonName')) {
+    prisonName ||= `${faker.location.county()} (HMP)`
+  }
+
+  if (requireOptionalFields || !Object.prototype.hasOwnProperty.call(params, 'tasksCompleted')) {
+    tasksCompleted ||= faker.number.int({ max: 4, min: 1 })
+  }
 
   let earliestReleaseDate: ReferralSummary['earliestReleaseDate']
   if (sentence) {
@@ -34,7 +61,6 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
       : sentence.paroleEligibilityDate || sentence.conditionalReleaseDate
   }
 
-  const { availableStatuses } = transientParams
   const status = params.status || randomStatus(availableStatuses)
 
   return {
@@ -45,9 +71,7 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
     courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
     earliestReleaseDate,
     organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),
-    prisonName: Object.prototype.hasOwnProperty.call(params, 'prisonName')
-      ? params.prisonName
-      : `${faker.location.county()} (HMP)`,
+    prisonName,
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
     prisonerName: {
       firstName: faker.person.firstName(),
@@ -57,8 +81,6 @@ export default Factory.define<ReferralSummary, ReferralSummaryTransientParams>((
     sentence,
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
-    tasksCompleted: Object.prototype.hasOwnProperty.call(params, 'tasksCompleted')
-      ? params.tasksCompleted
-      : FactoryHelpers.optionalArrayElement(faker.number.int({ max: 4, min: 1 })),
+    tasksCompleted,
   }
 })
