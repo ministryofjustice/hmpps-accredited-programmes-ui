@@ -44,6 +44,16 @@ export default class OffenceAnalysisPage extends Page {
     })
   }
 
+  shouldContainNoOffenceDetailsSummaryCard() {
+    cy.get('[data-testid="no-offence-details-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Section 2 - Offence analysis',
+        'No offence details found in OASys. Add offence details to OASys to see them here.',
+        summaryCardElement,
+      )
+    })
+  }
+
   shouldContainOtherOffendersAndInfluencesSummaryList() {
     cy.get('[data-testid="other-offenders-and-influences-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(

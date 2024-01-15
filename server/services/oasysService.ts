@@ -1,3 +1,6 @@
+import createError from 'http-errors'
+import type { ResponseError } from 'superagent'
+
 import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type { OffenceDetail, Referral } from '@accredited-programmes/models'
 
@@ -10,11 +13,23 @@ export default class OasysService {
   async getOffenceDetails(
     username: Express.User['username'],
     prisonNumber: Referral['prisonNumber'],
-  ): Promise<OffenceDetail> {
+  ): Promise<OffenceDetail | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
-    return oasysClient.findOffenceDetails(prisonNumber)
+    try {
+      const offenceDetails = await oasysClient.findOffenceDetails(prisonNumber)
+
+      return offenceDetails
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, `Error fetching offence details for prison number ${prisonNumber}.`)
+    }
   }
 }
