@@ -5,7 +5,7 @@ import { when } from 'jest-when'
 import OasysService from './oasysService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
-import { offenceDetailFactory } from '../testutils/factories'
+import { offenceDetailFactory, roshAnalysisFactory } from '../testutils/factories'
 
 jest.mock('../data/accreditedProgrammesApi/oasysClient')
 jest.mock('../data/hmppsAuthClient')
@@ -75,6 +75,52 @@ describe('OasysService', () => {
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(oasysClient.findOffenceDetails).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+  })
+
+  describe('getRoshAnalysis', () => {
+    it('returns the ROSH analysis for the given prison number', async () => {
+      const roshAnalysis = roshAnalysisFactory.build()
+
+      when(oasysClient.findRoshAnalysis).calledWith(prisonNumber).mockResolvedValue(roshAnalysis)
+
+      const result = await service.getRoshAnalysis(username, prisonNumber)
+
+      expect(result).toEqual(roshAnalysis)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findRoshAnalysis).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        const notFoundClientError = createError(404)
+
+        when(oasysClient.findRoshAnalysis).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getRoshAnalysis(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findRoshAnalysis).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+
+        when(oasysClient.findRoshAnalysis).calledWith(prisonNumber).mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching ROSH analysis for prison number ${prisonNumber}.`)
+        await expect(service.getRoshAnalysis(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findRoshAnalysis).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })
