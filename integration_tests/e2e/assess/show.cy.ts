@@ -56,8 +56,16 @@ context('Viewing a submitted referral', () => {
 
   context('And reviewing risks and needs', () => {
     describe('When reviewing Section 2 - Offence analysis', () => {
-      it('shows the correct information', () => {
-        sharedTests.risksAndNeeds.showsOffenceAnalysisPage(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      describe('and there are offence details', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsOffenceAnalysisPageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
+      })
+
+      describe('and there are no offence details', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsOffenceAnalysisPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
       })
     })
   })

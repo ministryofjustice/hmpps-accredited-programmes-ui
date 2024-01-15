@@ -378,7 +378,7 @@ const sharedTests = {
     },
   },
   risksAndNeeds: {
-    showsOffenceAnalysisPage: (role: ApplicationRole): void => {
+    showsOffenceAnalysisPageWithData: (role: ApplicationRole): void => {
       const offenceDetail = offenceDetailFactory.build({})
       sharedTests.referrals.beforeEach(role)
 
@@ -409,6 +409,29 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainMotivationAndTriggersSummaryCard()
       offenceAnalysisPage.shouldContainResponsibilitySummaryList()
       offenceAnalysisPage.shouldContainPatternOffendingSummaryCard()
+    },
+    showsOffenceAnalysisPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubOffenceDetails', {
+        offenceDetail: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.offenceAnalysis({ referralId: referral.id })
+      cy.visit(path)
+
+      const offenceAnalysisPage = Page.verifyOnPage(OffenceAnalysisPage, {
+        course,
+        offenceDetail: {},
+      })
+      offenceAnalysisPage.shouldHavePersonDetails(person)
+      offenceAnalysisPage.shouldContainNavigation(path)
+      offenceAnalysisPage.shouldContainBackLink('#')
+      offenceAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      offenceAnalysisPage.shouldContainShowReferralSubHeading()
+      offenceAnalysisPage.shouldContainNoOffenceDetailsSummaryCard()
+      offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
     },
   },
 }
