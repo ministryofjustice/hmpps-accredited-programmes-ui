@@ -122,6 +122,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
         ...sharedPageData,
+        hasOffenceDetails: true,
         impactAndConsequencesSummaryListRows,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         motivationAndTriggersText,
@@ -132,6 +133,26 @@ describe('RisksAndNeedsController', () => {
         responsibilitySummaryListRows,
         subNavigationItems,
         victimsAndPartnersSummaryListRows,
+      })
+    })
+
+    describe('when the oasys service returns `null`', () => {
+      it('renders the offence analysis page with the correct response locals', async () => {
+        when(oasysService.getOffenceDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: referral.id })
+
+        const requestHandler = controller.offenceAnalysis()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
+          ...sharedPageData,
+          hasOffenceDetails: false,
+          navigationItems,
+          subNavigationItems,
+        })
       })
     })
   })

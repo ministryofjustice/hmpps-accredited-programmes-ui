@@ -30,17 +30,27 @@ export default class RisksAndNeedsController {
         sharedPageData.referral.prisonNumber,
       )
 
+      const templateLocals = offenceDetails
+        ? {
+            hasOffenceDetails: true,
+            impactAndConsequencesSummaryListRows:
+              OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            motivationAndTriggersText: OffenceAnalysisUtils.textValue(offenceDetails.motivationAndTriggers),
+            offenceDetailsText: OffenceAnalysisUtils.textValue(offenceDetails.offenceDetails),
+            otherOffendersAndInfluencesSummaryListRows:
+              OffenceAnalysisUtils.otherOffendersAndInfluencesSummaryListRows(offenceDetails),
+            patternOffendingText: OffenceAnalysisUtils.textValue(offenceDetails.patternOffending),
+            responsibilitySummaryListRows: OffenceAnalysisUtils.responsibilitySummaryListRows(offenceDetails),
+            victimsAndPartnersSummaryListRows: OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetails),
+          }
+        : {
+            hasOffenceDetails: false,
+          }
+
       return res.render('referrals/show/risksAndNeeds/offenceAnalysis', {
         ...sharedPageData,
-        impactAndConsequencesSummaryListRows: OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
-        importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-        motivationAndTriggersText: OffenceAnalysisUtils.textValue(offenceDetails.motivationAndTriggers),
-        offenceDetailsText: OffenceAnalysisUtils.textValue(offenceDetails.offenceDetails),
-        otherOffendersAndInfluencesSummaryListRows:
-          OffenceAnalysisUtils.otherOffendersAndInfluencesSummaryListRows(offenceDetails),
-        patternOffendingText: OffenceAnalysisUtils.textValue(offenceDetails.patternOffending),
-        responsibilitySummaryListRows: OffenceAnalysisUtils.responsibilitySummaryListRows(offenceDetails),
-        victimsAndPartnersSummaryListRows: OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetails),
+        ...templateLocals,
       })
     }
   }
