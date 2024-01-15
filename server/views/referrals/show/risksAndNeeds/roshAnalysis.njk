@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {% if hasRoshAnalysis %}
+    {{ super() }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Section R6.2 - Previous behaviour"
+        },
+        attributes: {
+          "data-testid": "previous-behaviour-summary-list"
+        }
+      },
+      rows: previousBehaviourSummaryListRows
+    }) }}
+  {% else %}
+    {% set noRoshAnalysisString = "No ROSH analysis found in OASys. Add ROSH analysis to OASys to see it here." %}
+
+    {{ keylessSummaryCard("Section R6 - ROSH analysis", bodyText=noRoshAnalysisString, testId="no-rosh-analysis-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}
