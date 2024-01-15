@@ -86,7 +86,7 @@ describe('RisksAndNeedsController', () => {
 
   describe('offenceAnalysis', () => {
     it('renders the offence analysis page with the correct response locals', async () => {
-      const offenceDetails = offenceDetailFactory.build()
+      const offenceDetails = offenceDetailFactory.withAllOptionalFields().build()
       const impactAndConsequencesSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
       const motivationAndTriggersText = 'Motivation and triggers text'
       const offenceDetailsText = 'Offence details text'
