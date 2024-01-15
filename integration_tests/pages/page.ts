@@ -2,7 +2,13 @@ import type { AxeRules } from '@accredited-programmes/integration-tests'
 
 import { assessPathBase, referPaths } from '../../server/paths'
 import { referPathBase } from '../../server/paths/refer'
-import { CourseParticipationUtils, PersonUtils, ShowReferralUtils } from '../../server/utils'
+import {
+  CourseParticipationUtils,
+  DateUtils,
+  PersonUtils,
+  ShowReferralUtils,
+  ShowRisksAndNeedsUtils,
+} from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { Organisation, Person, Referral } from '@accredited-programmes/models'
 import type {
@@ -163,6 +169,13 @@ export default abstract class Page {
       })
   }
 
+  shouldContainImportedFromOasysText(): void {
+    cy.get('[data-testid="imported-from-text"]').should(
+      'contain.text',
+      `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+    )
+  }
+
   shouldContainKeylessSummaryCard(
     title: GovukFrontendSummaryListCardTitle['text'],
     body: string,
@@ -260,6 +273,75 @@ export default abstract class Page {
             expect(actual).to.equal(expected)
           })
           cy.get('.govuk-radios__input').should('have.attr', 'value', option.value)
+        })
+    })
+  }
+
+  shouldContainRisksAndNeedsOasysMessage(): void {
+    cy.get('[data-testid="risks-and-needs-oasys-message"]').should(
+      'contain.text',
+      'Relevant sections from OASys to support the referral. The full Layer 3 assessment is available in OASys. Information is accurate at the time of the referral being submitted.',
+    )
+  }
+
+  shouldContainRisksAndNeedsSideNavigation(currentPath: string, referralId: Referral['id']): void {
+    const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
+      ? assessPathBase.pattern
+      : referPathBase.pattern
+    const navigationItems = ShowRisksAndNeedsUtils.navigationItems(currentBasePath, referralId)
+
+    cy.get('.moj-side-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
+      const { href, text } = navigationItems[navigationItemElementIndex]
+
+      const { actual, expected } = Helpers.parseHtml(navigationItemElement, text)
+      expect(actual).to.equal(expected)
+
+      cy.wrap(navigationItemElement).within(() => {
+        cy.get('a').should('have.attr', 'href', href)
+
+        if (currentPath === href) {
+          cy.get('a').should('have.attr', 'aria-current', 'location')
+        } else {
+          cy.get('a').should('not.have.attr', 'aria-current', 'location')
+        }
+      })
+    })
+  }
+
+  shouldContainShowReferralSubHeading(): void {
+    cy.get('[data-testid="show-referral-sub-heading"]').should('contain.text', 'Risks and needs')
+  }
+
+  shouldContainShowReferralSubNavigation(
+    currentPath: string,
+    currentSection: 'referral' | 'risksAndNeeds',
+    referralId: Referral['id'],
+  ): void {
+    const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
+      ? assessPathBase.pattern
+      : referPathBase.pattern
+    const navigationItems = ShowReferralUtils.subNavigationItems(currentBasePath, currentSection, referralId)
+
+    navigationItems.forEach((navigationItem, navigationItemIndex) => {
+      const { href, text } = navigationItem
+
+      cy.get('.moj-sub-navigation__item')
+        .eq(navigationItemIndex)
+        .within(subNavigationItemElement => {
+          const { actual, expected } = Helpers.parseHtml(subNavigationItemElement, text)
+          expect(actual).to.equal(expected)
+
+          cy.get('.moj-sub-navigation__link').then(subNavigationItemLinkElement => {
+            cy.wrap(subNavigationItemLinkElement).should('have.attr', 'href', href)
+
+            if (currentSection === 'referral' && text === 'Referral details') {
+              cy.get('a').should('have.attr', 'aria-current', 'page')
+            } else if (currentSection === 'risksAndNeeds' && text === 'Risks and needs') {
+              cy.get('a').should('have.attr', 'aria-current', 'page')
+            } else {
+              cy.get('a').should('not.have.attr', 'aria-current', 'page')
+            }
+          })
         })
     })
   }

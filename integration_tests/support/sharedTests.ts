@@ -5,6 +5,7 @@ import {
   courseOfferingFactory,
   courseParticipationFactory,
   inmateDetailFactory,
+  offenceDetailFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
   offenderSentenceAndOffencesFactory,
@@ -20,6 +21,7 @@ import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
   AdditionalInformationPage,
+  OffenceAnalysisPage,
   OffenceHistoryPage,
   PersonalDetailsPage,
   ProgrammeHistoryPage,
@@ -137,6 +139,7 @@ const sharedTests = {
       additionalInformationPage.shouldHavePersonDetails(person)
       additionalInformationPage.shouldContainNavigation(path)
       additionalInformationPage.shouldContainBackLink('#')
+      additionalInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       additionalInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       additionalInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
@@ -164,6 +167,7 @@ const sharedTests = {
       offenceHistoryPage.shouldHavePersonDetails(person)
       offenceHistoryPage.shouldContainNavigation(path)
       offenceHistoryPage.shouldContainBackLink('#')
+      offenceHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
@@ -189,6 +193,7 @@ const sharedTests = {
       programmeHistoryPage.shouldHavePersonDetails(person)
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink('#')
+      programmeHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       programmeHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
@@ -246,6 +251,7 @@ const sharedTests = {
       offenceHistoryPage.shouldHavePersonDetails(person)
       offenceHistoryPage.shouldContainNavigation(path)
       offenceHistoryPage.shouldContainBackLink('#')
+      offenceHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
@@ -267,6 +273,7 @@ const sharedTests = {
       personalDetailsPage.shouldHavePersonDetails(person)
       personalDetailsPage.shouldContainNavigation(path)
       personalDetailsPage.shouldContainBackLink('#')
+      personalDetailsPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       personalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       personalDetailsPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       personalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
@@ -298,6 +305,7 @@ const sharedTests = {
       programmeHistoryPage.shouldHavePersonDetails(person)
       programmeHistoryPage.shouldContainNavigation(path)
       programmeHistoryPage.shouldContainBackLink('#')
+      programmeHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       programmeHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
@@ -325,6 +333,7 @@ const sharedTests = {
       sentenceInformationPage.shouldHavePersonDetails(person)
       sentenceInformationPage.shouldContainNavigation(path)
       sentenceInformationPage.shouldContainBackLink('#')
+      sentenceInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
@@ -359,12 +368,47 @@ const sharedTests = {
       sentenceInformationPage.shouldHavePersonDetails(person)
       sentenceInformationPage.shouldContainNavigation(path)
       sentenceInformationPage.shouldContainBackLink('#')
+      sentenceInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText()
       sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()
       sentenceInformationPage.shouldContainNoReleaseDatesSummaryCard()
+    },
+  },
+  risksAndNeeds: {
+    showsOffenceAnalysisPage: (role: ApplicationRole): void => {
+      const offenceDetail = offenceDetailFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubOffenceDetails', {
+        offenceDetail,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.offenceAnalysis({ referralId: referral.id })
+      cy.visit(path)
+
+      const offenceAnalysisPage = Page.verifyOnPage(OffenceAnalysisPage, {
+        course,
+        offenceDetail,
+      })
+      offenceAnalysisPage.shouldHavePersonDetails(person)
+      offenceAnalysisPage.shouldContainNavigation(path)
+      offenceAnalysisPage.shouldContainBackLink('#')
+      offenceAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      offenceAnalysisPage.shouldContainShowReferralSubHeading()
+      offenceAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
+      offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      offenceAnalysisPage.shouldContainImportedFromOasysText()
+      offenceAnalysisPage.shouldContainBriefOffenceDetailsSummaryCard()
+      offenceAnalysisPage.shouldContainVictimsAndPartnersSummaryList()
+      offenceAnalysisPage.shouldContainImpactAndConsequencesSummaryList()
+      offenceAnalysisPage.shouldContainOtherOffendersAndInfluencesSummaryList()
+      offenceAnalysisPage.shouldContainMotivationAndTriggersSummaryCard()
+      offenceAnalysisPage.shouldContainResponsibilitySummaryList()
+      offenceAnalysisPage.shouldContainPatternOffendingSummaryCard()
     },
   },
 }
