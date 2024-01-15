@@ -58,7 +58,7 @@ describe('OffenceAnalysisUtils', () => {
           },
         },
         {
-          key: { text: 'Peer group influences (e.g. offender easily led, gang member)' },
+          key: { text: 'Peer group influences (eg offender easily led, gang member)' },
           value: {
             text: 'Detail about influences',
           },
@@ -116,7 +116,7 @@ describe('OffenceAnalysisUtils', () => {
         },
         {
           key: {
-            text: 'How much responsibility does s/he acknowledge for the offence(s). Does s/he blame others, minimise the extent of his/her offending?',
+            text: 'How much responsibility does the offender acknowledge for the offence(s). Do they blame others, minimise the extent of their offending?',
           },
           value: {
             text: 'Detail about the persons acceptance',
@@ -148,7 +148,7 @@ describe('OffenceAnalysisUtils', () => {
     it('formats the victims and partners related offence details in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       expect(OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetail)).toEqual([
         {
-          key: { text: 'Were there any direct victim(s) e.g. contact targeting?' },
+          key: { text: 'Were there any direct victim(s) eg contact targeting?' },
           value: {
             text: 'No',
           },
@@ -162,7 +162,7 @@ describe('OffenceAnalysisUtils', () => {
           },
         },
         {
-          key: { text: 'Response to a specific victim (e.g. revenge, settling grudges)' },
+          key: { text: 'Response to a specific victim (eg revenge, settling grudges)' },
           value: {
             text: 'Yes',
           },

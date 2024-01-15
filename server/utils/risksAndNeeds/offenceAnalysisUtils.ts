@@ -40,7 +40,7 @@ export default class OffenceAnalysisUtils {
         },
       },
       {
-        key: { text: 'Peer group influences (e.g. offender easily led, gang member)' },
+        key: { text: 'Peer group influences (eg offender easily led, gang member)' },
         value: {
           text: this.textValue(offenceDetail.peerGroupInfluences),
         },
@@ -60,7 +60,7 @@ export default class OffenceAnalysisUtils {
       },
       {
         key: {
-          text: 'How much responsibility does s/he acknowledge for the offence(s). Does s/he blame others, minimise the extent of his/her offending?',
+          text: 'How much responsibility does the offender acknowledge for the offence(s). Do they blame others, minimise the extent of their offending?',
         },
         value: {
           text: this.textValue(offenceDetail.acceptsResponsibilityDetail),
@@ -78,7 +78,7 @@ export default class OffenceAnalysisUtils {
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
-        key: { text: 'Were there any direct victim(s) e.g. contact targeting?' },
+        key: { text: 'Were there any direct victim(s) eg contact targeting?' },
         value: {
           text: this.yesOrNo(offenceDetail.contactTargeting),
         },
@@ -90,7 +90,7 @@ export default class OffenceAnalysisUtils {
         value: { text: this.yesOrNo(offenceDetail.raciallyMotivated) },
       },
       {
-        key: { text: 'Response to a specific victim (e.g. revenge, settling grudges)' },
+        key: { text: 'Response to a specific victim (eg revenge, settling grudges)' },
         value: {
           text: this.yesOrNo(offenceDetail.revenge),
         },
