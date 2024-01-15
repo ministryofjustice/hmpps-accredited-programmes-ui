@@ -16,6 +16,14 @@ class CourseParticipationFactory extends Factory<CourseParticipation> {
       source: undefined,
     })
   }
+
+  withAllOptionalFields() {
+    return this.params({
+      outcome: courseParticipationOutcomeFactory.withAllOptionalFields().build(),
+      setting: courseParticipationSettingFactory.withAllOptionalFields().build(),
+      source: faker.word.words(),
+    })
+  }
 }
 
 export default CourseParticipationFactory.define(() => ({

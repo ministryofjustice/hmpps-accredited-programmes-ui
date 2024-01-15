@@ -125,7 +125,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         content: FactoryHelpers.buildListWith(
           referralSummaryFactory,
           { status: 'referral_submitted', tasksCompleted: undefined },
-          {},
+          { transient: { requireOptionalFields: true } },
           1,
         ),
         pageIsEmpty: false,
@@ -174,7 +174,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     describe('without query parameters', () => {
       const paginatedReferralSummaries: Paginated<ReferralSummary> = {
         content: [
-          referralSummaryFactory.build({
+          referralSummaryFactory.withAllOptionalFields().build({
             earliestReleaseDate: undefined,
             status: 'referral_submitted',
             tasksCompleted: undefined,
@@ -225,7 +225,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
             status: 'referral_submitted',
             tasksCompleted: undefined,
           },
-          {},
+          { transient: { requireOptionalFields: true } },
           16,
         ),
         pageIsEmpty: false,
