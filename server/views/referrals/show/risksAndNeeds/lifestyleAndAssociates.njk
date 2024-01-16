@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {% if hasLifestyle %}
+    {{ super() }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Section 7.2 - Reoffending"
+        },
+        attributes: {
+          "data-testid": "reoffending-summary-list"
+        }
+      },
+      rows: reoffendingSummaryListRows
+    }) }}
+  {% else %}
+    {% set noLifestyleDataString = "No lifestyle data found in OASys. Add lifestyle data to OASys to see them here." %}
+
+    {{ keylessSummaryCard("Section 7 - Lifestyle and associates", bodyText=noLifestyleDataString, testId="no-lifestyle-data-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}
