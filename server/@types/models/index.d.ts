@@ -8,6 +8,7 @@ import type {
   CourseParticipationUpdate,
 } from './CourseParticipation'
 import type { CoursePrerequisite } from './CoursePrerequisite'
+import type { Lifestyle } from './Lifestyle'
 import type { OffenceDetail } from './OffenceDetail'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
@@ -26,6 +27,7 @@ export type {
   CourseParticipationUpdate,
   CoursePrerequisite,
   CreatedReferralResponse,
+  Lifestyle,
   OffenceDetail,
   Organisation,
   OrganisationAddress,
