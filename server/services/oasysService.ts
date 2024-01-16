@@ -2,13 +2,36 @@ import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
 import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
-import type { OffenceDetail, Referral, RoshAnalysis } from '@accredited-programmes/models'
+import type { Lifestyle, OffenceDetail, Referral, RoshAnalysis } from '@accredited-programmes/models'
 
 export default class OasysService {
   constructor(
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly oasysClientBuilder: RestClientBuilder<OasysClient>,
   ) {}
+
+  async getLifestyle(
+    username: Express.User['username'],
+    prisonNumber: Referral['prisonNumber'],
+  ): Promise<Lifestyle | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const oasysClient = this.oasysClientBuilder(systemToken)
+
+    try {
+      const lifestyle = await oasysClient.findLifestyle(prisonNumber)
+
+      return lifestyle
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, `Error fetching lifestyle data for prison number ${prisonNumber}.`)
+    }
+  }
 
   async getOffenceDetails(
     username: Express.User['username'],

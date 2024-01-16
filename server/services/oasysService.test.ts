@@ -5,7 +5,7 @@ import { when } from 'jest-when'
 import OasysService from './oasysService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
-import { offenceDetailFactory, roshAnalysisFactory } from '../testutils/factories'
+import { lifestyleFactory, offenceDetailFactory, roshAnalysisFactory } from '../testutils/factories'
 
 jest.mock('../data/accreditedProgrammesApi/oasysClient')
 jest.mock('../data/hmppsAuthClient')
@@ -31,6 +31,52 @@ describe('OasysService', () => {
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     oasysClientBuilder.mockReturnValue(oasysClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+  })
+
+  describe('getLifestyle', () => {
+    it('returns lifestyle data for given prison number', async () => {
+      const lifestyle = lifestyleFactory.build()
+
+      when(oasysClient.findLifestyle).calledWith(prisonNumber).mockResolvedValue(lifestyle)
+
+      const result = await service.getLifestyle(username, prisonNumber)
+
+      expect(result).toEqual(lifestyle)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findLifestyle).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        const notFoundClientError = createError(404)
+
+        when(oasysClient.findLifestyle).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getLifestyle(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findLifestyle).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+
+        when(oasysClient.findLifestyle).calledWith(prisonNumber).mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching lifestyle data for prison number ${prisonNumber}.`)
+        await expect(service.getLifestyle(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findLifestyle).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
   })
 
   describe('getOffenceDetails', () => {
