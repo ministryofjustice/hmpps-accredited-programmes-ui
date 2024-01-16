@@ -20,4 +20,12 @@ export default class ShowRisksAndNeedsUtils {
       active: currentPath === item.href,
     }))
   }
+
+  static textValue(value?: string): string {
+    return value || 'No information available'
+  }
+
+  static yesOrNo(value?: boolean): 'No' | 'Yes' {
+    return value ? 'Yes' : 'No'
+  }
 }
