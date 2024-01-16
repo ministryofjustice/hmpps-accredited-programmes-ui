@@ -5,6 +5,7 @@ import {
   CourseUtils,
   DateUtils,
   OffenceAnalysisUtils,
+  RoshAnalysisUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
   TypeUtils,
@@ -49,6 +50,34 @@ export default class RisksAndNeedsController {
           }
 
       return res.render('referrals/show/risksAndNeeds/offenceAnalysis', {
+        ...sharedPageData,
+        ...templateLocals,
+      })
+    }
+  }
+
+  roshAnalysis(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const roshAnalysis = await this.oasysService.getRoshAnalysis(
+        req.user.username,
+        sharedPageData.referral.prisonNumber,
+      )
+
+      const templateLocals = roshAnalysis
+        ? {
+            hasRoshAnalysis: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            previousBehaviourSummaryListRows: RoshAnalysisUtils.previousBehaviourSummaryListRows(roshAnalysis),
+          }
+        : {
+            hasRoshAnalysis: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/roshAnalysis', {
         ...sharedPageData,
         ...templateLocals,
       })

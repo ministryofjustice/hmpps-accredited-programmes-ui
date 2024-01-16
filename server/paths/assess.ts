@@ -20,6 +20,7 @@ export default {
     programmeHistory: referralShowPathBase.path('programme-history'),
     risksAndNeeds: {
       offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
+      roshAnalysis: risksAndNeedsPathBase.path('rosh-analysis'),
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
   },
