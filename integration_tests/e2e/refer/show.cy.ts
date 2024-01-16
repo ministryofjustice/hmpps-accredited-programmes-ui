@@ -76,5 +76,19 @@ context('Viewing a submitted referral', () => {
         })
       })
     })
+
+    describe('When reviewing Section R6 - ROSH analysis', () => {
+      describe('and there is a ROSH analysis', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsRoshAnalysisPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no ROSH analysis', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsRoshAnalysisPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
   })
 })
