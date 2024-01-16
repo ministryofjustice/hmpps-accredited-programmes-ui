@@ -13,9 +13,17 @@ import {
   organisationFactory,
   personFactory,
   referralFactory,
+  roshAnalysisFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import { CourseUtils, DateUtils, OffenceAnalysisUtils, ShowReferralUtils, ShowRisksAndNeedsUtils } from '../../utils'
+import {
+  CourseUtils,
+  DateUtils,
+  OffenceAnalysisUtils,
+  RoshAnalysisUtils,
+  ShowReferralUtils,
+  ShowRisksAndNeedsUtils,
+} from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
@@ -23,11 +31,13 @@ jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
 jest.mock('../../utils/risksAndNeeds/offenceAnalysisUtils')
+jest.mock('../../utils/risksAndNeeds/roshAnalysisUtils')
 
 const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
 const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
 const mockShowRisksAndNeedsUtils = ShowRisksAndNeedsUtils as jest.Mocked<typeof ShowRisksAndNeedsUtils>
 const mockOffenceAnalysisUtils = OffenceAnalysisUtils as jest.Mocked<typeof OffenceAnalysisUtils>
+const mockRoshAnalysisUtils = RoshAnalysisUtils as jest.Mocked<typeof RoshAnalysisUtils>
 
 describe('RisksAndNeedsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -152,6 +162,53 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
           ...sharedPageData,
           hasOffenceDetails: false,
+          navigationItems,
+          subNavigationItems,
+        })
+      })
+    })
+  })
+
+  describe('roshAnalysis', () => {
+    it('renders the offence analysis page with the correct response locals', async () => {
+      const roshAnalysis = roshAnalysisFactory.build()
+      const previousBehaviourSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+
+      mockRoshAnalysisUtils.previousBehaviourSummaryListRows.mockReturnValue(previousBehaviourSummaryListRows)
+
+      when(oasysService.getRoshAnalysis).calledWith(username, person.prisonNumber).mockResolvedValue(roshAnalysis)
+
+      request.path = referPaths.show.risksAndNeeds.roshAnalysis({ referralId: referral.id })
+
+      const requestHandler = controller.roshAnalysis()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
+        ...sharedPageData,
+        hasRoshAnalysis: true,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        navigationItems,
+        previousBehaviourSummaryListRows,
+        subNavigationItems,
+      })
+    })
+
+    describe('when the OASys service returns `null`', () => {
+      it('renders the offence analysis page with the correct response locals', async () => {
+        when(oasysService.getRoshAnalysis).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.roshAnalysis({ referralId: referral.id })
+
+        const requestHandler = controller.roshAnalysis()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
+          ...sharedPageData,
+          hasRoshAnalysis: false,
           navigationItems,
           subNavigationItems,
         })
