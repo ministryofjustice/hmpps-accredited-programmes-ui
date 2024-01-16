@@ -15,6 +15,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             href: referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),
             text: 'Section 2 - Offence analysis',
           },
+          {
+            active: false,
+            href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            text: 'Section R6 - ROSH analysis',
+          },
         ])
       })
     })
@@ -28,6 +33,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: true,
             href: assessPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),
             text: 'Section 2 - Offence analysis',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            text: 'Section R6 - ROSH analysis',
           },
         ])
       })
