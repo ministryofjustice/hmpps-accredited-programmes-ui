@@ -17,6 +17,7 @@ import NewReferralUtils from './referrals/newReferralUtils'
 import ShowReferralUtils from './referrals/showReferralUtils'
 import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
 import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
+import RoshAnalysisUtils from './risksAndNeeds/roshAnalysisUtils'
 import RouteUtils from './routeUtils'
 import SentenceInformationUtils from './sentenceInformationUtils'
 import StringUtils from './stringUtils'
@@ -36,6 +37,7 @@ export {
   PaginationUtils,
   PathUtils,
   PersonUtils,
+  RoshAnalysisUtils,
   RouteUtils,
   SentenceInformationUtils,
   ShowReferralUtils,
