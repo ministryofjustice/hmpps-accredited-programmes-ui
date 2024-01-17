@@ -126,24 +126,6 @@ describe('OffenceAnalysisUtils', () => {
     })
   })
 
-  describe('textValue', () => {
-    it('returns the text value', () => {
-      expect(OffenceAnalysisUtils.textValue('Some text')).toEqual('Some text')
-    })
-
-    describe('when the text value is undefined', () => {
-      it('returns the "No information available" message', () => {
-        expect(OffenceAnalysisUtils.textValue(undefined)).toEqual('No information available')
-      })
-    })
-
-    describe('when the text value is an empty string', () => {
-      it('returns the "No information available" message', () => {
-        expect(OffenceAnalysisUtils.textValue('')).toEqual('No information available')
-      })
-    })
-  })
-
   describe('victimsAndPartnersSummaryListRows', () => {
     it('formats the victims and partners related offence details in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       expect(OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetail)).toEqual([

@@ -36,11 +36,11 @@ export default class RisksAndNeedsController {
             impactAndConsequencesSummaryListRows:
               OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-            motivationAndTriggersText: OffenceAnalysisUtils.textValue(offenceDetails.motivationAndTriggers),
-            offenceDetailsText: OffenceAnalysisUtils.textValue(offenceDetails.offenceDetails),
+            motivationAndTriggersText: ShowRisksAndNeedsUtils.textValue(offenceDetails.motivationAndTriggers),
+            offenceDetailsText: ShowRisksAndNeedsUtils.textValue(offenceDetails.offenceDetails),
             otherOffendersAndInfluencesSummaryListRows:
               OffenceAnalysisUtils.otherOffendersAndInfluencesSummaryListRows(offenceDetails),
-            patternOffendingText: OffenceAnalysisUtils.textValue(offenceDetails.patternOffending),
+            patternOffendingText: ShowRisksAndNeedsUtils.textValue(offenceDetails.patternOffending),
             responsibilitySummaryListRows: OffenceAnalysisUtils.responsibilitySummaryListRows(offenceDetails),
             victimsAndPartnersSummaryListRows: OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetails),
           }

@@ -105,13 +105,15 @@ describe('RisksAndNeedsController', () => {
       mockOffenceAnalysisUtils.victimsAndPartnersSummaryListRows.mockReturnValue(victimsAndPartnersSummaryListRows)
 
       when(oasysService.getOffenceDetails).calledWith(username, person.prisonNumber).mockResolvedValue(offenceDetails)
-      when(OffenceAnalysisUtils.textValue)
+      when(ShowRisksAndNeedsUtils.textValue)
         .calledWith(offenceDetails.motivationAndTriggers)
         .mockReturnValue(motivationAndTriggersText)
-      when(OffenceAnalysisUtils.textValue)
+      when(ShowRisksAndNeedsUtils.textValue)
         .calledWith(offenceDetails.patternOffending)
         .mockReturnValue(patternOffendingText)
-      when(OffenceAnalysisUtils.textValue).calledWith(offenceDetails.offenceDetails).mockReturnValue(offenceDetailsText)
+      when(ShowRisksAndNeedsUtils.textValue)
+        .calledWith(offenceDetails.offenceDetails)
+        .mockReturnValue(offenceDetailsText)
 
       request.path = referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: referral.id })
 
