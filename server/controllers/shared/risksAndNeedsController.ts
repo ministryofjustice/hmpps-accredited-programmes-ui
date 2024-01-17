@@ -5,6 +5,7 @@ import {
   CourseUtils,
   DateUtils,
   OffenceAnalysisUtils,
+  RoshAnalysisUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
   TypeUtils,
@@ -36,11 +37,11 @@ export default class RisksAndNeedsController {
             impactAndConsequencesSummaryListRows:
               OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-            motivationAndTriggersText: OffenceAnalysisUtils.textValue(offenceDetails.motivationAndTriggers),
-            offenceDetailsText: OffenceAnalysisUtils.textValue(offenceDetails.offenceDetails),
+            motivationAndTriggersText: ShowRisksAndNeedsUtils.textValue(offenceDetails.motivationAndTriggers),
+            offenceDetailsText: ShowRisksAndNeedsUtils.textValue(offenceDetails.offenceDetails),
             otherOffendersAndInfluencesSummaryListRows:
               OffenceAnalysisUtils.otherOffendersAndInfluencesSummaryListRows(offenceDetails),
-            patternOffendingText: OffenceAnalysisUtils.textValue(offenceDetails.patternOffending),
+            patternOffendingText: ShowRisksAndNeedsUtils.textValue(offenceDetails.patternOffending),
             responsibilitySummaryListRows: OffenceAnalysisUtils.responsibilitySummaryListRows(offenceDetails),
             victimsAndPartnersSummaryListRows: OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetails),
           }
@@ -49,6 +50,34 @@ export default class RisksAndNeedsController {
           }
 
       return res.render('referrals/show/risksAndNeeds/offenceAnalysis', {
+        ...sharedPageData,
+        ...templateLocals,
+      })
+    }
+  }
+
+  roshAnalysis(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const roshAnalysis = await this.oasysService.getRoshAnalysis(
+        req.user.username,
+        sharedPageData.referral.prisonNumber,
+      )
+
+      const templateLocals = roshAnalysis
+        ? {
+            hasRoshAnalysis: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            previousBehaviourSummaryListRows: RoshAnalysisUtils.previousBehaviourSummaryListRows(roshAnalysis),
+          }
+        : {
+            hasRoshAnalysis: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/roshAnalysis', {
         ...sharedPageData,
         ...templateLocals,
       })

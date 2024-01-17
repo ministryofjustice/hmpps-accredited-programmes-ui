@@ -21,6 +21,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
 
   get(assessPaths.show.risksAndNeeds.offenceAnalysis.pattern, risksAndNeedsController.offenceAnalysis())
+  get(assessPaths.show.risksAndNeeds.roshAnalysis.pattern, risksAndNeedsController.roshAnalysis())
 
   return router
 }

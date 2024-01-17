@@ -1,4 +1,4 @@
-import { CourseUtils, OffenceAnalysisUtils } from '../../../../../server/utils'
+import { CourseUtils, OffenceAnalysisUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
 import type { Course, OffenceDetail } from '@accredited-programmes/models'
 
@@ -19,7 +19,7 @@ export default class OffenceAnalysisPage extends Page {
     cy.get('[data-testid="brief-offence-details-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Section 2.1 - Brief offence details',
-        OffenceAnalysisUtils.textValue(this.offenceDetail.offenceDetails),
+        ShowRisksAndNeedsUtils.textValue(this.offenceDetail.offenceDetails),
         summaryCardElement,
       )
     })
@@ -38,7 +38,7 @@ export default class OffenceAnalysisPage extends Page {
     cy.get('[data-testid="motivation-and-triggers-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Section 2.8 - Motivation and triggers',
-        OffenceAnalysisUtils.textValue(this.offenceDetail.motivationAndTriggers),
+        ShowRisksAndNeedsUtils.textValue(this.offenceDetail.motivationAndTriggers),
         summaryCardElement,
       )
     })
@@ -67,7 +67,7 @@ export default class OffenceAnalysisPage extends Page {
     cy.get('[data-testid="pattern-offending-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Section 2.12 - Pattern of offending',
-        OffenceAnalysisUtils.textValue(this.offenceDetail.patternOffending),
+        ShowRisksAndNeedsUtils.textValue(this.offenceDetail.patternOffending),
         summaryCardElement,
       )
     })

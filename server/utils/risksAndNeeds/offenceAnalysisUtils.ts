@@ -1,3 +1,4 @@
+import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
 import type { OffenceDetail } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 
@@ -11,7 +12,7 @@ export default class OffenceAnalysisUtils {
           text: 'Does the offender recognise the impact and consequences of offending on victim / community / wider society?',
         },
         value: {
-          text: this.yesOrNo(offenceDetail.recognisesImpact),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.recognisesImpact),
         },
       },
     ]
@@ -24,25 +25,27 @@ export default class OffenceAnalysisUtils {
       {
         key: { text: 'Were there other offenders involved?' },
         value: {
-          text: this.yesOrNo(!!offenceDetail.numberOfOthersInvolved && offenceDetail.numberOfOthersInvolved > 0),
+          text: ShowRisksAndNeedsUtils.yesOrNo(
+            !!offenceDetail.numberOfOthersInvolved && offenceDetail.numberOfOthersInvolved > 0,
+          ),
         },
       },
       {
         key: { text: 'Number of others involved' },
         value: {
-          text: this.textValue(offenceDetail.numberOfOthersInvolved?.toString()),
+          text: ShowRisksAndNeedsUtils.textValue(offenceDetail.numberOfOthersInvolved?.toString()),
         },
       },
       {
         key: { text: 'Was the offender the leader?' },
         value: {
-          text: this.textValue(offenceDetail.othersInvolvedDetail),
+          text: ShowRisksAndNeedsUtils.textValue(offenceDetail.othersInvolvedDetail),
         },
       },
       {
         key: { text: 'Peer group influences (eg offender easily led, gang member)' },
         value: {
-          text: this.textValue(offenceDetail.peerGroupInfluences),
+          text: ShowRisksAndNeedsUtils.textValue(offenceDetail.peerGroupInfluences),
         },
       },
     ]
@@ -55,7 +58,7 @@ export default class OffenceAnalysisUtils {
       {
         key: { text: 'Does the offender accept responsibility for the current offence(s)?' },
         value: {
-          text: this.yesOrNo(offenceDetail.acceptsResponsibility),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.acceptsResponsibility),
         },
       },
       {
@@ -63,14 +66,10 @@ export default class OffenceAnalysisUtils {
           text: 'How much responsibility does the offender acknowledge for the offence(s). Do they blame others, minimise the extent of their offending?',
         },
         value: {
-          text: this.textValue(offenceDetail.acceptsResponsibilityDetail),
+          text: ShowRisksAndNeedsUtils.textValue(offenceDetail.acceptsResponsibilityDetail),
         },
       },
     ]
-  }
-
-  static textValue(value?: string): string {
-    return value || 'No information available'
   }
 
   static victimsAndPartnersSummaryListRows(
@@ -80,49 +79,45 @@ export default class OffenceAnalysisUtils {
       {
         key: { text: 'Were there any direct victim(s) eg contact targeting?' },
         value: {
-          text: this.yesOrNo(offenceDetail.contactTargeting),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.contactTargeting),
         },
       },
       {
         key: {
           text: 'Were any of the victim(s) targeted because of racial motivation or hatred of other identifiable group?',
         },
-        value: { text: this.yesOrNo(offenceDetail.raciallyMotivated) },
+        value: { text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.raciallyMotivated) },
       },
       {
         key: { text: 'Response to a specific victim (eg revenge, settling grudges)' },
         value: {
-          text: this.yesOrNo(offenceDetail.revenge),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.revenge),
         },
       },
       {
         key: { text: 'Physical violence towards partner' },
         value: {
-          text: this.yesOrNo(offenceDetail.domesticViolence),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.domesticViolence),
         },
       },
       {
         key: { text: 'Repeat victimisation of the same person' },
         value: {
-          text: this.yesOrNo(offenceDetail.repeatVictimisation),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.repeatVictimisation),
         },
       },
       {
         key: { text: 'Were the victim(s) stranger(s) to the offender?' },
         value: {
-          text: this.yesOrNo(offenceDetail.victimWasStranger),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.victimWasStranger),
         },
       },
       {
         key: { text: 'Stalking' },
         value: {
-          text: this.yesOrNo(offenceDetail.stalking),
+          text: ShowRisksAndNeedsUtils.yesOrNo(offenceDetail.stalking),
         },
       },
     ]
-  }
-
-  private static yesOrNo(value?: boolean): 'No' | 'Yes' {
-    return value ? 'Yes' : 'No'
   }
 }

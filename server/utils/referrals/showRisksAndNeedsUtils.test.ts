@@ -15,6 +15,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             href: referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),
             text: 'Section 2 - Offence analysis',
           },
+          {
+            active: false,
+            href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            text: 'Section R6 - ROSH analysis',
+          },
         ])
       })
     })
@@ -29,7 +34,52 @@ describe('ShowRisksAndNeedsUtils', () => {
             href: assessPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),
             text: 'Section 2 - Offence analysis',
           },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            text: 'Section R6 - ROSH analysis',
+          },
         ])
+      })
+    })
+  })
+
+  describe('textValue', () => {
+    describe('when the value is undefined', () => {
+      it('returns "No information available"', () => {
+        expect(ShowRisksAndNeedsUtils.textValue(undefined)).toEqual('No information available')
+      })
+    })
+
+    describe('when the value is an empty string', () => {
+      it('returns "No information available"', () => {
+        expect(ShowRisksAndNeedsUtils.textValue('')).toEqual('No information available')
+      })
+    })
+
+    describe('when the value is a string', () => {
+      it('returns the value', () => {
+        expect(ShowRisksAndNeedsUtils.textValue('Mock string value')).toEqual('Mock string value')
+      })
+    })
+  })
+
+  describe('yesOrNo', () => {
+    describe('when the value is undefined', () => {
+      it('returns "No"', () => {
+        expect(ShowRisksAndNeedsUtils.yesOrNo(undefined)).toEqual('No')
+      })
+    })
+
+    describe('when the value is false', () => {
+      it('returns "No"', () => {
+        expect(ShowRisksAndNeedsUtils.yesOrNo(false)).toEqual('No')
+      })
+    })
+
+    describe('when the value is true', () => {
+      it('returns "Yes"', () => {
+        expect(ShowRisksAndNeedsUtils.yesOrNo(true)).toEqual('Yes')
       })
     })
   })
