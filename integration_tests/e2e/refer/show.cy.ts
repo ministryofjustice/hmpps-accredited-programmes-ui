@@ -90,5 +90,19 @@ context('Viewing a submitted referral', () => {
         })
       })
     })
+
+    describe('When reviewing Section 7 - Lifestyle and associates', () => {
+      describe('and there is lifestyle data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsLifestyleAndAssociatesPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no lifestyle data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsLifestyleAndAssociatesPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
   })
 })
