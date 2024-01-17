@@ -5,7 +5,7 @@ import { when } from 'jest-when'
 import OasysService from './oasysService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
-import { offenceDetailFactory, referralFactory } from '../testutils/factories'
+import { offenceDetailFactory } from '../testutils/factories'
 
 jest.mock('../data/accreditedProgrammesApi/oasysClient')
 jest.mock('../data/hmppsAuthClient')
@@ -14,6 +14,7 @@ const redisClient = createMock<RedisClient>({})
 const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
 const systemToken = 'some system token'
 const username = 'USERNAME'
+const prisonNumber = 'PRISONNUMBER'
 
 describe('OasysService', () => {
   const oasysClient = new OasysClient(systemToken) as jest.Mocked<OasysClient>
@@ -34,12 +35,11 @@ describe('OasysService', () => {
 
   describe('getOffenceDetails', () => {
     it('returns offence details for given prison number', async () => {
-      const referral = referralFactory.build()
       const offenceDetails = offenceDetailFactory.build()
 
-      when(oasysClient.findOffenceDetails).calledWith(referral.prisonNumber).mockResolvedValue(offenceDetails)
+      when(oasysClient.findOffenceDetails).calledWith(prisonNumber).mockResolvedValue(offenceDetails)
 
-      const result = await service.getOffenceDetails(username, referral.prisonNumber)
+      const result = await service.getOffenceDetails(username, prisonNumber)
 
       expect(result).toEqual(offenceDetails)
 
@@ -47,12 +47,11 @@ describe('OasysService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(oasysClient.findOffenceDetails).toHaveBeenCalledWith(referral.prisonNumber)
+      expect(oasysClient.findOffenceDetails).toHaveBeenCalledWith(prisonNumber)
     })
 
     describe('when the oasys client throws a 404 error', () => {
       it('returns null', async () => {
-        const prisonNumber = 'ABC1234'
         const notFoundClientError = createError(404)
 
         when(oasysClient.findOffenceDetails).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
@@ -67,7 +66,6 @@ describe('OasysService', () => {
 
     describe('when the oasys client throws an unknown error', () => {
       it('throws an error', async () => {
-        const prisonNumber = 'ABC1234'
         const clientError = createError(500)
 
         when(oasysClient.findOffenceDetails).calledWith(prisonNumber).mockRejectedValue(clientError)
