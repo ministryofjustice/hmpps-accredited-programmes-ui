@@ -33,7 +33,7 @@ export default {
   },
   oasys: {
     offenceDetails: oasysBasePath.path('offence-details'),
-    roshAnalysis: oasysBasePath.path('analysis'),
+    roshAnalysis: oasysBasePath.path('rosh-analysis'),
   },
   offerings: {
     course: courseByOfferingPath,

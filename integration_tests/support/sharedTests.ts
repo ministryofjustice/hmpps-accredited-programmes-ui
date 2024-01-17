@@ -13,6 +13,7 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  roshAnalysisFactory,
   userFactory,
 } from '../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
@@ -25,6 +26,7 @@ import {
   OffenceHistoryPage,
   PersonalDetailsPage,
   ProgrammeHistoryPage,
+  RoshAnalysisPage,
   SentenceInformationPage,
 } from '../pages/shared'
 import type { Person, Referral } from '@accredited-programmes/models'
@@ -432,6 +434,55 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainShowReferralSubHeading()
       offenceAnalysisPage.shouldContainNoOffenceDetailsSummaryCard()
       offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+    },
+    showsRoshAnalysisPageWithData: (role: ApplicationRole): void => {
+      const roshAnalysis = roshAnalysisFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRoshAnalysis', {
+        prisonNumber: prisoner.prisonerNumber,
+        roshAnalysis,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.roshAnalysis({ referralId: referral.id })
+      cy.visit(path)
+
+      const roshAnalysisPage = Page.verifyOnPage(RoshAnalysisPage, {
+        course,
+        roshAnalysis,
+      })
+      roshAnalysisPage.shouldHavePersonDetails(person)
+      roshAnalysisPage.shouldContainNavigation(path)
+      roshAnalysisPage.shouldContainBackLink('#')
+      roshAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      roshAnalysisPage.shouldContainShowReferralSubHeading()
+      roshAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
+      roshAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      roshAnalysisPage.shouldContainImportedFromOasysText()
+      roshAnalysisPage.shouldContainPreviousBehaviourSummaryList()
+    },
+    showsRoshAnalysisPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRoshAnalysis', {
+        prisonNumber: prisoner.prisonerNumber,
+        roshAnalysis: null,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.roshAnalysis({ referralId: referral.id })
+      cy.visit(path)
+
+      const roshAnalysisPage = Page.verifyOnPage(RoshAnalysisPage, {
+        course,
+        roshAnalysis: {},
+      })
+      roshAnalysisPage.shouldHavePersonDetails(person)
+      roshAnalysisPage.shouldContainNavigation(path)
+      roshAnalysisPage.shouldContainBackLink('#')
+      roshAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      roshAnalysisPage.shouldContainShowReferralSubHeading()
+      roshAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      roshAnalysisPage.shouldContainNoRoshAnalysisSummaryCard()
     },
   },
 }
