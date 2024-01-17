@@ -3,6 +3,7 @@ import courseOfferings from './courseOfferings.json'
 import courseParticipations from './courseParticipations.json'
 import courses from './courses.json'
 import oasysOffenceDetail from './oasysOffenceDetail.json'
+import oasysRoshAnalysis from './oasysRoshAnalysis.json'
 import offenceCodes from './offenceCodes.json'
 import offenderBookings from './offenderBookings.json'
 import offenderSentenceAndOffences from './offenderSentenceAndOffences.json'
@@ -16,6 +17,7 @@ export {
   courseParticipations,
   courses,
   oasysOffenceDetail,
+  oasysRoshAnalysis,
   offenceCodes,
   offenderBookings,
   offenderSentenceAndOffences,

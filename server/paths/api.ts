@@ -9,7 +9,6 @@ const offeringPath = path('/offerings/:courseOfferingId')
 const courseByOfferingPath = offeringPath.path('course')
 
 const oasysBasePath = path('/oasys/:prisonNumber')
-const offenceDetailsPath = oasysBasePath.path('offence-details')
 
 const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
@@ -33,7 +32,8 @@ export default {
     show: coursePath,
   },
   oasys: {
-    offenceDetails: offenceDetailsPath,
+    offenceDetails: oasysBasePath.path('offence-details'),
+    roshAnalysis: oasysBasePath.path('analysis'),
   },
   offerings: {
     course: courseByOfferingPath,

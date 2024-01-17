@@ -2,7 +2,7 @@
 import config, { type ApiConfig } from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
-import type { OffenceDetail, Referral } from '@accredited-programmes/models'
+import type { OffenceDetail, Referral, RoshAnalysis } from '@accredited-programmes/models'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class OasysClient {
@@ -16,5 +16,11 @@ export default class OasysClient {
     return (await this.restClient.get({
       path: apiPaths.oasys.offenceDetails({ prisonNumber }),
     })) as OffenceDetail
+  }
+
+  async findRoshAnalysis(prisonNumber: Referral['prisonNumber']): Promise<RoshAnalysis> {
+    return (await this.restClient.get({
+      path: apiPaths.oasys.roshAnalysis({ prisonNumber }),
+    })) as RoshAnalysis
   }
 }
