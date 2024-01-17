@@ -23,7 +23,7 @@ describe('ShowRisksAndNeedsUtils', () => {
           {
             active: false,
             href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
-            text: 'Section R6 - ROSH analysis',
+            text: 'Section R6 - RoSH analysis',
           },
           {
             active: false,
@@ -62,7 +62,7 @@ describe('ShowRisksAndNeedsUtils', () => {
           {
             active: false,
             href: assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
-            text: 'Section R6 - ROSH analysis',
+            text: 'Section R6 - RoSH analysis',
           },
           {
             active: false,

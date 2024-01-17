@@ -20,8 +20,8 @@
       rows: previousBehaviourSummaryListRows
     }) }}
   {% else %}
-    {% set noRoshAnalysisString = "No ROSH analysis found in OASys. Add ROSH analysis to OASys to see it here." %}
+    {% set noRoshAnalysisString = "No RoSH analysis found in OASys. Add RoSH analysis to OASys to see it here." %}
 
-    {{ keylessSummaryCard("Section R6 - ROSH analysis", bodyText=noRoshAnalysisString, testId="no-rosh-analysis-summary-card") }}
+    {{ keylessSummaryCard("Section R6 - RoSH analysis", bodyText=noRoshAnalysisString, testId="no-rosh-analysis-summary-card") }}
   {% endif %}
 {% endblock primaryContent %}

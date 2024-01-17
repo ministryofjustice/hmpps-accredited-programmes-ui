@@ -18,8 +18,8 @@ export default class RoshAnalysisPage extends Page {
   shouldContainNoRoshAnalysisSummaryCard() {
     cy.get('[data-testid="no-rosh-analysis-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
-        'Section R6 - ROSH analysis',
-        'No ROSH analysis found in OASys. Add ROSH analysis to OASys to see it here.',
+        'Section R6 - RoSH analysis',
+        'No RoSH analysis found in OASys. Add RoSH analysis to OASys to see it here.',
         summaryCardElement,
       )
     })

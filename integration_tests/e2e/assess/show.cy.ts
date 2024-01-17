@@ -84,14 +84,14 @@ context('Viewing a submitted referral', () => {
     })
   })
 
-  describe('When reviewing Section R6 - ROSH analysis', () => {
-    describe('and there is a ROSH analysis', () => {
+  describe('When reviewing Section R6 - RoSH analysis', () => {
+    describe('and there is a RoSH analysis', () => {
       it('shows the correct information', () => {
         sharedTests.risksAndNeeds.showsRoshAnalysisPageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
       })
     })
 
-    describe('and there is no ROSH analysis', () => {
+    describe('and there is no RoSH analysis', () => {
       it('shows the correct information', () => {
         sharedTests.risksAndNeeds.showsRoshAnalysisPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
       })

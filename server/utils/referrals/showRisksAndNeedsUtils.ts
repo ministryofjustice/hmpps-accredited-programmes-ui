@@ -19,7 +19,7 @@ export default class ShowRisksAndNeedsUtils {
       },
       {
         href: paths.show.risksAndNeeds.roshAnalysis({ referralId }),
-        text: 'Section R6 - ROSH analysis',
+        text: 'Section R6 - RoSH analysis',
       },
       {
         href: paths.show.risksAndNeeds.lifestyleAndAssociates({ referralId }),
