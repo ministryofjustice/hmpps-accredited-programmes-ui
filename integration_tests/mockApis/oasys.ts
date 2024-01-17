@@ -2,9 +2,22 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { OffenceDetail, Referral, RoshAnalysis } from '@accredited-programmes/models'
+import type { Lifestyle, OffenceDetail, Referral, RoshAnalysis } from '@accredited-programmes/models'
 
 export default {
+  stubLifestyle: (args: { lifestyle: Lifestyle; prisonNumber: Referral['prisonNumber'] }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.lifestyle({ prisonNumber: args.prisonNumber }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.lifestyle,
+        status: 200,
+      },
+    }),
+
   stubOffenceDetails: (args: {
     offenceDetail: OffenceDetail
     prisonNumber: Referral['prisonNumber']
