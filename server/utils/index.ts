@@ -16,6 +16,7 @@ import CaseListUtils from './referrals/caseListUtils'
 import NewReferralUtils from './referrals/newReferralUtils'
 import ShowReferralUtils from './referrals/showReferralUtils'
 import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
+import LifestyleAndAssociatesUtils from './risksAndNeeds/lifestyleAndAssociatesUtils'
 import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
 import RoshAnalysisUtils from './risksAndNeeds/roshAnalysisUtils'
 import RouteUtils from './routeUtils'
@@ -30,6 +31,7 @@ export {
   CourseUtils,
   DateUtils,
   FormUtils,
+  LifestyleAndAssociatesUtils,
   NewReferralUtils,
   OffenceAnalysisUtils,
   OffenceUtils,

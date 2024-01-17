@@ -20,6 +20,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
             text: 'Section R6 - ROSH analysis',
           },
+          {
+            active: false,
+            href: referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
+            text: 'Section 7 - Lifestyle and associates',
+          },
         ])
       })
     })
@@ -38,6 +43,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
             text: 'Section R6 - ROSH analysis',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
+            text: 'Section 7 - Lifestyle and associates',
           },
         ])
       })

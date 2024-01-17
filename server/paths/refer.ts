@@ -71,6 +71,7 @@ export default {
     personalDetails: referralShowPathBase.path('personal-details'),
     programmeHistory: referralShowPathBase.path('programme-history'),
     risksAndNeeds: {
+      lifestyleAndAssociates: risksAndNeedsPathBase.path('lifestyle-and-associates'),
       offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
       roshAnalysis: risksAndNeedsPathBase.path('rosh-analysis'),
     },

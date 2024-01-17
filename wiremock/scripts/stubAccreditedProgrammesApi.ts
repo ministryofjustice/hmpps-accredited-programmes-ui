@@ -8,6 +8,7 @@ import {
   courseOfferings,
   courseParticipations,
   courses,
+  oasysLifestyle,
   oasysOffenceDetail,
   oasysRoshAnalysis,
   prisoners,
@@ -257,6 +258,22 @@ prisoners.forEach(prisoner => {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: oasysRoshAnalysis,
+        status: 200,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.lifestyle({ prisonNumber: prisoner.prisonerNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: oasysLifestyle,
         status: 200,
       },
     }),

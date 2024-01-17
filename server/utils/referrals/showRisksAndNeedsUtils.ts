@@ -17,6 +17,10 @@ export default class ShowRisksAndNeedsUtils {
         href: paths.show.risksAndNeeds.roshAnalysis({ referralId }),
         text: 'Section R6 - ROSH analysis',
       },
+      {
+        href: paths.show.risksAndNeeds.lifestyleAndAssociates({ referralId }),
+        text: 'Section 7 - Lifestyle and associates',
+      },
     ]
 
     return navigationItems.map(item => ({

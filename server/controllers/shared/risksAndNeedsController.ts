@@ -4,6 +4,7 @@ import type { CourseService, OasysService, PersonService, ReferralService } from
 import {
   CourseUtils,
   DateUtils,
+  LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
   RoshAnalysisUtils,
   ShowReferralUtils,
@@ -19,6 +20,31 @@ export default class RisksAndNeedsController {
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
+
+  lifestyleAndAssociates(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const lifestyle = await this.oasysService.getLifestyle(req.user.username, sharedPageData.referral.prisonNumber)
+
+      const templateLocals = lifestyle
+        ? {
+            hasLifestyle: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            reoffendingSummaryListRows: LifestyleAndAssociatesUtils.reoffendingSummaryListRows(lifestyle),
+          }
+        : {
+            hasLifestyle: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
+        ...sharedPageData,
+        ...templateLocals,
+      })
+    }
+  }
 
   offenceAnalysis(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
