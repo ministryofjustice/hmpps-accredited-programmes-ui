@@ -5,6 +5,7 @@ import {
   courseOfferingFactory,
   courseParticipationFactory,
   inmateDetailFactory,
+  lifestyleFactory,
   offenceDetailFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
@@ -22,6 +23,7 @@ import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
   AdditionalInformationPage,
+  LifestyleAndAssociatesPage,
   OffenceAnalysisPage,
   OffenceHistoryPage,
   PersonalDetailsPage,
@@ -380,6 +382,56 @@ const sharedTests = {
     },
   },
   risksAndNeeds: {
+    showsLifestyleAndAssociatesPageWithData: (role: ApplicationRole): void => {
+      const lifestyle = lifestyleFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubLifestyle', {
+        lifestyle,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.lifestyleAndAssociates({ referralId: referral.id })
+      cy.visit(path)
+
+      const lifestyleAndAssociatesPage = Page.verifyOnPage(LifestyleAndAssociatesPage, {
+        course,
+        lifestyle,
+      })
+      lifestyleAndAssociatesPage.shouldHavePersonDetails(person)
+      lifestyleAndAssociatesPage.shouldContainNavigation(path)
+      lifestyleAndAssociatesPage.shouldContainBackLink('#')
+      lifestyleAndAssociatesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading()
+      lifestyleAndAssociatesPage.shouldContainRisksAndNeedsOasysMessage()
+      lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      lifestyleAndAssociatesPage.shouldContainImportedFromOasysText()
+      lifestyleAndAssociatesPage.shouldContainReoffendingSummaryList()
+    },
+    showsLifestyleAndAssociatesPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubLifestyle', {
+        lifestyle: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.lifestyleAndAssociates({ referralId: referral.id })
+      cy.visit(path)
+
+      const lifestyleAndAssociatesPage = Page.verifyOnPage(LifestyleAndAssociatesPage, {
+        course,
+        lifestyle: {},
+      })
+      lifestyleAndAssociatesPage.shouldHavePersonDetails(person)
+      lifestyleAndAssociatesPage.shouldContainNavigation(path)
+      lifestyleAndAssociatesPage.shouldContainBackLink('#')
+      lifestyleAndAssociatesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading()
+      lifestyleAndAssociatesPage.shouldContainRisksAndNeedsOasysMessage()
+      lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      lifestyleAndAssociatesPage.shouldContainNoLifestyleDataSummaryCard()
+    },
     showsOffenceAnalysisPageWithData: (role: ApplicationRole): void => {
       const offenceDetail = offenceDetailFactory.build({})
       sharedTests.referrals.beforeEach(role)
