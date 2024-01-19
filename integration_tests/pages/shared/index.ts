@@ -5,6 +5,7 @@ import PersonalDetailsPage from './showReferral/personalDetails'
 import ProgrammeHistoryPage from './showReferral/programmeHistory'
 import LifestyleAndAssociatesPage from './showReferral/risksAndNeeds/lifestyleAndAssociates'
 import OffenceAnalysisPage from './showReferral/risksAndNeeds/offenceAnalysis'
+import RelationshipsPage from './showReferral/risksAndNeeds/relationships'
 import RoshAnalysisPage from './showReferral/risksAndNeeds/roshAnalysis'
 import SentenceInformationPage from './showReferral/sentenceInformation'
 
@@ -16,6 +17,7 @@ export {
   OffenceHistoryPage,
   PersonalDetailsPage,
   ProgrammeHistoryPage,
+  RelationshipsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
 }
