@@ -2,7 +2,14 @@
 import config, { type ApiConfig } from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
-import type { Lifestyle, OffenceDetail, Referral, Relationships, RoshAnalysis } from '@accredited-programmes/models'
+import type {
+  Lifestyle,
+  OffenceDetail,
+  Psychiatric,
+  Referral,
+  Relationships,
+  RoshAnalysis,
+} from '@accredited-programmes/models'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class OasysClient {
@@ -22,6 +29,12 @@ export default class OasysClient {
     return (await this.restClient.get({
       path: apiPaths.oasys.offenceDetails({ prisonNumber }),
     })) as OffenceDetail
+  }
+
+  async findPsychiatric(prisonNumber: Referral['prisonNumber']): Promise<Psychiatric> {
+    return (await this.restClient.get({
+      path: apiPaths.oasys.psychiatric({ prisonNumber }),
+    })) as Psychiatric
   }
 
   async findRelationships(prisonNumber: Referral['prisonNumber']): Promise<Relationships> {
