@@ -21,6 +21,7 @@ export default {
     risksAndNeeds: {
       lifestyleAndAssociates: risksAndNeedsPathBase.path('lifestyle-and-associates'),
       offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
+      relationships: risksAndNeedsPathBase.path('relationships'),
       roshAnalysis: risksAndNeedsPathBase.path('rosh-analysis'),
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
