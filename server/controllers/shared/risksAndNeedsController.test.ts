@@ -14,6 +14,7 @@ import {
   organisationFactory,
   personFactory,
   referralFactory,
+  relationshipsFactory,
   roshAnalysisFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
@@ -22,6 +23,7 @@ import {
   DateUtils,
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
+  RelationshipsUtils,
   RoshAnalysisUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
@@ -34,6 +36,7 @@ jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
 jest.mock('../../utils/risksAndNeeds/lifestyleAndAssociatesUtils')
 jest.mock('../../utils/risksAndNeeds/offenceAnalysisUtils')
+jest.mock('../../utils/risksAndNeeds/relationshipsUtils')
 jest.mock('../../utils/risksAndNeeds/roshAnalysisUtils')
 
 const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
@@ -41,6 +44,7 @@ const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferr
 const mockShowRisksAndNeedsUtils = ShowRisksAndNeedsUtils as jest.Mocked<typeof ShowRisksAndNeedsUtils>
 const mockLifestyleAndAssociatesUtils = LifestyleAndAssociatesUtils as jest.Mocked<typeof LifestyleAndAssociatesUtils>
 const mockOffenceAnalysisUtils = OffenceAnalysisUtils as jest.Mocked<typeof OffenceAnalysisUtils>
+const mockRelationshipsUtils = RelationshipsUtils as jest.Mocked<typeof RelationshipsUtils>
 const mockRoshAnalysisUtils = RoshAnalysisUtils as jest.Mocked<typeof RoshAnalysisUtils>
 
 describe('RisksAndNeedsController', () => {
@@ -214,6 +218,53 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
           ...sharedPageData,
           hasOffenceDetails: false,
+          navigationItems,
+          subNavigationItems,
+        })
+      })
+    })
+  })
+
+  describe('relationships', () => {
+    it('renders the relationships page with the correct response locals', async () => {
+      const relationships = relationshipsFactory.build()
+      const domesticViolenceSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+
+      mockRelationshipsUtils.domesticViolenceSummaryListRows.mockReturnValue(domesticViolenceSummaryListRows)
+
+      when(oasysService.getRelationships).calledWith(username, person.prisonNumber).mockResolvedValue(relationships)
+
+      request.path = referPaths.show.risksAndNeeds.relationships({ referralId: referral.id })
+
+      const requestHandler = controller.relationships()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
+        ...sharedPageData,
+        domesticViolenceSummaryListRows,
+        hasRelationships: true,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        navigationItems,
+        subNavigationItems,
+      })
+    })
+
+    describe('when the oasys service returns `null`', () => {
+      it('renders the relationships page with the correct response locals', async () => {
+        when(oasysService.getRelationships).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.relationships({ referralId: referral.id })
+
+        const requestHandler = controller.relationships()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
+          ...sharedPageData,
+          hasRelationships: false,
           navigationItems,
           subNavigationItems,
         })
