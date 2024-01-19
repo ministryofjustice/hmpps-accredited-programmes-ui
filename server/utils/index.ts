@@ -18,6 +18,7 @@ import ShowReferralUtils from './referrals/showReferralUtils'
 import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
 import LifestyleAndAssociatesUtils from './risksAndNeeds/lifestyleAndAssociatesUtils'
 import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
+import RelationshipsUtils from './risksAndNeeds/relationshipsUtils'
 import RoshAnalysisUtils from './risksAndNeeds/roshAnalysisUtils'
 import RouteUtils from './routeUtils'
 import SentenceInformationUtils from './sentenceInformationUtils'
@@ -39,6 +40,7 @@ export {
   PaginationUtils,
   PathUtils,
   PersonUtils,
+  RelationshipsUtils,
   RoshAnalysisUtils,
   RouteUtils,
   SentenceInformationUtils,
