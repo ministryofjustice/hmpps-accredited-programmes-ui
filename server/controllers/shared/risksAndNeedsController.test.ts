@@ -13,6 +13,7 @@ import {
   offenceDetailFactory,
   organisationFactory,
   personFactory,
+  psychiatricFactory,
   referralFactory,
   relationshipsFactory,
   roshAnalysisFactory,
@@ -21,6 +22,7 @@ import Helpers from '../../testutils/helpers'
 import {
   CourseUtils,
   DateUtils,
+  EmotionalWellbeingUtils,
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
   RelationshipsUtils,
@@ -34,6 +36,7 @@ import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
+jest.mock('../../utils/risksAndNeeds/emotionalWellbeingUtils')
 jest.mock('../../utils/risksAndNeeds/lifestyleAndAssociatesUtils')
 jest.mock('../../utils/risksAndNeeds/offenceAnalysisUtils')
 jest.mock('../../utils/risksAndNeeds/relationshipsUtils')
@@ -42,6 +45,7 @@ jest.mock('../../utils/risksAndNeeds/roshAnalysisUtils')
 const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
 const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
 const mockShowRisksAndNeedsUtils = ShowRisksAndNeedsUtils as jest.Mocked<typeof ShowRisksAndNeedsUtils>
+const mockEmotionalWellbeingUtils = EmotionalWellbeingUtils as jest.Mocked<typeof EmotionalWellbeingUtils>
 const mockLifestyleAndAssociatesUtils = LifestyleAndAssociatesUtils as jest.Mocked<typeof LifestyleAndAssociatesUtils>
 const mockOffenceAnalysisUtils = OffenceAnalysisUtils as jest.Mocked<typeof OffenceAnalysisUtils>
 const mockRelationshipsUtils = RelationshipsUtils as jest.Mocked<typeof RelationshipsUtils>
@@ -100,6 +104,53 @@ describe('RisksAndNeedsController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
+  })
+
+  describe('emotionalWellbeing', () => {
+    it('renders the emotional wellbeing page with the correct response locals', async () => {
+      const psychiatric = psychiatricFactory.build({ description: '0 - No problems' })
+      const psychiatricSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+
+      mockEmotionalWellbeingUtils.psychiatricSummaryListRows.mockReturnValue(psychiatricSummaryListRows)
+
+      when(oasysService.getPsychiatric).calledWith(username, person.prisonNumber).mockResolvedValue(psychiatric)
+
+      request.path = referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id })
+
+      const requestHandler = controller.emotionalWellbeing()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
+        ...sharedPageData,
+        hasEmotionalWellbeingData: true,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        navigationItems,
+        psychiatricSummaryListRows,
+        subNavigationItems,
+      })
+    })
+
+    describe('when the oasys service returns `null`', () => {
+      it('renders the emotional wellbeing page with the correct response locals', async () => {
+        when(oasysService.getPsychiatric).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id })
+
+        const requestHandler = controller.emotionalWellbeing()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
+          ...sharedPageData,
+          hasEmotionalWellbeingData: false,
+          navigationItems,
+          subNavigationItems,
+        })
+      })
+    })
   })
 
   describe('lifestyleAndAssociates', () => {

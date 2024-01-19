@@ -1,0 +1,28 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {% if hasEmotionalWellbeingData %}
+    {{ super() }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Section 10.6 - Psychiatric problems"
+        },
+        attributes: {
+          "data-testid": "psychiatric-problems-summary-list"
+        }
+      },
+      rows: psychiatricSummaryListRows
+    }) }}
+
+  {% else %}
+    {% set noPsychiatricDataString = "No psychiatric data found in OASys. Add psychiatric data to OASys to see them here." %}
+
+    {{ keylessSummaryCard("Section 10.6 - Psychiatric problems", bodyText=noPsychiatricDataString, testId="no-psychiatric-data-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}
