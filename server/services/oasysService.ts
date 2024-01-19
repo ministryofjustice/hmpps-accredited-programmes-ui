@@ -2,7 +2,14 @@ import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
 import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
-import type { Lifestyle, OffenceDetail, Referral, Relationships, RoshAnalysis } from '@accredited-programmes/models'
+import type {
+  Lifestyle,
+  OffenceDetail,
+  Psychiatric,
+  Referral,
+  Relationships,
+  RoshAnalysis,
+} from '@accredited-programmes/models'
 
 export default class OasysService {
   constructor(
@@ -53,6 +60,29 @@ export default class OasysService {
       }
 
       throw createError(knownError.status || 500, `Error fetching offence details for prison number ${prisonNumber}.`)
+    }
+  }
+
+  async getPsychiatric(
+    username: Express.User['username'],
+    prisonNumber: Referral['prisonNumber'],
+  ): Promise<Psychiatric | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const oasysClient = this.oasysClientBuilder(systemToken)
+
+    try {
+      const psychiatric = await oasysClient.findPsychiatric(prisonNumber)
+
+      return psychiatric
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, `Error fetching psychiatric data for prison number ${prisonNumber}.`)
     }
   }
 

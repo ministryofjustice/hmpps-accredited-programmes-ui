@@ -8,6 +8,7 @@ import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
 import {
   lifestyleFactory,
   offenceDetailFactory,
+  psychiatricFactory,
   relationshipsFactory,
   roshAnalysisFactory,
 } from '../testutils/factories'
@@ -126,6 +127,52 @@ describe('OasysService', () => {
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(oasysClient.findOffenceDetails).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+  })
+
+  describe('getPsychiatric', () => {
+    it('returns psychiatric information for the given prison number', async () => {
+      const psychiatric = psychiatricFactory.build()
+
+      when(oasysClient.findPsychiatric).calledWith(prisonNumber).mockResolvedValue(psychiatric)
+
+      const result = await service.getPsychiatric(username, prisonNumber)
+
+      expect(result).toEqual(psychiatric)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findPsychiatric).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        const notFoundClientError = createError(404)
+
+        when(oasysClient.findPsychiatric).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getPsychiatric(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findPsychiatric).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+
+        when(oasysClient.findPsychiatric).calledWith(prisonNumber).mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching psychiatric data for prison number ${prisonNumber}.`)
+        await expect(service.getPsychiatric(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findPsychiatric).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })
