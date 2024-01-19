@@ -14,6 +14,7 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  relationshipsFactory,
   roshAnalysisFactory,
   userFactory,
 } from '../../server/testutils/factories'
@@ -28,6 +29,7 @@ import {
   OffenceHistoryPage,
   PersonalDetailsPage,
   ProgrammeHistoryPage,
+  RelationshipsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
 } from '../pages/shared'
@@ -486,6 +488,55 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainShowReferralSubHeading()
       offenceAnalysisPage.shouldContainNoOffenceDetailsSummaryCard()
       offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+    },
+    showsRelationshipsPageWithData: (role: ApplicationRole): void => {
+      const relationships = relationshipsFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRelationships', {
+        prisonNumber: prisoner.prisonerNumber,
+        relationships,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.relationships({ referralId: referral.id })
+      cy.visit(path)
+
+      const relationshipsPage = Page.verifyOnPage(RelationshipsPage, {
+        course,
+        relationships,
+      })
+      relationshipsPage.shouldHavePersonDetails(person)
+      relationshipsPage.shouldContainNavigation(path)
+      relationshipsPage.shouldContainBackLink('#')
+      relationshipsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      relationshipsPage.shouldContainShowReferralSubHeading()
+      relationshipsPage.shouldContainRisksAndNeedsOasysMessage()
+      relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      relationshipsPage.shouldContainImportedFromOasysText()
+      relationshipsPage.shouldContainDomesticViolenceSummaryList()
+    },
+    showsRelationshipsPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRelationships', {
+        prisonNumber: prisoner.prisonerNumber,
+        relationships: null,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.relationships({ referralId: referral.id })
+      cy.visit(path)
+
+      const relationshipsPage = Page.verifyOnPage(RelationshipsPage, {
+        course,
+        relationships: {},
+      })
+      relationshipsPage.shouldHavePersonDetails(person)
+      relationshipsPage.shouldContainNavigation(path)
+      relationshipsPage.shouldContainBackLink('#')
+      relationshipsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      relationshipsPage.shouldContainShowReferralSubHeading()
+      relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      relationshipsPage.shouldContainNoRelationshipsSummaryCard()
     },
     showsRoshAnalysisPageWithData: (role: ApplicationRole): void => {
       const roshAnalysis = roshAnalysisFactory.build({})
