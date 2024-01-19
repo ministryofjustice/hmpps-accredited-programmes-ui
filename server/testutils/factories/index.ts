@@ -20,6 +20,7 @@ import prisonAddressFactory from './prisonAddress'
 import prisonerFactory from './prisoner'
 import referralFactory from './referral'
 import referralSummaryFactory from './referralSummary'
+import relationshipsFactory from './relationships'
 import roshAnalysisFactory from './roshAnalysis'
 import userFactory from './user'
 
@@ -46,6 +47,7 @@ export {
   prisonerFactory,
   referralFactory,
   referralSummaryFactory,
+  relationshipsFactory,
   roshAnalysisFactory,
   userFactory,
 }

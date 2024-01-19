@@ -15,6 +15,7 @@ import type { OrganisationAddress } from './OrganisationAddress'
 import type { Paginated } from './Paginated'
 import type { Person } from './Person'
 import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralSummary, ReferralUpdate } from './Referral'
+import type { Relationships } from './Relationships'
 import type { RoshAnalysis } from './RoshAnalysis'
 
 export type {
@@ -37,5 +38,6 @@ export type {
   ReferralStatus,
   ReferralSummary,
   ReferralUpdate,
+  Relationships,
   RoshAnalysis,
 }
