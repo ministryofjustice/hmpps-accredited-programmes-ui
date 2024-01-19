@@ -13,6 +13,7 @@ import {
   oasysRelationships,
   oasysRoshAnalysis,
   prisoners,
+  psychiatric,
   referralSummaries,
   referrals,
 } from '../stubs'
@@ -291,6 +292,22 @@ prisoners.forEach(prisoner => {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: oasysRelationships,
+        status: 200,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.psychiatric({ prisonNumber: prisoner.prisonerNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: psychiatric,
         status: 200,
       },
     }),
