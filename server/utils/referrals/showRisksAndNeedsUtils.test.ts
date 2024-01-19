@@ -30,6 +30,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             href: referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
             text: 'Section 7 - Lifestyle and associates',
           },
+          {
+            active: false,
+            href: referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId }),
+            text: 'Section 10 - Emotional wellbeing',
+          },
         ])
       })
     })
@@ -58,6 +63,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: assessPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
             text: 'Section 7 - Lifestyle and associates',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId }),
+            text: 'Section 10 - Emotional wellbeing',
           },
         ])
       })
