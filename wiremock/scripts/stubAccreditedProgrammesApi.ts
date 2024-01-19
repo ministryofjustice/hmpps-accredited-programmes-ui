@@ -10,6 +10,7 @@ import {
   courses,
   oasysLifestyle,
   oasysOffenceDetail,
+  oasysRelationships,
   oasysRoshAnalysis,
   prisoners,
   referralSummaries,
@@ -235,6 +236,22 @@ prisoners.forEach(prisoner => {
     stubFor({
       request: {
         method: 'GET',
+        url: apiPaths.oasys.lifestyle({ prisonNumber: prisoner.prisonerNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: oasysLifestyle,
+        status: 200,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
         url: apiPaths.oasys.offenceDetails({ prisonNumber: prisoner.prisonerNumber }),
       },
       response: {
@@ -267,13 +284,13 @@ prisoners.forEach(prisoner => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.oasys.lifestyle({ prisonNumber: prisoner.prisonerNumber }),
+        url: apiPaths.oasys.relationships({ prisonNumber: prisoner.prisonerNumber }),
       },
       response: {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: oasysLifestyle,
+        jsonBody: oasysRelationships,
         status: 200,
       },
     }),
