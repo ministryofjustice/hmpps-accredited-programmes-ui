@@ -29,6 +29,10 @@ export default class ShowRisksAndNeedsUtils {
         href: paths.show.risksAndNeeds.emotionalWellbeing({ referralId }),
         text: 'Section 10 - Emotional wellbeing',
       },
+      {
+        href: paths.show.risksAndNeeds.thinkingAndBehaving({ referralId }),
+        text: 'Section 11 - Thinking and behaving',
+      },
     ]
 
     return navigationItems.map(item => ({

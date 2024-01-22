@@ -24,6 +24,7 @@ export default {
       offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
       relationships: risksAndNeedsPathBase.path('relationships'),
       roshAnalysis: risksAndNeedsPathBase.path('rosh-analysis'),
+      thinkingAndBehaving: risksAndNeedsPathBase.path('thinking-and-behaving'),
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
   },

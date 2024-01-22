@@ -1,3 +1,4 @@
+import type { Behaviour } from './Behaviour'
 import type { Course } from './Course'
 import type { CourseAudience } from './CourseAudience'
 import type { CourseOffering } from './CourseOffering'
@@ -20,6 +21,7 @@ import type { Relationships } from './Relationships'
 import type { RoshAnalysis } from './RoshAnalysis'
 
 export type {
+  Behaviour,
   Course,
   CourseAudience,
   CourseOffering,

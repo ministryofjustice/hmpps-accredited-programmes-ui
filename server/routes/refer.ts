@@ -76,6 +76,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.show.risksAndNeeds.offenceAnalysis.pattern, risksAndNeedsController.offenceAnalysis())
   get(referPaths.show.risksAndNeeds.relationships.pattern, risksAndNeedsController.relationships())
   get(referPaths.show.risksAndNeeds.roshAnalysis.pattern, risksAndNeedsController.roshAnalysis())
+  get(referPaths.show.risksAndNeeds.thinkingAndBehaving.pattern, risksAndNeedsController.thinkingAndBehaving())
 
   return router
 }

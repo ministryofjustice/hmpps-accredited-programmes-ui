@@ -7,6 +7,7 @@ import RisksAndNeedsController from './risksAndNeedsController'
 import { referPaths } from '../../paths'
 import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
 import {
+  behaviourFactory,
   courseFactory,
   courseOfferingFactory,
   lifestyleFactory,
@@ -29,6 +30,7 @@ import {
   RoshAnalysisUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
+  ThinkingAndBehavingUtils,
 } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
@@ -41,6 +43,7 @@ jest.mock('../../utils/risksAndNeeds/lifestyleAndAssociatesUtils')
 jest.mock('../../utils/risksAndNeeds/offenceAnalysisUtils')
 jest.mock('../../utils/risksAndNeeds/relationshipsUtils')
 jest.mock('../../utils/risksAndNeeds/roshAnalysisUtils')
+jest.mock('../../utils/risksAndNeeds/thinkingAndBehavingUtils')
 
 const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
 const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
@@ -50,6 +53,7 @@ const mockLifestyleAndAssociatesUtils = LifestyleAndAssociatesUtils as jest.Mock
 const mockOffenceAnalysisUtils = OffenceAnalysisUtils as jest.Mocked<typeof OffenceAnalysisUtils>
 const mockRelationshipsUtils = RelationshipsUtils as jest.Mocked<typeof RelationshipsUtils>
 const mockRoshAnalysisUtils = RoshAnalysisUtils as jest.Mocked<typeof RoshAnalysisUtils>
+const mockThinkingAndBehavingUtils = ThinkingAndBehavingUtils as jest.Mocked<typeof ThinkingAndBehavingUtils>
 
 describe('RisksAndNeedsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -363,6 +367,55 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
           ...sharedPageData,
           hasRoshAnalysis: false,
+          navigationItems,
+          subNavigationItems,
+        })
+      })
+    })
+  })
+
+  describe('thinkingAndBehaving', () => {
+    it('renders the thinking and behaving page with the correct response locals', async () => {
+      const behaviour = behaviourFactory.build()
+      const thinkingAndBehavingSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+
+      mockThinkingAndBehavingUtils.thinkingAndBehavingSummaryListRows.mockReturnValue(
+        thinkingAndBehavingSummaryListRows,
+      )
+
+      when(oasysService.getBehaviour).calledWith(username, person.prisonNumber).mockResolvedValue(behaviour)
+
+      request.path = referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id })
+
+      const requestHandler = controller.thinkingAndBehaving()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
+        ...sharedPageData,
+        hasBehaviourData: true,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        navigationItems,
+        subNavigationItems,
+        thinkingAndBehavingSummaryListRows,
+      })
+    })
+
+    describe('when the OASys service returns `null`', () => {
+      it('renders the thinking and behaving page with the correct response locals', async () => {
+        when(oasysService.getBehaviour).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id })
+
+        const requestHandler = controller.thinkingAndBehaving()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
+          ...sharedPageData,
+          hasBehaviourData: false,
           navigationItems,
           subNavigationItems,
         })

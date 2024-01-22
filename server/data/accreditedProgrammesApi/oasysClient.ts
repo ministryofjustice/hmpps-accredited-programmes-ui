@@ -3,6 +3,7 @@ import config, { type ApiConfig } from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
+  Behaviour,
   Lifestyle,
   OffenceDetail,
   Psychiatric,
@@ -17,6 +18,12 @@ export default class OasysClient {
 
   constructor(systemToken: SystemToken) {
     this.restClient = new RestClient('oasysClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
+  }
+
+  async findBehaviour(prisonNumber: Referral['prisonNumber']): Promise<Behaviour> {
+    return (await this.restClient.get({
+      path: apiPaths.oasys.behaviour({ prisonNumber }),
+    })) as Behaviour
   }
 
   async findLifestyle(prisonNumber: Referral['prisonNumber']): Promise<Lifestyle> {

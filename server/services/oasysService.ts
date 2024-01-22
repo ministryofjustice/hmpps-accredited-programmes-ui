@@ -3,6 +3,7 @@ import type { ResponseError } from 'superagent'
 
 import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
+  Behaviour,
   Lifestyle,
   OffenceDetail,
   Psychiatric,
@@ -16,6 +17,29 @@ export default class OasysService {
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly oasysClientBuilder: RestClientBuilder<OasysClient>,
   ) {}
+
+  async getBehaviour(
+    username: Express.User['username'],
+    prisonNumber: Referral['prisonNumber'],
+  ): Promise<Behaviour | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const oasysClient = this.oasysClientBuilder(systemToken)
+
+    try {
+      const behaviour = await oasysClient.findBehaviour(prisonNumber)
+
+      return behaviour
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, `Error fetching behaviour data for prison number ${prisonNumber}.`)
+    }
+  }
 
   async getLifestyle(
     username: Express.User['username'],

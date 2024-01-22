@@ -32,6 +32,7 @@ export default {
     show: coursePath,
   },
   oasys: {
+    behaviour: oasysBasePath.path('behaviour'),
     lifestyle: oasysBasePath.path('lifestyle'),
     offenceDetails: oasysBasePath.path('offence-details'),
     psychiatric: oasysBasePath.path('psychiatric'),
