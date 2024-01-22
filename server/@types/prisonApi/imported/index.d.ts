@@ -908,42 +908,42 @@ export interface paths {
   "/api/staff/{staffId}": {
     /**
      * Staff detail.
-     * @description Staff detail.
+     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
      */
     get: operations["getStaffDetail"];
   };
   "/api/staff/{staffId}/{agencyId}/roles": {
     /**
      * List of job roles for specified staff and agency Id
-     * @description List of job roles for specified staff and agency Id
+     * @description Security note: the agency must be in the current user's caseload.
      */
     get: operations["getAllRolesForAgency"];
   };
   "/api/staff/{staffId}/{agencyId}/roles/{roleType}": {
     /**
      * Check if staff member has a role
-     * @description Check if staff member has a role, either KW or POM
+     * @description Check if staff member has a role, either KW or POM. Security note: the agency must be in the current user's caseload.
      */
     get: operations["hasStaffRole"];
   };
   "/api/staff/{staffId}/emails": {
     /**
      * Returns a list of email addresses associated with this staff user
-     * @description List of email addresses for a specified staff user
+     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
      */
     get: operations["getStaffEmailAddresses"];
   };
   "/api/staff/{staffId}/caseloads": {
     /**
      * Returns a list of caseloads associated with this staff user
-     * @description List of caseloads for a specified staff user
+     * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
      */
     get: operations["getStaffCaseloads"];
   };
   "/api/staff/roles/{agencyId}/role/{role}": {
     /**
      * Get staff members within agency who are currently assigned the specified role.
-     * @description Get staff members within agency who are currently assigned the specified role.<p>This endpoint uses the REPLICA database.</p>
+     * @description Get staff members within agency who are currently assigned the specified role. Security note: the agency must be in the current user's caseload.<p>This endpoint uses the REPLICA database.</p>
      */
     get: operations["getStaffByAgencyRole"];
   };
@@ -1302,6 +1302,10 @@ export interface paths {
      * @description Retrieve an single offender sentence details
      */
     get: operations["getLatestSentenceSummary"];
+  };
+  "/api/offenders/{offenderNo}/belief-history": {
+    /** Get belief history for a prisoner */
+    get: operations["getOffenderBeliefHistory"];
   };
   "/api/offenders/{offenderNo}/alerts/v2": {
     /**
@@ -1767,13 +1771,6 @@ export interface paths {
      * @description Assessment Information. Requires booking access (via caseload) or VIEW_ASSESSMENTS role.
      */
     get: operations["getAssessments_1"];
-  };
-  "/api/bookings/{bookingId}/assessment/{assessmentCode}": {
-    /**
-     * Offender assessment detail.
-     * @description Offender assessment detail.
-     */
-    get: operations["getAssessmentByCode"];
   };
   "/api/bookings/{bookingId}/aliases": {
     /**
@@ -5091,6 +5088,8 @@ export interface components {
       keyDates: components["schemas"]["OffenderKeyDates"];
       /** @description Comment to be associated with the sentence calculation, if not set a default comment is used */
       comment?: string;
+      /** @description The reason the sentence calculation was performed, if not set the default reason is used */
+      reason?: string;
       /** @description Is true, when there are no dates to be recorded in NOMIS */
       noDates?: boolean;
     };
@@ -7345,6 +7344,7 @@ export interface components {
       prisonerNumber: string;
       /** Format: date */
       dateOfBirth: string;
+      lastName: string;
       alerts: components["schemas"]["Alert"][];
     };
     /** @description Sentence Adjustment values */
@@ -7540,9 +7540,13 @@ export interface components {
     };
     /** @description A period of time in prison */
     PrisonPeriod: {
-      bookNumber?: string;
-      /** Format: int64 */
-      bookingId?: number;
+      /** @description The book number for this booking */
+      bookNumber: string;
+      /**
+       * Format: int64
+       * @description The ID of this booking
+       */
+      bookingId: number;
       /**
        * @description Date they first entered prison in this booking
        * @example 2021-07-05T10:35:17
@@ -7598,7 +7602,7 @@ export interface components {
        * @description Type of movement out of prison
        * @enum {string}
        */
-      outwardType: "REL" | "TAP";
+      outwardType?: "REL" | "TAP";
       /**
        * @description The initial prison they entered during this period
        * @example MDI
@@ -8581,6 +8585,61 @@ export interface components {
       /** @description Whether this is a life sentence. */
       lifeSentence: boolean;
     };
+    Belief: {
+      /**
+       * Format: int64
+       * @description Prisoner booking id
+       * @example 1123456
+       */
+      bookingId: number;
+      /**
+       * Format: int64
+       * @description Offender belief id
+       * @example 1123456
+       */
+      beliefId: number;
+      /**
+       * @description Belief Code
+       * @example SCIE
+       */
+      beliefCode: string;
+      /**
+       * @description Description associated with the belief code
+       * @example Scientologist
+       */
+      beliefDescription: string;
+      /**
+       * Format: date
+       * @description Date the belief started
+       * @example 2024-01-01
+       */
+      startDate: string;
+      /**
+       * Format: date
+       * @description Date the belief ended
+       * @example 2024-12-12
+       */
+      endDate?: string;
+      /** @description Was a reason given for change of belief? */
+      changeReason?: boolean;
+      /** @description Comments describing reason for change of belief */
+      comments?: string;
+      /** @description First name of staff member that added belief */
+      addedByFirstName: string;
+      /** @description Last name of staff member that added belief */
+      addedByLastName: string;
+      /** @description First name of staff member that updated belief */
+      updatedByFirstName?: string;
+      /** @description Last name of staff member that updated belief */
+      updatedByLastName?: string;
+      /**
+       * Format: date
+       * @description Date belief was updated
+       */
+      updatedDate?: string;
+      /** @description Verified flag */
+      verified?: boolean;
+    };
     /** @description Base Sentence Calc Dates */
     BaseSentenceCalcDates: {
       /**
@@ -8940,6 +8999,31 @@ export interface components {
        * @example HI
        */
       classificationReviewReason?: string;
+      /**
+       * @description The classification code entered to override the calculated value prior to approval
+       * @example HI
+       */
+      overridingClassificationCode?: string;
+      /**
+       * @description The classification code originally calculated by NOMIS based on the answers given to the questions when carrying out the initial review
+       * @example HI
+       */
+      calculatedClassificationCode?: string;
+      /**
+       * @description The classification code that has been approved
+       * @example HI
+       */
+      approvedClassificationCode?: string;
+      /**
+       * @description Comment added at approval of classification code
+       * @example Comment
+       */
+      approvalComment?: string;
+      /**
+       * @description The reason given for overriding the calculated classification code
+       * @example Overriding comment
+       */
+      overrideReason?: string;
       /** @description Assessment questions and answers, in the order they were asked */
       questions: components["schemas"]["AssessmentQuestion"][];
     };
@@ -16258,7 +16342,7 @@ export interface operations {
   };
   /**
    * Staff detail.
-   * @description Staff detail.
+   * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
    */
   getStaffDetail: {
     parameters: {
@@ -16296,7 +16380,7 @@ export interface operations {
   };
   /**
    * List of job roles for specified staff and agency Id
-   * @description List of job roles for specified staff and agency Id
+   * @description Security note: the agency must be in the current user's caseload.
    */
   getAllRolesForAgency: {
     parameters: {
@@ -16336,7 +16420,7 @@ export interface operations {
   };
   /**
    * Check if staff member has a role
-   * @description Check if staff member has a role, either KW or POM
+   * @description Check if staff member has a role, either KW or POM. Security note: the agency must be in the current user's caseload.
    */
   hasStaffRole: {
     parameters: {
@@ -16381,7 +16465,7 @@ export interface operations {
   };
   /**
    * Returns a list of email addresses associated with this staff user
-   * @description List of email addresses for a specified staff user
+   * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
    */
   getStaffEmailAddresses: {
     parameters: {
@@ -16419,7 +16503,7 @@ export interface operations {
   };
   /**
    * Returns a list of caseloads associated with this staff user
-   * @description List of caseloads for a specified staff user
+   * @description Security note: staff details are only available for the current user unless client has ROLE_STAFF_SEARCH.
    */
   getStaffCaseloads: {
     parameters: {
@@ -16460,7 +16544,7 @@ export interface operations {
   };
   /**
    * Get staff members within agency who are currently assigned the specified role.
-   * @description Get staff members within agency who are currently assigned the specified role.<p>This endpoint uses the REPLICA database.</p>
+   * @description Get staff members within agency who are currently assigned the specified role. Security note: the agency must be in the current user's caseload.<p>This endpoint uses the REPLICA database.</p>
    */
   getStaffByAgencyRole: {
     parameters: {
@@ -18027,6 +18111,44 @@ export interface operations {
       };
       /** @description Invalid request. */
       400: {
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  /** Get belief history for a prisoner */
+  getOffenderBeliefHistory: {
+    parameters: {
+      query?: {
+        bookingId?: string;
+      };
+      path: {
+        /** @description The prisoner number */
+        offenderNo: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Belief"][];
+        };
+      };
+      /** @description Invalid request. */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Forbidden - user not authorised to view belief history. */
+      403: {
         content: {
           "application/json": components["schemas"]["ErrorResponse"];
         };
@@ -20751,46 +20873,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["Assessment"][];
-        };
-      };
-      /** @description Invalid request. */
-      400: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Requested resource not found. */
-      404: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Unrecoverable error occurred whilst processing request. */
-      500: {
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  /**
-   * Offender assessment detail.
-   * @description Offender assessment detail.
-   */
-  getAssessmentByCode: {
-    parameters: {
-      path: {
-        /** @description The booking id of offender */
-        bookingId: number;
-        /** @description Assessment Type Code */
-        assessmentCode: string;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "application/json": components["schemas"]["Assessment"];
         };
       };
       /** @description Invalid request. */
