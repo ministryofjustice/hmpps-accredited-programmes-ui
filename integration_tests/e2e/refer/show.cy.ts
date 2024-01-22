@@ -118,5 +118,19 @@ context('Viewing a submitted referral', () => {
         })
       })
     })
+
+    describe('When reviewing Section 10 - Emotional wellbeing', () => {
+      describe('and there is psychiatric data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsEmotionalWellbeingPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no psychiatric data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsEmotionalWellbeingPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
   })
 })

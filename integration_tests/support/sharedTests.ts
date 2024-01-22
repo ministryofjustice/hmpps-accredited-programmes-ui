@@ -13,6 +13,7 @@ import {
   personFactory,
   prisonFactory,
   prisonerFactory,
+  psychiatricFactory,
   referralFactory,
   relationshipsFactory,
   roshAnalysisFactory,
@@ -33,6 +34,7 @@ import {
   RoshAnalysisPage,
   SentenceInformationPage,
 } from '../pages/shared'
+import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
@@ -384,6 +386,56 @@ const sharedTests = {
     },
   },
   risksAndNeeds: {
+    showsEmotionalWellbeingPageWithData: (role: ApplicationRole): void => {
+      const psychiatric = psychiatricFactory.build()
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubPsychiatric', {
+        prisonNumber: prisoner.prisonerNumber,
+        psychiatric,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id })
+      cy.visit(path)
+
+      const emotionalWellbeingPage = Page.verifyOnPage(EmotionalWellbeing, {
+        course,
+        psychiatric,
+      })
+      emotionalWellbeingPage.shouldHavePersonDetails(person)
+      emotionalWellbeingPage.shouldContainNavigation(path)
+      emotionalWellbeingPage.shouldContainBackLink('#')
+      emotionalWellbeingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      emotionalWellbeingPage.shouldContainShowReferralSubHeading()
+      emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
+      emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      emotionalWellbeingPage.shouldContainImportedFromOasysText()
+      emotionalWellbeingPage.shouldContainPsychiatricProblemsSummaryList()
+    },
+    showsEmotionalWellbeingPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubPsychiatric', {
+        prisonNumber: prisoner.prisonerNumber,
+        psychiatric: null,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id })
+      cy.visit(path)
+
+      const emotionalWellbeingPage = Page.verifyOnPage(EmotionalWellbeing, {
+        course,
+        psychiatric: {},
+      })
+      emotionalWellbeingPage.shouldHavePersonDetails(person)
+      emotionalWellbeingPage.shouldContainNavigation(path)
+      emotionalWellbeingPage.shouldContainBackLink('#')
+      emotionalWellbeingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      emotionalWellbeingPage.shouldContainShowReferralSubHeading()
+      emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
+      emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      emotionalWellbeingPage.shouldContainNoPsychiatricDataSummaryCard()
+    },
     showsLifestyleAndAssociatesPageWithData: (role: ApplicationRole): void => {
       const lifestyle = lifestyleFactory.build({})
       sharedTests.referrals.beforeEach(role)
