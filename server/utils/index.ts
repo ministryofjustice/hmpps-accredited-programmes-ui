@@ -21,6 +21,7 @@ import LifestyleAndAssociatesUtils from './risksAndNeeds/lifestyleAndAssociatesU
 import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
 import RelationshipsUtils from './risksAndNeeds/relationshipsUtils'
 import RoshAnalysisUtils from './risksAndNeeds/roshAnalysisUtils'
+import ThinkingAndBehavingUtils from './risksAndNeeds/thinkingAndBehavingUtils'
 import RouteUtils from './routeUtils'
 import SentenceInformationUtils from './sentenceInformationUtils'
 import StringUtils from './stringUtils'
@@ -49,6 +50,7 @@ export {
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
   StringUtils,
+  ThinkingAndBehavingUtils,
   TypeUtils,
   UserUtils,
   nunjucksSetup,
