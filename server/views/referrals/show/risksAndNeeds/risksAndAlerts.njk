@@ -1,0 +1,93 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% from "./_ospBox.njk" import ospBox %}
+{% from "./_riskBox.njk" import riskBox %}
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {% if hasRisksAndAlerts %}
+    {{ govukInsetText({
+      classes: "govuk-!-margin-top-0",
+      text: importedFromOasysText,
+      attributes: {
+        "data-testid": "imported-from-oasys-text"
+      }
+    }) }}
+
+    <h3 class="govuk-heading-s">Offender group reconviction scale</h3>
+
+    {{ riskBox(ogrsYear1Box) }}
+    {{ riskBox(ogrsYear2Box) }}
+
+    <h3 class="govuk-heading-s">Offender violence predictor</h3>
+
+    {{ riskBox(ovpYear1Box) }}
+    {{ riskBox(ovpYear2Box) }}
+
+    <h3 class="govuk-heading-s">Spousal assault risk assessment</h3>
+
+    {% set saraPartnerBody %}
+    <p class="govuk-body govuk-!-margin-bottom-1">Risk of violence towards partner</p>
+    {% endset %}
+
+    {% set saraOthersBody %}
+    <p class="govuk-body govuk-!-margin-bottom-1">Risk of violence towards others</p>
+    {% endset %}
+
+    {{ riskBox(saraPartnerBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards partner', bodyHtml: saraPartnerBody })) }}
+    {{ riskBox(saraOthersBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards others', bodyHtml: saraOthersBody })) }}
+
+    <h3 class="govuk-heading-s">Risk of serious recidivism</h3>
+
+    {% set rsrBody %}
+    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-3">
+    <ul class="govuk-list govuk-!-margin-top-3 govuk-!-margin-bottom-2">
+      {{ ospBox(ospcBox) }}
+      {{ ospBox(ospiBox) }}
+    </ul>
+    {% endset %}
+
+    {{ riskBox(rsrBox | objectMerge({ bodyHtml: rsrBody })) }}
+
+    <h3 class="govuk-heading-s">Risk of serious harm</h3>
+
+    {% set roshBody %}
+    <p class="govuk-body govuk-!-margin-bottom-1">Risk of serious harm</p>
+
+    {{ govukTable(roshTable) }}
+    {% endset %}
+
+    {{ riskBox(roshBox | objectMerge({ bodyHtml: roshBody })) }}
+
+    {{ govukInsetText({
+      classes: "govuk-!-margin-top-8",
+      text: importedFromNomisText,
+      attributes: {
+        "data-testid": "imported-from-nomis-text"
+      }
+    }) }}
+
+    <h3 class="govuk-heading-s">Risk alerts</h3>
+
+    <aside class="alerts-box" aria-label="Active alerts box">
+      <h4 class="govuk-heading-s govuk-!-margin-bottom-3">Active alerts</h4>
+      <hr class="govuk-section-break govuk-section-break--visible">
+
+      {% if alerts and alerts.length %}
+        <ul class="govuk-list govuk-!-margin-top-1 govuk-!-margin-bottom-0">
+          {% for alert in alerts %}
+            <li>{{ alert.description | capitalize }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No risks found.</p>
+      {% endif %}
+    </aside>
+  {% else %}
+    {% set noRisksAndAlertsString = "No risks and alerts data found in OASys or Nomis. Add risks and alerts data to OASys and/or Nomis to see them here." %}
+
+    {{ keylessSummaryCard("Risks and alerts", bodyText=noRisksAndAlertsString, testId="no-risks-and-alerts-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}
