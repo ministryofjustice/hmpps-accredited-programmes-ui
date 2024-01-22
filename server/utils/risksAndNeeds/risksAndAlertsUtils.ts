@@ -1,6 +1,7 @@
 import StringUtils from '../stringUtils'
-import type { RiskLevel } from '@accredited-programmes/models'
+import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
 import type { OspBox, RiskBox, RiskLevelOrUnknown } from '@accredited-programmes/ui'
+import type { GovukFrontendTable, GovukFrontendTableCell } from '@govuk-frontend'
 
 export default class RisksAndAlertsUtils {
   static ospBox(type: OspBox['type'], level?: RiskLevel): OspBox {
@@ -24,6 +25,40 @@ export default class RisksAndAlertsUtils {
     }
   }
 
+  static roshTable(risksAndAlerts: RisksAndAlerts): GovukFrontendTable {
+    return {
+      classes: 'rosh-table',
+      head: [{ text: 'Risk to' }, { text: 'Custody' }, { text: 'Community' }],
+      rows: [
+        [
+          { text: 'Children' },
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskChildrenCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskChildrenCommunity),
+        ],
+        [
+          { text: 'Public' },
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPublicCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPublicCommunity),
+        ],
+        [
+          { text: 'Known adult' },
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskKnownAdultCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskKnownAdultCommunity),
+        ],
+        [
+          { text: 'Staff' },
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskStaffCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskStaffCommunity),
+        ],
+        [
+          { text: 'Prisoners' },
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPrisonersCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPrisonersCommunity),
+        ],
+      ],
+    }
+  }
+
   private static levelClass(baseClass: string, level: RiskLevelOrUnknown): string {
     return `${baseClass}--${level.split('_').join('-').toLowerCase()}`
   }
@@ -40,5 +75,14 @@ export default class RisksAndAlertsUtils {
     }
 
     return text
+  }
+
+  private static roshTableCellForLevel(level?: RiskLevel): GovukFrontendTableCell {
+    const levelOrUnknown = RisksAndAlertsUtils.levelOrUnknown(level)
+
+    return {
+      classes: `rosh-table__cell ${RisksAndAlertsUtils.levelClass('rosh-table__cell', levelOrUnknown)}`,
+      text: RisksAndAlertsUtils.levelText(levelOrUnknown, 'proper'),
+    }
   }
 }

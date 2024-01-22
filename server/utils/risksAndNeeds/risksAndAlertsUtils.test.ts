@@ -1,4 +1,5 @@
 import RisksAndAlertsUtils from './risksAndAlertsUtils'
+import type { RisksAndAlerts } from '@accredited-programmes/models'
 
 describe('RisksAndAlertsUtils', () => {
   describe('ospBox', () => {
@@ -47,6 +48,65 @@ describe('RisksAndAlertsUtils', () => {
         expect(RisksAndAlertsUtils.riskBox('RSR', 'MEDIUM', '3.25')).toEqual(
           expect.objectContaining({ figure: '3.25' }),
         )
+      })
+    })
+  })
+
+  describe('roshTable', () => {
+    const risksAndAlerts: RisksAndAlerts = {
+      riskChildrenCommunity: 'LOW',
+      riskChildrenCustody: 'LOW',
+      riskKnownAdultCommunity: 'MEDIUM',
+      riskKnownAdultCustody: 'HIGH',
+      riskPrisonersCommunity: 'LOW',
+      riskPrisonersCustody: 'LOW',
+      riskPublicCommunity: 'LOW',
+      riskPublicCustody: 'LOW',
+      riskStaffCommunity: 'LOW',
+      riskStaffCustody: 'MEDIUM',
+    }
+
+    it('formats risk and alerts data in the appropriate format for passing to an RoSH box Nunjucks macro', () => {
+      expect(RisksAndAlertsUtils.roshTable(risksAndAlerts)).toEqual({
+        classes: 'rosh-table',
+        head: [{ text: 'Risk to' }, { text: 'Custody' }, { text: 'Community' }],
+        rows: [
+          [
+            { text: 'Children' },
+            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+          ],
+          [
+            { text: 'Public' },
+            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+          ],
+          [
+            { text: 'Known adult' },
+            { classes: 'rosh-table__cell rosh-table__cell--high', text: 'High' },
+            { classes: 'rosh-table__cell rosh-table__cell--medium', text: 'Medium' },
+          ],
+          [
+            { text: 'Staff' },
+            { classes: 'rosh-table__cell rosh-table__cell--medium', text: 'Medium' },
+            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+          ],
+          [
+            { text: 'Prisoners' },
+            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+          ],
+        ],
+      })
+    })
+
+    describe('when data are missing', () => {
+      it('uses "unknown" as the level', () => {
+        expect(
+          RisksAndAlertsUtils.roshTable({ ...risksAndAlerts, riskChildrenCommunity: undefined }).rows?.find(
+            row => row[0].text === 'Children',
+          )?.[2],
+        ).toEqual({ classes: 'rosh-table__cell rosh-table__cell--unknown', text: 'Unknown' })
       })
     })
   })
