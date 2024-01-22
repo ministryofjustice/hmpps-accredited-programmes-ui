@@ -5,7 +5,12 @@ import { when } from 'jest-when'
 import OasysService from './oasysService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
-import { lifestyleFactory, offenceDetailFactory, roshAnalysisFactory } from '../testutils/factories'
+import {
+  lifestyleFactory,
+  offenceDetailFactory,
+  relationshipsFactory,
+  roshAnalysisFactory,
+} from '../testutils/factories'
 
 jest.mock('../data/accreditedProgrammesApi/oasysClient')
 jest.mock('../data/hmppsAuthClient')
@@ -121,6 +126,52 @@ describe('OasysService', () => {
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(oasysClient.findOffenceDetails).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+  })
+
+  describe('getRelationships', () => {
+    it('returns relationships data for given prison number', async () => {
+      const relationships = relationshipsFactory.build()
+
+      when(oasysClient.findRelationships).calledWith(prisonNumber).mockResolvedValue(relationships)
+
+      const result = await service.getRelationships(username, prisonNumber)
+
+      expect(result).toEqual(relationships)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findRelationships).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        const notFoundClientError = createError(404)
+
+        when(oasysClient.findRelationships).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getRelationships(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findRelationships).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+
+        when(oasysClient.findRelationships).calledWith(prisonNumber).mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching relationships for prison number ${prisonNumber}.`)
+        await expect(service.getRelationships(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findRelationships).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })

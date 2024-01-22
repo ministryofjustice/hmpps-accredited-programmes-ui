@@ -14,6 +14,10 @@ export default class ShowRisksAndNeedsUtils {
         text: 'Section 2 - Offence analysis',
       },
       {
+        href: paths.show.risksAndNeeds.relationships({ referralId }),
+        text: 'Section 6 - Relationships',
+      },
+      {
         href: paths.show.risksAndNeeds.roshAnalysis({ referralId }),
         text: 'Section R6 - ROSH analysis',
       },

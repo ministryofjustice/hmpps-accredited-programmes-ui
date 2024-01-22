@@ -6,6 +6,7 @@ import {
   DateUtils,
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
+  RelationshipsUtils,
   RoshAnalysisUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
@@ -76,6 +77,34 @@ export default class RisksAndNeedsController {
           }
 
       return res.render('referrals/show/risksAndNeeds/offenceAnalysis', {
+        ...sharedPageData,
+        ...templateLocals,
+      })
+    }
+  }
+
+  relationships(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const relationships = await this.oasysService.getRelationships(
+        req.user.username,
+        sharedPageData.referral.prisonNumber,
+      )
+
+      const templateLocals = relationships
+        ? {
+            domesticViolenceSummaryListRows: RelationshipsUtils.domesticViolenceSummaryListRows(relationships),
+            hasRelationships: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          }
+        : {
+            hasRelationships: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/relationships', {
         ...sharedPageData,
         ...templateLocals,
       })
