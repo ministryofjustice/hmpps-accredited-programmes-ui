@@ -12,6 +12,7 @@ import {
   oasysLifestyle,
   oasysOffenceDetail,
   oasysRelationships,
+  oasysRisksAndAlerts,
   oasysRoshAnalysis,
   prisoners,
   psychiatric,
@@ -309,6 +310,22 @@ prisoners.forEach(prisoner => {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: oasysRelationships,
+        status: 200,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.risksAndAlerts({ prisonNumber: prisoner.prisonerNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: oasysRisksAndAlerts,
         status: 200,
       },
     }),

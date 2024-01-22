@@ -6,6 +6,7 @@ import oasysBehaviour from './oasysBehaviour.json'
 import oasysLifestyle from './oasysLifestyle.json'
 import oasysOffenceDetail from './oasysOffenceDetail.json'
 import oasysRelationships from './oasysRelationships.json'
+import oasysRisksAndAlerts from './oasysRisksAndAlerts.json'
 import oasysRoshAnalysis from './oasysRoshAnalysis.json'
 import offenceCodes from './offenceCodes.json'
 import offenderBookings from './offenderBookings.json'
@@ -24,6 +25,7 @@ export {
   oasysLifestyle,
   oasysOffenceDetail,
   oasysRelationships,
+  oasysRisksAndAlerts,
   oasysRoshAnalysis,
   offenceCodes,
   offenderBookings,
