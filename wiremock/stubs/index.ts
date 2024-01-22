@@ -2,6 +2,7 @@ import caseloads from './caseloads.json'
 import courseOfferings from './courseOfferings.json'
 import courseParticipations from './courseParticipations.json'
 import courses from './courses.json'
+import oasysBehaviour from './oasysBehaviour.json'
 import oasysLifestyle from './oasysLifestyle.json'
 import oasysOffenceDetail from './oasysOffenceDetail.json'
 import oasysRelationships from './oasysRelationships.json'
@@ -19,6 +20,7 @@ export {
   courseOfferings,
   courseParticipations,
   courses,
+  oasysBehaviour,
   oasysLifestyle,
   oasysOffenceDetail,
   oasysRelationships,

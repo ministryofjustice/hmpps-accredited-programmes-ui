@@ -8,6 +8,7 @@ import {
   courseOfferings,
   courseParticipations,
   courses,
+  oasysBehaviour,
   oasysLifestyle,
   oasysOffenceDetail,
   oasysRelationships,
@@ -233,6 +234,22 @@ stubs.push(() =>
 )
 
 prisoners.forEach(prisoner => {
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.behaviour({ prisonNumber: prisoner.prisonerNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: oasysBehaviour,
+        status: 200,
+      },
+    }),
+  )
+
   stubs.push(() =>
     stubFor({
       request: {
