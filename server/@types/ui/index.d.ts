@@ -5,6 +5,7 @@ import type {
   Organisation,
   Person,
   Referral,
+  RiskLevel,
 } from '@accredited-programmes/models'
 import type {
   GovukFrontendPagination,
@@ -167,6 +168,14 @@ type QueryParam = {
   value: string
 }
 
+type OspBox = {
+  levelClass: string
+  levelText: string
+  type: 'OSP/C' | 'OSP/I'
+}
+
+type RiskLevelOrUnknown = RiskLevel | 'UNKNOWN'
+
 export type {
   CaseListColumnHeader,
   CourseParticipationPresenter,
@@ -185,6 +194,7 @@ export type {
   OffenceHistory,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
+  OspBox,
   QueryParam,
   ReferralSharedPageData,
   ReferralStatusGroup,
@@ -192,6 +202,7 @@ export type {
   ReferralTaskListSection,
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
+  RiskLevelOrUnknown,
   RisksAndNeedsSharedPageData,
   TagColour,
 }
