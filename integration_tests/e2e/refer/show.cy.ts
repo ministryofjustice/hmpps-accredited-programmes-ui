@@ -77,6 +77,20 @@ context('Viewing a submitted referral', () => {
       })
     })
 
+    describe('When reviewing Section 6 - Relationships', () => {
+      describe('and there is relationships data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsRelationshipsPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no relationships data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsRelationshipsPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
+
     describe('When reviewing Section R6 - ROSH analysis', () => {
       describe('and there is a ROSH analysis', () => {
         it('shows the correct information', () => {
