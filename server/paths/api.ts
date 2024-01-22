@@ -34,6 +34,7 @@ export default {
   oasys: {
     lifestyle: oasysBasePath.path('lifestyle'),
     offenceDetails: oasysBasePath.path('offence-details'),
+    psychiatric: oasysBasePath.path('psychiatric'),
     relationships: oasysBasePath.path('relationships'),
     roshAnalysis: oasysBasePath.path('rosh-analysis'),
   },

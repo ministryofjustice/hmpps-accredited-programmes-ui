@@ -18,6 +18,7 @@ import personFactory from './person'
 import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
 import prisonerFactory from './prisoner'
+import psychiatricFactory from './psychiatric'
 import referralFactory from './referral'
 import referralSummaryFactory from './referralSummary'
 import relationshipsFactory from './relationships'
@@ -45,6 +46,7 @@ export {
   prisonAddressFactory,
   prisonFactory,
   prisonerFactory,
+  psychiatricFactory,
   referralFactory,
   referralSummaryFactory,
   relationshipsFactory,

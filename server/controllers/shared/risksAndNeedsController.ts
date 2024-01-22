@@ -12,6 +12,7 @@ import {
   ShowRisksAndNeedsUtils,
   TypeUtils,
 } from '../../utils'
+import EmotionalWellbeingUtils from '../../utils/risksAndNeeds/emotionalWellbeingUtils'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 export default class RisksAndNeedsController {
@@ -21,6 +22,34 @@ export default class RisksAndNeedsController {
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
+
+  emotionalWellbeing(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const psychiatric = await this.oasysService.getPsychiatric(
+        req.user.username,
+        sharedPageData.referral.prisonNumber,
+      )
+
+      const templateLocals = psychiatric
+        ? {
+            hasEmotionalWellbeingData: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            psychiatricSummaryListRows: EmotionalWellbeingUtils.psychiatricSummaryListRows(psychiatric),
+          }
+        : {
+            hasEmotionalWellbeingData: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/emotionalWellbeing', {
+        ...sharedPageData,
+        ...templateLocals,
+      })
+    }
+  }
 
   lifestyleAndAssociates(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
