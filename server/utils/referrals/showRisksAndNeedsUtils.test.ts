@@ -35,6 +35,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             href: referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId }),
             text: 'Section 10 - Emotional wellbeing',
           },
+          {
+            active: false,
+            href: referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId }),
+            text: 'Section 11 - Thinking and behaving',
+          },
         ])
       })
     })
@@ -68,6 +73,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: assessPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId }),
             text: 'Section 10 - Emotional wellbeing',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId }),
+            text: 'Section 11 - Thinking and behaving',
           },
         ])
       })
