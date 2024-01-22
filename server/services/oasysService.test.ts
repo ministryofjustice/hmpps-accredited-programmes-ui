@@ -11,6 +11,7 @@ import {
   offenceDetailFactory,
   psychiatricFactory,
   relationshipsFactory,
+  risksAndAlertsFactory,
   roshAnalysisFactory,
 } from '../testutils/factories'
 
@@ -266,6 +267,52 @@ describe('OasysService', () => {
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(oasysClient.findRelationships).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+  })
+
+  describe('getRisksAndAlerts', () => {
+    it('returns the risks and alerts for the given prison number', async () => {
+      const risksAndAlerts = risksAndAlertsFactory.build()
+
+      when(oasysClient.findRisksAndAlerts).calledWith(prisonNumber).mockResolvedValue(risksAndAlerts)
+
+      const result = await service.getRisksAndAlerts(username, prisonNumber)
+
+      expect(result).toEqual(risksAndAlerts)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findRisksAndAlerts).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        const notFoundClientError = createError(404)
+
+        when(oasysClient.findRisksAndAlerts).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getRisksAndAlerts(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findRisksAndAlerts).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+
+        when(oasysClient.findRisksAndAlerts).calledWith(prisonNumber).mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching risks and alerts for prison number ${prisonNumber}.`)
+        await expect(service.getRisksAndAlerts(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findRisksAndAlerts).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })
