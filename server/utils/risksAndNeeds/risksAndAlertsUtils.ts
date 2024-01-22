@@ -1,6 +1,6 @@
 import StringUtils from '../stringUtils'
 import type { RiskLevel } from '@accredited-programmes/models'
-import type { OspBox, RiskLevelOrUnknown } from '@accredited-programmes/ui'
+import type { OspBox, RiskBox, RiskLevelOrUnknown } from '@accredited-programmes/ui'
 
 export default class RisksAndAlertsUtils {
   static ospBox(type: OspBox['type'], level?: RiskLevel): OspBox {
@@ -10,6 +10,17 @@ export default class RisksAndAlertsUtils {
       levelClass: RisksAndAlertsUtils.levelClass('osp-box', levelOrUnknown),
       levelText: RisksAndAlertsUtils.levelText(levelOrUnknown),
       type,
+    }
+  }
+
+  static riskBox(category: RiskBox['category'], level?: RiskLevel, figure?: string): RiskBox {
+    const levelOrUnknown = RisksAndAlertsUtils.levelOrUnknown(level)
+
+    return {
+      category,
+      figure,
+      levelClass: RisksAndAlertsUtils.levelClass('risk-box', levelOrUnknown),
+      levelText: RisksAndAlertsUtils.levelText(levelOrUnknown),
     }
   }
 
