@@ -132,5 +132,19 @@ context('Viewing a submitted referral', () => {
         })
       })
     })
+
+    describe('When reviewing Section 11 - Thinking and behaving', () => {
+      describe('and there is behaviour data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsThinkingAndBehavingPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no behaviour data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsThinkingAndBehavingPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
   })
 })
