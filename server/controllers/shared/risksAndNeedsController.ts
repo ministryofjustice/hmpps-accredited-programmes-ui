@@ -4,6 +4,7 @@ import type { CourseService, OasysService, PersonService, ReferralService } from
 import {
   CourseUtils,
   DateUtils,
+  EmotionalWellbeingUtils,
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
   RelationshipsUtils,
@@ -13,7 +14,6 @@ import {
   ThinkingAndBehavingUtils,
   TypeUtils,
 } from '../../utils'
-import EmotionalWellbeingUtils from '../../utils/risksAndNeeds/emotionalWellbeingUtils'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 export default class RisksAndNeedsController {
