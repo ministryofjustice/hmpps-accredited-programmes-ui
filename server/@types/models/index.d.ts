@@ -18,6 +18,7 @@ import type { Person } from './Person'
 import type { Psychiatric } from './Psychiatric'
 import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralSummary, ReferralUpdate } from './Referral'
 import type { Relationships } from './Relationships'
+import type { RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
 import type { RoshAnalysis } from './RoshAnalysis'
 
 export type {
@@ -43,5 +44,7 @@ export type {
   ReferralSummary,
   ReferralUpdate,
   Relationships,
+  RiskLevel,
+  RisksAndAlerts,
   RoshAnalysis,
 }
