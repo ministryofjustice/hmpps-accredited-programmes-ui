@@ -1,3 +1,4 @@
+import behaviourFactory from './behaviour'
 import caseloadFactory from './caseload'
 import courseFactory from './course'
 import courseAudienceFactory from './courseAudience'
@@ -26,6 +27,7 @@ import roshAnalysisFactory from './roshAnalysis'
 import userFactory from './user'
 
 export {
+  behaviourFactory,
   caseloadFactory,
   courseAudienceFactory,
   courseFactory,
