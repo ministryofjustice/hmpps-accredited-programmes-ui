@@ -6,6 +6,7 @@ import OasysService from './oasysService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
 import {
+  behaviourFactory,
   lifestyleFactory,
   offenceDetailFactory,
   psychiatricFactory,
@@ -37,6 +38,52 @@ describe('OasysService', () => {
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     oasysClientBuilder.mockReturnValue(oasysClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+  })
+
+  describe('getBehaviour', () => {
+    it('returns behaviour data for given prison number', async () => {
+      const behaviour = behaviourFactory.build()
+
+      when(oasysClient.findBehaviour).calledWith(prisonNumber).mockResolvedValue(behaviour)
+
+      const result = await service.getBehaviour(username, prisonNumber)
+
+      expect(result).toEqual(behaviour)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findBehaviour).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        const notFoundClientError = createError(404)
+
+        when(oasysClient.findBehaviour).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getBehaviour(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findBehaviour).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+
+        when(oasysClient.findBehaviour).calledWith(prisonNumber).mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching behaviour data for prison number ${prisonNumber}.`)
+        await expect(service.getBehaviour(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findBehaviour).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
   })
 
   describe('getLifestyle', () => {
