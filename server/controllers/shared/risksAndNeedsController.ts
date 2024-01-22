@@ -10,6 +10,7 @@ import {
   RoshAnalysisUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
+  ThinkingAndBehavingUtils,
   TypeUtils,
 } from '../../utils'
 import EmotionalWellbeingUtils from '../../utils/risksAndNeeds/emotionalWellbeingUtils'
@@ -162,6 +163,31 @@ export default class RisksAndNeedsController {
           }
 
       return res.render('referrals/show/risksAndNeeds/roshAnalysis', {
+        ...sharedPageData,
+        ...templateLocals,
+      })
+    }
+  }
+
+  thinkingAndBehaving(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const behaviour = await this.oasysService.getBehaviour(req.user.username, sharedPageData.referral.prisonNumber)
+
+      const templateLocals = behaviour
+        ? {
+            hasBehaviourData: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            thinkingAndBehavingSummaryListRows: ThinkingAndBehavingUtils.thinkingAndBehavingSummaryListRows(behaviour),
+          }
+        : {
+            hasBehaviourData: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/thinkingAndBehaving', {
         ...sharedPageData,
         ...templateLocals,
       })

@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {% if hasBehaviourData %}
+    {{ super() }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Section 11 - Thinking and behaving"
+        },
+        attributes: {
+          "data-testid": "previous-behaviour-summary-list"
+        }
+      },
+      rows: thinkingAndBehavingSummaryListRows
+    }) }}
+  {% else %}
+    {% set noBehaviourDataString = "No behaviour data found in OASys. Add behaviour data to OASys to see it here." %}
+
+    {{ keylessSummaryCard("Section 11 - Thinking and behaving", bodyText=noBehaviourDataString, testId="no-behaviour-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}
