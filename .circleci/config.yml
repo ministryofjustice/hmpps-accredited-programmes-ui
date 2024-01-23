@@ -91,10 +91,12 @@ jobs:
               -u $PACT_BROKER_USERNAME -p $PACT_BROKER_PASSWORD
 
   integration_test:
+    parallelism: 4
     executor:
       name: hmpps/node_redis
       node_tag: << pipeline.parameters.node-version >>
       redis_tag: '6.2'
+      resource_class: medium+
     steps:
       - checkout
       - attach_workspace:
@@ -120,10 +122,16 @@ jobs:
           background: true
       - run:
           name: Wait for node app to start
-          command: sleep 5
+          command: |
+            until curl http://localhost:3007/health > /dev/null 2>&1; do
+              printf '.'
+              sleep 1
+            done
       - run:
           name: integration tests
-          command: npm run test:integration:cli:run
+          command: |
+            TESTS=$(circleci tests glob "integration_tests/e2e/**/*.cy.ts" | circleci tests split --split-by=timings | paste -sd ',')
+            npm run test:integration:cli:run -- --spec $TESTS
       - store_test_results:
           path: test_results/integration
       - store_artifacts:
