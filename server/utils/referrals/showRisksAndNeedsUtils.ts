@@ -10,6 +10,10 @@ export default class ShowRisksAndNeedsUtils {
 
     const navigationItems = [
       {
+        href: paths.show.risksAndNeeds.risksAndAlerts({ referralId }),
+        text: 'Risks and alerts',
+      },
+      {
         href: paths.show.risksAndNeeds.offenceAnalysis({ referralId }),
         text: 'Section 2 - Offence analysis',
       },

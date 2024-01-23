@@ -11,6 +11,11 @@ describe('ShowRisksAndNeedsUtils', () => {
 
         expect(ShowRisksAndNeedsUtils.navigationItems(currentRequestPath, mockReferralId)).toEqual([
           {
+            active: false,
+            href: referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: mockReferralId }),
+            text: 'Risks and alerts',
+          },
+          {
             active: true,
             href: referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),
             text: 'Section 2 - Offence analysis',
@@ -49,6 +54,11 @@ describe('ShowRisksAndNeedsUtils', () => {
         const currentRequestPath = assessPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId })
 
         expect(ShowRisksAndNeedsUtils.navigationItems(currentRequestPath, mockReferralId)).toEqual([
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: mockReferralId }),
+            text: 'Risks and alerts',
+          },
           {
             active: true,
             href: assessPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),

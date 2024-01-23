@@ -64,7 +64,7 @@ export default class ShowReferralUtils {
       },
       {
         active: currentSection === 'risksAndNeeds',
-        href: paths.show.risksAndNeeds.offenceAnalysis({ referralId }),
+        href: paths.show.risksAndNeeds.risksAndAlerts({ referralId }),
         text: 'Risks and needs',
       },
     ]
