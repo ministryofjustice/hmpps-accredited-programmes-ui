@@ -16,6 +16,7 @@ import CaseListUtils from './referrals/caseListUtils'
 import NewReferralUtils from './referrals/newReferralUtils'
 import ShowReferralUtils from './referrals/showReferralUtils'
 import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
+import AttitudesUtils from './risksAndNeeds/attitudesUtils'
 import EmotionalWellbeingUtils from './risksAndNeeds/emotionalWellbeingUtils'
 import LifestyleAndAssociatesUtils from './risksAndNeeds/lifestyleAndAssociatesUtils'
 import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
@@ -30,6 +31,7 @@ import TypeUtils from './typeUtils'
 import UserUtils from './userUtils'
 
 export {
+  AttitudesUtils,
   CaseListUtils,
   CourseParticipationUtils,
   CourseUtils,
