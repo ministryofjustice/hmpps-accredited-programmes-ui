@@ -17,6 +17,7 @@ import {
   psychiatricFactory,
   referralFactory,
   relationshipsFactory,
+  risksAndAlertsFactory,
   roshAnalysisFactory,
   userFactory,
 } from '../../server/testutils/factories'
@@ -32,6 +33,7 @@ import {
   PersonalDetailsPage,
   ProgrammeHistoryPage,
   RelationshipsPage,
+  RisksAndAlertsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
   ThinkingAndBehavingPage,
@@ -591,6 +593,61 @@ const sharedTests = {
       relationshipsPage.shouldContainShowReferralSubHeading()
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainNoRelationshipsSummaryCard()
+    },
+    showsRisksAndAlertsPageWithData: (role: ApplicationRole): void => {
+      const risksAndAlerts = risksAndAlertsFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRisksAndAlerts', {
+        prisonNumber: prisoner.prisonerNumber,
+        risksAndAlerts,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+      cy.visit(path)
+
+      const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
+        course,
+        risksAndAlerts,
+      })
+      risksAndAlertsPage.shouldHavePersonDetails(person)
+      risksAndAlertsPage.shouldContainNavigation(path)
+      risksAndAlertsPage.shouldContainBackLink('#')
+      risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      risksAndAlertsPage.shouldContainShowReferralSubHeading()
+      risksAndAlertsPage.shouldContainRisksAndNeedsOasysMessage()
+      risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      risksAndAlertsPage.shouldContainImportedFromText('OASys', 'imported-from-oasys-text')
+      risksAndAlertsPage.shouldHaveOgrsInformation()
+      risksAndAlertsPage.shouldHaveOvpInformation()
+      risksAndAlertsPage.shouldHaveSaraInformation()
+      risksAndAlertsPage.shouldHaveRsrInformation()
+      risksAndAlertsPage.shouldHaveRoshInformation()
+      risksAndAlertsPage.shouldContainImportedFromText('Nomis', 'imported-from-nomis-text')
+      risksAndAlertsPage.shouldHaveAlertsInformation()
+    },
+    showsRisksAndAlertsPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRisksAndAlerts', {
+        prisonNumber: prisoner.prisonerNumber,
+        risksAndAlerts: null,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+      cy.visit(path)
+
+      const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
+        course,
+        risksAndAlerts: {},
+      })
+      risksAndAlertsPage.shouldHavePersonDetails(person)
+      risksAndAlertsPage.shouldContainNavigation(path)
+      risksAndAlertsPage.shouldContainBackLink('#')
+      risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      risksAndAlertsPage.shouldContainShowReferralSubHeading()
+      risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      risksAndAlertsPage.shouldContainNoRisksAndAlertsSummaryCard()
     },
     showsRoshAnalysisPageWithData: (role: ApplicationRole): void => {
       const roshAnalysis = roshAnalysisFactory.build({})
