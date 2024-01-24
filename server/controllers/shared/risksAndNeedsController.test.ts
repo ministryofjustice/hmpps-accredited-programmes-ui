@@ -7,6 +7,7 @@ import RisksAndNeedsController from './risksAndNeedsController'
 import { referPaths } from '../../paths'
 import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
 import {
+  attitudeFactory,
   behaviourFactory,
   courseFactory,
   courseOfferingFactory,
@@ -22,6 +23,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import {
+  AttitudesUtils,
   CourseUtils,
   DateUtils,
   EmotionalWellbeingUtils,
@@ -40,6 +42,7 @@ import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-p
 jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
+jest.mock('../../utils/risksAndNeeds/attitudesUtils')
 jest.mock('../../utils/risksAndNeeds/emotionalWellbeingUtils')
 jest.mock('../../utils/risksAndNeeds/lifestyleAndAssociatesUtils')
 jest.mock('../../utils/risksAndNeeds/offenceAnalysisUtils')
@@ -51,6 +54,7 @@ jest.mock('../../utils/risksAndNeeds/thinkingAndBehavingUtils')
 const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
 const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
 const mockShowRisksAndNeedsUtils = ShowRisksAndNeedsUtils as jest.Mocked<typeof ShowRisksAndNeedsUtils>
+const mockAttitudesUtils = AttitudesUtils as jest.Mocked<typeof AttitudesUtils>
 const mockEmotionalWellbeingUtils = EmotionalWellbeingUtils as jest.Mocked<typeof EmotionalWellbeingUtils>
 const mockLifestyleAndAssociatesUtils = LifestyleAndAssociatesUtils as jest.Mocked<typeof LifestyleAndAssociatesUtils>
 const mockOffenceAnalysisUtils = OffenceAnalysisUtils as jest.Mocked<typeof OffenceAnalysisUtils>
@@ -112,6 +116,53 @@ describe('RisksAndNeedsController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
+  })
+
+  describe('attitudes', () => {
+    it('renders the attitudes page with the correct response locals', async () => {
+      const attitudes = attitudeFactory.build()
+      const attitudesSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+
+      mockAttitudesUtils.attitudesSummaryListRows.mockReturnValue(attitudesSummaryListRows)
+
+      when(oasysService.getAttitude).calledWith(username, person.prisonNumber).mockResolvedValue(attitudes)
+
+      request.path = referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id })
+
+      const requestHandler = controller.attitudes()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
+        ...sharedPageData,
+        attitudesSummaryListRows,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        navigationItems,
+        noAttitude: true,
+        subNavigationItems,
+      })
+    })
+
+    describe('when the oasys service returns `null`', () => {
+      it('renders the attitudes page with the correct response locals', async () => {
+        when(oasysService.getAttitude).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id })
+
+        const requestHandler = controller.attitudes()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
+          ...sharedPageData,
+          navigationItems,
+          noAttitude: false,
+          subNavigationItems,
+        })
+      })
+    })
   })
 
   describe('emotionalWellbeing', () => {

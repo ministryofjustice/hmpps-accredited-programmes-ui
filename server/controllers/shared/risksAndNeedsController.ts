@@ -2,6 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
 import {
+  AttitudesUtils,
   CourseUtils,
   DateUtils,
   EmotionalWellbeingUtils,
@@ -24,6 +25,28 @@ export default class RisksAndNeedsController {
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
+
+  attitudes(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const attitude = await this.oasysService.getAttitude(req.user.username, sharedPageData.referral.prisonNumber)
+
+      const templateLocals = attitude
+        ? {
+            attitudesSummaryListRows: AttitudesUtils.attitudesSummaryListRows(attitude),
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            noAttitude: true,
+          }
+        : {
+            noAttitude: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/attitudes', { ...sharedPageData, ...templateLocals })
+    }
+  }
 
   emotionalWellbeing(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
