@@ -53,7 +53,7 @@ export default class RisksAndAlertsUtils {
         [
           { text: 'Prisoners' },
           RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPrisonersCustody),
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPrisonersCommunity),
+          { classes: 'rosh-table__cell', text: 'Not applicable' },
         ],
       ],
     }

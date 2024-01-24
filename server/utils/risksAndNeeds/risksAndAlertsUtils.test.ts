@@ -58,7 +58,6 @@ describe('RisksAndAlertsUtils', () => {
       riskChildrenCustody: 'LOW',
       riskKnownAdultCommunity: 'MEDIUM',
       riskKnownAdultCustody: 'HIGH',
-      riskPrisonersCommunity: 'LOW',
       riskPrisonersCustody: 'LOW',
       riskPublicCommunity: 'LOW',
       riskPublicCustody: 'LOW',
@@ -94,7 +93,7 @@ describe('RisksAndAlertsUtils', () => {
           [
             { text: 'Prisoners' },
             { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
-            { classes: 'rosh-table__cell rosh-table__cell--low', text: 'Low' },
+            { classes: 'rosh-table__cell', text: 'Not applicable' },
           ],
         ],
       })
