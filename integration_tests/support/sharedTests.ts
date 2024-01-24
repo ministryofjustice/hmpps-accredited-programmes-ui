@@ -1,6 +1,7 @@
 import type { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths, referPaths } from '../../server/paths'
 import {
+  behaviourFactory,
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
@@ -33,6 +34,7 @@ import {
   RelationshipsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
+  ThinkingAndBehavingPage,
 } from '../pages/shared'
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, Referral } from '@accredited-programmes/models'
@@ -638,6 +640,55 @@ const sharedTests = {
       roshAnalysisPage.shouldContainShowReferralSubHeading()
       roshAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       roshAnalysisPage.shouldContainNoRoshAnalysisSummaryCard()
+    },
+    showsThinkingAndBehavingPageWithData: (role: ApplicationRole): void => {
+      const behaviour = behaviourFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubBehaviour', {
+        behaviour,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id })
+      cy.visit(path)
+
+      const thinkingAndBehavingPage = Page.verifyOnPage(ThinkingAndBehavingPage, {
+        behaviour,
+        course,
+      })
+      thinkingAndBehavingPage.shouldHavePersonDetails(person)
+      thinkingAndBehavingPage.shouldContainNavigation(path)
+      thinkingAndBehavingPage.shouldContainBackLink('#')
+      thinkingAndBehavingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      thinkingAndBehavingPage.shouldContainShowReferralSubHeading()
+      thinkingAndBehavingPage.shouldContainRisksAndNeedsOasysMessage()
+      thinkingAndBehavingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      thinkingAndBehavingPage.shouldContainImportedFromOasysText()
+      thinkingAndBehavingPage.shouldContainThinkingAndBehavingSummaryList()
+    },
+    showsThinkingAndBehavingPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubBehaviour', {
+        behaviour: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id })
+      cy.visit(path)
+
+      const thinkingAndBehavingPage = Page.verifyOnPage(ThinkingAndBehavingPage, {
+        behaviour: {},
+        course,
+      })
+      thinkingAndBehavingPage.shouldHavePersonDetails(person)
+      thinkingAndBehavingPage.shouldContainNavigation(path)
+      thinkingAndBehavingPage.shouldContainBackLink('#')
+      thinkingAndBehavingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      thinkingAndBehavingPage.shouldContainShowReferralSubHeading()
+      thinkingAndBehavingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      thinkingAndBehavingPage.shouldContainNoBehaviourDataSummaryCard()
     },
   },
 }

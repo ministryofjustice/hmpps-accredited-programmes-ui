@@ -8,6 +8,7 @@ import LifestyleAndAssociatesPage from './showReferral/risksAndNeeds/lifestyleAn
 import OffenceAnalysisPage from './showReferral/risksAndNeeds/offenceAnalysis'
 import RelationshipsPage from './showReferral/risksAndNeeds/relationships'
 import RoshAnalysisPage from './showReferral/risksAndNeeds/roshAnalysis'
+import ThinkingAndBehavingPage from './showReferral/risksAndNeeds/thinkingAndBehaving'
 import SentenceInformationPage from './showReferral/sentenceInformation'
 
 export {
@@ -22,4 +23,5 @@ export {
   RelationshipsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
+  ThinkingAndBehavingPage,
 }
