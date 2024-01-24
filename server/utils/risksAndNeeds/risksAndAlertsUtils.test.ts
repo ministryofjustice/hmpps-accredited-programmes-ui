@@ -2,6 +2,40 @@ import RisksAndAlertsUtils from './risksAndAlertsUtils'
 import type { RisksAndAlerts } from '@accredited-programmes/models'
 
 describe('RisksAndAlertsUtils', () => {
+  describe('levelOrUnknown', () => {
+    describe('when provided a level', () => {
+      it('returns the level unmodified', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknown('HIGH')).toEqual('HIGH')
+      })
+    })
+
+    describe('when provided `undefined`', () => {
+      it('returns "UNKNOWN"', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknown(undefined)).toEqual('UNKNOWN')
+      })
+    })
+  })
+
+  describe('levelText', () => {
+    describe('when provided a level without underscores', () => {
+      it('returns the level unmodified', () => {
+        expect(RisksAndAlertsUtils.levelText('HIGH')).toEqual('HIGH')
+      })
+    })
+
+    describe('when provided a level with underscores', () => {
+      it('returns the level with spaces replacing underscores', () => {
+        expect(RisksAndAlertsUtils.levelText('VERY_HIGH')).toEqual('VERY HIGH')
+      })
+    })
+
+    describe('when proper case is requested', () => {
+      it('returns the level in proper case', () => {
+        expect(RisksAndAlertsUtils.levelText('VERY_HIGH', 'proper')).toEqual('Very high')
+      })
+    })
+  })
+
   describe('ospBox', () => {
     it('formats OSP data in the appropriate format for passing to an OSP box Nunjucks macro', () => {
       expect(RisksAndAlertsUtils.ospBox('OSP/C', 'VERY_HIGH')).toEqual({

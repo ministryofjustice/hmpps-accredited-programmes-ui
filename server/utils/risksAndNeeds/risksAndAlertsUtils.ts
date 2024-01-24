@@ -4,6 +4,20 @@ import type { OspBox, RiskBox, RiskLevelOrUnknown } from '@accredited-programmes
 import type { GovukFrontendTable, GovukFrontendTableCell } from '@govuk-frontend'
 
 export default class RisksAndAlertsUtils {
+  static levelOrUnknown(level?: RiskLevel): RiskLevelOrUnknown {
+    return level || 'UNKNOWN'
+  }
+
+  static levelText(level: RiskLevelOrUnknown, casing: 'proper' | 'upper' = 'upper'): string {
+    let text = level.split('_').join(' ')
+
+    if (casing === 'proper') {
+      text = StringUtils.properCase(text)
+    }
+
+    return text
+  }
+
   static ospBox(type: OspBox['type'], level?: RiskLevel): OspBox {
     const levelOrUnknown = RisksAndAlertsUtils.levelOrUnknown(level)
 
@@ -68,20 +82,6 @@ export default class RisksAndAlertsUtils {
 
   private static levelClass(baseClass: string, level: RiskLevelOrUnknown): string {
     return `${baseClass}--${level.split('_').join('-').toLowerCase()}`
-  }
-
-  private static levelOrUnknown(level?: RiskLevel): RiskLevelOrUnknown {
-    return level || 'UNKNOWN'
-  }
-
-  private static levelText(level: RiskLevelOrUnknown, casing: 'proper' | 'upper' = 'upper'): string {
-    let text = level.split('_').join(' ')
-
-    if (casing === 'proper') {
-      text = StringUtils.properCase(text)
-    }
-
-    return text
   }
 
   private static roshTableCellForLevel(level?: RiskLevel): GovukFrontendTableCell {
