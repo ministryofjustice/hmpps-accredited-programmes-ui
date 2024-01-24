@@ -20,6 +20,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
   get(assessPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
 
+  get(assessPaths.show.risksAndNeeds.attitudes.pattern, risksAndNeedsController.attitudes())
   get(assessPaths.show.risksAndNeeds.emotionalWellbeing.pattern, risksAndNeedsController.emotionalWellbeing())
   get(assessPaths.show.risksAndNeeds.lifestyleAndAssociates.pattern, risksAndNeedsController.lifestyleAndAssociates())
   get(assessPaths.show.risksAndNeeds.offenceAnalysis.pattern, risksAndNeedsController.offenceAnalysis())
