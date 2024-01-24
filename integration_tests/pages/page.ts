@@ -169,11 +169,14 @@ export default abstract class Page {
       })
   }
 
-  shouldContainImportedFromOasysText(): void {
-    cy.get('[data-testid="imported-from-text"]').should(
-      'contain.text',
-      `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-    )
+  shouldContainImportedFromText(source: 'Nomis' | 'OASys'): void {
+    cy.get('[data-testid="import-from-text"]').then(importedFromElement => {
+      const { actual, expected } = Helpers.parseHtml(
+        importedFromElement,
+        `Imported from ${source} on ${DateUtils.govukFormattedFullDateString()}.`,
+      )
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldContainKeylessSummaryCard(

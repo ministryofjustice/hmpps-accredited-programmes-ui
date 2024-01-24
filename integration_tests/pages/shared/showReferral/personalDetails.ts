@@ -1,4 +1,4 @@
-import { CourseUtils, DateUtils, PersonUtils } from '../../../../server/utils'
+import { CourseUtils, PersonUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Course, Person } from '@accredited-programmes/models'
 
@@ -12,13 +12,6 @@ export default class PersonalDetailsPage extends Page {
     super(`Referral to ${coursePresenter.nameAndAlternateName}`)
 
     this.person = person
-  }
-
-  shouldContainImportedFromText(): void {
-    cy.get('[data-testid="imported-from-text"]').should(
-      'contain.text',
-      `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
-    )
   }
 
   shouldContainPersonalDetailsSummaryCard(): void {

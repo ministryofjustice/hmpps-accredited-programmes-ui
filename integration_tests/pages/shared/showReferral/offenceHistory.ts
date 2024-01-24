@@ -1,4 +1,4 @@
-import { CourseUtils, DateUtils, OffenceUtils } from '../../../../server/utils'
+import { CourseUtils, OffenceUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Course, Person } from '@accredited-programmes/models'
 import type { InmateDetail, OffenceDto } from '@prison-api'
@@ -47,13 +47,6 @@ export default class OffenceHistoryPage extends Page {
         )
       })
     })
-  }
-
-  shouldContainImportedFromText(): void {
-    cy.get('[data-testid="imported-from-text"]').should(
-      'contain.text',
-      `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
-    )
   }
 
   shouldContainIndexOffenceSummaryCard(): void {
