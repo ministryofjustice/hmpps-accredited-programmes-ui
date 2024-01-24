@@ -3,6 +3,7 @@ import type { SuperAgentRequest } from 'superagent'
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type {
+  Attitude,
   Behaviour,
   Lifestyle,
   OffenceDetail,
@@ -14,6 +15,19 @@ import type {
 } from '@accredited-programmes/models'
 
 export default {
+  stubAttitude: (args: { attitude: Attitude; prisonNumber: Referral['prisonNumber'] }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.attitude({ prisonNumber: args.prisonNumber }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.attitude,
+        status: 200,
+      },
+    }),
+
   stubBehaviour: (args: { behaviour: Behaviour; prisonNumber: Referral['prisonNumber'] }): SuperAgentRequest =>
     stubFor({
       request: {
