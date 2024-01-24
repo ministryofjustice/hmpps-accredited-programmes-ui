@@ -1,3 +1,4 @@
+import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
@@ -38,10 +39,13 @@ export default class NewReferralProgrammeHistoryPage extends Page {
   }
 
   shouldContainNoHistoryText() {
-    cy.get('[data-testid="history-text"]').should(
-      'contain.text',
-      `There is no record of Accredited Programmes for ${this.person.name}.`,
-    )
+    cy.get('[data-testid="history-text"]').then(historyTextElement => {
+      const { actual, expected } = Helpers.parseHtml(
+        historyTextElement,
+        `There is no record of Accredited Programmes for ${this.person.name}.`,
+      )
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldContainPreHistoryParagraph() {
@@ -52,14 +56,20 @@ export default class NewReferralProgrammeHistoryPage extends Page {
   }
 
   shouldContainPreHistoryText() {
-    cy.get('[data-testid="history-text"]').should(
-      'contain.text',
-      `The history shows ${this.person.name} has previously started or completed an Accredited Programme.`,
-    )
+    cy.get('[data-testid="history-text"]').then(historyTextElement => {
+      const { actual, expected } = Helpers.parseHtml(
+        historyTextElement,
+        `The history shows ${this.person.name} has previously started or completed an Accredited Programme.`,
+      )
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldContainSuccessMessage(message: string) {
-    cy.get('[data-testid="success-banner"]').should('contain.text', message)
+    cy.get('[data-testid="success-banner"]').then(successBannerElement => {
+      const { actual, expected } = Helpers.parseHtml(successBannerElement, message)
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldNotContainNoHistoryParagraphs() {
