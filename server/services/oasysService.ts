@@ -152,7 +152,7 @@ export default class OasysService {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching ROSH analysis for prison number ${prisonNumber}.`)
+      throw createError(knownError.status || 500, `Error fetching RoSH analysis for prison number ${prisonNumber}.`)
     }
   }
 }

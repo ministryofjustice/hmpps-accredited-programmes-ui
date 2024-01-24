@@ -271,7 +271,7 @@ describe('OasysService', () => {
   })
 
   describe('getRoshAnalysis', () => {
-    it('returns the ROSH analysis for the given prison number', async () => {
+    it('returns the RoSH analysis for the given prison number', async () => {
       const roshAnalysis = roshAnalysisFactory.build()
 
       when(oasysClient.findRoshAnalysis).calledWith(prisonNumber).mockResolvedValue(roshAnalysis)
@@ -307,7 +307,7 @@ describe('OasysService', () => {
 
         when(oasysClient.findRoshAnalysis).calledWith(prisonNumber).mockRejectedValue(clientError)
 
-        const expectedError = createError(500, `Error fetching ROSH analysis for prison number ${prisonNumber}.`)
+        const expectedError = createError(500, `Error fetching RoSH analysis for prison number ${prisonNumber}.`)
         await expect(service.getRoshAnalysis(username, prisonNumber)).rejects.toThrow(expectedError)
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)

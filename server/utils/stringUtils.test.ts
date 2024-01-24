@@ -1,6 +1,6 @@
 import StringUtils from './stringUtils'
 
-describe('utils', () => {
+describe('StringUtils', () => {
   describe('convertFromUrlSlug', () => {
     it('formats a lowercase, hyphenated string to capitalised words', () => {
       expect(StringUtils.convertFromUrlSlug('a-url-slug')).toEqual('A Url Slug')

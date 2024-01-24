@@ -286,13 +286,13 @@ prisoners.forEach(prisoner => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.oasys.roshAnalysis({ prisonNumber: prisoner.prisonerNumber }),
+        url: apiPaths.oasys.psychiatric({ prisonNumber: prisoner.prisonerNumber }),
       },
       response: {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: oasysRoshAnalysis,
+        jsonBody: psychiatric,
         status: 200,
       },
     }),
@@ -318,13 +318,13 @@ prisoners.forEach(prisoner => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.oasys.psychiatric({ prisonNumber: prisoner.prisonerNumber }),
+        url: apiPaths.oasys.roshAnalysis({ prisonNumber: prisoner.prisonerNumber }),
       },
       response: {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: psychiatric,
+        jsonBody: oasysRoshAnalysis,
         status: 200,
       },
     }),
