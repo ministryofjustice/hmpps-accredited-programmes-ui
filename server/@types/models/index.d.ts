@@ -1,3 +1,4 @@
+import type { Attitude } from './Attitude'
 import type { Behaviour } from './Behaviour'
 import type { Course } from './Course'
 import type { CourseAudience } from './CourseAudience'
@@ -22,6 +23,7 @@ import type { RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
 import type { RoshAnalysis } from './RoshAnalysis'
 
 export type {
+  Attitude,
   Behaviour,
   Course,
   CourseAudience,
