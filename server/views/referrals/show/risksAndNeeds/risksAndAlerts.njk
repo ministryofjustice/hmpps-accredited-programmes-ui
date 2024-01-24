@@ -16,17 +16,17 @@
       }
     }) }}
 
-    <h3 class="govuk-heading-s">Offender group reconviction scale</h3>
+    <h3 class="govuk-heading-s" data-testid="ogrs-heading">Offender group reconviction scale</h3>
 
     {{ riskBox(ogrsYear1Box) }}
     {{ riskBox(ogrsYear2Box) }}
 
-    <h3 class="govuk-heading-s">Offender violence predictor</h3>
+    <h3 class="govuk-heading-s" data-testid="ovp-heading">Offender violence predictor</h3>
 
     {{ riskBox(ovpYear1Box) }}
     {{ riskBox(ovpYear2Box) }}
 
-    <h3 class="govuk-heading-s">Spousal assault risk assessment</h3>
+    <h3 class="govuk-heading-s" data-testid="sara-heading">Spousal assault risk assessment</h3>
 
     {% set saraPartnerBody %}
     <p class="govuk-body govuk-!-margin-bottom-1">Risk of violence towards partner</p>
@@ -39,7 +39,7 @@
     {{ riskBox(saraPartnerBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards partner', bodyHtml: saraPartnerBody })) }}
     {{ riskBox(saraOthersBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards others', bodyHtml: saraOthersBody })) }}
 
-    <h3 class="govuk-heading-s">Risk of serious recidivism</h3>
+    <h3 class="govuk-heading-s" data-testid="rsr-heading">Risk of serious recidivism</h3>
 
     {% set rsrBody %}
     <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-3">
@@ -51,7 +51,7 @@
 
     {{ riskBox(rsrBox | objectMerge({ bodyHtml: rsrBody })) }}
 
-    <h3 class="govuk-heading-s">Risk of serious harm</h3>
+    <h3 class="govuk-heading-s" data-testid="rosh-heading">Risk of serious harm</h3>
 
     {% set roshBody %}
     <p class="govuk-body govuk-!-margin-bottom-1">Risk of serious harm</p>
@@ -69,9 +69,9 @@
       }
     }) }}
 
-    <h3 class="govuk-heading-s">Risk alerts</h3>
+    <h3 class="govuk-heading-s" data-testid="alerts-heading">Risk alerts</h3>
 
-    <aside class="alerts-box" aria-label="Active alerts box">
+    <aside class="alerts-box" aria-label="Active alerts box" data-testid="alerts-box">
       <h4 class="govuk-heading-s govuk-!-margin-bottom-3">Active alerts</h4>
       <hr class="govuk-section-break govuk-section-break--visible">
 

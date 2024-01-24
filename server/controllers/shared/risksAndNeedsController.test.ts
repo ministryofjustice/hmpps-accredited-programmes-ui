@@ -338,35 +338,60 @@ describe('RisksAndNeedsController', () => {
         .build({ imminentRiskOfViolenceTowardsOthers: 'LOW', imminentRiskOfViolenceTowardsPartner: 'HIGH' })
       const ogrsYear1Box: RiskBox = {
         category: 'OGRS Year 1',
+        dataTestId: 'ogrs-year-1-risk-box',
         figure: '65.6%',
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
       const ogrsYear2Box: RiskBox = {
         category: 'OGRS Year 2',
+        dataTestId: 'ogrs-year-2-risk-box',
         figure: '89.1%',
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
-      const ospcBox: OspBox = { levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/C' }
-      const ospiBox: OspBox = { levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/I' }
+      const ospcBox: OspBox = { dataTestId: 'osp-c-box', levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/C' }
+      const ospiBox: OspBox = { dataTestId: 'ocp-i-box', levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/I' }
       const ovpYear1Box: RiskBox = {
         category: 'OVP Year 1',
+        dataTestId: 'ovp-year-1-risk-box',
         figure: '70.2%',
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
       const ovpYear2Box: RiskBox = {
         category: 'OVP Year 2',
+        dataTestId: 'ovp-year-2-risk-box',
         figure: '78.5%',
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
-      const roshBox: RiskBox = { category: 'RoSH', levelClass: 'risk-box--low', levelText: 'LOW' }
+      const roshBox: RiskBox = {
+        category: 'RoSH',
+        dataTestId: 'rosh-risk-box',
+        levelClass: 'risk-box--low',
+        levelText: 'LOW',
+      }
       const roshTable = { classes: 'rosh-table', head: [{ text: 'heading' }], rows: [[{ text: 'value' }]] }
-      const rsrBox: RiskBox = { category: 'RSR', figure: '32.3', levelClass: 'risk-box--low', levelText: 'LOW' }
-      const saraOthersBox: RiskBox = { category: 'SARA', levelClass: 'risk-box--low', levelText: 'LOW' }
-      const saraPartnerBox: RiskBox = { category: 'SARA', levelClass: 'risk-box--high', levelText: 'HIGH' }
+      const rsrBox: RiskBox = {
+        category: 'RSR',
+        dataTestId: 'rsr-risk-box',
+        figure: '32.3',
+        levelClass: 'risk-box--low',
+        levelText: 'LOW',
+      }
+      const saraOthersBox: RiskBox = {
+        category: 'SARA',
+        dataTestId: 'sara-others-risk-box',
+        levelClass: 'risk-box--low',
+        levelText: 'LOW',
+      }
+      const saraPartnerBox: RiskBox = {
+        category: 'SARA',
+        dataTestId: 'sara-partner-risk-box',
+        levelClass: 'risk-box--high',
+        levelText: 'HIGH',
+      }
 
       when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(risksAndAlerts)
       when(mockRisksAndAlertsUtils.riskBox)
@@ -389,10 +414,10 @@ describe('RisksAndNeedsController', () => {
         .calledWith('RSR', risksAndAlerts.rsrRisk, risksAndAlerts.rsrScore?.toString())
         .mockReturnValue(rsrBox)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsOthers)
+        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsOthers, undefined, 'sara-others')
         .mockReturnValue(saraOthersBox)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsPartner)
+        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsPartner, undefined, 'sara-partner')
         .mockReturnValue(saraPartnerBox)
 
       request.path = referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })

@@ -8,17 +8,24 @@ export default class RisksAndAlertsUtils {
     const levelOrUnknown = RisksAndAlertsUtils.levelOrUnknown(level)
 
     return {
+      dataTestId: `${type.toLowerCase().replace('/', '-')}-box`,
       levelClass: RisksAndAlertsUtils.levelClass('osp-box', levelOrUnknown),
       levelText: RisksAndAlertsUtils.levelText(levelOrUnknown),
       type,
     }
   }
 
-  static riskBox(category: RiskBox['category'], level?: RiskLevel, figure?: string): RiskBox {
+  static riskBox(
+    category: RiskBox['category'],
+    level?: RiskLevel,
+    figure?: string,
+    dataTestIdPrefix?: string,
+  ): RiskBox {
     const levelOrUnknown = RisksAndAlertsUtils.levelOrUnknown(level)
 
     return {
       category,
+      dataTestId: `${dataTestIdPrefix || category.toLowerCase().replace(/\s/g, '-')}-risk-box`,
       figure,
       levelClass: RisksAndAlertsUtils.levelClass('risk-box', levelOrUnknown),
       levelText: RisksAndAlertsUtils.levelText(levelOrUnknown),

@@ -169,6 +169,7 @@ type QueryParam = {
 }
 
 type OspBox = {
+  dataTestId: string
   levelClass: string
   levelText: string
   type: 'OSP/C' | 'OSP/I'
@@ -176,6 +177,7 @@ type OspBox = {
 
 type RiskBox = {
   category: 'OGRS Year 1' | 'OGRS Year 2' | 'OVP Year 1' | 'OVP Year 2' | 'RoSH' | 'RSR' | 'SARA'
+  dataTestId: string
   levelClass: string
   levelText: string
   bodyHtml?: string

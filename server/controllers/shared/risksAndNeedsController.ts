@@ -184,8 +184,18 @@ export default class RisksAndNeedsController {
             roshBox: RisksAndAlertsUtils.riskBox('RoSH', risksAndAlerts.overallRoshLevel),
             roshTable: RisksAndAlertsUtils.roshTable(risksAndAlerts),
             rsrBox: RisksAndAlertsUtils.riskBox('RSR', risksAndAlerts.rsrRisk, risksAndAlerts.rsrScore?.toString()),
-            saraOthersBox: RisksAndAlertsUtils.riskBox('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsOthers),
-            saraPartnerBox: RisksAndAlertsUtils.riskBox('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsPartner),
+            saraOthersBox: RisksAndAlertsUtils.riskBox(
+              'SARA',
+              risksAndAlerts.imminentRiskOfViolenceTowardsOthers,
+              undefined,
+              'sara-others',
+            ),
+            saraPartnerBox: RisksAndAlertsUtils.riskBox(
+              'SARA',
+              risksAndAlerts.imminentRiskOfViolenceTowardsPartner,
+              undefined,
+              'sara-partner',
+            ),
           }
         : {
             hasRisksAndAlerts: false,

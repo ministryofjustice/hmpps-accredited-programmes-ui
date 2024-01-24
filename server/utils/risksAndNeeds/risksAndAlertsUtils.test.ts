@@ -5,6 +5,7 @@ describe('RisksAndAlertsUtils', () => {
   describe('ospBox', () => {
     it('formats OSP data in the appropriate format for passing to an OSP box Nunjucks macro', () => {
       expect(RisksAndAlertsUtils.ospBox('OSP/C', 'VERY_HIGH')).toEqual({
+        dataTestId: 'osp-c-box',
         levelClass: 'osp-box--very-high',
         levelText: 'VERY HIGH',
         type: 'OSP/C',
@@ -27,6 +28,7 @@ describe('RisksAndAlertsUtils', () => {
     it('formats risk data in the appropriate format for passing to an risk box Nunjucks macro', () => {
       expect(RisksAndAlertsUtils.riskBox('RSR', 'MEDIUM')).toEqual({
         category: 'RSR',
+        dataTestId: 'rsr-risk-box',
         levelClass: 'risk-box--medium',
         levelText: 'MEDIUM',
       })
@@ -47,6 +49,14 @@ describe('RisksAndAlertsUtils', () => {
       it('includes the figure', () => {
         expect(RisksAndAlertsUtils.riskBox('RSR', 'MEDIUM', '3.25')).toEqual(
           expect.objectContaining({ figure: '3.25' }),
+        )
+      })
+    })
+
+    describe('when a data test ID prefix is provided', () => {
+      it('interpolates the provided prefix', () => {
+        expect(RisksAndAlertsUtils.riskBox('RSR', 'MEDIUM', undefined, 'something-very-special')).toEqual(
+          expect.objectContaining({ dataTestId: 'something-very-special-risk-box' }),
         )
       })
     })
