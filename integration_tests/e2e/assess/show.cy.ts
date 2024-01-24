@@ -153,4 +153,18 @@ context('Viewing a submitted referral', () => {
       })
     })
   })
+
+  describe('When reviewing Section 12 - Attitudes', () => {
+    describe('and there is attitude data', () => {
+      it('shows the correct information', () => {
+        sharedTests.risksAndNeeds.showsAttitudesPageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      })
+    })
+
+    describe('and there is no attitude data', () => {
+      it('shows the correct information', () => {
+        sharedTests.risksAndNeeds.showsAttitudesPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      })
+    })
+  })
 })
