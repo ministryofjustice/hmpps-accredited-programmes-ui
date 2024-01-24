@@ -9,6 +9,7 @@ import type {
   Psychiatric,
   Referral,
   Relationships,
+  RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
 
@@ -130,6 +131,29 @@ export default class OasysService {
       }
 
       throw createError(knownError.status || 500, `Error fetching relationships for prison number ${prisonNumber}.`)
+    }
+  }
+
+  async getRisksAndAlerts(
+    username: Express.User['username'],
+    prisonNumber: Referral['prisonNumber'],
+  ): Promise<RisksAndAlerts | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const oasysClient = this.oasysClientBuilder(systemToken)
+
+    try {
+      const risksAndAlerts = await oasysClient.findRisksAndAlerts(prisonNumber)
+
+      return risksAndAlerts
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(knownError.status || 500, `Error fetching risks and alerts for prison number ${prisonNumber}.`)
     }
   }
 

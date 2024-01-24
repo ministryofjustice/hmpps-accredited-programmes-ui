@@ -20,6 +20,7 @@ import EmotionalWellbeingUtils from './risksAndNeeds/emotionalWellbeingUtils'
 import LifestyleAndAssociatesUtils from './risksAndNeeds/lifestyleAndAssociatesUtils'
 import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
 import RelationshipsUtils from './risksAndNeeds/relationshipsUtils'
+import RisksAndAlertsUtils from './risksAndNeeds/risksAndAlertsUtils'
 import RoshAnalysisUtils from './risksAndNeeds/roshAnalysisUtils'
 import ThinkingAndBehavingUtils from './risksAndNeeds/thinkingAndBehavingUtils'
 import RouteUtils from './routeUtils'
@@ -44,6 +45,7 @@ export {
   PathUtils,
   PersonUtils,
   RelationshipsUtils,
+  RisksAndAlertsUtils,
   RoshAnalysisUtils,
   RouteUtils,
   SentenceInformationUtils,

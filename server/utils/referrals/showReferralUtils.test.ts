@@ -83,7 +83,7 @@ describe('ShowReferralUtils', () => {
           },
           {
             active: false,
-            href: '/refer/referrals/mock-referral-id/risks-and-needs/offence-analysis',
+            href: '/refer/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
             text: 'Risks and needs',
           },
         ])
@@ -100,7 +100,7 @@ describe('ShowReferralUtils', () => {
           },
           {
             active: true,
-            href: '/refer/referrals/mock-referral-id/risks-and-needs/offence-analysis',
+            href: '/refer/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
             text: 'Risks and needs',
           },
         ])
@@ -119,7 +119,7 @@ describe('ShowReferralUtils', () => {
           },
           {
             active: false,
-            href: '/assess/referrals/mock-referral-id/risks-and-needs/offence-analysis',
+            href: '/assess/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
             text: 'Risks and needs',
           },
         ])
@@ -136,7 +136,7 @@ describe('ShowReferralUtils', () => {
           },
           {
             active: true,
-            href: '/assess/referrals/mock-referral-id/risks-and-needs/offence-analysis',
+            href: '/assess/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
             text: 'Risks and needs',
           },
         ])

@@ -17,6 +17,7 @@ import {
   psychiatricFactory,
   referralFactory,
   relationshipsFactory,
+  risksAndAlertsFactory,
   roshAnalysisFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
@@ -27,13 +28,14 @@ import {
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
   RelationshipsUtils,
+  RisksAndAlertsUtils,
   RoshAnalysisUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,
   ThinkingAndBehavingUtils,
 } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
-import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
+import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
@@ -42,6 +44,7 @@ jest.mock('../../utils/risksAndNeeds/emotionalWellbeingUtils')
 jest.mock('../../utils/risksAndNeeds/lifestyleAndAssociatesUtils')
 jest.mock('../../utils/risksAndNeeds/offenceAnalysisUtils')
 jest.mock('../../utils/risksAndNeeds/relationshipsUtils')
+jest.mock('../../utils/risksAndNeeds/risksAndAlertsUtils')
 jest.mock('../../utils/risksAndNeeds/roshAnalysisUtils')
 jest.mock('../../utils/risksAndNeeds/thinkingAndBehavingUtils')
 
@@ -52,6 +55,7 @@ const mockEmotionalWellbeingUtils = EmotionalWellbeingUtils as jest.Mocked<typeo
 const mockLifestyleAndAssociatesUtils = LifestyleAndAssociatesUtils as jest.Mocked<typeof LifestyleAndAssociatesUtils>
 const mockOffenceAnalysisUtils = OffenceAnalysisUtils as jest.Mocked<typeof OffenceAnalysisUtils>
 const mockRelationshipsUtils = RelationshipsUtils as jest.Mocked<typeof RelationshipsUtils>
+const mockRisksAndAlertsUtils = RisksAndAlertsUtils as jest.Mocked<typeof RisksAndAlertsUtils>
 const mockRoshAnalysisUtils = RoshAnalysisUtils as jest.Mocked<typeof RoshAnalysisUtils>
 const mockThinkingAndBehavingUtils = ThinkingAndBehavingUtils as jest.Mocked<typeof ThinkingAndBehavingUtils>
 
@@ -320,6 +324,120 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
           ...sharedPageData,
           hasRelationships: false,
+          navigationItems,
+          subNavigationItems,
+        })
+      })
+    })
+  })
+
+  describe('risksAndAlerts', () => {
+    it('renders the risks and alerts page with the correct response locals', async () => {
+      const risksAndAlerts = risksAndAlertsFactory
+        .withAllOptionalFields()
+        .build({ imminentRiskOfViolenceTowardsOthers: 'LOW', imminentRiskOfViolenceTowardsPartner: 'HIGH' })
+      const ogrsYear1Box: RiskBox = {
+        category: 'OGRS Year 1',
+        figure: '65.6%',
+        levelClass: 'risk-box--low',
+        levelText: 'LOW',
+      }
+      const ogrsYear2Box: RiskBox = {
+        category: 'OGRS Year 2',
+        figure: '89.1%',
+        levelClass: 'risk-box--low',
+        levelText: 'LOW',
+      }
+      const ospcBox: OspBox = { levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/C' }
+      const ospiBox: OspBox = { levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/I' }
+      const ovpYear1Box: RiskBox = {
+        category: 'OVP Year 1',
+        figure: '70.2%',
+        levelClass: 'risk-box--low',
+        levelText: 'LOW',
+      }
+      const ovpYear2Box: RiskBox = {
+        category: 'OVP Year 2',
+        figure: '78.5%',
+        levelClass: 'risk-box--low',
+        levelText: 'LOW',
+      }
+      const roshBox: RiskBox = { category: 'RoSH', levelClass: 'risk-box--low', levelText: 'LOW' }
+      const roshTable = { classes: 'rosh-table', head: [{ text: 'heading' }], rows: [[{ text: 'value' }]] }
+      const rsrBox: RiskBox = { category: 'RSR', figure: '32.3', levelClass: 'risk-box--low', levelText: 'LOW' }
+      const saraOthersBox: RiskBox = { category: 'SARA', levelClass: 'risk-box--low', levelText: 'LOW' }
+      const saraPartnerBox: RiskBox = { category: 'SARA', levelClass: 'risk-box--high', levelText: 'HIGH' }
+
+      when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(risksAndAlerts)
+      when(mockRisksAndAlertsUtils.riskBox)
+        .calledWith('OGRS Year 1', risksAndAlerts.ogrsRisk, `${risksAndAlerts.ogrsYear1?.toString()}%`)
+        .mockReturnValue(ogrsYear1Box)
+      when(mockRisksAndAlertsUtils.riskBox)
+        .calledWith('OGRS Year 2', risksAndAlerts.ogrsRisk, `${risksAndAlerts.ogrsYear2?.toString()}%`)
+        .mockReturnValue(ogrsYear2Box)
+      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/C', risksAndAlerts.ospcScore).mockReturnValue(ospcBox)
+      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/I', risksAndAlerts.ospiScore).mockReturnValue(ospiBox)
+      when(mockRisksAndAlertsUtils.riskBox)
+        .calledWith('OVP Year 1', risksAndAlerts.ovpRisk, `${risksAndAlerts.ovpYear1?.toString()}%`)
+        .mockReturnValue(ovpYear1Box)
+      when(mockRisksAndAlertsUtils.riskBox)
+        .calledWith('OVP Year 2', risksAndAlerts.ovpRisk, `${risksAndAlerts.ovpYear2?.toString()}%`)
+        .mockReturnValue(ovpYear2Box)
+      when(mockRisksAndAlertsUtils.riskBox).calledWith('RoSH', risksAndAlerts.overallRoshLevel).mockReturnValue(roshBox)
+      mockRisksAndAlertsUtils.roshTable.mockReturnValue(roshTable)
+      when(mockRisksAndAlertsUtils.riskBox)
+        .calledWith('RSR', risksAndAlerts.rsrRisk, risksAndAlerts.rsrScore?.toString())
+        .mockReturnValue(rsrBox)
+      when(mockRisksAndAlertsUtils.riskBox)
+        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsOthers)
+        .mockReturnValue(saraOthersBox)
+      when(mockRisksAndAlertsUtils.riskBox)
+        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsPartner)
+        .mockReturnValue(saraPartnerBox)
+
+      request.path = referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+
+      const requestHandler = controller.risksAndAlerts()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
+        ...sharedPageData,
+        alerts: risksAndAlerts.alerts,
+        hasRisksAndAlerts: true,
+        importedFromNomisText: `Imported from Nomis on ${importedFromDate}.`,
+        importedFromOasysText: `Imported from OASys on ${importedFromDate}.`,
+        navigationItems,
+        ogrsYear1Box,
+        ogrsYear2Box,
+        ospcBox,
+        ospiBox,
+        ovpYear1Box,
+        ovpYear2Box,
+        roshBox,
+        roshTable,
+        rsrBox,
+        saraOthersBox,
+        saraPartnerBox,
+        subNavigationItems,
+      })
+    })
+
+    describe('when the OASys service returns `null`', () => {
+      it('renders the risks and alerts page with the correct response locals', async () => {
+        when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+
+        const requestHandler = controller.risksAndAlerts()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
+          ...sharedPageData,
+          hasRisksAndAlerts: false,
           navigationItems,
           subNavigationItems,
         })

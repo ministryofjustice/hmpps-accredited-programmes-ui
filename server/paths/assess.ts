@@ -23,6 +23,7 @@ export default {
       lifestyleAndAssociates: risksAndNeedsPathBase.path('lifestyle-and-associates'),
       offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
       relationships: risksAndNeedsPathBase.path('relationships'),
+      risksAndAlerts: risksAndNeedsPathBase.path('risks-and-alerts'),
       roshAnalysis: risksAndNeedsPathBase.path('rosh-analysis'),
       thinkingAndBehaving: risksAndNeedsPathBase.path('thinking-and-behaving'),
     },
