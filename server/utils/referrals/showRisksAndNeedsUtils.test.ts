@@ -45,6 +45,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             href: referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId }),
             text: 'Section 11 - Thinking and behaving',
           },
+          {
+            active: false,
+            href: referPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId }),
+            text: 'Section 12 - Attitudes',
+          },
         ])
       })
     })
@@ -88,6 +93,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: assessPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId }),
             text: 'Section 11 - Thinking and behaving',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId }),
+            text: 'Section 12 - Attitudes',
           },
         ])
       })
