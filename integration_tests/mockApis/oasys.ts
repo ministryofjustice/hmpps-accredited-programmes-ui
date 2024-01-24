@@ -9,6 +9,7 @@ import type {
   Psychiatric,
   Referral,
   Relationships,
+  RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
 
@@ -80,6 +81,24 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.relationships,
+        status: 200,
+      },
+    }),
+
+  stubRisksAndAlerts: (args: {
+    prisonNumber: Referral['prisonNumber']
+    risksAndAlerts: RisksAndAlerts
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.risksAndAlerts({ prisonNumber: args.prisonNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: args.risksAndAlerts,
         status: 200,
       },
     }),
