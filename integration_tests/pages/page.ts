@@ -172,8 +172,8 @@ export default abstract class Page {
       })
   }
 
-  shouldContainImportedFromText(source: 'Nomis' | 'OASys'): void {
-    cy.get('[data-testid="import-from-text"]').then(importedFromElement => {
+  shouldContainImportedFromText(source: 'Nomis' | 'OASys', dataTestId = 'imported-from-text'): void {
+    cy.get(`[data-testid="${dataTestId}"]`).then(importedFromElement => {
       const { actual, expected } = Helpers.parseHtml(
         importedFromElement,
         `Imported from ${source} on ${DateUtils.govukFormattedFullDateString()}.`,
