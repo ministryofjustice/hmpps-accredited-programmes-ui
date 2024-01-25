@@ -3,6 +3,7 @@ import AdditionalInformationPage from './showReferral/additionalInformation'
 import OffenceHistoryPage from './showReferral/offenceHistory'
 import PersonalDetailsPage from './showReferral/personalDetails'
 import ProgrammeHistoryPage from './showReferral/programmeHistory'
+import AttitudesPage from './showReferral/risksAndNeeds/attitudes'
 import EmotionalWellbeingPage from './showReferral/risksAndNeeds/emotionalWellbeing'
 import LifestyleAndAssociatesPage from './showReferral/risksAndNeeds/lifestyleAndAssociates'
 import OffenceAnalysisPage from './showReferral/risksAndNeeds/offenceAnalysis'
@@ -14,6 +15,7 @@ import SentenceInformationPage from './showReferral/sentenceInformation'
 
 export {
   AdditionalInformationPage,
+  AttitudesPage,
   CaseListPage,
   EmotionalWellbeingPage,
   LifestyleAndAssociatesPage,

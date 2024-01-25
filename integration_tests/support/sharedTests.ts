@@ -1,6 +1,7 @@
 import type { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths, referPaths } from '../../server/paths'
 import {
+  attitudeFactory,
   behaviourFactory,
   courseFactory,
   courseOfferingFactory,
@@ -27,6 +28,7 @@ import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
   AdditionalInformationPage,
+  AttitudesPage,
   LifestyleAndAssociatesPage,
   OffenceAnalysisPage,
   OffenceHistoryPage,
@@ -390,6 +392,56 @@ const sharedTests = {
     },
   },
   risksAndNeeds: {
+    showsAttitudesPageWithData: (role: ApplicationRole): void => {
+      const attitude = attitudeFactory.build()
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubAttitude', {
+        attitude,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.attitudes({ referralId: referral.id })
+      cy.visit(path)
+
+      const attitudePage = Page.verifyOnPage(AttitudesPage, {
+        attitude,
+        course,
+      })
+      attitudePage.shouldHavePersonDetails(person)
+      attitudePage.shouldContainNavigation(path)
+      attitudePage.shouldContainBackLink('#')
+      attitudePage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      attitudePage.shouldContainShowReferralSubHeading()
+      attitudePage.shouldContainRisksAndNeedsOasysMessage()
+      attitudePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      attitudePage.shouldContainImportedFromText('OASys')
+      attitudePage.shouldContainAttitudesSummaryList()
+    },
+    showsAttitudesPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubAttitude', {
+        attitude: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.attitudes({ referralId: referral.id })
+      cy.visit(path)
+
+      const attitudesPage = Page.verifyOnPage(AttitudesPage, {
+        attitude: {},
+        course,
+      })
+      attitudesPage.shouldHavePersonDetails(person)
+      attitudesPage.shouldContainNavigation(path)
+      attitudesPage.shouldContainBackLink('#')
+      attitudesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      attitudesPage.shouldContainShowReferralSubHeading()
+      attitudesPage.shouldContainRisksAndNeedsOasysMessage()
+      attitudesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      attitudesPage.shouldContainNoAttitudeDataSummaryCard()
+    },
     showsEmotionalWellbeingPageWithData: (role: ApplicationRole): void => {
       const psychiatric = psychiatricFactory.build()
       sharedTests.referrals.beforeEach(role)
