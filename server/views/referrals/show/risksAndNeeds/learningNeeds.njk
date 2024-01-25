@@ -1,0 +1,31 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {% if hasLearningNeeds %}
+    {{ super() }}
+
+    {{ govukSummaryList({
+      card: {
+        title: { text: "Learning needs information" },
+        attributes: { "data-testid": "information-summary-list" }
+      },
+      rows: informationSummaryListRows
+    }) }}
+
+    {{ govukSummaryList({
+      card: {
+        title: { text: "Learning needs score" },
+        attributes: { "data-testid": "score-summary-list" }
+      },
+      rows: scoreSummaryListRows
+    }) }}
+  {% else %}
+    {% set noLearningNeedsDataString = "No learning needs data found in OASys. Add learning needs data to OASys to see them here." %}
+
+    {{ keylessSummaryCard("Learning needs", bodyText=noLearningNeedsDataString, testId="no-learning-needs-data-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}
