@@ -17,7 +17,6 @@ type RisksAndAlerts = {
   riskChildrenCustody?: RiskLevel
   riskKnownAdultCommunity?: RiskLevel
   riskKnownAdultCustody?: RiskLevel
-  riskPrisonersCommunity?: RiskLevel
   riskPrisonersCustody?: RiskLevel
   riskPublicCommunity?: RiskLevel
   riskPublicCustody?: RiskLevel

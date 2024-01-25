@@ -7,6 +7,7 @@ import EmotionalWellbeingPage from './showReferral/risksAndNeeds/emotionalWellbe
 import LifestyleAndAssociatesPage from './showReferral/risksAndNeeds/lifestyleAndAssociates'
 import OffenceAnalysisPage from './showReferral/risksAndNeeds/offenceAnalysis'
 import RelationshipsPage from './showReferral/risksAndNeeds/relationships'
+import RisksAndAlertsPage from './showReferral/risksAndNeeds/risksAndAlerts'
 import RoshAnalysisPage from './showReferral/risksAndNeeds/roshAnalysis'
 import ThinkingAndBehavingPage from './showReferral/risksAndNeeds/thinkingAndBehaving'
 import SentenceInformationPage from './showReferral/sentenceInformation'
@@ -21,6 +22,7 @@ export {
   PersonalDetailsPage,
   ProgrammeHistoryPage,
   RelationshipsPage,
+  RisksAndAlertsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
   ThinkingAndBehavingPage,

@@ -104,7 +104,10 @@ export default abstract class Page {
 
   shouldContainCheckbox(name: string, label: string): void {
     cy.get(`.govuk-checkboxes__input[name="${name}"]`).should('exist')
-    cy.get(`.govuk-checkboxes__label[for="${name}"]`).should('contain.text', label)
+    cy.get(`.govuk-checkboxes__label[for="${name}"]`).then(labelElement => {
+      const { actual, expected } = Helpers.parseHtml(labelElement, label)
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldContainCourseOfferingSummaryList(course: CoursePresenter, organisationName: Organisation['name']) {
@@ -118,7 +121,7 @@ export default abstract class Page {
 
   shouldContainDetails(summaryText: string, detailsText: string, detailsElement: JQuery<HTMLElement>): void {
     cy.wrap(detailsElement).within(() => {
-      cy.get('.govuk-details__summary-text').should('contain.text', summaryText)
+      cy.get('.govuk-details__summary-text').should('have.text', summaryText)
 
       cy.get('.govuk-details__text').then(detailsTextElement => {
         const { actual, expected } = Helpers.parseHtml(detailsTextElement, detailsText)
@@ -169,11 +172,14 @@ export default abstract class Page {
       })
   }
 
-  shouldContainImportedFromOasysText(): void {
-    cy.get('[data-testid="imported-from-text"]').should(
-      'contain.text',
-      `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-    )
+  shouldContainImportedFromText(source: 'Nomis' | 'OASys', dataTestId = 'imported-from-text'): void {
+    cy.get(`[data-testid="${dataTestId}"]`).then(importedFromElement => {
+      const { actual, expected } = Helpers.parseHtml(
+        importedFromElement,
+        `Imported from ${source} on ${DateUtils.govukFormattedFullDateString()}.`,
+      )
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldContainKeylessSummaryCard(
@@ -279,7 +285,7 @@ export default abstract class Page {
 
   shouldContainRisksAndNeedsOasysMessage(): void {
     cy.get('[data-testid="risks-and-needs-oasys-message"]').should(
-      'contain.text',
+      'have.text',
       'Relevant sections from OASys to support the referral. The full Layer 3 assessment is available in OASys. Information is accurate at the time of the referral being submitted.',
     )
   }
@@ -309,7 +315,7 @@ export default abstract class Page {
   }
 
   shouldContainShowReferralSubHeading(): void {
-    cy.get('[data-testid="show-referral-sub-heading"]').should('contain.text', 'Risks and needs')
+    cy.get('[data-testid="show-referral-sub-heading"]').should('have.text', 'Risks and needs')
   }
 
   shouldContainShowReferralSubNavigation(
@@ -460,12 +466,18 @@ export default abstract class Page {
   }
 
   shouldContainTextArea(id: string, label: string): void {
-    cy.get(`.govuk-label[for="${id}"]`).should('contain.text', label)
+    cy.get(`.govuk-label[for="${id}"]`).then(labelElement => {
+      const { actual, expected } = Helpers.parseHtml(labelElement, label)
+      expect(actual).to.equal(expected)
+    })
     cy.get(`.govuk-textarea[id="${id}"]`).should('exist')
   }
 
   shouldContainWarningText(text: GovukFrontendWarningText['text']): void {
-    cy.get('.govuk-warning-text__text').should('contain.text', text)
+    cy.get('.govuk-warning-text__text').then(warningElement => {
+      const { actual, expected } = Helpers.parseHtml(warningElement, `Warning ${text}`)
+      expect(actual).to.equal(expected)
+    })
   }
 
   shouldHaveErrors(errors: Array<{ field: string; message: string }>): void {

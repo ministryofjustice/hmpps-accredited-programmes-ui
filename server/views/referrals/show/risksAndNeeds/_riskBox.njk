@@ -1,5 +1,5 @@
 {% macro riskBox(params) %}
-  <aside class="risk-box {{ params.levelClass }}" aria-label="{{ params.ariaLabelPrefix or params.category }} risk box">
+  <aside class="risk-box {{ params.levelClass }}" aria-label="{{ params.ariaLabelPrefix or params.category }} risk box" data-testid="{{ params.dataTestId }}">
     <h4 class="govuk-heading-s govuk-!-margin-bottom-1">{{ params.levelText }}
       <span class="govuk-!-font-weight-regular">{{ params.category }}</span>
       {% if params.figure %}

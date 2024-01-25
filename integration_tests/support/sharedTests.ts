@@ -17,6 +17,7 @@ import {
   psychiatricFactory,
   referralFactory,
   relationshipsFactory,
+  risksAndAlertsFactory,
   roshAnalysisFactory,
   userFactory,
 } from '../../server/testutils/factories'
@@ -32,6 +33,7 @@ import {
   PersonalDetailsPage,
   ProgrammeHistoryPage,
   RelationshipsPage,
+  RisksAndAlertsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
   ThinkingAndBehavingPage,
@@ -181,7 +183,7 @@ const sharedTests = {
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      offenceHistoryPage.shouldContainImportedFromText()
+      offenceHistoryPage.shouldContainImportedFromText('Nomis')
       offenceHistoryPage.shouldContainNoOffenceHistoryMessage()
     },
 
@@ -265,7 +267,7 @@ const sharedTests = {
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      offenceHistoryPage.shouldContainImportedFromText()
+      offenceHistoryPage.shouldContainImportedFromText('Nomis')
       offenceHistoryPage.shouldContainIndexOffenceSummaryCard()
       offenceHistoryPage.shouldContainAdditionalOffenceSummaryCards()
     },
@@ -287,7 +289,7 @@ const sharedTests = {
       personalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       personalDetailsPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       personalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      personalDetailsPage.shouldContainImportedFromText()
+      personalDetailsPage.shouldContainImportedFromText('Nomis')
       personalDetailsPage.shouldContainPersonalDetailsSummaryCard()
     },
 
@@ -347,7 +349,7 @@ const sharedTests = {
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      sentenceInformationPage.shouldContainImportedFromText()
+      sentenceInformationPage.shouldContainImportedFromText('OASys')
       sentenceInformationPage.shouldContainSentenceDetailsSummaryCard()
       sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
     },
@@ -382,7 +384,7 @@ const sharedTests = {
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
       sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      sentenceInformationPage.shouldContainImportedFromText()
+      sentenceInformationPage.shouldContainImportedFromText('OASys')
       sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()
       sentenceInformationPage.shouldContainNoReleaseDatesSummaryCard()
     },
@@ -411,7 +413,7 @@ const sharedTests = {
       emotionalWellbeingPage.shouldContainShowReferralSubHeading()
       emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
       emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      emotionalWellbeingPage.shouldContainImportedFromOasysText()
+      emotionalWellbeingPage.shouldContainImportedFromText('OASys')
       emotionalWellbeingPage.shouldContainPsychiatricProblemsSummaryList()
     },
     showsEmotionalWellbeingPageWithoutData: (role: ApplicationRole): void => {
@@ -461,7 +463,7 @@ const sharedTests = {
       lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading()
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsOasysMessage()
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      lifestyleAndAssociatesPage.shouldContainImportedFromOasysText()
+      lifestyleAndAssociatesPage.shouldContainImportedFromText('OASys')
       lifestyleAndAssociatesPage.shouldContainReoffendingSummaryList()
     },
     showsLifestyleAndAssociatesPageWithoutData: (role: ApplicationRole): void => {
@@ -511,7 +513,7 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainShowReferralSubHeading()
       offenceAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
       offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      offenceAnalysisPage.shouldContainImportedFromOasysText()
+      offenceAnalysisPage.shouldContainImportedFromText('OASys')
       offenceAnalysisPage.shouldContainBriefOffenceDetailsSummaryCard()
       offenceAnalysisPage.shouldContainVictimsAndPartnersSummaryList()
       offenceAnalysisPage.shouldContainImpactAndConsequencesSummaryList()
@@ -566,7 +568,7 @@ const sharedTests = {
       relationshipsPage.shouldContainShowReferralSubHeading()
       relationshipsPage.shouldContainRisksAndNeedsOasysMessage()
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      relationshipsPage.shouldContainImportedFromOasysText()
+      relationshipsPage.shouldContainImportedFromText('OASys')
       relationshipsPage.shouldContainDomesticViolenceSummaryList()
     },
     showsRelationshipsPageWithoutData: (role: ApplicationRole): void => {
@@ -592,6 +594,61 @@ const sharedTests = {
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainNoRelationshipsSummaryCard()
     },
+    showsRisksAndAlertsPageWithData: (role: ApplicationRole): void => {
+      const risksAndAlerts = risksAndAlertsFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRisksAndAlerts', {
+        prisonNumber: prisoner.prisonerNumber,
+        risksAndAlerts,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+      cy.visit(path)
+
+      const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
+        course,
+        risksAndAlerts,
+      })
+      risksAndAlertsPage.shouldHavePersonDetails(person)
+      risksAndAlertsPage.shouldContainNavigation(path)
+      risksAndAlertsPage.shouldContainBackLink('#')
+      risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      risksAndAlertsPage.shouldContainShowReferralSubHeading()
+      risksAndAlertsPage.shouldContainRisksAndNeedsOasysMessage()
+      risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      risksAndAlertsPage.shouldContainImportedFromText('OASys', 'imported-from-oasys-text')
+      risksAndAlertsPage.shouldHaveOgrsInformation()
+      risksAndAlertsPage.shouldHaveOvpInformation()
+      risksAndAlertsPage.shouldHaveSaraInformation()
+      risksAndAlertsPage.shouldHaveRsrInformation()
+      risksAndAlertsPage.shouldHaveRoshInformation()
+      risksAndAlertsPage.shouldContainImportedFromText('Nomis', 'imported-from-nomis-text')
+      risksAndAlertsPage.shouldHaveAlertsInformation()
+    },
+    showsRisksAndAlertsPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRisksAndAlerts', {
+        prisonNumber: prisoner.prisonerNumber,
+        risksAndAlerts: null,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+      cy.visit(path)
+
+      const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
+        course,
+        risksAndAlerts: {},
+      })
+      risksAndAlertsPage.shouldHavePersonDetails(person)
+      risksAndAlertsPage.shouldContainNavigation(path)
+      risksAndAlertsPage.shouldContainBackLink('#')
+      risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      risksAndAlertsPage.shouldContainShowReferralSubHeading()
+      risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      risksAndAlertsPage.shouldContainNoRisksAndAlertsSummaryCard()
+    },
     showsRoshAnalysisPageWithData: (role: ApplicationRole): void => {
       const roshAnalysis = roshAnalysisFactory.build({})
       sharedTests.referrals.beforeEach(role)
@@ -615,7 +672,7 @@ const sharedTests = {
       roshAnalysisPage.shouldContainShowReferralSubHeading()
       roshAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
       roshAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      roshAnalysisPage.shouldContainImportedFromOasysText()
+      roshAnalysisPage.shouldContainImportedFromText('OASys')
       roshAnalysisPage.shouldContainPreviousBehaviourSummaryList()
     },
     showsRoshAnalysisPageWithoutData: (role: ApplicationRole): void => {
@@ -664,7 +721,7 @@ const sharedTests = {
       thinkingAndBehavingPage.shouldContainShowReferralSubHeading()
       thinkingAndBehavingPage.shouldContainRisksAndNeedsOasysMessage()
       thinkingAndBehavingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      thinkingAndBehavingPage.shouldContainImportedFromOasysText()
+      thinkingAndBehavingPage.shouldContainImportedFromText('OASys')
       thinkingAndBehavingPage.shouldContainThinkingAndBehavingSummaryList()
     },
     showsThinkingAndBehavingPageWithoutData: (role: ApplicationRole): void => {

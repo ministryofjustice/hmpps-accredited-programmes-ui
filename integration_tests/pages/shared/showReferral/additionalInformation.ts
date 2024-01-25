@@ -1,4 +1,5 @@
 import { CourseUtils, DateUtils } from '../../../../server/utils'
+import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { Course, Referral } from '@accredited-programmes/models'
 
@@ -26,9 +27,12 @@ export default class AdditionalInformationPage extends Page {
   }
 
   shouldContainSubmittedText() {
-    cy.get('[data-testid="submitted-text"]').should(
-      'contain.text',
-      `Submitted in referral on ${DateUtils.govukFormattedFullDateString(this.referral.submittedOn)}.`,
-    )
+    cy.get('[data-testid="submitted-text"]').then(submittedTextElement => {
+      const { actual, expected } = Helpers.parseHtml(
+        submittedTextElement,
+        `Submitted in referral on ${DateUtils.govukFormattedFullDateString(this.referral.submittedOn)}.`,
+      )
+      expect(actual).to.equal(expected)
+    })
   }
 }
