@@ -5,6 +5,7 @@ import PersonalDetailsPage from './showReferral/personalDetails'
 import ProgrammeHistoryPage from './showReferral/programmeHistory'
 import AttitudesPage from './showReferral/risksAndNeeds/attitudes'
 import EmotionalWellbeingPage from './showReferral/risksAndNeeds/emotionalWellbeing'
+import HealthPage from './showReferral/risksAndNeeds/health'
 import LearningNeedsPage from './showReferral/risksAndNeeds/learningNeeds'
 import LifestyleAndAssociatesPage from './showReferral/risksAndNeeds/lifestyleAndAssociates'
 import OffenceAnalysisPage from './showReferral/risksAndNeeds/offenceAnalysis'
@@ -19,6 +20,7 @@ export {
   AttitudesPage,
   CaseListPage,
   EmotionalWellbeingPage,
+  HealthPage,
   LearningNeedsPage,
   LifestyleAndAssociatesPage,
   OffenceAnalysisPage,
