@@ -98,20 +98,6 @@ context('Viewing a submitted referral', () => {
     })
   })
 
-  describe('When reviewing Section R6 - RoSH analysis', () => {
-    describe('and there is a RoSH analysis', () => {
-      it('shows the correct information', () => {
-        sharedTests.risksAndNeeds.showsRoshAnalysisPageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
-      })
-    })
-
-    describe('and there is no RoSH analysis', () => {
-      it('shows the correct information', () => {
-        sharedTests.risksAndNeeds.showsRoshAnalysisPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
-      })
-    })
-  })
-
   describe('When reviewing Section 7 - Lifestyle and associates', () => {
     describe('and there is lifestyle data', () => {
       it('shows the correct information', () => {
@@ -164,6 +150,20 @@ context('Viewing a submitted referral', () => {
     describe('and there is no attitude data', () => {
       it('shows the correct information', () => {
         sharedTests.risksAndNeeds.showsAttitudesPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      })
+    })
+  })
+
+  describe('When reviewing Section R6 - RoSH analysis', () => {
+    describe('and there is a RoSH analysis', () => {
+      it('shows the correct information', () => {
+        sharedTests.risksAndNeeds.showsRoshAnalysisPageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      })
+    })
+
+    describe('and there is no RoSH analysis', () => {
+      it('shows the correct information', () => {
+        sharedTests.risksAndNeeds.showsRoshAnalysisPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
       })
     })
   })
