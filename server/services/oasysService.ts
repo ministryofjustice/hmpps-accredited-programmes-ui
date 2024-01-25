@@ -5,6 +5,7 @@ import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilder
 import type {
   Attitude,
   Behaviour,
+  LearningNeeds,
   Lifestyle,
   OffenceDetail,
   Psychiatric,
@@ -63,6 +64,32 @@ export default class OasysService {
       }
 
       throw createError(knownError.status || 500, `Error fetching behaviour data for prison number ${prisonNumber}.`)
+    }
+  }
+
+  async getLearningNeeds(
+    username: Express.User['username'],
+    prisonNumber: Referral['prisonNumber'],
+  ): Promise<LearningNeeds | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const oasysClient = this.oasysClientBuilder(systemToken)
+
+    try {
+      const learningNeeds = await oasysClient.findLearningNeeds(prisonNumber)
+
+      return learningNeeds
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(
+        knownError.status || 500,
+        `Error fetching learning needs data for prison number ${prisonNumber}.`,
+      )
     }
   }
 

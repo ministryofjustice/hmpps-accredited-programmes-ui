@@ -8,6 +8,7 @@ import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
 import {
   attitudeFactory,
   behaviourFactory,
+  learningNeedsFactory,
   lifestyleFactory,
   offenceDetailFactory,
   psychiatricFactory,
@@ -130,6 +131,52 @@ describe('OasysService', () => {
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(oasysClient.findBehaviour).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+  })
+
+  describe('getLearningNeeds', () => {
+    it('returns learning needs data for given prison number', async () => {
+      const learningNeeds = learningNeedsFactory.build()
+
+      when(oasysClient.findLearningNeeds).calledWith(prisonNumber).mockResolvedValue(learningNeeds)
+
+      const result = await service.getLearningNeeds(username, prisonNumber)
+
+      expect(result).toEqual(learningNeeds)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findLearningNeeds).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        const notFoundClientError = createError(404)
+
+        when(oasysClient.findLearningNeeds).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getLearningNeeds(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findLearningNeeds).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+
+        when(oasysClient.findLearningNeeds).calledWith(prisonNumber).mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching learning needs data for prison number ${prisonNumber}.`)
+        await expect(service.getLearningNeeds(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findLearningNeeds).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })
