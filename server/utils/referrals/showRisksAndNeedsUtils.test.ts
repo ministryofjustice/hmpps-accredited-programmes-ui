@@ -27,11 +27,6 @@ describe('ShowRisksAndNeedsUtils', () => {
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
-            text: 'Section R6 - RoSH analysis',
-          },
-          {
-            active: false,
             href: referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
             text: 'Section 7 - Lifestyle and associates',
           },
@@ -49,6 +44,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: referPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId }),
             text: 'Section 12 - Attitudes',
+          },
+          {
+            active: false,
+            href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            text: 'Section R6 - RoSH analysis',
           },
         ])
       })
@@ -76,11 +76,6 @@ describe('ShowRisksAndNeedsUtils', () => {
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
-            text: 'Section R6 - RoSH analysis',
-          },
-          {
-            active: false,
             href: assessPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
             text: 'Section 7 - Lifestyle and associates',
           },
@@ -98,6 +93,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: assessPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId }),
             text: 'Section 12 - Attitudes',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            text: 'Section R6 - RoSH analysis',
           },
         ])
       })
