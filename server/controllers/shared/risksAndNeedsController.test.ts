@@ -241,7 +241,6 @@ describe('RisksAndNeedsController', () => {
     describe('when the oasys service returns `null`', () => {
       it('renders the lifestyle and associates page with the correct response locals', async () => {
         when(oasysService.getLifestyle).calledWith(username, person.prisonNumber).mockResolvedValue(null)
-        when(oasysService.getOffenceDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
         request.path = referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: referral.id })
 
