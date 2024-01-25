@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {% if hasHealthData %}
+    {{ super() }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Section 13.1 - Health"
+        },
+        attributes: {
+          "data-testid": "health-summary-list"
+        }
+      },
+      rows: healthSummaryListRows
+    }) }}
+  {% else %}
+    {% set noHealthDataString = "No health data found in OASys. Add health data to OASys to see it here." %}
+
+    {{ keylessSummaryCard("Section 13 - Health", bodyText=noHealthDataString, testId="no-health-data-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}

@@ -6,6 +6,7 @@ import {
   CourseUtils,
   DateUtils,
   EmotionalWellbeingUtils,
+  HealthUtils,
   LearningNeedsUtils,
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
@@ -74,6 +75,28 @@ export default class RisksAndNeedsController {
         ...sharedPageData,
         ...templateLocals,
       })
+    }
+  }
+
+  health(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const health = await this.oasysService.getHealth(req.user.username, sharedPageData.referral.prisonNumber)
+
+      const templateLocals = health
+        ? {
+            hasHealthData: true,
+            healthSummaryListRows: HealthUtils.healthSummaryListRows(health),
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          }
+        : {
+            hasHealthData: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/health', { ...sharedPageData, ...templateLocals })
     }
   }
 
