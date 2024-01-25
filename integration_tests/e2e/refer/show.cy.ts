@@ -161,6 +161,20 @@ context('Viewing a submitted referral', () => {
       })
     })
 
+    describe('When reviewing Section 13 - Health', () => {
+      describe('and there is health data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsHealthPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no health data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsHealthPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
+
     describe('When reviewing Learning needs', () => {
       describe('and there is learning needs data', () => {
         it('shows the correct information', () => {

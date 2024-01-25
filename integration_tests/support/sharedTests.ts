@@ -6,6 +6,7 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  healthFactory,
   inmateDetailFactory,
   learningNeedsFactory,
   lifestyleFactory,
@@ -30,6 +31,7 @@ import Page from '../pages/page'
 import {
   AdditionalInformationPage,
   AttitudesPage,
+  HealthPage,
   LearningNeedsPage,
   LifestyleAndAssociatesPage,
   OffenceAnalysisPage,
@@ -493,6 +495,55 @@ const sharedTests = {
       emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
       emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       emotionalWellbeingPage.shouldContainNoPsychiatricDataSummaryCard()
+    },
+    showsHealthPageWithData: (role: ApplicationRole): void => {
+      const health = healthFactory.build()
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubHealth', {
+        health,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.health({ referralId: referral.id })
+      cy.visit(path)
+
+      const healthPage = Page.verifyOnPage(HealthPage, {
+        course,
+        health,
+      })
+      healthPage.shouldHavePersonDetails(person)
+      healthPage.shouldContainNavigation(path)
+      healthPage.shouldContainBackLink('#')
+      healthPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      healthPage.shouldContainShowReferralSubHeading()
+      healthPage.shouldContainRisksAndNeedsOasysMessage()
+      healthPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      healthPage.shouldContainImportedFromText('OASys')
+      healthPage.shouldContainHealthSummaryList()
+    },
+    showsHealthPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubHealth', {
+        health: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.health({ referralId: referral.id })
+      cy.visit(path)
+
+      const healthPage = Page.verifyOnPage(HealthPage, {
+        course,
+        health: {},
+      })
+      healthPage.shouldHavePersonDetails(person)
+      healthPage.shouldContainNavigation(path)
+      healthPage.shouldContainBackLink('#')
+      healthPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      healthPage.shouldContainShowReferralSubHeading()
+      healthPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      healthPage.shouldContainNoHealthDataSummaryCard()
     },
     showsLearningNeedsPageWithData: (role: ApplicationRole): void => {
       const learningNeeds = learningNeedsFactory.build({})
