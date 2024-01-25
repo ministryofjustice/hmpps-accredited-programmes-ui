@@ -10,6 +10,7 @@ import type {
   CourseParticipationUpdate,
 } from './CourseParticipation'
 import type { CoursePrerequisite } from './CoursePrerequisite'
+import type { LearningNeeds } from './LearningNeeds'
 import type { Lifestyle } from './Lifestyle'
 import type { OffenceDetail } from './OffenceDetail'
 import type { Organisation } from './Organisation'
@@ -34,6 +35,7 @@ export type {
   CourseParticipationUpdate,
   CoursePrerequisite,
   CreatedReferralResponse,
+  LearningNeeds,
   Lifestyle,
   OffenceDetail,
   Organisation,
