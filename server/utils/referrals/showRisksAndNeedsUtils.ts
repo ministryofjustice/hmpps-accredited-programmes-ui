@@ -38,6 +38,10 @@ export default class ShowRisksAndNeedsUtils {
         text: 'Section 12 - Attitudes',
       },
       {
+        href: paths.show.risksAndNeeds.learningNeeds({ referralId }),
+        text: 'Learning needs',
+      },
+      {
         href: paths.show.risksAndNeeds.roshAnalysis({ referralId }),
         text: 'Section R6 - RoSH analysis',
       },

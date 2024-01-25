@@ -47,6 +47,11 @@ describe('ShowRisksAndNeedsUtils', () => {
           },
           {
             active: false,
+            href: referPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId }),
+            text: 'Learning needs',
+          },
+          {
+            active: false,
             href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
             text: 'Section R6 - RoSH analysis',
           },
@@ -93,6 +98,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: assessPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId }),
             text: 'Section 12 - Attitudes',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId }),
+            text: 'Learning needs',
           },
           {
             active: false,
