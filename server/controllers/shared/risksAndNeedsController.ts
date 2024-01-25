@@ -6,6 +6,7 @@ import {
   CourseUtils,
   DateUtils,
   EmotionalWellbeingUtils,
+  LearningNeedsUtils,
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
   RelationshipsUtils,
@@ -70,6 +71,35 @@ export default class RisksAndNeedsController {
           }
 
       return res.render('referrals/show/risksAndNeeds/emotionalWellbeing', {
+        ...sharedPageData,
+        ...templateLocals,
+      })
+    }
+  }
+
+  learningNeeds(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const learningNeeds = await this.oasysService.getLearningNeeds(
+        req.user.username,
+        sharedPageData.referral.prisonNumber,
+      )
+
+      const templateLocals = learningNeeds
+        ? {
+            hasLearningNeeds: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            informationSummaryListRows: LearningNeedsUtils.informationSummaryListRows(learningNeeds),
+            scoreSummaryListRows: LearningNeedsUtils.scoreSummaryListRows(learningNeeds),
+          }
+        : {
+            hasLearningNeeds: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/learningNeeds', {
         ...sharedPageData,
         ...templateLocals,
       })

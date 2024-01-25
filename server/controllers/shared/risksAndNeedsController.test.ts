@@ -11,6 +11,7 @@ import {
   behaviourFactory,
   courseFactory,
   courseOfferingFactory,
+  learningNeedsFactory,
   lifestyleFactory,
   offenceDetailFactory,
   organisationFactory,
@@ -27,6 +28,7 @@ import {
   CourseUtils,
   DateUtils,
   EmotionalWellbeingUtils,
+  LearningNeedsUtils,
   LifestyleAndAssociatesUtils,
   OffenceAnalysisUtils,
   RelationshipsUtils,
@@ -44,6 +46,7 @@ jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
 jest.mock('../../utils/risksAndNeeds/attitudesUtils')
 jest.mock('../../utils/risksAndNeeds/emotionalWellbeingUtils')
+jest.mock('../../utils/risksAndNeeds/learningNeedsUtils')
 jest.mock('../../utils/risksAndNeeds/lifestyleAndAssociatesUtils')
 jest.mock('../../utils/risksAndNeeds/offenceAnalysisUtils')
 jest.mock('../../utils/risksAndNeeds/relationshipsUtils')
@@ -56,6 +59,7 @@ const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferr
 const mockShowRisksAndNeedsUtils = ShowRisksAndNeedsUtils as jest.Mocked<typeof ShowRisksAndNeedsUtils>
 const mockAttitudesUtils = AttitudesUtils as jest.Mocked<typeof AttitudesUtils>
 const mockEmotionalWellbeingUtils = EmotionalWellbeingUtils as jest.Mocked<typeof EmotionalWellbeingUtils>
+const mockLearningNeedsUtils = LearningNeedsUtils as jest.Mocked<typeof LearningNeedsUtils>
 const mockLifestyleAndAssociatesUtils = LifestyleAndAssociatesUtils as jest.Mocked<typeof LifestyleAndAssociatesUtils>
 const mockOffenceAnalysisUtils = OffenceAnalysisUtils as jest.Mocked<typeof OffenceAnalysisUtils>
 const mockRelationshipsUtils = RelationshipsUtils as jest.Mocked<typeof RelationshipsUtils>
@@ -205,6 +209,56 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
           ...sharedPageData,
           hasEmotionalWellbeingData: false,
+          navigationItems,
+          subNavigationItems,
+        })
+      })
+    })
+  })
+
+  describe('learningNeeds', () => {
+    it('renders the learning needs page with the correct response locals', async () => {
+      const learningNeeds = learningNeedsFactory.withAllOptionalFields().build()
+      const informationSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+      const scoreSummaryListRows = [{ key: { text: 'key-two' }, value: { text: 'value two' } }]
+
+      mockLearningNeedsUtils.informationSummaryListRows.mockReturnValue(informationSummaryListRows)
+      mockLearningNeedsUtils.scoreSummaryListRows.mockReturnValue(scoreSummaryListRows)
+
+      when(oasysService.getLearningNeeds).calledWith(username, person.prisonNumber).mockResolvedValue(learningNeeds)
+
+      request.path = referPaths.show.risksAndNeeds.learningNeeds({ referralId: referral.id })
+
+      const requestHandler = controller.learningNeeds()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments()
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
+        ...sharedPageData,
+        hasLearningNeeds: true,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        informationSummaryListRows,
+        navigationItems,
+        scoreSummaryListRows,
+        subNavigationItems,
+      })
+    })
+
+    describe('when the OASys service returns `null`', () => {
+      it('renders the learning needs page with the correct response locals', async () => {
+        when(oasysService.getLearningNeeds).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.learningNeeds({ referralId: referral.id })
+
+        const requestHandler = controller.learningNeeds()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments()
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
+          ...sharedPageData,
+          hasLearningNeeds: false,
           navigationItems,
           subNavigationItems,
         })
