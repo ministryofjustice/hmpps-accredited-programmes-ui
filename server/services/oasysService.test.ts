@@ -8,6 +8,7 @@ import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
 import {
   attitudeFactory,
   behaviourFactory,
+  healthFactory,
   learningNeedsFactory,
   lifestyleFactory,
   offenceDetailFactory,
@@ -84,6 +85,48 @@ describe('OasysService', () => {
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(oasysClient.findAttitude).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+  })
+
+  describe('getHealth', () => {
+    it('returns health data for given prison number', async () => {
+      const health = healthFactory.build()
+
+      when(oasysClient.findHealth).calledWith(prisonNumber).mockResolvedValue(health)
+
+      const result = await service.getHealth(username, prisonNumber)
+
+      expect(result).toEqual(health)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findHealth).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        when(oasysClient.findHealth).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getHealth(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findHealth).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws an error', async () => {
+        when(oasysClient.findHealth).calledWith(prisonNumber).mockRejectedValue(generalClientError)
+
+        const expectedError = createError(500, `Error fetching health data for prison number ${prisonNumber}.`)
+        await expect(service.getHealth(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findHealth).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })
