@@ -23,6 +23,5 @@ export default Factory.define<Course>(({ params }) => {
     ],
     description: faker.lorem.sentences(),
     name,
-    referable: faker.datatype.boolean(),
   }
 })

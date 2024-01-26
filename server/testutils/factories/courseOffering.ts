@@ -10,6 +10,7 @@ export default Factory.define<CourseOffering>(({ params }) => {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     contactEmail: `nobody-${organisationId.toLowerCase()}@digital.justice.gov.uk`,
     organisationId,
+    referable: faker.datatype.boolean(),
     secondaryContactEmail: null,
   }
 })

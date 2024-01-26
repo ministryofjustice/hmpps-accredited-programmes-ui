@@ -18,8 +18,8 @@ import {
 } from '../../../pages/refer'
 
 context('Searching for a person and creating a referral', () => {
-  const course = courseFactory.build({ referable: true })
-  const courseOffering = courseOfferingFactory.build()
+  const course = courseFactory.build()
+  const courseOffering = courseOfferingFactory.build({ referable: true })
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
   const prisoner = prisonerFactory.build({

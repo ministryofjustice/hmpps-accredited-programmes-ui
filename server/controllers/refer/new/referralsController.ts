@@ -96,9 +96,9 @@ export default class NewReferralsController {
       const { courseOfferingId, prisonNumber } = req.body
       const { username } = req.user
 
-      const course = await this.courseService.getCourseByOffering(req.user.username, courseOfferingId)
-      if (!course.referable) {
-        throw createError(400, 'Course is not referable.')
+      const courseOffering = await this.courseService.getOffering(req.user.username, courseOfferingId)
+      if (!courseOffering.referable) {
+        throw createError(400, 'Course offering is not referable.')
       }
 
       const createdReferralResponse: CreatedReferralResponse = await this.referralService.createReferral(
