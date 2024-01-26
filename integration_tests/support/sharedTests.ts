@@ -7,6 +7,7 @@ import {
   courseOfferingFactory,
   courseParticipationFactory,
   inmateDetailFactory,
+  learningNeedsFactory,
   lifestyleFactory,
   offenceDetailFactory,
   offenceDtoFactory,
@@ -29,6 +30,7 @@ import Page from '../pages/page'
 import {
   AdditionalInformationPage,
   AttitudesPage,
+  LearningNeedsPage,
   LifestyleAndAssociatesPage,
   OffenceAnalysisPage,
   OffenceHistoryPage,
@@ -491,6 +493,57 @@ const sharedTests = {
       emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
       emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       emotionalWellbeingPage.shouldContainNoPsychiatricDataSummaryCard()
+    },
+    showsLearningNeedsPageWithData: (role: ApplicationRole): void => {
+      const learningNeeds = learningNeedsFactory.build({})
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubLearningNeeds', {
+        learningNeeds,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.learningNeeds({ referralId: referral.id })
+      cy.visit(path)
+
+      const learningNeedsPage = Page.verifyOnPage(LearningNeedsPage, {
+        course,
+        learningNeeds,
+      })
+      learningNeedsPage.shouldHavePersonDetails(person)
+      learningNeedsPage.shouldContainNavigation(path)
+      learningNeedsPage.shouldContainBackLink('#')
+      learningNeedsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      learningNeedsPage.shouldContainShowReferralSubHeading()
+      learningNeedsPage.shouldContainRisksAndNeedsOasysMessage()
+      learningNeedsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      learningNeedsPage.shouldContainImportedFromText('OASys')
+      learningNeedsPage.shouldContainInformationSummaryList()
+      learningNeedsPage.shouldContainScoreSummaryList()
+    },
+    showsLearningNeedsPageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubLearningNeeds', {
+        learningNeeds: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.learningNeeds({ referralId: referral.id })
+      cy.visit(path)
+
+      const learningNeedsPage = Page.verifyOnPage(LearningNeedsPage, {
+        course,
+        learningNeeds: {},
+      })
+      learningNeedsPage.shouldHavePersonDetails(person)
+      learningNeedsPage.shouldContainNavigation(path)
+      learningNeedsPage.shouldContainBackLink('#')
+      learningNeedsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      learningNeedsPage.shouldContainShowReferralSubHeading()
+      learningNeedsPage.shouldContainRisksAndNeedsOasysMessage()
+      learningNeedsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      learningNeedsPage.shouldContainNoLearningNeedsDataSummaryCard()
     },
     showsLifestyleAndAssociatesPageWithData: (role: ApplicationRole): void => {
       const lifestyle = lifestyleFactory.build({})

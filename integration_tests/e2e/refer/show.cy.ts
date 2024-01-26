@@ -105,20 +105,6 @@ context('Viewing a submitted referral', () => {
       })
     })
 
-    describe('When reviewing Section R6 - RoSH analysis', () => {
-      describe('and there is a RoSH analysis', () => {
-        it('shows the correct information', () => {
-          sharedTests.risksAndNeeds.showsRoshAnalysisPageWithData(ApplicationRoles.ACP_REFERRER)
-        })
-      })
-
-      describe('and there is no RoSH analysis', () => {
-        it('shows the correct information', () => {
-          sharedTests.risksAndNeeds.showsRoshAnalysisPageWithoutData(ApplicationRoles.ACP_REFERRER)
-        })
-      })
-    })
-
     describe('When reviewing Section 7 - Lifestyle and associates', () => {
       describe('and there is lifestyle data', () => {
         it('shows the correct information', () => {
@@ -171,6 +157,34 @@ context('Viewing a submitted referral', () => {
       describe('and there is no attitude data', () => {
         it('shows the correct information', () => {
           sharedTests.risksAndNeeds.showsAttitudesPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
+
+    describe('When reviewing Learning needs', () => {
+      describe('and there is learning needs data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsLearningNeedsPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no learning needs data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsLearningNeedsPageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
+
+    describe('When reviewing Section R6 - RoSH analysis', () => {
+      describe('and there is a RoSH analysis', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsRoshAnalysisPageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no RoSH analysis', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsRoshAnalysisPageWithoutData(ApplicationRoles.ACP_REFERRER)
         })
       })
     })
