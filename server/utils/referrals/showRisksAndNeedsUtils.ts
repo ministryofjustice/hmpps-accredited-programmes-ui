@@ -22,10 +22,6 @@ export default class ShowRisksAndNeedsUtils {
         text: 'Section 6 - Relationships',
       },
       {
-        href: paths.show.risksAndNeeds.roshAnalysis({ referralId }),
-        text: 'Section R6 - RoSH analysis',
-      },
-      {
         href: paths.show.risksAndNeeds.lifestyleAndAssociates({ referralId }),
         text: 'Section 7 - Lifestyle and associates',
       },
@@ -40,6 +36,14 @@ export default class ShowRisksAndNeedsUtils {
       {
         href: paths.show.risksAndNeeds.attitudes({ referralId }),
         text: 'Section 12 - Attitudes',
+      },
+      {
+        href: paths.show.risksAndNeeds.learningNeeds({ referralId }),
+        text: 'Learning needs',
+      },
+      {
+        href: paths.show.risksAndNeeds.roshAnalysis({ referralId }),
+        text: 'Section R6 - RoSH analysis',
       },
     ]
 

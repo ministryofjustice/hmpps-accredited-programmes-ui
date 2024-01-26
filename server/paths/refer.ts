@@ -73,6 +73,7 @@ export default {
     risksAndNeeds: {
       attitudes: risksAndNeedsPathBase.path('attitudes'),
       emotionalWellbeing: risksAndNeedsPathBase.path('emotional-wellbeing'),
+      learningNeeds: risksAndNeedsPathBase.path('learning-needs'),
       lifestyleAndAssociates: risksAndNeedsPathBase.path('lifestyle-and-associates'),
       offenceAnalysis: risksAndNeedsPathBase.path('offence-analysis'),
       relationships: risksAndNeedsPathBase.path('relationships'),
