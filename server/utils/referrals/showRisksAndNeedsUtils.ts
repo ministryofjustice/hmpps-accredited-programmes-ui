@@ -38,6 +38,10 @@ export default class ShowRisksAndNeedsUtils {
         text: 'Section 12 - Attitudes',
       },
       {
+        href: paths.show.risksAndNeeds.health({ referralId }),
+        text: 'Section 13 - Health',
+      },
+      {
         href: paths.show.risksAndNeeds.learningNeeds({ referralId }),
         text: 'Learning needs',
       },

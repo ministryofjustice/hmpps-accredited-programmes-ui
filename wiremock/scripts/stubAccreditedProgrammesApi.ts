@@ -10,6 +10,7 @@ import {
   courses,
   oasysAttitude,
   oasysBehaviour,
+  oasysHealth,
   oasysLearningNeeds,
   oasysLifestyle,
   oasysOffenceDetail,
@@ -264,6 +265,22 @@ prisoners.forEach(prisoner => {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: oasysBehaviour,
+        status: 200,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.health({ prisonNumber: prisoner.prisonerNumber }),
+      },
+      response: {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: oasysHealth,
         status: 200,
       },
     }),

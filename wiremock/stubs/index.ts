@@ -4,6 +4,7 @@ import courseParticipations from './courseParticipations.json'
 import courses from './courses.json'
 import oasysAttitude from './oasysAttitude.json'
 import oasysBehaviour from './oasysBehaviour.json'
+import oasysHealth from './oasysHealth.json'
 import oasysLearningNeeds from './oasysLearningNeeds.json'
 import oasysLifestyle from './oasysLifestyle.json'
 import oasysOffenceDetail from './oasysOffenceDetail.json'
@@ -25,6 +26,7 @@ export {
   courses,
   oasysAttitude,
   oasysBehaviour,
+  oasysHealth,
   oasysLearningNeeds,
   oasysLifestyle,
   oasysOffenceDetail,

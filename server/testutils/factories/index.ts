@@ -7,6 +7,7 @@ import courseOfferingFactory from './courseOffering'
 import courseParticipationFactory from './courseParticipation'
 import courseParticipationOutcomeFactory from './courseParticipationOutcome'
 import coursePrerequisiteFactory from './coursePrerequisite'
+import healthFactory from './health'
 import inmateDetailFactory from './inmateDetail'
 import learningNeedsFactory from './learningNeeds'
 import lifestyleFactory from './lifestyle'
@@ -39,6 +40,7 @@ export {
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
   coursePrerequisiteFactory,
+  healthFactory,
   inmateDetailFactory,
   learningNeedsFactory,
   lifestyleFactory,
