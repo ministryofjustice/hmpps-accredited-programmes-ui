@@ -546,7 +546,7 @@ const sharedTests = {
       healthPage.shouldContainNoHealthDataSummaryCard()
     },
     showsLearningNeedsPageWithData: (role: ApplicationRole): void => {
-      const learningNeeds = learningNeedsFactory.build({})
+      const learningNeeds = learningNeedsFactory.build()
       sharedTests.referrals.beforeEach(role)
 
       cy.task('stubLearningNeeds', {
@@ -597,7 +597,7 @@ const sharedTests = {
       learningNeedsPage.shouldContainNoLearningNeedsDataSummaryCard()
     },
     showsLifestyleAndAssociatesPageWithData: (role: ApplicationRole): void => {
-      const lifestyle = lifestyleFactory.build({})
+      const lifestyle = lifestyleFactory.build()
       sharedTests.referrals.beforeEach(role)
 
       cy.task('stubLifestyle', {
@@ -647,7 +647,7 @@ const sharedTests = {
       lifestyleAndAssociatesPage.shouldContainNoLifestyleDataSummaryCard()
     },
     showsOffenceAnalysisPageWithData: (role: ApplicationRole): void => {
-      const offenceDetail = offenceDetailFactory.build({})
+      const offenceDetail = offenceDetailFactory.build()
       sharedTests.referrals.beforeEach(role)
 
       cy.task('stubOffenceDetails', {
@@ -702,7 +702,7 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
     },
     showsRelationshipsPageWithData: (role: ApplicationRole): void => {
-      const relationships = relationshipsFactory.build({})
+      const relationships = relationshipsFactory.build()
       sharedTests.referrals.beforeEach(role)
 
       cy.task('stubRelationships', {
@@ -751,7 +751,7 @@ const sharedTests = {
       relationshipsPage.shouldContainNoRelationshipsSummaryCard()
     },
     showsRisksAndAlertsPageWithData: (role: ApplicationRole): void => {
-      const risksAndAlerts = risksAndAlertsFactory.build({})
+      const risksAndAlerts = risksAndAlertsFactory.build()
       sharedTests.referrals.beforeEach(role)
 
       cy.task('stubRisksAndAlerts', {
@@ -806,7 +806,7 @@ const sharedTests = {
       risksAndAlertsPage.shouldContainNoRisksAndAlertsSummaryCard()
     },
     showsRoshAnalysisPageWithData: (role: ApplicationRole): void => {
-      const roshAnalysis = roshAnalysisFactory.build({})
+      const roshAnalysis = roshAnalysisFactory.build()
       sharedTests.referrals.beforeEach(role)
 
       cy.task('stubRoshAnalysis', {
@@ -855,7 +855,7 @@ const sharedTests = {
       roshAnalysisPage.shouldContainNoRoshAnalysisSummaryCard()
     },
     showsThinkingAndBehavingPageWithData: (role: ApplicationRole): void => {
-      const behaviour = behaviourFactory.build({})
+      const behaviour = behaviourFactory.build()
       sharedTests.referrals.beforeEach(role)
 
       cy.task('stubBehaviour', {
