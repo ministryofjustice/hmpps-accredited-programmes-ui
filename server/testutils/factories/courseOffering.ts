@@ -11,6 +11,9 @@ export default Factory.define<CourseOffering>(({ params }) => {
     contactEmail: `nobody-${organisationId.toLowerCase()}@digital.justice.gov.uk`,
     organisationId,
     referable: faker.datatype.boolean(),
-    secondaryContactEmail: null,
+    secondaryContactEmail: faker.helpers.arrayElement([
+      `nobody2-${organisationId.toLowerCase()}@digital.justice.gov.uk`,
+      null,
+    ]),
   }
 })
