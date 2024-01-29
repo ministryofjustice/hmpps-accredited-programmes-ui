@@ -14,6 +14,7 @@ import {
   coursePrerequisiteFactory,
   referralFactory,
 } from '../../../server/testutils/factories'
+import { randomStatus } from '../../../server/testutils/factories/referral'
 import { StringUtils } from '../../../server/utils'
 import { caseloads, prisoners } from '../../../wiremock/stubs'
 import type { Organisation, Referral } from '@accredited-programmes/models'
@@ -58,14 +59,26 @@ export default class TableRecords {
     this.cachedReferral ||= (() => {
       const records: Array<ReferralRecord> = []
 
-      // one offering for active case load ID should have at least 100 referrals
-      // to allow us to fully test features like pagination
+      // one offering for active case load ID should have at least 100 submitted
+      // referrals to allow us to fully test features like pagination
       const firstReferableOfferingForActiveCaseLoadId = this.referableOfferingRecordsForActiveCaseLoadId()[0]
       while (records.length < 100) {
         records.push(
           this.referralRecord(
             firstReferableOfferingForActiveCaseLoadId.id,
             faker.helpers.arrayElement(prisoners).prisonerNumber,
+            randomStatus(['referral_submitted', 'assessment_started', 'awaiting_assessment']),
+          ),
+        )
+      }
+
+      // and maybe a few draft referrals
+      while (records.length < 110) {
+        records.push(
+          this.referralRecord(
+            firstReferableOfferingForActiveCaseLoadId.id,
+            faker.helpers.arrayElement(prisoners).prisonerNumber,
+            'referral_started',
           ),
         )
       }
@@ -170,12 +183,14 @@ export default class TableRecords {
   private static referralRecord(
     offeringId: Referral['offeringId'],
     prisonNumber: Referral['prisonNumber'],
+    status?: Referral['status'],
   ): ReferralRecord {
     const referrer = faker.helpers.arrayElement(this.seededReferrers)
     const referral = referralFactory.build({
       offeringId,
       prisonNumber,
       referrerUsername: referrer.username,
+      status: status || randomStatus(),
     })
     return {
       ...referral,
