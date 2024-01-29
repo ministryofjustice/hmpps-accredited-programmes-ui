@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
 import { referPaths } from '../../../paths'
-import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
 import type { CreatedReferralResponse } from '@accredited-programmes/models'
 
@@ -12,6 +12,7 @@ export default class NewReferralsController {
     private readonly organisationService: OrganisationService,
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
+    private readonly userService: UserService,
   ) {}
 
   checkAnswers(): TypedRequestHandler<Request, Response> {
@@ -19,7 +20,6 @@ export default class NewReferralsController {
       TypeUtils.assertHasUser(req)
 
       const { referralId } = req.params
-      const { username } = req.user
 
       const referral = await this.referralService.getReferral(req.user.username, referralId)
 
@@ -36,6 +36,7 @@ export default class NewReferralsController {
         this.courseService.getOffering(req.user.token, referral.offeringId),
         this.courseService.getCourseByOffering(req.user.token, referral.offeringId),
       ])
+      const referrerName = await this.userService.getFullNameFromUsername(req.user.token, referral.referrerUsername)
 
       const [organisation, participationSummaryListsOptions] = await Promise.all([
         this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId),
@@ -59,7 +60,7 @@ export default class NewReferralsController {
           coursePresenter,
           organisation,
           person,
-          username,
+          referrerName,
         ),
         pageHeading: 'Check your answers',
         participationSummaryListsOptions,

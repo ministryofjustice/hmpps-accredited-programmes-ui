@@ -5,7 +5,7 @@ import createError from 'http-errors'
 
 import NewReferralsController from './referralsController'
 import { referPaths } from '../../../paths'
-import type { CourseService, OrganisationService, PersonService, ReferralService } from '../../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
   courseAudienceFactory,
   courseFactory,
@@ -33,6 +33,7 @@ describe('NewReferralsController', () => {
   const organisationService = createMock<OrganisationService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
+  const userService = createMock<UserService>({})
 
   const referableCourse = courseFactory.build({ referable: true })
   const courseOffering = courseOfferingFactory.build()
@@ -55,7 +56,13 @@ describe('NewReferralsController', () => {
   beforeEach(() => {
     request = createMock<Request>({ user: { token: userToken, username } })
     response = Helpers.createMockResponseWithCaseloads()
-    controller = new NewReferralsController(courseService, organisationService, personService, referralService)
+    controller = new NewReferralsController(
+      courseService,
+      organisationService,
+      personService,
+      referralService,
+      userService,
+    )
     courseService.getOffering.mockResolvedValue(courseOffering)
   })
 
@@ -232,8 +239,10 @@ describe('NewReferralsController', () => {
 
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
+      const referrerName = 'Bobby Brown'
       courseService.getCourseByOffering.mockResolvedValue(referableCourse)
       personService.getPerson.mockResolvedValue(person)
+      userService.getFullNameFromUsername.mockResolvedValue(referrerName)
 
       request.params.referralId = referralId
       referralService.getReferral.mockResolvedValue(submittableReferral)
@@ -263,6 +272,7 @@ describe('NewReferralsController', () => {
       })
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
         username,
@@ -278,7 +288,7 @@ describe('NewReferralsController', () => {
           coursePresenter,
           organisation,
           person,
-          request.user.username,
+          referrerName,
         ),
         pageHeading: 'Check your answers',
         participationSummaryListsOptions: [summaryListOptions, summaryListOptions],

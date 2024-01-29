@@ -7,6 +7,7 @@ import type {
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
 } from '@accredited-programmes/ui'
+import type { User } from '@manage-users-api'
 
 export default class NewReferralUtils {
   static applicationSummaryListRows(
@@ -14,7 +15,7 @@ export default class NewReferralUtils {
     coursePresenter: CoursePresenter,
     organisation: Organisation,
     person: Person,
-    username: Express.User['username'],
+    referrerName: User['name'],
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
@@ -31,7 +32,7 @@ export default class NewReferralUtils {
       },
       {
         key: { text: 'Referrer name' },
-        value: { text: username },
+        value: { text: referrerName },
       },
       {
         key: { text: 'Referring prison' },

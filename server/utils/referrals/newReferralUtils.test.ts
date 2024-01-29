@@ -26,10 +26,16 @@ describe('NewReferralUtils', () => {
       const coursePresenter = CourseUtils.presentCourse(course)
       const organisation = organisationFactory.build({ name: 'HMP Hewell' })
       const person = personFactory.build({ name: 'Del Hatton' })
-      const username = 'BOBBY_BROWN'
+      const referrerName = 'Bobby Brown'
 
       expect(
-        NewReferralUtils.applicationSummaryListRows(courseOffering, coursePresenter, organisation, person, username),
+        NewReferralUtils.applicationSummaryListRows(
+          courseOffering,
+          coursePresenter,
+          organisation,
+          person,
+          referrerName,
+        ),
       ).toEqual([
         {
           key: { text: 'Applicant name' },
@@ -45,7 +51,7 @@ describe('NewReferralUtils', () => {
         },
         {
           key: { text: 'Referrer name' },
-          value: { text: 'BOBBY_BROWN' },
+          value: { text: 'Bobby Brown' },
         },
         {
           key: { text: 'Referring prison' },

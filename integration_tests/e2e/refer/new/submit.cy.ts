@@ -11,7 +11,6 @@ import {
   userFactory,
 } from '../../../../server/testutils/factories'
 import { OrganisationUtils, StringUtils } from '../../../../server/utils'
-import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import { NewReferralCheckAnswersPage, NewReferralCompletePage, NewReferralTaskListPage } from '../../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
@@ -36,7 +35,7 @@ context('Submitting a referral', () => {
   })
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
-  const addedByUser1 = userFactory.build()
+  const addedByUser1 = userFactory.build({ name: 'Bobby Brown' })
   const addedByUser2 = userFactory.build()
   const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
     addedBy: addedByUser1.username,
@@ -61,9 +60,11 @@ context('Submitting a referral', () => {
     courseParticipationWithKnownCourseNamePresenter,
     courseParticipationWithUnknownCourseNamePresenter,
   ]
-  const submittableReferral = referralFactory
-    .submittable()
-    .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+  const submittableReferral = referralFactory.submittable().build({
+    offeringId: courseOffering.id,
+    prisonNumber: person.prisonNumber,
+    referrerUsername: addedByUser1.username,
+  })
 
   beforeEach(() => {
     cy.task('reset')
@@ -115,7 +116,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
-        username: auth.mockedUser.username,
+        referrerName: addedByUser1.name,
       })
       checkAnswersPage.shouldHavePersonDetails(person)
       checkAnswersPage.shouldContainNavigation(path)
@@ -146,7 +147,7 @@ context('Submitting a referral', () => {
           participations: [],
           person,
           referral: submittableReferral,
-          username: auth.mockedUser.username,
+          referrerName: addedByUser1.name,
         })
         checkAnswersPage.shouldNotHaveProgrammeHistory()
       })
@@ -173,7 +174,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
-        username: auth.mockedUser.username,
+        referrerName: addedByUser1.name,
       })
       checkAnswersPage.confirmDetailsAndSubmitReferral()
 
@@ -194,7 +195,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
-        username: auth.mockedUser.username,
+        referrerName: addedByUser1.name,
       })
       checkAnswersPage.shouldContainButton('Submit referral').click()
 
@@ -205,7 +206,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
-        username: auth.mockedUser.username,
+        referrerName: addedByUser1.name,
       })
       checkAnswersPageWithErrors.shouldHaveErrors([
         {
