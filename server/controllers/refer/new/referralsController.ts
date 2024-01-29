@@ -31,22 +31,22 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.show({ referralId }))
       }
 
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
-      const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
-      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
-      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
+      const [person, courseOffering, course] = await Promise.all([
+        this.personService.getPerson(req.user.username, referral.prisonNumber, res.locals.user.caseloads),
+        this.courseService.getOffering(req.user.token, referral.offeringId),
+        this.courseService.getCourseByOffering(req.user.token, referral.offeringId),
+      ])
 
-      const participationSummaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
-        req.user.username,
-        req.user.token,
-        person.prisonNumber,
-        referralId,
-        { change: true, remove: false },
-      )
+      const [organisation, participationSummaryListsOptions] = await Promise.all([
+        this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId),
+        this.courseService.getAndPresentParticipationsByPerson(
+          req.user.username,
+          req.user.token,
+          person.prisonNumber,
+          referralId,
+          { change: true, remove: false },
+        ),
+      ])
 
       const coursePresenter = CourseUtils.presentCourse(course)
 
