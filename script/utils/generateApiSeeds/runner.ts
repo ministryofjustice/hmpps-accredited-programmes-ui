@@ -4,8 +4,6 @@ import tableSql from './tableSql'
 const insertSql = [
   TableDefinitions.course(),
   TableDefinitions.prerequisite(),
-  TableDefinitions.audience(),
-  TableDefinitions.courseAudience(),
   TableDefinitions.offering(),
   TableDefinitions.referrerUser(),
   TableDefinitions.referral(),
@@ -19,8 +17,6 @@ const sql = `-- Changes to this script should ideally be made by updating and re
 DELETE from referral;
 DELETE from referrer_user;
 DELETE from offering;
-DELETE from course_audience;
-DELETE from audience;
 DELETE from prerequisite;
 DELETE from course;
 

@@ -59,7 +59,7 @@ context('Searching for a person and creating a referral', () => {
     startReferralPage.shouldContainNavigation(path)
     startReferralPage.shouldContainBackLink(findPaths.offerings.show({ courseOfferingId: courseOffering.id }))
     startReferralPage.shouldContainOrganisationAndCourseHeading(startReferralPage)
-    startReferralPage.shouldContainAudienceTags(startReferralPage.course.audienceTags)
+    startReferralPage.shouldContainAudienceTag(startReferralPage.course.audienceTag)
     startReferralPage.shouldHaveProcessInformation()
     startReferralPage.shouldContainStartButtonLink()
   })

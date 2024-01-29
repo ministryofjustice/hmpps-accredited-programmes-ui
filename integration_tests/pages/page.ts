@@ -80,11 +80,9 @@ export default abstract class Page {
     })
   }
 
-  shouldContainAudienceTags(audienceTags: CoursePresenter['audienceTags']) {
-    cy.get('.govuk-main-wrapper').within(() => {
-      cy.get('p:first-of-type').then(tagContainerElement => {
-        this.shouldContainTags(audienceTags, tagContainerElement)
-      })
+  shouldContainAudienceTag(audienceTag: CoursePresenter['audienceTag']) {
+    cy.get('[data-testid="audience-tag"]').then(tagElement => {
+      this.shouldContainTag(audienceTag, tagElement)
     })
   }
 
@@ -454,15 +452,6 @@ export default abstract class Page {
     const { actual, expected } = Helpers.parseHtml(tagElement, tag.text)
     expect(actual).to.equal(expected)
     cy.wrap(tagElement).should('have.class', tag.classes)
-  }
-
-  shouldContainTags(tags: Array<GovukFrontendTagWithText>, tagContainerElement: JQuery<HTMLElement>): void {
-    cy.wrap(tagContainerElement).within(() => {
-      cy.get('.govuk-tag').each((tagElement, tagElementIndex) => {
-        const tag = tags[tagElementIndex]
-        this.shouldContainTag(tag, tagElement)
-      })
-    })
   }
 
   shouldContainTextArea(id: string, label: string): void {

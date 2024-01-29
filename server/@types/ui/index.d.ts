@@ -71,7 +71,7 @@ type CourseParticipationPresenter = CourseParticipation & {
 }
 
 type CoursePresenter = Course & {
-  audienceTags: Array<GovukFrontendTagWithText>
+  audienceTag: GovukFrontendTagWithText
   nameAndAlternateName: string
   prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
 }

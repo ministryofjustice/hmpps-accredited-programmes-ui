@@ -1,7 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% from "../partials/audienceTags.njk" import audienceTags %}
+{% from "../partials/audienceTag.njk" import audienceTag %}
 
 {% extends "../partials/layout.njk" %}
 
@@ -17,7 +17,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{ audienceTags(course.audienceTags) }}
+      {{ audienceTag(course.audienceTag) }}
 
       <h2 class="govuk-heading-m">Programme criteria</h2>
 
@@ -28,7 +28,7 @@
 
       <h2 class="govuk-heading-m">Programme description</h2>
 
-      <p class="govuk-body">{{ course.description }}</p>
+      <p class="govuk-body" data-testid="description-paragraph">{{ course.description }}</p>
 
       <h2 class="govuk-heading-m">Locations</h2>
 

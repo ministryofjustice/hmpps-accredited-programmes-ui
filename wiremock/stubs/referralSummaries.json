@@ -1,7 +1,7 @@
 [
   {
     "id": "4261ad11-279e-4698-b1bb-90241ec036b9",
-    "audiences": ["Intimate partner violence offence", "General violence offence"],
+    "audience": "Intimate partner violence offence",
     "courseName": "Becoming New Me Plus",
     "earliestReleaseDate": "2024-09-16",
     "organisationId": "MRI",
@@ -21,7 +21,7 @@
   },
   {
     "id": "fc70b23a-47bf-4015-9c1e-18b5b8bffcf7",
-    "audiences": ["Intimate partner violence offence", "General violence offence"],
+    "audience": "Intimate partner violence offence",
     "courseName": "Becoming New Me Plus",
     "earliestReleaseDate": "2024-09-16",
     "organisationId": "MRI",

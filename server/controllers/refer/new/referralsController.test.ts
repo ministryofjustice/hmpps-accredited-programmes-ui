@@ -254,7 +254,7 @@ describe('NewReferralsController', () => {
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
       const coursePresenter = createMock<CoursePresenter>({
-        audiences: courseAudienceFactory.buildList(1),
+        audience: courseAudienceFactory.build(),
         nameAndAlternateName: `${course.name} (${course.alternateName})`,
       })
       courseService.getCourse.mockResolvedValue(course)

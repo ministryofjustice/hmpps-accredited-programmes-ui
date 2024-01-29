@@ -65,9 +65,7 @@ export default ReferralSummaryFactory.define(({ params, transientParams }) => {
 
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
-    audiences: FactoryHelpers.buildListBetween(courseAudienceFactory, { max: 3, min: 1 }).map(
-      audience => audience.value,
-    ),
+    audience: courseAudienceFactory.build(),
     courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
     earliestReleaseDate,
     organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),

@@ -1,4 +1,7 @@
-export type CourseAudience = {
-  id: string // eslint-disable-next-line @typescript-eslint/member-ordering
-  value: string
-}
+export type CourseAudience =
+  | 'Extremism offence'
+  | 'Gang offence'
+  | 'General offence'
+  | 'General violence offence'
+  | 'Intimate partner violence offence'
+  | 'Sexual offence'

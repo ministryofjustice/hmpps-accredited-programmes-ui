@@ -2,17 +2,6 @@ import type { TableDefinition } from '.'
 import TableRecords from './tableRecords'
 
 export default class TableDefinitions {
-  static audience(): TableDefinition {
-    return {
-      properties: [
-        { api: 'audience_id', ui: 'id' },
-        { api: 'audience_value', ui: 'value' },
-      ],
-      records: TableRecords.audience(),
-      tableName: 'audience',
-    }
-  }
-
   static course(): TableDefinition {
     return {
       properties: [
@@ -20,21 +9,11 @@ export default class TableDefinitions {
         { api: 'name', ui: 'name' },
         { api: 'identifier', ui: 'identifier' },
         { api: 'description', ui: 'description' },
+        { api: 'audience', ui: 'audience' },
         { api: 'alternate_name', ui: 'alternateName' },
       ],
       records: TableRecords.course(),
       tableName: 'course',
-    }
-  }
-
-  static courseAudience(): TableDefinition {
-    return {
-      properties: [
-        { api: 'course_id', ui: 'courseId' },
-        { api: 'audience_id', ui: 'audienceId' },
-      ],
-      records: TableRecords.courseAudience(),
-      tableName: 'course_audience',
     }
   }
 

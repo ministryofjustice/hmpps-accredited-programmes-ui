@@ -4,7 +4,7 @@ import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
-import type { Course, CourseAudience, Referral, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
+import type { Course, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
@@ -43,7 +43,7 @@ export default class CaseListUtils {
     })
   }
 
-  static queryParamsExcludingPage(audience?: CourseAudience['value'], status?: Referral['status']): Array<QueryParam> {
+  static queryParamsExcludingPage(audience?: string, status?: string): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
     if (audience) {
@@ -130,7 +130,7 @@ export default class CaseListUtils {
       case 'Programme name':
         return referralSummary.courseName
       case 'Programme strand':
-        return referralSummary.audiences.map(audience => audience).join(', ')
+        return referralSummary.audience
       case 'Progress':
         return `${referralSummary.tasksCompleted || 0} out of 4 tasks complete`
       case 'Referral status':

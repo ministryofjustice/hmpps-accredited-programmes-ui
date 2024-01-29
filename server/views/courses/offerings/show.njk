@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% from "../../partials/audienceTags.njk" import audienceTags %}
+{% from "../../partials/audienceTag.njk" import audienceTag %}
 
 {% extends "../../partials/layout.njk" %}
 
@@ -20,7 +20,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{ audienceTags(course.audienceTags) }}
+      {{ audienceTag(course.audienceTag) }}
 
       <h2 class="govuk-heading-m">{{ organisation.name }}</h2>
 

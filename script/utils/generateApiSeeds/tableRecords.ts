@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 
 import type {
-  CourseAudienceRecord,
   CourseOfferingRecord,
   CoursePrerequisiteRecord,
   CourseRecord,
@@ -10,7 +9,6 @@ import type {
 } from '.'
 import organisationIds from './organisationIds'
 import {
-  courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
   coursePrerequisiteFactory,
@@ -18,22 +16,9 @@ import {
 } from '../../../server/testutils/factories'
 import { StringUtils } from '../../../server/utils'
 import { caseloads, prisoners } from '../../../wiremock/stubs'
-import type { CourseAudience, Organisation, Referral } from '@accredited-programmes/models'
+import type { Organisation, Referral } from '@accredited-programmes/models'
 
 export default class TableRecords {
-  static audience(): Array<CourseAudience> {
-    this.cachedAudience ||= [
-      'Sexual offence',
-      'Extremism offence',
-      'Gang offence',
-      'General violence offence',
-      'Intimate partner violence offence',
-      'General offence',
-    ].map(value => courseAudienceFactory.build({ value }))
-
-    return this.cachedAudience
-  }
-
   static course(): Array<CourseRecord> {
     this.cachedCourse ||= courseFactory.buildList(10).map((courseRecord, courseRecordIndex) => ({
       ...courseRecord,
@@ -44,15 +29,6 @@ export default class TableRecords {
     }))
 
     return this.cachedCourse
-  }
-
-  static courseAudience(): Array<CourseAudienceRecord> {
-    this.cachedCourseAudience ||= this.course().map(courseRecord => ({
-      audienceId: faker.helpers.arrayElement(this.audience()).id,
-      courseId: courseRecord.id,
-    }))
-
-    return this.cachedCourseAudience
   }
 
   static offering(): Array<CourseOfferingRecord> {
@@ -209,11 +185,7 @@ export default class TableRecords {
 
   static cachedActiveCaseLoadId: Organisation['id']
 
-  static cachedAudience: Array<CourseAudience>
-
   static cachedCourse: Array<CourseRecord>
-
-  static cachedCourseAudience: Array<CourseAudienceRecord>
 
   static cachedNonActiveCaseLoadOrganisationsIds: Array<Organisation['id']>
 

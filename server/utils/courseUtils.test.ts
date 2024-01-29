@@ -1,5 +1,5 @@
 import CourseUtils from './courseUtils'
-import { courseAudienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
+import { courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
 
 describe('CourseUtils', () => {
   describe('courseNameWithAlternateName', () => {
@@ -36,10 +36,7 @@ describe('CourseUtils', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
         alternateName: 'LC',
-        audiences: [
-          courseAudienceFactory.build({ value: 'Intimate partner violence offence' }),
-          courseAudienceFactory.build({ value: 'General violence offence' }),
-        ],
+        audience: 'Intimate partner violence offence',
         coursePrerequisites: [
           coursePrerequisiteFactory.gender().build(),
           coursePrerequisiteFactory.learningNeeds().build(),
@@ -51,16 +48,11 @@ describe('CourseUtils', () => {
 
       expect(CourseUtils.presentCourse(course)).toEqual({
         ...course,
-        audienceTags: [
-          {
-            classes: 'govuk-tag govuk-tag--green',
-            text: 'Intimate partner violence offence',
-          },
-          {
-            classes: 'govuk-tag govuk-tag--yellow',
-            text: 'General violence offence',
-          },
-        ],
+        audienceTag: {
+          attributes: { 'data-testid': 'audience-tag' },
+          classes: 'govuk-tag govuk-tag--green',
+          text: 'Intimate partner violence offence',
+        },
         nameAndAlternateName: 'Lime Course (LC)',
         prerequisiteSummaryListRows: [
           {

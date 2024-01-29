@@ -1,10 +1,4 @@
-import type {
-  Course,
-  CourseAudience,
-  CourseOffering,
-  CoursePrerequisite,
-  Referral,
-} from '@accredited-programmes/models'
+import type { Course, CourseOffering, CoursePrerequisite, Referral } from '@accredited-programmes/models'
 
 type Property = { api: string; ui: string }
 type TableDefinition = {
@@ -14,7 +8,6 @@ type TableDefinition = {
   tableName: string
 }
 
-type CourseAudienceRecord = { audienceId: CourseAudience['id']; courseId: Course['id'] }
 type CourseOfferingRecord = CourseOffering & { courseId: Course['id'] }
 type CoursePrerequisiteRecord = CoursePrerequisite & { courseId: Course['id'] }
 type CourseRecord = Course & { identifier: string }
@@ -25,7 +18,6 @@ type ReferralRecord = Omit<Referral, 'status'> & {
 type ReferrerUserRecord = { referrerUsername: Express.User['username'] }
 
 export type {
-  CourseAudienceRecord,
   CourseOfferingRecord,
   CoursePrerequisiteRecord,
   CourseRecord,

@@ -1,7 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
-import type { Referral } from '../../@types/models/Referral'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
 import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
@@ -74,7 +73,7 @@ export default class AssessCaseListController {
 
       const pagination = PaginationUtils.pagination(
         req.path,
-        CaseListUtils.queryParamsExcludingPage(audience, status as Referral['status']),
+        CaseListUtils.queryParamsExcludingPage(audience, status),
         paginatedReferralSummaries.pageNumber,
         paginatedReferralSummaries.totalPages,
       )

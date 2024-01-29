@@ -24,14 +24,14 @@ export default class CourseUtils {
   static presentCourse(course: Course): CoursePresenter {
     return {
       ...course,
-      audienceTags: CourseUtils.audienceTags(course.audiences),
-      nameAndAlternateName: this.courseNameWithAlternateName(course),
+      audienceTag: CourseUtils.audienceTag(course.audience),
+      nameAndAlternateName: CourseUtils.courseNameWithAlternateName(course),
       prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
   }
 
-  private static audienceTags(audiences: Array<CourseAudience>): Array<GovukFrontendTagWithText> {
-    const audienceColourMap: Record<CourseAudience['value'], TagColour> = {
+  private static audienceTag(audience: CourseAudience): GovukFrontendTagWithText {
+    const audienceColourMap: Record<CourseAudience, TagColour> = {
       'Extremism offence': 'turquoise',
       'Gang offence': 'purple',
       'General offence': 'pink',
@@ -40,14 +40,13 @@ export default class CourseUtils {
       'Sexual offence': 'orange',
     }
 
-    return audiences.map(audience => {
-      const colour: TagColour = audienceColourMap[audience.value]
+    const colour: TagColour = audienceColourMap[audience]
 
-      return {
-        classes: `govuk-tag govuk-tag--${colour}`,
-        text: audience.value,
-      }
-    })
+    return {
+      attributes: { 'data-testid': 'audience-tag' },
+      classes: `govuk-tag govuk-tag--${colour}`,
+      text: audience,
+    }
   }
 
   private static prerequisiteSummaryListRows(

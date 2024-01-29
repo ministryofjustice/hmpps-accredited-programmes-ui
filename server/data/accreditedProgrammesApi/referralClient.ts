@@ -3,8 +3,6 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
-  Course,
-  CourseAudience,
   CreatedReferralResponse,
   Paginated,
   Referral,
@@ -50,7 +48,7 @@ export default class ReferralClient {
 
   async findReferralSummaries(
     organisationId: string,
-    query?: { audience?: CourseAudience['value']; courseName?: Course['name']; page?: string; status?: string },
+    query?: { audience?: string; courseName?: string; page?: string; status?: string },
   ): Promise<Paginated<ReferralSummary>> {
     return (await this.restClient.get({
       path: apiPaths.referrals.dashboard({ organisationId }),
