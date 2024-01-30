@@ -16,19 +16,18 @@ export default class NewReferralAdditionalInformationPage extends Page {
   }
 
   shouldContainAdditionalInformationTextArea() {
-    this.shouldContainTextArea('additionalInformation', 'Add additional information')
+    this.shouldContainTextArea('additionalInformation', 'Provide additional information')
   }
 
   shouldContainInstructions() {
-    cy.get('#additionalInformation-hint .govuk-body').should(
+    cy.get('[data-testid="instructions-paragraph"]').should(
       'have.text',
-      'You can provide any additional information you feel will help the programme team in their assessment. This might include:',
+      'You must provide additional information you feel will help the programme team in their assessment. This might include:',
     )
 
     const expectedListText = [
       'The reason for the referral',
       "The person's motivation to complete a programme",
-      'Their offence history and behaviour',
       'Information to support an override',
     ]
 
