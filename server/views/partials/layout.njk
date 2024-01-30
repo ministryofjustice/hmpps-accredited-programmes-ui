@@ -84,12 +84,6 @@
   <body>, to avoid blocking the initial render. #}
   <script type="module" src="/assets/govukFrontendInit.js"></script>
   <script src="/assets/moj/all.js"></script>
+  <script src="/assets/mojFrontendInit.js"></script>
   <script src="/assets/clickableDashboardCards.js"></script>
-  {% block extraScripts %}
-    <script type="text/javascript" nonce="{{ cspNonce }}">
-      window
-        .MOJFrontend
-        .initAll()
-    </script>
-  {% endblock extraScripts %}
 {% endblock bodyEnd %}
