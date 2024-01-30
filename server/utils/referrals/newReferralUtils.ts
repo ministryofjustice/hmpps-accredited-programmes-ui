@@ -51,7 +51,7 @@ export default class NewReferralUtils {
 
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {
     const referralId = referral.id
-    const checkAnswersStatus = NewReferralUtils.isReadyForSubmission(referral) ? 'not started' : 'cannot start yet'
+    const checkAnswersStatus = NewReferralUtils.isReadyForSubmission(referral) ? 'Not started' : 'Cannot start yet'
     const checkAnswersUrl = NewReferralUtils.isReadyForSubmission(referral)
       ? referPaths.new.checkAnswers({ referralId })
       : ''
@@ -61,7 +61,7 @@ export default class NewReferralUtils {
         heading: 'Personal details',
         items: [
           {
-            statusTag: NewReferralUtils.taskListStatusTag('completed'),
+            statusTag: NewReferralUtils.taskListStatusTag('Completed'),
             text: 'Confirm personal details',
             url: referPaths.new.showPerson({ referralId }),
           },
@@ -72,7 +72,7 @@ export default class NewReferralUtils {
         items: [
           {
             statusTag: NewReferralUtils.taskListStatusTag(
-              referral.hasReviewedProgrammeHistory ? 'completed' : 'not started',
+              referral.hasReviewedProgrammeHistory ? 'Completed' : 'Not started',
               'programme-history-tag',
             ),
             text: 'Review Accredited Programme history',
@@ -80,7 +80,7 @@ export default class NewReferralUtils {
           },
           {
             statusTag: NewReferralUtils.taskListStatusTag(
-              referral.oasysConfirmed ? 'completed' : 'not started',
+              referral.oasysConfirmed ? 'Completed' : 'Not started',
               'confirm-oasys-tag',
             ),
             text: 'Confirm the OASys information',
@@ -88,7 +88,7 @@ export default class NewReferralUtils {
           },
           {
             statusTag: NewReferralUtils.taskListStatusTag(
-              referral.additionalInformation ? 'completed' : 'not started',
+              referral.additionalInformation ? 'Completed' : 'Not started',
               'additional-information-tag',
             ),
             text: 'Add additional information',
@@ -117,7 +117,7 @@ export default class NewReferralUtils {
     let tag: ReferralTaskListStatusTag
 
     switch (text) {
-      case 'completed':
+      case 'Completed':
         tag = { classes: baseClasses, text }
         break
       default:

@@ -33,7 +33,7 @@ export default class NewReferralTaskListPage extends Page {
     cy.get('[data-testid="check-answers-list-item"]').within(() => {
       cy.get('a').should('have.attr', 'href', referPaths.new.checkAnswers({ referralId: this.referral.id }))
       cy.get('.govuk-tag').then(tagElement => {
-        const { actual, expected } = Helpers.parseHtml(tagElement, 'not started')
+        const { actual, expected } = Helpers.parseHtml(tagElement, 'Not started')
         expect(actual).to.equal(expected)
       })
     })
@@ -66,7 +66,7 @@ export default class NewReferralTaskListPage extends Page {
   shouldHaveAdditionalInformation() {
     cy.get('[data-testid="additional-information-tag"]').then(additionalInformationTagElement => {
       this.shouldContainTag(
-        { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
+        { classes: 'govuk-tag moj-task-list__task-completed', text: 'Completed' },
         additionalInformationTagElement,
       )
     })
@@ -75,7 +75,7 @@ export default class NewReferralTaskListPage extends Page {
   shouldHaveConfirmedOasys() {
     cy.get('[data-testid="confirm-oasys-tag"]').then(confirmOasysTagElement => {
       this.shouldContainTag(
-        { classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' },
+        { classes: 'govuk-tag moj-task-list__task-completed', text: 'Completed' },
         confirmOasysTagElement,
       )
     })
@@ -83,7 +83,7 @@ export default class NewReferralTaskListPage extends Page {
 
   shouldHaveReviewedProgrammeHistory() {
     cy.get('[data-testid="programme-history-tag"]').then(tagElement => {
-      this.shouldContainTag({ classes: 'govuk-tag moj-task-list__task-completed', text: 'completed' }, tagElement)
+      this.shouldContainTag({ classes: 'govuk-tag moj-task-list__task-completed', text: 'Completed' }, tagElement)
     })
   }
 
@@ -91,7 +91,7 @@ export default class NewReferralTaskListPage extends Page {
     cy.get('[data-testid="check-answers-list-item"]').within(() => {
       cy.get('a').should('not.exist')
       cy.get('.govuk-tag').then(tagElement => {
-        const { actual, expected } = Helpers.parseHtml(tagElement, 'cannot start yet')
+        const { actual, expected } = Helpers.parseHtml(tagElement, 'Cannot start yet')
         expect(actual).to.equal(expected)
       })
     })
