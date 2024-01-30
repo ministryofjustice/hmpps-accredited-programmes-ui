@@ -17,7 +17,7 @@ ${components.map(component => component.definitions).join('\n')}
   }
 
   private static async componentDirectoryPaths(): Promise<Array<string>> {
-    const componentsPath = 'node_modules/govuk-frontend/govuk/components'
+    const componentsPath = 'node_modules/govuk-frontend/dist/govuk/components'
     const componentsDirectoryContents = await fs.readdir(componentsPath)
 
     const componentsDirectoryContentsStats = await Promise.all(
