@@ -5903,6 +5903,12 @@ export interface components {
        * @example 2019-02-13
        */
       alertDate: string;
+      /**
+       * Format: date
+       * @description Date the alert should expire
+       * @example 2099-02-13
+       */
+      expiryDate?: string;
     };
     AlertCreated: {
       /** Format: int64 */
@@ -7345,6 +7351,7 @@ export interface components {
       /** Format: date */
       dateOfBirth: string;
       lastName: string;
+      agencyId: string;
       alerts: components["schemas"]["Alert"][];
     };
     /** @description Sentence Adjustment values */
@@ -10802,9 +10809,7 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        content: {
-          "application/json": Record<string, never>;
-        };
+        content: never;
       };
       /** @description Invalid username or password */
       401: {
