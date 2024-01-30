@@ -8,7 +8,7 @@
     "prisonerName": { "firstName": "Savannah", "lastName": "Fritsch" },
     "prisonName": "County Tyrone (HMP)",
     "prisonNumber": "Y7RLN5A",
-    "referrerUsername": "STUBBED_USER",
+    "referrerUsername": "ACP_POM_USER",
     "sentence": {
       "conditionalReleaseDate": "2025-10-12",
       "indeterminateSentence": false,
@@ -28,7 +28,7 @@
     "prisonerName": { "firstName": "Savannah", "lastName": "Fritsch" },
     "prisonName": "County Tyrone (HMP)",
     "prisonNumber": "Y7RLN5A",
-    "referrerUsername": "STUBBED_USER",
+    "referrerUsername": "ACP_POM_USER",
     "sentence": {
       "conditionalReleaseDate": "2025-10-12",
       "indeterminateSentence": false,

@@ -38,7 +38,9 @@ As the Prisoner Search is a complex API with multiple dependencies, we've opted 
 
 ### With a mocked API
 
-**Warning:** the mocked API currently only covers the Find journey and searching for a person before creating a referral. The rest of the Refer journey will not work with a mocked API at present.
+**Warning:** only some parts of the journey are available with the mocked API.
+
+Mocked referral summaries and referrals are mocked to have been referred by `ACP_POM_USER`. To view these referrals with the `status` set to `referral_started`, you must be logged in as `ACP_POM_USER`.
 
 To run the application as above but with a mocked Accredited Programmes API (port 9099), run:
 
