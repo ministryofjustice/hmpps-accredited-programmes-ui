@@ -245,14 +245,14 @@ export interface components {
       totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["Prisoner"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components["schemas"]["PageableObject"];
@@ -264,10 +264,10 @@ export interface components {
       sort?: components["schemas"]["SortObject"];
       /** Format: int32 */
       pageSize?: number;
-      paged?: boolean;
-      unpaged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
+      unpaged?: boolean;
+      paged?: boolean;
     };
     Prisoner: {
       /**
@@ -920,14 +920,14 @@ export interface components {
       totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["Prisoner"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components["schemas"]["PageableObject"];
@@ -1094,14 +1094,14 @@ export interface components {
       totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["Prisoner"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components["schemas"]["PageableObject"];
@@ -1199,14 +1199,14 @@ export interface components {
       totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["Prisoner"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components["schemas"]["PageableObject"];
