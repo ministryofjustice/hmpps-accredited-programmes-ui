@@ -3,6 +3,7 @@ import { CourseUtils, NewReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
+import type { User } from '@manage-users-api'
 
 export default class NewReferralCheckAnswersPage extends Page {
   course: CoursePresenter
@@ -17,7 +18,7 @@ export default class NewReferralCheckAnswersPage extends Page {
 
   referral: Referral
 
-  username: Express.User['username']
+  referrerName: User['name']
 
   constructor(args: {
     course: Course
@@ -26,18 +27,18 @@ export default class NewReferralCheckAnswersPage extends Page {
     participations: Array<CourseParticipationPresenter>
     person: Person
     referral: Referral
-    username: Express.User['username']
+    referrerName: User['name']
   }) {
     super('Check your answers')
 
-    const { course, courseOffering, organisation, participations, person, referral, username } = args
+    const { course, courseOffering, organisation, participations, person, referral, referrerName } = args
     this.course = CourseUtils.presentCourse(course)
     this.courseOffering = courseOffering
     this.organisation = organisation
     this.participations = participations
     this.person = person
     this.referral = referral
-    this.username = username
+    this.referrerName = referrerName
   }
 
   confirmDetailsAndSubmitReferral() {
@@ -83,7 +84,7 @@ export default class NewReferralCheckAnswersPage extends Page {
           this.course,
           this.organisation,
           this.person,
-          this.username,
+          this.referrerName,
         ),
         summaryListElement,
       )

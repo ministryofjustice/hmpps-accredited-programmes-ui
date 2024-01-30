@@ -14,6 +14,7 @@ const controllers = (services: Services) => {
     services.organisationService,
     services.personService,
     services.referralService,
+    services.userService,
   )
   const newReferralsPeopleController = new NewReferralsPeopleController(services.personService)
   const newReferralsAdditionalInformationController = new NewReferralsAdditionalInformationController(
