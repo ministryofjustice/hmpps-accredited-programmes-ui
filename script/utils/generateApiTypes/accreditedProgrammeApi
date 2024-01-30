@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# script/generateApiTypes/prisonApi: Generate types for the Prison API.
+#  
+
+npx openapi-typescript https://accredited-programmes-api-dev.hmpps.service.justice.gov.uk/api.yml > server/@types/accreditedProgrammesApi/imported/index.d.ts
