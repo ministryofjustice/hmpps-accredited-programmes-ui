@@ -11,6 +11,7 @@ import {
   userFactory,
 } from '../../../../server/testutils/factories'
 import { type CourseParticipationDetailsBody, OrganisationUtils, StringUtils } from '../../../../server/utils'
+import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import {
   NewReferralDeleteProgrammeHistoryPage,
@@ -34,7 +35,7 @@ context('Programme history', () => {
   })
   const courses = courseFactory.buildList(4)
   const courseNames = courses.map(course => course.name)
-  const addedByUser1 = userFactory.build()
+  const addedByUser1 = userFactory.build({ username: auth.mockedUser.username })
   const addedByUser2 = userFactory.build()
   const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
     addedBy: addedByUser1.username,
@@ -55,7 +56,11 @@ context('Programme history', () => {
     addedByDisplayName: StringUtils.convertToTitleCase(addedByUser2.name),
   }
   const courseOffering = courseOfferingFactory.build()
-  const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+  const referral = referralFactory.started().build({
+    offeringId: courseOffering.id,
+    prisonNumber: person.prisonNumber,
+    referrerUsername: addedByUser1.username,
+  })
   const programmeHistoryPath = referPaths.new.programmeHistory.index({ referralId: referral.id })
   const newParticipationPath = referPaths.new.programmeHistory.new({ referralId: referral.id })
 

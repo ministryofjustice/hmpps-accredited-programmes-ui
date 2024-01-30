@@ -11,6 +11,7 @@ import {
   userFactory,
 } from '../../../../server/testutils/factories'
 import { OrganisationUtils, StringUtils } from '../../../../server/utils'
+import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import { NewReferralCheckAnswersPage, NewReferralCompletePage, NewReferralTaskListPage } from '../../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
@@ -35,7 +36,7 @@ context('Submitting a referral', () => {
   })
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
-  const addedByUser1 = userFactory.build({ name: 'Bobby Brown' })
+  const addedByUser1 = userFactory.build({ name: 'Bobby Brown', username: auth.mockedUser.username })
   const addedByUser2 = userFactory.build()
   const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
     addedBy: addedByUser1.username,
@@ -218,7 +219,7 @@ context('Submitting a referral', () => {
   })
 
   it('Shows the complete page for a completed referral', () => {
-    const submittedReferral = referralFactory.submitted().build()
+    const submittedReferral = referralFactory.submitted().build({ referrerUsername: auth.mockedUser.username })
     cy.task('stubReferral', submittedReferral)
 
     const path = referPaths.new.complete({ referralId: submittedReferral.id })

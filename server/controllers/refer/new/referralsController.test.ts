@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import NewReferralsController from './referralsController'
-import { referPaths } from '../../../paths'
+import { authPaths, referPaths } from '../../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
   courseAudienceFactory,
@@ -25,6 +25,7 @@ jest.mock('../../../utils/referrals/newReferralUtils')
 describe('NewReferralsController', () => {
   const userToken = 'SOME_TOKEN'
   const username = 'SOME_USERNAME'
+  const otherUsername = 'SOME_OTHER_USERNAME'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
@@ -41,15 +42,24 @@ describe('NewReferralsController', () => {
     name: 'Del Hatton',
   })
   const referralId = 'A-REFERRAL-ID'
-  const draftReferral = referralFactory
-    .started()
-    .build({ id: referralId, offeringId: referableCourseOffering.id, prisonNumber: person.prisonNumber })
-  const submittableReferral = referralFactory
-    .submittable()
-    .build({ id: referralId, offeringId: referableCourseOffering.id, prisonNumber: person.prisonNumber })
-  const submittedReferral = referralFactory
-    .submitted()
-    .build({ id: referralId, offeringId: referableCourseOffering.id, prisonNumber: person.prisonNumber })
+  const draftReferral = referralFactory.started().build({
+    id: referralId,
+    offeringId: referableCourseOffering.id,
+    prisonNumber: person.prisonNumber,
+    referrerUsername: username,
+  })
+  const submittableReferral = referralFactory.submittable().build({
+    id: referralId,
+    offeringId: referableCourseOffering.id,
+    prisonNumber: person.prisonNumber,
+    referrerUsername: username,
+  })
+  const submittedReferral = referralFactory.submitted().build({
+    id: referralId,
+    offeringId: referableCourseOffering.id,
+    prisonNumber: person.prisonNumber,
+    referrerUsername: username,
+  })
 
   let controller: NewReferralsController
 
@@ -201,6 +211,23 @@ describe('NewReferralsController', () => {
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
+
+    describe('when the logged in user is not the referrer', () => {
+      it('redirects to the auth error page', async () => {
+        TypeUtils.assertHasUser(request)
+
+        request.params.referralId = referralId
+        request.user.username = otherUsername
+
+        referralService.getReferral.mockResolvedValue(draftReferral)
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
+      })
+    })
   })
 
   describe('showPerson', () => {
@@ -233,6 +260,23 @@ describe('NewReferralsController', () => {
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
+      })
+    })
+
+    describe('when the logged in user is not the referrer', () => {
+      it('redirects to the auth error page', async () => {
+        TypeUtils.assertHasUser(request)
+
+        request.params.referralId = referralId
+        request.user.username = otherUsername
+
+        referralService.getReferral.mockResolvedValue(draftReferral)
+
+        const requestHandler = controller.showPerson()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
       })
     })
   })
@@ -311,6 +355,23 @@ describe('NewReferralsController', () => {
       })
     })
 
+    describe('when the logged in user is not the referrer', () => {
+      it('redirects to the auth error page', async () => {
+        TypeUtils.assertHasUser(request)
+
+        request.params.referralId = referralId
+        request.user.username = otherUsername
+
+        referralService.getReferral.mockResolvedValue(submittableReferral)
+
+        const requestHandler = controller.checkAnswers()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
+      })
+    })
+
     describe('when the referral is not ready for submission', () => {
       it('redirects to the show referral action', async () => {
         request.params.referralId = draftReferral.id
@@ -377,6 +438,24 @@ describe('NewReferralsController', () => {
       })
     })
 
+    describe('when the logged in user is not the referrer', () => {
+      it('redirects to the auth error page', async () => {
+        TypeUtils.assertHasUser(request)
+
+        request.body.confirmation = 'true'
+        request.params.referralId = referralId
+        request.user.username = otherUsername
+
+        referralService.getReferral.mockResolvedValue(submittableReferral)
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
+      })
+    })
+
     describe('when the referral is not ready for submission', () => {
       it('redirects to the show referral action', async () => {
         request.body.confirmation = 'true'
@@ -420,6 +499,23 @@ describe('NewReferralsController', () => {
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      })
+    })
+
+    describe('when the logged in user is not the referrer', () => {
+      it('redirects to the auth error page', async () => {
+        TypeUtils.assertHasUser(request)
+
+        request.params.referralId = referralId
+        request.user.username = otherUsername
+
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = controller.complete()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId)
+        expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
       })
     })
   })
