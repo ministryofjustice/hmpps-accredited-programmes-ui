@@ -40,4 +40,20 @@ context('General Refer functionality', () => {
       Page.verifyOnPage(NewReferralCompletePage)
     })
   })
+
+  describe('When a user attempts to view a draft referral and they are not the referrer user', () => {
+    it('redirects to the auth error page', () => {
+      cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
+      cy.signIn()
+
+      const draftReferral = referralFactory.started().build()
+      cy.task('stubReferral', draftReferral)
+
+      const path = referPaths.new.show({ referralId: draftReferral.id })
+      cy.visit(path, { failOnStatusCode: false })
+
+      const authErrorPage = Page.verifyOnPage(AuthErrorPage)
+      authErrorPage.shouldContainAuthErrorMessage()
+    })
+  })
 })
