@@ -7,7 +7,7 @@
   "scripts": {
     "build": "npm run compile-sass && tsc && npm run copy-views",
     "clean": "rm -rf dist build node_modules stylesheets",
-    "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css assets/scss/application-ie8.scss:./assets/stylesheets/application-ie8.css --style compressed",
+    "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend/dist --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
     "copy-views": "cp -R server/views dist/server/",
     "generate-api-seeds": "ts-node script/utils/generateApiSeeds/runner.ts",
     "generate-govuk-frontend-types": "ts-node script/utils/generateGovukFrontendTypes/runner.ts && prettier --write server/@types/govukFrontend/index.d.ts",
@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.0",
-    "@ministryofjustice/frontend": "^1.6.6",
+    "@ministryofjustice/frontend": "2.1",
     "@sentry/node": "^7.54.0",
     "agentkeepalive": "^4.3.0",
     "applicationinsights": "^2.5.1",
@@ -74,7 +74,7 @@
     "express-prom-bundle": "^7.0.0",
     "express-session": "^1.17.3",
     "fishery": "^2.2.2",
-    "govuk-frontend": "^4.5.0",
+    "govuk-frontend": "^5.0.0",
     "helmet": "^7.0.0",
     "http-errors": "^2.0.0",
     "jquery": "^3.6.4",

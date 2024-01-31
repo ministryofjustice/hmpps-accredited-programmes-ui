@@ -110,21 +110,21 @@ type ReferralSharedPageData = {
 
 type ReferralStatusGroup = 'closed' | 'draft' | 'open'
 
-type ReferralTaskListStatusText = 'cannot start yet' | 'completed' | 'not started'
+type ReferralTaskListStatusText = 'Cannot start yet' | 'Completed' | 'Not started'
 
 type ReferralTaskListStatusTagCompleted = GovukFrontendTagWithText & {
   classes: 'govuk-tag--grey moj-task-list__task-completed'
-  text: 'cannot start yet'
+  text: 'Cannot start yet'
 }
 
 type ReferralTaskListStatusTagNotStarted = GovukFrontendTagWithText & {
   classes: 'govuk-tag--grey moj-task-list__task-completed'
-  text: 'not started'
+  text: 'Not started'
 }
 
 type ReferralTaskListStatusTagCannotStartYet = GovukFrontendTagWithText & {
   classes: 'moj-task-list__task-completed'
-  text: 'completed'
+  text: 'Completed'
 }
 
 type ReferralTaskListStatusTag =

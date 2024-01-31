@@ -101,7 +101,7 @@ describe('NewReferralUtils', () => {
           heading: 'Personal details',
           items: [
             {
-              statusTag: { classes: 'moj-task-list__task-completed', text: 'completed' },
+              statusTag: { classes: 'moj-task-list__task-completed', text: 'Completed' },
               text: 'Confirm personal details',
               url: `/refer/referrals/new/${referral.id}/person`,
             },
@@ -114,7 +114,7 @@ describe('NewReferralUtils', () => {
               statusTag: {
                 attributes: { 'data-testid': 'programme-history-tag' },
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
-                text: 'not started',
+                text: 'Not started',
               },
               text: 'Review Accredited Programme history',
               url: `/refer/referrals/new/${referral.id}/programme-history`,
@@ -123,7 +123,7 @@ describe('NewReferralUtils', () => {
               statusTag: {
                 attributes: { 'data-testid': 'confirm-oasys-tag' },
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
-                text: 'not started',
+                text: 'Not started',
               },
               text: 'Confirm the OASys information',
               url: `/refer/referrals/new/${referral.id}/confirm-oasys`,
@@ -132,7 +132,7 @@ describe('NewReferralUtils', () => {
               statusTag: {
                 attributes: { 'data-testid': 'additional-information-tag' },
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
-                text: 'not started',
+                text: 'Not started',
               },
               text: 'Add additional information',
               url: `/refer/referrals/new/${referral.id}/additional-information`,
@@ -145,7 +145,7 @@ describe('NewReferralUtils', () => {
             {
               statusTag: {
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
-                text: 'cannot start yet',
+                text: 'Cannot start yet',
               },
               testIds: { listItem: 'check-answers-list-item' },
               text: 'Check answers and submit',
@@ -176,17 +176,17 @@ describe('NewReferralUtils', () => {
       expect(accreditedProgrammeHistoryStatusTag).toEqual({
         attributes: { 'data-testid': 'programme-history-tag' },
         classes: 'moj-task-list__task-completed',
-        text: 'completed',
+        text: 'Completed',
       })
       expect(additionalInformationStatusTag).toEqual({
         attributes: { 'data-testid': 'additional-information-tag' },
         classes: 'moj-task-list__task-completed',
-        text: 'completed',
+        text: 'Completed',
       })
       expect(confirmOasysStatusTag).toEqual({
         attributes: { 'data-testid': 'confirm-oasys-tag' },
         classes: 'moj-task-list__task-completed',
-        text: 'completed',
+        text: 'Completed',
       })
     })
 
@@ -197,7 +197,7 @@ describe('NewReferralUtils', () => {
       const checkAnswersTask = getTaskListItem('Check answers and submit', checkAnswersSection)
 
       expect(checkAnswersTask.url).toEqual(`/refer/referrals/new/${referralWithOasysConfirmed.id}/check-answers`)
-      expect(checkAnswersTask.statusTag.text).toEqual('not started')
+      expect(checkAnswersTask.statusTag.text).toEqual('Not started')
     })
   })
 })

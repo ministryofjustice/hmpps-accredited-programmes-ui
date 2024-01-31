@@ -141,7 +141,7 @@ export default abstract class Page {
         cy.get('.govuk-summary-card')
           .eq(participationsIndex)
           .then(summaryCardElement => {
-            const actions = []
+            const actions: Array<GovukFrontendSummaryListCardActionsItemWithText> = []
 
             if (withActions.change) {
               actions.push({
@@ -150,7 +150,7 @@ export default abstract class Page {
                   referralId,
                 }),
                 text: 'Change',
-                visuallyHiddenText: ` participation for ${participation.courseName}`,
+                visuallyHiddenText: 'participation',
               })
             }
 
@@ -161,7 +161,7 @@ export default abstract class Page {
                   referralId,
                 }),
                 text: 'Remove',
-                visuallyHiddenText: ` participation for ${participation.courseName}`,
+                visuallyHiddenText: 'participation',
               })
             }
 
@@ -402,10 +402,11 @@ export default abstract class Page {
             let { text } = action
 
             if (action.visuallyHiddenText) {
-              text += ` ${action.visuallyHiddenText}`
+              const visuallyHiddenText = ` ${action.visuallyHiddenText} (${title})`
+              text += visuallyHiddenText
 
               cy.wrap(actionElement).within(() => {
-                cy.get('.govuk-visually-hidden').should('have.text', action.visuallyHiddenText)
+                cy.get('.govuk-visually-hidden').should('have.text', visuallyHiddenText)
               })
             }
 

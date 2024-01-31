@@ -123,7 +123,7 @@ export default class CourseParticipationUtils {
           referralId,
         }),
         text: 'Change',
-        visuallyHiddenText: `participation for ${courseParticipation.courseName}`,
+        visuallyHiddenText: 'participation',
       })
     }
 
@@ -134,7 +134,7 @@ export default class CourseParticipationUtils {
           referralId,
         }),
         text: 'Remove',
-        visuallyHiddenText: `participation for ${courseParticipation.courseName}`,
+        visuallyHiddenText: 'participation',
       })
     }
 
