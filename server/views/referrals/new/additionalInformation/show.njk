@@ -3,6 +3,7 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% extends "../../../partials/layout.njk" %}
 
@@ -26,16 +27,25 @@
           errorList: errors.list
         }) }}
       {% endif %}
+    </div>
+  </div>
 
-      {% set hintHtml %}
-      <p class="govuk-body">You can provide any additional information you feel will help the programme team in their assessment. This might include:</p>
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body" data-testid="instructions-paragraph">You must provide additional information you feel will help the programme team in their assessment. This might include:</p>
+
       <ul class="govuk-list govuk-list--bullet">
         <li>The reason for the referral</li>
         <li>The person's motivation to complete a programme</li>
-        <li>Their offence history and behaviour</li>
         <li>Information to support an override</li>
       </ul>
-      {% endset %}
+
+      {{ govukWarningText({
+        text: "This service will provide the relevant sections from OASys that the programme team needs to assess this referral. The programme team may also need to access the full OASys Layer 3.",
+        iconFallbackText: "Warning"
+      }) }}
 
       <form action="{{ referPaths.new.additionalInformation.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
@@ -44,12 +54,8 @@
           name: "additionalInformation",
           id: "additionalInformation",
           label: {
-            text: pageHeading,
-            classes: "govuk-label--l",
-            isPageHeading: true
-          },
-          hint: {
-            html: hintHtml
+            text: "Provide additional information",
+            classes: "govuk-!-font-weight-bold"
           },
           value: referral.additionalInformation,
           attributes: {

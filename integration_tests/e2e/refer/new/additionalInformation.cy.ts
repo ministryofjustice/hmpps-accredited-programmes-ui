@@ -51,6 +51,9 @@ context('Additional information', () => {
     additionalInformationPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
     additionalInformationPage.shouldContainInstructions()
     additionalInformationPage.shouldContainAdditionalInformationTextArea()
+    additionalInformationPage.shouldContainWarningText(
+      'This service will provide the relevant sections from OASys that the programme team needs to assess this referral. The programme team may also need to access the full OASys Layer 3.',
+    )
     additionalInformationPage.shouldContainSaveAndContinueButton()
   })
 
