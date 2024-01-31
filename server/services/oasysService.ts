@@ -12,9 +12,9 @@ import type {
   Psychiatric,
   Referral,
   Relationships,
-  RisksAndAlerts,
+  Risks,
   RoshAnalysis,
-} from '@accredited-programmes/models'
+} from '@accredited-programmes/api'
 
 export default class OasysService {
   constructor(
@@ -206,18 +206,15 @@ export default class OasysService {
     }
   }
 
-  async getRisksAndAlerts(
-    username: Express.User['username'],
-    prisonNumber: Referral['prisonNumber'],
-  ): Promise<RisksAndAlerts | null> {
+  async getRisks(username: Express.User['username'], prisonNumber: Referral['prisonNumber']): Promise<Risks | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
-      const risksAndAlerts = await oasysClient.findRisksAndAlerts(prisonNumber)
+      const risks = await oasysClient.findRisks(prisonNumber)
 
-      return risksAndAlerts
+      return risks
     } catch (error) {
       const knownError = error as ResponseError
 
@@ -225,7 +222,7 @@ export default class OasysService {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching risks and alerts for prison number ${prisonNumber}.`)
+      throw createError(knownError.status || 500, `Error fetching risks for prison number ${prisonNumber}.`)
     }
   }
 

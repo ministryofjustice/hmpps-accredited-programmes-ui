@@ -1,7 +1,9 @@
 import { findPaths } from '../paths'
-import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
+import type { Course, CourseOffering } from '@accredited-programmes/api'
 import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
+  Organisation,
+  OrganisationAddress,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
 } from '@accredited-programmes/ui'

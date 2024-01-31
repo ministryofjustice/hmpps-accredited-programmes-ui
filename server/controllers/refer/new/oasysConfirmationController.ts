@@ -3,7 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { authPaths, referPaths } from '../../../paths'
 import type { PersonService, ReferralService } from '../../../services'
 import { FormUtils, TypeUtils } from '../../../utils'
-import type { ReferralUpdate } from '@accredited-programmes/models'
+import type { ReferralUpdate } from '@accredited-programmes/api'
 
 export default class NewReferralsOasysConfirmationController {
   constructor(

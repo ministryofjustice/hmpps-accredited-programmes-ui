@@ -2,8 +2,8 @@ import { referPaths } from '../../../../server/paths'
 import { CourseUtils, NewReferralUtils } from '../../../../server/utils'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
-import type { Course, CourseOffering, Organisation, Referral } from '@accredited-programmes/models'
-import type { CoursePresenter } from '@accredited-programmes/ui'
+import type { Course, CourseOffering, Referral } from '@accredited-programmes/api'
+import type { CoursePresenter, Organisation } from '@accredited-programmes/ui'
 
 export default class NewReferralTaskListPage extends Page {
   course: CoursePresenter

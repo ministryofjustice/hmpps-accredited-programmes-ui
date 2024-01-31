@@ -7,11 +7,11 @@ import NewReferralsController from './referralsController'
 import { authPaths, referPaths } from '../../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
-  courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
   organisationFactory,
   personFactory,
+  randomAudience,
   referralFactory,
 } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
@@ -298,7 +298,7 @@ describe('NewReferralsController', () => {
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
       const coursePresenter = createMock<CoursePresenter>({
-        audience: courseAudienceFactory.build(),
+        audience: randomAudience(),
         nameAndAlternateName: `${course.name} (${course.alternateName})`,
       })
       courseService.getCourse.mockResolvedValue(course)

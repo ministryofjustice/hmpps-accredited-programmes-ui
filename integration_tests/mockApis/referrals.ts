@@ -2,7 +2,7 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Paginated, Referral, ReferralSummary } from '@accredited-programmes/models'
+import type { PaginatedReferralSummary, Referral, ReferralSummary } from '@accredited-programmes/api'
 import type { ReferralStatusGroup } from '@accredited-programmes/ui'
 
 interface ReferralAndScenarioOptions {
@@ -17,7 +17,7 @@ type QueryParameters = Record<string, { equalTo: string }>
 const referralSummariesMetadata = (stubArgs: {
   queryParameters?: QueryParameters
   totalElements?: number
-  totalPages?: Paginated<ReferralSummary>['totalPages']
+  totalPages?: PaginatedReferralSummary['totalPages']
 }): { pageIsEmpty: boolean; pageNumber: number; pageSize: number; totalElements: number; totalPages: number } => {
   const pageNumber = Number(stubArgs.queryParameters?.page?.equalTo || 0)
   const pageSize = 15
@@ -50,7 +50,7 @@ export default {
     referralSummaries: Array<ReferralSummary>
     queryParameters?: QueryParameters
     totalElements?: number
-    totalPages?: Paginated<ReferralSummary>['totalPages']
+    totalPages?: PaginatedReferralSummary['totalPages']
   }) => {
     const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralSummariesMetadata(args)
 
@@ -91,7 +91,7 @@ export default {
     referralSummaries: Array<ReferralSummary>
     queryParameters?: QueryParameters
     totalElements?: number
-    totalPages?: Paginated<ReferralSummary>['totalPages']
+    totalPages?: PaginatedReferralSummary['totalPages']
   }): SuperAgentRequest => {
     const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralSummariesMetadata(args)
 

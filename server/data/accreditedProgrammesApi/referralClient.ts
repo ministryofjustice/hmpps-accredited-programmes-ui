@@ -3,13 +3,12 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
-  CreatedReferralResponse,
-  Paginated,
+  PaginatedReferralSummary,
   Referral,
+  ReferralCreated,
   ReferralStatus,
-  ReferralSummary,
   ReferralUpdate,
-} from '@accredited-programmes/models'
+} from '@accredited-programmes/api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {
@@ -22,11 +21,11 @@ export default class ReferralClient {
   async create(
     courseOfferingId: Referral['offeringId'],
     prisonNumber: Referral['prisonNumber'],
-  ): Promise<CreatedReferralResponse> {
+  ): Promise<ReferralCreated> {
     return (await this.restClient.post({
       data: { offeringId: courseOfferingId, prisonNumber },
       path: apiPaths.referrals.create({}),
-    })) as CreatedReferralResponse
+    })) as ReferralCreated
   }
 
   async find(referralId: Referral['id']): Promise<Referral> {
@@ -35,7 +34,7 @@ export default class ReferralClient {
     })) as Referral
   }
 
-  async findMyReferralSummaries(query?: { page?: string; status?: string }): Promise<Paginated<ReferralSummary>> {
+  async findMyReferralSummaries(query?: { page?: string; status?: string }): Promise<PaginatedReferralSummary> {
     return (await this.restClient.get({
       path: apiPaths.referrals.myDashboard({}),
       query: {
@@ -43,13 +42,13 @@ export default class ReferralClient {
         ...(query?.status && { status: query.status }),
         size: '15',
       },
-    })) as Paginated<ReferralSummary>
+    })) as PaginatedReferralSummary
   }
 
   async findReferralSummaries(
     organisationId: string,
     query?: { audience?: string; courseName?: string; page?: string; status?: string },
-  ): Promise<Paginated<ReferralSummary>> {
+  ): Promise<PaginatedReferralSummary> {
     return (await this.restClient.get({
       path: apiPaths.referrals.dashboard({ organisationId }),
       query: {
@@ -59,7 +58,7 @@ export default class ReferralClient {
         ...(query?.status && { status: query.status }),
         size: '15',
       },
-    })) as Paginated<ReferralSummary>
+    })) as PaginatedReferralSummary
   }
 
   async submit(referralId: Referral['id']): Promise<void> {

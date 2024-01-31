@@ -2,11 +2,12 @@ import type { Request } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
-import type { Organisation, Referral } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes/api'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
   MojFrontendNavigationItem,
+  Organisation,
 } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 

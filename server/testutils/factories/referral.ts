@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
-import type { Referral, ReferralStatus } from '@accredited-programmes/models'
+import type { Referral, ReferralStatus } from '@accredited-programmes/api'
 
 class ReferralFactory extends Factory<Referral> {
   started() {

@@ -4,7 +4,7 @@ import { courseFactory, courseOfferingFactory, prisonFactory } from '../../serve
 import { OrganisationUtils } from '../../server/utils'
 import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
 import Page from '../pages/page'
-import type { CourseOffering } from '@accredited-programmes/models'
+import type { CourseOffering } from '@accredited-programmes/api'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 context('Find', () => {
@@ -65,7 +65,7 @@ context('Find', () => {
     describe('Viewing a single offering', () => {
       it('shows a single offering with no secondary email address', () => {
         const courseOffering = courseOfferingFactory.build({
-          secondaryContactEmail: null,
+          secondaryContactEmail: undefined,
         })
         cy.task('stubOffering', { courseOffering })
         cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })

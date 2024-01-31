@@ -1,7 +1,6 @@
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
-import type { Person } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRowWithKeyAndValue, Person } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 import type { Prisoner } from '@prisoner-search'
 

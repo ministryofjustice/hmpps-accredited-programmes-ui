@@ -12,9 +12,9 @@ import type {
   Psychiatric,
   Referral,
   Relationships,
-  RisksAndAlerts,
+  Risks,
   RoshAnalysis,
-} from '@accredited-programmes/models'
+} from '@accredited-programmes/api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class OasysClient {
@@ -72,10 +72,10 @@ export default class OasysClient {
     })) as Relationships
   }
 
-  async findRisksAndAlerts(prisonNumber: Referral['prisonNumber']): Promise<RisksAndAlerts> {
+  async findRisks(prisonNumber: Referral['prisonNumber']): Promise<Risks> {
     return (await this.restClient.get({
-      path: apiPaths.oasys.risksAndAlerts({ prisonNumber }),
-    })) as RisksAndAlerts
+      path: apiPaths.oasys.risks({ prisonNumber }),
+    })) as Risks
   }
 
   async findRoshAnalysis(prisonNumber: Referral['prisonNumber']): Promise<RoshAnalysis> {

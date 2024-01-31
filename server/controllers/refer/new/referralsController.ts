@@ -4,7 +4,7 @@ import createError from 'http-errors'
 import { authPaths, referPaths } from '../../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
-import type { CreatedReferralResponse } from '@accredited-programmes/models'
+import type { ReferralCreated } from '@accredited-programmes/api'
 
 export default class NewReferralsController {
   constructor(
@@ -109,7 +109,7 @@ export default class NewReferralsController {
         throw createError(400, 'Course offering is not referable.')
       }
 
-      const createdReferralResponse: CreatedReferralResponse = await this.referralService.createReferral(
+      const createdReferralResponse: ReferralCreated = await this.referralService.createReferral(
         username,
         courseOfferingId,
         prisonNumber,

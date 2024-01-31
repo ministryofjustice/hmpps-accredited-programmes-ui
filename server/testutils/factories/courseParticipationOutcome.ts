@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { CourseParticipationOutcome } from '@accredited-programmes/models'
+import type { CourseParticipationOutcome } from '@accredited-programmes/api'
 
 const randomValidYear = (): number => {
   const currentYear = new Date().getFullYear()

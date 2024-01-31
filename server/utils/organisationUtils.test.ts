@@ -8,8 +8,8 @@ import {
   organisationFactory,
   prisonFactory,
 } from '../testutils/factories'
-import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
-import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
+import type { Course, CourseOffering } from '@accredited-programmes/api'
+import type { Organisation, OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('OrganisationUtils', () => {
   describe('organisationFromPrison', () => {
@@ -198,7 +198,7 @@ describe('OrganisationUtils', () => {
       it('does not include a secondary email address field', () => {
         const offeringWithNoSecondaryContactEmail = courseOfferingFactory.build({
           contactEmail: 'nobody-hmp-what@digital.justice.gov.uk',
-          secondaryContactEmail: null,
+          secondaryContactEmail: undefined,
         })
 
         expect(

@@ -3,7 +3,7 @@ import type { ResponseError } from 'superagent'
 
 import type { PrisonRegisterApiClient, RestClientBuilder } from '../data'
 import { OrganisationUtils, TypeUtils } from '../utils'
-import type { Organisation } from '@accredited-programmes/models'
+import type { Organisation } from '@accredited-programmes/ui'
 import type { Prison } from '@prison-register-api'
 
 export default class OrganisationService {

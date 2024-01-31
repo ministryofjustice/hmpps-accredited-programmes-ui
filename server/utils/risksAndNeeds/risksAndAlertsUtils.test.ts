@@ -1,5 +1,5 @@
 import RisksAndAlertsUtils from './risksAndAlertsUtils'
-import type { RisksAndAlerts } from '@accredited-programmes/models'
+import type { Risks } from '@accredited-programmes/api'
 
 describe('RisksAndAlertsUtils', () => {
   describe('levelOrUnknown', () => {
@@ -97,7 +97,7 @@ describe('RisksAndAlertsUtils', () => {
   })
 
   describe('roshTable', () => {
-    const risksAndAlerts: RisksAndAlerts = {
+    const risksAndAlerts: Risks = {
       riskChildrenCommunity: 'LOW',
       riskChildrenCustody: 'LOW',
       riskKnownAdultCommunity: 'MEDIUM',

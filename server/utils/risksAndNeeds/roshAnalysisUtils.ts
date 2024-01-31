@@ -1,5 +1,5 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { RoshAnalysis } from '@accredited-programmes/models'
+import type { RoshAnalysis } from '@accredited-programmes/api'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 
 export default class RoshAnalysisUtils {

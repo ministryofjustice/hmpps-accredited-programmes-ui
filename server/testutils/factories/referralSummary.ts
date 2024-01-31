@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
-import courseAudienceFactory from './courseAudience'
+import { randomAudience } from './course'
 import FactoryHelpers from './factoryHelpers'
 import { randomStatus } from './referral'
 import { StringUtils } from '../../utils'
-import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
+import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/api'
 
 interface ReferralSummaryTransientParams {
   availableStatuses: Array<ReferralStatus>
@@ -17,6 +17,8 @@ class ReferralSummaryFactory extends Factory<ReferralSummary, ReferralSummaryTra
     return this.transient({ requireOptionalFields: true })
   }
 }
+
+export type { ReferralSummaryTransientParams }
 
 export default ReferralSummaryFactory.define(({ params, transientParams }) => {
   const { availableStatuses, requireOptionalFields } = transientParams
@@ -34,7 +36,7 @@ export default ReferralSummaryFactory.define(({ params, transientParams }) => {
     ? faker.datatype.boolean()
     : FactoryHelpers.optionalArrayElement(faker.datatype.boolean())
 
-  let { prisonName, sentence, tasksCompleted } = params
+  let { prisonName, sentence } = params
 
   if (requireOptionalFields || !Object.prototype.hasOwnProperty.call(params, 'sentence')) {
     sentence ||= {
@@ -50,10 +52,6 @@ export default ReferralSummaryFactory.define(({ params, transientParams }) => {
     prisonName ||= `${faker.location.county()} (HMP)`
   }
 
-  if (requireOptionalFields || !Object.prototype.hasOwnProperty.call(params, 'tasksCompleted')) {
-    tasksCompleted ||= faker.number.int({ max: 4, min: 1 })
-  }
-
   let earliestReleaseDate: ReferralSummary['earliestReleaseDate']
   if (sentence) {
     earliestReleaseDate = sentence.indeterminateSentence
@@ -65,7 +63,7 @@ export default ReferralSummaryFactory.define(({ params, transientParams }) => {
 
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
-    audience: courseAudienceFactory.build(),
+    audience: randomAudience(),
     courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
     earliestReleaseDate,
     organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),
@@ -79,6 +77,5 @@ export default ReferralSummaryFactory.define(({ params, transientParams }) => {
     sentence,
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
-    tasksCompleted,
   }
 })

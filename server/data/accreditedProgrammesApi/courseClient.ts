@@ -2,13 +2,8 @@ import type { ApiConfig } from '../../config'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
-import type {
-  Course,
-  CourseOffering,
-  CourseParticipation,
-  CourseParticipationUpdate,
-  Person,
-} from '@accredited-programmes/models'
+import type { Course, CourseOffering, CourseParticipation, CourseParticipationUpdate } from '@accredited-programmes/api'
+import type { Person } from '@accredited-programmes/ui'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class CourseClient {

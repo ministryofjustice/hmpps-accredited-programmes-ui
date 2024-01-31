@@ -1,6 +1,6 @@
 import { AttitudesUtils, CourseUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Attitude, Course } from '@accredited-programmes/models'
+import type { Attitude, Course } from '@accredited-programmes/api'
 
 export default class AttitudesPage extends Page {
   attitude: Attitude

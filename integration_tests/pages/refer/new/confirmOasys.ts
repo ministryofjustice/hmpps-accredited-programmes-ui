@@ -1,5 +1,6 @@
 import Page from '../../page'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes/api'
+import type { Person } from '@accredited-programmes/ui'
 
 export default class NewReferralConfirmOasysPage extends Page {
   person: Person

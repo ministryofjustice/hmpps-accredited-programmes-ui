@@ -2,13 +2,13 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
+import type { RiskLevel, Risks } from '@accredited-programmes/api'
 
 const alert = (): { description: string } => ({ description: faker.lorem.sentence() })
 const riskLevel = () => faker.helpers.arrayElement<RiskLevel>(['LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'])
 const percentage = () => faker.number.int({ max: 100, min: 0 })
 
-class RiskAndAlertsFactory extends Factory<RisksAndAlerts> {
+class RisksFactory extends Factory<Risks> {
   withAllOptionalFields() {
     return this.params({
       alerts: Array(faker.helpers.rangeToNumber({ max: 10, min: 0 }))
@@ -40,8 +40,8 @@ class RiskAndAlertsFactory extends Factory<RisksAndAlerts> {
   }
 }
 
-export default RiskAndAlertsFactory.define(
-  (): RisksAndAlerts => ({
+export default RisksFactory.define(
+  (): Risks => ({
     alerts: FactoryHelpers.optionalArrayElement([
       Array(faker.helpers.rangeToNumber({ max: 10, min: 0 }))
         .fill(undefined)

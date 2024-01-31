@@ -6,7 +6,7 @@ import CoursesController from './coursesController'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
-import type { Course, CourseOffering } from '@accredited-programmes/models'
+import type { Course, CourseOffering } from '@accredited-programmes/api'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 describe('CoursesController', () => {

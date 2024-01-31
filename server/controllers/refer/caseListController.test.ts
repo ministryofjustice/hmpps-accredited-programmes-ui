@@ -9,7 +9,7 @@ import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { referralSummaryFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils } from '../../utils'
-import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
+import type { PaginatedReferralSummary, ReferralSummary } from '@accredited-programmes/api'
 import type {
   CaseListColumnHeader,
   GovukFrontendPaginationWithItems,
@@ -54,7 +54,7 @@ describe('ReferCaseListController', () => {
   })
 
   describe('show', () => {
-    let paginatedReferralSummaries: Paginated<ReferralSummary>
+    let paginatedReferralSummaries: PaginatedReferralSummary & { content: Array<ReferralSummary> }
     const tableRows = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
     const pagination = 'bbb' as unknown as jest.Mocked<GovukFrontendPaginationWithItems>
     const subNavigationItems = 'ccc' as unknown as jest.Mocked<Array<MojFrontendNavigationItem>>
@@ -115,8 +115,8 @@ describe('ReferCaseListController', () => {
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
-          paginatedReferralSummaries.content,
           columnsToInclude,
+          paginatedReferralSummaries.content,
           referPaths,
         )
         expect(referralService.getNumberOfTasksCompleted).not.toHaveBeenCalled()
@@ -179,8 +179,8 @@ describe('ReferCaseListController', () => {
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
-          expectedPaginatedReferralSummariesContent,
           columnsToInclude,
+          expectedPaginatedReferralSummariesContent,
           referPaths,
         )
         expect(referralService.getNumberOfTasksCompleted).toHaveBeenCalledTimes(

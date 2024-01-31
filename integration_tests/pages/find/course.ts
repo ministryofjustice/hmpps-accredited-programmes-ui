@@ -1,7 +1,7 @@
 import { findPaths } from '../../../server/paths'
 import { CourseUtils } from '../../../server/utils'
 import Page from '../page'
-import type { Course } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/api'
 import type { CoursePresenter, OrganisationWithOfferingId } from '@accredited-programmes/ui'
 
 export default class CoursePage extends Page {

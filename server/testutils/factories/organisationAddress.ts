@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
-import type { OrganisationAddress } from '@accredited-programmes/models'
+import type { OrganisationAddress } from '@accredited-programmes/ui'
 
 export default Factory.define<OrganisationAddress>(() => ({
   addressLine1: faker.location.streetAddress(),

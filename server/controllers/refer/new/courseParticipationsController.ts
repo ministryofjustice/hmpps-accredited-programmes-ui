@@ -3,7 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { referPaths } from '../../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../../services'
 import { CourseParticipationUtils, CourseUtils, FormUtils, TypeUtils } from '../../../utils'
-import type { CourseParticipation, ReferralUpdate } from '@accredited-programmes/models'
+import type { CourseParticipation, ReferralUpdate } from '@accredited-programmes/api'
 
 export default class NewReferralsCourseParticipationsController {
   constructor(

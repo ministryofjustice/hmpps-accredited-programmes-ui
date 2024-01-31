@@ -1,10 +1,9 @@
 import attitudeFactory from './attitude'
 import behaviourFactory from './behaviour'
 import caseloadFactory from './caseload'
-import courseFactory from './course'
-import courseAudienceFactory from './courseAudience'
+import courseFactory, { randomAudience } from './course'
 import courseOfferingFactory from './courseOffering'
-import courseParticipationFactory from './courseParticipation'
+import courseParticipationFactory, { randomCourseName } from './courseParticipation'
 import courseParticipationOutcomeFactory from './courseParticipationOutcome'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import healthFactory from './health'
@@ -23,10 +22,11 @@ import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
 import prisonerFactory from './prisoner'
 import psychiatricFactory from './psychiatric'
-import referralFactory from './referral'
+import referralFactory, { randomStatus } from './referral'
 import referralSummaryFactory from './referralSummary'
+import referralSummaryWithTasksCompletedFactory from './referralSummaryWithTasksCompletedFactory'
 import relationshipsFactory from './relationships'
-import risksAndAlertsFactory from './risksAndAlerts'
+import risksFactory from './risks'
 import roshAnalysisFactory from './roshAnalysis'
 import userFactory from './user'
 
@@ -34,7 +34,6 @@ export {
   attitudeFactory,
   behaviourFactory,
   caseloadFactory,
-  courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
@@ -56,10 +55,14 @@ export {
   prisonFactory,
   prisonerFactory,
   psychiatricFactory,
+  randomAudience,
+  randomCourseName,
+  randomStatus,
   referralFactory,
   referralSummaryFactory,
+  referralSummaryWithTasksCompletedFactory,
   relationshipsFactory,
-  risksAndAlertsFactory,
+  risksFactory,
   roshAnalysisFactory,
   userFactory,
 }

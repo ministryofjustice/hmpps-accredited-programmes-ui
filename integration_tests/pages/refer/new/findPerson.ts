@@ -1,6 +1,6 @@
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
-import type { Person } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/ui'
 
 export default class NewReferralFindPersonPage extends Page {
   constructor() {

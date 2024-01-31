@@ -1,5 +1,5 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { Lifestyle } from '@accredited-programmes/models'
+import type { Lifestyle } from '@accredited-programmes/api'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 
 export default class LifestyleAndAssociatesUtils {

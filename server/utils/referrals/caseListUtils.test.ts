@@ -1,8 +1,12 @@
 import CaseListUtils from './caseListUtils'
 import { assessPaths, referPaths } from '../../paths'
-import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
+import {
+  courseFactory,
+  referralSummaryFactory,
+  referralSummaryWithTasksCompletedFactory,
+} from '../../testutils/factories'
 import FormUtils from '../formUtils'
-import type { ReferralStatus } from '@accredited-programmes/models'
+import type { ReferralStatus } from '@accredited-programmes/api'
 import type { CaseListColumnHeader } from '@accredited-programmes/ui'
 
 jest.mock('../formUtils')
@@ -161,7 +165,7 @@ describe('CaseListUtils', () => {
   })
 
   describe('tableRowContent', () => {
-    const referralSummary = referralSummaryFactory.build({
+    const referralSummary = referralSummaryWithTasksCompletedFactory.build({
       audience: 'General offence',
       courseName: 'Test Course',
       earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
@@ -398,7 +402,7 @@ describe('CaseListUtils', () => {
 
   describe('tableRows', () => {
     const referralSummaries = [
-      referralSummaryFactory.build({
+      referralSummaryWithTasksCompletedFactory.build({
         audience: 'General offence',
         courseName: 'Test Course 1',
         earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
@@ -427,7 +431,6 @@ describe('CaseListUtils', () => {
         sentence: {},
         status: 'referral_submitted',
         submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
-        tasksCompleted: undefined,
       }),
     ]
 
@@ -447,7 +450,7 @@ describe('CaseListUtils', () => {
         'Tariff end date',
       ]
 
-      expect(CaseListUtils.tableRows(referralSummaries, columnsToInclude)).toEqual([
+      expect(CaseListUtils.tableRows(columnsToInclude, referralSummaries)).toEqual([
         [
           {
             attributes: { 'data-sort-value': '2023-01-01T00:00:00.000Z' },
@@ -535,11 +538,10 @@ describe('CaseListUtils', () => {
 
     it('only includes data corresponding to the given column headers', () => {
       expect(
-        CaseListUtils.tableRows(referralSummaries, [
-          'Conditional release date',
-          'Date referred',
-          'Earliest release date',
-        ]),
+        CaseListUtils.tableRows(
+          ['Conditional release date', 'Date referred', 'Earliest release date'],
+          referralSummaries,
+        ),
       ).toEqual([
         [
           {
@@ -575,7 +577,7 @@ describe('CaseListUtils', () => {
     describe('when referPaths is passed in as the paths argument', () => {
       it('passes the paths to `tableRowContent` for that row', () => {
         expect(
-          CaseListUtils.tableRows(referralSummaries, ['Name / Prison number', 'Date referred'], referPaths),
+          CaseListUtils.tableRows(['Name / Prison number', 'Date referred'], referralSummaries, referPaths),
         ).toEqual([
           [
             {
@@ -599,6 +601,10 @@ describe('CaseListUtils', () => {
           ],
         ])
       })
+    })
+
+    describe('when there are no referral summaries', () => {
+      expect(CaseListUtils.tableRows(['Conditional release date'], undefined)).toEqual([])
     })
   })
 

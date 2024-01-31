@@ -9,7 +9,7 @@ import type {
   CourseParticipationSetting,
   CourseParticipationUpdate,
   Referral,
-} from '@accredited-programmes/models'
+} from '@accredited-programmes/api'
 import type {
   CourseParticipationPresenter,
   GovukFrontendSummaryListCardActionsWithItems,

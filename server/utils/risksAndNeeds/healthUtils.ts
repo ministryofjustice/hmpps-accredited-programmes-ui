@@ -1,5 +1,5 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { Health } from '@accredited-programmes/models'
+import type { Health } from '@accredited-programmes/api'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 
 export default class HealthUtils {

@@ -266,8 +266,8 @@ export interface components {
       pageSize?: number;
       /** Format: int32 */
       pageNumber?: number;
-      unpaged?: boolean;
       paged?: boolean;
+      unpaged?: boolean;
     };
     Prisoner: {
       /**

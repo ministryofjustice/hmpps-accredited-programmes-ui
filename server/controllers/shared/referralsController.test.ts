@@ -26,10 +26,11 @@ import {
   ShowReferralUtils,
 } from '../../utils'
 import { releaseDateFields } from '../../utils/personUtils'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes/api'
 import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
+  Person,
   ReferralSharedPageData,
 } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'

@@ -20,7 +20,7 @@ import {
   NewReferralSelectProgrammePage,
   NewReferralTaskListPage,
 } from '../../../pages/refer'
-import type { CourseParticipation } from '@accredited-programmes/models'
+import type { CourseParticipation } from '@accredited-programmes/api'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 
 context('Programme history', () => {

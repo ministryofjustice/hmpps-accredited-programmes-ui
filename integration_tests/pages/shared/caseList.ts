@@ -2,7 +2,7 @@ import { assessPaths, referPaths } from '../../../server/paths'
 import { CaseListUtils, CourseUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
-import type { Course, ReferralSummary } from '@accredited-programmes/models'
+import type { Course, ReferralSummary } from '@accredited-programmes/api'
 import type { CaseListColumnHeader, ReferralStatusGroup } from '@accredited-programmes/ui'
 
 export default class CaseListPage extends Page {

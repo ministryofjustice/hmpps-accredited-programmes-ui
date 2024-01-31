@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
-import type { CourseOffering } from '@accredited-programmes/models'
+import type { CourseOffering } from '@accredited-programmes/api'
 
 export default class CoursesController {
   constructor(

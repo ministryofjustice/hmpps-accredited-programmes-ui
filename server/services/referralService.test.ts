@@ -5,7 +5,7 @@ import ReferralService from './referralService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
 import { referralFactory, referralSummaryFactory } from '../testutils/factories'
-import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
+import type { ReferralCreated, ReferralStatus, ReferralUpdate } from '@accredited-programmes/api'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
@@ -35,7 +35,7 @@ describe('ReferralService', () => {
   describe('createReferral', () => {
     it('returns a created referral', async () => {
       const referral = referralFactory.started().build()
-      const createdReferralResponse: CreatedReferralResponse = { referralId: referral.id }
+      const createdReferralResponse: ReferralCreated = { referralId: referral.id }
 
       when(referralClient.create)
         .calledWith(referral.offeringId, referral.prisonNumber)

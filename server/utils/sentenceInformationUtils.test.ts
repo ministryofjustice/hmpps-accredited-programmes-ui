@@ -1,5 +1,5 @@
 import SentenceInformationUtils from './sentenceInformationUtils'
-import type { Person } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/ui'
 import type { OffenderSentenceAndOffences } from '@prison-api'
 
 describe('SentenceInformationUtils', () => {

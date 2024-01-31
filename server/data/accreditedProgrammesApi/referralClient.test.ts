@@ -7,7 +7,7 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import { referralFactory, referralSummaryFactory } from '../../testutils/factories'
 import FactoryHelpers from '../../testutils/factories/factoryHelpers'
-import type { CreatedReferralResponse, Paginated, ReferralSummary, ReferralUpdate } from '@accredited-programmes/models'
+import type { PaginatedReferralSummary, ReferralCreated, ReferralUpdate } from '@accredited-programmes/api'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let referralClient: ReferralClient
@@ -20,7 +20,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('create', () => {
-    const createdReferralResponse: CreatedReferralResponse = { referralId: faker.string.uuid() }
+    const createdReferralResponse: ReferralCreated = { referralId: faker.string.uuid() }
     const prisonNumber = 'A1234AA'
 
     beforeEach(() => {
@@ -83,8 +83,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     // TODO: enable this once Provider tests are refactored
     // see https://github.com/ministryofjustice/hmpps-accredited-programmes-api/pull/223) for details
     describe.skip('without query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: [referralSummaryFactory.build({ status: 'referral_submitted', tasksCompleted: undefined })],
+      const paginatedReferralSummaries: PaginatedReferralSummary = {
+        content: [referralSummaryFactory.build({ status: 'referral_submitted' })],
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
@@ -121,10 +121,10 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     describe('with query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+      const paginatedReferralSummaries: PaginatedReferralSummary = {
         content: FactoryHelpers.buildListWith(
           referralSummaryFactory,
-          { status: 'referral_submitted', tasksCompleted: undefined },
+          { status: 'referral_submitted' },
           { transient: { requireOptionalFields: true } },
           1,
         ),
@@ -172,13 +172,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('findReferralSummaries', () => {
     describe('without query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+      const paginatedReferralSummaries: PaginatedReferralSummary = {
         content: [
-          referralSummaryFactory.withAllOptionalFields().build({
-            earliestReleaseDate: undefined,
-            status: 'referral_submitted',
-            tasksCompleted: undefined,
-          }),
+          referralSummaryFactory
+            .withAllOptionalFields()
+            .build({ earliestReleaseDate: undefined, status: 'referral_submitted' }),
         ],
         pageIsEmpty: false,
         pageNumber: 0,
@@ -216,15 +214,10 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     describe('with query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+      const paginatedReferralSummaries: PaginatedReferralSummary = {
         content: FactoryHelpers.buildListWith(
           referralSummaryFactory,
-          {
-            audience: 'General offence',
-            courseName: 'Super Course',
-            status: 'referral_submitted',
-            tasksCompleted: undefined,
-          },
+          { audience: 'General offence', courseName: 'Super Course', status: 'referral_submitted' },
           { transient: { requireOptionalFields: true } },
           16,
         ),

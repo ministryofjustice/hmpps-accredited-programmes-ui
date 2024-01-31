@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { OffenceDetail } from '@accredited-programmes/models'
+import type { OffenceDetail } from '@accredited-programmes/api'
 
 class OffenceDetailFactory extends Factory<OffenceDetail> {
   withAllOptionalFields() {

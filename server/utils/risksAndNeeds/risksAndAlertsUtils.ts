@@ -1,5 +1,5 @@
 import StringUtils from '../stringUtils'
-import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
+import type { RiskLevel, Risks } from '@accredited-programmes/api'
 import type { OspBox, RiskBox, RiskLevelOrUnknown } from '@accredited-programmes/ui'
 import type { GovukFrontendTable, GovukFrontendTableCell } from '@govuk-frontend'
 
@@ -46,34 +46,34 @@ export default class RisksAndAlertsUtils {
     }
   }
 
-  static roshTable(risksAndAlerts: RisksAndAlerts): GovukFrontendTable {
+  static roshTable(risks: Risks): GovukFrontendTable {
     return {
       classes: 'rosh-table',
       head: [{ text: 'Risk to' }, { text: 'Custody' }, { text: 'Community' }],
       rows: [
         [
           { text: 'Children' },
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskChildrenCustody),
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskChildrenCommunity),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskChildrenCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskChildrenCommunity),
         ],
         [
           { text: 'Public' },
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPublicCustody),
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPublicCommunity),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskPublicCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskPublicCommunity),
         ],
         [
           { text: 'Known adult' },
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskKnownAdultCustody),
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskKnownAdultCommunity),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskKnownAdultCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskKnownAdultCommunity),
         ],
         [
           { text: 'Staff' },
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskStaffCustody),
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskStaffCommunity),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskStaffCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskStaffCommunity),
         ],
         [
           { text: 'Prisoners' },
-          RisksAndAlertsUtils.roshTableCellForLevel(risksAndAlerts.riskPrisonersCustody),
+          RisksAndAlertsUtils.roshTableCellForLevel(risks.riskPrisonersCustody),
           { classes: 'rosh-table__cell', text: 'Not applicable' },
         ],
       ],

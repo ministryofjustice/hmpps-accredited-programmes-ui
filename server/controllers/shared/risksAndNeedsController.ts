@@ -224,57 +224,54 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const risksAndAlerts = await this.oasysService.getRisksAndAlerts(
-        req.user.username,
-        sharedPageData.referral.prisonNumber,
-      )
+      const risks = await this.oasysService.getRisks(req.user.username, sharedPageData.referral.prisonNumber)
 
-      const templateLocals = risksAndAlerts
+      const templateLocals = risks
         ? {
-            alerts: risksAndAlerts.alerts,
-            hasRisksAndAlerts: true,
+            alerts: risks.alerts,
+            hasRisks: true,
             importedFromNomisText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
             importedFromOasysText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             ogrsYear1Box: RisksAndAlertsUtils.riskBox(
               'OGRS Year 1',
-              risksAndAlerts.ogrsRisk,
-              risksAndAlerts.ogrsYear1 ? `${risksAndAlerts.ogrsYear1}%` : undefined,
+              risks.ogrsRisk,
+              risks.ogrsYear1 ? `${risks.ogrsYear1}%` : undefined,
             ),
             ogrsYear2Box: RisksAndAlertsUtils.riskBox(
               'OGRS Year 2',
-              risksAndAlerts.ogrsRisk,
-              risksAndAlerts.ogrsYear2 ? `${risksAndAlerts.ogrsYear2}%` : undefined,
+              risks.ogrsRisk,
+              risks.ogrsYear2 ? `${risks.ogrsYear2}%` : undefined,
             ),
-            ospcBox: RisksAndAlertsUtils.ospBox('OSP/C', risksAndAlerts.ospcScore),
-            ospiBox: RisksAndAlertsUtils.ospBox('OSP/I', risksAndAlerts.ospiScore),
+            ospcBox: RisksAndAlertsUtils.ospBox('OSP/C', risks.ospcScore),
+            ospiBox: RisksAndAlertsUtils.ospBox('OSP/I', risks.ospiScore),
             ovpYear1Box: RisksAndAlertsUtils.riskBox(
               'OVP Year 1',
-              risksAndAlerts.ovpRisk,
-              risksAndAlerts.ovpYear1 ? `${risksAndAlerts.ovpYear1}%` : undefined,
+              risks.ovpRisk,
+              risks.ovpYear1 ? `${risks.ovpYear1}%` : undefined,
             ),
             ovpYear2Box: RisksAndAlertsUtils.riskBox(
               'OVP Year 2',
-              risksAndAlerts.ovpRisk,
-              risksAndAlerts.ovpYear2 ? `${risksAndAlerts.ovpYear2}%` : undefined,
+              risks.ovpRisk,
+              risks.ovpYear2 ? `${risks.ovpYear2}%` : undefined,
             ),
-            roshBox: RisksAndAlertsUtils.riskBox('RoSH', risksAndAlerts.overallRoshLevel),
-            roshTable: RisksAndAlertsUtils.roshTable(risksAndAlerts),
-            rsrBox: RisksAndAlertsUtils.riskBox('RSR', risksAndAlerts.rsrRisk, risksAndAlerts.rsrScore?.toString()),
+            roshBox: RisksAndAlertsUtils.riskBox('RoSH', risks.overallRoshLevel),
+            roshTable: RisksAndAlertsUtils.roshTable(risks),
+            rsrBox: RisksAndAlertsUtils.riskBox('RSR', risks.rsrRisk, risks.rsrScore?.toString()),
             saraOthersBox: RisksAndAlertsUtils.riskBox(
               'SARA',
-              risksAndAlerts.imminentRiskOfViolenceTowardsOthers,
+              risks.imminentRiskOfViolenceTowardsOthers,
               undefined,
               'sara-others',
             ),
             saraPartnerBox: RisksAndAlertsUtils.riskBox(
               'SARA',
-              risksAndAlerts.imminentRiskOfViolenceTowardsPartner,
+              risks.imminentRiskOfViolenceTowardsPartner,
               undefined,
               'sara-partner',
             ),
           }
         : {
-            hasRisksAndAlerts: false,
+            hasRisks: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/risksAndAlerts', { ...sharedPageData, ...templateLocals })

@@ -1,6 +1,6 @@
 import { CourseUtils, LifestyleAndAssociatesUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, Lifestyle } from '@accredited-programmes/models'
+import type { Course, Lifestyle } from '@accredited-programmes/api'
 
 export default class LifestyleAndAssociatesPage extends Page {
   lifestyle: Lifestyle

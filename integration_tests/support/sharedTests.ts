@@ -20,7 +20,7 @@ import {
   psychiatricFactory,
   referralFactory,
   relationshipsFactory,
-  risksAndAlertsFactory,
+  risksFactory,
   roshAnalysisFactory,
   userFactory,
 } from '../../server/testutils/factories'
@@ -45,8 +45,8 @@ import {
   ThinkingAndBehavingPage,
 } from '../pages/shared'
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
-import type { Person, Referral } from '@accredited-programmes/models'
-import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes/api'
+import type { CourseParticipationPresenter, Person } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 import type { PrisonerWithBookingId } from '@prisoner-search'
 
@@ -751,12 +751,12 @@ const sharedTests = {
       relationshipsPage.shouldContainNoRelationshipsSummaryCard()
     },
     showsRisksAndAlertsPageWithData: (role: ApplicationRole): void => {
-      const risksAndAlerts = risksAndAlertsFactory.build()
+      const risks = risksFactory.build()
       sharedTests.referrals.beforeEach(role)
 
-      cy.task('stubRisksAndAlerts', {
+      cy.task('stubRisks', {
         prisonNumber: prisoner.prisonerNumber,
-        risksAndAlerts,
+        risks,
       })
 
       const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
@@ -764,7 +764,7 @@ const sharedTests = {
 
       const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
         course,
-        risksAndAlerts,
+        risks,
       })
       risksAndAlertsPage.shouldHavePersonDetails(person)
       risksAndAlertsPage.shouldContainNavigation(path)
@@ -785,9 +785,9 @@ const sharedTests = {
     showsRisksAndAlertsPageWithoutData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
 
-      cy.task('stubRisksAndAlerts', {
+      cy.task('stubRisks', {
         prisonNumber: prisoner.prisonerNumber,
-        risksAndAlerts: null,
+        risks: null,
       })
 
       const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
@@ -795,7 +795,7 @@ const sharedTests = {
 
       const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
         course,
-        risksAndAlerts: {},
+        risks: {},
       })
       risksAndAlertsPage.shouldHavePersonDetails(person)
       risksAndAlertsPage.shouldContainNavigation(path)

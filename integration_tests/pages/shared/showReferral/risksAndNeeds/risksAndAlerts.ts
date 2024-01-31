@@ -1,20 +1,20 @@
 import { CourseUtils, RisksAndAlertsUtils } from '../../../../../server/utils'
 import Helpers from '../../../../support/helpers'
 import Page from '../../../page'
-import type { Course, RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
+import type { Course, RiskLevel, Risks } from '@accredited-programmes/api'
 import type { RiskBox } from '@accredited-programmes/ui'
 
 export default class RisksAndAlertsPage extends Page {
-  risksAndAlerts: RisksAndAlerts
+  risks: Risks
 
-  constructor(args: { course: Course; risksAndAlerts: RisksAndAlerts }) {
-    const { course, risksAndAlerts } = args
+  constructor(args: { course: Course; risks: Risks }) {
+    const { course, risks } = args
 
     const coursePresenter = CourseUtils.presentCourse(course)
 
     super(`Referral to ${coursePresenter.nameAndAlternateName}`)
 
-    this.risksAndAlerts = risksAndAlerts
+    this.risks = risks
   }
 
   shouldContainNoRisksAndAlertsSummaryCard() {
@@ -33,8 +33,8 @@ export default class RisksAndAlertsPage extends Page {
     cy.get('[data-testid="alerts-box"]').within(() => {
       cy.get('h4').should('have.text', 'Active alerts')
 
-      if (this.risksAndAlerts.alerts?.length) {
-        this.risksAndAlerts.alerts.forEach((alert, alertIndex) => {
+      if (this.risks.alerts?.length) {
+        this.risks.alerts.forEach((alert, alertIndex) => {
           cy.get('li').eq(alertIndex).should('have.text', alert.description)
         })
       } else {
@@ -50,8 +50,8 @@ export default class RisksAndAlertsPage extends Page {
       this.shouldHaveRiskBoxHeading(
         riskBoxElement,
         'OGRS Year 1',
-        this.risksAndAlerts.ogrsRisk,
-        this.risksAndAlerts.ogrsYear1 ? `${this.risksAndAlerts.ogrsYear1}%` : undefined,
+        this.risks.ogrsRisk,
+        this.risks.ogrsYear1 ? `${this.risks.ogrsYear1}%` : undefined,
       )
     })
 
@@ -59,8 +59,8 @@ export default class RisksAndAlertsPage extends Page {
       this.shouldHaveRiskBoxHeading(
         riskBoxElement,
         'OGRS Year 2',
-        this.risksAndAlerts.ogrsRisk,
-        this.risksAndAlerts.ogrsYear2 ? `${this.risksAndAlerts.ogrsYear2}%` : undefined,
+        this.risks.ogrsRisk,
+        this.risks.ogrsYear2 ? `${this.risks.ogrsYear2}%` : undefined,
       )
     })
   }
@@ -72,8 +72,8 @@ export default class RisksAndAlertsPage extends Page {
       this.shouldHaveRiskBoxHeading(
         riskBoxElement,
         'OVP Year 1',
-        this.risksAndAlerts.ovpRisk,
-        this.risksAndAlerts.ovpYear1 ? `${this.risksAndAlerts.ovpYear1}%` : undefined,
+        this.risks.ovpRisk,
+        this.risks.ovpYear1 ? `${this.risks.ovpYear1}%` : undefined,
       )
     })
 
@@ -81,8 +81,8 @@ export default class RisksAndAlertsPage extends Page {
       this.shouldHaveRiskBoxHeading(
         riskBoxElement,
         'OVP Year 2',
-        this.risksAndAlerts.ovpRisk,
-        this.risksAndAlerts.ovpYear2 ? `${this.risksAndAlerts.ovpYear2}%` : undefined,
+        this.risks.ovpRisk,
+        this.risks.ovpYear2 ? `${this.risks.ovpYear2}%` : undefined,
       )
     })
   }
@@ -91,7 +91,7 @@ export default class RisksAndAlertsPage extends Page {
     cy.get('[data-testid="rosh-heading"]').should('have.text', 'Risk of serious harm')
 
     cy.get('[data-testid="rosh-risk-box"]').within(riskBoxElement => {
-      this.shouldHaveRiskBoxHeading(riskBoxElement, 'RoSH', this.risksAndAlerts.overallRoshLevel)
+      this.shouldHaveRiskBoxHeading(riskBoxElement, 'RoSH', this.risks.overallRoshLevel)
 
       cy.get('p').then(descriptionElement => {
         const { actual, expected } = Helpers.parseHtml(descriptionElement, 'Risk of serious harm')
@@ -106,39 +106,39 @@ export default class RisksAndAlertsPage extends Page {
           .eq(0)
           .within(tableRowElement => {
             cy.get('.govuk-table__cell').eq(0).should('have.text', 'Children')
-            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risksAndAlerts.riskChildrenCustody)
-            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risksAndAlerts.riskChildrenCommunity)
+            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risks.riskChildrenCustody)
+            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risks.riskChildrenCommunity)
           })
 
         cy.get('.govuk-table__row')
           .eq(1)
           .within(tableRowElement => {
             cy.get('.govuk-table__cell').eq(0).should('have.text', 'Public')
-            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risksAndAlerts.riskPublicCustody)
-            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risksAndAlerts.riskPublicCommunity)
+            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risks.riskPublicCustody)
+            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risks.riskPublicCommunity)
           })
 
         cy.get('.govuk-table__row')
           .eq(2)
           .within(tableRowElement => {
             cy.get('.govuk-table__cell').eq(0).should('have.text', 'Known adult')
-            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risksAndAlerts.riskKnownAdultCustody)
-            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risksAndAlerts.riskKnownAdultCommunity)
+            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risks.riskKnownAdultCustody)
+            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risks.riskKnownAdultCommunity)
           })
 
         cy.get('.govuk-table__row')
           .eq(3)
           .within(tableRowElement => {
             cy.get('.govuk-table__cell').eq(0).should('have.text', 'Staff')
-            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risksAndAlerts.riskStaffCustody)
-            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risksAndAlerts.riskStaffCommunity)
+            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risks.riskStaffCustody)
+            this.shouldHaveLevelTextInCell(tableRowElement, 2, this.risks.riskStaffCommunity)
           })
 
         cy.get('.govuk-table__row')
           .eq(4)
           .within(tableRowElement => {
             cy.get('.govuk-table__cell').eq(0).should('have.text', 'Prisoners')
-            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risksAndAlerts.riskPrisonersCustody)
+            this.shouldHaveLevelTextInCell(tableRowElement, 1, this.risks.riskPrisonersCustody)
             cy.get('.govuk-table__cell').eq(2).should('have.text', 'Not applicable')
           })
       })
@@ -149,17 +149,12 @@ export default class RisksAndAlertsPage extends Page {
     cy.get('[data-testid="rsr-heading"]').should('have.text', 'Risk of serious recidivism')
 
     cy.get('[data-testid="rsr-risk-box"]').within(riskBoxElement => {
-      this.shouldHaveRiskBoxHeading(
-        riskBoxElement,
-        'RSR',
-        this.risksAndAlerts.rsrRisk,
-        this.risksAndAlerts.rsrScore?.toString(),
-      )
+      this.shouldHaveRiskBoxHeading(riskBoxElement, 'RSR', this.risks.rsrRisk, this.risks.rsrScore?.toString())
 
       cy.get('[data-testid="osp-c-box"]').then(ospcBoxElement => {
         const { actual, expected } = Helpers.parseHtml(
           ospcBoxElement,
-          `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risksAndAlerts.ospcScore))} OSP/C`,
+          `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risks.ospcScore))} OSP/C`,
         )
         expect(actual).to.equal(expected)
       })
@@ -167,7 +162,7 @@ export default class RisksAndAlertsPage extends Page {
       cy.get('[data-testid="osp-i-box"]').then(ospiBoxElement => {
         const { actual, expected } = Helpers.parseHtml(
           ospiBoxElement,
-          `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risksAndAlerts.ospiScore))} OSP/I`,
+          `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risks.ospiScore))} OSP/I`,
         )
         expect(actual).to.equal(expected)
       })
@@ -178,7 +173,7 @@ export default class RisksAndAlertsPage extends Page {
     cy.get('[data-testid="sara-heading"]').should('have.text', 'Spousal assault risk assessment')
 
     cy.get('[data-testid="sara-partner-risk-box"]').within(riskBoxElement => {
-      this.shouldHaveRiskBoxHeading(riskBoxElement, 'SARA', this.risksAndAlerts.imminentRiskOfViolenceTowardsPartner)
+      this.shouldHaveRiskBoxHeading(riskBoxElement, 'SARA', this.risks.imminentRiskOfViolenceTowardsPartner)
 
       cy.get('p').then(descriptionElement => {
         const { actual, expected } = Helpers.parseHtml(descriptionElement, 'Risk of violence towards partner')
@@ -187,7 +182,7 @@ export default class RisksAndAlertsPage extends Page {
     })
 
     cy.get('[data-testid="sara-others-risk-box"]').within(riskBoxElement => {
-      this.shouldHaveRiskBoxHeading(riskBoxElement, 'SARA', this.risksAndAlerts.imminentRiskOfViolenceTowardsOthers)
+      this.shouldHaveRiskBoxHeading(riskBoxElement, 'SARA', this.risks.imminentRiskOfViolenceTowardsOthers)
 
       cy.get('p').then(descriptionElement => {
         const { actual, expected } = Helpers.parseHtml(descriptionElement, 'Risk of violence towards others')

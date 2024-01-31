@@ -10,7 +10,7 @@ import {
   ShowRisksAndNeedsUtils,
 } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes/api'
 import type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -20,6 +20,8 @@ import type {
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
+  Organisation,
+  Person,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListCardTitle, GovukFrontendWarningText } from '@govuk-frontend'
 import type { User } from '@manage-users-api'

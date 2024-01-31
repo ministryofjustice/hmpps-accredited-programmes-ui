@@ -5298,9 +5298,9 @@ export interface components {
        */
       createDateTime: string;
       /** @description Agency travelling from */
-      fromAgency: string;
+      fromAgency?: string;
       /** @description Description of the agency travelling from */
-      fromAgencyDescription: string;
+      fromAgencyDescription?: string;
       /** @description Agency travelling to */
       toAgency: string;
       /** @description Description of the agency travelling to */
@@ -7107,17 +7107,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: string[];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     PageableObject: {
@@ -7348,17 +7348,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["CalculableSentenceEnvelope"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     /** @description The identifiers of a person necessary for a calculation */
@@ -9068,17 +9068,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["OffenceDto"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     /** @description Offender out today details */
@@ -9845,17 +9845,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["Education"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     /** @description A charge linked to a court date */
@@ -10061,17 +10061,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["VisitWithVisitors"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     /** @description Visit details */
@@ -10431,17 +10431,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["BedAssignment"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     /** @description Case Note Count Detail */
@@ -10489,17 +10489,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["Alert"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     PagePrisonerBookingSummary: {
@@ -10507,17 +10507,17 @@ export interface components {
       totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["PrisonerBookingSummary"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"];
-      first?: boolean;
-      last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     /** @description Prisoner Booking Summary */

@@ -1,4 +1,4 @@
-import type { Course, CourseAudience, CoursePrerequisite } from '@accredited-programmes/models'
+import type { Course, CoursePrerequisite } from '@accredited-programmes/api'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -30,8 +30,8 @@ export default class CourseUtils {
     }
   }
 
-  private static audienceTag(audience: CourseAudience): GovukFrontendTagWithText {
-    const audienceColourMap: Record<CourseAudience, TagColour> = {
+  private static audienceTag(audience: Course['audience']): GovukFrontendTagWithText {
+    const audienceColourMap: Record<Course['audience'], TagColour> = {
       'Extremism offence': 'turquoise',
       'Gang offence': 'purple',
       'General offence': 'pink',

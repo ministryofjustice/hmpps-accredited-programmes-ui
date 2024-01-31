@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { Behaviour } from '@accredited-programmes/models'
+import type { Behaviour } from '@accredited-programmes/api'
 
 export default Factory.define<Behaviour>(() => {
   return {

@@ -9,8 +9,7 @@ import type {
   RestClientBuilderWithoutToken,
 } from '../data'
 import { PersonUtils } from '../utils'
-import type { Person } from '@accredited-programmes/models'
-import type { OffenceDetails, OffenceHistory } from '@accredited-programmes/ui'
+import type { OffenceDetails, OffenceHistory, Person } from '@accredited-programmes/ui'
 import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 
 export default class PersonService {

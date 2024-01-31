@@ -20,7 +20,7 @@ import {
   psychiatricFactory,
   referralFactory,
   relationshipsFactory,
-  risksAndAlertsFactory,
+  risksFactory,
   roshAnalysisFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
@@ -40,8 +40,8 @@ import {
   ShowRisksAndNeedsUtils,
   ThinkingAndBehavingUtils,
 } from '../../utils'
-import type { Person, Referral } from '@accredited-programmes/models'
-import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes/api'
+import type { OspBox, Person, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
@@ -488,7 +488,7 @@ describe('RisksAndNeedsController', () => {
 
   describe('risksAndAlerts', () => {
     it('renders the risks and alerts page with the correct response locals', async () => {
-      const risksAndAlerts = risksAndAlertsFactory
+      const risks = risksFactory
         .withAllOptionalFields()
         .build({ imminentRiskOfViolenceTowardsOthers: 'LOW', imminentRiskOfViolenceTowardsPartner: 'HIGH' })
       const ogrsYear1Box: RiskBox = {
@@ -548,31 +548,31 @@ describe('RisksAndNeedsController', () => {
         levelText: 'HIGH',
       }
 
-      when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(risksAndAlerts)
+      when(oasysService.getRisks).calledWith(username, person.prisonNumber).mockResolvedValue(risks)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('OGRS Year 1', risksAndAlerts.ogrsRisk, `${risksAndAlerts.ogrsYear1?.toString()}%`)
+        .calledWith('OGRS Year 1', risks.ogrsRisk, `${risks.ogrsYear1?.toString()}%`)
         .mockReturnValue(ogrsYear1Box)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('OGRS Year 2', risksAndAlerts.ogrsRisk, `${risksAndAlerts.ogrsYear2?.toString()}%`)
+        .calledWith('OGRS Year 2', risks.ogrsRisk, `${risks.ogrsYear2?.toString()}%`)
         .mockReturnValue(ogrsYear2Box)
-      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/C', risksAndAlerts.ospcScore).mockReturnValue(ospcBox)
-      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/I', risksAndAlerts.ospiScore).mockReturnValue(ospiBox)
+      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/C', risks.ospcScore).mockReturnValue(ospcBox)
+      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/I', risks.ospiScore).mockReturnValue(ospiBox)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('OVP Year 1', risksAndAlerts.ovpRisk, `${risksAndAlerts.ovpYear1?.toString()}%`)
+        .calledWith('OVP Year 1', risks.ovpRisk, `${risks.ovpYear1?.toString()}%`)
         .mockReturnValue(ovpYear1Box)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('OVP Year 2', risksAndAlerts.ovpRisk, `${risksAndAlerts.ovpYear2?.toString()}%`)
+        .calledWith('OVP Year 2', risks.ovpRisk, `${risks.ovpYear2?.toString()}%`)
         .mockReturnValue(ovpYear2Box)
-      when(mockRisksAndAlertsUtils.riskBox).calledWith('RoSH', risksAndAlerts.overallRoshLevel).mockReturnValue(roshBox)
+      when(mockRisksAndAlertsUtils.riskBox).calledWith('RoSH', risks.overallRoshLevel).mockReturnValue(roshBox)
       mockRisksAndAlertsUtils.roshTable.mockReturnValue(roshTable)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('RSR', risksAndAlerts.rsrRisk, risksAndAlerts.rsrScore?.toString())
+        .calledWith('RSR', risks.rsrRisk, risks.rsrScore?.toString())
         .mockReturnValue(rsrBox)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsOthers, undefined, 'sara-others')
+        .calledWith('SARA', risks.imminentRiskOfViolenceTowardsOthers, undefined, 'sara-others')
         .mockReturnValue(saraOthersBox)
       when(mockRisksAndAlertsUtils.riskBox)
-        .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsPartner, undefined, 'sara-partner')
+        .calledWith('SARA', risks.imminentRiskOfViolenceTowardsPartner, undefined, 'sara-partner')
         .mockReturnValue(saraPartnerBox)
 
       request.path = referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
@@ -584,8 +584,8 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
         ...sharedPageData,
-        alerts: risksAndAlerts.alerts,
-        hasRisksAndAlerts: true,
+        alerts: risks.alerts,
+        hasRisks: true,
         importedFromNomisText: `Imported from Nomis on ${importedFromDate}.`,
         importedFromOasysText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
@@ -606,7 +606,7 @@ describe('RisksAndNeedsController', () => {
 
     describe('when the OASys service returns `null`', () => {
       it('renders the risks and alerts page with the correct response locals', async () => {
-        when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+        when(oasysService.getRisks).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
         request.path = referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
 
@@ -617,7 +617,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
           ...sharedPageData,
-          hasRisksAndAlerts: false,
+          hasRisks: false,
           navigationItems,
           subNavigationItems,
         })

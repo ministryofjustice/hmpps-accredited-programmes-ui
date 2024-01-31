@@ -1,9 +1,11 @@
 import LearningNeedsUtils from './learningNeedsUtils'
-import type { LearningNeeds } from '@accredited-programmes/models'
+import type { LearningNeeds } from '@accredited-programmes/api'
 
 describe('LearningNeedsUtils', () => {
   const learningNeeds: LearningNeeds = {
     basicSkillsScore: '6',
+    // this one is missing on the API and will be added shortly
+    // @ts-expect-error to fix later
     basicSkillsScoreDescription: 'Extra detail about the learning needs score',
     learningDifficulties: '0 - No problems',
     noFixedAbodeOrTransient: false,
@@ -52,6 +54,8 @@ describe('LearningNeedsUtils', () => {
     describe("when there's no score description", () => {
       it('omits the description', () => {
         expect(
+          // this one is missing on the API and will be added shortly
+          // @ts-expect-error to fix later
           LearningNeedsUtils.scoreSummaryListRows({ ...learningNeeds, basicSkillsScoreDescription: undefined }),
         ).toEqual([
           {

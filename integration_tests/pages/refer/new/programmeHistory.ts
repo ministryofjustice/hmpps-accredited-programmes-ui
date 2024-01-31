@@ -1,7 +1,7 @@
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
-import type { Person, Referral } from '@accredited-programmes/models'
-import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes/api'
+import type { CourseParticipationPresenter, Person } from '@accredited-programmes/ui'
 
 export default class NewReferralProgrammeHistoryPage extends Page {
   participations: Array<CourseParticipationPresenter>

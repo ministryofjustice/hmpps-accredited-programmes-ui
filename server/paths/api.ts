@@ -40,7 +40,7 @@ export default {
     offenceDetails: oasysBasePath.path('offence-details'),
     psychiatric: oasysBasePath.path('psychiatric'),
     relationships: oasysBasePath.path('relationships'),
-    risksAndAlerts: oasysBasePath.path('risks-and-alerts'),
+    risks: oasysBasePath.path('risks'),
     roshAnalysis: oasysBasePath.path('rosh-analysis'),
   },
   offerings: {

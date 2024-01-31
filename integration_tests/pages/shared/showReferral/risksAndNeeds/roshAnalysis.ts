@@ -1,6 +1,6 @@
 import { CourseUtils, RoshAnalysisUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, RoshAnalysis } from '@accredited-programmes/models'
+import type { Course, RoshAnalysis } from '@accredited-programmes/api'
 
 export default class RoshAnalysisPage extends Page {
   roshAnalysis: RoshAnalysis

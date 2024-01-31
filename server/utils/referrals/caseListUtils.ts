@@ -4,8 +4,14 @@ import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
-import type { Course, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
-import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
+import type { Course, ReferralStatus, ReferralSummary } from '@accredited-programmes/api'
+import type {
+  CaseListColumnHeader,
+  MojFrontendNavigationItem,
+  QueryParam,
+  ReferralSummaryWithTasksCompleted,
+  TagColour,
+} from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -104,7 +110,7 @@ export default class CaseListUtils {
   }
 
   static tableRowContent(
-    referralSummary: ReferralSummary,
+    referralSummary: ReferralSummary | ReferralSummaryWithTasksCompleted,
     column: CaseListColumnHeader,
     paths: typeof assessPaths | typeof referPaths = assessPaths,
   ): string {
@@ -132,7 +138,9 @@ export default class CaseListUtils {
       case 'Programme strand':
         return referralSummary.audience
       case 'Progress':
-        return `${referralSummary.tasksCompleted || 0} out of 4 tasks complete`
+        return Object.prototype.hasOwnProperty.call(referralSummary, 'tasksCompleted')
+          ? `${(referralSummary as ReferralSummaryWithTasksCompleted).tasksCompleted} out of 4 tasks complete`
+          : 'N/A'
       case 'Referral status':
         return CaseListUtils.statusTagHtml(referralSummary.status)
       case 'Release date type':
@@ -142,7 +150,7 @@ export default class CaseListUtils {
               CRD: 'Conditional Release Date',
               NPD: 'Non Parole Date',
               PRRD: 'Post Recall Release Date',
-            }[referralSummary.sentence.nonDtoReleaseDateType]
+            }[referralSummary.sentence.nonDtoReleaseDateType] || 'N/A'
           : 'N/A'
       case 'Tariff end date':
         return referralSummary.sentence?.tariffExpiryDate
@@ -154,84 +162,86 @@ export default class CaseListUtils {
   }
 
   static tableRows(
-    referralSummaries: Array<ReferralSummary>,
     columnsToInclude: Array<CaseListColumnHeader>,
+    referralSummaries?: Array<ReferralSummary | ReferralSummaryWithTasksCompleted>,
     paths: typeof assessPaths | typeof referPaths = assessPaths,
   ): Array<GovukFrontendTableRow> {
-    return referralSummaries.map(summary => {
-      const row: GovukFrontendTableRow = []
+    return (
+      referralSummaries?.map(summary => {
+        const row: GovukFrontendTableRow = []
 
-      columnsToInclude.forEach(column => {
-        switch (column) {
-          case 'Conditional release date':
-            row.push({
-              attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
-              text: CaseListUtils.tableRowContent(summary, 'Conditional release date'),
-            })
-            break
-          case 'Date referred':
-            row.push({
-              attributes: { 'data-sort-value': summary.submittedOn },
-              text: CaseListUtils.tableRowContent(summary, 'Date referred'),
-            })
-            break
-          case 'Earliest release date':
-            row.push({
-              attributes: { 'data-sort-value': summary.earliestReleaseDate },
-              text: CaseListUtils.tableRowContent(summary, 'Earliest release date'),
-            })
-            break
-          case 'Name / Prison number':
-            row.push({
-              attributes: { 'data-sort-value': CaseListUtils.formattedPrisonerName(summary.prisonerName) },
-              html: CaseListUtils.tableRowContent(summary, 'Name / Prison number', paths),
-            })
-            break
-          case 'Parole eligibility date':
-            row.push({
-              attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
-              text: CaseListUtils.tableRowContent(summary, 'Parole eligibility date'),
-            })
-            break
-          case 'Programme location':
-            row.push({
-              attributes: { 'data-sort-value': summary.prisonName },
-              text: CaseListUtils.tableRowContent(summary, 'Programme location'),
-            })
-            break
-          case 'Programme name':
-            row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme name') })
-            break
-          case 'Programme strand':
-            row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme strand') })
-            break
-          case 'Progress':
-            row.push({ text: CaseListUtils.tableRowContent(summary, 'Progress') })
-            break
-          case 'Referral status':
-            row.push({
-              attributes: { 'data-sort-value': summary.status },
-              html: CaseListUtils.tableRowContent(summary, 'Referral status'),
-            })
-            break
-          case 'Release date type':
-            row.push({
-              attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
-              text: CaseListUtils.tableRowContent(summary, 'Release date type'),
-            })
-            break
-          case 'Tariff end date':
-            row.push({
-              attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
-              text: CaseListUtils.tableRowContent(summary, 'Tariff end date'),
-            })
-            break
-          default:
-        }
-      })
+        columnsToInclude.forEach(column => {
+          switch (column) {
+            case 'Conditional release date':
+              row.push({
+                attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
+                text: CaseListUtils.tableRowContent(summary, 'Conditional release date'),
+              })
+              break
+            case 'Date referred':
+              row.push({
+                attributes: { 'data-sort-value': summary.submittedOn },
+                text: CaseListUtils.tableRowContent(summary, 'Date referred'),
+              })
+              break
+            case 'Earliest release date':
+              row.push({
+                attributes: { 'data-sort-value': summary.earliestReleaseDate },
+                text: CaseListUtils.tableRowContent(summary, 'Earliest release date'),
+              })
+              break
+            case 'Name / Prison number':
+              row.push({
+                attributes: { 'data-sort-value': CaseListUtils.formattedPrisonerName(summary.prisonerName) },
+                html: CaseListUtils.tableRowContent(summary, 'Name / Prison number', paths),
+              })
+              break
+            case 'Parole eligibility date':
+              row.push({
+                attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
+                text: CaseListUtils.tableRowContent(summary, 'Parole eligibility date'),
+              })
+              break
+            case 'Programme location':
+              row.push({
+                attributes: { 'data-sort-value': summary.prisonName },
+                text: CaseListUtils.tableRowContent(summary, 'Programme location'),
+              })
+              break
+            case 'Programme name':
+              row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme name') })
+              break
+            case 'Programme strand':
+              row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme strand') })
+              break
+            case 'Progress':
+              row.push({ text: CaseListUtils.tableRowContent(summary, 'Progress') })
+              break
+            case 'Referral status':
+              row.push({
+                attributes: { 'data-sort-value': summary.status },
+                html: CaseListUtils.tableRowContent(summary, 'Referral status'),
+              })
+              break
+            case 'Release date type':
+              row.push({
+                attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
+                text: CaseListUtils.tableRowContent(summary, 'Release date type'),
+              })
+              break
+            case 'Tariff end date':
+              row.push({
+                attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
+                text: CaseListUtils.tableRowContent(summary, 'Tariff end date'),
+              })
+              break
+            default:
+          }
+        })
 
-      return row
-    })
+        return row
+      }) || []
+    )
   }
 
   static uiToApiAudienceQueryParam(uiAudienceQueryParam: string | undefined): string | undefined {

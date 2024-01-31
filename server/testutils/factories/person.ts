@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { Person } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/ui'
 
 export default Factory.define<Person>(({ params }) => {
   const county = faker.location.county()

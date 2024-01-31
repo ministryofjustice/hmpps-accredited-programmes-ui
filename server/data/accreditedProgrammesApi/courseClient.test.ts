@@ -10,7 +10,7 @@ import {
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
 } from '../../testutils/factories'
-import type { CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CourseParticipationUpdate } from '@accredited-programmes/api'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -56,8 +56,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('createParticipation', () => {
-    const courseParticipation = courseParticipationFactory.new().build()
-    const { courseName, prisonNumber } = courseParticipation
+    const courseName = 'Super course'
+    const courseParticipation = courseParticipationFactory.new().build({ courseName })
+    const { prisonNumber } = courseParticipation
 
     beforeEach(() => {
       provider.addInteraction({

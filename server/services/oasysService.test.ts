@@ -14,7 +14,7 @@ import {
   offenceDetailFactory,
   psychiatricFactory,
   relationshipsFactory,
-  risksAndAlertsFactory,
+  risksFactory,
   roshAnalysisFactory,
 } from '../testutils/factories'
 
@@ -383,44 +383,44 @@ describe('OasysService', () => {
     })
   })
 
-  describe('getRisksAndAlerts', () => {
-    it('returns the risks and alerts for the given prison number', async () => {
-      const risksAndAlerts = risksAndAlertsFactory.build()
+  describe('getRisks', () => {
+    it('returns the risks for the given prison number', async () => {
+      const risks = risksFactory.build()
 
-      when(oasysClient.findRisksAndAlerts).calledWith(prisonNumber).mockResolvedValue(risksAndAlerts)
+      when(oasysClient.findRisks).calledWith(prisonNumber).mockResolvedValue(risks)
 
-      const result = await service.getRisksAndAlerts(username, prisonNumber)
+      const result = await service.getRisks(username, prisonNumber)
 
-      expect(result).toEqual(risksAndAlerts)
+      expect(result).toEqual(risks)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(oasysClient.findRisksAndAlerts).toHaveBeenCalledWith(prisonNumber)
+      expect(oasysClient.findRisks).toHaveBeenCalledWith(prisonNumber)
     })
 
     describe('when the oasys client throws a 404 error', () => {
       it('returns null', async () => {
-        when(oasysClient.findRisksAndAlerts).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+        when(oasysClient.findRisks).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
 
-        const result = await service.getRisksAndAlerts(username, prisonNumber)
+        const result = await service.getRisks(username, prisonNumber)
         expect(result).toBeNull()
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(oasysClient.findRisksAndAlerts).toHaveBeenCalledWith(prisonNumber)
+        expect(oasysClient.findRisks).toHaveBeenCalledWith(prisonNumber)
       })
     })
 
     describe('when the oasys client throws an unknown error', () => {
       it('throws an error', async () => {
-        when(oasysClient.findRisksAndAlerts).calledWith(prisonNumber).mockRejectedValue(generalClientError)
+        when(oasysClient.findRisks).calledWith(prisonNumber).mockRejectedValue(generalClientError)
 
         const expectedError = createError(500, `Error fetching risks and alerts for prison number ${prisonNumber}.`)
-        await expect(service.getRisksAndAlerts(username, prisonNumber)).rejects.toThrow(expectedError)
+        await expect(service.getRisks(username, prisonNumber)).rejects.toThrow(expectedError)
 
         expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(oasysClient.findRisksAndAlerts).toHaveBeenCalledWith(prisonNumber)
+        expect(oasysClient.findRisks).toHaveBeenCalledWith(prisonNumber)
       })
     })
   })

@@ -4,8 +4,12 @@ import createHttpError from 'http-errors'
 import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { CaseListUtils, PaginationUtils, TypeUtils } from '../../utils'
-import type { ReferralStatus } from '@accredited-programmes/models'
-import type { CaseListColumnHeader, ReferralStatusGroup } from '@accredited-programmes/ui'
+import type { ReferralStatus, ReferralSummary } from '@accredited-programmes/api'
+import type {
+  CaseListColumnHeader,
+  ReferralStatusGroup,
+  ReferralSummaryWithTasksCompleted,
+} from '@accredited-programmes/ui'
 
 export default class ReferCaseListController {
   constructor(private readonly referralService: ReferralService) {}
@@ -43,7 +47,8 @@ export default class ReferCaseListController {
         status: CaseListUtils.uiToApiStatusQueryParam(referralStatuses.join(',')),
       })
 
-      let paginatedReferralSummariesContent = paginatedReferralSummaries.content
+      let paginatedReferralSummariesContent: Array<ReferralSummary | ReferralSummaryWithTasksCompleted> | undefined =
+        paginatedReferralSummaries.content
 
       const pagination = PaginationUtils.pagination(
         req.path,
@@ -57,12 +62,14 @@ export default class ReferCaseListController {
       if (referralStatusGroup === 'draft') {
         finalColumnHeader = 'Progress'
 
-        paginatedReferralSummariesContent = await Promise.all(
-          paginatedReferralSummariesContent.map(async referralSummary => {
-            const tasksCompleted = await this.referralService.getNumberOfTasksCompleted(username, referralSummary.id)
-            return { ...referralSummary, tasksCompleted }
-          }),
-        )
+        if (paginatedReferralSummariesContent) {
+          paginatedReferralSummariesContent = await Promise.all(
+            paginatedReferralSummariesContent.map(async referralSummary => {
+              const tasksCompleted = await this.referralService.getNumberOfTasksCompleted(username, referralSummary.id)
+              return { ...referralSummary, tasksCompleted }
+            }),
+          )
+        }
       }
 
       return res.render('referrals/caseList/refer/show', {
@@ -72,7 +79,6 @@ export default class ReferCaseListController {
         pagination,
         subNavigationItems: CaseListUtils.subNavigationItems(req.path),
         tableRows: CaseListUtils.tableRows(
-          paginatedReferralSummariesContent,
           [
             'Name / Prison number',
             'Date referred',
@@ -82,6 +88,7 @@ export default class ReferCaseListController {
             'Programme name',
             finalColumnHeader,
           ],
+          paginatedReferralSummariesContent,
           referPaths,
         ),
       })

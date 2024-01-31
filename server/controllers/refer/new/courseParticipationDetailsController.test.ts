@@ -13,7 +13,7 @@ import type {
   CourseParticipation,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-} from '@accredited-programmes/models'
+} from '@accredited-programmes/api'
 
 jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/courseParticipationUtils')

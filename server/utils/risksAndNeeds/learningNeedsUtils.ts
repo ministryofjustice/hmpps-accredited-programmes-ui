@@ -1,5 +1,5 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { LearningNeeds } from '@accredited-programmes/models'
+import type { LearningNeeds } from '@accredited-programmes/api'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 
 export default class LearningNeedsUtils {
@@ -30,6 +30,8 @@ export default class LearningNeedsUtils {
 
   static scoreSummaryListRows(learningNeeds: LearningNeeds): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     const scoreText = ShowRisksAndNeedsUtils.textValue(learningNeeds.basicSkillsScore)
+    // this one is missing on the API and will be added shortly
+    // @ts-expect-error to fix later
     const valueHtml = [scoreText, learningNeeds.basicSkillsScoreDescription].filter(text => text).join('<br><br>')
 
     return [

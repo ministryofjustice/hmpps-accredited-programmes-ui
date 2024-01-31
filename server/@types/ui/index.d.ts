@@ -1,12 +1,4 @@
-import type {
-  Course,
-  CourseOffering,
-  CourseParticipation,
-  Organisation,
-  Person,
-  Referral,
-  RiskLevel,
-} from '@accredited-programmes/models'
+import type { Course, CourseOffering, CourseParticipation, Referral, ReferralSummary } from '@accredited-programmes/api'
 import type {
   GovukFrontendPagination,
   GovukFrontendPaginationItem,
@@ -20,6 +12,8 @@ import type {
   GovukFrontendTag,
 } from '@govuk-frontend'
 import type { OffenceDto, OffenceHistoryDetail } from '@prison-api'
+
+// namespace most if not all of these types with `UI` to avoid clashes with API
 
 type GovukFrontendRadiosItemWithLabel = GovukFrontendRadiosItem & { label: string }
 
@@ -95,6 +89,25 @@ type OrganisationWithOfferingId = Organisation & {
 
 type OrganisationWithOfferingEmailsPresenter = Organisation & {
   summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
+}
+
+type Person = {
+  dateOfBirth: string
+  ethnicity: string
+  gender: string
+  name: string
+  prisonNumber: string
+  religionOrBelief: string
+  setting: 'Custody'
+  bookingId?: string
+  conditionalReleaseDate?: string
+  currentPrison?: string
+  homeDetentionCurfewEligibilityDate?: string
+  indeterminateSentence?: boolean
+  paroleEligibilityDate?: string
+  sentenceExpiryDate?: string
+  sentenceStartDate?: string
+  tariffDate?: string
 }
 
 type ReferralSharedPageData = {
@@ -175,6 +188,9 @@ type OspBox = {
   type: 'OSP/C' | 'OSP/I'
 }
 
+// ideally this would be `'LOW' | 'MEDIUM |` etc but the API returns `string | undefined`
+type RiskLevelOrUnknown = string | 'UNKNOWN'
+
 type RiskBox = {
   category: 'OGRS Year 1' | 'OGRS Year 2' | 'OVP Year 1' | 'OVP Year 2' | 'RoSH' | 'RSR' | 'SARA'
   dataTestId: string
@@ -184,7 +200,32 @@ type RiskBox = {
   figure?: string
 }
 
-type RiskLevelOrUnknown = RiskLevel | 'UNKNOWN'
+type OrganisationAddress = {
+  addressLine1: string | null
+  addressLine2: string | null
+  country: string
+  county: string | null
+  postalCode: string
+  town: string
+}
+
+type Organisation = {
+  id: string // eslint-disable-next-line @typescript-eslint/member-ordering
+  address: OrganisationAddress
+  category: string
+  name: string
+}
+
+type ReferralSummaryWithTasksCompleted = ReferralSummary & { tasksCompleted: number }
+
+type Paginated<T> = {
+  content?: Array<T>
+  pageIsEmpty?: boolean
+  pageNumber?: number
+  pageSize?: number
+  totalElements?: number
+  totalPages?: number
+}
 
 export type {
   CaseListColumnHeader,
@@ -202,12 +243,17 @@ export type {
   MojFrontendNavigationItem,
   OffenceDetails,
   OffenceHistory,
+  Organisation,
+  OrganisationAddress,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
   OspBox,
+  Paginated,
+  Person,
   QueryParam,
   ReferralSharedPageData,
   ReferralStatusGroup,
+  ReferralSummaryWithTasksCompleted,
   ReferralTaskListItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,

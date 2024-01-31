@@ -1,6 +1,7 @@
 import { CourseUtils, PersonUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course, Person } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/api'
+import type { Person } from '@accredited-programmes/ui'
 
 export default class PersonalDetailsPage extends Page {
   person: Person

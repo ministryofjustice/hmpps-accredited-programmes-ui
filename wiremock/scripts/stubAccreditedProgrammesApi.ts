@@ -15,7 +15,7 @@ import {
   oasysLifestyle,
   oasysOffenceDetail,
   oasysRelationships,
-  oasysRisksAndAlerts,
+  oasysRisks,
   oasysRoshAnalysis,
   prisoners,
   psychiatric,
@@ -370,13 +370,13 @@ prisoners.forEach(prisoner => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.oasys.risksAndAlerts({ prisonNumber: prisoner.prisonerNumber }),
+        url: apiPaths.oasys.risks({ prisonNumber: prisoner.prisonerNumber }),
       },
       response: {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: oasysRisksAndAlerts,
+        jsonBody: oasysRisks,
         status: 200,
       },
     }),

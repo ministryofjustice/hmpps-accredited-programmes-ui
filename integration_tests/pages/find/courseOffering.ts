@@ -1,8 +1,8 @@
 import { referPaths } from '../../../server/paths'
 import { CourseUtils, OrganisationUtils } from '../../../server/utils'
 import Page from '../page'
-import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
-import type { CoursePresenter, OrganisationWithOfferingEmailsPresenter } from '@accredited-programmes/ui'
+import type { Course, CourseOffering } from '@accredited-programmes/api'
+import type { CoursePresenter, Organisation, OrganisationWithOfferingEmailsPresenter } from '@accredited-programmes/ui'
 
 export default class CourseOfferingPage extends Page {
   course: CoursePresenter

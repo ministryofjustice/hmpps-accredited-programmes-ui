@@ -9,10 +9,9 @@ import type {
   CourseOffering,
   CourseParticipation,
   CourseParticipationUpdate,
-  Person,
   Referral,
-} from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
+} from '@accredited-programmes/api'
+import type { GovukFrontendSummaryListWithRowsWithKeysAndValues, Person } from '@accredited-programmes/ui'
 import type { Prison } from '@prison-register-api'
 
 export default class CourseService {

@@ -10,7 +10,7 @@ import type {
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-} from '@accredited-programmes/models'
+} from '@accredited-programmes/api'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type {
   GovukFrontendSummaryListRow,

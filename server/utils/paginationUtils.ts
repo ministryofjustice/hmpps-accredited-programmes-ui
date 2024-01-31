@@ -1,8 +1,7 @@
 import type { Request } from 'express'
 
 import PathUtils from './pathUtils'
-import type { Paginated } from '@accredited-programmes/models'
-import type { GovukFrontendPaginationWithItems, QueryParam } from '@accredited-programmes/ui'
+import type { GovukFrontendPaginationWithItems, Paginated, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendPaginationItem } from '@govuk-frontend'
 
 export default class PaginationUtils {
@@ -12,7 +11,7 @@ export default class PaginationUtils {
     zeroIndexedPageNumber: Paginated<T>['pageNumber'],
     totalPages: Paginated<T>['totalPages'],
   ): GovukFrontendPaginationWithItems {
-    const oneIndexedPageNumber = zeroIndexedPageNumber + 1
+    const oneIndexedPageNumber = zeroIndexedPageNumber || 0 + 1
     const pagination: GovukFrontendPaginationWithItems = { items: [] }
     const pageNumbersToInclude = PaginationUtils.pageNumbersToInclude(oneIndexedPageNumber, totalPages)
 
@@ -22,7 +21,7 @@ export default class PaginationUtils {
       }
 
       const item: GovukFrontendPaginationItem = {
-        href: PaginationUtils.linkUrl<T>(path, queryParamsExcludingPage, includedNumber),
+        href: PaginationUtils.linkUrl(path, queryParamsExcludingPage, includedNumber),
         number: includedNumber.toString(),
       }
 
@@ -35,41 +34,41 @@ export default class PaginationUtils {
 
     if (oneIndexedPageNumber > 1) {
       pagination.previous = {
-        href: PaginationUtils.linkUrl<T>(path, queryParamsExcludingPage, oneIndexedPageNumber - 1),
+        href: PaginationUtils.linkUrl(path, queryParamsExcludingPage, oneIndexedPageNumber - 1),
       }
     }
 
-    if (oneIndexedPageNumber < totalPages) {
+    if (totalPages && oneIndexedPageNumber < totalPages) {
       pagination.next = {
-        href: PaginationUtils.linkUrl<T>(path, queryParamsExcludingPage, oneIndexedPageNumber + 1),
+        href: PaginationUtils.linkUrl(path, queryParamsExcludingPage, oneIndexedPageNumber + 1),
       }
     }
 
     return pagination
   }
 
-  private static linkUrl<T>(
+  private static linkUrl(
     path: Request['path'],
     queryParamsExcludingPage: Array<QueryParam>,
-    pageNumber: Paginated<T>['pageNumber'],
+    pageNumber: number,
   ): string {
     const queryParams = queryParamsExcludingPage.concat({ key: 'page', value: pageNumber.toString() })
     return PathUtils.pathWithQuery(path, queryParams)
   }
 
   private static pageNumbersToInclude<T>(
-    currentPageNumber: Paginated<T>['pageNumber'],
+    currentPageNumber: number,
     totalPages: Paginated<T>['totalPages'],
-  ): Array<Paginated<T>['pageNumber']> {
+  ): Array<number> {
     const previousPageNumber = currentPageNumber - 1
     const nextPageNumber = currentPageNumber + 1
     const allPossibleNumbers = Array.from(
-      new Set([1, previousPageNumber, currentPageNumber, nextPageNumber, totalPages]),
+      new Set([1, previousPageNumber, currentPageNumber || 1, nextPageNumber, totalPages]),
     )
 
     return allPossibleNumbers.filter(
-      (possibleNumber: Paginated<T>['pageNumber']) => possibleNumber > 0 && possibleNumber <= totalPages,
-    )
+      possibleNumber => possibleNumber && possibleNumber > 0 && possibleNumber <= (totalPages || currentPageNumber),
+    ) as Array<number>
   }
 
   private static shouldAddEllipsis(pageNumbers: Array<number>, currentPageIndex: number): boolean {

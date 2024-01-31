@@ -5,7 +5,7 @@ import type { ResponseError } from 'superagent'
 import { referPaths } from '../../../paths'
 import type { PersonService } from '../../../services'
 import { PersonUtils, TypeUtils } from '../../../utils'
-import type { Person } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/ui'
 
 export default class NewReferralsPeopleController {
   constructor(private readonly personService: PersonService) {}

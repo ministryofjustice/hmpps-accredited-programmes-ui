@@ -1,5 +1,5 @@
 import HealthUtils from './healthUtils'
-import type { Health } from '@accredited-programmes/models'
+import type { Health } from '@accredited-programmes/api'
 
 describe('HealthUtils', () => {
   describe('healthSummaryListRows', () => {

@@ -15,7 +15,7 @@ import {
   userFactory,
 } from '../testutils/factories'
 import { CourseParticipationUtils, StringUtils } from '../utils'
-import type { CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CourseParticipationUpdate } from '@accredited-programmes/api'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../data/hmppsAuthClient')

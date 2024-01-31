@@ -1,6 +1,6 @@
 import { CourseUtils, EmotionalWellbeingUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, Psychiatric } from '@accredited-programmes/models'
+import type { Course, Psychiatric } from '@accredited-programmes/api'
 
 export default class EmotionalWellbeing extends Page {
   psychiatric: Psychiatric

@@ -1,8 +1,8 @@
 import { referPaths } from '../../../../server/paths'
 import { CourseUtils, NewReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
-import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
+import type { Course, CourseOffering, Referral } from '@accredited-programmes/api'
+import type { CourseParticipationPresenter, CoursePresenter, Organisation, Person } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 
 export default class NewReferralCheckAnswersPage extends Page {
@@ -70,7 +70,7 @@ export default class NewReferralCheckAnswersPage extends Page {
     cy.get('[data-testid="additional-information-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Add additional information',
-        this.referral.additionalInformation,
+        this.referral.additionalInformation || '',
         summaryCardElement,
       )
     })

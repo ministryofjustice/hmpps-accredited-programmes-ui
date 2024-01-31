@@ -5,7 +5,9 @@ import courseParticipationOutcomeFactory from './courseParticipationOutcome'
 import courseParticipationSettingFactory from './courseParticipationSetting'
 import FactoryHelpers from './factoryHelpers'
 import { StringUtils } from '../../utils'
-import type { CourseParticipation } from '@accredited-programmes/models'
+import type { CourseParticipation } from '@accredited-programmes/api'
+
+const randomCourseName = () => `${StringUtils.convertToTitleCase(faker.color.human())} Course`
 
 class CourseParticipationFactory extends Factory<CourseParticipation> {
   new() {
@@ -19,6 +21,7 @@ class CourseParticipationFactory extends Factory<CourseParticipation> {
 
   withAllOptionalFields() {
     return this.params({
+      courseName: randomCourseName(),
       outcome: courseParticipationOutcomeFactory.withAllOptionalFields().build(),
       setting: courseParticipationSettingFactory.withAllOptionalFields().build(),
       source: faker.word.words(),
@@ -26,10 +29,12 @@ class CourseParticipationFactory extends Factory<CourseParticipation> {
   }
 }
 
+export { randomCourseName }
+
 export default CourseParticipationFactory.define(() => ({
   id: faker.string.uuid(), // eslint-disable-next-line sort-keys
   addedBy: `${faker.person.firstName()} ${faker.person.lastName()}`,
-  courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
+  courseName: FactoryHelpers.optionalArrayElement(`${StringUtils.convertToTitleCase(faker.color.human())} Course`),
   createdAt: `${faker.date.between({ from: '2023-09-20T00:00:00.000Z', to: new Date() })}`,
   detail: faker.lorem.paragraph({ max: 5, min: 0 }),
   outcome: FactoryHelpers.optionalArrayElement([courseParticipationOutcomeFactory.build()]),

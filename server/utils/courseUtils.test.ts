@@ -13,7 +13,7 @@ describe('CourseUtils', () => {
 
     describe('when a course has no `alternateName`', () => {
       it('just returns the `name`', () => {
-        const course = courseFactory.build({ alternateName: null, name: 'Lime Course' })
+        const course = courseFactory.build({ alternateName: undefined, name: 'Lime Course' })
 
         expect(CourseUtils.courseNameWithAlternateName(course)).toEqual('Lime Course')
       })
@@ -91,7 +91,7 @@ describe('CourseUtils', () => {
 
     describe('when a course has no `alternateName`', () => {
       it('just uses the `name` as the `nameAndAlternateName`', () => {
-        const course = courseFactory.build({ alternateName: null })
+        const course = courseFactory.build({ alternateName: undefined })
 
         expect(CourseUtils.presentCourse(course).nameAndAlternateName).toEqual(course.name)
       })

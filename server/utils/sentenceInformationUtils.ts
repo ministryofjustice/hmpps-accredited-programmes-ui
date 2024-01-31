@@ -1,6 +1,5 @@
 import DateUtils from './dateUtils'
-import type { Person } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRowWithKeyAndValue, Person } from '@accredited-programmes/ui'
 import type { OffenderSentenceAndOffences } from '@prison-api'
 
 export default class SentenceInformationUtils {

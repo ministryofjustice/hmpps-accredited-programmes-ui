@@ -12,9 +12,9 @@ import type {
   Psychiatric,
   Referral,
   Relationships,
-  RisksAndAlerts,
+  Risks,
   RoshAnalysis,
-} from '@accredited-programmes/models'
+} from '@accredited-programmes/api'
 
 export default {
   stubAttitude: (args: { attitude: Attitude; prisonNumber: Referral['prisonNumber'] }): SuperAgentRequest =>
@@ -130,20 +130,17 @@ export default {
       },
     }),
 
-  stubRisksAndAlerts: (args: {
-    prisonNumber: Referral['prisonNumber']
-    risksAndAlerts: RisksAndAlerts
-  }): SuperAgentRequest =>
+  stubRisks: (args: { prisonNumber: Referral['prisonNumber']; risks: Risks }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.oasys.risksAndAlerts({ prisonNumber: args.prisonNumber }),
+        url: apiPaths.oasys.risks({ prisonNumber: args.prisonNumber }),
       },
       response: {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: args.risksAndAlerts,
+        jsonBody: args.risks,
         status: 200,
       },
     }),
