@@ -6,7 +6,7 @@
     "oasysConfirmed": false,
     "offeringId": "e78237cd-8244-4256-a1e8-8fb29b1f2f76",
     "prisonNumber": "Y7RLN5A",
-    "referrerUsername": "STUBBED_USER",
+    "referrerUsername": "ACP_POM_USER",
     "status": "referral_started"
   },
   {
@@ -16,7 +16,7 @@
     "oasysConfirmed": true,
     "offeringId": "e78237cd-8244-4256-a1e8-8fb29b1f2f76",
     "prisonNumber": "Y7RLN5A",
-    "referrerUsername": "STUBBED_USER",
+    "referrerUsername": "ACP_POM_USER",
     "status": "referral_submitted"
   }
 ]

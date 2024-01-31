@@ -1,6 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { referPaths } from '../../../paths'
+import { authPaths, referPaths } from '../../../paths'
 import type { PersonService, ReferralService } from '../../../services'
 import { FormUtils, TypeUtils } from '../../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
@@ -21,6 +21,10 @@ export default class NewReferralsAdditionalInformationController {
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
+      }
+
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
       }
 
       const person = await this.personService.getPerson(
@@ -49,6 +53,10 @@ export default class NewReferralsAdditionalInformationController {
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
+      }
+
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
       }
 
       const formattedAdditionalInformation = req.body.additionalInformation?.trim()

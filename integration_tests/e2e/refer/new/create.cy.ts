@@ -9,6 +9,7 @@ import {
   referralFactory,
 } from '../../../../server/testutils/factories'
 import { OrganisationUtils } from '../../../../server/utils'
+import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import {
   NewReferralConfirmPersonPage,
@@ -119,9 +120,11 @@ context('Searching for a person and creating a referral', () => {
     cy.task('stubPrison', prison)
     cy.task('stubPrisoner', prisoner)
 
-    const referral = referralFactory
-      .started()
-      .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    const referral = referralFactory.started().build({
+      offeringId: courseOffering.id,
+      prisonNumber: person.prisonNumber,
+      referrerUsername: auth.mockedUser.username,
+    })
     cy.task('stubCreateReferral', referral)
     cy.task('stubReferral', referral)
 

@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
-import { referPaths } from '../../../paths'
+import { authPaths, referPaths } from '../../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
 import type { CreatedReferralResponse } from '@accredited-programmes/models'
@@ -25,6 +25,10 @@ export default class NewReferralsController {
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
+      }
+
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
       }
 
       if (!NewReferralUtils.isReadyForSubmission(referral)) {
@@ -83,7 +87,11 @@ export default class NewReferralsController {
         throw createError(400, 'Referral has not been submitted.')
       }
 
-      res.render('referrals/new/complete', {
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
+      }
+
+      return res.render('referrals/new/complete', {
         pageHeading: 'Referral complete',
       })
     }
@@ -139,6 +147,10 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
+      }
+
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
@@ -169,6 +181,10 @@ export default class NewReferralsController {
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
+      }
+
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
       }
 
       const person = await this.personService.getPerson(
@@ -223,6 +239,10 @@ export default class NewReferralsController {
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
+      }
+
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
       }
 
       if (!NewReferralUtils.isReadyForSubmission(referral)) {

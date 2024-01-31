@@ -9,6 +9,7 @@ import {
   referralFactory,
 } from '../../../../server/testutils/factories'
 import { OrganisationUtils } from '../../../../server/utils'
+import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import { NewReferralConfirmOasysPage, NewReferralTaskListPage } from '../../../pages/refer'
 
@@ -23,7 +24,11 @@ context('OASys confirmation', () => {
     name: 'Del Hatton',
     prisonNumber: prisoner.prisonerNumber,
   })
-  const referral = referralFactory.started().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+  const referral = referralFactory.started().build({
+    offeringId: courseOffering.id,
+    prisonNumber: person.prisonNumber,
+    referrerUsername: auth.mockedUser.username,
+  })
 
   beforeEach(() => {
     cy.task('reset')
