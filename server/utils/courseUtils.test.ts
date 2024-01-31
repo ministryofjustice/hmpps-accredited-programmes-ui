@@ -50,7 +50,7 @@ describe('CourseUtils', () => {
         ...course,
         audienceTag: {
           attributes: { 'data-testid': 'audience-tag' },
-          classes: 'govuk-tag govuk-tag--green',
+          classes: 'govuk-tag govuk-tag--green audience-tag',
           text: 'Intimate partner violence offence',
         },
         nameAndAlternateName: 'Lime Course (LC)',

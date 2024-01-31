@@ -44,7 +44,7 @@ export default class CourseUtils {
 
     return {
       attributes: { 'data-testid': 'audience-tag' },
-      classes: `govuk-tag govuk-tag--${colour}`,
+      classes: `govuk-tag govuk-tag--${colour} audience-tag`,
       text: audience,
     }
   }
