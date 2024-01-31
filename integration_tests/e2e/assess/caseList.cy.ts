@@ -118,7 +118,7 @@ context('Referral case lists', () => {
       const referralStatusSelectedValue = 'assessment started'
       const filteredReferralSummaries = [
         referralSummaryFactory.build({
-          audiences: [programmeStrandSelectedValue],
+          audience: 'General offence',
           courseName: limeCourse.name,
           status: 'assessment_started',
         }),

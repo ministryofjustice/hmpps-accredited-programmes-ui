@@ -16,8 +16,8 @@ export default class CoursesPage extends Page {
         cy.get('.govuk-link').should('have.attr', 'href', findPaths.show({ courseId: course.id }))
         cy.get('.govuk-heading-m .govuk-link').should('have.text', course.nameAndAlternateName)
 
-        cy.get('p:first-of-type').then(tagContainerElement => {
-          this.shouldContainTags(course.audienceTags, tagContainerElement)
+        cy.get('.govuk-tag').then(tagElement => {
+          this.shouldContainTag(course.audienceTag, tagElement)
         })
 
         cy.get('p:nth-of-type(2)').should('have.text', course.description)

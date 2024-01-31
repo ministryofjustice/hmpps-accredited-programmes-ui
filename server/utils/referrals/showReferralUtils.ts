@@ -22,7 +22,7 @@ export default class ShowReferralUtils {
       },
       {
         key: { text: 'Programme strand' },
-        value: { text: coursePresenter.audiences.map(audience => audience.value).join(', ') },
+        value: { text: coursePresenter.audience },
       },
       {
         key: { text: 'Programme location' },

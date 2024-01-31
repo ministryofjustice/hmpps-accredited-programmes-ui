@@ -59,7 +59,7 @@ context('Showing the referral task list and person page', () => {
     taskListPage.shouldHavePersonDetails(person)
     taskListPage.shouldContainNavigation(path)
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
-    taskListPage.shouldContainAudienceTags(taskListPage.course.audienceTags)
+    taskListPage.shouldContainAudienceTag(taskListPage.course.audienceTag)
     taskListPage.shouldContainTaskList()
     taskListPage.shouldNotBeReadyForSubmission()
   })

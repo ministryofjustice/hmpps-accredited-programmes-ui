@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 
 import type {
-  CourseAudienceRecord,
   CourseOfferingRecord,
   CoursePrerequisiteRecord,
   CourseRecord,
@@ -10,54 +9,27 @@ import type {
 } from '.'
 import organisationIds from './organisationIds'
 import {
-  courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
   coursePrerequisiteFactory,
   referralFactory,
 } from '../../../server/testutils/factories'
+import { randomStatus } from '../../../server/testutils/factories/referral'
 import { StringUtils } from '../../../server/utils'
 import { caseloads, prisoners } from '../../../wiremock/stubs'
-import type { CourseAudience, Organisation, Referral } from '@accredited-programmes/models'
+import type { Organisation, Referral } from '@accredited-programmes/models'
 
 export default class TableRecords {
-  static audience(): Array<CourseAudience> {
-    this.cachedAudience ||= [
-      'Sexual offence',
-      'Extremism offence',
-      'Gang offence',
-      'General violence offence',
-      'Intimate partner violence offence',
-      'General offence',
-    ].map(value => courseAudienceFactory.build({ value }))
-
-    return this.cachedAudience
-  }
-
   static course(): Array<CourseRecord> {
-    this.cachedCourse ||= courseFactory
-      .buildList(this.referableCourseCount + this.nonReferableCourseCount)
-      .map((courseRecord, courseRecordIndex) => ({
-        ...courseRecord,
-        // this might not be the most realistic implementation of identifier, but
-        // really we just need it to be unique: the initialised title is a bit of
-        // realism dressing on an otherwise simple unique value generator
-        identifier: StringUtils.initialiseTitle(courseRecord.name) + courseRecordIndex,
-        // we want most of the courses to be referable, but a couple of
-        // non-referable ones would be nice for realism
-        referable: courseRecordIndex < this.referableCourseCount,
-      }))
-
-    return this.cachedCourse
-  }
-
-  static courseAudience(): Array<CourseAudienceRecord> {
-    this.cachedCourseAudience ||= this.course().map(courseRecord => ({
-      audienceId: faker.helpers.arrayElement(this.audience()).id,
-      courseId: courseRecord.id,
+    this.cachedCourse ||= courseFactory.buildList(10).map((courseRecord, courseRecordIndex) => ({
+      ...courseRecord,
+      // this might not be the most realistic implementation of identifier, but
+      // really we just need it to be unique: the initialised title is a bit of
+      // realism dressing on an otherwise simple unique value generator
+      identifier: StringUtils.initialiseTitle(courseRecord.name) + courseRecordIndex,
     }))
 
-    return this.cachedCourseAudience
+    return this.cachedCourse
   }
 
   static offering(): Array<CourseOfferingRecord> {
@@ -87,24 +59,37 @@ export default class TableRecords {
     this.cachedReferral ||= (() => {
       const records: Array<ReferralRecord> = []
 
-      // one offering for active case load ID should have at least 100 referrals
-      // to allow us to fully test features like pagination
-      const firstOfferingForActiveCaseLoadId = this.offeringsForActiveCaseLoadId()[0]
+      // one offering for active case load ID should have at least 100 submitted
+      // referrals to allow us to fully test features like pagination
+      const firstReferableOfferingForActiveCaseLoadId = this.referableOfferingRecordsForActiveCaseLoadId()[0]
       while (records.length < 100) {
         records.push(
           this.referralRecord(
-            firstOfferingForActiveCaseLoadId.id,
+            firstReferableOfferingForActiveCaseLoadId.id,
             faker.helpers.arrayElement(prisoners).prisonerNumber,
+            randomStatus(['referral_submitted', 'assessment_started', 'awaiting_assessment']),
+          ),
+        )
+      }
+
+      // and maybe a few draft referrals
+      while (records.length < 110) {
+        records.push(
+          this.referralRecord(
+            firstReferableOfferingForActiveCaseLoadId.id,
+            faker.helpers.arrayElement(prisoners).prisonerNumber,
+            'referral_started',
           ),
         )
       }
 
       // some other offerings for active case load ID should have referrals
-      const nonFirstOfferingsForActiveCaseLoadId = this.offeringsForActiveCaseLoadId().slice(1)
+      const subsequentReferableOfferingsForActiveCaseLoadId =
+        this.referableOfferingRecordsForActiveCaseLoadId().slice(1)
       while (records.length < 200) {
         records.push(
           this.referralRecord(
-            faker.helpers.arrayElement(nonFirstOfferingsForActiveCaseLoadId).id,
+            faker.helpers.arrayElement(subsequentReferableOfferingsForActiveCaseLoadId).id,
             faker.helpers.arrayElement(prisoners).prisonerNumber,
           ),
         )
@@ -114,7 +99,7 @@ export default class TableRecords {
       while (records.length < 250) {
         records.push(
           this.referralRecord(
-            faker.helpers.arrayElement(this.offeringsForNonActiveCaseLoadOrganisations()).id,
+            faker.helpers.arrayElement(this.referableOfferingRecordsForNonActiveCaseLoadOrganisations()).id,
             faker.helpers.arrayElement(prisoners).prisonerNumber,
           ),
         )
@@ -150,13 +135,13 @@ export default class TableRecords {
 
   private static offeringsForActiveCaseLoadId(): Array<CourseOfferingRecord> {
     this.cachedOfferingsForActiveCaseLoadId ||= faker.helpers
-      .arrayElements(this.referableCourseRecords(), {
-        max: this.referableCourseRecords().length - 1 || 1,
-        min: Math.ceil(this.referableCourseRecords().length * 0.8),
+      .arrayElements(this.course(), {
+        max: this.course().length - 1 || 1,
+        min: Math.ceil(this.course().length * 0.8),
       })
-      .map(referableCourse => {
+      .map(courseRecord => {
         return {
-          courseId: referableCourse.id,
+          courseId: courseRecord.id,
           ...courseOfferingFactory.build({ organisationId: this.activeCaseLoadId() }),
         }
       })
@@ -165,12 +150,12 @@ export default class TableRecords {
   }
 
   private static offeringsForNonActiveCaseLoadOrganisations(): Array<CourseOfferingRecord> {
-    this.cachedOfferingsForNonActiveCaseLoadOrganisations ||= this.referableCourseRecords()
-      .map(referableCourseRecord => {
+    this.cachedOfferingsForNonActiveCaseLoadOrganisations ||= this.course()
+      .map(courseRecord => {
         const organisationIdsForCourse = faker.helpers.arrayElements(this.nonActiveCaseLoadOrganisationsIds())
 
         return organisationIdsForCourse.map(organisationId => ({
-          courseId: referableCourseRecord.id,
+          courseId: courseRecord.id,
           ...courseOfferingFactory.build({ organisationId }),
         }))
       })
@@ -179,21 +164,33 @@ export default class TableRecords {
     return this.cachedOfferingsForNonActiveCaseLoadOrganisations
   }
 
-  private static referableCourseRecords(): Array<CourseRecord> {
-    this.cachedReferableCourseRecords ||= this.course().filter(courseRecord => courseRecord.referable)
+  private static referableOfferingRecordsForActiveCaseLoadId(): Array<CourseOfferingRecord> {
+    this.cachedReferableOfferingRecordsForActiveCaseLoadId ||= this.offeringsForActiveCaseLoadId().filter(
+      offeringRecord => offeringRecord.referable,
+    )
 
-    return this.cachedReferableCourseRecords
+    return this.cachedReferableOfferingRecordsForActiveCaseLoadId
+  }
+
+  private static referableOfferingRecordsForNonActiveCaseLoadOrganisations(): Array<CourseOfferingRecord> {
+    this.cachedReferableOfferingRecordsForNonActiveCaseLoadOrganisations ||= this.offeringsForActiveCaseLoadId().filter(
+      offeringRecord => offeringRecord.referable,
+    )
+
+    return this.cachedReferableOfferingRecordsForNonActiveCaseLoadOrganisations
   }
 
   private static referralRecord(
     offeringId: Referral['offeringId'],
     prisonNumber: Referral['prisonNumber'],
+    status?: Referral['status'],
   ): ReferralRecord {
     const referrer = faker.helpers.arrayElement(this.seededReferrers)
     const referral = referralFactory.build({
       offeringId,
       prisonNumber,
       referrerUsername: referrer.username,
+      status: status || randomStatus(),
     })
     return {
       ...referral,
@@ -203,11 +200,7 @@ export default class TableRecords {
 
   static cachedActiveCaseLoadId: Organisation['id']
 
-  static cachedAudience: Array<CourseAudience>
-
   static cachedCourse: Array<CourseRecord>
-
-  static cachedCourseAudience: Array<CourseAudienceRecord>
 
   static cachedNonActiveCaseLoadOrganisationsIds: Array<Organisation['id']>
 
@@ -219,15 +212,13 @@ export default class TableRecords {
 
   static cachedPrerequisite: Array<CoursePrerequisiteRecord>
 
-  static cachedReferableCourseRecords: Array<CourseRecord>
+  static cachedReferableOfferingRecordsForActiveCaseLoadId: Array<CourseOfferingRecord>
+
+  static cachedReferableOfferingRecordsForNonActiveCaseLoadOrganisations: Array<CourseOfferingRecord>
 
   static cachedReferral: Array<ReferralRecord>
 
   static cachedReferrerUser: Array<ReferrerUserRecord>
-
-  static nonReferableCourseCount = 2
-
-  static referableCourseCount = 8
 
   static seededReferrers = [
     { id: '3F2504E0-4F89-41D3-9A0C-0305E82C3301', username: 'ACP_POM_USER' },

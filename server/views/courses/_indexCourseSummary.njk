@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% from "../partials/audienceTags.njk" import audienceTags %}
+{% from "../partials/audienceTag.njk" import audienceTag %}
 
 {% macro indexCourseSummary(course, isLastInList) %}
   <div class="govuk-grid-row" role="listitem">
@@ -9,7 +9,7 @@
         <a class="govuk-link" href="/programmes/{{ course.id }}">{{ course.nameAndAlternateName }}</a>
       </h2>
 
-      {{ audienceTags(course.audienceTags) }}
+      {{ audienceTag(course.audienceTag) }}
 
       <p class="govuk-body">{{ course.description }}</p>
 

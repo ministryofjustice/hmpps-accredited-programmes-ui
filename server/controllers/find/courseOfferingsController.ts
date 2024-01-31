@@ -16,15 +16,12 @@ export default class CourseOfferingsController {
 
       const [course, [courseOffering, organisation]] = await Promise.all([
         this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId),
-        // eslint-disable-next-line
         this.courseService.getOffering(req.user.token, req.params.courseOfferingId).then(async _courseOffering => {
           // eslint-disable-next-line
           const _organisation = await this.organisationService.getOrganisation(
             req.user.token,
-            // eslint-disable-next-line
             _courseOffering.organisationId,
           )
-          // eslint-disable-next-line
           return [_courseOffering, _organisation] as [CourseOffering, Organisation]
         }),
       ])

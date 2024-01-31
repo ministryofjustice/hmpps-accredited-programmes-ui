@@ -35,21 +35,21 @@ describe('NewReferralsController', () => {
   const referralService = createMock<ReferralService>({})
   const userService = createMock<UserService>({})
 
-  const referableCourse = courseFactory.build({ referable: true })
-  const courseOffering = courseOfferingFactory.build()
+  const course = courseFactory.build()
+  const referableCourseOffering = courseOfferingFactory.build({ referable: true })
   const person = personFactory.build({
     name: 'Del Hatton',
   })
   const referralId = 'A-REFERRAL-ID'
   const draftReferral = referralFactory
     .started()
-    .build({ id: referralId, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    .build({ id: referralId, offeringId: referableCourseOffering.id, prisonNumber: person.prisonNumber })
   const submittableReferral = referralFactory
     .submittable()
-    .build({ id: referralId, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    .build({ id: referralId, offeringId: referableCourseOffering.id, prisonNumber: person.prisonNumber })
   const submittedReferral = referralFactory
     .submitted()
-    .build({ id: referralId, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    .build({ id: referralId, offeringId: referableCourseOffering.id, prisonNumber: person.prisonNumber })
 
   let controller: NewReferralsController
 
@@ -63,7 +63,7 @@ describe('NewReferralsController', () => {
       referralService,
       userService,
     )
-    courseService.getOffering.mockResolvedValue(courseOffering)
+    courseService.getOffering.mockResolvedValue(referableCourseOffering)
   })
 
   afterEach(() => {
@@ -72,20 +72,20 @@ describe('NewReferralsController', () => {
 
   describe('start', () => {
     it('renders the referral start template', async () => {
-      courseService.getCourseByOffering.mockResolvedValue(referableCourse)
+      courseService.getCourseByOffering.mockResolvedValue(course)
 
-      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+      const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
       const requestHandler = controller.start()
       await requestHandler(request, response, next)
 
-      const coursePresenter = createMock<CoursePresenter>({ name: referableCourse.name })
+      const coursePresenter = createMock<CoursePresenter>({ name: course.name })
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/start', {
         course: coursePresenter,
-        courseOffering,
+        courseOffering: referableCourseOffering,
         organisation,
         pageHeading: 'Make a referral',
       })
@@ -93,14 +93,14 @@ describe('NewReferralsController', () => {
   })
 
   describe('new', () => {
-    const courseId = referableCourse.id
-    const courseOfferingId = courseOffering.id
+    const courseId = course.id
+    const courseOfferingId = referableCourseOffering.id
 
     it('renders the referral new template', async () => {
       request.params.courseId = courseId
       request.params.courseOfferingId = courseOfferingId
 
-      courseService.getCourseByOffering.mockResolvedValue(referableCourse)
+      courseService.getCourseByOffering.mockResolvedValue(course)
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
@@ -125,7 +125,7 @@ describe('NewReferralsController', () => {
       request.body.courseOfferingId = draftReferral.offeringId
       request.body.prisonNumber = draftReferral.prisonNumber
 
-      courseService.getCourseByOffering.mockResolvedValue(referableCourse)
+      courseService.getOffering.mockResolvedValue(referableCourseOffering)
 
       TypeUtils.assertHasUser(request)
 
@@ -135,7 +135,7 @@ describe('NewReferralsController', () => {
       await requestHandler(request, response, next)
 
       expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
-      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, courseOffering.id)
+      expect(courseService.getOffering).toHaveBeenCalledWith(username, referableCourseOffering.id)
       expect(referralService.createReferral).toHaveBeenCalledWith(
         username,
         draftReferral.offeringId,
@@ -143,30 +143,30 @@ describe('NewReferralsController', () => {
       )
     })
 
-    describe('when the course is not referable', () => {
+    describe('when the course offering is not referable', () => {
       it('responds with a 400', async () => {
-        request.body.courseOfferingId = draftReferral.offeringId
+        const nonReferableCourseOffering = courseOfferingFactory.build({ referable: false })
+        request.body.courseOfferingId = nonReferableCourseOffering.id
         request.body.prisonNumber = draftReferral.prisonNumber
 
-        const nonReferableCourse = courseFactory.build({ referable: false })
-        courseService.getCourseByOffering.mockResolvedValue(nonReferableCourse)
+        courseService.getOffering.mockResolvedValue(nonReferableCourseOffering)
 
         TypeUtils.assertHasUser(request)
 
         const requestHandler = controller.create()
-        const expectedError = createError(400, 'Course is not referable.')
+        const expectedError = createError(400, 'Course offering is not referable.')
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
-        expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, courseOffering.id)
+        expect(courseService.getOffering).toHaveBeenCalledWith(username, nonReferableCourseOffering.id)
       })
     })
   })
 
   describe('show', () => {
     it('renders the referral task list page', async () => {
-      courseService.getCourseByOffering.mockResolvedValue(referableCourse)
+      courseService.getCourseByOffering.mockResolvedValue(course)
 
-      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+      const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
       personService.getPerson.mockResolvedValue(person)
@@ -176,7 +176,7 @@ describe('NewReferralsController', () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
-      const coursePresenter = createMock<CoursePresenter>({ name: referableCourse.name })
+      const coursePresenter = createMock<CoursePresenter>({ name: course.name })
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
@@ -205,7 +205,7 @@ describe('NewReferralsController', () => {
 
   describe('showPerson', () => {
     it("renders the page for viewing a person's details", async () => {
-      courseService.getCourseByOffering.mockResolvedValue(referableCourse)
+      courseService.getCourseByOffering.mockResolvedValue(course)
       personService.getPerson.mockResolvedValue(person)
 
       referralService.getReferral.mockResolvedValue(draftReferral)
@@ -240,7 +240,7 @@ describe('NewReferralsController', () => {
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
       const referrerName = 'Bobby Brown'
-      courseService.getCourseByOffering.mockResolvedValue(referableCourse)
+      courseService.getCourseByOffering.mockResolvedValue(course)
       personService.getPerson.mockResolvedValue(person)
       userService.getFullNameFromUsername.mockResolvedValue(referrerName)
 
@@ -250,14 +250,14 @@ describe('NewReferralsController', () => {
 
       TypeUtils.assertHasUser(request)
 
-      const organisation = organisationFactory.build({ id: courseOffering.organisationId })
+      const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
       const coursePresenter = createMock<CoursePresenter>({
-        audiences: courseAudienceFactory.buildList(1),
-        nameAndAlternateName: `${referableCourse.name} (${referableCourse.alternateName})`,
+        audience: courseAudienceFactory.build(),
+        nameAndAlternateName: `${course.name} (${course.alternateName})`,
       })
-      courseService.getCourse.mockResolvedValue(referableCourse)
+      courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
@@ -284,7 +284,7 @@ describe('NewReferralsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
         additionalInformation: submittableReferral.additionalInformation,
         applicationSummaryListRows: NewReferralUtils.applicationSummaryListRows(
-          courseOffering,
+          referableCourseOffering,
           coursePresenter,
           organisation,
           person,

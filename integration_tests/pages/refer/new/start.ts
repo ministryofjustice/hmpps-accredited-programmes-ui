@@ -27,7 +27,7 @@ export default class NewReferralStartPage extends Page {
   shouldHaveProcessInformation() {
     cy.get('h2:nth-of-type(2)').should('have.text', "What you'll need to do")
 
-    cy.get('p:nth-of-type(2)').should('have.text', 'When completing the referral:')
+    cy.get('[data-testid="pre-list-paragraph"]').should('have.text', 'When completing the referral:')
 
     const listItemsText = [
       "review this person's information and confirm that it's accurate",

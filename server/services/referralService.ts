@@ -1,7 +1,5 @@
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
-  Course,
-  CourseAudience,
   CreatedReferralResponse,
   Organisation,
   Paginated,
@@ -64,7 +62,7 @@ export default class ReferralService {
   async getReferralSummaries(
     username: Express.User['username'],
     organisationId: Organisation['id'],
-    query?: { audience?: CourseAudience['value']; courseName?: Course['name']; page?: string; status?: string },
+    query?: { audience?: string; courseName?: string; page?: string; status?: string },
   ): Promise<Paginated<ReferralSummary>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)

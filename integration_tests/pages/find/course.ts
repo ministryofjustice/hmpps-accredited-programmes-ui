@@ -16,13 +16,13 @@ export default class CoursePage extends Page {
   }
 
   shouldHaveCourse() {
-    this.shouldContainAudienceTags(this.course.audienceTags)
+    this.shouldContainAudienceTag(this.course.audienceTag)
 
     cy.get('.govuk-summary-list').then(summaryListElement => {
       this.shouldContainSummaryListRows(this.course.prerequisiteSummaryListRows, summaryListElement)
     })
 
-    cy.get('p:nth-of-type(2)').should('have.text', this.course.description)
+    cy.get('[data-testid="description-paragraph"]').should('have.text', this.course.description)
   }
 
   shouldHaveOrganisations(organisationsWithOfferingIds: Array<OrganisationWithOfferingId>) {

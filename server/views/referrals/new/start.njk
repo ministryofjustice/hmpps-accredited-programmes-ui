@@ -1,7 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% from "../../partials/audienceTags.njk" import audienceTags %}
+{% from "../../partials/audienceTag.njk" import audienceTag %}
 
 {% extends "../../partials/layout.njk" %}
 
@@ -19,11 +19,11 @@
     <div class="govuk-grid-column-two-thirds">
       {% include "./_organisationAndCourse.njk" %}
 
-      {{ audienceTags(course.audienceTags) }}
+      {{ audienceTag(course.audienceTag) }}
 
       <h2 class="govuk-heading-m">What you'll need to do</h2>
 
-      <p class="govuk-body">When completing the referral:</p>
+      <p class="govuk-body" data-testid="pre-list-paragraph">When completing the referral:</p>
 
       <ul class="govuk-list govuk-list--bullet">
         <li>review this person's information and confirm that it's accurate</li>

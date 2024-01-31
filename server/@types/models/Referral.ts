@@ -32,7 +32,7 @@ type ReferralStatus = 'assessment_started' | 'awaiting_assessment' | 'referral_s
 
 type ReferralSummary = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
-  audiences: Array<CourseAudience['value']>
+  audience: CourseAudience
   courseName: Course['name']
   prisonNumber: Person['prisonNumber']
   referrerUsername: User['username']

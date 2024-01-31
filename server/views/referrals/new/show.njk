@@ -1,7 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% from "./_taskListSection.njk" import taskListSection %}
-{% from "../../partials/audienceTags.njk" import audienceTags %}
+{% from "../../partials/audienceTag.njk" import audienceTag %}
 
 {% extends "../../partials/layout.njk" %}
 
@@ -16,7 +16,7 @@
     <div class="govuk-grid-column-two-thirds">
       {% include "./_organisationAndCourse.njk" %}
 
-      {{ audienceTags(course.audienceTags) }}
+      {{ audienceTag(course.audienceTag) }}
 
       <ol class="moj-task-list">
         {% for section in taskListSections %}

@@ -47,7 +47,7 @@ export default class NewReferralTaskListPage extends Page {
         cy.get('.moj-task-list__section').should('have.text', section.heading)
 
         section.items.forEach((item, itemIndex) => {
-          cy.get(`.moj-task-list__item:nth-child(${itemIndex + 1})`).within(listItemElement => {
+          cy.get(`.moj-task-list__item:nth-child(${itemIndex + 1})`).within(() => {
             cy.get('.moj-task-list__task-name').then(taskNameElement => {
               cy.wrap(taskNameElement).should('have.text', item.text)
 
@@ -56,7 +56,7 @@ export default class NewReferralTaskListPage extends Page {
               }
             })
 
-            this.shouldContainTags([item.statusTag], listItemElement)
+            cy.get('.govuk-tag').then(tagElement => this.shouldContainTag(item.statusTag, tagElement))
           })
         })
       })

@@ -84,7 +84,7 @@ context('Find', () => {
         })
         courseOfferingPage.shouldContainNavigation(path)
         courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
-        courseOfferingPage.shouldContainAudienceTags(courseOfferingPage.course.audienceTags)
+        courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)
         courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
         courseOfferingPage.shouldNotContainSecondaryContactEmailSummaryListItem()
         courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
@@ -111,7 +111,7 @@ context('Find', () => {
         })
         courseOfferingPage.shouldContainNavigation(path)
         courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
-        courseOfferingPage.shouldContainAudienceTags(courseOfferingPage.course.audienceTags)
+        courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)
         courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
         courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
       })
@@ -119,10 +119,12 @@ context('Find', () => {
   })
 
   describe('For a user with the `ROLE_ACP_REFERRER` role', () => {
-    const courseOffering = courseOfferingFactory.build()
-    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+    const courseOfferingId = '00a718c8-6c3d-40b4-a6f0-728ff3bb71de'
+    const organisationId = 'MMM'
+    const course = courseFactory.build()
+    const prison = prisonFactory.build({ prisonId: organisationId })
     const organisation = OrganisationUtils.organisationFromPrison(prison)
-    const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
+    const path = findPaths.offerings.show({ courseOfferingId })
 
     beforeEach(() => {
       cy.task('reset')
@@ -131,36 +133,44 @@ context('Find', () => {
       cy.task('stubDefaultCaseloads')
       cy.signIn()
 
-      cy.task('stubOffering', { courseOffering })
       cy.task('stubPrison', prison)
+      cy.task('stubCourseByOffering', { course, courseOfferingId })
     })
 
-    describe('and a referable course', () => {
+    describe('and a referable course offering', () => {
       it('shows the "Make a referral" button on an offering', () => {
-        const referableCourse = courseFactory.build({ referable: true })
-        cy.task('stubCourseByOffering', { course: referableCourse, courseOfferingId: courseOffering.id })
+        const referableCourseOffering = courseOfferingFactory.build({
+          id: courseOfferingId,
+          organisationId,
+          referable: true,
+        })
+        cy.task('stubOffering', { courseOffering: referableCourseOffering })
 
         cy.visit(path)
 
         const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-          course: referableCourse,
-          courseOffering,
+          course,
+          courseOffering: referableCourseOffering,
           organisation,
         })
         courseOfferingPage.shouldContainMakeAReferralButtonLink()
       })
     })
 
-    describe('and a non-referable course', () => {
+    describe('and a non-referable course offering', () => {
       it('does not show the "Make a referral" button on an offering', () => {
-        const nonReferableCourse = courseFactory.build({ referable: false })
-        cy.task('stubCourseByOffering', { course: nonReferableCourse, courseOfferingId: courseOffering.id })
+        const nonReferableCourseOffering = courseOfferingFactory.build({
+          id: courseOfferingId,
+          organisationId,
+          referable: false,
+        })
+        cy.task('stubOffering', { courseOffering: nonReferableCourseOffering })
 
         cy.visit(path)
 
         const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-          course: nonReferableCourse,
-          courseOffering,
+          course,
+          courseOffering: nonReferableCourseOffering,
           organisation,
         })
         courseOfferingPage.shouldNotContainMakeAReferralButtonLink()

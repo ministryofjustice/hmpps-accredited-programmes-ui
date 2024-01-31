@@ -162,7 +162,7 @@ describe('CaseListUtils', () => {
 
   describe('tableRowContent', () => {
     const referralSummary = referralSummaryFactory.build({
-      audiences: ['General offence'],
+      audience: 'General offence',
       courseName: 'Test Course',
       earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
       id: 'referral-123',
@@ -318,21 +318,8 @@ describe('CaseListUtils', () => {
     })
 
     describe('Programme strand', () => {
-      describe("when there's a single audience", () => {
-        it('returns the audience', () => {
-          expect(CaseListUtils.tableRowContent(referralSummary, 'Programme strand')).toEqual('General offence')
-        })
-      })
-
-      describe('when there are multiple audiences', () => {
-        it('returns the audiences as a comma-and-space-separated list', () => {
-          expect(
-            CaseListUtils.tableRowContent(
-              { ...referralSummary, audiences: ['General offence', 'General violence offence'] },
-              'Programme strand',
-            ),
-          ).toEqual('General offence, General violence offence')
-        })
+      it('returns the audience', () => {
+        expect(CaseListUtils.tableRowContent(referralSummary, 'Programme strand')).toEqual('General offence')
       })
     })
 
@@ -412,7 +399,7 @@ describe('CaseListUtils', () => {
   describe('tableRows', () => {
     const referralSummaries = [
       referralSummaryFactory.build({
-        audiences: ['General offence'],
+        audience: 'General offence',
         courseName: 'Test Course 1',
         earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
         id: 'referral-123',
@@ -430,7 +417,7 @@ describe('CaseListUtils', () => {
         tasksCompleted: 2,
       }),
       referralSummaryFactory.build({
-        audiences: ['General offence', 'Extremism offence'],
+        audience: 'Extremism offence',
         courseName: 'Test Course 2',
         earliestReleaseDate: undefined,
         id: 'referral-456',

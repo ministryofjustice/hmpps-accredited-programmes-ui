@@ -18,8 +18,8 @@ import {
 } from '../../../pages/refer'
 
 context('Searching for a person and creating a referral', () => {
-  const course = courseFactory.build({ referable: true })
-  const courseOffering = courseOfferingFactory.build()
+  const course = courseFactory.build()
+  const courseOffering = courseOfferingFactory.build({ referable: true })
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
   const prisoner = prisonerFactory.build({
@@ -59,7 +59,7 @@ context('Searching for a person and creating a referral', () => {
     startReferralPage.shouldContainNavigation(path)
     startReferralPage.shouldContainBackLink(findPaths.offerings.show({ courseOfferingId: courseOffering.id }))
     startReferralPage.shouldContainOrganisationAndCourseHeading(startReferralPage)
-    startReferralPage.shouldContainAudienceTags(startReferralPage.course.audienceTags)
+    startReferralPage.shouldContainAudienceTag(startReferralPage.course.audienceTag)
     startReferralPage.shouldHaveProcessInformation()
     startReferralPage.shouldContainStartButtonLink()
   })

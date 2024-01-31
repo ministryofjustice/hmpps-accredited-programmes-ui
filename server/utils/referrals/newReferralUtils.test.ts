@@ -14,12 +14,7 @@ describe('NewReferralUtils', () => {
     it('formats referral information in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       const course = courseFactory.build({
         alternateName: 'TC+',
-        audiences: [
-          {
-            id: '1',
-            value: 'General offence',
-          },
-        ],
+        audience: 'General offence',
         name: 'Test Course',
       })
       const courseOffering = courseOfferingFactory.build({ contactEmail: 'nobody-hmp-what@digital.justice.gov.uk' })
