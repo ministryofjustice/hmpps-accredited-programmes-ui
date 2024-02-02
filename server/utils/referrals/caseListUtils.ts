@@ -6,7 +6,7 @@ import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
 import type { Course, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
-import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
+import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
   static audienceSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
@@ -43,7 +43,12 @@ export default class CaseListUtils {
     })
   }
 
-  static queryParamsExcludingPage(audience?: string, status?: string): Array<QueryParam> {
+  static queryParamsExcludingPage(
+    audience?: string,
+    status?: string,
+    sortColumn?: string,
+    sortDirection?: string,
+  ): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
     if (audience) {
@@ -54,7 +59,55 @@ export default class CaseListUtils {
       queryParams.push({ key: 'status', value: status })
     }
 
+    if (sortColumn && sortDirection) {
+      queryParams.push({ key: 'sortColumn', value: sortColumn })
+      queryParams.push({ key: 'sortDirection', value: sortDirection })
+    }
+
     return queryParams
+  }
+
+  static queryParamsExcludingSort(audience?: string, status?: string, page?: string): Array<QueryParam> {
+    const queryParams: Array<QueryParam> = []
+
+    if (audience) {
+      queryParams.push({ key: 'strand', value: audience })
+    }
+
+    if (status) {
+      queryParams.push({ key: 'status', value: status })
+    }
+
+    if (page) {
+      queryParams.push({ key: 'page', value: page })
+    }
+
+    return queryParams
+  }
+
+  static sortableTableHeadings(
+    basePath: string,
+    columns: Record<string, CaseListColumnHeader>,
+    sortColumn: string = 'surname',
+    sortDirection: string = 'ascending',
+  ): Array<GovukFrontendTableHeadElement> {
+    return Object.entries(columns).map(([key, value]) => {
+      let ariaSortDirection: 'ascending' | 'descending' | 'none' = 'none'
+      const columnIsCurrentlySorted = key === sortColumn
+
+      if (columnIsCurrentlySorted) {
+        ariaSortDirection = sortDirection === 'ascending' ? 'ascending' : 'descending'
+      }
+
+      const hrefPrefix = basePath.includes('?') ? `${basePath}&` : `${basePath}?`
+
+      return {
+        attributes: { 'aria-sort': ariaSortDirection },
+        html: `<a class="govuk-link--no-visited-state" href="${hrefPrefix}sortColumn=${key}&sortDirection=${
+          ariaSortDirection === 'ascending' ? 'descending' : 'ascending'
+        }">${value}</a>`,
+      }
+    })
   }
 
   static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
