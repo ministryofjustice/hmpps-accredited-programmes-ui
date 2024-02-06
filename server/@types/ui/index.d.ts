@@ -186,6 +186,19 @@ type RiskBox = {
 
 type RiskLevelOrUnknown = RiskLevel | 'UNKNOWN'
 
+type SortableCaseListColumnKey =
+  | 'audience'
+  | 'conditionalReleaseDate'
+  | 'courseName'
+  | 'earliestReleaseDate'
+  | 'nonDtoReleaseDateType'
+  | 'organisationName'
+  | 'paroleEligibilityDate'
+  | 'status'
+  | 'submittedOn'
+  | 'surname'
+  | 'tariffExpiryDate'
+
 export type {
   CaseListColumnHeader,
   CourseParticipationPresenter,
@@ -215,5 +228,6 @@ export type {
   RiskBox,
   RiskLevelOrUnknown,
   RisksAndNeedsSharedPageData,
+  SortableCaseListColumnKey,
   TagColour,
 }
