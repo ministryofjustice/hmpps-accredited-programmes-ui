@@ -3,9 +3,9 @@ import createHttpError from 'http-errors'
 
 import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
-import { CaseListUtils, PaginationUtils, TypeUtils } from '../../utils'
+import { CaseListUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
 import type { ReferralStatus } from '@accredited-programmes/models'
-import type { CaseListColumnHeader, ReferralStatusGroup } from '@accredited-programmes/ui'
+import type { CaseListColumnHeader, ReferralStatusGroup, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
 export default class ReferCaseListController {
   constructor(private readonly referralService: ReferralService) {}
@@ -28,7 +28,7 @@ export default class ReferCaseListController {
         open: ['assessment_started', 'awaiting_assessment', 'referral_submitted'],
       }
 
-      const { page } = req.query as Record<string, string>
+      const { page, sortColumn, sortDirection } = req.query as Record<string, string>
       const { username } = res.locals.user
       const { referralStatusGroup } = req.params
 
@@ -38,49 +38,70 @@ export default class ReferCaseListController {
         throw createHttpError(404, 'Not found')
       }
 
-      const paginatedReferralSummaries = await this.referralService.getMyReferralSummaries(username, {
+      const paginatedReferralViews = await this.referralService.getMyReferralViews(username, {
         page: page ? (Number(page) - 1).toString() : undefined,
+        sortColumn,
+        sortDirection,
         status: CaseListUtils.uiToApiStatusQueryParam(referralStatuses.join(',')),
       })
 
-      let paginatedReferralSummariesContent = paginatedReferralSummaries.content
+      let paginatedReferralViewsContent = paginatedReferralViews.content
 
       const pagination = PaginationUtils.pagination(
         req.path,
-        [],
-        paginatedReferralSummaries.pageNumber,
-        paginatedReferralSummaries.totalPages,
+        CaseListUtils.queryParamsExcludingPage(undefined, undefined, sortColumn, sortDirection),
+        paginatedReferralViews.pageNumber,
+        paginatedReferralViews.totalPages,
       )
 
-      let finalColumnHeader: CaseListColumnHeader = 'Referral status'
+      const basePathExcludingSort = PathUtils.pathWithQuery(
+        referPaths.caseList.show({ referralStatusGroup }),
+        CaseListUtils.queryParamsExcludingSort(undefined, undefined, page),
+      )
 
-      if (referralStatusGroup === 'draft') {
-        finalColumnHeader = 'Progress'
+      /* eslint-disable sort-keys */
+      const sortableCaseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
+        surname: 'Name / Prison number',
+        submittedOn: 'Date referred',
+        earliestReleaseDate: 'Earliest release date',
+        nonDtoReleaseDateType: 'Release date type',
+        organisationName: 'Programme location',
+        courseName: 'Programme name',
+      }
+      /* eslint-enable sort-keys */
 
-        paginatedReferralSummariesContent = await Promise.all(
-          paginatedReferralSummariesContent.map(async referralSummary => {
-            const tasksCompleted = await this.referralService.getNumberOfTasksCompleted(username, referralSummary.id)
-            return { ...referralSummary, tasksCompleted }
+      const isDraftCaseList = referralStatusGroup === 'draft'
+
+      if (isDraftCaseList) {
+        paginatedReferralViewsContent = await Promise.all(
+          paginatedReferralViewsContent.map(async referralView => {
+            const tasksCompleted = await this.referralService.getNumberOfTasksCompleted(username, referralView.id)
+            return { ...referralView, tasksCompleted }
           }),
         )
+      } else {
+        sortableCaseListColumns.status = 'Referral status'
       }
 
       return res.render('referrals/caseList/refer/show', {
-        finalColumnHeader,
         isMyReferralsPage: true,
         pageHeading: 'My referrals',
         pagination,
         subNavigationItems: CaseListUtils.subNavigationItems(req.path),
+        tableHeadings: [
+          ...CaseListUtils.sortableTableHeadings(
+            basePathExcludingSort,
+            sortableCaseListColumns,
+            sortColumn,
+            sortDirection,
+          ),
+          ...(isDraftCaseList ? [{ text: 'Progress' }] : []),
+        ],
         tableRows: CaseListUtils.tableRows(
-          paginatedReferralSummariesContent,
+          paginatedReferralViewsContent,
           [
-            'Name / Prison number',
-            'Date referred',
-            'Earliest release date',
-            'Release date type',
-            'Programme location',
-            'Programme name',
-            finalColumnHeader,
+            ...Object.values(sortableCaseListColumns).map(value => value),
+            ...(isDraftCaseList ? (['Progress'] as Array<CaseListColumnHeader>) : []),
           ],
           referPaths,
         ),

@@ -7,8 +7,8 @@ import type {
   Paginated,
   Referral,
   ReferralStatus,
-  ReferralSummary,
   ReferralUpdate,
+  ReferralView,
 } from '@accredited-programmes/models'
 import type { SystemToken } from '@hmpps-auth'
 
@@ -35,31 +35,47 @@ export default class ReferralClient {
     })) as Referral
   }
 
-  async findMyReferralSummaries(query?: { page?: string; status?: string }): Promise<Paginated<ReferralSummary>> {
+  async findMyReferralViews(query?: {
+    page?: string
+    sortColumn?: string
+    sortDirection?: string
+    status?: string
+  }): Promise<Paginated<ReferralView>> {
     return (await this.restClient.get({
       path: apiPaths.referrals.myDashboard({}),
       query: {
         ...(query?.page && { page: query.page }),
         ...(query?.status && { status: query.status }),
+        ...(query?.sortColumn && { sortColumn: query.sortColumn }),
+        ...(query?.sortDirection && { sortDirection: query.sortDirection }),
         size: '15',
       },
-    })) as Paginated<ReferralSummary>
+    })) as Paginated<ReferralView>
   }
 
-  async findReferralSummaries(
+  async findReferralViews(
     organisationId: string,
-    query?: { audience?: string; courseName?: string; page?: string; status?: string },
-  ): Promise<Paginated<ReferralSummary>> {
+    query?: {
+      audience?: string
+      courseName?: string
+      page?: string
+      sortColumn?: string
+      sortDirection?: string
+      status?: string
+    },
+  ): Promise<Paginated<ReferralView>> {
     return (await this.restClient.get({
       path: apiPaths.referrals.dashboard({ organisationId }),
       query: {
         ...(query?.audience && { audience: query.audience }),
         ...(query?.courseName && { courseName: query.courseName }),
         ...(query?.page && { page: query.page }),
+        ...(query?.sortColumn && { sortColumn: query.sortColumn }),
+        ...(query?.sortDirection && { sortDirection: query.sortDirection }),
         ...(query?.status && { status: query.status }),
         size: '15',
       },
-    })) as Paginated<ReferralSummary>
+    })) as Paginated<ReferralView>
   }
 
   async submit(referralId: Referral['id']): Promise<void> {

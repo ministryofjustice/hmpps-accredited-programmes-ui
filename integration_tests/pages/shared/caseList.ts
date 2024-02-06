@@ -2,25 +2,25 @@ import { assessPaths, referPaths } from '../../../server/paths'
 import { CaseListUtils, CourseUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
-import type { Course, ReferralSummary } from '@accredited-programmes/models'
+import type { Course, ReferralView } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, ReferralStatusGroup } from '@accredited-programmes/ui'
 
 export default class CaseListPage extends Page {
   columnHeaders: Array<CaseListColumnHeader>
 
-  referralSummaries: Array<ReferralSummary>
+  referralViews: Array<ReferralView>
 
   constructor(args: {
     columnHeaders: Array<CaseListColumnHeader>
-    referralSummaries: Array<ReferralSummary>
+    referralViews: Array<ReferralView>
     course?: Course
   }) {
-    const { columnHeaders, course, referralSummaries } = args
+    const { columnHeaders, course, referralViews } = args
 
     super(course ? CourseUtils.courseNameWithAlternateName(course) : 'My referrals')
 
     this.columnHeaders = columnHeaders
-    this.referralSummaries = referralSummaries
+    this.referralViews = referralViews
   }
 
   shouldContainCourseNavigation(currentPath: string, courses: Array<Course>): void {
@@ -79,14 +79,14 @@ export default class CaseListPage extends Page {
     })
   }
 
-  shouldContainTableOfReferralSummaries(paths: typeof assessPaths | typeof referPaths) {
+  shouldContainTableOfReferralViews(paths: typeof assessPaths | typeof referPaths) {
     this.columnHeaders.forEach((columnHeader, columnHeaderIndex) => {
       cy.get('.govuk-table__header').eq(columnHeaderIndex).should('have.text', columnHeader)
     })
 
     cy.get('.govuk-table__body').within(() => {
       cy.get('.govuk-table__row').each((tableRowElement, tableRowElementIndex) => {
-        const summary = this.referralSummaries[tableRowElementIndex]
+        const view = this.referralViews[tableRowElementIndex]
 
         cy.wrap(tableRowElement).within(() => {
           this.columnHeaders.forEach((column, columnIndex) => {
@@ -97,67 +97,61 @@ export default class CaseListPage extends Page {
                   case 'Conditional release date':
                     cy.wrap(tableCellElement).should(
                       'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Conditional release date'),
+                      CaseListUtils.tableRowContent(view, 'Conditional release date'),
                     )
                     break
                   case 'Date referred':
-                    cy.wrap(tableCellElement).should(
-                      'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Date referred'),
-                    )
+                    cy.wrap(tableCellElement).should('have.text', CaseListUtils.tableRowContent(view, 'Date referred'))
                     break
                   case 'Earliest release date':
                     cy.wrap(tableCellElement).should(
                       'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Earliest release date'),
+                      CaseListUtils.tableRowContent(view, 'Earliest release date'),
                     )
                     break
                   case 'Name / Prison number':
                     cy.wrap(tableCellElement).should(
                       'have.html',
-                      CaseListUtils.tableRowContent(summary, 'Name / Prison number', paths),
+                      CaseListUtils.tableRowContent(view, 'Name / Prison number', paths),
                     )
                     break
                   case 'Parole eligibility date':
                     cy.wrap(tableCellElement).should(
                       'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Parole eligibility date'),
+                      CaseListUtils.tableRowContent(view, 'Parole eligibility date'),
                     )
                     break
                   case 'Programme location':
                     cy.wrap(tableCellElement).should(
                       'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Programme location'),
+                      CaseListUtils.tableRowContent(view, 'Programme location'),
                     )
                     break
                   case 'Programme name':
-                    cy.wrap(tableCellElement).should(
-                      'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Programme name'),
-                    )
+                    cy.wrap(tableCellElement).should('have.text', CaseListUtils.tableRowContent(view, 'Programme name'))
                     break
                   case 'Programme strand':
                     cy.wrap(tableCellElement).should(
                       'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Programme strand'),
+                      CaseListUtils.tableRowContent(view, 'Programme strand'),
                     )
                     break
                   case 'Referral status':
                     cy.wrap(tableCellElement).should(
                       'have.html',
-                      CaseListUtils.tableRowContent(summary, 'Referral status'),
+                      CaseListUtils.tableRowContent(view, 'Referral status'),
                     )
                     break
                   case 'Release date type':
                     cy.wrap(tableCellElement).should(
                       'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Release date type'),
+                      CaseListUtils.tableRowContent(view, 'Release date type'),
                     )
                     break
                   case 'Tariff end date':
                     cy.wrap(tableCellElement).should(
                       'have.text',
-                      CaseListUtils.tableRowContent(summary, 'Tariff end date'),
+                      CaseListUtils.tableRowContent(view, 'Tariff end date'),
                     )
                     break
                   default:
@@ -172,15 +166,15 @@ export default class CaseListPage extends Page {
   shouldFilter(
     programmeStrandSelectedValue: string,
     referralStatusSelectedValue: string,
-    filteredReferralSummaries: Array<ReferralSummary>,
+    filteredReferralViews: Array<ReferralView>,
   ) {
-    cy.task('stubFindReferralSummaries', {
+    cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
       queryParameters: {
         audience: { equalTo: CaseListUtils.uiToApiAudienceQueryParam(programmeStrandSelectedValue) },
         status: { equalTo: CaseListUtils.uiToApiStatusQueryParam(referralStatusSelectedValue) },
       },
-      referralSummaries: filteredReferralSummaries,
+      referralViews: filteredReferralViews,
     })
 
     this.selectSelectItem('programme-strand-select', programmeStrandSelectedValue)

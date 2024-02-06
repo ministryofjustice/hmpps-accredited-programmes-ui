@@ -1,6 +1,6 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
-import { courseFactory, referralSummaryFactory } from '../../../server/testutils/factories'
+import { courseFactory, referralViewFactory } from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
 import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
@@ -9,18 +9,18 @@ import type { CaseListColumnHeader } from '@accredited-programmes/ui'
 
 context('Referral case lists', () => {
   const limeCourse = courseFactory.build({ name: 'Lime Course' })
-  const orangeCourse = courseFactory.build({ name: 'Blue Course' })
-  const courses = [limeCourse, orangeCourse]
+  const blueCourse = courseFactory.build({ name: 'Blue Course' })
+  const courses = [limeCourse, blueCourse]
   const availableStatuses = ['assessment_started', 'awaiting_assessment', 'referral_submitted']
-  const limeCourseReferralSummaries = FactoryHelpers.buildListWith(
-    referralSummaryFactory,
+  const limeCourseReferralViews = FactoryHelpers.buildListWith(
+    referralViewFactory,
     { courseName: limeCourse.name },
     { transient: { availableStatuses } },
     15,
   )
-  const orangeCourseReferralSummaries = FactoryHelpers.buildListWith(
-    referralSummaryFactory,
-    { courseName: orangeCourse.name },
+  const blueCourseReferralViews = FactoryHelpers.buildListWith(
+    referralViewFactory,
+    { courseName: blueCourse.name },
     { transient: { availableStatuses } },
     15,
   )
@@ -40,12 +40,12 @@ context('Referral case lists', () => {
     cy.task('stubDefaultCaseloads')
     cy.task('stubCoursesForOrganisation', { courses, organisationId: 'MRI' })
     cy.signIn()
-    cy.task('stubFindReferralSummaries', {
+    cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
       queryParameters: {
         courseName: { equalTo: limeCourse.name },
       },
-      referralSummaries: limeCourseReferralSummaries,
+      referralViews: limeCourseReferralViews,
     })
   })
 
@@ -56,24 +56,24 @@ context('Referral case lists', () => {
     const caseListPage = Page.verifyOnPage(CaseListPage, {
       columnHeaders,
       course: limeCourse,
-      referralSummaries: limeCourseReferralSummaries,
+      referralViews: limeCourseReferralViews,
     })
     caseListPage.shouldContainCourseNavigation(path, courses)
     caseListPage.shouldHaveSelectedFilterValues('', '')
-    caseListPage.shouldContainTableOfReferralSummaries(assessPaths)
+    caseListPage.shouldContainTableOfReferralViews(assessPaths)
   })
 
   it('includes pagination', () => {
-    cy.task('stubFindReferralSummaries', {
+    cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
       queryParameters: { page: { equalTo: '3' } },
-      referralSummaries: limeCourseReferralSummaries,
+      referralViews: limeCourseReferralViews,
       totalPages: 7,
     })
-    cy.task('stubFindReferralSummaries', {
+    cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
       queryParameters: { page: { equalTo: '4' } },
-      referralSummaries: limeCourseReferralSummaries,
+      referralViews: limeCourseReferralViews,
       totalPages: 7,
     })
 
@@ -85,7 +85,7 @@ context('Referral case lists', () => {
     const caseListPage = Page.verifyOnPage(CaseListPage, {
       columnHeaders,
       course: limeCourse,
-      referralSummaries: limeCourseReferralSummaries,
+      referralViews: limeCourseReferralViews,
     })
     caseListPage.shouldContainPaginationPreviousButtonLink()
     caseListPage.shouldContainPaginationNextButtonLink()
@@ -108,43 +108,43 @@ context('Referral case lists', () => {
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
         course: limeCourse,
-        referralSummaries: limeCourseReferralSummaries,
+        referralViews: limeCourseReferralViews,
       })
       caseListPage.shouldContainCourseNavigation(path, courses)
       caseListPage.shouldHaveSelectedFilterValues('', '')
-      caseListPage.shouldContainTableOfReferralSummaries(assessPaths)
+      caseListPage.shouldContainTableOfReferralViews(assessPaths)
 
       const programmeStrandSelectedValue = 'general offence'
       const referralStatusSelectedValue = 'assessment started'
-      const filteredReferralSummaries = [
-        referralSummaryFactory.build({
+      const filteredReferralViews = [
+        referralViewFactory.build({
           audience: 'General offence',
           courseName: limeCourse.name,
           status: 'assessment_started',
         }),
       ]
 
-      caseListPage.shouldFilter(programmeStrandSelectedValue, referralStatusSelectedValue, filteredReferralSummaries)
+      caseListPage.shouldFilter(programmeStrandSelectedValue, referralStatusSelectedValue, filteredReferralViews)
 
       const filteredCaseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
         course: limeCourse,
-        referralSummaries: filteredReferralSummaries,
+        referralViews: filteredReferralViews,
       })
       filteredCaseListPage.shouldContainCourseNavigation(path, courses)
       filteredCaseListPage.shouldHaveSelectedFilterValues(programmeStrandSelectedValue, referralStatusSelectedValue)
-      filteredCaseListPage.shouldContainTableOfReferralSummaries(assessPaths)
+      filteredCaseListPage.shouldContainTableOfReferralViews(assessPaths)
     })
   })
 
   describe('when visiting the index, without specifying a course', () => {
     it('redirects to the correct course case list page', () => {
-      cy.task('stubFindReferralSummaries', {
+      cy.task('stubFindReferralViews', {
         organisationId: 'MRI',
         queryParameters: {
-          courseName: { equalTo: orangeCourse.name },
+          courseName: { equalTo: blueCourse.name },
         },
-        referralSummaries: orangeCourseReferralSummaries,
+        referralViews: blueCourseReferralViews,
       })
 
       const path = assessPaths.caseList.index({})
@@ -152,12 +152,12 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
-        course: orangeCourse,
-        referralSummaries: orangeCourseReferralSummaries,
+        course: blueCourse,
+        referralViews: blueCourseReferralViews,
       })
       caseListPage.shouldContainCourseNavigation(assessPaths.caseList.show({ courseName: 'blue-course' }), courses)
       caseListPage.shouldHaveSelectedFilterValues('', '')
-      caseListPage.shouldContainTableOfReferralSummaries(assessPaths)
+      caseListPage.shouldContainTableOfReferralViews(assessPaths)
     })
   })
 })

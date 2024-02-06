@@ -4,6 +4,7 @@ import createError from 'http-errors'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
 import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
+import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
 export default class AssessCaseListController {
   constructor(
@@ -49,7 +50,7 @@ export default class AssessCaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseName } = req.params
-      const { page, status, strand: audience } = req.query as Record<string, string>
+      const { page, status, strand: audience, sortColumn, sortDirection } = req.query as Record<string, string>
 
       const { activeCaseLoadId, username } = res.locals.user
 
@@ -64,19 +65,37 @@ export default class AssessCaseListController {
 
       const statusQuery = status || ['assessment_started', 'awaiting_assessment', 'referral_submitted'].join(',')
 
-      const paginatedReferralSummaries = await this.referralService.getReferralSummaries(username, activeCaseLoadId, {
+      const paginatedReferralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
         audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
         courseName: selectedCourse.name,
         page: page ? (Number(page) - 1).toString() : undefined,
+        sortColumn,
+        sortDirection,
         status: CaseListUtils.uiToApiStatusQueryParam(statusQuery),
       })
 
       const pagination = PaginationUtils.pagination(
         req.path,
-        CaseListUtils.queryParamsExcludingPage(audience, status),
-        paginatedReferralSummaries.pageNumber,
-        paginatedReferralSummaries.totalPages,
+        CaseListUtils.queryParamsExcludingPage(audience, status, sortColumn, sortDirection),
+        paginatedReferralViews.pageNumber,
+        paginatedReferralViews.totalPages,
       )
+
+      const basePathExcludingSort = PathUtils.pathWithQuery(
+        assessPaths.caseList.show({ courseName }),
+        CaseListUtils.queryParamsExcludingSort(audience, status, page),
+      )
+
+      /* eslint-disable sort-keys */
+      const caseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
+        surname: 'Name / Prison number',
+        conditionalReleaseDate: 'Conditional release date',
+        paroleEligibilityDate: 'Parole eligibility date',
+        tariffExpiryDate: 'Tariff end date',
+        audience: 'Programme strand',
+        status: 'Referral status',
+      }
+      /* eslint-enable sort-keys */
 
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseName }),
@@ -85,14 +104,16 @@ export default class AssessCaseListController {
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusSelectItems: CaseListUtils.statusSelectItems(status),
-        tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content, [
-          'Name / Prison number',
-          'Conditional release date',
-          'Parole eligibility date',
-          'Tariff end date',
-          'Programme strand',
-          'Referral status',
-        ]),
+        tableHeadings: CaseListUtils.sortableTableHeadings(
+          basePathExcludingSort,
+          caseListColumns,
+          sortColumn,
+          sortDirection,
+        ),
+        tableRows: CaseListUtils.tableRows(
+          paginatedReferralViews.content,
+          Object.values(caseListColumns).map(value => value),
+        ),
       })
     }
   }

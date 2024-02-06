@@ -4,7 +4,7 @@ import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
-import type { Course, ReferralStatus, ReferralSummary } from '@accredited-programmes/models'
+import type { Course, ReferralStatus, ReferralView } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
@@ -114,7 +114,7 @@ export default class CaseListUtils {
     return this.selectItems(['Assessment started', 'Awaiting assessment', 'Referral submitted'], selectedValue)
   }
 
-  static statusTagHtml(status: ReferralStatus): string {
+  static statusTagHtml(status?: ReferralStatus): string {
     let colour: TagColour
     let text: string
 
@@ -133,7 +133,7 @@ export default class CaseListUtils {
         break
       default:
         colour = 'grey'
-        text = status
+        text = status || 'Unknown'
         break
     }
 
@@ -157,49 +157,49 @@ export default class CaseListUtils {
   }
 
   static tableRowContent(
-    referralSummary: ReferralSummary,
+    referralView: ReferralView,
     column: CaseListColumnHeader,
     paths: typeof assessPaths | typeof referPaths = assessPaths,
   ): string {
     switch (column) {
       case 'Conditional release date':
-        return referralSummary.sentence?.conditionalReleaseDate
-          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.conditionalReleaseDate)
+        return referralView.conditionalReleaseDate
+          ? DateUtils.govukFormattedFullDateString(referralView.conditionalReleaseDate)
           : 'N/A'
       case 'Date referred':
-        return referralSummary.submittedOn ? DateUtils.govukFormattedFullDateString(referralSummary.submittedOn) : 'N/A'
+        return referralView.submittedOn ? DateUtils.govukFormattedFullDateString(referralView.submittedOn) : 'N/A'
       case 'Earliest release date':
-        return referralSummary.earliestReleaseDate
-          ? DateUtils.govukFormattedFullDateString(referralSummary.earliestReleaseDate)
+        return referralView.earliestReleaseDate
+          ? DateUtils.govukFormattedFullDateString(referralView.earliestReleaseDate)
           : 'N/A'
       case 'Name / Prison number':
-        return CaseListUtils.nameAndPrisonNumberHtml(referralSummary, paths)
+        return CaseListUtils.nameAndPrisonNumberHtml(referralView, paths)
       case 'Parole eligibility date':
-        return referralSummary.sentence?.paroleEligibilityDate
-          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.paroleEligibilityDate)
+        return referralView.paroleEligibilityDate
+          ? DateUtils.govukFormattedFullDateString(referralView.paroleEligibilityDate)
           : 'N/A'
       case 'Programme location':
-        return referralSummary.prisonName || 'N/A'
+        return referralView.organisationName || 'N/A'
       case 'Programme name':
-        return referralSummary.courseName
+        return referralView.courseName || 'N/A'
       case 'Programme strand':
-        return referralSummary.audience
+        return referralView.audience || 'N/A'
       case 'Progress':
-        return `${referralSummary.tasksCompleted || 0} out of 4 tasks complete`
+        return `${referralView.tasksCompleted || 0} out of 4 tasks complete`
       case 'Referral status':
-        return CaseListUtils.statusTagHtml(referralSummary.status)
+        return CaseListUtils.statusTagHtml(referralView.status)
       case 'Release date type':
-        return referralSummary.sentence?.nonDtoReleaseDateType
+        return referralView.nonDtoReleaseDateType
           ? {
               ARD: 'Automatic Release Date',
               CRD: 'Conditional Release Date',
               NPD: 'Non Parole Date',
               PRRD: 'Post Recall Release Date',
-            }[referralSummary.sentence.nonDtoReleaseDateType]
+            }[referralView.nonDtoReleaseDateType]
           : 'N/A'
       case 'Tariff end date':
-        return referralSummary.sentence?.tariffExpiryDate
-          ? DateUtils.govukFormattedFullDateString(referralSummary.sentence.tariffExpiryDate)
+        return referralView.tariffExpiryDate
+          ? DateUtils.govukFormattedFullDateString(referralView.tariffExpiryDate)
           : 'N/A'
       default:
         return ''
@@ -207,76 +207,67 @@ export default class CaseListUtils {
   }
 
   static tableRows(
-    referralSummaries: Array<ReferralSummary>,
+    referralViews: Array<ReferralView>,
     columnsToInclude: Array<CaseListColumnHeader>,
     paths: typeof assessPaths | typeof referPaths = assessPaths,
   ): Array<GovukFrontendTableRow> {
-    return referralSummaries.map(summary => {
+    return referralViews.map(view => {
       const row: GovukFrontendTableRow = []
 
       columnsToInclude.forEach(column => {
         switch (column) {
           case 'Conditional release date':
             row.push({
-              attributes: { 'data-sort-value': summary.sentence?.conditionalReleaseDate },
-              text: CaseListUtils.tableRowContent(summary, 'Conditional release date'),
+              text: CaseListUtils.tableRowContent(view, 'Conditional release date'),
             })
             break
           case 'Date referred':
             row.push({
-              attributes: { 'data-sort-value': summary.submittedOn },
-              text: CaseListUtils.tableRowContent(summary, 'Date referred'),
+              text: CaseListUtils.tableRowContent(view, 'Date referred'),
             })
             break
           case 'Earliest release date':
             row.push({
-              attributes: { 'data-sort-value': summary.earliestReleaseDate },
-              text: CaseListUtils.tableRowContent(summary, 'Earliest release date'),
+              text: CaseListUtils.tableRowContent(view, 'Earliest release date'),
             })
             break
           case 'Name / Prison number':
             row.push({
-              attributes: { 'data-sort-value': CaseListUtils.formattedPrisonerName(summary.prisonerName) },
-              html: CaseListUtils.tableRowContent(summary, 'Name / Prison number', paths),
+              html: CaseListUtils.tableRowContent(view, 'Name / Prison number', paths),
             })
             break
           case 'Parole eligibility date':
             row.push({
-              attributes: { 'data-sort-value': summary.sentence?.paroleEligibilityDate },
-              text: CaseListUtils.tableRowContent(summary, 'Parole eligibility date'),
+              text: CaseListUtils.tableRowContent(view, 'Parole eligibility date'),
             })
             break
           case 'Programme location':
             row.push({
-              attributes: { 'data-sort-value': summary.prisonName },
-              text: CaseListUtils.tableRowContent(summary, 'Programme location'),
+              text: CaseListUtils.tableRowContent(view, 'Programme location'),
             })
             break
           case 'Programme name':
-            row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme name') })
+            row.push({ text: CaseListUtils.tableRowContent(view, 'Programme name') })
             break
           case 'Programme strand':
-            row.push({ text: CaseListUtils.tableRowContent(summary, 'Programme strand') })
+            row.push({ text: CaseListUtils.tableRowContent(view, 'Programme strand') })
             break
           case 'Progress':
-            row.push({ text: CaseListUtils.tableRowContent(summary, 'Progress') })
+            row.push({ text: CaseListUtils.tableRowContent(view, 'Progress') })
             break
           case 'Referral status':
             row.push({
-              attributes: { 'data-sort-value': summary.status },
-              html: CaseListUtils.tableRowContent(summary, 'Referral status'),
+              html: CaseListUtils.tableRowContent(view, 'Referral status'),
             })
             break
           case 'Release date type':
             row.push({
-              attributes: { 'data-sort-value': summary.sentence?.nonDtoReleaseDateType },
-              text: CaseListUtils.tableRowContent(summary, 'Release date type'),
+              text: CaseListUtils.tableRowContent(view, 'Release date type'),
             })
             break
           case 'Tariff end date':
             row.push({
-              attributes: { 'data-sort-value': summary.sentence?.tariffExpiryDate },
-              text: CaseListUtils.tableRowContent(summary, 'Tariff end date'),
+              text: CaseListUtils.tableRowContent(view, 'Tariff end date'),
             })
             break
           default:
@@ -295,27 +286,25 @@ export default class CaseListUtils {
     return uiStatusQueryParam ? uiStatusQueryParam.toUpperCase().replace(/\s/g, '_') : undefined
   }
 
-  private static formattedPrisonerName(prisonerName: ReferralSummary['prisonerName']): string {
-    return StringUtils.convertToTitleCase(
-      [prisonerName?.firstName, prisonerName?.lastName].filter(nameComponent => nameComponent).join(' '),
-    )
+  private static formattedPrisonerName(forename?: ReferralView['forename'], surname?: ReferralView['surname']): string {
+    return StringUtils.convertToTitleCase([forename, surname].filter(nameComponent => nameComponent).join(' '))
   }
 
   private static nameAndPrisonNumberHtml(
-    referralSummary: ReferralSummary,
+    referralView: ReferralView,
     paths: typeof assessPaths | typeof referPaths,
   ): string {
     const path =
-      referralSummary.status === 'referral_started'
-        ? referPaths.new.show({ referralId: referralSummary.id })
+      referralView.status === 'referral_started'
+        ? referPaths.new.show({ referralId: referralView.id })
         : paths.show.personalDetails({
-            referralId: referralSummary.id,
+            referralId: referralView.id,
           })
     const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${path}">`
-    const prisonerName = CaseListUtils.formattedPrisonerName(referralSummary.prisonerName)
+    const prisonerName = CaseListUtils.formattedPrisonerName(referralView?.forename, referralView?.surname)
     const nameAndPrisonNumberHtmlEnd = prisonerName
-      ? `${prisonerName}</a><br>${referralSummary.prisonNumber}`
-      : `${referralSummary.prisonNumber}</a>`
+      ? `${prisonerName}</a><br>${referralView.prisonNumber}`
+      : `${referralView.prisonNumber}</a>`
 
     return nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd
   }

@@ -53,47 +53,7 @@
   </div>
 
   {{ govukTable({
-    attributes: {
-      'data-module': 'moj-sortable-table'
-    },
-    head: [
-      {
-        text: "Name / Prison number",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Conditional release date",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Parole eligibility date",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Tariff end date",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Programme strand",
-        attributes: {
-          "aria-sort": "none"
-        }
-      },
-      {
-        text: "Referral status",
-        attributes: {
-          "aria-sort": "none"
-        }
-      }
-    ],
+    head: tableHeadings,
     rows: tableRows
   }) }}
 

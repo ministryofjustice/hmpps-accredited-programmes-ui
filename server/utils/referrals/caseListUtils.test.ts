@@ -1,6 +1,6 @@
 import CaseListUtils from './caseListUtils'
 import { assessPaths, referPaths } from '../../paths'
-import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
+import { courseFactory, referralViewFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
@@ -369,45 +369,36 @@ describe('CaseListUtils', () => {
   })
 
   describe('tableRowContent', () => {
-    const referralSummary = referralSummaryFactory.build({
+    const referralView = referralViewFactory.build({
       audience: 'General offence',
+      conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
       courseName: 'Test Course',
       earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
+      forename: 'Del',
       id: 'referral-123',
-      prisonName: 'Whatton (HMP)',
+      nonDtoReleaseDateType: 'ARD',
+      organisationName: 'Whatton (HMP)',
+      paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
       prisonNumber: 'ABC1234',
-      prisonerName: { firstName: 'Del', lastName: 'Hatton' },
-      sentence: {
-        conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
-        nonDtoReleaseDateType: 'ARD',
-        paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
-        tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
-      },
       status: 'referral_submitted',
       submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
+      surname: 'Hatton',
+      tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
       tasksCompleted: 4,
     })
 
     describe('Conditional release date', () => {
       it('returns a formatted conditional release date', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Conditional release date')).toEqual('1 January 2023')
+        expect(CaseListUtils.tableRowContent(referralView, 'Conditional release date')).toEqual('1 January 2023')
       })
 
-      describe('when `sentence.conditionalReleaseDate` is `undefined`', () => {
+      describe('when `conditionalReleaseDate` is `undefined`', () => {
         it('returns "N/A"', () => {
           expect(
             CaseListUtils.tableRowContent(
-              { ...referralSummary, sentence: { ...referralSummary.sentence, conditionalReleaseDate: undefined } },
+              { ...referralView, conditionalReleaseDate: undefined },
               'Conditional release date',
             ),
-          ).toEqual('N/A')
-        })
-      })
-
-      describe('when `sentence` is `undefined', () => {
-        it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent({ ...referralSummary, sentence: undefined }, 'Conditional release date'),
           ).toEqual('N/A')
         })
       })
@@ -415,30 +406,27 @@ describe('CaseListUtils', () => {
 
     describe('Date referred', () => {
       it('returns a formatted submitted on date', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Date referred')).toEqual('1 January 2021')
+        expect(CaseListUtils.tableRowContent(referralView, 'Date referred')).toEqual('1 January 2021')
       })
 
       describe('when `submittedOn` is `undefined`', () => {
         it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent({ ...referralSummary, submittedOn: undefined }, 'Date referred'),
-          ).toEqual('N/A')
+          expect(CaseListUtils.tableRowContent({ ...referralView, submittedOn: undefined }, 'Date referred')).toEqual(
+            'N/A',
+          )
         })
       })
     })
 
     describe('Earliest release date', () => {
       it('returns a formatted earliest release date', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Earliest release date')).toEqual('1 January 2022')
+        expect(CaseListUtils.tableRowContent(referralView, 'Earliest release date')).toEqual('1 January 2022')
       })
 
       describe('when `earliestReleaseDate` is `undefined`', () => {
         it('returns "N/A"', () => {
           expect(
-            CaseListUtils.tableRowContent(
-              { ...referralSummary, earliestReleaseDate: undefined },
-              'Earliest release date',
-            ),
+            CaseListUtils.tableRowContent({ ...referralView, earliestReleaseDate: undefined }, 'Earliest release date'),
           ).toEqual('N/A')
         })
       })
@@ -446,7 +434,7 @@ describe('CaseListUtils', () => {
 
     describe('Name / Prison number', () => {
       it('returns a HTML string with the prisoner name on the first line, which links to the referral, and their prison number on a new line', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Name / Prison number')).toEqual(
+        expect(CaseListUtils.tableRowContent(referralView, 'Name / Prison number')).toEqual(
           '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
         )
       })
@@ -455,7 +443,7 @@ describe('CaseListUtils', () => {
         it('links to the Refer new referral show page', () => {
           expect(
             CaseListUtils.tableRowContent(
-              { ...referralSummary, status: 'referral_started', submittedOn: undefined },
+              { ...referralView, status: 'referral_started', submittedOn: undefined },
               'Name / Prison number',
               assessPaths,
             ),
@@ -465,16 +453,19 @@ describe('CaseListUtils', () => {
 
       describe('when referPaths is passed in as the paths argument', () => {
         it('links to a Refer show referral page', () => {
-          expect(CaseListUtils.tableRowContent(referralSummary, 'Name / Prison number', referPaths)).toEqual(
+          expect(CaseListUtils.tableRowContent(referralView, 'Name / Prison number', referPaths)).toEqual(
             '<a class="govuk-link" href="/refer/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
           )
         })
       })
 
-      describe('when `prisonerName` is `undefined`', () => {
+      describe('when `forename` and `surname` are `undefined`', () => {
         it('omits the prisoner name and adds the link to their prison number instead', () => {
           expect(
-            CaseListUtils.tableRowContent({ ...referralSummary, prisonerName: undefined }, 'Name / Prison number'),
+            CaseListUtils.tableRowContent(
+              { ...referralView, forename: undefined, surname: undefined },
+              'Name / Prison number',
+            ),
           ).toEqual('<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>')
         })
       })
@@ -482,38 +473,30 @@ describe('CaseListUtils', () => {
 
     describe('Parole eligibility date', () => {
       it('returns a formatted parole eligibility date', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Parole eligibility date')).toEqual('1 January 2022')
+        expect(CaseListUtils.tableRowContent(referralView, 'Parole eligibility date')).toEqual('1 January 2022')
       })
 
-      describe('when `sentence.paroleEligibilityDate` is `undefined`', () => {
+      describe('when `paroleEligibilityDate` is `undefined`', () => {
         it('returns "N/A"', () => {
           expect(
             CaseListUtils.tableRowContent(
-              { ...referralSummary, sentence: { ...referralSummary.sentence, paroleEligibilityDate: undefined } },
+              { ...referralView, paroleEligibilityDate: undefined },
               'Parole eligibility date',
             ),
-          ).toEqual('N/A')
-        })
-      })
-
-      describe('when `sentence` is `undefined', () => {
-        it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent({ ...referralSummary, sentence: undefined }, 'Parole eligibility date'),
           ).toEqual('N/A')
         })
       })
     })
 
     describe('Programme location', () => {
-      it('returns the prison name', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Programme location')).toEqual('Whatton (HMP)')
+      it('returns the organisation name', () => {
+        expect(CaseListUtils.tableRowContent(referralView, 'Programme location')).toEqual('Whatton (HMP)')
       })
 
-      describe('when `prisonName` is `undefined`', () => {
+      describe('when `organisationName` is `undefined`', () => {
         it('returns "N/A"', () => {
           expect(
-            CaseListUtils.tableRowContent({ ...referralSummary, prisonName: undefined }, 'Programme location'),
+            CaseListUtils.tableRowContent({ ...referralView, organisationName: undefined }, 'Programme location'),
           ).toEqual('N/A')
         })
       })
@@ -521,24 +504,40 @@ describe('CaseListUtils', () => {
 
     describe('Programme name', () => {
       it('returns the course name', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Programme name')).toEqual('Test Course')
+        expect(CaseListUtils.tableRowContent(referralView, 'Programme name')).toEqual('Test Course')
+      })
+
+      describe('when `courseName` is `undefined`', () => {
+        it('returns "N/A"', () => {
+          expect(CaseListUtils.tableRowContent({ ...referralView, courseName: undefined }, 'Programme name')).toEqual(
+            'N/A',
+          )
+        })
       })
     })
 
     describe('Programme strand', () => {
       it('returns the audience', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Programme strand')).toEqual('General offence')
+        expect(CaseListUtils.tableRowContent(referralView, 'Programme strand')).toEqual('General offence')
+      })
+
+      describe('when `audience` is `undefined`', () => {
+        it('returns "N/A"', () => {
+          expect(CaseListUtils.tableRowContent({ ...referralView, audience: undefined }, 'Programme strand')).toEqual(
+            'N/A',
+          )
+        })
       })
     })
 
     describe('Progress', () => {
       it('returns the formatted tasks completed', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Progress')).toEqual('4 out of 4 tasks complete')
+        expect(CaseListUtils.tableRowContent(referralView, 'Progress')).toEqual('4 out of 4 tasks complete')
       })
 
       describe('when `tasksCompleted` is `undefined`', () => {
         it('sets the number to zero', () => {
-          expect(CaseListUtils.tableRowContent({ ...referralSummary, tasksCompleted: undefined }, 'Progress')).toEqual(
+          expect(CaseListUtils.tableRowContent({ ...referralView, tasksCompleted: undefined }, 'Progress')).toEqual(
             '0 out of 4 tasks complete',
           )
         })
@@ -547,7 +546,7 @@ describe('CaseListUtils', () => {
 
     describe('Referral status', () => {
       it('returns the status as a status tag HTML string', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Referral status')).toEqual(
+        expect(CaseListUtils.tableRowContent(referralView, 'Referral status')).toEqual(
           CaseListUtils.statusTagHtml('referral_submitted'),
         )
       })
@@ -555,24 +554,13 @@ describe('CaseListUtils', () => {
 
     describe('Release date type', () => {
       it('returns the non-DTO release date type in a spelled out form', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Release date type')).toEqual('Automatic Release Date')
+        expect(CaseListUtils.tableRowContent(referralView, 'Release date type')).toEqual('Automatic Release Date')
       })
 
-      describe('when `sentence.nonDtoReleaseDateType` is `undefined`', () => {
+      describe('when `nonDtoReleaseDateType` is `undefined`', () => {
         it('returns "N/A"', () => {
           expect(
-            CaseListUtils.tableRowContent(
-              { ...referralSummary, sentence: { ...referralSummary.sentence, nonDtoReleaseDateType: undefined } },
-              'Release date type',
-            ),
-          ).toEqual('N/A')
-        })
-      })
-
-      describe('when `sentence` is `undefined', () => {
-        it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent({ ...referralSummary, sentence: undefined }, 'Release date type'),
+            CaseListUtils.tableRowContent({ ...referralView, nonDtoReleaseDateType: undefined }, 'Release date type'),
           ).toEqual('N/A')
         })
       })
@@ -580,61 +568,53 @@ describe('CaseListUtils', () => {
 
     describe('Tariff end date', () => {
       it('returns a formatted tariff end date', () => {
-        expect(CaseListUtils.tableRowContent(referralSummary, 'Tariff end date')).toEqual('1 January 2024')
+        expect(CaseListUtils.tableRowContent(referralView, 'Tariff end date')).toEqual('1 January 2024')
       })
 
-      describe('when `sentence.tariffExpiryDate` is `undefined`', () => {
+      describe('when `tariffExpiryDate` is `undefined`', () => {
         it('returns "N/A"', () => {
           expect(
-            CaseListUtils.tableRowContent(
-              { ...referralSummary, sentence: { ...referralSummary.sentence, tariffExpiryDate: undefined } },
-              'Tariff end date',
-            ),
+            CaseListUtils.tableRowContent({ ...referralView, tariffExpiryDate: undefined }, 'Tariff end date'),
           ).toEqual('N/A')
-        })
-      })
-
-      describe('when `sentence` is `undefined', () => {
-        it('returns "N/A"', () => {
-          expect(CaseListUtils.tableRowContent({ ...referralSummary, sentence: undefined }, 'Tariff end date')).toEqual(
-            'N/A',
-          )
         })
       })
     })
   })
 
   describe('tableRows', () => {
-    const referralSummaries = [
-      referralSummaryFactory.build({
+    const referralViews = [
+      referralViewFactory.build({
         audience: 'General offence',
+        conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
         courseName: 'Test Course 1',
         earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
+        forename: 'DEL',
         id: 'referral-123',
-        prisonName: 'Whatton (HMP)',
+        nonDtoReleaseDateType: 'ARD',
+        organisationName: 'Whatton (HMP)',
+        paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
         prisonNumber: 'ABC1234',
-        prisonerName: { firstName: 'DEL', lastName: 'HATTON' },
-        sentence: {
-          conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
-          nonDtoReleaseDateType: 'ARD',
-          paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
-          tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
-        },
         status: 'referral_started',
         submittedOn: undefined,
+        surname: 'HATTON',
+        tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
         tasksCompleted: 2,
       }),
-      referralSummaryFactory.build({
+      referralViewFactory.build({
         audience: 'Extremism offence',
+        conditionalReleaseDate: undefined,
         courseName: 'Test Course 2',
         earliestReleaseDate: undefined,
+        forename: undefined,
         id: 'referral-456',
-        prisonName: undefined,
+        nonDtoReleaseDateType: undefined,
+        organisationName: undefined,
+        paroleEligibilityDate: undefined,
         prisonNumber: 'DEF1234',
-        prisonerName: undefined,
-        sentence: {},
         status: 'referral_submitted',
         submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
+        surname: undefined,
+        tariffExpiryDate: undefined,
         tasksCompleted: undefined,
       }),
     ]
@@ -655,155 +635,65 @@ describe('CaseListUtils', () => {
         'Tariff end date',
       ]
 
-      expect(CaseListUtils.tableRows(referralSummaries, columnsToInclude)).toEqual([
+      expect(CaseListUtils.tableRows(referralViews, columnsToInclude)).toEqual([
         [
-          {
-            attributes: { 'data-sort-value': '2023-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Conditional release date'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Date referred'),
-          },
-          {
-            attributes: { 'data-sort-value': '2022-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Earliest release date'),
-          },
-          {
-            attributes: { 'data-sort-value': 'Del Hatton' },
-            html: CaseListUtils.tableRowContent(referralSummaries[0], 'Name / Prison number'),
-          },
-          {
-            attributes: { 'data-sort-value': '2022-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Parole eligibility date'),
-          },
-          {
-            attributes: { 'data-sort-value': 'Whatton (HMP)' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Programme location'),
-          },
-          { text: CaseListUtils.tableRowContent(referralSummaries[0], 'Programme name') },
-          { text: CaseListUtils.tableRowContent(referralSummaries[0], 'Programme strand') },
-          { text: CaseListUtils.tableRowContent(referralSummaries[0], 'Progress') },
-          {
-            attributes: { 'data-sort-value': 'referral_started' },
-            html: CaseListUtils.tableRowContent(referralSummaries[0], 'Referral status'),
-          },
-          {
-            attributes: { 'data-sort-value': 'ARD' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Release date type'),
-          },
-          {
-            attributes: { 'data-sort-value': '2024-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Tariff end date'),
-          },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Conditional release date') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
+          { html: CaseListUtils.tableRowContent(referralViews[0], 'Name / Prison number') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Parole eligibility date') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme location') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme name') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme strand') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Progress') },
+          { html: CaseListUtils.tableRowContent(referralViews[0], 'Referral status') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Release date type') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Tariff end date') },
         ],
         [
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Conditional release date'),
-          },
-          {
-            attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Date referred'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Earliest release date'),
-          },
-          {
-            attributes: { 'data-sort-value': '' },
-            html: CaseListUtils.tableRowContent(referralSummaries[1], 'Name / Prison number'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Parole eligibility date'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Programme location'),
-          },
-          { text: CaseListUtils.tableRowContent(referralSummaries[1], 'Programme name') },
-          { text: CaseListUtils.tableRowContent(referralSummaries[1], 'Programme strand') },
-          { text: CaseListUtils.tableRowContent(referralSummaries[1], 'Progress') },
-          {
-            attributes: { 'data-sort-value': 'referral_submitted' },
-            html: CaseListUtils.tableRowContent(referralSummaries[1], 'Referral status'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Release date type'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Tariff end date'),
-          },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Conditional release date') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
+          { html: CaseListUtils.tableRowContent(referralViews[1], 'Name / Prison number') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Parole eligibility date') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme location') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme name') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme strand') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Progress') },
+          { html: CaseListUtils.tableRowContent(referralViews[1], 'Referral status') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Release date type') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Tariff end date') },
         ],
       ])
     })
 
     it('only includes data corresponding to the given column headers', () => {
       expect(
-        CaseListUtils.tableRows(referralSummaries, [
-          'Conditional release date',
-          'Date referred',
-          'Earliest release date',
-        ]),
+        CaseListUtils.tableRows(referralViews, ['Conditional release date', 'Date referred', 'Earliest release date']),
       ).toEqual([
         [
-          {
-            attributes: { 'data-sort-value': '2023-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Conditional release date'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Date referred'),
-          },
-          {
-            attributes: { 'data-sort-value': '2022-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[0], 'Earliest release date'),
-          },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Conditional release date') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
         ],
         [
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Conditional release date'),
-          },
-          {
-            attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Date referred'),
-          },
-          {
-            attributes: { 'data-sort-value': undefined },
-            text: CaseListUtils.tableRowContent(referralSummaries[1], 'Earliest release date'),
-          },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Conditional release date') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
         ],
       ])
     })
 
     describe('when referPaths is passed in as the paths argument', () => {
       it('passes the paths to `tableRowContent` for that row', () => {
-        expect(
-          CaseListUtils.tableRows(referralSummaries, ['Name / Prison number', 'Date referred'], referPaths),
-        ).toEqual([
+        expect(CaseListUtils.tableRows(referralViews, ['Name / Prison number', 'Date referred'], referPaths)).toEqual([
           [
-            {
-              attributes: { 'data-sort-value': 'Del Hatton' },
-              html: CaseListUtils.tableRowContent(referralSummaries[0], 'Name / Prison number', referPaths),
-            },
-            {
-              attributes: { 'data-sort-value': undefined },
-              text: CaseListUtils.tableRowContent(referralSummaries[0], 'Date referred'),
-            },
+            { html: CaseListUtils.tableRowContent(referralViews[0], 'Name / Prison number', referPaths) },
+            { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
           ],
           [
-            {
-              attributes: { 'data-sort-value': '' },
-              html: CaseListUtils.tableRowContent(referralSummaries[1], 'Name / Prison number', referPaths),
-            },
-            {
-              attributes: { 'data-sort-value': '2021-01-01T00:00:00.000Z' },
-              text: CaseListUtils.tableRowContent(referralSummaries[1], 'Date referred'),
-            },
+            { html: CaseListUtils.tableRowContent(referralViews[1], 'Name / Prison number', referPaths) },
+            { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
           ],
         ])
       })
