@@ -55,4 +55,25 @@ type ReferralSummary = {
   tasksCompleted?: number
 }
 
-export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralSummary, ReferralUpdate }
+type ReferralView = {
+  id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
+  audience?: string
+  conditionalReleaseDate?: Person['conditionalReleaseDate']
+  courseName?: Course['name']
+  earliestReleaseDate?: Person['conditionalReleaseDate'] | Person['paroleEligibilityDate'] | Person['tariffDate']
+  earliestReleaseDateType?: string
+  forename?: string
+  nonDtoReleaseDateType?: Prisoner['nonDtoReleaseDateType']
+  organisationId?: Organisation['id']
+  organisationName?: Organisation['name']
+  paroleEligibilityDate?: Person['paroleEligibilityDate']
+  prisonNumber?: Person['prisonNumber']
+  referrerUsername?: User['username']
+  status?: ReferralStatus
+  submittedOn?: Referral['submittedOn']
+  surname?: string
+  tariffExpiryDate?: Person['tariffDate']
+  tasksCompleted?: number
+}
+
+export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralSummary, ReferralUpdate, ReferralView }
