@@ -171,7 +171,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findReferralViews', () => {
-    describe('without query parameters', () => {
+    // TODO: enable this once Provider tests are refactored
+    describe.skip('without query parameters', () => {
       const paginatedReferralViews: Paginated<ReferralView> = {
         content: [
           referralViewFactory.withAllOptionalFields().build({
