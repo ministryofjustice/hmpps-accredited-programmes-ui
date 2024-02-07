@@ -16,7 +16,7 @@ import offenderBookings from './offenderBookings.json'
 import offenderSentenceAndOffences from './offenderSentenceAndOffences.json'
 import prisoners from './prisoners.json'
 import psychiatric from './psychiatric.json'
-import referralSummaries from './referralSummaries.json'
+import referralViews from './referralViews.json'
 import referrals from './referrals.json'
 
 export {
@@ -38,6 +38,6 @@ export {
   offenderSentenceAndOffences,
   prisoners,
   psychiatric,
-  referralSummaries,
+  referralViews,
   referrals,
 }
