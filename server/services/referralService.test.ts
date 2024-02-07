@@ -4,7 +4,7 @@ import { when } from 'jest-when'
 import ReferralService from './referralService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
-import { referralFactory, referralSummaryFactory } from '../testutils/factories'
+import { referralFactory, referralViewFactory } from '../testutils/factories'
 import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
@@ -53,31 +53,29 @@ describe('ReferralService', () => {
     })
   })
 
-  describe('getMyReferralSummaries', () => {
-    it('returns a list of referral summaries for the logged in user', async () => {
-      const referralSummaries = referralSummaryFactory.buildList(3)
-      const paginatedReferralSummariesResponse = {
-        content: referralSummaries,
+  describe('getMyReferralViews', () => {
+    it('returns a list of referral views for the logged in user', async () => {
+      const referralViews = referralViewFactory.buildList(3)
+      const paginatedReferralViewsResponse = {
+        content: referralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 10,
-        totalElements: referralSummaries.length,
+        totalElements: referralViews.length,
         totalPages: 1,
       }
 
-      when(referralClient.findMyReferralSummaries)
-        .calledWith(undefined)
-        .mockResolvedValue(paginatedReferralSummariesResponse)
+      when(referralClient.findMyReferralViews).calledWith(undefined).mockResolvedValue(paginatedReferralViewsResponse)
 
-      const result = await service.getMyReferralSummaries(username, undefined)
+      const result = await service.getMyReferralViews(username, undefined)
 
-      expect(result).toEqual(paginatedReferralSummariesResponse)
+      expect(result).toEqual(paginatedReferralViewsResponse)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(referralClient.findMyReferralSummaries).toHaveBeenCalledWith(undefined)
+      expect(referralClient.findMyReferralViews).toHaveBeenCalledWith(undefined)
     })
 
     describe('with query values', () => {
@@ -87,10 +85,10 @@ describe('ReferralService', () => {
           status: 'REFERRAL_SUBMITTED',
         }
 
-        await service.getMyReferralSummaries(username, query)
+        await service.getMyReferralViews(username, query)
 
         expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(referralClient.findMyReferralSummaries).toHaveBeenCalledWith(query)
+        expect(referralClient.findMyReferralViews).toHaveBeenCalledWith(query)
       })
     })
   })
@@ -141,33 +139,33 @@ describe('ReferralService', () => {
     )
   })
 
-  describe('getReferralSummaries', () => {
+  describe('getReferralViews', () => {
     const organisationId = 'organisation-id'
 
-    it('returns a list of referral summaries for a given organisation', async () => {
-      const referralSummaries = referralSummaryFactory.buildList(3)
-      const paginatedReferralSummariesResponse = {
-        content: referralSummaries,
+    it('returns a list of referral vuews for a given organisation', async () => {
+      const referralViews = referralViewFactory.buildList(3)
+      const paginatedReferralViewsResponse = {
+        content: referralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 10,
-        totalElements: referralSummaries.length,
+        totalElements: referralViews.length,
         totalPages: 1,
       }
 
-      when(referralClient.findReferralSummaries)
+      when(referralClient.findReferralViews)
         .calledWith(organisationId, undefined)
-        .mockResolvedValue(paginatedReferralSummariesResponse)
+        .mockResolvedValue(paginatedReferralViewsResponse)
 
-      const result = await service.getReferralSummaries(username, organisationId, undefined)
+      const result = await service.getReferralViews(username, organisationId, undefined)
 
-      expect(result).toEqual(paginatedReferralSummariesResponse)
+      expect(result).toEqual(paginatedReferralViewsResponse)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId, undefined)
+      expect(referralClient.findReferralViews).toHaveBeenCalledWith(organisationId, undefined)
     })
 
     describe('with query values', () => {
@@ -176,13 +174,15 @@ describe('ReferralService', () => {
           audience: 'General offence',
           courseName: 'Lime Course',
           page: '1',
+          sortColumn: 'surname',
+          sortDirection: 'ascending',
           status: 'REFERRAL_SUBMITTED',
         }
 
-        await service.getReferralSummaries(username, organisationId, query)
+        await service.getReferralViews(username, organisationId, query)
 
         expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(referralClient.findReferralSummaries).toHaveBeenCalledWith(organisationId, query)
+        expect(referralClient.findReferralViews).toHaveBeenCalledWith(organisationId, query)
       })
     })
   })

@@ -7,13 +7,14 @@ import { when } from 'jest-when'
 import ReferCaseListController from './caseListController'
 import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
-import { referralSummaryFactory } from '../../testutils/factories'
-import { CaseListUtils, PaginationUtils } from '../../utils'
-import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
+import { referralViewFactory } from '../../testutils/factories'
+import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
+import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
   CaseListColumnHeader,
   GovukFrontendPaginationWithItems,
   MojFrontendNavigationItem,
+  QueryParam,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendTableRow } from '@govuk-frontend'
 
@@ -24,6 +25,9 @@ jest.mock('../../utils/referrals/caseListUtils')
 describe('ReferCaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
+  const pathWithQuery = 'path-with-query'
+  const queryParamsExcludingPage: Array<QueryParam> = []
+  const queryParamsExcludingSort: Array<QueryParam> = []
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -54,72 +58,165 @@ describe('ReferCaseListController', () => {
   })
 
   describe('show', () => {
-    let paginatedReferralSummaries: Paginated<ReferralSummary>
+    let paginatedReferralViews: Paginated<ReferralView>
     const tableRows = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
     const pagination = 'bbb' as unknown as jest.Mocked<GovukFrontendPaginationWithItems>
     const subNavigationItems = 'ccc' as unknown as jest.Mocked<Array<MojFrontendNavigationItem>>
+    const tableHeadings = [{ text: 'Heading 1' }, { text: 'Heading 2' }] as unknown as jest.Mocked<
+      Array<CaseListColumnHeader>
+    >
 
     beforeEach(() => {
-      const referralSummaries = referralSummaryFactory.buildList(3)
-      paginatedReferralSummaries = {
-        content: referralSummaries,
+      const referralViews = referralViewFactory.buildList(3)
+      paginatedReferralViews = {
+        content: referralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 10,
-        totalElements: referralSummaries.length,
+        totalElements: referralViews.length,
         totalPages: 1,
       }
-      referralService.getMyReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
+      referralService.getMyReferralViews.mockResolvedValue(paginatedReferralViews)
       ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(subNavigationItems)
+      ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
+      ;(CaseListUtils.queryParamsExcludingSort as jest.Mock).mockReturnValue(queryParamsExcludingSort)
+      ;(CaseListUtils.sortableTableHeadings as jest.Mock).mockReturnValue(tableHeadings)
       ;(CaseListUtils.tableRows as jest.Mock).mockReturnValue(tableRows)
       ;(PaginationUtils.pagination as jest.Mock).mockReturnValue(pagination)
+      ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
     })
 
     describe('when the referral status group is "open"', () => {
-      it('renders the show template with the correct response locals', async () => {
+      const apiOpenStatusQuery = 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
+
+      beforeEach(() => {
         request.params = { referralStatusGroup: 'open' }
-
-        const apiOpenStatusQuery = 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
         ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiOpenStatusQuery)
+      })
 
-        const columnsToInclude: Array<CaseListColumnHeader> = [
-          'Name / Prison number',
-          'Date referred',
-          'Earliest release date',
-          'Release date type',
-          'Programme location',
-          'Programme name',
-          'Referral status',
-        ]
-
+      it('renders the show template with the correct response locals', async () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
-          finalColumnHeader: 'Referral status',
           isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
           subNavigationItems: CaseListUtils.subNavigationItems(request.path),
+          tableHeadings,
           tableRows,
         })
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiOpenStatusQuery.toLowerCase())
-        expect(referralService.getMyReferralSummaries).toHaveBeenCalledWith(username, {
+        expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
           status: apiOpenStatusQuery,
         })
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
           [],
-          paginatedReferralSummaries.pageNumber,
-          paginatedReferralSummaries.totalPages,
+          paginatedReferralViews.pageNumber,
+          paginatedReferralViews.totalPages,
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
+        expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
+          pathWithQuery,
+          {
+            courseName: 'Programme name',
+            earliestReleaseDate: 'Earliest release date',
+            nonDtoReleaseDateType: 'Release date type',
+            organisationName: 'Programme location',
+            status: 'Referral status',
+            submittedOn: 'Date referred',
+            surname: 'Name / Prison number',
+          },
+          undefined,
+          undefined,
+        )
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
-          paginatedReferralSummaries.content,
-          columnsToInclude,
+          paginatedReferralViews.content,
+          [
+            'Name / Prison number',
+            'Date referred',
+            'Earliest release date',
+            'Release date type',
+            'Programme location',
+            'Programme name',
+            'Referral status',
+          ],
           referPaths,
         )
         expect(referralService.getNumberOfTasksCompleted).not.toHaveBeenCalled()
+      })
+
+      describe('when there are query parameters', () => {
+        it('renders the show template with the correct response locals', async () => {
+          const uiSortColumnQueryParam = 'surname'
+          const uiSortDirectionQueryParam = 'ascending'
+
+          request.query = {
+            sortColumn: uiSortColumnQueryParam,
+            sortDirection: uiSortDirectionQueryParam,
+          }
+
+          const requestHandler = controller.show()
+          await requestHandler(request, response, next)
+
+          expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
+            isMyReferralsPage: true,
+            pageHeading: 'My referrals',
+            pagination,
+            subNavigationItems: CaseListUtils.subNavigationItems(request.path),
+            tableHeadings,
+            tableRows,
+          })
+          expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
+            sortColumn: uiSortColumnQueryParam,
+            sortDirection: uiSortDirectionQueryParam,
+            status: apiOpenStatusQuery,
+          })
+          expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
+            undefined,
+            undefined,
+            uiSortColumnQueryParam,
+            uiSortDirectionQueryParam,
+          )
+          expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
+            request.path,
+            queryParamsExcludingPage,
+            paginatedReferralViews.pageNumber,
+            paginatedReferralViews.totalPages,
+          )
+          expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
+            referPaths.caseList.show({ referralStatusGroup: 'open' }),
+            queryParamsExcludingSort,
+          )
+          expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
+            pathWithQuery,
+            {
+              courseName: 'Programme name',
+              earliestReleaseDate: 'Earliest release date',
+              nonDtoReleaseDateType: 'Release date type',
+              organisationName: 'Programme location',
+              status: 'Referral status',
+              submittedOn: 'Date referred',
+              surname: 'Name / Prison number',
+            },
+            uiSortColumnQueryParam,
+            uiSortDirectionQueryParam,
+          )
+          expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
+            paginatedReferralViews.content,
+            [
+              'Name / Prison number',
+              'Date referred',
+              'Earliest release date',
+              'Release date type',
+              'Programme location',
+              'Programme name',
+              'Referral status',
+            ],
+            referPaths,
+          )
+        })
       })
     })
 
@@ -130,62 +227,75 @@ describe('ReferCaseListController', () => {
         const apiDraftStatusQuery = 'REFERRAL_STARTED'
         ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiDraftStatusQuery)
 
-        const columnsToInclude: Array<CaseListColumnHeader> = [
-          'Name / Prison number',
-          'Date referred',
-          'Earliest release date',
-          'Release date type',
-          'Programme location',
-          'Programme name',
-          'Progress',
-        ]
-
         when(referralService.getNumberOfTasksCompleted)
-          .calledWith(username, paginatedReferralSummaries.content[0].id)
+          .calledWith(username, paginatedReferralViews.content[0].id)
           .mockResolvedValue(1)
         when(referralService.getNumberOfTasksCompleted)
-          .calledWith(username, paginatedReferralSummaries.content[1].id)
+          .calledWith(username, paginatedReferralViews.content[1].id)
           .mockResolvedValue(2)
         when(referralService.getNumberOfTasksCompleted)
-          .calledWith(username, paginatedReferralSummaries.content[2].id)
+          .calledWith(username, paginatedReferralViews.content[2].id)
           .mockResolvedValue(3)
 
-        const expectedPaginatedReferralSummariesContent = [
-          { ...paginatedReferralSummaries.content[0], tasksCompleted: 1 },
-          { ...paginatedReferralSummaries.content[1], tasksCompleted: 2 },
-          { ...paginatedReferralSummaries.content[2], tasksCompleted: 3 },
+        const expectedPaginatedReferralViewsContent = [
+          { ...paginatedReferralViews.content[0], tasksCompleted: 1 },
+          { ...paginatedReferralViews.content[1], tasksCompleted: 2 },
+          { ...paginatedReferralViews.content[2], tasksCompleted: 3 },
         ]
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
-          finalColumnHeader: 'Progress',
           isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
           subNavigationItems: CaseListUtils.subNavigationItems(request.path),
+          tableHeadings: [...tableHeadings, { text: 'Progress' }],
           tableRows,
         })
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiDraftStatusQuery.toLowerCase())
-        expect(referralService.getMyReferralSummaries).toHaveBeenCalledWith(username, {
+        expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
           status: apiDraftStatusQuery,
         })
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
-          [],
-          paginatedReferralSummaries.pageNumber,
-          paginatedReferralSummaries.totalPages,
+          queryParamsExcludingPage,
+          paginatedReferralViews.pageNumber,
+          paginatedReferralViews.totalPages,
+        )
+        expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
+          referPaths.caseList.show({ referralStatusGroup: 'draft' }),
+          queryParamsExcludingSort,
         )
         expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
+        expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
+          pathWithQuery,
+          {
+            courseName: 'Programme name',
+            earliestReleaseDate: 'Earliest release date',
+            nonDtoReleaseDateType: 'Release date type',
+            organisationName: 'Programme location',
+            submittedOn: 'Date referred',
+            surname: 'Name / Prison number',
+          },
+          undefined,
+          undefined,
+        )
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
-          expectedPaginatedReferralSummariesContent,
-          columnsToInclude,
+          expectedPaginatedReferralViewsContent,
+          [
+            'Name / Prison number',
+            'Date referred',
+            'Earliest release date',
+            'Release date type',
+            'Programme location',
+            'Programme name',
+            'Progress',
+          ],
           referPaths,
         )
-        expect(referralService.getNumberOfTasksCompleted).toHaveBeenCalledTimes(
-          paginatedReferralSummaries.content.length,
-        )
+        expect(referralService.getNumberOfTasksCompleted).toHaveBeenCalledTimes(paginatedReferralViews.content.length)
       })
     })
 
@@ -197,7 +307,7 @@ describe('ReferCaseListController', () => {
         const expectedError = createError(404, 'Not found')
 
         await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
-        expect(referralService.getMyReferralSummaries).not.toHaveBeenCalled()
+        expect(referralService.getMyReferralViews).not.toHaveBeenCalled()
       })
     })
   })

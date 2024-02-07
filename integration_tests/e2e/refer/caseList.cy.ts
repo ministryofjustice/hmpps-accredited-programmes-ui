@@ -1,6 +1,6 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { referPaths } from '../../../server/paths'
-import { referralFactory, referralSummaryFactory } from '../../../server/testutils/factories'
+import { referralFactory, referralViewFactory } from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
 import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
@@ -9,15 +9,15 @@ import type { CaseListColumnHeader } from '@accredited-programmes/ui'
 
 context('Referral case lists', () => {
   const openStatuses = ['assessment_started', 'awaiting_assessment', 'referral_submitted']
-  const openReferralSummaries = FactoryHelpers.buildListWith(
-    referralSummaryFactory,
+  const openReferralViews = FactoryHelpers.buildListWith(
+    referralViewFactory,
     {},
     { transient: { availableStatuses: openStatuses } },
     15,
   )
   const draftReferrals = referralFactory.buildList(15)
-  const draftReferralSummaries = draftReferrals.map(referral => {
-    return referralSummaryFactory.build({ id: referral.id, status: 'referral_started' })
+  const draftReferralViews = draftReferrals.map(referral => {
+    return referralViewFactory.build({ id: referral.id, status: 'referral_started' })
   })
   const baseColumnHeaders: Array<CaseListColumnHeader> = [
     'Name / Prison number',
@@ -40,9 +40,9 @@ context('Referral case lists', () => {
 
   describe('when viewing open referrals', () => {
     it('shows the correct information', () => {
-      cy.task('stubFindMyReferralSummaries', {
+      cy.task('stubFindMyReferralViews', {
         referralStatusGroup: 'open',
-        referralSummaries: openReferralSummaries,
+        referralViews: openReferralViews,
       })
 
       const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
@@ -50,23 +50,23 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: openReferralsColumnHeaders,
-        referralSummaries: openReferralSummaries,
+        referralViews: openReferralViews,
       })
       caseListPage.shouldContainStatusNavigation('open')
-      caseListPage.shouldContainTableOfReferralSummaries(referPaths)
+      caseListPage.shouldContainTableOfReferralViews(referPaths)
     })
 
     it('includes pagination', () => {
-      cy.task('stubFindMyReferralSummaries', {
+      cy.task('stubFindMyReferralViews', {
         queryParameters: { page: { equalTo: '3' } },
         referralStatusGroup: 'open',
-        referralSummaries: openReferralSummaries,
+        referralViews: openReferralViews,
         totalPages: 7,
       })
-      cy.task('stubFindMyReferralSummaries', {
+      cy.task('stubFindMyReferralViews', {
         queryParameters: { page: { equalTo: '4' } },
         referralStatusGroup: 'open',
-        referralSummaries: openReferralSummaries,
+        referralViews: openReferralViews,
         totalPages: 7,
       })
 
@@ -77,7 +77,7 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: openReferralsColumnHeaders,
-        referralSummaries: openReferralSummaries,
+        referralViews: openReferralViews,
       })
       caseListPage.shouldContainPaginationPreviousButtonLink()
       caseListPage.shouldContainPaginationNextButtonLink()
@@ -99,9 +99,9 @@ context('Referral case lists', () => {
     })
 
     it('shows the correct information', () => {
-      cy.task('stubFindMyReferralSummaries', {
+      cy.task('stubFindMyReferralViews', {
         referralStatusGroup: 'draft',
-        referralSummaries: draftReferralSummaries,
+        referralViews: draftReferralViews,
       })
 
       const path = referPaths.caseList.show({ referralStatusGroup: 'draft' })
@@ -109,23 +109,23 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: draftReferralsColumnHeaders,
-        referralSummaries: draftReferralSummaries,
+        referralViews: draftReferralViews,
       })
       caseListPage.shouldContainStatusNavigation('draft')
-      caseListPage.shouldContainTableOfReferralSummaries(referPaths)
+      caseListPage.shouldContainTableOfReferralViews(referPaths)
     })
 
     it('includes pagination', () => {
-      cy.task('stubFindMyReferralSummaries', {
+      cy.task('stubFindMyReferralViews', {
         queryParameters: { page: { equalTo: '3' } },
         referralStatusGroup: 'draft',
-        referralSummaries: draftReferralSummaries,
+        referralViews: draftReferralViews,
         totalPages: 7,
       })
-      cy.task('stubFindMyReferralSummaries', {
+      cy.task('stubFindMyReferralViews', {
         queryParameters: { page: { equalTo: '4' } },
         referralStatusGroup: 'draft',
-        referralSummaries: draftReferralSummaries,
+        referralViews: draftReferralViews,
         totalPages: 7,
       })
 
@@ -136,7 +136,7 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: draftReferralsColumnHeaders,
-        referralSummaries: draftReferralSummaries,
+        referralViews: draftReferralViews,
       })
       caseListPage.shouldContainPaginationPreviousButtonLink()
       caseListPage.shouldContainPaginationNextButtonLink()
@@ -154,9 +154,9 @@ context('Referral case lists', () => {
 
   describe('when visiting the index, without specifying a status group', () => {
     it('redirects to the open referrals case list page', () => {
-      cy.task('stubFindMyReferralSummaries', {
+      cy.task('stubFindMyReferralViews', {
         referralStatusGroup: 'open',
-        referralSummaries: openReferralSummaries,
+        referralViews: openReferralViews,
       })
 
       const path = referPaths.caseList.index({})
@@ -164,10 +164,10 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: openReferralsColumnHeaders,
-        referralSummaries: openReferralSummaries,
+        referralViews: openReferralViews,
       })
       caseListPage.shouldContainStatusNavigation('open')
-      caseListPage.shouldContainTableOfReferralSummaries(referPaths)
+      caseListPage.shouldContainTableOfReferralViews(referPaths)
     })
   })
 })

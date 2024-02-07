@@ -8,9 +8,9 @@
 
 .filters {
   @include govuk-responsive-padding(3);
-  @include govuk-responsive-margin(7, "bottom");
+  @include govuk-responsive-margin(7, 'bottom');
 
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour('light-grey');
 
   .form-controls {
     * {
@@ -29,11 +29,11 @@
       * {
         width: auto;
       }
-  
+
       .govuk-button {
         margin-bottom: $govuk-border-width-form-element;
       }
-  
+
       .govuk-form-group {
         margin-bottom: 0;
         margin-right: govuk-spacing(3);
@@ -41,3 +41,57 @@
     }
   }
 }
+
+[aria-sort] a {
+  position: relative;
+  padding-right: 10px;
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:before {
+    content: ' ▼';
+    position: absolute;
+    right: -1px;
+    top: 9px;
+    font-size: 0.5em;
+  }
+
+  &:after {
+    content: ' ▲';
+    position: absolute;
+    right: -1px;
+    top: 1px;
+    font-size: 0.5em;
+  }
+}
+
+[aria-sort='ascending'] a {
+  &:before {
+    content: none;
+  }
+
+  &:after {
+    content: ' ▲';
+    font-size: 0.8em;
+    position: absolute;
+    right: -5px;
+    top: 2px;
+  }
+}
+
+[aria-sort='descending'] a {
+  &:before {
+    content: none;
+  }
+
+  &:after {
+    content: ' ▼';
+    font-size: 0.8em;
+    position: absolute;
+    right: -5px;
+    top: 2px;
+  }
+}
+

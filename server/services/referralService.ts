@@ -5,8 +5,8 @@ import type {
   Paginated,
   Referral,
   ReferralStatus,
-  ReferralSummary,
   ReferralUpdate,
+  ReferralView,
 } from '@accredited-programmes/models'
 
 export default class ReferralService {
@@ -27,15 +27,15 @@ export default class ReferralService {
     return referralClient.create(courseOfferingId, prisonNumber)
   }
 
-  async getMyReferralSummaries(
+  async getMyReferralViews(
     username: Express.User['username'],
-    query?: { page?: string; status?: string },
-  ): Promise<Paginated<ReferralSummary>> {
+    query?: { page?: string; sortColumn?: string; sortDirection?: string; status?: string },
+  ): Promise<Paginated<ReferralView>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
-    return referralClient.findMyReferralSummaries(query)
+    return referralClient.findMyReferralViews(query)
   }
 
   async getNumberOfTasksCompleted(username: Express.User['username'], referralId: Referral['id']): Promise<number> {
@@ -59,16 +59,23 @@ export default class ReferralService {
     return referralClient.find(referralId)
   }
 
-  async getReferralSummaries(
+  async getReferralViews(
     username: Express.User['username'],
     organisationId: Organisation['id'],
-    query?: { audience?: string; courseName?: string; page?: string; status?: string },
-  ): Promise<Paginated<ReferralSummary>> {
+    query?: {
+      audience?: string
+      courseName?: string
+      page?: string
+      sortColumn?: string
+      sortDirection?: string
+      status?: string
+    },
+  ): Promise<Paginated<ReferralView>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
-    return referralClient.findReferralSummaries(organisationId, query)
+    return referralClient.findReferralViews(organisationId, query)
   }
 
   async submitReferral(username: Express.User['username'], referralId: Referral['id']): Promise<void> {

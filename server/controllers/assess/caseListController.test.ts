@@ -1,15 +1,15 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
-import type { NextFunction, Request, Response } from 'express'
+import { type NextFunction, type Request, type Response } from 'express'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import AssessCaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferralService } from '../../services'
-import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
+import { courseFactory, referralViewFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
-import type { Paginated, ReferralSummary } from '@accredited-programmes/models'
+import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
   CaseListColumnHeader,
   GovukFrontendPaginationWithItems,
@@ -26,7 +26,9 @@ describe('AssessCaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
   const courseNameSlug = 'lime-course'
+  const pathWithQuery = 'path-with-query'
   const queryParamsExcludingPage: Array<QueryParam> = []
+  const queryParamsExcludingSort: Array<QueryParam> = []
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -74,7 +76,6 @@ describe('AssessCaseListController', () => {
 
   describe('filter', () => {
     const redirectPathBase = assessPaths.caseList.show({ courseName: courseNameSlug })
-    const pathWithQuery = 'path-with-query'
     const audience = 'General violence offence'
     const status = 'ASSESSMENT_STARTED'
 
@@ -100,12 +101,13 @@ describe('AssessCaseListController', () => {
 
   describe('show', () => {
     const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
-    let paginatedReferralSummaries: Paginated<ReferralSummary>
+    let paginatedReferralViews: Paginated<ReferralView>
     const audienceSelectItems = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const referralStatusSelectItems = 'bbb' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const tableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
     const primaryNavigationItems = 'ddd' as unknown as jest.Mocked<Array<MojFrontendNavigationItem>>
     const pagination = 'eee' as unknown as jest.Mocked<GovukFrontendPaginationWithItems>
+    const tableHeadings = 'fff' as unknown as jest.Mocked<Array<CaseListColumnHeader>>
     const columnsToInclude: Array<CaseListColumnHeader> = [
       'Name / Prison number',
       'Conditional release date',
@@ -120,22 +122,25 @@ describe('AssessCaseListController', () => {
 
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
 
-      const referralSummaries = referralSummaryFactory.buildList(3)
-      paginatedReferralSummaries = {
-        content: referralSummaries,
+      const referralViews = referralViewFactory.buildList(3)
+      paginatedReferralViews = {
+        content: referralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 10,
-        totalElements: referralSummaries.length,
+        totalElements: referralViews.length,
         totalPages: 1,
       }
-      referralService.getReferralSummaries.mockResolvedValue(paginatedReferralSummaries)
+      referralService.getReferralViews.mockResolvedValue(paginatedReferralViews)
       ;(CaseListUtils.audienceSelectItems as jest.Mock).mockReturnValue(audienceSelectItems)
       ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(primaryNavigationItems)
       ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
+      ;(CaseListUtils.queryParamsExcludingSort as jest.Mock).mockReturnValue(queryParamsExcludingSort)
+      ;(CaseListUtils.sortableTableHeadings as jest.Mock).mockReturnValue(tableHeadings)
       ;(CaseListUtils.statusSelectItems as jest.Mock).mockReturnValue(referralStatusSelectItems)
       ;(CaseListUtils.tableRows as jest.Mock).mockReturnValue(tableRows)
       ;(PaginationUtils.pagination as jest.Mock).mockReturnValue(pagination)
+      ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
     })
 
     it('renders the show template with the correct response locals', async () => {
@@ -154,36 +159,65 @@ describe('AssessCaseListController', () => {
         pagination,
         primaryNavigationItems,
         referralStatusSelectItems,
+        tableHeadings,
         tableRows,
       })
       expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(undefined)
       expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiStatusQuery.toLowerCase())
-      expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
+      expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
         audience: undefined,
         courseName: 'Lime Course',
         status: apiStatusQuery,
       })
-      expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(undefined, undefined)
+      expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      )
       expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
         request.path,
         queryParamsExcludingPage,
-        paginatedReferralSummaries.pageNumber,
-        paginatedReferralSummaries.totalPages,
+        paginatedReferralViews.pageNumber,
+        paginatedReferralViews.totalPages,
+      )
+      expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
+        assessPaths.caseList.show({ courseName: courseNameSlug }),
+        queryParamsExcludingSort,
       )
       expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
       expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
+      expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
+        pathWithQuery,
+        {
+          audience: 'Programme strand',
+          conditionalReleaseDate: 'Conditional release date',
+          paroleEligibilityDate: 'Parole eligibility date',
+          status: 'Referral status',
+          surname: 'Name / Prison number',
+          tariffExpiryDate: 'Tariff end date',
+        },
+        undefined,
+        undefined,
+      )
       expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(undefined)
-      expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content, columnsToInclude)
+      expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
     })
 
     describe('when there are query parameters', () => {
       it('renders the show template with the correct response locals', async () => {
-        request.query = {
-          status: 'referral submitted',
-          strand: 'general offence',
-        }
         const uiAudienceQueryParam = 'general offence'
+        const uiSortColumnQueryParam = 'surname'
+        const uiSortDirectionQueryParam = 'ascending'
         const uiStatusQueryParam = 'referral submitted'
+
+        request.query = {
+          sortColumn: uiSortColumnQueryParam,
+          sortDirection: uiSortDirectionQueryParam,
+          status: uiStatusQueryParam,
+          strand: uiAudienceQueryParam,
+        }
+
         const apiAudienceQueryParam = 'General offence'
         const apiStatusQueryParam = 'REFERRAL_SUBMITTED'
         ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(apiAudienceQueryParam)
@@ -199,29 +233,51 @@ describe('AssessCaseListController', () => {
           pagination,
           primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
           referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
-          tableRows: CaseListUtils.tableRows(paginatedReferralSummaries.content, columnsToInclude),
+          tableHeadings,
+          tableRows: CaseListUtils.tableRows(paginatedReferralViews.content, columnsToInclude),
         })
         expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(uiAudienceQueryParam)
         expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(uiStatusQueryParam)
-        expect(referralService.getReferralSummaries).toHaveBeenCalledWith(username, activeCaseLoadId, {
+        expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: apiAudienceQueryParam,
           courseName: 'Lime Course',
+          sortColumn: uiSortColumnQueryParam,
+          sortDirection: uiSortDirectionQueryParam,
           status: apiStatusQueryParam,
         })
         expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
           uiAudienceQueryParam,
           uiStatusQueryParam,
+          uiSortColumnQueryParam,
+          uiSortDirectionQueryParam,
         )
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
           queryParamsExcludingPage,
-          paginatedReferralSummaries.pageNumber,
-          paginatedReferralSummaries.totalPages,
+          paginatedReferralViews.pageNumber,
+          paginatedReferralViews.totalPages,
+        )
+        expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
+          assessPaths.caseList.show({ courseName: courseNameSlug }),
+          queryParamsExcludingSort,
         )
         expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
         expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
+        expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
+          pathWithQuery,
+          {
+            audience: 'Programme strand',
+            conditionalReleaseDate: 'Conditional release date',
+            paroleEligibilityDate: 'Parole eligibility date',
+            status: 'Referral status',
+            surname: 'Name / Prison number',
+            tariffExpiryDate: 'Tariff end date',
+          },
+          uiSortColumnQueryParam,
+          uiSortDirectionQueryParam,
+        )
         expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(uiStatusQueryParam)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralSummaries.content, columnsToInclude)
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
       })
     })
 
@@ -233,7 +289,7 @@ describe('AssessCaseListController', () => {
         const expectedError = createError(404, 'Not A Course not found.')
 
         await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
-        expect(referralService.getReferralSummaries).not.toHaveBeenCalled()
+        expect(referralService.getReferralViews).not.toHaveBeenCalled()
       })
     })
   })

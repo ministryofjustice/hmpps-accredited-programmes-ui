@@ -2,7 +2,7 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Paginated, Referral, ReferralSummary } from '@accredited-programmes/models'
+import type { Paginated, Referral, ReferralView } from '@accredited-programmes/models'
 import type { ReferralStatusGroup } from '@accredited-programmes/ui'
 
 interface ReferralAndScenarioOptions {
@@ -14,10 +14,10 @@ interface ReferralAndScenarioOptions {
 
 type QueryParameters = Record<string, { equalTo: string }>
 
-const referralSummariesMetadata = (stubArgs: {
+const referralViewsMetadata = (stubArgs: {
   queryParameters?: QueryParameters
   totalElements?: number
-  totalPages?: Paginated<ReferralSummary>['totalPages']
+  totalPages?: Paginated<ReferralView>['totalPages']
 }): { pageIsEmpty: boolean; pageNumber: number; pageSize: number; totalElements: number; totalPages: number } => {
   const pageNumber = Number(stubArgs.queryParameters?.page?.equalTo || 0)
   const pageSize = 15
@@ -45,14 +45,14 @@ export default {
       },
     }),
 
-  stubFindMyReferralSummaries: (args: {
+  stubFindMyReferralViews: (args: {
     referralStatusGroup: ReferralStatusGroup
-    referralSummaries: Array<ReferralSummary>
+    referralViews: Array<ReferralView>
     queryParameters?: QueryParameters
     totalElements?: number
-    totalPages?: Paginated<ReferralSummary>['totalPages']
+    totalPages?: Paginated<ReferralView>['totalPages']
   }) => {
-    const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralSummariesMetadata(args)
+    const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralViewsMetadata(args)
 
     return stubFor({
       request: {
@@ -74,7 +74,7 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
-          content: args.referralSummaries,
+          content: args.referralViews,
           pageIsEmpty,
           pageNumber,
           pageSize,
@@ -86,14 +86,14 @@ export default {
     })
   },
 
-  stubFindReferralSummaries: (args: {
+  stubFindReferralViews: (args: {
     organisationId: string
-    referralSummaries: Array<ReferralSummary>
+    referralViews: Array<ReferralView>
     queryParameters?: QueryParameters
     totalElements?: number
-    totalPages?: Paginated<ReferralSummary>['totalPages']
+    totalPages?: Paginated<ReferralView>['totalPages']
   }): SuperAgentRequest => {
-    const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralSummariesMetadata(args)
+    const { pageIsEmpty, pageNumber, pageSize, totalElements, totalPages } = referralViewsMetadata(args)
 
     return stubFor({
       request: {
@@ -109,7 +109,7 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
-          content: args.referralSummaries,
+          content: args.referralViews,
           pageIsEmpty,
           pageNumber,
           pageSize,

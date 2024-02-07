@@ -5,9 +5,9 @@ import { pactWith } from 'jest-pact'
 import ReferralClient from './referralClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
-import { referralFactory, referralSummaryFactory } from '../../testutils/factories'
+import { referralFactory, referralViewFactory } from '../../testutils/factories'
 import FactoryHelpers from '../../testutils/factories/factoryHelpers'
-import type { CreatedReferralResponse, Paginated, ReferralSummary, ReferralUpdate } from '@accredited-programmes/models'
+import type { CreatedReferralResponse, Paginated, ReferralUpdate, ReferralView } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let referralClient: ReferralClient
@@ -79,12 +79,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
-  describe('findMyReferralSummaries', () => {
+  describe('findMyReferralViews', () => {
     // TODO: enable this once Provider tests are refactored
     // see https://github.com/ministryofjustice/hmpps-accredited-programmes-api/pull/223) for details
     describe.skip('without query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
-        content: [referralSummaryFactory.build({ status: 'referral_submitted', tasksCompleted: undefined })],
+      const paginatedReferralViews: Paginated<ReferralView> = {
+        content: [referralViewFactory.build({ status: 'referral_submitted', tasksCompleted: undefined })],
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
@@ -95,9 +95,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       beforeEach(() => {
         provider.addInteraction({
           state: 'Referral(s) exist for the logged in user',
-          uponReceiving: "A request for the logged in user's referral summaries",
+          uponReceiving: "A request for the logged in user's referral views",
           willRespondWith: {
-            body: Matchers.like(paginatedReferralSummaries),
+            body: Matchers.like(paginatedReferralViews),
             status: 200,
           },
           withRequest: {
@@ -113,17 +113,17 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         })
       })
 
-      it("fetches the logged in user's referral summaries", async () => {
-        const result = await referralClient.findMyReferralSummaries()
+      it("fetches the logged in user's referral views", async () => {
+        const result = await referralClient.findMyReferralViews()
 
-        expect(result).toEqual(paginatedReferralSummaries)
+        expect(result).toEqual(paginatedReferralViews)
       })
     })
 
     describe('with query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+      const paginatedReferralViews: Paginated<ReferralView> = {
         content: FactoryHelpers.buildListWith(
-          referralSummaryFactory,
+          referralViewFactory,
           { status: 'referral_submitted', tasksCompleted: undefined },
           { transient: { requireOptionalFields: true } },
           1,
@@ -139,9 +139,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         provider.addInteraction({
           state: 'Referral(s) exist for logged in user with status REFERRAL_SUBMITTED',
           uponReceiving:
-            "A request for the second (15 length) page of the logged in user's referral summaries with status REFERRAL_SUBMITTED",
+            "A request for the second (15 length) page of the logged in user's referral views with status REFERRAL_SUBMITTED",
           willRespondWith: {
-            body: Matchers.like(paginatedReferralSummaries),
+            body: Matchers.like(paginatedReferralViews),
             status: 200,
           },
           withRequest: {
@@ -159,22 +159,22 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         })
       })
 
-      it("fetches the logged in user's referral summaries matching the given query parameters", async () => {
-        const result = await referralClient.findMyReferralSummaries({
+      it("fetches the logged in user's referral views matching the given query parameters", async () => {
+        const result = await referralClient.findMyReferralViews({
           page: '1',
           status: 'REFERRAL_SUBMITTED',
         })
 
-        expect(result).toEqual(paginatedReferralSummaries)
+        expect(result).toEqual(paginatedReferralViews)
       })
     })
   })
 
-  describe('findReferralSummaries', () => {
+  describe('findReferralViews', () => {
     describe('without query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+      const paginatedReferralViews: Paginated<ReferralView> = {
         content: [
-          referralSummaryFactory.withAllOptionalFields().build({
+          referralViewFactory.withAllOptionalFields().build({
             earliestReleaseDate: undefined,
             status: 'referral_submitted',
             tasksCompleted: undefined,
@@ -190,9 +190,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       beforeEach(() => {
         provider.addInteraction({
           state: 'Referral(s) exist for organisation BWN',
-          uponReceiving: "A request for organisation BWN's referral summaries",
+          uponReceiving: "A request for organisation BWN's referral views",
           willRespondWith: {
-            body: Matchers.like(paginatedReferralSummaries),
+            body: Matchers.like(paginatedReferralViews),
             status: 200,
           },
           withRequest: {
@@ -208,17 +208,17 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         })
       })
 
-      it("fetches the given organisation's referral summaries", async () => {
-        const result = await referralClient.findReferralSummaries('BWN')
+      it("fetches the given organisation's referral views", async () => {
+        const result = await referralClient.findReferralViews('BWN')
 
-        expect(result).toEqual(paginatedReferralSummaries)
+        expect(result).toEqual(paginatedReferralViews)
       })
     })
 
     describe('with query parameters', () => {
-      const paginatedReferralSummaries: Paginated<ReferralSummary> = {
+      const paginatedReferralViews: Paginated<ReferralView> = {
         content: FactoryHelpers.buildListWith(
-          referralSummaryFactory,
+          referralViewFactory,
           {
             audience: 'General offence',
             courseName: 'Super Course',
@@ -240,9 +240,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
           state:
             'Super Course referral(s) exist for organisation BWM with status REFERRAL_SUBMITTED to offerings for courses with audience General offence',
           uponReceiving:
-            "A request for the second (15 length) page of organistion BWM's Super Course referral summaries with status REFERRAL_SUBMITTED to offerings for courses with audience General offence",
+            "A request for the second (15 length) page of organistion BWM's Super Course referral views with status REFERRAL_SUBMITTED to offerings for courses with audience General offence",
           willRespondWith: {
-            body: Matchers.like(paginatedReferralSummaries),
+            body: Matchers.like(paginatedReferralViews),
             status: 200,
           },
           withRequest: {
@@ -262,15 +262,15 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         })
       })
 
-      it("fetches the given organisation's referral summaries matching the given query parameters", async () => {
-        const result = await referralClient.findReferralSummaries('BWM', {
+      it("fetches the given organisation's referral views matching the given query parameters", async () => {
+        const result = await referralClient.findReferralViews('BWM', {
           audience: 'General offence',
           courseName: 'Super Course',
           page: '1',
           status: 'REFERRAL_SUBMITTED',
         })
 
-        expect(result).toEqual(paginatedReferralSummaries)
+        expect(result).toEqual(paginatedReferralViews)
       })
     })
   })
