@@ -1,5 +1,4 @@
 import type { Course } from './Course'
-import type { CourseAudience } from './CourseAudience'
 import type { CourseOffering } from './CourseOffering'
 import type { Organisation } from './Organisation'
 import type { Person } from './Person'
@@ -30,31 +29,6 @@ type ReferralUpdate = {
 
 type ReferralStatus = 'assessment_started' | 'awaiting_assessment' | 'referral_started' | 'referral_submitted'
 
-type ReferralSummary = {
-  id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
-  audience: CourseAudience
-  courseName: Course['name']
-  prisonNumber: Person['prisonNumber']
-  referrerUsername: User['username']
-  status: ReferralStatus
-  earliestReleaseDate?: Person['conditionalReleaseDate'] | Person['paroleEligibilityDate'] | Person['tariffDate']
-  organisationId?: Organisation['id']
-  prisonerName?: {
-    firstName: Prisoner['firstName']
-    lastName: Prisoner['lastName']
-  }
-  prisonName?: Organisation['name']
-  sentence?: {
-    conditionalReleaseDate?: Person['conditionalReleaseDate']
-    indeterminateSentence?: Person['indeterminateSentence']
-    nonDtoReleaseDateType?: Prisoner['nonDtoReleaseDateType']
-    paroleEligibilityDate?: Person['paroleEligibilityDate']
-    tariffExpiryDate?: Person['tariffDate']
-  }
-  submittedOn?: Referral['submittedOn']
-  tasksCompleted?: number
-}
-
 type ReferralView = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
   audience?: string
@@ -76,4 +50,4 @@ type ReferralView = {
   tasksCompleted?: number
 }
 
-export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralSummary, ReferralUpdate, ReferralView }
+export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate, ReferralView }

@@ -19,14 +19,7 @@ import type { OrganisationAddress } from './OrganisationAddress'
 import type { Paginated } from './Paginated'
 import type { Person } from './Person'
 import type { Psychiatric } from './Psychiatric'
-import type {
-  CreatedReferralResponse,
-  Referral,
-  ReferralStatus,
-  ReferralSummary,
-  ReferralUpdate,
-  ReferralView,
-} from './Referral'
+import type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate, ReferralView } from './Referral'
 import type { Relationships } from './Relationships'
 import type { RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
 import type { RoshAnalysis } from './RoshAnalysis'
@@ -54,7 +47,6 @@ export type {
   Psychiatric,
   Referral,
   ReferralStatus,
-  ReferralSummary,
   ReferralUpdate,
   ReferralView,
   Relationships,
