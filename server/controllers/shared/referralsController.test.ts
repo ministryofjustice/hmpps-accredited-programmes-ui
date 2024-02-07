@@ -238,6 +238,18 @@ describe('ReferralsController', () => {
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
+
+    describe('when the referral has been submitted with an `updatePerson` query', () => {
+      it('calls `referralService.getReferral` with the same value', async () => {
+        request.query.updatePerson = 'true'
+        request.path = referPaths.show.personalDetails({ referralId: referral.id })
+
+        const requestHandler = controller.personalDetails()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments('true')
+      })
+    })
   })
 
   describe('programmeHistory', () => {
@@ -362,8 +374,10 @@ describe('ReferralsController', () => {
     })
   })
 
-  function assertSharedDataServicesAreCalledWithExpectedArguments() {
-    expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
+  function assertSharedDataServicesAreCalledWithExpectedArguments(updatePersonQueryValue?: string) {
+    expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id, {
+      updatePerson: updatePersonQueryValue,
+    })
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
