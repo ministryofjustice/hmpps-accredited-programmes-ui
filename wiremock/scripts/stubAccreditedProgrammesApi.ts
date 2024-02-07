@@ -19,17 +19,15 @@ import {
   oasysRoshAnalysis,
   prisoners,
   psychiatric,
-  referralSummaries,
+  referralViews,
   referrals,
 } from '../stubs'
 import type { Caseload } from '@prison-api'
 
 const stubs: Array<ReturnsSuperAgentRequest> = []
 const activeCaseLoadId = caseloads.find(caseload => caseload.currentlyActive)?.caseLoadId as Caseload['caseLoadId']
-const draftReferralSummaries = referralSummaries.filter(
-  referralSummary => referralSummary.status === 'referral_started',
-)
-const openReferralSummaries = referralSummaries.filter(referralSummary => referralSummary.status !== 'referral_started')
+const draftReferralViews = referralViews.filter(referralView => referralView.status === 'referral_started')
+const openReferralViews = referralViews.filter(referralView => referralView.status !== 'referral_started')
 
 stubs.push(() =>
   stubFor({
@@ -174,18 +172,18 @@ stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
-      url: `${apiPaths.referrals.dashboard({
+      urlPath: `${apiPaths.referrals.dashboard({
         organisationId: activeCaseLoadId,
-      })}?courseName=Becoming%20New%20Me%20Plus&status=ASSESSMENT_STARTED%2CAWAITING_ASSESSMENT%2CREFERRAL_SUBMITTED&size=15`,
+      })}`,
     },
     response: {
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        content: openReferralSummaries,
+        content: openReferralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
-        totalElements: openReferralSummaries.length,
+        totalElements: openReferralViews.length,
         totalPages: 1,
       },
       status: 200,
@@ -197,18 +195,24 @@ stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
-      url: `${apiPaths.referrals.myDashboard(
-        {},
-      )}?status=ASSESSMENT_STARTED%2CAWAITING_ASSESSMENT%2CREFERRAL_SUBMITTED&size=15`,
+      queryParameters: {
+        size: {
+          equalTo: '15',
+        },
+        status: {
+          equalTo: 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED',
+        },
+      },
+      urlPath: `${apiPaths.referrals.myDashboard({})}`,
     },
     response: {
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        content: openReferralSummaries,
+        content: openReferralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
-        totalElements: openReferralSummaries.length,
+        totalElements: openReferralViews.length,
         totalPages: 1,
       },
       status: 200,
@@ -220,16 +224,24 @@ stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
-      url: `${apiPaths.referrals.myDashboard({})}?status=REFERRAL_STARTED&size=15`,
+      queryParameters: {
+        size: {
+          equalTo: '15',
+        },
+        status: {
+          equalTo: 'REFERRAL_STARTED',
+        },
+      },
+      urlPath: `${apiPaths.referrals.myDashboard({})}`,
     },
     response: {
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       jsonBody: {
-        content: draftReferralSummaries,
+        content: draftReferralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 15,
-        totalElements: draftReferralSummaries.length,
+        totalElements: draftReferralViews.length,
         totalPages: 1,
       },
       status: 200,
