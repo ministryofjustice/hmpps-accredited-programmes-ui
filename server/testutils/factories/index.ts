@@ -25,6 +25,7 @@ import prisonerFactory from './prisoner'
 import psychiatricFactory from './psychiatric'
 import referralFactory from './referral'
 import referralSummaryFactory from './referralSummary'
+import referralViewFactory from './referralView'
 import relationshipsFactory from './relationships'
 import risksAndAlertsFactory from './risksAndAlerts'
 import roshAnalysisFactory from './roshAnalysis'
@@ -58,6 +59,7 @@ export {
   psychiatricFactory,
   referralFactory,
   referralSummaryFactory,
+  referralViewFactory,
   relationshipsFactory,
   risksAndAlertsFactory,
   roshAnalysisFactory,
