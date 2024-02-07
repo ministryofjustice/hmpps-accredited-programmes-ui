@@ -140,8 +140,9 @@ export default class NewReferralsController {
       TypeUtils.assertHasUser(req)
 
       const { referralId } = req.params
+      const { updatePerson } = req.query as { updatePerson?: string }
 
-      const referral = await this.referralService.getReferral(req.user.username, referralId)
+      const referral = await this.referralService.getReferral(req.user.username, referralId, { updatePerson })
 
       if (referral.status !== 'referral_started') {
         return res.redirect(referPaths.new.complete({ referralId }))
