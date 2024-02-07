@@ -29,9 +29,17 @@ export default class ReferralClient {
     })) as CreatedReferralResponse
   }
 
-  async find(referralId: Referral['id']): Promise<Referral> {
+  async find(
+    referralId: Referral['id'],
+    query?: {
+      updatePerson?: string
+    },
+  ): Promise<Referral> {
     return (await this.restClient.get({
       path: apiPaths.referrals.show({ referralId }),
+      query: {
+        ...(query?.updatePerson && { updatePerson: query.updatePerson }),
+      },
     })) as Referral
   }
 
