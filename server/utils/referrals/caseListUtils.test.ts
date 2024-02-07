@@ -236,15 +236,15 @@ describe('CaseListUtils', () => {
     describe('when `sortColumn` and `sortDirection` are provided', () => {
       it('sets the correct heading with the `sortDirection` value as `aria-sort` attribute value and the `sortDirection` in the `href` is the `sortColumn` in the opposite direction', () => {
         expect(
-          CaseListUtils.sortableTableHeadings('/case-list', caseListColumns, 'conditionalReleaseDate', 'ascending'),
+          CaseListUtils.sortableTableHeadings('/case-list', caseListColumns, 'conditionalReleaseDate', 'descending'),
         ).toEqual([
           {
             attributes: { 'aria-sort': 'none' },
             html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=surname&sortDirection=ascending">Name / Prison number</a>',
           },
           {
-            attributes: { 'aria-sort': 'ascending' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=conditionalReleaseDate&sortDirection=descending">Conditional release date</a>',
+            attributes: { 'aria-sort': 'descending' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=conditionalReleaseDate&sortDirection=ascending">Conditional release date</a>',
           },
           {
             attributes: { 'aria-sort': 'none' },
@@ -333,9 +333,10 @@ describe('CaseListUtils', () => {
       ['awaiting_assessment', 'orange', 'Awaiting assessment'],
       ['referral_submitted', 'red', 'Referral submitted'],
       ['referral_started', 'grey', 'referral_started'],
+      [undefined, 'grey', 'Unknown'],
     ])(
       'should return the correct HTML for status "%s"',
-      (status: string, expectedColour: string, expectedText: string) => {
+      (status: string | undefined, expectedColour: string, expectedText: string) => {
         const result = CaseListUtils.statusTagHtml(status as ReferralStatus)
 
         expect(result).toBe(`<strong class="govuk-tag govuk-tag--${expectedColour}">${expectedText}</strong>`)
