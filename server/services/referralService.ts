@@ -51,12 +51,16 @@ export default class ReferralService {
     return referralProgressIndicatorKeys.filter(item => referral[item]).length
   }
 
-  async getReferral(username: Express.User['username'], referralId: Referral['id']): Promise<Referral> {
+  async getReferral(
+    username: Express.User['username'],
+    referralId: Referral['id'],
+    query?: { updatePerson?: string },
+  ): Promise<Referral> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
-    return referralClient.find(referralId)
+    return referralClient.find(referralId, query)
   }
 
   async getReferralViews(
