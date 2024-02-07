@@ -173,15 +173,19 @@ describe('NewReferralsController', () => {
   })
 
   describe('show', () => {
+    const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
+
+    beforeEach(() => {
+      request.params.referralId = referralId
+    })
+
     it('renders the referral task list page', async () => {
       courseService.getCourseByOffering.mockResolvedValue(course)
 
-      const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
       personService.getPerson.mockResolvedValue(person)
       referralService.getReferral.mockResolvedValue(draftReferral)
-      request.params.referralId = referralId
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
@@ -189,7 +193,7 @@ describe('NewReferralsController', () => {
       const coursePresenter = createMock<CoursePresenter>({ name: course.name })
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId, { updatePerson: undefined })
       expect(response.render).toHaveBeenCalledWith('referrals/new/show', {
         course: coursePresenter,
         organisation,
@@ -199,15 +203,31 @@ describe('NewReferralsController', () => {
       })
     })
 
+    describe('when the referral has been requested with an `updatePerson` query', () => {
+      it('calls `referralService.getReferral` with the same value', async () => {
+        courseService.getCourseByOffering.mockResolvedValue(course)
+
+        organisationService.getOrganisation.mockResolvedValue(organisation)
+
+        personService.getPerson.mockResolvedValue(person)
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        request.query.updatePerson = 'true'
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId, { updatePerson: 'true' })
+      })
+    })
+
     describe('when the referral has been submitted', () => {
       it('redirects to the referral confirmation action', async () => {
-        request.params.referralId = referralId
         referralService.getReferral.mockResolvedValue(submittedReferral)
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId, { updatePerson: undefined })
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
       })
     })
@@ -216,7 +236,6 @@ describe('NewReferralsController', () => {
       it('redirects to the auth error page', async () => {
         TypeUtils.assertHasUser(request)
 
-        request.params.referralId = referralId
         request.user.username = otherUsername
 
         referralService.getReferral.mockResolvedValue(draftReferral)
@@ -224,7 +243,7 @@ describe('NewReferralsController', () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId)
+        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId, { updatePerson: undefined })
         expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
       })
     })

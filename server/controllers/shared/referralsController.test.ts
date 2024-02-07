@@ -239,7 +239,7 @@ describe('ReferralsController', () => {
       })
     })
 
-    describe('when the referral has been submitted with an `updatePerson` query', () => {
+    describe('when the referral has been requested with an `updatePerson` query', () => {
       it('calls `referralService.getReferral` with the same value', async () => {
         request.query.updatePerson = 'true'
         request.path = referPaths.show.personalDetails({ referralId: referral.id })
