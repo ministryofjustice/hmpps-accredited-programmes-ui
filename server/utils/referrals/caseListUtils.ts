@@ -300,7 +300,7 @@ export default class CaseListUtils {
         : paths.show.personalDetails({
             referralId: referralView.id,
           })
-    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${path}">`
+    const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${path}?updatePerson=true">`
     const prisonerName = CaseListUtils.formattedPrisonerName(referralView?.forename, referralView?.surname)
     const nameAndPrisonNumberHtmlEnd = prisonerName
       ? `${prisonerName}</a><br>${referralView.prisonNumber}`

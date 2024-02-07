@@ -435,7 +435,7 @@ describe('CaseListUtils', () => {
     describe('Name / Prison number', () => {
       it('returns a HTML string with the prisoner name on the first line, which links to the referral, and their prison number on a new line', () => {
         expect(CaseListUtils.tableRowContent(referralView, 'Name / Prison number')).toEqual(
-          '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
+          '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details?updatePerson=true">Del Hatton</a><br>ABC1234',
         )
       })
 
@@ -447,14 +447,16 @@ describe('CaseListUtils', () => {
               'Name / Prison number',
               assessPaths,
             ),
-          ).toEqual('<a class="govuk-link" href="/refer/referrals/new/referral-123">Del Hatton</a><br>ABC1234')
+          ).toEqual(
+            '<a class="govuk-link" href="/refer/referrals/new/referral-123?updatePerson=true">Del Hatton</a><br>ABC1234',
+          )
         })
       })
 
       describe('when referPaths is passed in as the paths argument', () => {
         it('links to a Refer show referral page', () => {
           expect(CaseListUtils.tableRowContent(referralView, 'Name / Prison number', referPaths)).toEqual(
-            '<a class="govuk-link" href="/refer/referrals/referral-123/personal-details">Del Hatton</a><br>ABC1234',
+            '<a class="govuk-link" href="/refer/referrals/referral-123/personal-details?updatePerson=true">Del Hatton</a><br>ABC1234',
           )
         })
       })
@@ -466,7 +468,9 @@ describe('CaseListUtils', () => {
               { ...referralView, forename: undefined, surname: undefined },
               'Name / Prison number',
             ),
-          ).toEqual('<a class="govuk-link" href="/assess/referrals/referral-123/personal-details">ABC1234</a>')
+          ).toEqual(
+            '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details?updatePerson=true">ABC1234</a>',
+          )
         })
       })
     })
