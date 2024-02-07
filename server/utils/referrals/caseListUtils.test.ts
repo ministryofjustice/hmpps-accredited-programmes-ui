@@ -3,7 +3,7 @@ import { assessPaths, referPaths } from '../../paths'
 import { courseFactory, referralSummaryFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
-import type { CaseListColumnHeader } from '@accredited-programmes/ui'
+import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
 jest.mock('../formUtils')
 
@@ -64,17 +64,28 @@ describe('CaseListUtils', () => {
   describe('queryParamsExcludingPage', () => {
     const audienceQueryParam = { key: 'audience', value: 'general violence offence' }
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
+    const sortColumnQueryParam = { key: 'sortColumn', value: 'conditionalReleaseDate' }
+    const sortDirectionQueryParam = { key: 'sortDirection', value: 'ascending' }
 
-    describe('when both audience and status are provided', () => {
+    describe('when all possible params are provided', () => {
       it('returns an array with one `QueryParam` for each, converting audience to "strand"', async () => {
-        expect(CaseListUtils.queryParamsExcludingPage(audienceQueryParam.value, statusQueryParam.value)).toEqual([
+        expect(
+          CaseListUtils.queryParamsExcludingPage(
+            audienceQueryParam.value,
+            statusQueryParam.value,
+            sortColumnQueryParam.value,
+            sortDirectionQueryParam.value,
+          ),
+        ).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
           { key: 'status', value: statusQueryParam.value },
+          { key: 'sortColumn', value: sortColumnQueryParam.value },
+          { key: 'sortDirection', value: sortDirectionQueryParam.value },
         ])
       })
     })
 
-    describe('when audience is undefined', () => {
+    describe('when only status is provided', () => {
       it('returns an array with a status `QueryParam`', async () => {
         expect(CaseListUtils.queryParamsExcludingPage(undefined, statusQueryParam.value)).toEqual([
           { key: 'status', value: statusQueryParam.value },
@@ -82,7 +93,7 @@ describe('CaseListUtils', () => {
       })
     })
 
-    describe('when status is undefined', () => {
+    describe('when only strand is provided', () => {
       it('returns an array with a strand `QueryParam`, converted from "audience"', async () => {
         expect(CaseListUtils.queryParamsExcludingPage(audienceQueryParam.value, undefined)).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
@@ -90,9 +101,206 @@ describe('CaseListUtils', () => {
       })
     })
 
-    describe('when both are undefined', () => {
+    describe('when only sortColumn is provided', () => {
       it('returns an empty array', async () => {
-        expect(CaseListUtils.queryParamsExcludingPage(undefined, undefined)).toEqual([])
+        expect(
+          CaseListUtils.queryParamsExcludingPage(undefined, undefined, sortColumnQueryParam.value, undefined),
+        ).toEqual([])
+      })
+    })
+
+    describe('when only sortDirection is provided', () => {
+      it('returns an empty array', async () => {
+        expect(
+          CaseListUtils.queryParamsExcludingPage(undefined, undefined, undefined, sortDirectionQueryParam.value),
+        ).toEqual([])
+      })
+    })
+
+    describe('when both sortColumn and sortDirection are provided', () => {
+      it('returns an array with both sort `QueryParam`s', async () => {
+        expect(
+          CaseListUtils.queryParamsExcludingPage(
+            undefined,
+            undefined,
+            sortColumnQueryParam.value,
+            sortDirectionQueryParam.value,
+          ),
+        ).toEqual([
+          { key: 'sortColumn', value: sortColumnQueryParam.value },
+          { key: 'sortDirection', value: sortDirectionQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when all params are undefined', () => {
+      it('returns an empty array', async () => {
+        expect(CaseListUtils.queryParamsExcludingPage(undefined, undefined, undefined, undefined)).toEqual([])
+      })
+    })
+  })
+
+  describe('queryParamsExcludingSort', () => {
+    const audienceQueryParam = { key: 'audience', value: 'general violence offence' }
+    const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
+    const pageQueryParam = { key: 'page', value: '2' }
+
+    describe('when all possible params are provided', () => {
+      it('returns an array with one `QueryParam` for each, converting audience to "strand"', async () => {
+        expect(
+          CaseListUtils.queryParamsExcludingSort(
+            audienceQueryParam.value,
+            statusQueryParam.value,
+            pageQueryParam.value,
+          ),
+        ).toEqual([
+          { key: 'strand', value: audienceQueryParam.value },
+          { key: 'status', value: statusQueryParam.value },
+          { key: 'page', value: pageQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when only status is provided', () => {
+      it('returns an array with a status `QueryParam`', async () => {
+        expect(CaseListUtils.queryParamsExcludingSort(undefined, statusQueryParam.value, undefined)).toEqual([
+          { key: 'status', value: statusQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when only strand is provided', () => {
+      it('returns an array with a strand `QueryParam`, converted from "audience"', async () => {
+        expect(CaseListUtils.queryParamsExcludingSort(audienceQueryParam.value, undefined, undefined)).toEqual([
+          { key: 'strand', value: audienceQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when only page is provided', () => {
+      it('returns an array with a page `QueryParam`', async () => {
+        expect(CaseListUtils.queryParamsExcludingSort(undefined, undefined, pageQueryParam.value)).toEqual([
+          { key: 'page', value: pageQueryParam.value },
+        ])
+      })
+    })
+
+    describe('when all params are undefined', () => {
+      it('returns an empty array', async () => {
+        expect(CaseListUtils.queryParamsExcludingSort(undefined, undefined, undefined)).toEqual([])
+      })
+    })
+  })
+
+  describe('sortableTableHeadings', () => {
+    /* eslint-disable sort-keys */
+    const caseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
+      surname: 'Name / Prison number',
+      conditionalReleaseDate: 'Conditional release date',
+      paroleEligibilityDate: 'Parole eligibility date',
+      tariffExpiryDate: 'Tariff end date',
+      audience: 'Programme strand',
+      status: 'Referral status',
+    }
+    /* eslint-enable sort-keys */
+
+    it('returns a formatted array to be used by GOV.UK Nunjucks table macro for sortable headings, wtih the default sorting set to "Name / Prison number" in `ascending` order', () => {
+      expect(CaseListUtils.sortableTableHeadings('/case-list', caseListColumns)).toEqual([
+        {
+          attributes: { 'aria-sort': 'ascending' },
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=surname&sortDirection=descending">Name / Prison number</a>',
+        },
+        {
+          attributes: { 'aria-sort': 'none' },
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=conditionalReleaseDate&sortDirection=ascending">Conditional release date</a>',
+        },
+        {
+          attributes: { 'aria-sort': 'none' },
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=paroleEligibilityDate&sortDirection=ascending">Parole eligibility date</a>',
+        },
+        {
+          attributes: { 'aria-sort': 'none' },
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=tariffExpiryDate&sortDirection=ascending">Tariff end date</a>',
+        },
+        {
+          attributes: { 'aria-sort': 'none' },
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=audience&sortDirection=ascending">Programme strand</a>',
+        },
+        {
+          attributes: { 'aria-sort': 'none' },
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=status&sortDirection=ascending">Referral status</a>',
+        },
+      ])
+    })
+
+    describe('when `sortColumn` and `sortDirection` are provided', () => {
+      it('sets the correct heading with the `sortDirection` value as `aria-sort` attribute value and the `sortDirection` in the `href` is the `sortColumn` in the opposite direction', () => {
+        expect(
+          CaseListUtils.sortableTableHeadings('/case-list', caseListColumns, 'conditionalReleaseDate', 'ascending'),
+        ).toEqual([
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=surname&sortDirection=ascending">Name / Prison number</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'ascending' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=conditionalReleaseDate&sortDirection=descending">Conditional release date</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=paroleEligibilityDate&sortDirection=ascending">Parole eligibility date</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=tariffExpiryDate&sortDirection=ascending">Tariff end date</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=audience&sortDirection=ascending">Programme strand</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=status&sortDirection=ascending">Referral status</a>',
+          },
+        ])
+      })
+    })
+
+    describe('when the `basePath` contains a query string', () => {
+      it('preserves the query string in the `href` of each heading', () => {
+        expect(
+          CaseListUtils.sortableTableHeadings(
+            '/case-list?audience=general+offence',
+            caseListColumns,
+            'conditionalReleaseDate',
+            'ascending',
+          ),
+        ).toEqual([
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=surname&sortDirection=ascending">Name / Prison number</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'ascending' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=conditionalReleaseDate&sortDirection=descending">Conditional release date</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=paroleEligibilityDate&sortDirection=ascending">Parole eligibility date</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=tariffExpiryDate&sortDirection=ascending">Tariff end date</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=audience&sortDirection=ascending">Programme strand</a>',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=status&sortDirection=ascending">Referral status</a>',
+          },
+        ])
       })
     })
   })
