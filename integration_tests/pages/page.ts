@@ -65,8 +65,12 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
+  selectCheckbox(name: string): void {
+    cy.get(`.govuk-checkboxes__input[name="${name}"]`).check({ force: true })
+  }
+
   selectRadioButton(name: string, value: string): void {
-    cy.get(`.govuk-radios__input[name="${name}"][value="${value}"]`).check()
+    cy.get(`.govuk-radios__input[name="${name}"][value="${value}"]`).check({ force: true })
   }
 
   selectSelectItem(testId: string, value: string): void {

@@ -57,7 +57,7 @@ export default class NewReferralCheckAnswersPage extends Page {
       scenarioName: 'Submitting a referral',
     })
 
-    cy.get('[name="confirmation"]').check()
+    this.selectCheckbox('confirmation')
     this.shouldContainButton('Submit referral').click()
   }
 
