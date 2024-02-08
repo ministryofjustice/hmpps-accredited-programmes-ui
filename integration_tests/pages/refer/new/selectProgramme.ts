@@ -25,7 +25,7 @@ export default class NewReferralSelectProgrammePage extends Page {
   }
 
   shouldDisplayOtherCourseInput() {
-    cy.get('[data-testid="other-course-option"]').check()
+    this.selectRadioButton('courseName', 'Other')
     cy.get('input[name="otherCourseName"]').should('be.visible')
   }
 

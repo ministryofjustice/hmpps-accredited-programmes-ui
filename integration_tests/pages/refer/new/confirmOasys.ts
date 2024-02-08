@@ -15,7 +15,7 @@ export default class NewReferralConfirmOasysPage extends Page {
   }
 
   confirmOasys() {
-    cy.get('[name="oasysConfirmed"]').check()
+    this.selectCheckbox('oasysConfirmed')
     this.referral = { ...this.referral, oasysConfirmed: true }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)

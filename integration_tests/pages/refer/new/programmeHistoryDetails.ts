@@ -74,22 +74,22 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   }
 
   shouldDisplayCommunityLocationInput() {
-    cy.get('[data-testid="community-setting-option"]').check()
+    this.selectRadioButton('setting[type]', 'community')
     cy.get('input[id="communityLocation"]').should('be.visible')
   }
 
   shouldDisplayCustodyLocationInput() {
-    cy.get('[data-testid="custody-setting-option"]').check()
+    this.selectRadioButton('setting[type]', 'custody')
     cy.get('input[id="custodyLocation"]').should('be.visible')
   }
 
   shouldDisplayYearCompletedInput() {
-    cy.get('[data-testid="complete-outcome-option"]').check()
+    this.selectRadioButton('outcome[status]', 'complete')
     cy.get('input[id="yearCompleted"]').should('be.visible')
   }
 
   shouldDisplayYearStartedInput() {
-    cy.get('[data-testid="incomplete-outcome-option"]').check()
+    this.selectRadioButton('outcome[status]', 'incomplete')
     cy.get('input[id="yearStarted"]').should('be.visible')
   }
 
