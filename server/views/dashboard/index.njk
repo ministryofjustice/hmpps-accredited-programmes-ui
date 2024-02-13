@@ -13,11 +13,34 @@
       <div class="govuk-grid-column-one-third dashboard__card-wrapper">
         <div class="dashboard__card">
           <h2 class="govuk-heading-m dashboard__card-heading">
-            <a class="govuk-link dashboard__card-link" href="{{ findPath }}">Find an accredited programme</a>
+            <a class="govuk-link dashboard__card-link" href="{{ findPath }}">Find a programme and make a referral</a>
           </h2>
-          <p class="govuk-body dashboard__card-description">Search for an accredited programme and make a referral</p>
+          <p class="govuk-body dashboard__card-description">Search for Accredited Programmes, find out where they’re running and start a referral.</p>
         </div>
       </div>
+
+      {% if 'ROLE_ACP_REFERRER' in user.roles %}
+        <div class="govuk-grid-column-one-third dashboard__card-wrapper">
+          <div class="dashboard__card">
+            <h2 class="govuk-heading-m dashboard__card-heading">
+              <a class="govuk-link dashboard__card-link" href="{{ referCaseListPath }}">My referrals</a>
+            </h2>
+            <p class="govuk-body dashboard__card-description">View draft, open and closed referrals you have made.</p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if 'ROLE_ACP_PROGRAMME_TEAM' in user.roles %}
+        <div class="govuk-grid-column-one-third dashboard__card-wrapper">
+          <div class="dashboard__card">
+            <h2 class="govuk-heading-m dashboard__card-heading">
+              <a class="govuk-link dashboard__card-link" href="{{ assessCaseListPath }}">Manage your programme team’s referrals</a>
+            </h2>
+            <p class="govuk-body dashboard__card-description">View and update all referrals made to your programme team.</p>
+          </div>
+        </div>
+      {% endif %}
+
     </div>
   </div>
 {% endblock content %}
