@@ -23,8 +23,10 @@ describe('DashboardController', () => {
       requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('dashboard/index', {
+        assessCaseListPath: '/assess/referrals/case-list',
         findPath: findPaths.index({}),
-        pageHeading: 'Accredited Programmes',
+        pageHeading: 'Accredited Programmes: find and refer',
+        referCaseListPath: '/refer/referrals/case-list',
       })
     })
   })

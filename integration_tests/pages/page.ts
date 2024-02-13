@@ -204,7 +204,10 @@ export default abstract class Page {
   }
 
   shouldContainNavigation(currentPath: string): void {
-    const navigationItems = [{ href: '/programmes', text: 'List of programmes' }]
+    const navigationItems = [
+      { href: '/programmes', text: 'List of programmes' },
+      { href: '/refer/referrals/case-list', text: 'My referrals' },
+    ]
 
     cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
       const { href, text } = navigationItems[navigationItemElementIndex]
@@ -515,6 +518,10 @@ export default abstract class Page {
 
   shouldNotContainButtonLink(): void {
     cy.get('.govuk-button').should('not.exist')
+  }
+
+  shouldNotContainLink(href: string): void {
+    cy.get(`[href="${href}"]`).should('not.exist')
   }
 
   shouldNotContainNavigation(): void {
