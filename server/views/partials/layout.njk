@@ -55,7 +55,7 @@
     ] %}
 
     {% for role in user.roles %}
-      {% if role === 'ROLE_POM' %}
+      {% if role === 'ROLE_ACP_REFERRER' %}
         {% set primaryNavigationItems = primaryNavigationItems.concat([
           {
             text: 'My referrals',
