@@ -520,6 +520,10 @@ export default abstract class Page {
     cy.get('.govuk-button').should('not.exist')
   }
 
+  shouldNotContainLink(href: string): void {
+    cy.get(`[href="${href}"]`).should('not.exist')
+  }
+
   shouldNotContainNavigation(): void {
     cy.get('.moj-primary-navigation').should('not.exist')
   }

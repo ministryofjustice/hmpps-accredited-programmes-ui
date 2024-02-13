@@ -33,8 +33,7 @@ context('Authentication', () => {
   it('Redirects signed in users to a landing page', () => {
     cy.signIn()
 
-    const indexPage = Page.verifyOnPage(IndexPage)
-    indexPage.findLink().should('contain.text', 'Find an accredited programme')
+    Page.verifyOnPage(IndexPage)
   })
 
   it('User can log out', () => {
