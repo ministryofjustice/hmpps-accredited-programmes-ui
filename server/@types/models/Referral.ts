@@ -6,14 +6,16 @@ import type { User } from '@manage-users-api'
 import type { Prisoner } from '@prisoner-search'
 
 type Referral = {
-  id: string // eslint-disable-next-line @typescript-eslint/member-ordering
-  additionalInformation: string
+  additionalInformation: string // eslint-disable-next-line @typescript-eslint/member-ordering
   hasReviewedProgrammeHistory: boolean
+  id: string
   oasysConfirmed: boolean
   offeringId: CourseOffering['id']
   prisonNumber: Person['prisonNumber']
   referrerUsername: Express.User['username']
-  status: ReferralStatus
+  status: string
+  statusColour: string
+  statusDescription: string
   submittedOn?: string
 }
 
@@ -26,8 +28,6 @@ type ReferralUpdate = {
   oasysConfirmed: Referral['oasysConfirmed']
   additionalInformation?: Referral['additionalInformation']
 }
-
-type ReferralStatus = 'assessment_started' | 'awaiting_assessment' | 'referral_started' | 'referral_submitted'
 
 type ReferralView = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -43,11 +43,13 @@ type ReferralView = {
   paroleEligibilityDate?: Person['paroleEligibilityDate']
   prisonNumber?: Person['prisonNumber']
   referrerUsername?: User['username']
-  status?: ReferralStatus
+  status?: Referral['status']
+  statusColour?: Referral['statusColour']
+  statusDescription?: Referral['statusDescription']
   submittedOn?: Referral['submittedOn']
   surname?: string
   tariffExpiryDate?: Person['tariffDate']
   tasksCompleted?: number
 }
 
-export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate, ReferralView }
+export type { CreatedReferralResponse, Referral, ReferralUpdate, ReferralView }
