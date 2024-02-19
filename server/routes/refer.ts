@@ -22,6 +22,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     newReferralsOasysConfirmationController,
     referralsController,
     risksAndNeedsController,
+    statusHistoryController,
   } = controllers
 
   get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
@@ -64,6 +65,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.new.checkAnswers.pattern, newReferralsController.checkAnswers())
   get(referPaths.new.complete.pattern, newReferralsController.complete())
   post(referPaths.new.submit.pattern, newReferralsController.submit())
+
+  get(referPaths.show.statusHistory.pattern, statusHistoryController.show())
 
   get(referPaths.show.additionalInformation.pattern, referralsController.additionalInformation())
   get(referPaths.show.offenceHistory.pattern, referralsController.offenceHistory())

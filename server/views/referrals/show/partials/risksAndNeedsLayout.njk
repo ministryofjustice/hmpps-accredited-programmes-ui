@@ -1,9 +1,9 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
-{% extends "./rootLayout.njk" %}
+{% extends "./withNavigationLayout.njk" %}
 
 {% block supportingContent %}
-  <p data-testid="risks-and-needs-oasys-message">Relevant sections from OASys to support the referral. The full Layer 3 assessment is available in OASys. Information is accurate at the time of the referral being submitted.</p>
+  <p class="govuk-!-margin-bottom-0" data-testid="risks-and-needs-oasys-message">Relevant sections from OASys to support the referral. The full Layer 3 assessment is available in OASys. Information is accurate at the time of the referral being submitted.</p>
 {% endblock supportingContent %}
 
 {% block primaryContent %}

@@ -51,12 +51,17 @@ export default class ShowReferralUtils {
 
   static subNavigationItems(
     currentPath: Request['path'],
-    currentSection: 'referral' | 'risksAndNeeds',
+    currentSection: 'referral' | 'risksAndNeeds' | 'statusHistory',
     referralId: Referral['id'],
   ): Array<MojFrontendNavigationItem> {
     const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
 
     return [
+      {
+        active: currentSection === 'statusHistory',
+        href: paths.show.statusHistory({ referralId }),
+        text: 'Status history',
+      },
       {
         active: currentSection === 'referral',
         href: paths.show.personalDetails({ referralId }),

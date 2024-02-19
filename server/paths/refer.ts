@@ -83,6 +83,7 @@ export default {
       thinkingAndBehaving: risksAndNeedsPathBase.path('thinking-and-behaving'),
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
+    statusHistory: referralShowPathBase.path('status-history'),
   },
 }
 

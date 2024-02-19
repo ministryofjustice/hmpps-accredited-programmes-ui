@@ -1,0 +1,25 @@
+{% extends "./rootLayout.njk" %}
+
+{% block content %}
+  {{ super() }}
+
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+  <div class="govuk-grid-row">
+    {% if navigationItems | length %}
+      <div class="govuk-grid-column-one-quarter">
+        {{ mojSideNavigation({
+          label: 'Side navigation',
+          items: navigationItems,
+          classes: 'govuk-!-padding-top-0'
+        }) }}
+      </div>
+    {% endif %}
+
+    <div class="govuk-grid-column-three-quarters">
+      {% block primaryContent %}{% endblock primaryContent %}
+    </div>
+  </div>
+{% endblock %}
+```
+
