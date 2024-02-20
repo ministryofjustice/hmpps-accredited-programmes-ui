@@ -2,6 +2,7 @@ import type { Course } from './Course'
 import type { CourseOffering } from './CourseOffering'
 import type { Organisation } from './Organisation'
 import type { Person } from './Person'
+import type { TagColour } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 import type { Prisoner } from '@prisoner-search'
 
@@ -14,6 +15,8 @@ type Referral = {
   prisonNumber: Person['prisonNumber']
   referrerUsername: Express.User['username']
   status: ReferralStatus
+  statusColour?: TagColour
+  statusDescription?: string
   submittedOn?: string
 }
 
@@ -44,6 +47,8 @@ type ReferralView = {
   prisonNumber?: Person['prisonNumber']
   referrerUsername?: User['username']
   status?: ReferralStatus
+  statusColour?: Referral['statusColour']
+  statusDescription?: Referral['statusDescription']
   submittedOn?: Referral['submittedOn']
   surname?: string
   tariffExpiryDate?: Person['tariffDate']
