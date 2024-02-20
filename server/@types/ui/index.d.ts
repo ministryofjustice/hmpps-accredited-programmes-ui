@@ -50,7 +50,17 @@ type HasHtmlString = {
   html: string
 }
 
-type TagColour = 'blue' | 'green' | 'grey' | 'orange' | 'pink' | 'purple' | 'red' | 'turquoise' | 'yellow'
+type TagColour =
+  | 'blue'
+  | 'green'
+  | 'grey'
+  | 'light-blue'
+  | 'orange'
+  | 'pink'
+  | 'purple'
+  | 'red'
+  | 'turquoise'
+  | 'yellow'
 
 type CaseListColumnHeader =
   | 'Conditional release date'
