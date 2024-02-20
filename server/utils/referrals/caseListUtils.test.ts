@@ -328,20 +328,19 @@ describe('CaseListUtils', () => {
   })
 
   describe('statusTagHtml', () => {
-    it.each([
-      ['assessment_started', 'yellow', 'Assessment started'],
-      ['awaiting_assessment', 'orange', 'Awaiting assessment'],
-      ['referral_submitted', 'red', 'Referral submitted'],
-      ['referral_started', 'grey', 'referral_started'],
-      [undefined, 'grey', 'Unknown'],
-    ])(
-      'should return the correct HTML for status "%s"',
-      (status: string | undefined, expectedColour: string, expectedText: string) => {
-        const result = CaseListUtils.statusTagHtml(status as ReferralStatus)
+    it('should return the correct HTML', () => {
+      expect(CaseListUtils.statusTagHtml('green', 'Referral submitted')).toBe(
+        '<strong class="govuk-tag govuk-tag--green">Referral submitted</strong>',
+      )
+    })
 
-        expect(result).toBe(`<strong class="govuk-tag govuk-tag--${expectedColour}">${expectedText}</strong>`)
-      },
-    )
+    describe('when the `statusDescription` is `undefined`', () => {
+      it('returns an empty string', () => {
+        expect(CaseListUtils.statusTagHtml('green', undefined)).toBe(
+          '<strong class="govuk-tag govuk-tag--green">Unknown status</strong>',
+        )
+      })
+    })
   })
 
   describe('subNavigationItems', () => {
@@ -552,7 +551,7 @@ describe('CaseListUtils', () => {
     describe('Referral status', () => {
       it('returns the status as a status tag HTML string', () => {
         expect(CaseListUtils.tableRowContent(referralView, 'Referral status')).toEqual(
-          CaseListUtils.statusTagHtml('referral_submitted'),
+          CaseListUtils.statusTagHtml('green', 'Referral submitted'),
         )
       })
     })

@@ -3,7 +3,7 @@ import { Factory } from 'fishery'
 
 import courseAudienceFactory from './courseAudience'
 import FactoryHelpers from './factoryHelpers'
-import { randomStatus } from './referral'
+import { randomStatus, statusDescriptionAndColour } from './referral'
 import { StringUtils } from '../../utils'
 import type { ReferralStatus, ReferralView } from '@accredited-programmes/models'
 
@@ -20,6 +20,7 @@ class ReferralViewFactory extends Factory<ReferralView, ReferralViewTransientPar
 
 export default ReferralViewFactory.define(({ params, transientParams }) => {
   const { availableStatuses, requireOptionalFields } = transientParams
+  const status = params.status || randomStatus(availableStatuses)
 
   const referralViewWithAllFields: ReferralView = {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
@@ -39,11 +40,12 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
     paroleEligibilityDate: FactoryHelpers.randomFutureDateString(),
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
     referrerUsername: faker.internet.userName(),
-    status: randomStatus(availableStatuses),
+    status,
     submittedOn: faker.date.past().toISOString(),
     surname: faker.person.lastName(),
     tariffExpiryDate: FactoryHelpers.randomFutureDateString(),
     tasksCompleted: faker.number.int({ max: 4, min: 1 }),
+    ...statusDescriptionAndColour(status),
   }
 
   return {

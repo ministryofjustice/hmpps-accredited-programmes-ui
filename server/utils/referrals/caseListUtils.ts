@@ -4,8 +4,8 @@ import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
-import type { Course, ReferralStatus, ReferralView } from '@accredited-programmes/models'
-import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam, TagColour } from '@accredited-programmes/ui'
+import type { Course, Referral, ReferralView } from '@accredited-programmes/models'
+import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -114,30 +114,11 @@ export default class CaseListUtils {
     return this.selectItems(['Assessment started', 'Awaiting assessment', 'Referral submitted'], selectedValue)
   }
 
-  static statusTagHtml(status?: ReferralStatus): string {
-    let colour: TagColour
-    let text: string
-
-    switch (status) {
-      case 'assessment_started':
-        colour = 'yellow'
-        text = 'Assessment started'
-        break
-      case 'awaiting_assessment':
-        colour = 'orange'
-        text = 'Awaiting assessment'
-        break
-      case 'referral_submitted':
-        colour = 'red'
-        text = 'Referral submitted'
-        break
-      default:
-        colour = 'grey'
-        text = status || 'Unknown'
-        break
-    }
-
-    return `<strong class="govuk-tag govuk-tag--${colour}">${text}</strong>`
+  static statusTagHtml(
+    statusColour?: Referral['statusColour'],
+    statusDescription?: Referral['statusDescription'],
+  ): string {
+    return `<strong class="govuk-tag govuk-tag--${statusColour}">${statusDescription || 'Unknown status'}</strong>`
   }
 
   static subNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
@@ -187,7 +168,7 @@ export default class CaseListUtils {
       case 'Progress':
         return `${referralView.tasksCompleted || 0} out of 4 tasks complete`
       case 'Referral status':
-        return CaseListUtils.statusTagHtml(referralView.status)
+        return CaseListUtils.statusTagHtml(referralView.statusColour, referralView.statusDescription)
       case 'Release date type':
         return referralView.nonDtoReleaseDateType
           ? {
