@@ -6,6 +6,21 @@ import type { TagColour } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 import type { Prisoner } from '@prisoner-search'
 
+const referralStatuses = [
+  'assessed_suitable',
+  'assessment_started',
+  'awaiting_assessment',
+  'deselected',
+  'not_suitable',
+  'on_hold_awaiting_assessment',
+  'on_programme',
+  'programme_complete',
+  'referral_started',
+  'referral_submitted',
+  'suitable_not_ready',
+  'withdrawn',
+] as const
+
 type Referral = {
   id: string // eslint-disable-next-line @typescript-eslint/member-ordering
   additionalInformation: string
@@ -30,7 +45,7 @@ type ReferralUpdate = {
   additionalInformation?: Referral['additionalInformation']
 }
 
-type ReferralStatus = 'assessment_started' | 'awaiting_assessment' | 'referral_started' | 'referral_submitted'
+type ReferralStatus = (typeof referralStatuses)[number]
 
 type ReferralView = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -55,4 +70,5 @@ type ReferralView = {
   tasksCompleted?: number
 }
 
+export { referralStatuses }
 export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate, ReferralView }
