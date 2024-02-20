@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
+import { referralStatuses } from '../../@types/models/Referral'
 import type { Referral, ReferralStatus } from '@accredited-programmes/models'
 
 class ReferralFactory extends Factory<Referral> {
@@ -35,10 +36,39 @@ class ReferralFactory extends Factory<Referral> {
   }
 }
 
-export const randomStatus = (availableStatuses?: Array<ReferralStatus>) =>
-  faker.helpers.arrayElement(
-    availableStatuses || ['awaiting_assessment', 'assessment_started', 'referral_started', 'referral_submitted'],
-  ) as ReferralStatus
+const randomStatus = (availableStatuses?: Array<ReferralStatus>) =>
+  faker.helpers.arrayElement(availableStatuses || referralStatuses)
+
+const statusDescriptionAndColour = (status: ReferralStatus): Pick<Referral, 'statusColour' | 'statusDescription'> => {
+  switch (status) {
+    case 'awaiting_assessment':
+      return { statusColour: 'light-blue', statusDescription: 'Awaiting Assessment' }
+    case 'on_hold_awaiting_assessment':
+      return { statusColour: 'light-blue', statusDescription: 'On Hold - Awaiting Assessment' }
+    case 'assessment_started':
+      return { statusColour: 'blue', statusDescription: 'Assessment started' }
+    case 'referral_started':
+      return { statusColour: 'yellow', statusDescription: 'Referral started' }
+    case 'referral_submitted':
+      return { statusColour: 'green', statusDescription: 'Referral submitted' }
+    case 'on_programme':
+      return { statusColour: 'pink', statusDescription: 'On Programme' }
+    case 'withdrawn':
+      return { statusColour: 'grey', statusDescription: 'Withdrawn' }
+    case 'assessed_suitable':
+      return { statusColour: 'purple', statusDescription: 'Assessed as Suitable' }
+    case 'suitable_not_ready':
+      return { statusColour: 'yellow', statusDescription: 'Suitable but not ready' }
+    case 'programme_complete':
+      return { statusColour: 'grey', statusDescription: 'Programme complete' }
+    case 'deselected':
+      return { statusColour: 'grey', statusDescription: 'Deselected' }
+    case 'not_suitable':
+      return { statusColour: 'grey', statusDescription: 'Not suitable' }
+    default:
+      return { statusColour: undefined, statusDescription: undefined }
+  }
+}
 
 export default ReferralFactory.define(({ params }) => {
   const status = params.status || randomStatus()
@@ -53,5 +83,8 @@ export default ReferralFactory.define(({ params }) => {
     referrerUsername: faker.internet.userName(),
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
+    ...statusDescriptionAndColour(status),
   }
 })
+
+export { randomStatus, statusDescriptionAndColour }
