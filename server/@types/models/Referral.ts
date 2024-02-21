@@ -47,6 +47,20 @@ type ReferralUpdate = {
 
 type ReferralStatus = (typeof referralStatuses)[number]
 
+type ReferralStatusHistory = {
+  id?: string
+  notes?: string
+  previousStatus?: Referral['status']
+  previousStatusColour?: Referral['statusColour']
+  previousStatusDescription?: Referral['statusDescription']
+  referralId?: Referral['id']
+  status?: Referral['status']
+  statusColour?: Referral['statusColour']
+  statusDescription?: Referral['statusDescription']
+  statusStartDate?: string
+  username?: User['username']
+}
+
 type ReferralView = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
   audience?: string
@@ -71,4 +85,4 @@ type ReferralView = {
 }
 
 export { referralStatuses }
-export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralUpdate, ReferralView }
+export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralStatusHistory, ReferralUpdate, ReferralView }

@@ -1,7 +1,18 @@
+import CaseListUtils from './caseListUtils'
 import ShowReferralUtils from './showReferralUtils'
 import { assessPaths, referPaths } from '../../paths'
-import { courseFactory, organisationFactory, referralFactory } from '../../testutils/factories'
+import {
+  courseFactory,
+  organisationFactory,
+  referralFactory,
+  referralStatusHistoryFactory,
+} from '../../testutils/factories'
 import CourseUtils from '../courseUtils'
+import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+
+jest.mock('./caseListUtils')
+
+const mockCaseListUtils = CaseListUtils as jest.Mocked<typeof CaseListUtils>
 
 describe('ShowReferralUtils', () => {
   describe('courseOfferingSummaryListRows', () => {
@@ -26,6 +37,56 @@ describe('ShowReferralUtils', () => {
         {
           key: { text: 'Programme location' },
           value: { text: 'HMP Hewell' },
+        },
+      ])
+    })
+  })
+
+  describe('statusHistoryTimelineItems', () => {
+    const statusTagHtml = '<strong>Status tag</strong>'
+
+    beforeEach(() => {
+      mockCaseListUtils.statusTagHtml.mockReturnValue('<strong>Status tag</strong>')
+    })
+
+    it('returns referral status history in the appropriate format for passing to a MoJ Frontend timeline Nunjucks macro', () => {
+      const startedReferralStatusHistory = referralStatusHistoryFactory.started().build()
+      const submittedReferralStatusHistory = referralStatusHistoryFactory.submitted().build()
+      const updatedReferralStatusHistory = referralStatusHistoryFactory.updated().build()
+
+      const statusHistoryPresenter: Array<ReferralStatusHistoryPresenter> = [
+        { ...updatedReferralStatusHistory, byLineText: 'You' },
+        { ...submittedReferralStatusHistory, byLineText: 'Test User' },
+        { ...startedReferralStatusHistory, byLineText: 'Test User' },
+      ]
+
+      expect(ShowReferralUtils.statusHistoryTimelineItems(statusHistoryPresenter)).toEqual([
+        {
+          byline: { text: 'You' },
+          datetime: {
+            timestamp: updatedReferralStatusHistory.statusStartDate,
+            type: 'datetime',
+          },
+          html: expect.stringContaining(updatedReferralStatusHistory.notes as string),
+          label: { text: 'Status update' },
+        },
+        {
+          byline: { text: 'Test User' },
+          datetime: {
+            timestamp: submittedReferralStatusHistory.statusStartDate,
+            type: 'datetime',
+          },
+          html: statusTagHtml,
+          label: { text: 'Referral submitted' },
+        },
+        {
+          byline: { text: 'Test User' },
+          datetime: {
+            timestamp: startedReferralStatusHistory.statusStartDate,
+            type: 'datetime',
+          },
+          html: statusTagHtml,
+          label: { text: 'Status update' },
         },
       ])
     })

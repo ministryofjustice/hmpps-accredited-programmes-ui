@@ -1,3 +1,5 @@
+import type UserService from './userService'
+import logger from '../../logger'
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
   CreatedReferralResponse,
@@ -8,11 +10,14 @@ import type {
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
+import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { User } from '@manage-users-api'
 
 export default class ReferralService {
   constructor(
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly referralClientBuilder: RestClientBuilder<ReferralClient>,
+    private readonly userService: UserService,
   ) {}
 
   async createReferral(
@@ -61,6 +66,38 @@ export default class ReferralService {
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.find(referralId, query)
+  }
+
+  async getReferralStatusHistory(
+    userToken: Express.User['token'],
+    currentUsername: Express.User['username'],
+    referralId: Referral['id'],
+  ): Promise<Array<ReferralStatusHistoryPresenter>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(currentUsername)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    const referralStatusHistory = await referralClient.findReferralStatusHistory(referralId)
+
+    const usernamesWithoutDuplicates: Array<User['username']> = [
+      ...new Set(referralStatusHistory.map(status => status.username as string).filter(username => username)),
+    ]
+
+    const usernamesWithFullNames = await Promise.all(
+      usernamesWithoutDuplicates.map(async value => {
+        try {
+          return { [value]: await this.userService.getFullNameFromUsername(userToken, value) }
+        } catch (error) {
+          logger.error(`Failed to get full name for username ${value}: ${error}`)
+          return { [value]: 'Unknown user' }
+        }
+      }),
+    ).then(usernameWithFullName => Object.assign({}, ...usernameWithFullName))
+
+    return referralStatusHistory.map(status => ({
+      ...status,
+      byLineText: currentUsername === status.username ? 'You' : usernamesWithFullNames[status.username as string],
+    }))
   }
 
   async getReferralViews(

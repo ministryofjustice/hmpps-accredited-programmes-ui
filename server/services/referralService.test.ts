@@ -2,17 +2,21 @@ import { createMock } from '@golevelup/ts-jest'
 import { when } from 'jest-when'
 
 import ReferralService from './referralService'
+import type UserService from './userService'
+import logger from '../../logger'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
-import { referralFactory, referralViewFactory } from '../testutils/factories'
+import { referralFactory, referralStatusHistoryFactory, referralViewFactory } from '../testutils/factories'
 import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
+jest.mock('../../logger')
 
 const redisClient = createMock<RedisClient>({})
 const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
-const systemToken = 'some system token'
+const systemToken = 'SOME_SYSTEM_TOKEN'
+const userToken = 'SOME_USER_TOKEN'
 const username = 'USERNAME'
 
 describe('ReferralService', () => {
@@ -22,7 +26,8 @@ describe('ReferralService', () => {
   const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
   const hmppsAuthClientBuilder = jest.fn()
 
-  const service = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder)
+  const userService = createMock<UserService>()
+  const service = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder, userService)
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -123,6 +128,91 @@ describe('ReferralService', () => {
         expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(referralClient.find).toHaveBeenCalledWith(referral.id, query)
         expect(result).toEqual(referral)
+      })
+    })
+  })
+
+  describe('getReferralStatusHistory', () => {
+    const referralId = 'referral-id'
+    const startedStatusHistory = referralStatusHistoryFactory.started().build({ username: 'ANOTHER_USER' })
+    const submittedStatusHistory = referralStatusHistoryFactory.submitted().build({ username: 'ANOTHER_USER' })
+    const updatedStatusHistory = referralStatusHistoryFactory.updated().build({ username })
+
+    const referralStatusHistory = [updatedStatusHistory, submittedStatusHistory, startedStatusHistory]
+
+    it('returns a referrals status history with the users full name', async () => {
+      when(referralClient.findReferralStatusHistory).calledWith(referralId).mockResolvedValue(referralStatusHistory)
+
+      when(userService.getFullNameFromUsername).calledWith(userToken, username).mockResolvedValue('Current User')
+      when(userService.getFullNameFromUsername).calledWith(userToken, 'ANOTHER_USER').mockResolvedValue('Another User')
+
+      const result = await service.getReferralStatusHistory(userToken, username, referralId)
+
+      expect(result).toEqual([
+        {
+          ...updatedStatusHistory,
+          byLineText: 'You',
+        },
+        {
+          ...submittedStatusHistory,
+          byLineText: 'Another User',
+        },
+        {
+          ...startedStatusHistory,
+          byLineText: 'Another User',
+        },
+      ])
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findReferralStatusHistory).toHaveBeenCalledWith(referralId)
+
+      expect(userService.getFullNameFromUsername).toHaveBeenCalledTimes(2)
+      expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, username)
+      expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, 'ANOTHER_USER')
+    })
+
+    describe('when a users full name cannot be found', () => {
+      it('returns a referrals status history with "Unknown user"', async () => {
+        when(referralClient.findReferralStatusHistory).calledWith(referralId).mockResolvedValue(referralStatusHistory)
+
+        when(userService.getFullNameFromUsername).calledWith(userToken, username).mockResolvedValue('Current User')
+        when(userService.getFullNameFromUsername)
+          .calledWith(userToken, 'ANOTHER_USER')
+          .mockRejectedValue(new Error('User not found'))
+
+        const result = await service.getReferralStatusHistory(userToken, username, referralId)
+
+        expect(result).toEqual([
+          {
+            ...updatedStatusHistory,
+            byLineText: 'You',
+          },
+          {
+            ...submittedStatusHistory,
+            byLineText: 'Unknown user',
+          },
+          {
+            ...startedStatusHistory,
+            byLineText: 'Unknown user',
+          },
+        ])
+
+        expect(logger.error).toHaveBeenCalledWith(
+          'Failed to get full name for username ANOTHER_USER: Error: User not found',
+        )
+
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+        expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(referralClient.findReferralStatusHistory).toHaveBeenCalledWith(referralId)
+
+        expect(userService.getFullNameFromUsername).toHaveBeenCalledTimes(2)
+        expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, username)
+        expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, 'ANOTHER_USER')
       })
     })
   })

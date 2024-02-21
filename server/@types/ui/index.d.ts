@@ -5,6 +5,7 @@ import type {
   Organisation,
   Person,
   Referral,
+  ReferralStatusHistory,
   RiskLevel,
 } from '@accredited-programmes/models'
 import type {
@@ -209,6 +210,23 @@ type SortableCaseListColumnKey =
   | 'surname'
   | 'tariffExpiryDate'
 
+type HtmlOrText = { html: string } | { text: string }
+
+type MojTimelineItem = HtmlOrText & {
+  byline: {
+    text: string
+  }
+  datetime: {
+    timestamp: string
+    type?: 'date' | 'datetime' | 'shortdate' | 'shortdatetime' | 'time'
+  }
+  label: HtmlOrText
+}
+
+type ReferralStatusHistoryPresenter = ReferralStatusHistory & {
+  byLineText: MojTimelineItem['byline']['text']
+}
+
 export type {
   CaseListColumnHeader,
   CourseParticipationPresenter,
@@ -223,6 +241,7 @@ export type {
   HasHtmlString,
   HasTextString,
   MojFrontendNavigationItem,
+  MojTimelineItem,
   OffenceDetails,
   OffenceHistory,
   OrganisationWithOfferingEmailsPresenter,
@@ -231,6 +250,7 @@ export type {
   QueryParam,
   ReferralSharedPageData,
   ReferralStatusGroup,
+  ReferralStatusHistoryPresenter,
   ReferralTaskListItem,
   ReferralTaskListSection,
   ReferralTaskListStatusTag,

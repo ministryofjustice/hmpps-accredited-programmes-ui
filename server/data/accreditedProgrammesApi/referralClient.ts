@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { ApiConfig } from '../../config'
 import config from '../../config'
 import { apiPaths } from '../../paths'
@@ -7,6 +9,7 @@ import type {
   Paginated,
   Referral,
   ReferralStatus,
+  ReferralStatusHistory,
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
@@ -59,6 +62,12 @@ export default class ReferralClient {
         size: '15',
       },
     })) as Paginated<ReferralView>
+  }
+
+  async findReferralStatusHistory(referralId: Referral['id']): Promise<Array<ReferralStatusHistory>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.statusHistory({ referralId }),
+    })) as Array<ReferralStatusHistory>
   }
 
   async findReferralViews(
