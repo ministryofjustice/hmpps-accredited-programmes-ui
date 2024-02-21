@@ -1,5 +1,6 @@
 import type { Request } from 'express'
 
+import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import type { Organisation, Referral } from '@accredited-programmes/models'
@@ -7,6 +8,8 @@ import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
   MojFrontendNavigationItem,
+  MojTimelineItem,
+  ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 
@@ -29,6 +32,32 @@ export default class ShowReferralUtils {
         value: { text: organisationName },
       },
     ]
+  }
+
+  static statusHistoryTimelineItems(
+    statusHistoryPresenter: Array<ReferralStatusHistoryPresenter>,
+  ): Array<MojTimelineItem> {
+    return statusHistoryPresenter.map(status => {
+      const html = CaseListUtils.statusTagHtml(status.statusColour, status.statusDescription)
+
+      return {
+        byline: {
+          text: status.byLineText,
+        },
+        datetime: {
+          timestamp: status.statusStartDate as string,
+          type: 'datetime',
+        },
+        html: status.notes
+          ? html.concat(
+              `<p class="govuk-!-margin-top-4 govuk-!-margin-bottom-0"><strong>Status details: </strong>${status.notes}</p>`,
+            )
+          : html,
+        label: {
+          text: status.status?.toLowerCase() === 'referral_submitted' ? 'Referral submitted' : 'Status update',
+        },
+      }
+    })
   }
 
   static submissionSummaryListRows(
