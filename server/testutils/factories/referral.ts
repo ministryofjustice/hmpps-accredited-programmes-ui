@@ -39,7 +39,7 @@ class ReferralFactory extends Factory<Referral> {
 const randomStatus = (availableStatuses?: Array<ReferralStatus>) =>
   faker.helpers.arrayElement(availableStatuses || referralStatuses)
 
-const statusDescriptionAndColour = (status: ReferralStatus): Pick<Referral, 'statusColour' | 'statusDescription'> => {
+const statusDescriptionAndColour = (status?: ReferralStatus): Pick<Referral, 'statusColour' | 'statusDescription'> => {
   switch (status) {
     case 'awaiting_assessment':
       return { statusColour: 'light-blue', statusDescription: 'Awaiting Assessment' }
