@@ -11,10 +11,12 @@ import {
   organisationFactory,
   personFactory,
   referralFactory,
+  referralStatusHistoryFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, ShowReferralUtils } from '../../utils'
 import type { Person, Referral } from '@accredited-programmes/models'
+import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/referrals/showReferralUtils')
 
@@ -37,20 +39,32 @@ describe('StatusHistoryController', () => {
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
+  const timelineItems: Array<MojTimelineItem> = [
+    {
+      byline: { text: 'Test User' },
+      datetime: { timestamp: new Date().toISOString(), type: 'datetime' },
+      html: 'html',
+      label: { text: 'Referral submitted' },
+    },
+  ]
   let person: Person
   let referral: Referral
+  let referralStatusHistory: Array<ReferralStatusHistoryPresenter>
 
   let controller: StatusHistoryController
 
   beforeEach(() => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
+    mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
+    referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
 
     controller = new StatusHistoryController(courseService, personService, referralService)
 
@@ -73,10 +87,12 @@ describe('StatusHistoryController', () => {
         person,
         referral,
         subNavigationItems,
+        timelineItems,
       })
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
+      expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(personService.getPerson).toHaveBeenCalledWith(
         username,
         referral.prisonNumber,
@@ -87,6 +103,7 @@ describe('StatusHistoryController', () => {
         'statusHistory',
         referral.id,
       )
+      expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
   })
 })

@@ -15,12 +15,13 @@ export default class StatusHistoryController {
       TypeUtils.assertHasUser(req)
 
       const { referralId } = req.params
-      const { username } = req.user
+      const { token: userToken, username } = req.user
 
       const referral = await this.referralService.getReferral(username, referralId)
 
-      const [course, person] = await Promise.all([
+      const [course, statusHistory, person] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
+        this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
       ])
 
@@ -32,6 +33,7 @@ export default class StatusHistoryController {
         person,
         referral,
         subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'statusHistory', referral.id),
+        timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory),
       })
     }
   }

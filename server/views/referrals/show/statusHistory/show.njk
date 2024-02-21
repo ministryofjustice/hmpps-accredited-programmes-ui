@@ -1,5 +1,9 @@
+{% from "moj/components/timeline/macro.njk" import mojTimeline %}
+
 {% extends "../partials/rootLayout.njk" %}
 
 {% block supportingContent %}
-  <p>Timeline here</p>
+  {{ mojTimeline({
+    items: timelineItems
+  }) }}
 {% endblock supportingContent %}
