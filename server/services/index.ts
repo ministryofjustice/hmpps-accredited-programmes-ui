@@ -22,8 +22,8 @@ const services = () => {
   const oasysService = new OasysService(hmppsAuthClientBuilder, oasysClientBuilder)
   const organisationService = new OrganisationService(prisonRegisterApiClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
-  const referralService = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder)
   const userService = new UserService(hmppsManageUsersClientBuilder, prisonApiClientBuilder)
+  const referralService = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder, userService)
   const courseService = new CourseService(courseClientBuilder, hmppsAuthClientBuilder, userService)
 
   return {
