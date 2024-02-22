@@ -35,7 +35,7 @@ export default class NewReferralUtils {
         value: { text: referrerName },
       },
       {
-        key: { text: 'Referring prison' },
+        key: { text: 'Programme location' },
         value: { text: organisation.name },
       },
       {
