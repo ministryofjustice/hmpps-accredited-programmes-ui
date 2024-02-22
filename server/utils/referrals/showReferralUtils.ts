@@ -11,9 +11,21 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendButton } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
 export default class ShowReferralUtils {
+  static buttons(currentPath: Request['path']): Array<GovukFrontendButton> {
+    const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
+
+    return [
+      {
+        href: paths.caseList.index({}),
+        text: 'Back to my referrals',
+      },
+    ]
+  }
+
   static courseOfferingSummaryListRows(
     coursePresenter: CoursePresenter,
     organisationName: Organisation['name'],
