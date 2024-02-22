@@ -15,6 +15,30 @@ jest.mock('./caseListUtils')
 const mockCaseListUtils = CaseListUtils as jest.Mocked<typeof CaseListUtils>
 
 describe('ShowReferralUtils', () => {
+  describe('buttons', () => {
+    describe('when on the assess journey', () => {
+      it('contains the "Back to my referrals" button with the corect href', () => {
+        expect(ShowReferralUtils.buttons(assessPaths.show.statusHistory({ referralId: 'mockReferralId' }))).toEqual([
+          {
+            href: '/assess/referrals/case-list',
+            text: 'Back to my referrals',
+          },
+        ])
+      })
+    })
+
+    describe('when on the refer journey', () => {
+      it('contains the "Back to my referrals" button with the corect href', () => {
+        expect(ShowReferralUtils.buttons(referPaths.show.statusHistory({ referralId: 'mockReferralId' }))).toEqual([
+          {
+            href: '/refer/referrals/case-list',
+            text: 'Back to my referrals',
+          },
+        ])
+      })
+    })
+  })
+
   describe('courseOfferingSummaryListRows', () => {
     it('formats course offering information in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       const course = courseFactory.build({

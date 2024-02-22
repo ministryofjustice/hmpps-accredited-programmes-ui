@@ -91,6 +91,7 @@ describe('RisksAndNeedsController', () => {
   const importedFromDate = '10 January 2024'
   const navigationItems = [{ active: true, href: 'nav-href', text: 'Nav Item' }]
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
+  const buttons = [{ href: 'button-href', text: 'Button' }]
   let person: Person
   let referral: Referral
   let sharedPageData: Omit<RisksAndNeedsSharedPageData, 'navigationItems' | 'subNavigationItems'>
@@ -103,8 +104,10 @@ describe('RisksAndNeedsController', () => {
     mockDateUtils.govukFormattedFullDateString.mockReturnValue(importedFromDate)
     mockShowRisksAndNeedsUtils.navigationItems.mockReturnValue(navigationItems)
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
+    mockShowReferralUtils.buttons.mockReturnValue(buttons)
 
     sharedPageData = {
+      buttons,
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       pageSubHeading: 'Risks and needs',
       person,
@@ -140,7 +143,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.attitudes()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
         ...sharedPageData,
@@ -161,7 +164,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.attitudes()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
           ...sharedPageData,
@@ -187,7 +190,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.emotionalWellbeing()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
         ...sharedPageData,
@@ -208,7 +211,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.emotionalWellbeing()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
           ...sharedPageData,
@@ -236,7 +239,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.learningNeeds()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
         ...sharedPageData,
@@ -258,7 +261,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.learningNeeds()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
           ...sharedPageData,
@@ -284,7 +287,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.health()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/health', {
         ...sharedPageData,
@@ -305,7 +308,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.health()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/health', {
           ...sharedPageData,
@@ -331,7 +334,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.lifestyleAndAssociates()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
         ...sharedPageData,
@@ -352,7 +355,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.lifestyleAndAssociates()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
           ...sharedPageData,
@@ -400,7 +403,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.offenceAnalysis()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
         ...sharedPageData,
@@ -427,7 +430,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.offenceAnalysis()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
           ...sharedPageData,
@@ -453,7 +456,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.relationships()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
         ...sharedPageData,
@@ -474,7 +477,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.relationships()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
           ...sharedPageData,
@@ -580,7 +583,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.risksAndAlerts()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
         ...sharedPageData,
@@ -613,7 +616,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.risksAndAlerts()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
           ...sharedPageData,
@@ -639,7 +642,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.roshAnalysis()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
         ...sharedPageData,
@@ -660,7 +663,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.roshAnalysis()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
           ...sharedPageData,
@@ -688,7 +691,7 @@ describe('RisksAndNeedsController', () => {
       const requestHandler = controller.thinkingAndBehaving()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
         ...sharedPageData,
@@ -709,7 +712,7 @@ describe('RisksAndNeedsController', () => {
         const requestHandler = controller.thinkingAndBehaving()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments()
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
           ...sharedPageData,
@@ -721,9 +724,10 @@ describe('RisksAndNeedsController', () => {
     })
   })
 
-  function assertSharedDataServicesAreCalledWithExpectedArguments() {
+  function assertSharedDataServicesAreCalledWithExpectedArguments(path?: Request['path']) {
     expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path)
   }
 })

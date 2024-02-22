@@ -350,6 +350,7 @@ export default class RisksAndNeedsController {
     const coursePresenter = CourseUtils.presentCourse(course)
 
     return {
+      buttons: ShowReferralUtils.buttons(req.path),
       navigationItems: ShowRisksAndNeedsUtils.navigationItems(req.path, referral.id),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       pageSubHeading: 'Risks and needs',

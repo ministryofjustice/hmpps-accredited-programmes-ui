@@ -1,4 +1,5 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/side-navigation/macro.njk" import mojSideNavigation %}
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
@@ -8,18 +9,23 @@
   {% include "../../_personBanner.njk" %}
 {% endblock personBanner %}
 
-{% block backLink %}
-  {{ govukBackLink({
-    text: "Back to my referrals",
-    href: "#"
-  }) }}
-{% endblock backLink %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
     </div>
+
+    {% if buttons | length %}
+      <div class="govuk-grid-column-one-third govuk-!-text-align-right" data-testid="show-referral-buttons">
+        {% for button in buttons %}
+          {{ govukButton({
+            text: button.text,
+            href: button.href,
+            classes: button.classes
+          }) }}
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 
   {{ mojSubNavigation({
@@ -28,7 +34,7 @@
   }) }}
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds ">
       <h2 class="govuk-heading-m" data-testid="show-referral-sub-heading">{{ pageSubHeading }}</h2>
 
       {% block supportingContent %}{% endblock supportingContent %}
