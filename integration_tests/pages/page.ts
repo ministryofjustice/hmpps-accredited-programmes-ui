@@ -20,6 +20,7 @@ import type {
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
+  MojTimelineItem,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListCardTitle, GovukFrontendWarningText } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
@@ -319,13 +320,13 @@ export default abstract class Page {
     })
   }
 
-  shouldContainShowReferralSubHeading(): void {
-    cy.get('[data-testid="show-referral-sub-heading"]').should('have.text', 'Risks and needs')
+  shouldContainShowReferralSubHeading(subHeading: string): void {
+    cy.get('[data-testid="show-referral-sub-heading"]').should('have.text', subHeading)
   }
 
   shouldContainShowReferralSubNavigation(
     currentPath: string,
-    currentSection: 'referral' | 'risksAndNeeds',
+    currentSection: 'referral' | 'risksAndNeeds' | 'statusHistory',
     referralId: Referral['id'],
   ): void {
     const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
@@ -348,6 +349,8 @@ export default abstract class Page {
             if (currentSection === 'referral' && text === 'Referral details') {
               cy.get('a').should('have.attr', 'aria-current', 'page')
             } else if (currentSection === 'risksAndNeeds' && text === 'Risks and needs') {
+              cy.get('a').should('have.attr', 'aria-current', 'page')
+            } else if (currentSection === 'statusHistory' && text === 'Status history') {
               cy.get('a').should('have.attr', 'aria-current', 'page')
             } else {
               cy.get('a').should('not.have.attr', 'aria-current', 'page')
@@ -468,6 +471,36 @@ export default abstract class Page {
       expect(actual).to.equal(expected)
     })
     cy.get(`.govuk-textarea[id="${id}"]`).should('exist')
+  }
+
+  shouldContainTimelineItems(items: Array<MojTimelineItem>, element: JQuery<HTMLElement>): void {
+    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+    const mojFilters = require('@ministryofjustice/frontend/moj/filters/all')()
+
+    cy.wrap(element).within(() => {
+      items.forEach((item, itemIndex) => {
+        cy.get('.moj-timeline__item')
+          .eq(itemIndex)
+          .within(timelineItemElement => {
+            cy.wrap(timelineItemElement).within(() => {
+              if ('text' in item.label) {
+                cy.get('.moj-timeline__title').should('have.text', item.label.text)
+              }
+              cy.get('.moj-timeline__byline').should('have.text', `by ${item.byline.text}`)
+              cy.get('.moj-timeline__date').should(
+                'contain.text',
+                mojFilters.mojDate(item.datetime.timestamp, item.datetime.type),
+              )
+              cy.get('.moj-timeline__description').then(htmlElement => {
+                if ('html' in item) {
+                  const { actual, expected } = Helpers.parseHtml(htmlElement, item.html)
+                  expect(actual).to.equal(expected)
+                }
+              })
+            })
+          })
+      })
+    })
   }
 
   shouldContainWarningText(text: GovukFrontendWarningText['text']): void {

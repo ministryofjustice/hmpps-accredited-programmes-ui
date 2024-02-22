@@ -14,6 +14,7 @@ import RisksAndAlertsPage from './showReferral/risksAndNeeds/risksAndAlerts'
 import RoshAnalysisPage from './showReferral/risksAndNeeds/roshAnalysis'
 import ThinkingAndBehavingPage from './showReferral/risksAndNeeds/thinkingAndBehaving'
 import SentenceInformationPage from './showReferral/sentenceInformation'
+import StatusHistoryPage from './showReferral/statusHistory'
 
 export {
   AdditionalInformationPage,
@@ -31,5 +32,6 @@ export {
   RisksAndAlertsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
+  StatusHistoryPage,
   ThinkingAndBehavingPage,
 }

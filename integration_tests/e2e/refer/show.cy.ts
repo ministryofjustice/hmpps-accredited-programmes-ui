@@ -205,4 +205,10 @@ context('Viewing a submitted referral', () => {
       })
     })
   })
+
+  context('And reviewing status history', () => {
+    it('shows the correct information', () => {
+      sharedTests.statusHistory.showPageWithData(ApplicationRoles.ACP_REFERRER)
+    })
+  })
 })
