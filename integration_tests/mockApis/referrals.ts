@@ -2,7 +2,7 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Paginated, Referral, ReferralView } from '@accredited-programmes/models'
+import type { Paginated, Referral, ReferralStatusHistory, ReferralView } from '@accredited-programmes/models'
 import type { ReferralStatusGroup } from '@accredited-programmes/ui'
 
 interface ReferralAndScenarioOptions {
@@ -153,6 +153,22 @@ export default {
         status: 200,
       },
       scenarioName,
+    }),
+
+  stubStatusHistory: (args: {
+    referralId: Referral['id']
+    statusHistory: Array<ReferralStatusHistory>
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referrals.statusHistory({ referralId: args.referralId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.statusHistory,
+        status: 200,
+      },
     }),
 
   stubSubmitReferral: (referralId: Referral['id']): SuperAgentRequest =>

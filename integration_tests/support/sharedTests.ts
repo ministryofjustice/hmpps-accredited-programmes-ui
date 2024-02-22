@@ -19,6 +19,7 @@ import {
   prisonerFactory,
   psychiatricFactory,
   referralFactory,
+  referralStatusHistoryFactory,
   relationshipsFactory,
   risksAndAlertsFactory,
   roshAnalysisFactory,
@@ -26,6 +27,7 @@ import {
 } from '../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
 import { releaseDateFields } from '../../server/utils/personUtils'
+import auth from '../mockApis/auth'
 import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
@@ -42,11 +44,12 @@ import {
   RisksAndAlertsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
+  StatusHistoryPage,
   ThinkingAndBehavingPage,
 } from '../pages/shared'
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, Referral } from '@accredited-programmes/models'
-import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { CourseParticipationPresenter, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 import type { PrisonerWithBookingId } from '@prisoner-search'
 
@@ -416,7 +419,7 @@ const sharedTests = {
       attitudePage.shouldContainNavigation(path)
       attitudePage.shouldContainBackLink('#')
       attitudePage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      attitudePage.shouldContainShowReferralSubHeading()
+      attitudePage.shouldContainShowReferralSubHeading('Risks and needs')
       attitudePage.shouldContainRisksAndNeedsOasysMessage()
       attitudePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       attitudePage.shouldContainImportedFromText('OASys')
@@ -441,7 +444,7 @@ const sharedTests = {
       attitudesPage.shouldContainNavigation(path)
       attitudesPage.shouldContainBackLink('#')
       attitudesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      attitudesPage.shouldContainShowReferralSubHeading()
+      attitudesPage.shouldContainShowReferralSubHeading('Risks and needs')
       attitudesPage.shouldContainRisksAndNeedsOasysMessage()
       attitudesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       attitudesPage.shouldContainNoAttitudeDataSummaryCard()
@@ -466,7 +469,7 @@ const sharedTests = {
       emotionalWellbeingPage.shouldContainNavigation(path)
       emotionalWellbeingPage.shouldContainBackLink('#')
       emotionalWellbeingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      emotionalWellbeingPage.shouldContainShowReferralSubHeading()
+      emotionalWellbeingPage.shouldContainShowReferralSubHeading('Risks and needs')
       emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
       emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       emotionalWellbeingPage.shouldContainImportedFromText('OASys')
@@ -491,7 +494,7 @@ const sharedTests = {
       emotionalWellbeingPage.shouldContainNavigation(path)
       emotionalWellbeingPage.shouldContainBackLink('#')
       emotionalWellbeingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      emotionalWellbeingPage.shouldContainShowReferralSubHeading()
+      emotionalWellbeingPage.shouldContainShowReferralSubHeading('Risks and needs')
       emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
       emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       emotionalWellbeingPage.shouldContainNoPsychiatricDataSummaryCard()
@@ -516,7 +519,7 @@ const sharedTests = {
       healthPage.shouldContainNavigation(path)
       healthPage.shouldContainBackLink('#')
       healthPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      healthPage.shouldContainShowReferralSubHeading()
+      healthPage.shouldContainShowReferralSubHeading('Risks and needs')
       healthPage.shouldContainRisksAndNeedsOasysMessage()
       healthPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       healthPage.shouldContainImportedFromText('OASys')
@@ -541,7 +544,7 @@ const sharedTests = {
       healthPage.shouldContainNavigation(path)
       healthPage.shouldContainBackLink('#')
       healthPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      healthPage.shouldContainShowReferralSubHeading()
+      healthPage.shouldContainShowReferralSubHeading('Risks and needs')
       healthPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       healthPage.shouldContainNoHealthDataSummaryCard()
     },
@@ -565,7 +568,7 @@ const sharedTests = {
       learningNeedsPage.shouldContainNavigation(path)
       learningNeedsPage.shouldContainBackLink('#')
       learningNeedsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      learningNeedsPage.shouldContainShowReferralSubHeading()
+      learningNeedsPage.shouldContainShowReferralSubHeading('Risks and needs')
       learningNeedsPage.shouldContainRisksAndNeedsOasysMessage()
       learningNeedsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       learningNeedsPage.shouldContainImportedFromText('OASys')
@@ -591,7 +594,7 @@ const sharedTests = {
       learningNeedsPage.shouldContainNavigation(path)
       learningNeedsPage.shouldContainBackLink('#')
       learningNeedsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      learningNeedsPage.shouldContainShowReferralSubHeading()
+      learningNeedsPage.shouldContainShowReferralSubHeading('Risks and needs')
       learningNeedsPage.shouldContainRisksAndNeedsOasysMessage()
       learningNeedsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       learningNeedsPage.shouldContainNoLearningNeedsDataSummaryCard()
@@ -616,7 +619,7 @@ const sharedTests = {
       lifestyleAndAssociatesPage.shouldContainNavigation(path)
       lifestyleAndAssociatesPage.shouldContainBackLink('#')
       lifestyleAndAssociatesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading()
+      lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading('Risks and needs')
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsOasysMessage()
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       lifestyleAndAssociatesPage.shouldContainImportedFromText('OASys')
@@ -641,7 +644,7 @@ const sharedTests = {
       lifestyleAndAssociatesPage.shouldContainNavigation(path)
       lifestyleAndAssociatesPage.shouldContainBackLink('#')
       lifestyleAndAssociatesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading()
+      lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading('Risks and needs')
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsOasysMessage()
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       lifestyleAndAssociatesPage.shouldContainNoLifestyleDataSummaryCard()
@@ -666,7 +669,7 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainNavigation(path)
       offenceAnalysisPage.shouldContainBackLink('#')
       offenceAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      offenceAnalysisPage.shouldContainShowReferralSubHeading()
+      offenceAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
       offenceAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
       offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       offenceAnalysisPage.shouldContainImportedFromText('OASys')
@@ -697,7 +700,7 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainNavigation(path)
       offenceAnalysisPage.shouldContainBackLink('#')
       offenceAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      offenceAnalysisPage.shouldContainShowReferralSubHeading()
+      offenceAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
       offenceAnalysisPage.shouldContainNoOffenceDetailsSummaryCard()
       offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
     },
@@ -721,7 +724,7 @@ const sharedTests = {
       relationshipsPage.shouldContainNavigation(path)
       relationshipsPage.shouldContainBackLink('#')
       relationshipsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      relationshipsPage.shouldContainShowReferralSubHeading()
+      relationshipsPage.shouldContainShowReferralSubHeading('Risks and needs')
       relationshipsPage.shouldContainRisksAndNeedsOasysMessage()
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainImportedFromText('OASys')
@@ -746,7 +749,7 @@ const sharedTests = {
       relationshipsPage.shouldContainNavigation(path)
       relationshipsPage.shouldContainBackLink('#')
       relationshipsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      relationshipsPage.shouldContainShowReferralSubHeading()
+      relationshipsPage.shouldContainShowReferralSubHeading('Risks and needs')
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainNoRelationshipsSummaryCard()
     },
@@ -770,7 +773,7 @@ const sharedTests = {
       risksAndAlertsPage.shouldContainNavigation(path)
       risksAndAlertsPage.shouldContainBackLink('#')
       risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      risksAndAlertsPage.shouldContainShowReferralSubHeading()
+      risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
       risksAndAlertsPage.shouldContainRisksAndNeedsOasysMessage()
       risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       risksAndAlertsPage.shouldContainImportedFromText('OASys', 'imported-from-oasys-text')
@@ -801,7 +804,7 @@ const sharedTests = {
       risksAndAlertsPage.shouldContainNavigation(path)
       risksAndAlertsPage.shouldContainBackLink('#')
       risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      risksAndAlertsPage.shouldContainShowReferralSubHeading()
+      risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
       risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       risksAndAlertsPage.shouldContainNoRisksAndAlertsSummaryCard()
     },
@@ -825,7 +828,7 @@ const sharedTests = {
       roshAnalysisPage.shouldContainNavigation(path)
       roshAnalysisPage.shouldContainBackLink('#')
       roshAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      roshAnalysisPage.shouldContainShowReferralSubHeading()
+      roshAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
       roshAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
       roshAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       roshAnalysisPage.shouldContainImportedFromText('OASys')
@@ -850,7 +853,7 @@ const sharedTests = {
       roshAnalysisPage.shouldContainNavigation(path)
       roshAnalysisPage.shouldContainBackLink('#')
       roshAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      roshAnalysisPage.shouldContainShowReferralSubHeading()
+      roshAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
       roshAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       roshAnalysisPage.shouldContainNoRoshAnalysisSummaryCard()
     },
@@ -874,7 +877,7 @@ const sharedTests = {
       thinkingAndBehavingPage.shouldContainNavigation(path)
       thinkingAndBehavingPage.shouldContainBackLink('#')
       thinkingAndBehavingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      thinkingAndBehavingPage.shouldContainShowReferralSubHeading()
+      thinkingAndBehavingPage.shouldContainShowReferralSubHeading('Risks and needs')
       thinkingAndBehavingPage.shouldContainRisksAndNeedsOasysMessage()
       thinkingAndBehavingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       thinkingAndBehavingPage.shouldContainImportedFromText('OASys')
@@ -899,9 +902,54 @@ const sharedTests = {
       thinkingAndBehavingPage.shouldContainNavigation(path)
       thinkingAndBehavingPage.shouldContainBackLink('#')
       thinkingAndBehavingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
-      thinkingAndBehavingPage.shouldContainShowReferralSubHeading()
+      thinkingAndBehavingPage.shouldContainShowReferralSubHeading('Risks and needs')
       thinkingAndBehavingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       thinkingAndBehavingPage.shouldContainNoBehaviourDataSummaryCard()
+    },
+  },
+  statusHistory: {
+    showPageWithData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      const startedStatusHistory = referralStatusHistoryFactory.started().build({ username: referringUser.username })
+      const submittedStatusHistory = referralStatusHistoryFactory
+        .submitted()
+        .build({ username: referringUser.username })
+      const updatedStatusHistory = referralStatusHistoryFactory
+        .updated()
+        .build({ status: 'assessment_started', username: auth.mockedUser.username })
+
+      const referralStatusHistory = [updatedStatusHistory, submittedStatusHistory, startedStatusHistory]
+      const referralStatusHistoryPresenter: Array<ReferralStatusHistoryPresenter> = [
+        {
+          ...referralStatusHistory[0],
+          byLineText: 'You',
+        },
+        {
+          ...referralStatusHistory[1],
+          byLineText: referringUser.name,
+        },
+        {
+          ...referralStatusHistory[2],
+          byLineText: referringUser.name,
+        },
+      ]
+
+      cy.task('stubStatusHistory', {
+        referralId: referral.id,
+        statusHistory: referralStatusHistory,
+      })
+
+      const path = pathsByRole(role).show.statusHistory({ referralId: referral.id })
+      cy.visit(path)
+
+      const statusHistoryPage = Page.verifyOnPage(StatusHistoryPage, { course })
+      statusHistoryPage.shouldHavePersonDetails(person)
+      statusHistoryPage.shouldContainNavigation(path)
+      statusHistoryPage.shouldContainBackLink('#')
+      statusHistoryPage.shouldContainShowReferralSubNavigation(path, 'statusHistory', referral.id)
+      statusHistoryPage.shouldContainShowReferralSubHeading('Status history')
+      statusHistoryPage.shouldContainStatusHistoryTimeline(referralStatusHistoryPresenter)
     },
   },
 }

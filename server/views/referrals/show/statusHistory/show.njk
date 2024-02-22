@@ -4,6 +4,9 @@
 
 {% block supportingContent %}
   {{ mojTimeline({
-    items: timelineItems
+    items: timelineItems,
+    attributes: {
+      "data-testid": "status-history-timeline"
+    }
   }) }}
 {% endblock supportingContent %}
