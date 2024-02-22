@@ -49,7 +49,7 @@ describe('NewReferralUtils', () => {
           value: { text: 'Bobby Brown' },
         },
         {
-          key: { text: 'Referring prison' },
+          key: { text: 'Programme location' },
           value: { text: 'HMP Hewell' },
         },
         {
