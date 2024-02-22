@@ -9,6 +9,7 @@ import type {
   RiskLevel,
 } from '@accredited-programmes/models'
 import type {
+  GovukFrontendButton,
   GovukFrontendPagination,
   GovukFrontendPaginationItem,
   GovukFrontendRadiosItem,
@@ -109,6 +110,7 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
 }
 
 type ReferralSharedPageData = {
+  buttons: Array<GovukFrontendButton>
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
   navigationItems: Array<MojFrontendNavigationItem>
   pageHeading: string
@@ -155,6 +157,7 @@ type ReferralTaskListItem = {
 }
 
 type RisksAndNeedsSharedPageData = {
+  buttons: Array<GovukFrontendButton>
   navigationItems: Array<MojFrontendNavigationItem>
   pageHeading: string
   pageSubHeading: string

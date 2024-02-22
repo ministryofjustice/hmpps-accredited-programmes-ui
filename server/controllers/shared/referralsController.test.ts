@@ -37,6 +37,8 @@ import type { User } from '@manage-users-api'
 jest.mock('../../utils/sentenceInformationUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
 
+const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
+
 describe('ReferralsController', () => {
   const userToken = 'SOME_TOKEN'
   const username = 'USERNAME'
@@ -55,7 +57,8 @@ describe('ReferralsController', () => {
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
-  const subNavigationItems = [{ href: 'sub-nav-href', text: 'Sub Nav Item' }]
+  const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
+  const buttons = [{ href: 'button-href', text: 'Button' }]
   let person: Person
   let referral: Referral
   let referringUser: User
@@ -67,9 +70,11 @@ describe('ReferralsController', () => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
     referringUser = userFactory.build({ name: 'Referring user', username: referral.referrerUsername })
-    ;(ShowReferralUtils.subNavigationItems as jest.Mock).mockReturnValue(subNavigationItems)
+    mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
+    mockShowReferralUtils.buttons.mockReturnValue(buttons)
 
     sharedPageData = {
+      buttons,
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
         coursePresenter,
         organisation.name,
@@ -111,7 +116,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.additionalInformation()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
@@ -216,7 +221,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.personalDetails()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/personalDetails', {
         ...sharedPageData,
@@ -247,7 +252,7 @@ describe('ReferralsController', () => {
         const requestHandler = controller.personalDetails()
         await requestHandler(request, response, next)
 
-        assertSharedDataServicesAreCalledWithExpectedArguments('true')
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path, 'true')
       })
     })
   })
@@ -263,7 +268,7 @@ describe('ReferralsController', () => {
       const requestHandler = controller.programmeHistory()
       await requestHandler(request, response, next)
 
-      assertSharedDataServicesAreCalledWithExpectedArguments()
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
         username,
@@ -374,7 +379,10 @@ describe('ReferralsController', () => {
     })
   })
 
-  function assertSharedDataServicesAreCalledWithExpectedArguments(updatePersonQueryValue?: string) {
+  function assertSharedDataServicesAreCalledWithExpectedArguments(
+    path?: Request['path'],
+    updatePersonQueryValue?: string,
+  ) {
     expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id, {
       updatePerson: updatePersonQueryValue,
     })
@@ -382,5 +390,6 @@ describe('ReferralsController', () => {
     expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
     expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path)
   }
 })

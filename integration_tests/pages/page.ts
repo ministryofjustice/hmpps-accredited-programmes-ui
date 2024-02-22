@@ -320,6 +320,31 @@ export default abstract class Page {
     })
   }
 
+  shouldContainShowReferralButtons(currentPath: string): void {
+    const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
+      ? assessPathBase.pattern
+      : referPathBase.pattern
+
+    cy.get('[data-testid="show-referral-buttons"]').then(buttonsElement => {
+      const buttons = ShowReferralUtils.buttons(currentBasePath)
+
+      cy.wrap(buttonsElement).within(() => {
+        buttons.forEach((button, buttonIndex) => {
+          cy.get('.govuk-button')
+            .eq(buttonIndex)
+            .then(buttonElement => {
+              if (button.text) {
+                const { actual, expected } = Helpers.parseHtml(buttonElement, button.text)
+                expect(actual).to.equal(expected)
+              }
+
+              cy.wrap(buttonElement).should('have.attr', 'href', button.href)
+            })
+        })
+      })
+    })
+  }
+
   shouldContainShowReferralSubHeading(subHeading: string): void {
     cy.get('[data-testid="show-referral-sub-heading"]').should('have.text', subHeading)
   }
