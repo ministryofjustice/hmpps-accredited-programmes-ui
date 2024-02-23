@@ -14,6 +14,7 @@ import PathUtils from './pathUtils'
 import PersonUtils from './personUtils'
 import CaseListUtils from './referrals/caseListUtils'
 import NewReferralUtils from './referrals/newReferralUtils'
+import ReferralUtils from './referrals/referralUtils'
 import ShowReferralUtils from './referrals/showReferralUtils'
 import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
 import AttitudesUtils from './risksAndNeeds/attitudesUtils'
@@ -50,6 +51,7 @@ export {
   PaginationUtils,
   PathUtils,
   PersonUtils,
+  ReferralUtils,
   RelationshipsUtils,
   RisksAndAlertsUtils,
   RoshAnalysisUtils,
