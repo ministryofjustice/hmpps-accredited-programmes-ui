@@ -25,6 +25,10 @@ const participationsByPersonPath = path('/people/:prisonNumber/course-participat
 const participationsPath = path('/course-participations')
 const participationPath = participationsPath.path(':courseParticipationId')
 
+const referenceDataPath = path('/reference-data')
+const referralStatusesPath = referenceDataPath.path('referral-statuses')
+const referralStatusCodeCategoriesPath = referralStatusesPath.path(':referralStatusCode/categories')
+
 export default {
   courses: {
     index: coursesPath,
@@ -59,6 +63,11 @@ export default {
   },
   people: {
     participations: participationsByPersonPath,
+  },
+  referenceData: {
+    referralStatuses: {
+      statusCodeCategories: referralStatusCodeCategoriesPath,
+    },
   },
   referrals: {
     create: referralsPath,
