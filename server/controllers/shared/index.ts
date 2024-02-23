@@ -3,6 +3,7 @@
 import ReferralsController from './referralsController'
 import RisksAndNeedsController from './risksAndNeedsController'
 import StatusHistoryController from './statusHistoryController'
+import WithdrawCategoryController from './withdrawCategoryController'
 import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
@@ -26,10 +27,16 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
+  const withdrawCategoryController = new WithdrawCategoryController(
+    services.referenceDataService,
+    services.referralService,
+  )
+
   return {
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
+    withdrawCategoryController,
   }
 }
 
