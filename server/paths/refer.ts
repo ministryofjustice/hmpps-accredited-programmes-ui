@@ -23,6 +23,8 @@ const referralShowPathBase = referralsPath.path(':referralId')
 
 const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
 
+const withdrawBasePath = referralShowPathBase.path('withdraw')
+
 export default {
   caseList: {
     index: caseListPath,
@@ -84,6 +86,10 @@ export default {
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
     statusHistory: referralShowPathBase.path('status-history'),
+  },
+  withdraw: {
+    category: withdrawBasePath,
+    reason: withdrawBasePath.path('reason'),
   },
 }
 
