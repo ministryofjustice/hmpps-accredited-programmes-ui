@@ -23,6 +23,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
+    withdrawCategoryController,
   } = controllers
 
   get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
@@ -84,6 +85,9 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.show.risksAndNeeds.risksAndAlerts.pattern, risksAndNeedsController.risksAndAlerts())
   get(referPaths.show.risksAndNeeds.roshAnalysis.pattern, risksAndNeedsController.roshAnalysis())
   get(referPaths.show.risksAndNeeds.thinkingAndBehaving.pattern, risksAndNeedsController.thinkingAndBehaving())
+
+  get(referPaths.withdraw.category.pattern, withdrawCategoryController.show())
+  post(referPaths.withdraw.category.pattern, withdrawCategoryController.submit())
 
   return router
 }
