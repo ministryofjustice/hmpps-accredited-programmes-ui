@@ -24,6 +24,7 @@ import type {
   Referral,
   ReferralStatus,
   ReferralStatusHistory,
+  ReferralStatusUppercase,
   ReferralUpdate,
   ReferralView,
 } from './Referral'
@@ -55,6 +56,7 @@ export type {
   Referral,
   ReferralStatus,
   ReferralStatusHistory,
+  ReferralStatusUppercase,
   ReferralUpdate,
   ReferralView,
   Relationships,
