@@ -8,8 +8,13 @@ import { RouteUtils } from '../utils'
 export default function routes(controllers: Controllers, router: Router): Router {
   const { get, post } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
 
-  const { assessCaseListController, referralsController, risksAndNeedsController, statusHistoryController } =
-    controllers
+  const {
+    assessCaseListController,
+    referralsController,
+    risksAndNeedsController,
+    statusHistoryController,
+    withdrawCategoryController,
+  } = controllers
 
   get(assessPaths.caseList.index.pattern, assessCaseListController.indexRedirect())
   get(assessPaths.caseList.show.pattern, assessCaseListController.show())
@@ -33,6 +38,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.risksAndNeeds.risksAndAlerts.pattern, risksAndNeedsController.risksAndAlerts())
   get(assessPaths.show.risksAndNeeds.roshAnalysis.pattern, risksAndNeedsController.roshAnalysis())
   get(assessPaths.show.risksAndNeeds.thinkingAndBehaving.pattern, risksAndNeedsController.thinkingAndBehaving())
+
+  get(assessPaths.withdraw.category.pattern, withdrawCategoryController.show())
 
   return router
 }

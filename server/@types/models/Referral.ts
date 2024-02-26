@@ -47,6 +47,14 @@ type ReferralUpdate = {
 
 type ReferralStatus = (typeof referralStatuses)[number]
 
+type ReferralStatusUppercase = Uppercase<ReferralStatus>
+
+type ReferralStatusCategory = {
+  code: string
+  description: string
+  referralStatusCode: ReferralStatusUppercase
+}
+
 type ReferralStatusHistory = {
   id?: string
   notes?: string
@@ -85,4 +93,13 @@ type ReferralView = {
 }
 
 export { referralStatuses }
-export type { CreatedReferralResponse, Referral, ReferralStatus, ReferralStatusHistory, ReferralUpdate, ReferralView }
+export type {
+  CreatedReferralResponse,
+  Referral,
+  ReferralStatus,
+  ReferralStatusCategory,
+  ReferralStatusHistory,
+  ReferralStatusUppercase,
+  ReferralUpdate,
+  ReferralView,
+}

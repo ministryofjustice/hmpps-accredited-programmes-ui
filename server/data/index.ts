@@ -15,6 +15,7 @@ AppInsightsUtils.buildClient()
 
 import CourseClient from './accreditedProgrammesApi/courseClient'
 import OasysClient from './accreditedProgrammesApi/oasysClient'
+import ReferenceDataClient from './accreditedProgrammesApi/referenceDataClient'
 import ReferralClient from './accreditedProgrammesApi/referralClient'
 import { serviceCheckFactory } from './healthCheck'
 import HmppsAuthClient from './hmppsAuthClient'
@@ -42,6 +43,8 @@ const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient>
   new PrisonRegisterApiClient(userToken)
 const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (systemToken: SystemToken) =>
   new PrisonerSearchClient(systemToken)
+const referenceDataClientBuilder: RestClientBuilder<ReferenceDataClient> = (systemToken: SystemToken) =>
+  new ReferenceDataClient(systemToken)
 const referralClientBuilder: RestClientBuilder<ReferralClient> = (userToken: Express.User['token']) =>
   new ReferralClient(userToken)
 const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (systemToken: SystemToken) =>
@@ -55,6 +58,7 @@ export {
   PrisonApiClient,
   PrisonRegisterApiClient,
   PrisonerSearchClient,
+  ReferenceDataClient,
   ReferralClient,
   TokenStore,
   courseClientBuilder,
@@ -65,6 +69,7 @@ export {
   prisonApiClientBuilder,
   prisonRegisterApiClientBuilder,
   prisonerSearchClientBuilder,
+  referenceDataClientBuilder,
   referralClientBuilder,
   serviceCheckFactory,
   verifyToken,
