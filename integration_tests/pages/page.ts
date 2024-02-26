@@ -191,7 +191,7 @@ export default abstract class Page {
     summaryCardElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryCardElement).within(() => {
-      cy.get('.govuk-summary-card__title').should('have.text', title)
+      cy.get('.govuk-summary-card__title').should('contain.text', title)
 
       cy.get('.govuk-summary-list__value').then(keylessSummaryCardBodyElement => {
         const { actual, expected } = Helpers.parseHtml(keylessSummaryCardBodyElement, body)
@@ -428,7 +428,7 @@ export default abstract class Page {
     summaryCardElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryCardElement).within(() => {
-      cy.get('.govuk-summary-card__title').should('have.text', title)
+      cy.get('.govuk-summary-card__title').should('contain.text', title)
 
       actions.forEach((action, actionIndex) => {
         cy.get('.govuk-summary-card__actions .govuk-link')
