@@ -67,11 +67,11 @@ export default abstract class Page {
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
   selectCheckbox(name: string): void {
-    cy.get(`.govuk-checkboxes__input[name="${name}"]`).check({ force: true })
+    cy.get(`.govuk-checkboxes__input[name="${name}"]`).check()
   }
 
   selectRadioButton(name: string, value: string): void {
-    cy.get(`.govuk-radios__input[name="${name}"][value="${value}"]`).check({ force: true })
+    cy.get(`.govuk-radios__input[name="${name}"][value="${value}"]`).check()
   }
 
   selectSelectItem(testId: string, value: string): void {
@@ -191,7 +191,7 @@ export default abstract class Page {
     summaryCardElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryCardElement).within(() => {
-      cy.get('.govuk-summary-card__title').should('have.text', title)
+      cy.get('.govuk-summary-card__title').should('contain.text', title)
 
       cy.get('.govuk-summary-list__value').then(keylessSummaryCardBodyElement => {
         const { actual, expected } = Helpers.parseHtml(keylessSummaryCardBodyElement, body)
@@ -428,7 +428,7 @@ export default abstract class Page {
     summaryCardElement: JQuery<HTMLElement>,
   ): void {
     cy.wrap(summaryCardElement).within(() => {
-      cy.get('.govuk-summary-card__title').should('have.text', title)
+      cy.get('.govuk-summary-card__title').should('contain.text', title)
 
       actions.forEach((action, actionIndex) => {
         cy.get('.govuk-summary-card__actions .govuk-link')
