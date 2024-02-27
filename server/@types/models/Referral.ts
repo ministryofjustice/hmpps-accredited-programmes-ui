@@ -75,6 +75,14 @@ type ReferralStatusHistory = {
   username?: User['username']
 }
 
+type ReferralStatusUpdate = {
+  status: ReferralStatus | ReferralStatusUppercase
+  category?: Uppercase<string>
+  notes?: string
+  ptUser?: boolean
+  reason?: Uppercase<string>
+}
+
 type ReferralView = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
   audience?: string
@@ -106,6 +114,7 @@ export type {
   ReferralStatusCategory,
   ReferralStatusHistory,
   ReferralStatusReason,
+  ReferralStatusUpdate,
   ReferralStatusUppercase,
   ReferralUpdate,
   ReferralView,
