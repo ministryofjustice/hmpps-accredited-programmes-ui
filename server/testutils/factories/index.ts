@@ -26,6 +26,7 @@ import psychiatricFactory from './psychiatric'
 import referralFactory from './referral'
 import referralStatusCategoryFactory from './referralStatusCategory'
 import referralStatusHistoryFactory from './referralStatusHistory'
+import referralStatusReasonFactory from './referralStatusReason'
 import referralViewFactory from './referralView'
 import relationshipsFactory from './relationships'
 import risksAndAlertsFactory from './risksAndAlerts'
@@ -61,6 +62,7 @@ export {
   referralFactory,
   referralStatusCategoryFactory,
   referralStatusHistoryFactory,
+  referralStatusReasonFactory,
   referralViewFactory,
   relationshipsFactory,
   risksAndAlertsFactory,

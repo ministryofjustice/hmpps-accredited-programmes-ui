@@ -1,20 +1,19 @@
-import type { ReferralStatusCategory } from '@accredited-programmes/models'
 import type { GovukFrontendRadiosItem } from '@govuk-frontend'
 
 export default class ReferralUtils {
-  static statusCategoriesToRadioItems(
-    statusCategories: Array<ReferralStatusCategory>,
-    selectedStatusCategory?: ReferralStatusCategory['code'],
+  static statusOptionsToRadioItems<T extends { code: string; description: string }>(
+    items: Array<T>,
+    selectedItemCode?: string,
   ): Array<GovukFrontendRadiosItem> {
-    return statusCategories.reduce<Array<GovukFrontendRadiosItem>>((acc, statusCategory) => {
-      if (statusCategory.description === 'Other') {
+    return items.reduce<Array<GovukFrontendRadiosItem>>((acc, item) => {
+      if (item.description === 'Other') {
         acc.push({ divider: 'or', value: '' })
       }
 
       acc.push({
-        checked: selectedStatusCategory === statusCategory.code,
-        text: statusCategory.description,
-        value: statusCategory.code,
+        checked: selectedItemCode === item.code,
+        text: item.description,
+        value: item.code,
       })
 
       return acc

@@ -42,23 +42,27 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukRadios({
-          name: "categoryCode",
+          name: "reasonCode",
           fieldset: {
             legend: {
-              text: "Select the withdrawal category",
+              text: "Select reason for this withdrawal",
               classes: "govuk-fieldset__legend--m"
             }
           },
           items: radioItems,
-          errorMessage: errors.messages.categoryCode,
+          errorMessage: errors.messages.reasonCode,
           attributes: {
-            "data-testid": "withdraw-category-options"
+            "data-testid": "withdraw-reason-options"
           }
         }) }}
 
-        {{ govukButton({
-          text: "Continue"
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          <a class="govuk-link" href={{ cancelLink }}>Cancel</a>
+        </div>
       </form>
     </div>
   </div>

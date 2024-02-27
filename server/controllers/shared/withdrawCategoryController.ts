@@ -30,7 +30,7 @@ export default class WithdrawCategoryController {
         this.referenceDataService.getReferralStatusCodeCategories(username, withdrawnStatus),
       ])
 
-      const radioItems = ReferralUtils.statusCategoriesToRadioItems(
+      const radioItems = ReferralUtils.statusOptionsToRadioItems(
         withdrawalCategories,
         req.session.referralStatusUpdateData?.statusCategoryCode,
       )
@@ -38,7 +38,6 @@ export default class WithdrawCategoryController {
       FormUtils.setFieldErrors(req, res, ['categoryCode'])
 
       return res.render('referrals/withdraw/category/show', {
-        action: paths.withdraw.category({ referralId }),
         backLinkHref: paths.show.statusHistory({ referralId }),
         pageHeading: 'Withdrawal category',
         radioItems,

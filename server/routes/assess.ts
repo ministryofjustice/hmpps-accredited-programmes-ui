@@ -14,6 +14,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     risksAndNeedsController,
     statusHistoryController,
     withdrawCategoryController,
+    withdrawReasonController,
   } = controllers
 
   get(assessPaths.caseList.index.pattern, assessCaseListController.indexRedirect())
@@ -40,6 +41,9 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.risksAndNeeds.thinkingAndBehaving.pattern, risksAndNeedsController.thinkingAndBehaving())
 
   get(assessPaths.withdraw.category.pattern, withdrawCategoryController.show())
+  post(assessPaths.withdraw.category.pattern, withdrawCategoryController.submit())
+  get(assessPaths.withdraw.reason.pattern, withdrawReasonController.show())
+  post(assessPaths.withdraw.reason.pattern, withdrawReasonController.submit())
 
   return router
 }
