@@ -58,15 +58,11 @@ describe('WithdrawCategoryController', () => {
 
   beforeEach(() => {
     referral = referralFactory.submitted().build({})
-    referralStatusCodeCategories = [
-      referralStatusCategoryFactory.build({ referralStatusCode: 'WITHDRAWN' }),
-      referralStatusCategoryFactory.build({ referralStatusCode: 'WITHDRAWN' }),
-    ]
+    referralStatusCodeCategories = referralStatusCategoryFactory.buildList(2, { referralStatusCode: 'WITHDRAWN' })
     referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
     mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
-    referralService.getReferral.mockResolvedValue(referral)
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
     referenceDataService.getReferralStatusCodeCategories.mockResolvedValue(referralStatusCodeCategories)
 
@@ -86,7 +82,6 @@ describe('WithdrawCategoryController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/withdraw/category/show', {
-        action: referPaths.withdraw.category({ referralId: referral.id }),
         backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
         pageHeading: 'Withdrawal category',
         radioItems,
@@ -97,10 +92,7 @@ describe('WithdrawCategoryController', () => {
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
       expect(mockedFormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
-      expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(
-        referralStatusCodeCategories,
-        undefined,
-      )
+      expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, undefined)
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
@@ -114,7 +106,6 @@ describe('WithdrawCategoryController', () => {
         expect(response.render).toHaveBeenCalledWith(
           'referrals/withdraw/category/show',
           expect.objectContaining({
-            action: assessPaths.withdraw.category({ referralId: referral.id }),
             backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
           }),
         )
