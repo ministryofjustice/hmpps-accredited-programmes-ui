@@ -3,6 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import WithdrawCategoryController from './withdrawCategoryController'
+import type { ReferralStatusUpdateSessionData } from '../../@types/express'
 import { assessPaths, referPaths } from '../../paths'
 import type { ReferenceDataService, ReferralService } from '../../services'
 import { referralFactory, referralStatusCategoryFactory, referralStatusHistoryFactory } from '../../testutils/factories'
@@ -92,12 +93,14 @@ describe('WithdrawCategoryController', () => {
         timelineItems: timelineItems.slice(0, 1),
       })
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referenceDataService.getReferralStatusCodeCategories).toHaveBeenCalledWith(username, 'WITHDRAWN')
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
       expect(mockedFormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
-      expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories)
+      expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(
+        referralStatusCodeCategories,
+        undefined,
+      )
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
@@ -117,36 +120,97 @@ describe('WithdrawCategoryController', () => {
         )
       })
     })
+
+    describe('when `referralStatusUpdateData` is for the same referral', () => {
+      it('should keep `referralStatusUpdateData` in the session and make the call to check the correct radio item', async () => {
+        const session: ReferralStatusUpdateSessionData = {
+          referralId: referral.id,
+          status: 'WITHDRAWN',
+          statusCategoryCode: 'A',
+        }
+        request.session.referralStatusUpdateData = session
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(request.session.referralStatusUpdateData).toEqual(session)
+        expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, 'A')
+      })
+    })
+
+    describe('when `referralStatusUpdateData` is for a different referral', () => {
+      it('should remove `referralStatusUpdateData` from the session', async () => {
+        request.session.referralStatusUpdateData = { referralId: 'DIFFERENT_REFERRAL_ID', status: 'WITHDRAWN' }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(request.session.referralStatusUpdateData).toBeUndefined()
+        expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(
+          referralStatusCodeCategories,
+          undefined,
+        )
+      })
+    })
+
+    describe('when `referralStatusUpdateData` is for a different status to `WITHDRAWN`', () => {
+      it('should remove `referralStatusUpdateData` from the session', async () => {
+        request.session.referralStatusUpdateData = { referralId: referral.id, status: 'DESELECTED' }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(request.session.referralStatusUpdateData).toBeUndefined()
+        expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(
+          referralStatusCodeCategories,
+          undefined,
+        )
+      })
+    })
   })
 
   describe('submit', () => {
     beforeEach(() => {
-      request.body = { categoryCode: 'A' }
+      request.body = { categoryCode: 'STATUS-CAT-A' }
+      request.session.referralStatusUpdateData = {
+        referralId: 'ANOTHER-REFERRAL',
+        status: 'WITHDRAWN',
+        statusCategoryCode: 'STATUS-CAT-B',
+        statusReasonCode: 'STATUS-REASON-A',
+      }
     })
 
-    it('should redirect to the withdraw reason page with the correct query params', async () => {
+    it('should update `referralStatusUpdateData` and redirect to refer withdraw reason page', async () => {
       const requestHandler = controller.submit()
       await requestHandler(request, response, next)
 
-      expect(response.redirect).toHaveBeenCalledWith(
-        `${referPaths.withdraw.reason({ referralId: referral.id })}?categoryCode=A`,
-      )
+      expect(request.session.referralStatusUpdateData).toEqual({
+        referralId: referral.id,
+        status: 'WITHDRAWN',
+        statusCategoryCode: 'STATUS-CAT-A',
+        statusReasonCode: undefined,
+      })
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.withdraw.reason({ referralId: referral.id }))
     })
 
     describe('when submitting the form on the assess journey', () => {
-      it('should redirect to the withdraw reason page with the correct query params', async () => {
+      it('should update `referralStatusUpdateData` and redirect to the assess withdraw reason page', async () => {
         request.path = assessPaths.withdraw.category({ referralId: referral.id })
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(
-          `${assessPaths.withdraw.reason({ referralId: referral.id })}?categoryCode=A`,
-        )
+        expect(request.session.referralStatusUpdateData).toEqual({
+          referralId: referral.id,
+          status: 'WITHDRAWN',
+          statusCategoryCode: 'STATUS-CAT-A',
+          statusReasonCode: undefined,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.withdraw.reason({ referralId: referral.id }))
       })
     })
 
-    describe('when the `categoryCode` value is missing', () => {
+    describe('when there is no `categoryCode` value is in the request body', () => {
       it('should redirect back to the show page with a flash message', async () => {
         request.body = { categoryCode: '' }
 

@@ -9,9 +9,22 @@ describe('ReferralUtils', () => {
         { code: 'B', description: 'Category B', referralStatusCode: 'WITHDRAWN' },
       ]
       expect(ReferralUtils.statusCategoriesToRadioItems(statusCategories)).toEqual([
-        { text: 'Category A', value: 'A' },
-        { text: 'Category B', value: 'B' },
+        { checked: false, text: 'Category A', value: 'A' },
+        { checked: false, text: 'Category B', value: 'B' },
       ])
+    })
+
+    describe('when a selected status category is provided', () => {
+      it('should mark the corresponding radio item as checked', () => {
+        const statusCategories: Array<ReferralStatusCategory> = [
+          { code: 'A', description: 'Category A', referralStatusCode: 'WITHDRAWN' },
+          { code: 'B', description: 'Category B', referralStatusCode: 'WITHDRAWN' },
+        ]
+        expect(ReferralUtils.statusCategoriesToRadioItems(statusCategories, 'B')).toEqual([
+          { checked: false, text: 'Category A', value: 'A' },
+          { checked: true, text: 'Category B', value: 'B' },
+        ])
+      })
     })
 
     describe('when the categories include a description with the value "Other"', () => {
@@ -22,10 +35,10 @@ describe('ReferralUtils', () => {
           { code: 'OTHER', description: 'Other', referralStatusCode: 'WITHDRAWN' },
         ]
         expect(ReferralUtils.statusCategoriesToRadioItems(statusCategories)).toEqual([
-          { text: 'Category A', value: 'A' },
-          { text: 'Category B', value: 'B' },
+          { checked: false, text: 'Category A', value: 'A' },
+          { checked: false, text: 'Category B', value: 'B' },
           { divider: 'or', value: '' },
-          { text: 'Other', value: 'OTHER' },
+          { checked: false, text: 'Other', value: 'OTHER' },
         ])
       })
     })

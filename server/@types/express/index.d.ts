@@ -2,12 +2,14 @@
 // @ts-expect-error to fix later: https://github.com/microsoft/TypeScript/issues/16472
 import type { Request as ConnectFlashRequest } from '@types/connect-flash'
 
+import type { ReferralStatus, ReferralStatusUppercase } from '@accredited-programmes/models'
 import type { UserDetails } from '@accredited-programmes/users'
 
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
     nowInMinutes: number
+    referralStatusUpdateData: ReferralStatusUpdateSessionData
     returnTo: string
     user: UserDetails
   }
@@ -40,10 +42,17 @@ declare global {
 
 type RequestWithUser = Express.RequestWithUser
 
+interface ReferralStatusUpdateSessionData {
+  referralId: string
+  status: ReferralStatus | ReferralStatusUppercase
+  statusCategoryCode?: Uppercase<string>
+  statusReasonCode?: Uppercase<string>
+}
+
 // @ts-expect-error to fix later
 export { global }
 
-export type { RequestWithUser }
+export type { ReferralStatusUpdateSessionData, RequestWithUser }
 
 // @ts-expect-error to fix later
 export default {}
