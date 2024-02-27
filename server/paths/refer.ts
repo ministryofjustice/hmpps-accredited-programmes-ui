@@ -90,6 +90,7 @@ export default {
   withdraw: {
     category: withdrawBasePath,
     reason: withdrawBasePath.path('reason'),
+    reasonInformation: withdrawBasePath.path('reason-information'),
   },
 }
 
