@@ -2,7 +2,11 @@
 import config, { type ApiConfig } from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
-import type { ReferralStatusCategory, ReferralStatusUppercase } from '@accredited-programmes/models'
+import type {
+  ReferralStatusCategory,
+  ReferralStatusReason,
+  ReferralStatusUppercase,
+} from '@accredited-programmes/models'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferenceDataClient {
@@ -18,5 +22,14 @@ export default class ReferenceDataClient {
     return (await this.restClient.get({
       path: apiPaths.referenceData.referralStatuses.statusCodeCategories({ referralStatusCode }),
     })) as Array<ReferralStatusCategory>
+  }
+
+  async findReferralStatusCodeReasons(
+    categoryCode: Uppercase<string>,
+    referralStatusCode: ReferralStatusUppercase,
+  ): Promise<Array<ReferralStatusReason>> {
+    return (await this.restClient.get({
+      path: apiPaths.referenceData.referralStatuses.statusCodeReasons({ categoryCode, referralStatusCode }),
+    })) as Array<ReferralStatusReason>
   }
 }
