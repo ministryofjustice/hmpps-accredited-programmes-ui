@@ -8,8 +8,8 @@ import type {
   CreatedReferralResponse,
   Paginated,
   Referral,
-  ReferralStatus,
   ReferralStatusHistory,
+  ReferralStatusUpdate,
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
@@ -108,9 +108,9 @@ export default class ReferralClient {
     })
   }
 
-  async updateStatus(referralId: Referral['id'], status: ReferralStatus): Promise<void> {
+  async updateStatus(referralId: Referral['id'], referralStatusUpdate: ReferralStatusUpdate): Promise<void> {
     await this.restClient.put({
-      data: { status },
+      data: referralStatusUpdate,
       path: apiPaths.referrals.updateStatus({ referralId }),
     })
   }
