@@ -63,7 +63,7 @@ describe('WithdrawCategoryController', () => {
       referralStatusCategoryFactory.build({ referralStatusCode: 'WITHDRAWN' }),
     ]
     referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
-    mockReferralUtils.statusCategoriesToRadioItems.mockReturnValue(radioItems)
+    mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
     referralService.getReferral.mockResolvedValue(referral)
@@ -97,7 +97,7 @@ describe('WithdrawCategoryController', () => {
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
       expect(mockedFormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
-      expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(
+      expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(
         referralStatusCodeCategories,
         undefined,
       )
@@ -134,7 +134,7 @@ describe('WithdrawCategoryController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toEqual(session)
-        expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, 'A')
+        expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, 'A')
       })
     })
 
@@ -146,7 +146,7 @@ describe('WithdrawCategoryController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toBeUndefined()
-        expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(
+        expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(
           referralStatusCodeCategories,
           undefined,
         )
@@ -161,7 +161,7 @@ describe('WithdrawCategoryController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toBeUndefined()
-        expect(mockReferralUtils.statusCategoriesToRadioItems).toHaveBeenCalledWith(
+        expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(
           referralStatusCodeCategories,
           undefined,
         )

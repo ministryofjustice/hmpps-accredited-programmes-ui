@@ -30,7 +30,7 @@ export default class WithdrawCategoryController {
         this.referenceDataService.getReferralStatusCodeCategories(username, withdrawnStatus),
       ])
 
-      const radioItems = ReferralUtils.statusCategoriesToRadioItems(
+      const radioItems = ReferralUtils.statusOptionsToRadioItems(
         withdrawalCategories,
         req.session.referralStatusUpdateData?.statusCategoryCode,
       )
