@@ -118,6 +118,7 @@ describe('WithdrawReasonController', () => {
           'referrals/withdraw/reason/show',
           expect.objectContaining({
             backLinkHref: assessPaths.withdraw.category({ referralId: referral.id }),
+            cancelLink: assessPaths.show.statusHistory({ referralId: referral.id }),
           }),
         )
       })
