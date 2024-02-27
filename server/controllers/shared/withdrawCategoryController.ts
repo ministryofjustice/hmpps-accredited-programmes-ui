@@ -4,6 +4,7 @@ import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import type { ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 
+export const withdrawnStatus = 'WITHDRAWN'
 export default class WithdrawCategoryController {
   constructor(
     private readonly referenceDataService: ReferenceDataService,
@@ -18,15 +19,21 @@ export default class WithdrawCategoryController {
 
       const { referralId } = req.params
       const { token: userToken, username } = req.user
+      const { referralStatusUpdateData } = req.session
 
-      await this.referralService.getReferral(username, referralId)
+      if (referralStatusUpdateData?.referralId !== referralId || referralStatusUpdateData.status !== withdrawnStatus) {
+        delete req.session.referralStatusUpdateData
+      }
 
       const [statusHistory, withdrawalCategories] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referenceDataService.getReferralStatusCodeCategories(username, 'WITHDRAWN'),
+        this.referenceDataService.getReferralStatusCodeCategories(username, withdrawnStatus),
       ])
 
-      const radioItems = ReferralUtils.statusCategoriesToRadioItems(withdrawalCategories)
+      const radioItems = ReferralUtils.statusCategoriesToRadioItems(
+        withdrawalCategories,
+        req.session.referralStatusUpdateData?.statusCategoryCode,
+      )
 
       FormUtils.setFieldErrors(req, res, ['categoryCode'])
 
@@ -53,7 +60,14 @@ export default class WithdrawCategoryController {
         return res.redirect(paths.withdraw.category({ referralId }))
       }
 
-      return res.redirect(`${paths.withdraw.reason({ referralId })}?categoryCode=${categoryCode}`)
+      req.session.referralStatusUpdateData = {
+        referralId,
+        status: withdrawnStatus,
+        statusCategoryCode: categoryCode,
+        statusReasonCode: undefined,
+      }
+
+      return res.redirect(paths.withdraw.reason({ referralId }))
     }
   }
 }
