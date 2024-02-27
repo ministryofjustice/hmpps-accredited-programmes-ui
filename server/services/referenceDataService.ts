@@ -1,5 +1,9 @@
 import type { HmppsAuthClient, ReferenceDataClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
-import type { ReferralStatusCategory, ReferralStatusUppercase } from '@accredited-programmes/models'
+import type {
+  ReferralStatusCategory,
+  ReferralStatusReason,
+  ReferralStatusUppercase,
+} from '@accredited-programmes/models'
 
 export default class ReferenceDataService {
   constructor(
@@ -16,5 +20,17 @@ export default class ReferenceDataService {
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findReferralStatusCodeCategories(referralStatusCode)
+  }
+
+  async getReferralStatusCodeReasons(
+    username: Express.User['username'],
+    categoryCode: Uppercase<string>,
+    referralStatusCode: ReferralStatusUppercase,
+  ): Promise<Array<ReferralStatusReason>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referenceDataClient = this.referenceDataClient(systemToken)
+
+    return referenceDataClient.findReferralStatusCodeReasons(categoryCode, referralStatusCode)
   }
 }
