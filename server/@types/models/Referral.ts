@@ -55,6 +55,12 @@ type ReferralStatusCategory = {
   referralStatusCode: ReferralStatusUppercase
 }
 
+type ReferralStatusReason = {
+  code: Uppercase<string>
+  description: string
+  referralCategoryCode: Uppercase<string>
+}
+
 type ReferralStatusHistory = {
   id?: string
   notes?: string
@@ -99,6 +105,7 @@ export type {
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusHistory,
+  ReferralStatusReason,
   ReferralStatusUppercase,
   ReferralUpdate,
   ReferralView,
