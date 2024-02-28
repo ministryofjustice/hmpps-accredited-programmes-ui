@@ -7,7 +7,7 @@ import logger from '../../logger'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
 import { referralFactory, referralStatusHistoryFactory, referralViewFactory } from '../testutils/factories'
-import type { CreatedReferralResponse, ReferralStatus, ReferralUpdate } from '@accredited-programmes/models'
+import type { CreatedReferralResponse, ReferralStatusUpdate, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
@@ -329,9 +329,9 @@ describe('ReferralService', () => {
   describe('updateReferralStatus', () => {
     it('asks the client to update the referral status', async () => {
       const referralId = 'an-ID'
-      const status: ReferralStatus = 'referral_submitted'
+      const statusUpdate: ReferralStatusUpdate = { status: 'referral_submitted' }
 
-      await service.updateReferralStatus(username, referralId, status)
+      await service.updateReferralStatus(username, referralId, statusUpdate)
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
 
@@ -339,7 +339,7 @@ describe('ReferralService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(referralClient.updateStatus).toHaveBeenCalledWith(referralId, status)
+      expect(referralClient.updateStatus).toHaveBeenCalledWith(referralId, statusUpdate)
     })
   })
 })

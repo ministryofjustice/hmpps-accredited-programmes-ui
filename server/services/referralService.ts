@@ -6,7 +6,7 @@ import type {
   Organisation,
   Paginated,
   Referral,
-  ReferralStatus,
+  ReferralStatusUpdate,
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
@@ -142,12 +142,12 @@ export default class ReferralService {
   async updateReferralStatus(
     username: Express.User['username'],
     referralId: Referral['id'],
-    status: ReferralStatus,
+    referralStatusUpdate: ReferralStatusUpdate,
   ): Promise<void> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
-    return referralClient.updateStatus(referralId, status)
+    return referralClient.updateStatus(referralId, referralStatusUpdate)
   }
 }

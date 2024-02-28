@@ -25,6 +25,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     statusHistoryController,
     withdrawCategoryController,
     withdrawReasonController,
+    withdrawReasonInformationController,
   } = controllers
 
   get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
@@ -91,6 +92,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(referPaths.withdraw.category.pattern, withdrawCategoryController.submit())
   get(referPaths.withdraw.reason.pattern, withdrawReasonController.show())
   post(referPaths.withdraw.reason.pattern, withdrawReasonController.submit())
+  get(referPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.show())
+  post(referPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.submit())
 
   return router
 }
