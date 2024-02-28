@@ -10,20 +10,25 @@
 {% endblock personBanner %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+  <div class="moj-page-header-actions">
+    <div class="moj-page-header-actions__title">
       <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
     </div>
 
     {% if buttons | length %}
-      <div class="govuk-grid-column-one-third govuk-!-text-align-right" data-testid="show-referral-buttons">
-        {% for button in buttons %}
-          {{ govukButton({
-            text: button.text,
-            href: button.href,
-            classes: button.classes
-          }) }}
-        {% endfor %}
+      <div class="moj-page-header-actions__actions">
+        <div class="moj-button-menu">
+          <div class="moj-button-menu__wrapper"  data-testid="show-referral-buttons">
+            {% for button in buttons %}
+              {{ govukButton({
+                classes: 'moj-button-menu__item moj-page-header-actions__action ' + button.classes,
+                disabled: button.disabled,
+                href: button.href,
+                text: button.text
+              }) }}
+            {% endfor %}
+          </div>
+        </div>
       </div>
     {% endif %}
   </div>

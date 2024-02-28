@@ -390,6 +390,6 @@ describe('ReferralsController', () => {
     expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
     expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
-    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral)
   }
 })
