@@ -15,6 +15,9 @@ import RoshAnalysisPage from './showReferral/risksAndNeeds/roshAnalysis'
 import ThinkingAndBehavingPage from './showReferral/risksAndNeeds/thinkingAndBehaving'
 import SentenceInformationPage from './showReferral/sentenceInformation'
 import StatusHistoryPage from './showReferral/statusHistory'
+import WithdrawCategoryPage from './withdraw/category'
+import WithdrawReasonPage from './withdraw/reason'
+import WithdrawReasonInformationPage from './withdraw/reasonInformation'
 
 export {
   AdditionalInformationPage,
@@ -34,4 +37,7 @@ export {
   SentenceInformationPage,
   StatusHistoryPage,
   ThinkingAndBehavingPage,
+  WithdrawCategoryPage,
+  WithdrawReasonInformationPage,
+  WithdrawReasonPage,
 }

@@ -14,15 +14,19 @@ import type { Organisation, Person, Referral } from '@accredited-programmes/mode
 import type {
   CourseParticipationPresenter,
   CoursePresenter,
-  GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
   MojTimelineItem,
+  ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendSummaryListCardTitle, GovukFrontendWarningText } from '@govuk-frontend'
+import type {
+  GovukFrontendRadiosItem,
+  GovukFrontendSummaryListCardTitle,
+  GovukFrontendWarningText,
+} from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
 export type PageElement = Cypress.Chainable<JQuery>
@@ -118,6 +122,15 @@ export default abstract class Page {
       this.shouldContainSummaryListRows(
         ShowReferralUtils.courseOfferingSummaryListRows(course, organisationName),
         summaryListElement,
+      )
+    })
+  }
+
+  shouldContainCurrentStatusTimelineItem(statusHistoryPresenter: Array<ReferralStatusHistoryPresenter>) {
+    cy.get('[data-testid="status-history-timeline"]').then(timelineElement => {
+      this.shouldContainTimelineItems(
+        ShowReferralUtils.statusHistoryTimelineItems(statusHistoryPresenter).slice(0, 1),
+        timelineElement,
       )
     })
   }
@@ -275,13 +288,13 @@ export default abstract class Page {
     })
   }
 
-  shouldContainRadioItems(options: Array<GovukFrontendRadiosItemWithLabel>): void {
+  shouldContainRadioItems(options: Array<GovukFrontendRadiosItem>): void {
     options.forEach((option, optionIndex) => {
       cy.get('.govuk-radios__item')
         .eq(optionIndex)
         .within(() => {
           cy.get('.govuk-radios__label').then(radioButtonLabelElement => {
-            const { actual, expected } = Helpers.parseHtml(radioButtonLabelElement, option.label)
+            const { actual, expected } = Helpers.parseHtml(radioButtonLabelElement, option.text as string)
             expect(actual).to.equal(expected)
           })
           cy.get('.govuk-radios__input').should('have.attr', 'value', option.value)

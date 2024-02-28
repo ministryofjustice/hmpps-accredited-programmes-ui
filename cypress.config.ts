@@ -10,6 +10,7 @@ import oasys from './integration_tests/mockApis/oasys'
 import prisonApi from './integration_tests/mockApis/prison'
 import prisonRegisterApi from './integration_tests/mockApis/prisonRegister'
 import prisonerSearch from './integration_tests/mockApis/prisonerSearch'
+import referenceData from './integration_tests/mockApis/referenceData'
 import referrals from './integration_tests/mockApis/referrals'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import { resetStubs } from './wiremock'
@@ -43,6 +44,7 @@ export const defaultConfig: Cypress.ConfigOptions = {
         ...prisonApi,
         ...prisonRegisterApi,
         ...prisonerSearch,
+        ...referenceData,
         ...referrals,
         ...tokenVerification,
         log(message) {

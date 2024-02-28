@@ -54,8 +54,8 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   shouldContainOutcomeRadioItems() {
     cy.get('[data-testid="outcome-options"]').within(() => {
       this.shouldContainRadioItems([
-        { label: 'Complete', value: 'complete' },
-        { label: 'Incomplete', value: 'incomplete' },
+        { text: 'Complete', value: 'complete' },
+        { text: 'Incomplete', value: 'incomplete' },
       ])
     })
   }
@@ -63,8 +63,8 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   shouldContainSettingRadioItems() {
     cy.get('[data-testid="setting-options"]').within(() => {
       this.shouldContainRadioItems([
-        { label: 'Community', value: 'community' },
-        { label: 'Custody', value: 'custody' },
+        { text: 'Community', value: 'community' },
+        { text: 'Custody', value: 'custody' },
       ])
     })
   }

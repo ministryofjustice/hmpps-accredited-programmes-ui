@@ -19,8 +19,8 @@ export default class NewReferralSelectProgrammePage extends Page {
 
   shouldContainCourseOptions() {
     this.shouldContainRadioItems([
-      ...this.courses.map(course => ({ label: course.name, value: course.name })),
-      { label: 'Other', value: 'Other' },
+      ...this.courses.map(course => ({ text: course.name, value: course.name })),
+      { text: 'Other', value: 'Other' },
     ])
   }
 
