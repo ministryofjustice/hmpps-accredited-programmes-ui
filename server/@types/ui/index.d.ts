@@ -12,7 +12,6 @@ import type {
   GovukFrontendButton,
   GovukFrontendPagination,
   GovukFrontendPaginationItem,
-  GovukFrontendRadiosItem,
   GovukFrontendSummaryList,
   GovukFrontendSummaryListCardActions,
   GovukFrontendSummaryListCardActionsItem,
@@ -22,8 +21,6 @@ import type {
   GovukFrontendTag,
 } from '@govuk-frontend'
 import type { OffenceDto, OffenceHistoryDetail } from '@prison-api'
-
-type GovukFrontendRadiosItemWithLabel = GovukFrontendRadiosItem & { label: string }
 
 type GovukFrontendSummaryListCardActionsItemWithText = GovukFrontendSummaryListCardActionsItem & { text: string }
 
@@ -235,7 +232,6 @@ export type {
   CourseParticipationPresenter,
   CoursePresenter,
   GovukFrontendPaginationWithItems,
-  GovukFrontendRadiosItemWithLabel,
   GovukFrontendSummaryListCardActionsItemWithText,
   GovukFrontendSummaryListCardActionsWithItems,
   GovukFrontendSummaryListRowWithKeyAndValue,
