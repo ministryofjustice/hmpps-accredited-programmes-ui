@@ -106,7 +106,7 @@ describe('StatusHistoryController', () => {
         'statusHistory',
         referral.id,
       )
-      expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path)
+      expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path, referral)
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
   })

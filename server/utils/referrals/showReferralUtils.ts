@@ -15,15 +15,28 @@ import type { GovukFrontendButton } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
 export default class ShowReferralUtils {
-  static buttons(currentPath: Request['path']): Array<GovukFrontendButton> {
-    const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
+  static buttons(currentPath: Request['path'], referral: Referral): Array<GovukFrontendButton> {
+    const isAssess = currentPath.startsWith(assessPathBase.pattern)
+    const paths = isAssess ? assessPaths : referPaths
+    const isWithdrawn = referral.status === 'withdrawn'
 
-    return [
+    const buttons: Array<GovukFrontendButton> = [
       {
         href: paths.caseList.index({}),
         text: 'Back to my referrals',
       },
     ]
+
+    if (!isAssess) {
+      buttons.push({
+        classes: 'govuk-button--secondary',
+        disabled: isWithdrawn,
+        href: isWithdrawn ? undefined : paths.withdraw.category({ referralId: referral.id }),
+        text: 'Withdraw referral',
+      })
+    }
+
+    return buttons
   }
 
   static courseOfferingSummaryListRows(

@@ -728,6 +728,6 @@ describe('RisksAndNeedsController', () => {
     expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
-    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral)
   }
 })

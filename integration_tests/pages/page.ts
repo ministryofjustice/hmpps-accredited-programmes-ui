@@ -320,13 +320,13 @@ export default abstract class Page {
     })
   }
 
-  shouldContainShowReferralButtons(currentPath: string): void {
+  shouldContainShowReferralButtons(currentPath: string, referral: Referral): void {
     const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
       ? assessPathBase.pattern
       : referPathBase.pattern
 
     cy.get('[data-testid="show-referral-buttons"]').then(buttonsElement => {
-      const buttons = ShowReferralUtils.buttons(currentBasePath)
+      const buttons = ShowReferralUtils.buttons(currentBasePath, referral)
 
       cy.wrap(buttonsElement).within(() => {
         buttons.forEach((button, buttonIndex) => {

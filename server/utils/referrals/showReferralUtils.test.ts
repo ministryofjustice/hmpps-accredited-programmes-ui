@@ -15,10 +15,17 @@ jest.mock('./caseListUtils')
 const mockCaseListUtils = CaseListUtils as jest.Mocked<typeof CaseListUtils>
 
 describe('ShowReferralUtils', () => {
+  const submittedReferral = referralFactory.submitted().build()
+
   describe('buttons', () => {
     describe('when on the assess journey', () => {
       it('contains the "Back to my referrals" button with the corect href', () => {
-        expect(ShowReferralUtils.buttons(assessPaths.show.statusHistory({ referralId: 'mockReferralId' }))).toEqual([
+        expect(
+          ShowReferralUtils.buttons(
+            assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+            submittedReferral,
+          ),
+        ).toEqual([
           {
             href: '/assess/referrals/case-list',
             text: 'Back to my referrals',
@@ -28,13 +35,46 @@ describe('ShowReferralUtils', () => {
     })
 
     describe('when on the refer journey', () => {
-      it('contains the "Back to my referrals" button with the corect href', () => {
-        expect(ShowReferralUtils.buttons(referPaths.show.statusHistory({ referralId: 'mockReferralId' }))).toEqual([
+      it('contains the "Back to my referrals" and "Withdraw referral" buttons with the correct hrefs', () => {
+        expect(
+          ShowReferralUtils.buttons(
+            referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+            submittedReferral,
+          ),
+        ).toEqual([
           {
             href: '/refer/referrals/case-list',
             text: 'Back to my referrals',
           },
+          {
+            classes: 'govuk-button--secondary',
+            disabled: false,
+            href: `/refer/referrals/${submittedReferral.id}/withdraw`,
+            text: 'Withdraw referral',
+          },
         ])
+      })
+
+      describe('when the referral has been withdrawn', () => {
+        it('disables the "Withdraw referral" button', () => {
+          const withdrawnReferral = referralFactory.build({ status: 'withdrawn' })
+
+          expect(
+            ShowReferralUtils.buttons(
+              referPaths.show.statusHistory({ referralId: withdrawnReferral.id }),
+              withdrawnReferral,
+            ),
+          ).toEqual(
+            expect.arrayContaining([
+              {
+                classes: 'govuk-button--secondary',
+                disabled: true,
+                href: undefined,
+                text: 'Withdraw referral',
+              },
+            ]),
+          )
+        })
       })
     })
   })
