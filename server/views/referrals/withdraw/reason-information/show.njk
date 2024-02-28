@@ -1,48 +1,14 @@
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
-{% from "moj/components/timeline/macro.njk" import mojTimeline %}
 
-{% extends "../../../partials/layout.njk" %}
-
-{% block backLink %}
-  {{ govukBackLink({
-    text: "Back",
-    href: backLinkHref
-  }) }}
-{% endblock backLink %}
+{% extends "../partials/layout.njk" %}
 
 {% block content %}
+  {{ super() }}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {% if errors.list | length %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: errors.list
-        }) }}
-      {% endif %}
-
-      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
-
-      <p>If you withdraw the referral, it will be closed.</p>
-
-      <h2 class="govuk-heading-m">Current status</h2>
-
-      {{ mojTimeline({
-        items: timelineItems,
-        attributes: {
-          "data-testid": "status-history-timeline"
-        }
-      }) }}
-
-      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-
-      <h2 class="govuk-heading-m">Give a reason</h2>
-
-      <p>Provide more information about the reason for withdrawing this referral.</p>
-
       <form method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
@@ -68,7 +34,7 @@
             text: "Submit"
           }) }}
 
-          <a class="govuk-link" href={{ cancelLink }}>Cancel</a>
+          <a href={{ cancelLink }}>Cancel</a>
         </div>
       </form>
     </div>
