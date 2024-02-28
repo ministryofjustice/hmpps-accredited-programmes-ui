@@ -20,6 +20,7 @@ import type {
   HasHtmlString,
   HasTextString,
   MojTimelineItem,
+  ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
 import type {
   GovukFrontendRadiosItem,
@@ -121,6 +122,15 @@ export default abstract class Page {
       this.shouldContainSummaryListRows(
         ShowReferralUtils.courseOfferingSummaryListRows(course, organisationName),
         summaryListElement,
+      )
+    })
+  }
+
+  shouldContainCurrentStatusTimelineItem(statusHistoryPresenter: Array<ReferralStatusHistoryPresenter>) {
+    cy.get('[data-testid="status-history-timeline"]').then(timelineElement => {
+      this.shouldContainTimelineItems(
+        ShowReferralUtils.statusHistoryTimelineItems(statusHistoryPresenter).slice(0, 1),
+        timelineElement,
       )
     })
   }
