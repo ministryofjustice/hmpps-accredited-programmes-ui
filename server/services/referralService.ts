@@ -6,6 +6,7 @@ import type {
   Organisation,
   Paginated,
   Referral,
+  ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralUpdate,
   ReferralView,
@@ -117,6 +118,18 @@ export default class ReferralService {
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findReferralViews(organisationId, query)
+  }
+
+  async getStatusTransitions(
+    username: Express.User['username'],
+    referralId: Referral['id'],
+    query?: { ptUser?: boolean },
+  ): Promise<Array<ReferralStatusRefData>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.findStatusTransitions(referralId, query)
   }
 
   async submitReferral(username: Express.User['username'], referralId: Referral['id']): Promise<void> {

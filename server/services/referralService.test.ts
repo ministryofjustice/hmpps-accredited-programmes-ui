@@ -6,7 +6,12 @@ import type UserService from './userService'
 import logger from '../../logger'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
-import { referralFactory, referralStatusHistoryFactory, referralViewFactory } from '../testutils/factories'
+import {
+  referralFactory,
+  referralStatusHistoryFactory,
+  referralStatusRefDataFactory,
+  referralViewFactory,
+} from '../testutils/factories'
 import type { CreatedReferralResponse, ReferralStatusUpdate, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
@@ -290,6 +295,41 @@ describe('ReferralService', () => {
 
         expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(referralClient.findReferralViews).toHaveBeenCalledWith(organisationId, query)
+      })
+    })
+  })
+
+  describe('getStatusTransitions', () => {
+    it('returns a list of status transitions for a given referral', async () => {
+      const referralId = 'referral-id'
+      const statusTransitions = referralStatusRefDataFactory.buildList(2)
+
+      when(referralClient.findStatusTransitions).calledWith(referralId, undefined).mockResolvedValue(statusTransitions)
+
+      const result = await service.getStatusTransitions(username, referralId)
+
+      expect(result).toEqual(statusTransitions)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findStatusTransitions).toHaveBeenCalledWith(referralId, undefined)
+    })
+
+    describe('with query values', () => {
+      it('makes the correct call to the referral client', async () => {
+        const referralId = 'referral-id'
+        const query = { ptUser: true }
+        const statusTransitions = referralStatusRefDataFactory.buildList(2)
+
+        when(referralClient.findStatusTransitions).calledWith(referralId, query).mockResolvedValue(statusTransitions)
+
+        const result = await service.getStatusTransitions(username, referralId, query)
+
+        expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(referralClient.findStatusTransitions).toHaveBeenCalledWith(referralId, query)
+        expect(result).toEqual(statusTransitions)
       })
     })
   })
