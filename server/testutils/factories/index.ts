@@ -27,6 +27,7 @@ import referralFactory from './referral'
 import referralStatusCategoryFactory from './referralStatusCategory'
 import referralStatusHistoryFactory from './referralStatusHistory'
 import referralStatusReasonFactory from './referralStatusReason'
+import referralStatusRefDataFactory from './referralStatusRefData'
 import referralViewFactory from './referralView'
 import relationshipsFactory from './relationships'
 import risksAndAlertsFactory from './risksAndAlerts'
@@ -63,6 +64,7 @@ export {
   referralStatusCategoryFactory,
   referralStatusHistoryFactory,
   referralStatusReasonFactory,
+  referralStatusRefDataFactory,
   referralViewFactory,
   relationshipsFactory,
   risksAndAlertsFactory,
