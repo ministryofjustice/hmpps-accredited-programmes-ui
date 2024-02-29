@@ -9,6 +9,7 @@ import type {
   Paginated,
   Referral,
   ReferralStatusHistory,
+  ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralUpdate,
   ReferralView,
@@ -93,6 +94,20 @@ export default class ReferralClient {
         size: '15',
       },
     })) as Paginated<ReferralView>
+  }
+
+  async findStatusTransitions(
+    referralId: Referral['id'],
+    query?: {
+      ptUser?: boolean
+    },
+  ): Promise<Array<ReferralStatusRefData>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.statusTransitions({ referralId }),
+      query: {
+        ...(query?.ptUser && { ptUser: 'true' }),
+      },
+    })) as Array<ReferralStatusRefData>
   }
 
   async submit(referralId: Referral['id']): Promise<void> {
