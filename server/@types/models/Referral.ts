@@ -88,7 +88,11 @@ type ReferralStatusRefData = {
   colour: TagColour
   description: string
   closed?: boolean
+  confirmationText?: string
   draft?: boolean
+  hasConfirmation?: boolean
+  hasNotes?: boolean
+  hintText?: string
 }
 
 type ReferralView = {
