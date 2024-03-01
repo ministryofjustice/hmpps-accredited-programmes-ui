@@ -57,6 +57,7 @@ export default class UpdateStatusDecisionController {
       }
 
       req.session.referralStatusUpdateData = {
+        previousPath: req.path,
         referralId,
         status: statusDecision,
       }

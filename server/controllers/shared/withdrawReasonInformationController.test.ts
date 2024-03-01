@@ -60,6 +60,7 @@ describe('WithdrawReasonInformationController', () => {
       path: referPaths.withdraw.reasonInformation({ referralId: referral.id }),
       session: {
         referralStatusUpdateData: {
+          previousPath: '/previous-path',
           referralId: referral.id,
           status: 'WITHDRAWN',
           statusCategoryCode: 'STATUS-CAT-A',
@@ -77,7 +78,7 @@ describe('WithdrawReasonInformationController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/withdraw/reason-information/show', {
-        backLinkHref: referPaths.withdraw.reason({ referralId: referral.id }),
+        backLinkHref: '/previous-path',
         cancelLink: referPaths.show.statusHistory({ referralId: referral.id }),
         maxLength: 100,
         pageHeading: 'Withdraw referral',
@@ -100,7 +101,7 @@ describe('WithdrawReasonInformationController', () => {
         expect(response.render).toHaveBeenCalledWith(
           'referrals/withdraw/reason-information/show',
           expect.objectContaining({
-            backLinkHref: assessPaths.withdraw.reason({ referralId: referral.id }),
+            backLinkHref: '/previous-path',
             cancelLink: assessPaths.show.statusHistory({ referralId: referral.id }),
           }),
         )

@@ -77,7 +77,11 @@ export default class WithdrawReasonController {
         return res.redirect(paths.withdraw.reason({ referralId }))
       }
 
-      referralStatusUpdateData.statusReasonCode = reasonCode
+      req.session.referralStatusUpdateData = {
+        ...referralStatusUpdateData,
+        previousPath: req.path,
+        statusReasonCode: reasonCode,
+      }
 
       return res.redirect(paths.withdraw.reasonInformation({ referralId }))
     }

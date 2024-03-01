@@ -38,7 +38,7 @@ export default class WithdrawCategoryController {
       FormUtils.setFieldErrors(req, res, ['categoryCode'])
 
       return res.render('referrals/withdraw/category/show', {
-        backLinkHref: paths.show.statusHistory({ referralId }),
+        backLinkHref: referralStatusUpdateData?.previousPath || paths.show.statusHistory({ referralId }),
         pageHeading: 'Withdrawal category',
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
@@ -60,6 +60,7 @@ export default class WithdrawCategoryController {
       }
 
       req.session.referralStatusUpdateData = {
+        previousPath: req.path,
         referralId,
         status: withdrawnStatus,
         statusCategoryCode: categoryCode,

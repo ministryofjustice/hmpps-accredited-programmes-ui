@@ -34,7 +34,7 @@ export default class WithdrawReasonInformationController {
       FormUtils.setFormValues(req, res)
 
       return res.render('referrals/withdraw/reason-information/show', {
-        backLinkHref: paths.withdraw.reason({ referralId }),
+        backLinkHref: referralStatusUpdateData.previousPath,
         cancelLink: paths.show.statusHistory({ referralId }),
         maxLength,
         pageHeading: 'Withdraw referral',
