@@ -155,6 +155,7 @@ describe('UpdateStatusDecisionController', () => {
       await requestHandler(request, response, next)
 
       expect(request.session.referralStatusUpdateData).toEqual({
+        previousPath: request.path,
         referralId: referral.id,
         status: 'NOT_SUITABLE',
       })
@@ -169,6 +170,7 @@ describe('UpdateStatusDecisionController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toEqual({
+          previousPath: request.path,
           referralId: referral.id,
           status: 'NOT_SUITABLE',
         })
@@ -196,6 +198,7 @@ describe('UpdateStatusDecisionController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toEqual({
+          previousPath: request.path,
           referralId: referral.id,
           status: 'WITHDRAWN',
         })
