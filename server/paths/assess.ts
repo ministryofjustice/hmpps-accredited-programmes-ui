@@ -9,6 +9,8 @@ const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
 
 const withdrawBasePath = referralShowPathBase.path('withdraw')
 
+const updateStatusPathBase = referralShowPathBase.path('update-status')
+
 export default {
   caseList: {
     filter: courseCaseListPath,
@@ -34,6 +36,10 @@ export default {
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
     statusHistory: referralShowPathBase.path('status-history'),
+  },
+  updateStatus: {
+    confirm: updateStatusPathBase.path('confirm'),
+    decision: updateStatusPathBase,
   },
   withdraw: {
     category: withdrawBasePath,

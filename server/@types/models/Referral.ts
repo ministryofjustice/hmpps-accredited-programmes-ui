@@ -83,6 +83,14 @@ type ReferralStatusUpdate = {
   reason?: Uppercase<string>
 }
 
+type ReferralStatusRefData = {
+  code: ReferralStatus | ReferralStatusUppercase
+  colour: TagColour
+  description: string
+  closed?: boolean
+  draft?: boolean
+}
+
 type ReferralView = {
   id: Referral['id'] // eslint-disable-next-line @typescript-eslint/member-ordering
   audience?: string
@@ -114,6 +122,7 @@ export type {
   ReferralStatusCategory,
   ReferralStatusHistory,
   ReferralStatusReason,
+  ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
   ReferralUpdate,

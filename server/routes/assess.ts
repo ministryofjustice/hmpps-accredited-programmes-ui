@@ -13,6 +13,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
+    updateStatusDecisionController,
     withdrawCategoryController,
     withdrawReasonController,
     withdrawReasonInformationController,
@@ -40,6 +41,9 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.risksAndNeeds.risksAndAlerts.pattern, risksAndNeedsController.risksAndAlerts())
   get(assessPaths.show.risksAndNeeds.roshAnalysis.pattern, risksAndNeedsController.roshAnalysis())
   get(assessPaths.show.risksAndNeeds.thinkingAndBehaving.pattern, risksAndNeedsController.thinkingAndBehaving())
+
+  get(assessPaths.updateStatus.decision.pattern, updateStatusDecisionController.show())
+  post(assessPaths.updateStatus.decision.pattern, updateStatusDecisionController.submit())
 
   get(assessPaths.withdraw.category.pattern, withdrawCategoryController.show())
   post(assessPaths.withdraw.category.pattern, withdrawCategoryController.submit())

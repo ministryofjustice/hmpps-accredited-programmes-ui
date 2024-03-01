@@ -17,6 +17,7 @@ const submitPath = referralPath.path('submit')
 const dashboardPath = referralsPath.path('view/organisation/:organisationId/dashboard')
 const myDashboardPath = referralsPath.path('view/me/dashboard')
 const statusHistoryPath = referralPath.path('status-history')
+const statusTransitionsPath = referralPath.path('status-transitions')
 
 const organisationsPath = path('/organisations')
 const coursesByOrganisationPath = organisationsPath.path(':organisationId/courses')
@@ -78,6 +79,7 @@ export default {
     myDashboard: myDashboardPath,
     show: referralPath,
     statusHistory: statusHistoryPath,
+    statusTransitions: statusTransitionsPath,
     submit: submitPath,
     update: referralPath,
     updateStatus: updateStatusPath,
