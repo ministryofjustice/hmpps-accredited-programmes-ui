@@ -3,6 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import WithdrawReasonController from './withdrawReasonController'
+import type { ReferralStatusUpdateSessionData } from '../../@types/express'
 import { assessPaths, referPaths } from '../../paths'
 import type { ReferenceDataService, ReferralService } from '../../services'
 import { referralFactory, referralStatusHistoryFactory, referralStatusReasonFactory } from '../../testutils/factories'
@@ -202,7 +203,15 @@ describe('WithdrawReasonController', () => {
   })
 
   describe('submit', () => {
+    let referralStatusUpdateSessionData: ReferralStatusUpdateSessionData
+
     beforeEach(() => {
+      referralStatusUpdateSessionData = {
+        referralId: referral.id,
+        status: 'WITHDRAWN',
+        statusCategoryCode: 'STATUS-CAT-A',
+        statusReasonCode: undefined,
+      }
       request.body = { reasonCode: 'STATUS-REASON-A' }
       request.session.referralStatusUpdateData = {
         referralId: referral.id,
@@ -217,7 +226,8 @@ describe('WithdrawReasonController', () => {
       await requestHandler(request, response, next)
 
       expect(request.session.referralStatusUpdateData).toEqual({
-        ...request.session.referralStatusUpdateData,
+        ...referralStatusUpdateSessionData,
+        previousPath: request.path,
         statusReasonCode: 'STATUS-REASON-A',
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.withdraw.reasonInformation({ referralId: referral.id }))
@@ -231,7 +241,8 @@ describe('WithdrawReasonController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toEqual({
-          ...request.session.referralStatusUpdateData,
+          ...referralStatusUpdateSessionData,
+          previousPath: request.path,
           statusReasonCode: 'STATUS-REASON-A',
         })
         expect(response.redirect).toHaveBeenCalledWith(

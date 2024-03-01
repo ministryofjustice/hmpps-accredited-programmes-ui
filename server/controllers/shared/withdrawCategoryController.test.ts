@@ -112,6 +112,26 @@ describe('WithdrawCategoryController', () => {
       })
     })
 
+    describe('when `referralStatusUpdateData` has `previousPath`', () => {
+      it('should render the show template with the correct `backLinkHref` value', async () => {
+        request.session.referralStatusUpdateData = {
+          previousPath: '/previous-path',
+          referralId: referral.id,
+          status: 'WITHDRAWN',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/withdraw/category/show',
+          expect.objectContaining({
+            backLinkHref: '/previous-path',
+          }),
+        )
+      })
+    })
+
     describe('when `referralStatusUpdateData` is for the same referral', () => {
       it('should keep `referralStatusUpdateData` in the session and make the call to check the correct radio item', async () => {
         const session: ReferralStatusUpdateSessionData = {
@@ -176,6 +196,7 @@ describe('WithdrawCategoryController', () => {
       await requestHandler(request, response, next)
 
       expect(request.session.referralStatusUpdateData).toEqual({
+        previousPath: request.path,
         referralId: referral.id,
         status: 'WITHDRAWN',
         statusCategoryCode: 'STATUS-CAT-A',
@@ -192,6 +213,7 @@ describe('WithdrawCategoryController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toEqual({
+          previousPath: request.path,
           referralId: referral.id,
           status: 'WITHDRAWN',
           statusCategoryCode: 'STATUS-CAT-A',
