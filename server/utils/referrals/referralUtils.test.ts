@@ -1,4 +1,5 @@
 import ReferralUtils from './referralUtils'
+import { referralStatusRefDataFactory } from '../../testutils/factories'
 import type { ReferralStatusCategory } from '@accredited-programmes/models'
 
 describe('ReferralUtils', () => {
@@ -39,6 +40,26 @@ describe('ReferralUtils', () => {
           { checked: false, text: 'Category B', value: 'B' },
           { divider: 'or', value: '' },
           { checked: false, text: 'Other', value: 'OTHER' },
+        ])
+      })
+    })
+
+    describe('when the provided array includes an option with a `hintText`', () => {
+      it('should include a hint for the corresponding radio item', () => {
+        const hintText = 'Some hint text'
+        const referralStatusTransitions = [
+          referralStatusRefDataFactory.build(),
+          referralStatusRefDataFactory.build({ hintText }),
+        ]
+
+        expect(ReferralUtils.statusOptionsToRadioItems(referralStatusTransitions)).toEqual([
+          { checked: false, text: referralStatusTransitions[0].description, value: referralStatusTransitions[0].code },
+          {
+            checked: false,
+            hint: { text: hintText },
+            text: referralStatusTransitions[1].description,
+            value: referralStatusTransitions[1].code,
+          },
         ])
       })
     })
