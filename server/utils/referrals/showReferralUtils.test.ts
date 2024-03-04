@@ -19,7 +19,7 @@ describe('ShowReferralUtils', () => {
 
   describe('buttons', () => {
     describe('when on the assess journey', () => {
-      it('contains the "Back to my referrals" button with the corect href', () => {
+      it('contains the "Back to my referrals" and "Update status" buttons with the corect hrefs', () => {
         expect(
           ShowReferralUtils.buttons(
             assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
@@ -30,7 +30,35 @@ describe('ShowReferralUtils', () => {
             href: '/assess/referrals/case-list',
             text: 'Back to my referrals',
           },
+          {
+            classes: 'govuk-button--secondary',
+            disabled: false,
+            href: `/assess/referrals/${submittedReferral.id}/update-status`,
+            text: 'Update status',
+          },
         ])
+      })
+
+      describe('and the referral is closed', () => {
+        it('disables the "Update status" button', () => {
+          const closedReferral = referralFactory.closed().build()
+
+          expect(
+            ShowReferralUtils.buttons(
+              assessPaths.show.statusHistory({ referralId: closedReferral.id }),
+              closedReferral,
+            ),
+          ).toEqual(
+            expect.arrayContaining([
+              {
+                classes: 'govuk-button--secondary',
+                disabled: true,
+                href: undefined,
+                text: 'Update status',
+              },
+            ]),
+          )
+        })
       })
     })
 
@@ -55,15 +83,12 @@ describe('ShowReferralUtils', () => {
         ])
       })
 
-      describe('when the referral has been withdrawn', () => {
+      describe('and the referral is closed', () => {
         it('disables the "Withdraw referral" button', () => {
-          const withdrawnReferral = referralFactory.build({ status: 'withdrawn' })
+          const closedReferral = referralFactory.closed().build()
 
           expect(
-            ShowReferralUtils.buttons(
-              referPaths.show.statusHistory({ referralId: withdrawnReferral.id }),
-              withdrawnReferral,
-            ),
+            ShowReferralUtils.buttons(referPaths.show.statusHistory({ referralId: closedReferral.id }), closedReferral),
           ).toEqual(
             expect.arrayContaining([
               {
