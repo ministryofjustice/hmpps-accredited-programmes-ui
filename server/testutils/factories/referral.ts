@@ -5,6 +5,10 @@ import { referralStatuses } from '../../@types/models/Referral'
 import type { Referral, ReferralStatus } from '@accredited-programmes/models'
 
 class ReferralFactory extends Factory<Referral> {
+  closed() {
+    return this.params({ closed: true, status: faker.helpers.arrayElement(closedStatuses) })
+  }
+
   started() {
     return this.params({
       additionalInformation: undefined,
@@ -35,6 +39,7 @@ class ReferralFactory extends Factory<Referral> {
     })
   }
 }
+const closedStatuses: Array<ReferralStatus> = ['programme_complete', 'deselected', 'not_suitable', 'withdrawn']
 
 const randomStatus = (availableStatuses?: Array<ReferralStatus>) =>
   faker.helpers.arrayElement(availableStatuses || referralStatuses)
@@ -76,6 +81,7 @@ export default ReferralFactory.define(({ params }) => {
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     additionalInformation: faker.lorem.paragraph({ max: 5, min: 0 }),
+    closed: closedStatuses.includes(status),
     hasReviewedProgrammeHistory: faker.datatype.boolean(),
     oasysConfirmed: faker.datatype.boolean(),
     offeringId: faker.string.uuid(),

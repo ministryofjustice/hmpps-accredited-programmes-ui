@@ -30,6 +30,7 @@ type Referral = {
   prisonNumber: Person['prisonNumber']
   referrerUsername: Express.User['username']
   status: ReferralStatus
+  closed?: boolean
   statusColour?: TagColour
   statusDescription?: string
   submittedOn?: string
