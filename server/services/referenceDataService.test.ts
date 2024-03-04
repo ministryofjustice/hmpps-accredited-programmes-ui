@@ -4,7 +4,11 @@ import { when } from 'jest-when'
 import ReferenceDataService from './referenceDataService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferenceDataClient, TokenStore } from '../data'
-import { referralStatusCategoryFactory, referralStatusReasonFactory } from '../testutils/factories'
+import {
+  referralStatusCategoryFactory,
+  referralStatusReasonFactory,
+  referralStatusRefDataFactory,
+} from '../testutils/factories'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referenceDataClient')
@@ -14,6 +18,7 @@ const redisClient = createMock<RedisClient>({})
 const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
 const systemToken = 'some system token'
 const username = 'USERNAME'
+const referralStatusCode: ReferralStatusUppercase = 'WITHDRAWN'
 
 describe('ReferenceDataService', () => {
   const referenceDataClient = new ReferenceDataClient(systemToken) as jest.Mocked<ReferenceDataClient>
@@ -34,7 +39,6 @@ describe('ReferenceDataService', () => {
 
   describe('getReferralStatusCodeCategories', () => {
     it('should return referral status code categories', async () => {
-      const referralStatusCode: ReferralStatusUppercase = 'WITHDRAWN'
       const categories = referralStatusCategoryFactory.buildList(2, { referralStatusCode })
 
       when(referenceDataClient.findReferralStatusCodeCategories)
@@ -47,9 +51,22 @@ describe('ReferenceDataService', () => {
     })
   })
 
+  describe('getReferralStatusCodeData', () => {
+    it('should return reference data for the referral status code', async () => {
+      const referralStatusRefData = referralStatusRefDataFactory.build()
+
+      when(referenceDataClient.findReferralStatusCodeData)
+        .calledWith(referralStatusCode)
+        .mockResolvedValue(referralStatusRefData)
+
+      const result = await service.getReferralStatusCodeData(username, referralStatusCode)
+
+      expect(result).toEqual(referralStatusRefData)
+    })
+  })
+
   describe('getReferralStatusCodeReasons', () => {
     it('should return referral status code reasons', async () => {
-      const referralStatusCode: ReferralStatusUppercase = 'WITHDRAWN'
       const categoryCode = 'A'
       const reasons = referralStatusReasonFactory.buildList(2, { referralCategoryCode: categoryCode })
 
