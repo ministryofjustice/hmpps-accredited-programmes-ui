@@ -22,13 +22,13 @@ export default class UpdateStatusDecisionController {
         delete req.session.referralStatusUpdateData
       }
 
-      const [statusHistory, statusTranisitions] = await Promise.all([
+      const [statusHistory, statusTransitions] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referralService.getStatusTransitions(username, referralId, { ptUser: isAssess }),
       ])
 
       const radioItems = ReferralUtils.statusOptionsToRadioItems(
-        statusTranisitions,
+        statusTransitions,
         req.session.referralStatusUpdateData?.status,
       )
 
