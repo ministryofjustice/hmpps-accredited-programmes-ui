@@ -3,7 +3,6 @@
 import ReferralsController from './referralsController'
 import RisksAndNeedsController from './risksAndNeedsController'
 import StatusHistoryController from './statusHistoryController'
-import UpdateStatusDecisionController from './updateStatusDecisionController'
 import WithdrawCategoryController from './withdrawCategoryController'
 import WithdrawReasonController from './withdrawReasonController'
 import WithdrawReasonInformationController from './withdrawReasonInformationController'
@@ -30,8 +29,6 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
-  const updateStatusDecisionController = new UpdateStatusDecisionController(services.referralService)
-
   const withdrawCategoryController = new WithdrawCategoryController(
     services.referenceDataService,
     services.referralService,
@@ -45,7 +42,6 @@ const controllers = (services: Services) => {
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
-    updateStatusDecisionController,
     withdrawCategoryController,
     withdrawReasonController,
     withdrawReasonInformationController,

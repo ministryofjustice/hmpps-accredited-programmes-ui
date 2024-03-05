@@ -31,7 +31,7 @@ export default class ShowReferralUtils {
       buttons.push({
         classes: 'govuk-button--secondary',
         disabled: closed,
-        href: closed ? undefined : assessPaths.updateStatus.decision({ referralId: referral.id }),
+        href: closed ? undefined : assessPaths.updateStatus.decision.show({ referralId: referral.id }),
         text: 'Update status',
       })
     } else {
