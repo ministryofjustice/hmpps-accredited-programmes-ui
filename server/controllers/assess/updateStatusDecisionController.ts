@@ -1,6 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { assessPathBase, assessPaths, referPaths } from '../../paths'
+import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 
@@ -10,9 +10,6 @@ export default class UpdateStatusDecisionController {
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
-
-      const isAssess = req.path.startsWith(assessPathBase.pattern)
-      const paths = isAssess ? assessPaths : referPaths
 
       const { referralId } = req.params
       const { token: userToken, username } = req.user
@@ -24,7 +21,7 @@ export default class UpdateStatusDecisionController {
 
       const [statusHistory, statusTransitions] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referralService.getStatusTransitions(username, referralId, { ptUser: isAssess }),
+        this.referralService.getStatusTransitions(username, referralId, { ptUser: true }),
       ])
 
       const radioItems = ReferralUtils.statusOptionsToRadioItems(
@@ -35,7 +32,8 @@ export default class UpdateStatusDecisionController {
       FormUtils.setFieldErrors(req, res, ['statusDecision'])
 
       return res.render('referrals/updateStatus/decision/show', {
-        backLinkHref: paths.show.statusHistory({ referralId }),
+        action: assessPaths.updateStatus.decision.submit({ referralId }),
+        backLinkHref: assessPaths.show.statusHistory({ referralId }),
         pageHeading: 'Update referral status',
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
@@ -45,15 +43,13 @@ export default class UpdateStatusDecisionController {
 
   submit(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      const paths = req.path.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
-
       const { referralId } = req.params
       const { statusDecision } = req.body
 
       if (!statusDecision) {
         req.flash('statusDecisionError', 'Select a status decision')
 
-        return res.redirect(paths.updateStatus.decision({ referralId }))
+        return res.redirect(assessPaths.updateStatus.decision.show({ referralId }))
       }
 
       req.session.referralStatusUpdateData = {
@@ -63,10 +59,10 @@ export default class UpdateStatusDecisionController {
       }
 
       if (statusDecision === 'WITHDRAWN') {
-        return res.redirect(paths.withdraw.category({ referralId }))
+        return res.redirect(assessPaths.withdraw.category({ referralId }))
       }
 
-      return res.redirect(paths.updateStatus.confirm({ referralId }))
+      return res.redirect(assessPaths.updateStatus.selection.show({ referralId }))
     }
   }
 }

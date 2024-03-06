@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 
 import UpdateStatusDecisionController from './updateStatusDecisionController'
 import type { ReferralStatusUpdateSessionData } from '../../@types/express'
-import { assessPaths, referPaths } from '../../paths'
+import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { referralFactory, referralStatusHistoryFactory, referralStatusRefDataFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
@@ -69,7 +69,7 @@ describe('UpdateStatusDecisionController', () => {
 
     request = createMock<Request>({
       params: { referralId: referral.id },
-      path: referPaths.updateStatus.decision({ referralId: referral.id }),
+      path: assessPaths.updateStatus.decision.show({ referralId: referral.id }),
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
@@ -81,7 +81,8 @@ describe('UpdateStatusDecisionController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/decision/show', {
-        backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
+        action: assessPaths.updateStatus.decision.submit({ referralId: referral.id }),
+        backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
         pageHeading: 'Update referral status',
         radioItems,
         timelineItems: timelineItems.slice(0, 1),
@@ -92,25 +93,7 @@ describe('UpdateStatusDecisionController', () => {
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
 
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
-      expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id, { ptUser: false })
-    })
-
-    describe('when viewing the page on the assess journey', () => {
-      it('should render the show template with the correct response locals', async () => {
-        request.path = assessPaths.updateStatus.decision({ referralId: referral.id })
-
-        const requestHandler = controller.show()
-        await requestHandler(request, response, next)
-
-        expect(response.render).toHaveBeenCalledWith(
-          'referrals/updateStatus/decision/show',
-          expect.objectContaining({
-            backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
-          }),
-        )
-
-        expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id, { ptUser: true })
-      })
+      expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id, { ptUser: true })
     })
 
     describe('when `referralStatusUpdateData` is for the same referral and contains `status`', () => {
@@ -150,7 +133,7 @@ describe('UpdateStatusDecisionController', () => {
       request.body = { statusDecision: 'NOT_SUITABLE' }
     })
 
-    it('should update `referralStatusUpdateData` and redirect to the refer update status confirm page', async () => {
+    it('should update `referralStatusUpdateData` and redirect to the update status selection show page', async () => {
       const requestHandler = controller.submit()
       await requestHandler(request, response, next)
 
@@ -159,23 +142,9 @@ describe('UpdateStatusDecisionController', () => {
         referralId: referral.id,
         status: 'NOT_SUITABLE',
       })
-      expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.confirm({ referralId: referral.id }))
-    })
-
-    describe('when submitting the form on the assess journey', () => {
-      it('should update `referralStatusUpdateData` and redirect to the assess update status confirm page', async () => {
-        request.path = assessPaths.updateStatus.decision({ referralId: referral.id })
-
-        const requestHandler = controller.submit()
-        await requestHandler(request, response, next)
-
-        expect(request.session.referralStatusUpdateData).toEqual({
-          previousPath: request.path,
-          referralId: referral.id,
-          status: 'NOT_SUITABLE',
-        })
-        expect(response.redirect).toHaveBeenCalledWith(assessPaths.updateStatus.confirm({ referralId: referral.id }))
-      })
+      expect(response.redirect).toHaveBeenCalledWith(
+        assessPaths.updateStatus.selection.show({ referralId: referral.id }),
+      )
     })
 
     describe('when there is no `statusDecision` value in the request body', () => {
@@ -186,7 +155,9 @@ describe('UpdateStatusDecisionController', () => {
         await requestHandler(request, response, next)
 
         expect(request.flash).toHaveBeenCalledWith('statusDecisionError', 'Select a status decision')
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.decision({ referralId: referral.id }))
+        expect(response.redirect).toHaveBeenCalledWith(
+          assessPaths.updateStatus.decision.show({ referralId: referral.id }),
+        )
       })
     })
 
@@ -202,7 +173,7 @@ describe('UpdateStatusDecisionController', () => {
           referralId: referral.id,
           status: 'WITHDRAWN',
         })
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.withdraw.category({ referralId: referral.id }))
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.withdraw.category({ referralId: referral.id }))
       })
     })
   })
