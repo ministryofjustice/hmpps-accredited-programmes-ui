@@ -29,6 +29,7 @@ const participationPath = participationsPath.path(':courseParticipationId')
 const referenceDataPath = path('/reference-data')
 const referralStatusesPath = referenceDataPath.path('referral-statuses')
 
+const referralStatusesCodeDataPath = referralStatusesPath.path(':referralStatusCode')
 const referralStatusCodeCategoriesPath = referralStatusesPath.path(':referralStatusCode/categories')
 const referralStatusCodeReasonsPath = referralStatusCodeCategoriesPath.path(':categoryCode/reasons')
 
@@ -69,6 +70,7 @@ export default {
   },
   referenceData: {
     referralStatuses: {
+      codeData: referralStatusesCodeDataPath,
       statusCodeCategories: referralStatusCodeCategoriesPath,
       statusCodeReasons: referralStatusCodeReasonsPath,
     },
