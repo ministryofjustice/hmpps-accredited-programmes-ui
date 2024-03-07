@@ -21,6 +21,8 @@ const referralStatuses = [
   'withdrawn',
 ] as const
 
+const referralStatusGroups = ['open', 'draft', 'closed'] as const
+
 type Referral = {
   id: string // eslint-disable-next-line @typescript-eslint/member-ordering
   additionalInformation: string
@@ -55,6 +57,8 @@ type ReferralStatusCategory = {
   description: string
   referralStatusCode: ReferralStatusUppercase
 }
+
+type ReferralStatusGroup = (typeof referralStatusGroups)[number]
 
 type ReferralStatusReason = {
   code: Uppercase<string>
@@ -119,12 +123,14 @@ type ReferralView = {
   tasksCompleted?: number
 }
 
-export { referralStatuses }
+export { referralStatusGroups, referralStatuses }
+
 export type {
   CreatedReferralResponse,
   Referral,
   ReferralStatus,
   ReferralStatusCategory,
+  ReferralStatusGroup,
   ReferralStatusHistory,
   ReferralStatusReason,
   ReferralStatusRefData,

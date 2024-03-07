@@ -118,8 +118,6 @@ type ReferralSharedPageData = {
   subNavigationItems: Array<MojFrontendNavigationItem>
 }
 
-type ReferralStatusGroup = 'closed' | 'draft' | 'open'
-
 type ReferralTaskListStatusText = 'Cannot start yet' | 'Completed' | 'Not started'
 
 type ReferralTaskListStatusTagCompleted = GovukFrontendTagWithText & {
@@ -248,7 +246,6 @@ export type {
   OspBox,
   QueryParam,
   ReferralSharedPageData,
-  ReferralStatusGroup,
   ReferralStatusHistoryPresenter,
   ReferralTaskListItem,
   ReferralTaskListSection,

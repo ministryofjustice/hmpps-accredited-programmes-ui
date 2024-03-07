@@ -352,15 +352,15 @@ describe('CaseListUtils', () => {
           href: '/refer/referrals/case-list/open',
           text: 'Open referrals',
         },
-        // {
-        //   active: false,
-        //   href: '/refer/referrals/case-list/closed',
-        //   text: 'Closed referrals',
-        // },
         {
           active: false,
           href: '/refer/referrals/case-list/draft',
           text: 'Draft referrals',
+        },
+        {
+          active: false,
+          href: '/refer/referrals/case-list/closed',
+          text: 'Closed referrals',
         },
       ]
 

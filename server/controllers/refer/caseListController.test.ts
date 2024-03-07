@@ -87,11 +87,8 @@ describe('ReferCaseListController', () => {
     })
 
     describe('when the referral status group is "open"', () => {
-      const apiOpenStatusQuery = 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
-
       beforeEach(() => {
         request.params = { referralStatusGroup: 'open' }
-        ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiOpenStatusQuery)
       })
 
       it('renders the show template with the correct response locals', async () => {
@@ -106,9 +103,8 @@ describe('ReferCaseListController', () => {
           tableHeadings,
           tableRows,
         })
-        expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiOpenStatusQuery.toLowerCase())
         expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
-          status: apiOpenStatusQuery,
+          statusGroup: 'open',
         })
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
@@ -171,7 +167,7 @@ describe('ReferCaseListController', () => {
           expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
-            status: apiOpenStatusQuery,
+            statusGroup: 'open',
           })
           expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
             undefined,
@@ -224,9 +220,6 @@ describe('ReferCaseListController', () => {
       it('renders the show template with the correct response locals', async () => {
         request.params = { referralStatusGroup: 'draft' }
 
-        const apiDraftStatusQuery = 'REFERRAL_STARTED'
-        ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiDraftStatusQuery)
-
         when(referralService.getNumberOfTasksCompleted)
           .calledWith(username, paginatedReferralViews.content[0].id)
           .mockResolvedValue(1)
@@ -254,9 +247,8 @@ describe('ReferCaseListController', () => {
           tableHeadings: [...tableHeadings, { text: 'Progress' }],
           tableRows,
         })
-        expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiDraftStatusQuery.toLowerCase())
         expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
-          status: apiDraftStatusQuery,
+          statusGroup: 'draft',
         })
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
@@ -296,6 +288,23 @@ describe('ReferCaseListController', () => {
           referPaths,
         )
         expect(referralService.getNumberOfTasksCompleted).toHaveBeenCalledTimes(paginatedReferralViews.content.length)
+      })
+    })
+
+    describe('when the referral status group is "closed"', () => {
+      it('make the correct calls', async () => {
+        request.params = { referralStatusGroup: 'closed' }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
+          statusGroup: 'closed',
+        })
+        expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
+          referPaths.caseList.show({ referralStatusGroup: 'closed' }),
+          queryParamsExcludingSort,
+        )
       })
     })
 

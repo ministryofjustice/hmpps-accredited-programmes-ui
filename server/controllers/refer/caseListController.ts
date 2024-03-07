@@ -1,11 +1,12 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createHttpError from 'http-errors'
 
+import { referralStatusGroups } from '../../@types/models/Referral'
 import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { CaseListUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
-import type { ReferralStatus } from '@accredited-programmes/models'
-import type { CaseListColumnHeader, ReferralStatusGroup, SortableCaseListColumnKey } from '@accredited-programmes/ui'
+import type { ReferralStatusGroup } from '@accredited-programmes/models'
+import { type CaseListColumnHeader, type SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
 export default class ReferCaseListController {
   constructor(private readonly referralService: ReferralService) {}
@@ -22,19 +23,13 @@ export default class ReferCaseListController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const referralStatusGroups: Record<ReferralStatusGroup, Array<ReferralStatus>> = {
-        closed: [],
-        draft: ['referral_started'],
-        open: ['assessment_started', 'awaiting_assessment', 'referral_submitted'],
-      }
-
       const { page, sortColumn, sortDirection } = req.query as Record<string, string>
       const { username } = res.locals.user
-      const { referralStatusGroup } = req.params
+      const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
-      const referralStatuses = referralStatusGroups[referralStatusGroup as ReferralStatusGroup]
+      const isValidReferralStatusGroup = referralStatusGroups.includes(referralStatusGroup)
 
-      if (!referralStatuses) {
+      if (!isValidReferralStatusGroup) {
         throw createHttpError(404, 'Not found')
       }
 
@@ -42,7 +37,7 @@ export default class ReferCaseListController {
         page: page ? (Number(page) - 1).toString() : undefined,
         sortColumn,
         sortDirection,
-        status: CaseListUtils.uiToApiStatusQueryParam(referralStatuses.join(',')),
+        statusGroup: referralStatusGroup,
       })
 
       let paginatedReferralViewsContent = paginatedReferralViews.content

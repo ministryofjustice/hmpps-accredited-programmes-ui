@@ -1,5 +1,6 @@
 import type { Request } from 'express'
 
+import { referralStatusGroups } from '../../@types/models/Referral'
 import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
@@ -122,11 +123,7 @@ export default class CaseListUtils {
   }
 
   static subNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
-    return [
-      'open',
-      // 'closed',
-      'draft',
-    ].map(referralStatusGroup => {
+    return referralStatusGroups.map(referralStatusGroup => {
       const path = referPaths.caseList.show({ referralStatusGroup })
 
       return {
