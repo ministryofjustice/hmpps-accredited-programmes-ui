@@ -41,7 +41,7 @@ context('Referral case lists', () => {
   describe('when viewing open referrals', () => {
     it('shows the correct information', () => {
       cy.task('stubFindMyReferralViews', {
-        referralStatusGroup: 'open',
+        queryParameters: { statusGroup: { equalTo: 'open' } },
         referralViews: openReferralViews,
       })
 
@@ -58,14 +58,12 @@ context('Referral case lists', () => {
 
     it('includes pagination', () => {
       cy.task('stubFindMyReferralViews', {
-        queryParameters: { page: { equalTo: '3' } },
-        referralStatusGroup: 'open',
+        queryParameters: { page: { equalTo: '3' }, statusGroup: { equalTo: 'open' } },
         referralViews: openReferralViews,
         totalPages: 7,
       })
       cy.task('stubFindMyReferralViews', {
-        queryParameters: { page: { equalTo: '4' } },
-        referralStatusGroup: 'open',
+        queryParameters: { page: { equalTo: '4' }, statusGroup: { equalTo: 'open' } },
         referralViews: openReferralViews,
         totalPages: 7,
       })
@@ -100,7 +98,7 @@ context('Referral case lists', () => {
 
     it('shows the correct information', () => {
       cy.task('stubFindMyReferralViews', {
-        referralStatusGroup: 'draft',
+        queryParameters: { statusGroup: { equalTo: 'draft' } },
         referralViews: draftReferralViews,
       })
 
@@ -117,14 +115,12 @@ context('Referral case lists', () => {
 
     it('includes pagination', () => {
       cy.task('stubFindMyReferralViews', {
-        queryParameters: { page: { equalTo: '3' } },
-        referralStatusGroup: 'draft',
+        queryParameters: { page: { equalTo: '3' }, statusGroup: { equalTo: 'draft' } },
         referralViews: draftReferralViews,
         totalPages: 7,
       })
       cy.task('stubFindMyReferralViews', {
-        queryParameters: { page: { equalTo: '4' } },
-        referralStatusGroup: 'draft',
+        queryParameters: { page: { equalTo: '4' }, statusGroup: { equalTo: 'draft' } },
         referralViews: draftReferralViews,
         totalPages: 7,
       })
@@ -155,7 +151,7 @@ context('Referral case lists', () => {
   describe('when visiting the index, without specifying a status group', () => {
     it('redirects to the open referrals case list page', () => {
       cy.task('stubFindMyReferralViews', {
-        referralStatusGroup: 'open',
+        queryParameters: { statusGroup: { equalTo: 'open' } },
         referralViews: openReferralViews,
       })
 

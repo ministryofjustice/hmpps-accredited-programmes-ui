@@ -2,8 +2,13 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Paginated, Referral, ReferralStatusHistory, ReferralView } from '@accredited-programmes/models'
-import type { ReferralStatusGroup } from '@accredited-programmes/ui'
+import type {
+  Paginated,
+  Referral,
+  ReferralStatusGroup,
+  ReferralStatusHistory,
+  ReferralView,
+} from '@accredited-programmes/models'
 
 interface ReferralAndScenarioOptions {
   referral: Referral
@@ -46,8 +51,8 @@ export default {
     }),
 
   stubFindMyReferralViews: (args: {
-    referralStatusGroup: ReferralStatusGroup
     referralViews: Array<ReferralView>
+    statusGroup: ReferralStatusGroup
     queryParameters?: QueryParameters
     totalElements?: number
     totalPages?: Paginated<ReferralView>['totalPages']
@@ -60,12 +65,6 @@ export default {
         queryParameters: {
           size: {
             equalTo: '15',
-          },
-          status: {
-            equalTo:
-              args.referralStatusGroup === 'open'
-                ? 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
-                : 'REFERRAL_STARTED',
           },
           ...args.queryParameters,
         },
