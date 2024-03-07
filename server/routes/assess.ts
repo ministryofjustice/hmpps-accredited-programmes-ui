@@ -14,6 +14,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     risksAndNeedsController,
     statusHistoryController,
     updateStatusDecisionController,
+    updateStatusSelectionController,
     withdrawCategoryController,
     withdrawReasonController,
     withdrawReasonInformationController,
@@ -44,6 +45,13 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   get(assessPaths.updateStatus.decision.show.pattern, updateStatusDecisionController.show())
   post(assessPaths.updateStatus.decision.submit.pattern, updateStatusDecisionController.submit())
+
+  get(assessPaths.updateStatus.selection.show.pattern, updateStatusSelectionController.show())
+  post(
+    assessPaths.updateStatus.selection.confirmation.submit.pattern,
+    updateStatusSelectionController.submitConfirmation(),
+  )
+  post(assessPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
 
   get(assessPaths.withdraw.category.pattern, withdrawCategoryController.show())
   post(assessPaths.withdraw.category.pattern, withdrawCategoryController.submit())
