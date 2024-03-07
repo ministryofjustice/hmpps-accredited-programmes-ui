@@ -6,6 +6,7 @@ import type {
   Organisation,
   Paginated,
   Referral,
+  ReferralStatusGroup,
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralUpdate,
@@ -35,7 +36,13 @@ export default class ReferralService {
 
   async getMyReferralViews(
     username: Express.User['username'],
-    query?: { page?: string; sortColumn?: string; sortDirection?: string; status?: string },
+    query?: {
+      page?: string
+      sortColumn?: string
+      sortDirection?: string
+      status?: string
+      statusGroup?: ReferralStatusGroup
+    },
   ): Promise<Paginated<ReferralView>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)

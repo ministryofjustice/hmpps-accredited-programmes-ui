@@ -12,7 +12,12 @@ import {
   referralStatusRefDataFactory,
   referralViewFactory,
 } from '../testutils/factories'
-import type { CreatedReferralResponse, ReferralStatusUpdate, ReferralUpdate } from '@accredited-programmes/models'
+import type {
+  CreatedReferralResponse,
+  ReferralStatusGroup,
+  ReferralStatusUpdate,
+  ReferralUpdate,
+} from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
@@ -90,9 +95,10 @@ describe('ReferralService', () => {
 
     describe('with query values', () => {
       it('makes the correct call to the referral client', async () => {
-        const query = {
+        const query: { page: string; status: string; statusGroup: ReferralStatusGroup } = {
           page: '1',
           status: 'REFERRAL_SUBMITTED',
+          statusGroup: 'open',
         }
 
         await service.getMyReferralViews(username, query)
