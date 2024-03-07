@@ -19,6 +19,12 @@ context('Referral case lists', () => {
   const draftReferralViews = draftReferrals.map(referral => {
     return referralViewFactory.build({ id: referral.id, status: 'referral_started' })
   })
+  const closedReferralViews = FactoryHelpers.buildListWith(
+    referralViewFactory,
+    {},
+    { transient: { availableStatuses: ['programme_complete'] } },
+    15,
+  )
   const baseColumnHeaders: Array<CaseListColumnHeader> = [
     'Name / Prison number',
     'Date referred',
@@ -133,6 +139,59 @@ context('Referral case lists', () => {
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: draftReferralsColumnHeaders,
         referralViews: draftReferralViews,
+      })
+      caseListPage.shouldContainPaginationPreviousButtonLink()
+      caseListPage.shouldContainPaginationNextButtonLink()
+      caseListPage.shouldContainPaginationItems(['1', '&ctdot;', '3', '4', '5', '&ctdot;', '7'])
+      caseListPage.shouldBeOnPaginationPage(4)
+
+      caseListPage.clickPaginationNextButton()
+      caseListPage.shouldBeOnPaginationPage(5)
+      caseListPage.clickPaginationPreviousButton()
+      caseListPage.shouldBeOnPaginationPage(4)
+      caseListPage.clickPaginationPage(5)
+      caseListPage.shouldBeOnPaginationPage(5)
+    })
+  })
+
+  describe('when viewing closed referrals', () => {
+    it('shows the correct information', () => {
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
+      })
+
+      const path = referPaths.caseList.show({ referralStatusGroup: 'closed' })
+      cy.visit(path)
+
+      const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders: baseColumnHeaders,
+        referralViews: closedReferralViews,
+      })
+      caseListPage.shouldContainStatusNavigation('closed')
+      caseListPage.shouldContainTableOfReferralViews(referPaths)
+    })
+
+    it('includes pagination', () => {
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { page: { equalTo: '3' }, statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
+        totalPages: 7,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { page: { equalTo: '4' }, statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
+        totalPages: 7,
+      })
+
+      const path = PathUtils.pathWithQuery(referPaths.caseList.show({ referralStatusGroup: 'closed' }), [
+        { key: 'page', value: '4' },
+      ])
+      cy.visit(path)
+
+      const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders: baseColumnHeaders,
+        referralViews: closedReferralViews,
       })
       caseListPage.shouldContainPaginationPreviousButtonLink()
       caseListPage.shouldContainPaginationNextButtonLink()
