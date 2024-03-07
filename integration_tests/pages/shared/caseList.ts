@@ -1,9 +1,10 @@
+import { referralStatusGroups } from '../../../server/@types/models/Referral'
 import { assessPaths, referPaths } from '../../../server/paths'
 import { CaseListUtils, CourseUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
-import type { Course, ReferralView } from '@accredited-programmes/models'
-import type { CaseListColumnHeader, ReferralStatusGroup } from '@accredited-programmes/ui'
+import type { Course, ReferralStatusGroup, ReferralView } from '@accredited-programmes/models'
+import type { CaseListColumnHeader } from '@accredited-programmes/ui'
 
 export default class CaseListPage extends Page {
   columnHeaders: Array<CaseListColumnHeader>
@@ -52,8 +53,6 @@ export default class CaseListPage extends Page {
   }
 
   shouldContainStatusNavigation(currentReferralStatusGroup: ReferralStatusGroup) {
-    const referralStatusGroups: Array<ReferralStatusGroup> = ['open', 'draft']
-
     referralStatusGroups.forEach((referralStatusGroup, referralStatusGroupIndex) => {
       cy.get('.moj-sub-navigation__item')
         .eq(referralStatusGroupIndex)
