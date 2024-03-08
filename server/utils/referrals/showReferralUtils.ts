@@ -115,14 +115,16 @@ export default class ShowReferralUtils {
     currentSection: 'referral' | 'risksAndNeeds' | 'statusHistory',
     referralId: Referral['id'],
   ): Array<MojFrontendNavigationItem> {
-    const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
+    const isAssess = currentPath.startsWith(assessPathBase.pattern)
+    const paths = isAssess ? assessPaths : referPaths
 
-    return [
-      {
-        active: currentSection === 'statusHistory',
-        href: paths.show.statusHistory({ referralId }),
-        text: 'Status history',
-      },
+    const statusHistoryLink: MojFrontendNavigationItem = {
+      active: currentSection === 'statusHistory',
+      href: paths.show.statusHistory({ referralId }),
+      text: 'Status history',
+    }
+
+    const navigationItems: Array<MojFrontendNavigationItem> = [
       {
         active: currentSection === 'referral',
         href: paths.show.personalDetails({ referralId }),
@@ -134,6 +136,14 @@ export default class ShowReferralUtils {
         text: 'Risks and needs',
       },
     ]
+
+    if (isAssess) {
+      navigationItems.push(statusHistoryLink)
+    } else {
+      navigationItems.unshift(statusHistoryLink)
+    }
+
+    return navigationItems
   }
 
   static viewReferralNavigationItems(
