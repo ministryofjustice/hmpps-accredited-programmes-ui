@@ -272,12 +272,24 @@ export default class CaseListUtils {
     referralView: ReferralView,
     paths: typeof assessPaths | typeof referPaths,
   ): string {
-    const path =
-      referralView.status === 'referral_started'
-        ? referPaths.new.show({ referralId: referralView.id })
-        : paths.show.personalDetails({
-            referralId: referralView.id,
-          })
+    const isAssess = paths === assessPaths
+
+    let path = paths.show.statusHistory({
+      referralId: referralView.id,
+    })
+
+    if (isAssess) {
+      path = assessPaths.show.personalDetails({
+        referralId: referralView.id,
+      })
+    }
+
+    if (referralView.status === 'referral_started') {
+      path = referPaths.new.show({
+        referralId: referralView.id,
+      })
+    }
+
     const nameAndPrisonNumberHtmlStart = `<a class="govuk-link" href="${path}?updatePerson=true">`
     const prisonerName = CaseListUtils.formattedPrisonerName(referralView?.forename, referralView?.surname)
     const nameAndPrisonNumberHtmlEnd = prisonerName
