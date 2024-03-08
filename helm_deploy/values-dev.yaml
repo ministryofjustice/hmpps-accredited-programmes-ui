@@ -17,7 +17,6 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
     PRISON_API_URL: 'https://prison-api-dev.prison.service.justice.gov.uk'
     PRISON_REGISTER_API_URL: 'https://prison-register-dev.hmpps.service.justice.gov.uk'
-    PRISONER_SEARCH_URL: 'https://prisoner-search-dev.prison.service.justice.gov.uk'
     REFER_ENABLED: true
 
 generic-prometheus-alerts:
