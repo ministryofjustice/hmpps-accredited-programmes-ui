@@ -2,7 +2,7 @@
 
 import type { ReturnsSuperAgentRequest } from '..'
 import { processStubs, stubFor } from '..'
-import { prisonerSearchPaths } from '../../server/paths'
+import { apiPaths } from '../../server/paths'
 import { prisoners } from '../stubs'
 
 const stubs: Array<ReturnsSuperAgentRequest> = []
@@ -20,7 +20,7 @@ prisoners.forEach(prisoner => {
           },
         ],
         method: 'POST',
-        url: prisonerSearchPaths.prisoner.search({}),
+        url: apiPaths.prisoner.search({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

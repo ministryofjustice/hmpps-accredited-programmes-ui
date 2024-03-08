@@ -1,7 +1,7 @@
-import RestClient from './restClient'
-import type { ApiConfig } from '../config'
-import config from '../config'
-import { prisonerSearchPaths } from '../paths'
+import type { ApiConfig } from '../../config'
+import config from '../../config'
+import { apiPaths } from '../../paths'
+import RestClient from '../restClient'
 import type { SystemToken } from '@hmpps-auth'
 import type { Caseload } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
@@ -10,7 +10,11 @@ export default class PrisonerSearchClient {
   restClient: RestClient
 
   constructor(systemToken: SystemToken) {
-    this.restClient = new RestClient('prisonerSearchClient', config.apis.prisonerSearch as ApiConfig, systemToken)
+    this.restClient = new RestClient(
+      'prisonerSearchClient',
+      config.apis.accreditedProgrammesApi as ApiConfig,
+      systemToken,
+    )
   }
 
   async find(
@@ -22,7 +26,7 @@ export default class PrisonerSearchClient {
         prisonIds: caseloadIds,
         prisonerIdentifier: prisonNumber,
       },
-      path: prisonerSearchPaths.prisoner.search({}),
+      path: apiPaths.prisoner.search({}),
     })) as Array<Prisoner>
 
     if (!prisoners.length) {

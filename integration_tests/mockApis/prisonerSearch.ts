@@ -1,6 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import { prisonerSearchPaths } from '../../server/paths'
+import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { Prisoner } from '@prisoner-search'
 
@@ -17,7 +17,7 @@ export default {
           },
         ],
         method: 'POST',
-        url: prisonerSearchPaths.prisoner.search({}),
+        url: apiPaths.prisoner.search({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

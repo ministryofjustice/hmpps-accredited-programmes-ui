@@ -16,9 +16,9 @@ import {
 import { PersonUtils } from '../utils'
 import type { InmateDetail } from '@prison-api'
 
-jest.mock('../data/prisonerSearchClient')
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/prisonApiClient')
+jest.mock('../data/accreditedProgrammesApi/prisonerSearchClient')
 jest.mock('../utils/personUtils')
 
 const redisClient = createMock<RedisClient>({})
