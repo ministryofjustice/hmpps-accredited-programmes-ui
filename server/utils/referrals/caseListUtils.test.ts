@@ -454,9 +454,9 @@ describe('CaseListUtils', () => {
       })
 
       describe('when referPaths is passed in as the paths argument', () => {
-        it('links to a Refer show referral page', () => {
+        it('links to the Refer show status history referral page', () => {
           expect(CaseListUtils.tableRowContent(referralView, 'Name / Prison number', referPaths)).toEqual(
-            '<a class="govuk-link" href="/refer/referrals/referral-123/personal-details?updatePerson=true">Del Hatton</a><br>ABC1234',
+            '<a class="govuk-link" href="/refer/referrals/referral-123/status-history?updatePerson=true">Del Hatton</a><br>ABC1234',
           )
         })
       })

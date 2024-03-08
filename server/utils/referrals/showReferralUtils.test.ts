@@ -217,7 +217,7 @@ describe('ShowReferralUtils', () => {
     const mockReferralId = 'mock-referral-id'
 
     describe('when on the refer journey', () => {
-      it('returns navigation items for the referral pages with the refer paths and sets the Status history link as active', () => {
+      it('returns navigation items for the show referral pages, in the correct order, with the refer paths and sets the Status history link as active', () => {
         const currentRequestPath = referPaths.show.statusHistory({ referralId: mockReferralId })
 
         expect(ShowReferralUtils.subNavigationItems(currentRequestPath, 'statusHistory', mockReferralId)).toEqual([
@@ -239,7 +239,7 @@ describe('ShowReferralUtils', () => {
         ])
       })
 
-      it('returns navigation items for the referral pages with the refer paths and sets the Referral details link as active', () => {
+      it('returns navigation items for the show referral pages, in the correct order, with the refer paths and sets the Referral details link as active', () => {
         const currentRequestPath = referPaths.show.personalDetails({ referralId: mockReferralId })
 
         expect(ShowReferralUtils.subNavigationItems(currentRequestPath, 'referral', mockReferralId)).toEqual([
@@ -261,7 +261,7 @@ describe('ShowReferralUtils', () => {
         ])
       })
 
-      it('returns navigation items for the risks and needs pages with the refer paths and sets the Risks and needs link as active', () => {
+      it('returns navigation items for the show referral pages, in the correct order, with the refer paths and sets the Risks and needs link as active', () => {
         const currentRequestPath = referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId })
 
         expect(ShowReferralUtils.subNavigationItems(currentRequestPath, 'risksAndNeeds', mockReferralId)).toEqual([
@@ -285,38 +285,11 @@ describe('ShowReferralUtils', () => {
     })
 
     describe('when on the assess journey', () => {
-      it('returns navigation items for the referral pages with the refer paths and sets the Status history link as active', () => {
-        const currentRequestPath = assessPaths.show.statusHistory({ referralId: mockReferralId })
-
-        expect(ShowReferralUtils.subNavigationItems(currentRequestPath, 'statusHistory', mockReferralId)).toEqual([
-          {
-            active: true,
-            href: '/assess/referrals/mock-referral-id/status-history',
-            text: 'Status history',
-          },
-          {
-            active: false,
-            href: '/assess/referrals/mock-referral-id/personal-details',
-            text: 'Referral details',
-          },
-          {
-            active: false,
-            href: '/assess/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
-            text: 'Risks and needs',
-          },
-        ])
-      })
-
-      it('returns navigation items for the referral pages with the assess paths and sets the Referral details link as active', () => {
+      it('returns navigation items for the show referral pages, in the correct order,   with the assess paths and sets the Referral details link as active', () => {
         const currentRequestPath = assessPaths.show.personalDetails({ referralId: mockReferralId })
 
         expect(ShowReferralUtils.subNavigationItems(currentRequestPath, 'referral', mockReferralId)).toEqual([
           {
-            active: false,
-            href: '/assess/referrals/mock-referral-id/status-history',
-            text: 'Status history',
-          },
-          {
             active: true,
             href: '/assess/referrals/mock-referral-id/personal-details',
             text: 'Referral details',
@@ -326,20 +299,20 @@ describe('ShowReferralUtils', () => {
             href: '/assess/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
             text: 'Risks and needs',
           },
+          {
+            active: false,
+            href: '/assess/referrals/mock-referral-id/status-history',
+            text: 'Status history',
+          },
         ])
       })
 
-      it('returns navigation items for the risks and needs pages with the assess paths and sets the Risks and needs link as active', () => {
+      it('returns navigation items for the show referral pages, in the correct order, with the assess paths and sets the Risks and needs link as active', () => {
         const currentRequestPath = assessPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId })
 
         expect(ShowReferralUtils.subNavigationItems(currentRequestPath, 'risksAndNeeds', mockReferralId)).toEqual([
           {
             active: false,
-            href: '/assess/referrals/mock-referral-id/status-history',
-            text: 'Status history',
-          },
-          {
-            active: false,
             href: '/assess/referrals/mock-referral-id/personal-details',
             text: 'Referral details',
           },
@@ -347,6 +320,33 @@ describe('ShowReferralUtils', () => {
             active: true,
             href: '/assess/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
             text: 'Risks and needs',
+          },
+          {
+            active: false,
+            href: '/assess/referrals/mock-referral-id/status-history',
+            text: 'Status history',
+          },
+        ])
+      })
+
+      it('returns navigation items for the show referral pages, in the correct order, with the assess paths and sets the Status history link as active', () => {
+        const currentRequestPath = assessPaths.show.statusHistory({ referralId: mockReferralId })
+
+        expect(ShowReferralUtils.subNavigationItems(currentRequestPath, 'statusHistory', mockReferralId)).toEqual([
+          {
+            active: false,
+            href: '/assess/referrals/mock-referral-id/personal-details',
+            text: 'Referral details',
+          },
+          {
+            active: false,
+            href: '/assess/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
+            text: 'Risks and needs',
+          },
+          {
+            active: true,
+            href: '/assess/referrals/mock-referral-id/status-history',
+            text: 'Status history',
           },
         ])
       })

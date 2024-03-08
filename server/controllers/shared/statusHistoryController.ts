@@ -16,8 +16,9 @@ export default class StatusHistoryController {
 
       const { referralId } = req.params
       const { token: userToken, username } = req.user
+      const { updatePerson } = req.query as Record<string, string>
 
-      const referral = await this.referralService.getReferral(username, referralId)
+      const referral = await this.referralService.getReferral(username, referralId, { updatePerson })
 
       const [course, statusHistory, person] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
