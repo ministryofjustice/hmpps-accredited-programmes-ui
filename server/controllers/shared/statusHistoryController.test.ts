@@ -93,7 +93,7 @@ describe('StatusHistoryController', () => {
         timelineItems,
       })
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id, {})
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(personService.getPerson).toHaveBeenCalledWith(
@@ -108,6 +108,18 @@ describe('StatusHistoryController', () => {
       )
       expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path, referral)
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
+    })
+
+    describe('when the page has been visited with an `updatePerson` query parameter', () => {
+      it('should pass the `updatePerson` query parameter to the `getReferral` method', async () => {
+        const updatePerson = 'true'
+        request.query = { updatePerson }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id, { updatePerson })
+      })
     })
   })
 })
