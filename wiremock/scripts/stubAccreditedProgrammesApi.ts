@@ -409,6 +409,28 @@ prisoners.forEach(prisoner => {
       },
     }),
   )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        bodyPatterns: [
+          {
+            equalToJson: {
+              prisonerIdentifier: prisoner.prisonerNumber,
+            },
+            ignoreExtraElements: true,
+          },
+        ],
+        method: 'POST',
+        url: apiPaths.prisoner.search({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [prisoner],
+        status: 200,
+      },
+    }),
+  )
 })
 
 console.log('Stubbing Accredited Programmes API')

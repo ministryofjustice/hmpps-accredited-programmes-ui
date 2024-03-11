@@ -31,7 +31,7 @@ fi
 echo "==> Starting the server..."
 
 if [ "$MOCK_API" = true ]; then
-  ACCREDITED_PROGRAMMES_API_URL=http://localhost:9099 PRISONER_SEARCH_URL=http://localhost:9099 PRISON_API_URL=http://localhost:9099 npm run start:dev
+  ACCREDITED_PROGRAMMES_API_URL=http://localhost:9099 PRISON_API_URL=http://localhost:9099 npm run start:dev
 else
-  PRISONER_SEARCH_URL=http://localhost:9099 PRISON_API_URL=http://localhost:9099 npm run start:dev
+  PRISON_API_URL=http://localhost:9099 npm run start:dev
 fi
