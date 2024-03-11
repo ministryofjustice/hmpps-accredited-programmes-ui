@@ -138,22 +138,46 @@ context('Find', () => {
     })
 
     describe('and a referable course offering', () => {
-      it('shows the "Make a referral" button on an offering', () => {
-        const referableCourseOffering = courseOfferingFactory.build({
-          id: courseOfferingId,
-          organisationId,
-          referable: true,
-        })
-        cy.task('stubOffering', { courseOffering: referableCourseOffering })
+      describe('and in an organisation where refer IS enabled', () => {
+        it('shows the "Make a referral" button on an offering', () => {
+          const courseOffering = courseOfferingFactory.build({
+            id: courseOfferingId,
+            organisationEnabled: true,
+            organisationId,
+            referable: true,
+          })
+          cy.task('stubOffering', { courseOffering })
 
-        cy.visit(path)
+          cy.visit(path)
 
-        const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-          course,
-          courseOffering: referableCourseOffering,
-          organisation,
+          const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
+            course,
+            courseOffering,
+            organisation,
+          })
+          courseOfferingPage.shouldContainMakeAReferralButtonLink()
         })
-        courseOfferingPage.shouldContainMakeAReferralButtonLink()
+      })
+
+      describe('and in an organisation where refer IS NOT enabled', () => {
+        it('does not show the "Make a referral" button on an offering', () => {
+          const courseOffering = courseOfferingFactory.build({
+            id: courseOfferingId,
+            organisationEnabled: false,
+            organisationId,
+            referable: true,
+          })
+          cy.task('stubOffering', { courseOffering })
+
+          cy.visit(path)
+
+          const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
+            course,
+            courseOffering,
+            organisation,
+          })
+          courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
+        })
       })
     })
 
