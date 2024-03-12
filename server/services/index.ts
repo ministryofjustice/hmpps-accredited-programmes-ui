@@ -2,6 +2,7 @@
 
 import CourseService from './courseService'
 import healthCheck from './healthCheck'
+import HmppsComponentsService from './hmppsComponentsService'
 import OasysService from './oasysService'
 import OrganisationService from './organisationService'
 import PersonService from './personService'
@@ -11,6 +12,7 @@ import UserService from './userService'
 import {
   courseClientBuilder,
   hmppsAuthClientBuilder,
+  hmppsComponentsClientBuilder,
   hmppsManageUsersClientBuilder,
   oasysClientBuilder,
   prisonApiClientBuilder,
@@ -21,6 +23,7 @@ import {
 } from '../data'
 
 const services = () => {
+  const hmppsComponentsService = new HmppsComponentsService(hmppsComponentsClientBuilder)
   const oasysService = new OasysService(hmppsAuthClientBuilder, oasysClientBuilder)
   const organisationService = new OrganisationService(prisonRegisterApiClientBuilder)
   const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
@@ -31,6 +34,7 @@ const services = () => {
 
   return {
     courseService,
+    hmppsComponentsService,
     oasysService,
     organisationService,
     personService,
@@ -44,6 +48,7 @@ type Services = ReturnType<typeof services>
 
 export {
   CourseService,
+  HmppsComponentsService,
   OasysService,
   OrganisationService,
   PersonService,
