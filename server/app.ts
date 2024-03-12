@@ -9,9 +9,11 @@ import type { Controllers } from './controllers'
 import errorHandler from './errorHandler'
 import {
   authorisationMiddleware,
+  getFrontendComponents,
   setUpAuthentication,
   setUpCsrf,
   setUpCurrentUser,
+  setUpEnvironmentName,
   setUpHealthChecks,
   setUpSentryErrorHandler,
   setUpSentryRequestHandler,
@@ -43,12 +45,13 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
+  setUpEnvironmentName(app)
   nunjucksSetup(app, path)
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-
+  app.get('*', getFrontendComponents(services.hmppsComponentsService))
   app.use(routes(controllers))
 
   app.use((req, res, next) => next(createError(404, 'Not Found')))

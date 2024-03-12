@@ -1,4 +1,3 @@
-import AuthManageDetailsPage from '../pages/authManageDetails'
 import AuthSignInPage from '../pages/authSignIn'
 import IndexPage from '../pages/index'
 import Page from '../pages/page'
@@ -43,16 +42,6 @@ context('Authentication', () => {
     indexPage.signOut().click()
 
     Page.verifyOnPage(AuthSignInPage)
-  })
-
-  it('User can manage their details', () => {
-    cy.signIn()
-
-    const indexPage = Page.verifyOnPage(IndexPage)
-    indexPage.manageDetails().get('a').invoke('removeAttr', 'target')
-    indexPage.manageDetails().click()
-
-    Page.verifyOnPage(AuthManageDetailsPage)
   })
 
   it('Token verification failure takes user to sign in page', () => {

@@ -52,6 +52,9 @@ export default {
       },
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
     },
+    hmppsComponents: {
+      url: get('HMPPS_COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+    },
     hmppsManageUsers: {
       agent: new AgentConfig(Number(get('HMPPS_MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000))),
       timeout: {
@@ -87,6 +90,7 @@ export default {
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  dpsUrl: get('DPS_URL', 'http://localhost:3001', requiredInProduction),
   enableApplicationInsights: production,
   environment: process.env.ENVIRONMENT || 'local',
   flags: {
