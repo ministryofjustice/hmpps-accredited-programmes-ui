@@ -1,7 +1,8 @@
-.hmpps-header {
+.fallback-dps-header {
   @include govuk-responsive-padding(3, 'top');
   @include govuk-responsive-padding(3, 'bottom');
 
+  color: govuk-colour('white');
   background-color: govuk-colour('black');
 
   &__container {
@@ -16,7 +17,7 @@
     @include govuk-responsive-margin(2, 'right');
 
     position: relative;
-    top: -0.125rem;
+    top: -2px;
     fill: govuk-colour('white');
   }
 
@@ -35,10 +36,12 @@
     }
 
     &__service-name {
+      @include govuk-responsive-margin(2, 'right');
       @include govuk-font(24);
 
       @include govuk-media-query($from: desktop) {
-        display: inline-block;
+        display: flex;
+        align-items: center;
       }
 
       display: none;
@@ -48,6 +51,8 @@
   &__link {
     @include govuk-link-common;
     @include govuk-link-style-default;
+
+    text-underline-offset: 0.1em;
 
     &:link,
     &:visited,
@@ -102,7 +107,7 @@
         @include govuk-responsive-padding(4, 'right');
 
         margin-bottom: 0;
-        border-right: 0.0625rem solid govuk-colour('white');
+        border-right: 1px solid govuk-colour('white');
       }
 
       margin-bottom: govuk-spacing(1);
@@ -118,33 +123,6 @@
         border-right: 0;
       }
     }
-  }
-
-  @media print {
-    display: none;
-  }
-}
-
-.location-bar {
-  @include govuk-width-container;
-  @include govuk-responsive-margin(3, 'bottom');
-  @include govuk-responsive-padding(3, 'top');
-  @include govuk-responsive-padding(3, 'bottom');
-
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  border-bottom: 0.0625rem solid $govuk-border-colour;
-
-  &__location {
-    @include govuk-font($size: 19, $weight: 'bold');
-    @include govuk-responsive-margin(3, 'right');
-  }
-
-  &__link {
-    @include govuk-link-common;
-    @include govuk-link-style-default;
-    @include govuk-font($size: 19, $weight: 'normal');
   }
 
   @media print {

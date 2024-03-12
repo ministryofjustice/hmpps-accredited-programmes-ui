@@ -25,12 +25,28 @@
   {% if enableApplicationInsights %}
     {% include "./applicationInsightsScript.njk" %}
   {% endif %}
+
+  {% if feComponents.jsIncludes %}
+    {% for js in feComponents.jsIncludes %}
+      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+    {% endfor %}
+  {% endif %}
+
+  {% if feComponents.cssIncludes %}
+    {% for css in feComponents.cssIncludes %}
+      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet"/>
+    {% endfor %}
+  {% endif %}
 {% endblock head %}
 
 {% block bodyStart %}{% endblock bodyStart %}
 
 {% block header %}
-  {% include "./header.njk" %}
+  {% if feComponents.header %}
+    {{ feComponents.header | safe }}
+  {% else %}
+    {% include "./header.njk" %}
+  {% endif %}
 {% endblock header %}
 
 {% if not mainClasses %}
@@ -78,6 +94,14 @@
 
   {% block backLink %}{% endblock backLink %}
 {% endblock beforeContent %}
+
+{% block footer %}
+  {% if feComponents.footer %}
+    {{ feComponents.footer | safe }}
+  {% else %}
+    {% include "./footer.njk" %}
+  {% endif %}
+{% endblock %}
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the
