@@ -46,4 +46,12 @@ export default class ReferenceDataService {
 
     return referenceDataClient.findReferralStatusCodeReasons(categoryCode, referralStatusCode)
   }
+
+  async getReferralStatuses(username: Express.User['username']): Promise<Array<ReferralStatusRefData>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referenceDataClient = this.referenceDataClient(systemToken)
+
+    return referenceDataClient.findReferralStatuses()
+  }
 }

@@ -42,4 +42,10 @@ export default class ReferenceDataClient {
       path: apiPaths.referenceData.referralStatuses.statusCodeReasons({ categoryCode, referralStatusCode }),
     })) as Array<ReferralStatusReason>
   }
+
+  async findReferralStatuses(): Promise<Array<ReferralStatusRefData>> {
+    return (await this.restClient.get({
+      path: apiPaths.referenceData.referralStatuses.show({}),
+    })) as Array<ReferralStatusRefData>
+  }
 }
