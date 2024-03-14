@@ -1,6 +1,6 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
-import { courseFactory, referralViewFactory } from '../../../server/testutils/factories'
+import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
 import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
@@ -11,7 +11,16 @@ context('Referral case lists', () => {
   const limeCourse = courseFactory.build({ name: 'Lime Course' })
   const blueCourse = courseFactory.build({ name: 'Blue Course' })
   const courses = [limeCourse, blueCourse]
+  const closedReferralStatuses = referralStatusRefDataFactory.buildList(3, { closed: true, draft: false })
+  const draftReferralStatuses = referralStatusRefDataFactory.buildList(3, { closed: false, draft: true })
+  const openReferralStatuses = [
+    referralStatusRefDataFactory.build({ closed: false, code: 'assessment_started', draft: false }),
+    referralStatusRefDataFactory.build({ closed: false, code: 'awaiting_assessment', draft: false }),
+    referralStatusRefDataFactory.build({ closed: false, code: 'referral_submitted', draft: false }),
+  ]
+  const referralStatuses = [...closedReferralStatuses, ...draftReferralStatuses, ...openReferralStatuses]
   const availableStatuses = ['assessment_started', 'awaiting_assessment', 'referral_submitted']
+
   const limeCourseReferralViews = FactoryHelpers.buildListWith(
     referralViewFactory,
     { courseName: limeCourse.name },
@@ -40,6 +49,7 @@ context('Referral case lists', () => {
     cy.task('stubDefaultCaseloads')
     cy.task('stubCoursesForOrganisation', { courses, organisationId: 'MRI' })
     cy.signIn()
+    cy.task('stubReferralStatuses', referralStatuses)
     cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
       queryParameters: {
@@ -123,7 +133,7 @@ context('Referral case lists', () => {
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
 
       const programmeStrandSelectedValue = 'general offence'
-      const referralStatusSelectedValue = 'assessment started'
+      const referralStatusSelectedValue = 'assessment_started'
       const filteredReferralViews = [
         referralViewFactory.build({
           audience: 'General offence',

@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
 import { assessPaths } from '../../paths'
-import type { CourseService, ReferralService } from '../../services'
+import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
 import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusGroup } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
@@ -11,6 +11,7 @@ export default class AssessCaseListController {
   constructor(
     private readonly courseService: CourseService,
     private readonly referralService: ReferralService,
+    private readonly referenceDataService: ReferenceDataService,
   ) {}
 
   filter(): TypedRequestHandler<Request, Response> {
@@ -71,15 +72,22 @@ export default class AssessCaseListController {
         throw createError(404, `${formattedCourseName} not found.`)
       }
 
-      const paginatedReferralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
-        audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
-        courseName: selectedCourse.name,
-        page: page ? (Number(page) - 1).toString() : undefined,
-        sortColumn,
-        sortDirection,
-        status: CaseListUtils.uiToApiStatusQueryParam(status),
-        statusGroup: referralStatusGroup,
-      })
+      const [paginatedReferralViews, referralStatuses] = await Promise.all([
+        this.referralService.getReferralViews(username, activeCaseLoadId, {
+          audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
+          courseName: selectedCourse.name,
+          page: page ? (Number(page) - 1).toString() : undefined,
+          sortColumn,
+          sortDirection,
+          status,
+          statusGroup: referralStatusGroup,
+        }),
+        this.referenceDataService.getReferralStatuses(username),
+      ])
+
+      const openReferralStatuses = referralStatuses.filter(
+        referralStatus => !referralStatus.closed && !referralStatus.draft,
+      )
 
       const pagination = PaginationUtils.pagination(
         req.path,
@@ -110,7 +118,7 @@ export default class AssessCaseListController {
         pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
-        referralStatusSelectItems: CaseListUtils.statusSelectItems(status),
+        referralStatusSelectItems: CaseListUtils.statusSelectItems(openReferralStatuses, status),
         tableHeadings: CaseListUtils.sortableTableHeadings(
           basePathExcludingSort,
           caseListColumns,

@@ -1,6 +1,6 @@
 import CaseListUtils from './caseListUtils'
 import { assessPaths, referPaths } from '../../paths'
-import { courseFactory, referralViewFactory } from '../../testutils/factories'
+import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
@@ -8,6 +8,10 @@ import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredite
 jest.mock('../formUtils')
 
 describe('CaseListUtils', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('audienceSelectItems', () => {
     const expectedItems = {
       'extremism offence': 'Extremism offence',
@@ -306,23 +310,28 @@ describe('CaseListUtils', () => {
   })
 
   describe('statusSelectItems', () => {
+    const referralStatuses = [
+      referralStatusRefDataFactory.build({ code: 'assessment_started' }),
+      referralStatusRefDataFactory.build({ code: 'referral_submitted' }),
+    ]
     const expectedItems = {
-      'assessment started': 'Assessment started',
-      'awaiting assessment': 'Awaiting assessment',
-      'referral submitted': 'Referral submitted',
+      assessment_started: 'Assessment started',
+      referral_submitted: 'Referral submitted',
     }
 
     it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
-      CaseListUtils.statusSelectItems()
+      CaseListUtils.statusSelectItems(referralStatuses)
 
       expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
     })
 
     describe('when a selected value is provided', () => {
       it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        CaseListUtils.statusSelectItems('referral submitted')
+        const selectedValue = 'assessment_started'
 
-        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'referral submitted')
+        CaseListUtils.statusSelectItems(referralStatuses, selectedValue)
+
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, selectedValue)
       })
     })
   })

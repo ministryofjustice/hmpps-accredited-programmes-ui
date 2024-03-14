@@ -5,6 +5,7 @@ import { stubFor } from '../../wiremock'
 import type {
   ReferralStatusCategory,
   ReferralStatusReason,
+  ReferralStatusRefData,
   ReferralStatusUppercase,
 } from '@accredited-programmes/models'
 
@@ -41,6 +42,19 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.reasons,
+        status: 200,
+      },
+    }),
+
+  stubReferralStatuses: (referralStatuses: Array<ReferralStatusRefData>): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referenceData.referralStatuses.show({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: referralStatuses,
         status: 200,
       },
     }),

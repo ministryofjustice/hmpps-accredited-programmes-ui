@@ -6,8 +6,8 @@ import { when } from 'jest-when'
 
 import AssessCaseListController from './caseListController'
 import { assessPaths } from '../../paths'
-import type { CourseService, ReferralService } from '../../services'
-import { courseFactory, referralViewFactory } from '../../testutils/factories'
+import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
+import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
@@ -37,13 +37,14 @@ describe('AssessCaseListController', () => {
 
   const courseService = createMock<CourseService>({})
   const referralService = createMock<ReferralService>({})
+  const referenceDataService = createMock<ReferenceDataService>({})
 
   let controller: AssessCaseListController
 
   const courses = [courseFactory.build({ name: 'Orange Course' }), courseFactory.build({ name: 'Lime Course' })]
 
   beforeEach(() => {
-    controller = new AssessCaseListController(courseService, referralService)
+    controller = new AssessCaseListController(courseService, referralService, referenceDataService)
 
     request = createMock<Request>({ user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
@@ -119,6 +120,9 @@ describe('AssessCaseListController', () => {
       'Programme strand',
       'Referral status',
     ]
+    const closedReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: true })
+    const draftReferralStatuses = referralStatusRefDataFactory.buildList(2, { draft: true })
+    const openReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: false, draft: false })
 
     beforeEach(() => {
       request.params = { courseName: courseNameSlug, referralStatusGroup }
@@ -134,7 +138,13 @@ describe('AssessCaseListController', () => {
         totalElements: referralViews.length,
         totalPages: 1,
       }
+
       referralService.getReferralViews.mockResolvedValue(paginatedReferralViews)
+      referenceDataService.getReferralStatuses.mockResolvedValue([
+        ...closedReferralStatuses,
+        ...draftReferralStatuses,
+        ...openReferralStatuses,
+      ])
       ;(CaseListUtils.audienceSelectItems as jest.Mock).mockReturnValue(audienceSelectItems)
       ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(primaryNavigationItems)
       ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
@@ -148,7 +158,6 @@ describe('AssessCaseListController', () => {
 
     it('renders the show template with the correct response locals', async () => {
       ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(undefined)
-      ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(undefined)
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
@@ -164,7 +173,6 @@ describe('AssessCaseListController', () => {
         tableRows,
       })
       expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(undefined)
-      expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(undefined)
       expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
         audience: undefined,
         courseName: 'Lime Course',
@@ -202,7 +210,7 @@ describe('AssessCaseListController', () => {
         undefined,
         undefined,
       )
-      expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(undefined)
+      expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, undefined)
       expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
     })
 
@@ -211,7 +219,7 @@ describe('AssessCaseListController', () => {
         const uiAudienceQueryParam = 'general offence'
         const uiSortColumnQueryParam = 'surname'
         const uiSortDirectionQueryParam = 'ascending'
-        const uiStatusQueryParam = 'referral submitted'
+        const uiStatusQueryParam = 'REFERRAL_SUBMITTED'
 
         request.query = {
           sortColumn: uiSortColumnQueryParam,
@@ -223,7 +231,6 @@ describe('AssessCaseListController', () => {
         const apiAudienceQueryParam = 'General offence'
         const apiStatusQueryParam = 'REFERRAL_SUBMITTED'
         ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(apiAudienceQueryParam)
-        ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiStatusQueryParam)
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -234,12 +241,11 @@ describe('AssessCaseListController', () => {
           pageHeading: 'Lime Course (LC)',
           pagination,
           primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
-          referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
+          referralStatusSelectItems: CaseListUtils.statusSelectItems(openReferralStatuses, uiStatusQueryParam),
           tableHeadings,
           tableRows: CaseListUtils.tableRows(paginatedReferralViews.content, columnsToInclude),
         })
         expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(uiAudienceQueryParam)
-        expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(uiStatusQueryParam)
         expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: apiAudienceQueryParam,
           courseName: 'Lime Course',
@@ -279,7 +285,7 @@ describe('AssessCaseListController', () => {
           uiSortColumnQueryParam,
           uiSortDirectionQueryParam,
         )
-        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(uiStatusQueryParam)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, uiStatusQueryParam)
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
       })
     })

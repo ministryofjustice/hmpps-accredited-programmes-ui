@@ -174,7 +174,7 @@ export default class CaseListPage extends Page {
       organisationId: 'MRI',
       queryParameters: {
         audience: { equalTo: CaseListUtils.uiToApiAudienceQueryParam(programmeStrandSelectedValue) },
-        status: { equalTo: CaseListUtils.uiToApiStatusQueryParam(referralStatusSelectedValue) },
+        status: { equalTo: referralStatusSelectedValue },
         statusGroup: { equalTo: 'open' },
       },
       referralViews: filteredReferralViews,

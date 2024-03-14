@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import { referralStatuses } from '../../@types/models/Referral'
-import type { Referral, ReferralStatus } from '@accredited-programmes/models'
+import type { Referral, ReferralStatus, ReferralStatusUppercase } from '@accredited-programmes/models'
 
 class ReferralFactory extends Factory<Referral> {
   closed() {
@@ -44,8 +44,12 @@ const closedStatuses: Array<ReferralStatus> = ['programme_complete', 'deselected
 const randomStatus = (availableStatuses?: Array<ReferralStatus>) =>
   faker.helpers.arrayElement(availableStatuses || referralStatuses)
 
-const statusDescriptionAndColour = (status?: ReferralStatus): Pick<Referral, 'statusColour' | 'statusDescription'> => {
-  switch (status) {
+const statusDescriptionAndColour = (
+  status?: ReferralStatus | ReferralStatusUppercase,
+): Pick<Referral, 'statusColour' | 'statusDescription'> => {
+  const lowercaseStatus = status?.toLowerCase()
+
+  switch (lowercaseStatus) {
     case 'awaiting_assessment':
       return { statusColour: 'light-blue', statusDescription: 'Awaiting Assessment' }
     case 'on_hold_awaiting_assessment':
