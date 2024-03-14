@@ -34,7 +34,10 @@ export default class CaseListUtils {
     const sortedCourses = coursesWithDuplicatesRemoved.sort((a, b) => a.name.localeCompare(b.name))
 
     return sortedCourses.map(course => {
-      const path = assessPaths.caseList.show({ courseName: StringUtils.convertToUrlSlug(course.name) })
+      const path = assessPaths.caseList.show({
+        courseName: StringUtils.convertToUrlSlug(course.name),
+        referralStatusGroup: 'open',
+      })
 
       return {
         active: currentPath === path,

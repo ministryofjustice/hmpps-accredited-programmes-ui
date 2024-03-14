@@ -83,6 +83,7 @@ export default class ReferralClient {
       sortColumn?: string
       sortDirection?: string
       status?: string
+      statusGroup?: ReferralStatusGroup
     },
   ): Promise<Paginated<ReferralView>> {
     return (await this.restClient.get({
@@ -94,6 +95,7 @@ export default class ReferralClient {
         ...(query?.sortColumn && { sortColumn: query.sortColumn }),
         ...(query?.sortDirection && { sortDirection: query.sortDirection }),
         ...(query?.status && { status: query.status }),
+        ...(query?.statusGroup && { statusGroup: query.statusGroup }),
         size: '15',
       },
     })) as Paginated<ReferralView>

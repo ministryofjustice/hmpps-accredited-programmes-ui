@@ -29,7 +29,10 @@ export default class CaseListPage extends Page {
       .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
       .map(course => {
         return {
-          href: assessPaths.caseList.show({ courseName: StringUtils.convertToUrlSlug(course.name) }),
+          href: assessPaths.caseList.show({
+            courseName: StringUtils.convertToUrlSlug(course.name),
+            referralStatusGroup: 'open',
+          }),
           text: `${course.name} referrals`,
         }
       })
@@ -172,6 +175,7 @@ export default class CaseListPage extends Page {
       queryParameters: {
         audience: { equalTo: CaseListUtils.uiToApiAudienceQueryParam(programmeStrandSelectedValue) },
         status: { equalTo: CaseListUtils.uiToApiStatusQueryParam(referralStatusSelectedValue) },
+        statusGroup: { equalTo: 'open' },
       },
       referralViews: filteredReferralViews,
     })

@@ -44,13 +44,14 @@ context('Referral case lists', () => {
       organisationId: 'MRI',
       queryParameters: {
         courseName: { equalTo: limeCourse.name },
+        statusGroup: { equalTo: 'open' },
       },
       referralViews: limeCourseReferralViews,
     })
   })
 
   it('shows the correct information', () => {
-    const path = assessPaths.caseList.show({ courseName: 'lime-course' })
+    const path = assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' })
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -66,20 +67,27 @@ context('Referral case lists', () => {
   it('includes pagination', () => {
     cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
-      queryParameters: { page: { equalTo: '3' } },
+      queryParameters: {
+        page: { equalTo: '3' },
+        statusGroup: { equalTo: 'open' },
+      },
       referralViews: limeCourseReferralViews,
       totalPages: 7,
     })
     cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
-      queryParameters: { page: { equalTo: '4' } },
+      queryParameters: {
+        page: { equalTo: '4' },
+        statusGroup: { equalTo: 'open' },
+      },
       referralViews: limeCourseReferralViews,
       totalPages: 7,
     })
 
-    const path = PathUtils.pathWithQuery(assessPaths.caseList.show({ courseName: 'lime-course' }), [
-      { key: 'page', value: '4' },
-    ])
+    const path = PathUtils.pathWithQuery(
+      assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' }),
+      [{ key: 'page', value: '4' }],
+    )
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -102,7 +110,7 @@ context('Referral case lists', () => {
 
   describe('when using the filters', () => {
     it('shows the correct information', () => {
-      const path = assessPaths.caseList.show({ courseName: 'lime-course' })
+      const path = assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' })
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -155,7 +163,10 @@ context('Referral case lists', () => {
         course: blueCourse,
         referralViews: blueCourseReferralViews,
       })
-      caseListPage.shouldContainCourseNavigation(assessPaths.caseList.show({ courseName: 'blue-course' }), courses)
+      caseListPage.shouldContainCourseNavigation(
+        assessPaths.caseList.show({ courseName: 'blue-course', referralStatusGroup: 'open' }),
+        courses,
+      )
       caseListPage.shouldHaveSelectedFilterValues('', '')
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
     })

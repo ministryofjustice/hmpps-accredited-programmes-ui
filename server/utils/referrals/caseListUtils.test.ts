@@ -41,20 +41,20 @@ describe('CaseListUtils', () => {
         courseFactory.build({ name: 'Blue Course' }),
       ]
 
-      expect(CaseListUtils.primaryNavigationItems('/assess/referrals/orange-course/case-list', courses)).toEqual([
+      expect(CaseListUtils.primaryNavigationItems('/assess/referrals/orange-course/case-list/open', courses)).toEqual([
         {
           active: false,
-          href: '/assess/referrals/blue-course/case-list',
+          href: '/assess/referrals/blue-course/case-list/open',
           text: 'Blue Course referrals',
         },
         {
           active: false,
-          href: '/assess/referrals/lime-course/case-list',
+          href: '/assess/referrals/lime-course/case-list/open',
           text: 'Lime Course referrals',
         },
         {
           active: true,
-          href: '/assess/referrals/orange-course/case-list',
+          href: '/assess/referrals/orange-course/case-list/open',
           text: 'Orange Course referrals',
         },
       ])
