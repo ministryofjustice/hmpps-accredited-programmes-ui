@@ -6,8 +6,8 @@ import { when } from 'jest-when'
 
 import AssessCaseListController from './caseListController'
 import { assessPaths } from '../../paths'
-import type { CourseService, ReferralService } from '../../services'
-import { courseFactory, referralViewFactory } from '../../testutils/factories'
+import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
+import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
@@ -26,6 +26,7 @@ describe('AssessCaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
   const courseNameSlug = 'lime-course'
+  const referralStatusGroup = 'open'
   const pathWithQuery = 'path-with-query'
   const queryParamsExcludingPage: Array<QueryParam> = []
   const queryParamsExcludingSort: Array<QueryParam> = []
@@ -36,13 +37,14 @@ describe('AssessCaseListController', () => {
 
   const courseService = createMock<CourseService>({})
   const referralService = createMock<ReferralService>({})
+  const referenceDataService = createMock<ReferenceDataService>({})
 
   let controller: AssessCaseListController
 
   const courses = [courseFactory.build({ name: 'Orange Course' }), courseFactory.build({ name: 'Lime Course' })]
 
   beforeEach(() => {
-    controller = new AssessCaseListController(courseService, referralService)
+    controller = new AssessCaseListController(courseService, referralService, referenceDataService)
 
     request = createMock<Request>({ user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
@@ -59,7 +61,9 @@ describe('AssessCaseListController', () => {
       const requestHandler = controller.indexRedirect()
       await requestHandler(request, response, next)
 
-      expect(response.redirect).toHaveBeenCalledWith(assessPaths.caseList.show({ courseName: 'lime-course' }))
+      expect(response.redirect).toHaveBeenCalledWith(
+        assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup }),
+      )
     })
 
     describe('when there are no courses', () => {
@@ -75,7 +79,7 @@ describe('AssessCaseListController', () => {
   })
 
   describe('filter', () => {
-    const redirectPathBase = assessPaths.caseList.show({ courseName: courseNameSlug })
+    const redirectPathBase = assessPaths.caseList.show({ courseName: courseNameSlug, referralStatusGroup })
     const audience = 'General violence offence'
     const status = 'ASSESSMENT_STARTED'
 
@@ -83,7 +87,7 @@ describe('AssessCaseListController', () => {
       ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
       ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
 
-      request.params = { courseName: courseNameSlug }
+      request.params = { courseName: courseNameSlug, referralStatusGroup }
     })
 
     it('uses utils to generate a path to the show action with the request body converted to query params, then redirects there', async () => {
@@ -116,9 +120,12 @@ describe('AssessCaseListController', () => {
       'Programme strand',
       'Referral status',
     ]
+    const closedReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: true })
+    const draftReferralStatuses = referralStatusRefDataFactory.buildList(2, { draft: true })
+    const openReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: false, draft: false })
 
     beforeEach(() => {
-      request.params = { courseName: courseNameSlug }
+      request.params = { courseName: courseNameSlug, referralStatusGroup }
 
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
 
@@ -131,7 +138,13 @@ describe('AssessCaseListController', () => {
         totalElements: referralViews.length,
         totalPages: 1,
       }
+
       referralService.getReferralViews.mockResolvedValue(paginatedReferralViews)
+      referenceDataService.getReferralStatuses.mockResolvedValue([
+        ...closedReferralStatuses,
+        ...draftReferralStatuses,
+        ...openReferralStatuses,
+      ])
       ;(CaseListUtils.audienceSelectItems as jest.Mock).mockReturnValue(audienceSelectItems)
       ;(CaseListUtils.primaryNavigationItems as jest.Mock).mockReturnValue(primaryNavigationItems)
       ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
@@ -144,16 +157,13 @@ describe('AssessCaseListController', () => {
     })
 
     it('renders the show template with the correct response locals', async () => {
-      const apiStatusQuery = 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED'
-
       ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(undefined)
-      ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiStatusQuery)
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
-        action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
+        action: assessPaths.caseList.filter({ courseName: courseNameSlug, referralStatusGroup }),
         audienceSelectItems,
         pageHeading: 'Lime Course (LC)',
         pagination,
@@ -163,11 +173,11 @@ describe('AssessCaseListController', () => {
         tableRows,
       })
       expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(undefined)
-      expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(apiStatusQuery.toLowerCase())
       expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
         audience: undefined,
         courseName: 'Lime Course',
-        status: apiStatusQuery,
+        status: undefined,
+        statusGroup: referralStatusGroup,
       })
       expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
         undefined,
@@ -182,7 +192,7 @@ describe('AssessCaseListController', () => {
         paginatedReferralViews.totalPages,
       )
       expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
-        assessPaths.caseList.show({ courseName: courseNameSlug }),
+        assessPaths.caseList.show({ courseName: courseNameSlug, referralStatusGroup }),
         queryParamsExcludingSort,
       )
       expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
@@ -200,7 +210,7 @@ describe('AssessCaseListController', () => {
         undefined,
         undefined,
       )
-      expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(undefined)
+      expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, undefined)
       expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
     })
 
@@ -209,7 +219,7 @@ describe('AssessCaseListController', () => {
         const uiAudienceQueryParam = 'general offence'
         const uiSortColumnQueryParam = 'surname'
         const uiSortDirectionQueryParam = 'ascending'
-        const uiStatusQueryParam = 'referral submitted'
+        const uiStatusQueryParam = 'REFERRAL_SUBMITTED'
 
         request.query = {
           sortColumn: uiSortColumnQueryParam,
@@ -221,29 +231,28 @@ describe('AssessCaseListController', () => {
         const apiAudienceQueryParam = 'General offence'
         const apiStatusQueryParam = 'REFERRAL_SUBMITTED'
         ;(CaseListUtils.uiToApiAudienceQueryParam as jest.Mock).mockReturnValue(apiAudienceQueryParam)
-        ;(CaseListUtils.uiToApiStatusQueryParam as jest.Mock).mockReturnValue(apiStatusQueryParam)
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
-          action: assessPaths.caseList.filter({ courseName: courseNameSlug }),
+          action: assessPaths.caseList.filter({ courseName: courseNameSlug, referralStatusGroup }),
           audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
           pageHeading: 'Lime Course (LC)',
           pagination,
           primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
-          referralStatusSelectItems: CaseListUtils.statusSelectItems('referral submitted'),
+          referralStatusSelectItems: CaseListUtils.statusSelectItems(openReferralStatuses, uiStatusQueryParam),
           tableHeadings,
           tableRows: CaseListUtils.tableRows(paginatedReferralViews.content, columnsToInclude),
         })
         expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(uiAudienceQueryParam)
-        expect(CaseListUtils.uiToApiStatusQueryParam).toHaveBeenCalledWith(uiStatusQueryParam)
         expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: apiAudienceQueryParam,
           courseName: 'Lime Course',
           sortColumn: uiSortColumnQueryParam,
           sortDirection: uiSortDirectionQueryParam,
           status: apiStatusQueryParam,
+          statusGroup: referralStatusGroup,
         })
         expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
           uiAudienceQueryParam,
@@ -258,7 +267,7 @@ describe('AssessCaseListController', () => {
           paginatedReferralViews.totalPages,
         )
         expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
-          assessPaths.caseList.show({ courseName: courseNameSlug }),
+          assessPaths.caseList.show({ courseName: courseNameSlug, referralStatusGroup }),
           queryParamsExcludingSort,
         )
         expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
@@ -276,17 +285,29 @@ describe('AssessCaseListController', () => {
           uiSortColumnQueryParam,
           uiSortDirectionQueryParam,
         )
-        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(uiStatusQueryParam)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, uiStatusQueryParam)
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
       })
     })
 
     describe('when the course name is not found', () => {
       it('throws a 404 error', async () => {
-        request.params = { courseName: 'not-a-course' }
+        request.params = { courseName: 'not-a-course', referralStatusGroup }
 
         const requestHandler = controller.show()
         const expectedError = createError(404, 'Not A Course not found.')
+
+        await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
+        expect(referralService.getReferralViews).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('when the referral status group is not valid', () => {
+      it('throws a 404 error', async () => {
+        request.params = { courseName: 'lime-course', referralStatusGroup: 'invalid-group' }
+
+        const requestHandler = controller.show()
+        const expectedError = createError(404, 'Not found')
 
         await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
         expect(referralService.getReferralViews).not.toHaveBeenCalled()

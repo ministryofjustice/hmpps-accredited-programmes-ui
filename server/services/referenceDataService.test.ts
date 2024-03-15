@@ -79,4 +79,16 @@ describe('ReferenceDataService', () => {
       expect(result).toEqual(reasons)
     })
   })
+
+  describe('getReferralStatuses', () => {
+    it('should return referral statuses', async () => {
+      const referralStatuses = referralStatusRefDataFactory.buildList(2)
+
+      when(referenceDataClient.findReferralStatuses).mockResolvedValue(referralStatuses)
+
+      const result = await service.getReferralStatuses(username)
+
+      expect(result).toEqual(referralStatuses)
+    })
+  })
 })

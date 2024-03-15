@@ -288,13 +288,22 @@ describe('ReferralService', () => {
 
     describe('with query values', () => {
       it('makes the correct call to the referral client', async () => {
-        const query = {
+        const query: {
+          audience: string
+          courseName: string
+          page: string
+          sortColumn: string
+          sortDirection: string
+          status: string
+          statusGroup: ReferralStatusGroup
+        } = {
           audience: 'General offence',
           courseName: 'Lime Course',
           page: '1',
           sortColumn: 'surname',
           sortDirection: 'ascending',
           status: 'REFERRAL_SUBMITTED',
+          statusGroup: 'open',
         }
 
         await service.getReferralViews(username, organisationId, query)

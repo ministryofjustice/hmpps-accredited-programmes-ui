@@ -76,6 +76,7 @@ export default {
   referenceData: {
     referralStatuses: {
       codeData: referralStatusesCodeDataPath,
+      show: referralStatusesPath,
       statusCodeCategories: referralStatusCodeCategoriesPath,
       statusCodeReasons: referralStatusCodeReasonsPath,
     },

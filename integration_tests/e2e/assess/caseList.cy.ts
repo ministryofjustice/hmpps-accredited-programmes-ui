@@ -1,6 +1,6 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
-import { courseFactory, referralViewFactory } from '../../../server/testutils/factories'
+import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
 import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
@@ -11,7 +11,16 @@ context('Referral case lists', () => {
   const limeCourse = courseFactory.build({ name: 'Lime Course' })
   const blueCourse = courseFactory.build({ name: 'Blue Course' })
   const courses = [limeCourse, blueCourse]
+  const closedReferralStatuses = referralStatusRefDataFactory.buildList(3, { closed: true, draft: false })
+  const draftReferralStatuses = referralStatusRefDataFactory.buildList(3, { closed: false, draft: true })
+  const openReferralStatuses = [
+    referralStatusRefDataFactory.build({ closed: false, code: 'assessment_started', draft: false }),
+    referralStatusRefDataFactory.build({ closed: false, code: 'awaiting_assessment', draft: false }),
+    referralStatusRefDataFactory.build({ closed: false, code: 'referral_submitted', draft: false }),
+  ]
+  const referralStatuses = [...closedReferralStatuses, ...draftReferralStatuses, ...openReferralStatuses]
   const availableStatuses = ['assessment_started', 'awaiting_assessment', 'referral_submitted']
+
   const limeCourseReferralViews = FactoryHelpers.buildListWith(
     referralViewFactory,
     { courseName: limeCourse.name },
@@ -40,17 +49,19 @@ context('Referral case lists', () => {
     cy.task('stubDefaultCaseloads')
     cy.task('stubCoursesForOrganisation', { courses, organisationId: 'MRI' })
     cy.signIn()
+    cy.task('stubReferralStatuses', referralStatuses)
     cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
       queryParameters: {
         courseName: { equalTo: limeCourse.name },
+        statusGroup: { equalTo: 'open' },
       },
       referralViews: limeCourseReferralViews,
     })
   })
 
   it('shows the correct information', () => {
-    const path = assessPaths.caseList.show({ courseName: 'lime-course' })
+    const path = assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' })
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -66,20 +77,27 @@ context('Referral case lists', () => {
   it('includes pagination', () => {
     cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
-      queryParameters: { page: { equalTo: '3' } },
+      queryParameters: {
+        page: { equalTo: '3' },
+        statusGroup: { equalTo: 'open' },
+      },
       referralViews: limeCourseReferralViews,
       totalPages: 7,
     })
     cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
-      queryParameters: { page: { equalTo: '4' } },
+      queryParameters: {
+        page: { equalTo: '4' },
+        statusGroup: { equalTo: 'open' },
+      },
       referralViews: limeCourseReferralViews,
       totalPages: 7,
     })
 
-    const path = PathUtils.pathWithQuery(assessPaths.caseList.show({ courseName: 'lime-course' }), [
-      { key: 'page', value: '4' },
-    ])
+    const path = PathUtils.pathWithQuery(
+      assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' }),
+      [{ key: 'page', value: '4' }],
+    )
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -102,7 +120,7 @@ context('Referral case lists', () => {
 
   describe('when using the filters', () => {
     it('shows the correct information', () => {
-      const path = assessPaths.caseList.show({ courseName: 'lime-course' })
+      const path = assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' })
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -115,7 +133,7 @@ context('Referral case lists', () => {
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
 
       const programmeStrandSelectedValue = 'general offence'
-      const referralStatusSelectedValue = 'assessment started'
+      const referralStatusSelectedValue = 'assessment_started'
       const filteredReferralViews = [
         referralViewFactory.build({
           audience: 'General offence',
@@ -155,7 +173,10 @@ context('Referral case lists', () => {
         course: blueCourse,
         referralViews: blueCourseReferralViews,
       })
-      caseListPage.shouldContainCourseNavigation(assessPaths.caseList.show({ courseName: 'blue-course' }), courses)
+      caseListPage.shouldContainCourseNavigation(
+        assessPaths.caseList.show({ courseName: 'blue-course', referralStatusGroup: 'open' }),
+        courses,
+      )
       caseListPage.shouldHaveSelectedFilterValues('', '')
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
     })

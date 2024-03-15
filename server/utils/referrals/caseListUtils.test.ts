@@ -1,6 +1,6 @@
 import CaseListUtils from './caseListUtils'
 import { assessPaths, referPaths } from '../../paths'
-import { courseFactory, referralViewFactory } from '../../testutils/factories'
+import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
@@ -8,6 +8,10 @@ import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredite
 jest.mock('../formUtils')
 
 describe('CaseListUtils', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('audienceSelectItems', () => {
     const expectedItems = {
       'extremism offence': 'Extremism offence',
@@ -41,20 +45,20 @@ describe('CaseListUtils', () => {
         courseFactory.build({ name: 'Blue Course' }),
       ]
 
-      expect(CaseListUtils.primaryNavigationItems('/assess/referrals/orange-course/case-list', courses)).toEqual([
+      expect(CaseListUtils.primaryNavigationItems('/assess/referrals/orange-course/case-list/open', courses)).toEqual([
         {
           active: false,
-          href: '/assess/referrals/blue-course/case-list',
+          href: '/assess/referrals/blue-course/case-list/open',
           text: 'Blue Course referrals',
         },
         {
           active: false,
-          href: '/assess/referrals/lime-course/case-list',
+          href: '/assess/referrals/lime-course/case-list/open',
           text: 'Lime Course referrals',
         },
         {
           active: true,
-          href: '/assess/referrals/orange-course/case-list',
+          href: '/assess/referrals/orange-course/case-list/open',
           text: 'Orange Course referrals',
         },
       ])
@@ -306,23 +310,28 @@ describe('CaseListUtils', () => {
   })
 
   describe('statusSelectItems', () => {
+    const referralStatuses = [
+      referralStatusRefDataFactory.build({ code: 'assessment_started' }),
+      referralStatusRefDataFactory.build({ code: 'referral_submitted' }),
+    ]
     const expectedItems = {
-      'assessment started': 'Assessment started',
-      'awaiting assessment': 'Awaiting assessment',
-      'referral submitted': 'Referral submitted',
+      assessment_started: 'Assessment started',
+      referral_submitted: 'Referral submitted',
     }
 
     it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
-      CaseListUtils.statusSelectItems()
+      CaseListUtils.statusSelectItems(referralStatuses)
 
       expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
     })
 
     describe('when a selected value is provided', () => {
       it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        CaseListUtils.statusSelectItems('referral submitted')
+        const selectedValue = 'assessment_started'
 
-        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'referral submitted')
+        CaseListUtils.statusSelectItems(referralStatuses, selectedValue)
+
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, selectedValue)
       })
     })
   })
@@ -712,18 +721,6 @@ describe('CaseListUtils', () => {
     describe('when the param is falsey', () => {
       it('returns `undefined`', () => {
         expect(CaseListUtils.uiToApiAudienceQueryParam(undefined)).toEqual(undefined)
-      })
-    })
-  })
-
-  describe('uiToApiStatusQueryParam', () => {
-    it('returns the UI query param formatted to match the API data', () => {
-      expect(CaseListUtils.uiToApiStatusQueryParam('referral submitted')).toEqual('REFERRAL_SUBMITTED')
-    })
-
-    describe('when the param is falsey', () => {
-      it('returns `undefined`', () => {
-        expect(CaseListUtils.uiToApiStatusQueryParam(undefined)).toEqual(undefined)
       })
     })
   })

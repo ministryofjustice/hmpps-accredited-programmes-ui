@@ -5,7 +5,7 @@ import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import StringUtils from '../stringUtils'
-import type { Course, Referral, ReferralView } from '@accredited-programmes/models'
+import type { Course, Referral, ReferralStatusRefData, ReferralView } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
@@ -34,7 +34,10 @@ export default class CaseListUtils {
     const sortedCourses = coursesWithDuplicatesRemoved.sort((a, b) => a.name.localeCompare(b.name))
 
     return sortedCourses.map(course => {
-      const path = assessPaths.caseList.show({ courseName: StringUtils.convertToUrlSlug(course.name) })
+      const path = assessPaths.caseList.show({
+        courseName: StringUtils.convertToUrlSlug(course.name),
+        referralStatusGroup: 'open',
+      })
 
       return {
         active: currentPath === path,
@@ -111,8 +114,14 @@ export default class CaseListUtils {
     })
   }
 
-  static statusSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return this.selectItems(['Assessment started', 'Awaiting assessment', 'Referral submitted'], selectedValue)
+  static statusSelectItems(
+    statuses: Array<ReferralStatusRefData>,
+    selectedValue?: string,
+  ): Array<GovukFrontendSelectItem> {
+    return FormUtils.getSelectItems(
+      Object.fromEntries(statuses.map(({ code, description }) => [code, description])),
+      selectedValue,
+    )
   }
 
   static statusTagHtml(
@@ -258,10 +267,6 @@ export default class CaseListUtils {
 
   static uiToApiAudienceQueryParam(uiAudienceQueryParam: string | undefined): string | undefined {
     return uiAudienceQueryParam ? StringUtils.properCase(uiAudienceQueryParam) : undefined
-  }
-
-  static uiToApiStatusQueryParam(uiStatusQueryParam: string | undefined): string | undefined {
-    return uiStatusQueryParam ? uiStatusQueryParam.toUpperCase().replace(/\s/g, '_') : undefined
   }
 
   private static formattedPrisonerName(forename?: ReferralView['forename'], surname?: ReferralView['surname']): string {

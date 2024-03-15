@@ -118,6 +118,7 @@ export default class ReferralService {
       sortColumn?: string
       sortDirection?: string
       status?: string
+      statusGroup?: ReferralStatusGroup
     },
   ): Promise<Paginated<ReferralView>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()

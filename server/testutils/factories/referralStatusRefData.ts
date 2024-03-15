@@ -9,7 +9,7 @@ import type { TagColour } from '@accredited-programmes/ui'
 export default Factory.define<ReferralStatusRefData>(({ params }) => {
   const { hasConfirmation: hasConfirmationParam, hasNotes: hasNotesParam } = params
 
-  const code = faker.helpers.arrayElement(referralStatuses).toUpperCase() as ReferralStatus
+  const code = params.code || (faker.helpers.arrayElement(referralStatuses).toUpperCase() as ReferralStatus)
   const { statusColour, statusDescription } = statusDescriptionAndColour(code)
   const colour = statusColour as TagColour
   const description = statusDescription as string
