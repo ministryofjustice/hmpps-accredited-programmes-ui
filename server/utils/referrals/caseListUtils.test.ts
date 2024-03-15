@@ -724,16 +724,4 @@ describe('CaseListUtils', () => {
       })
     })
   })
-
-  describe('uiToApiStatusQueryParam', () => {
-    it('returns the UI query param formatted to match the API data', () => {
-      expect(CaseListUtils.uiToApiStatusQueryParam('referral submitted')).toEqual('REFERRAL_SUBMITTED')
-    })
-
-    describe('when the param is falsey', () => {
-      it('returns `undefined`', () => {
-        expect(CaseListUtils.uiToApiStatusQueryParam(undefined)).toEqual(undefined)
-      })
-    })
-  })
 })

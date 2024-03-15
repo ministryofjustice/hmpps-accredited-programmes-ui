@@ -269,10 +269,6 @@ export default class CaseListUtils {
     return uiAudienceQueryParam ? StringUtils.properCase(uiAudienceQueryParam) : undefined
   }
 
-  static uiToApiStatusQueryParam(uiStatusQueryParam: string | undefined): string | undefined {
-    return uiStatusQueryParam ? uiStatusQueryParam.toUpperCase().replace(/\s/g, '_') : undefined
-  }
-
   private static formattedPrisonerName(forename?: ReferralView['forename'], surname?: ReferralView['surname']): string {
     return StringUtils.convertToTitleCase([forename, surname].filter(nameComponent => nameComponent).join(' '))
   }
