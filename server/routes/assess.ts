@@ -10,6 +10,8 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   const {
     assessCaseListController,
+    categoryController,
+    reasonController,
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
@@ -59,6 +61,12 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(assessPaths.withdraw.reason.pattern, withdrawReasonController.submit())
   get(assessPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.show())
   post(assessPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.submit())
+
+  get(assessPaths.updateStatus.category.show.pattern, categoryController.show())
+  post(assessPaths.updateStatus.category.submit.pattern, categoryController.submit())
+
+  get(assessPaths.updateStatus.reason.show.pattern, reasonController.show())
+  post(assessPaths.updateStatus.reason.submit.pattern, reasonController.submit())
 
   return router
 }
