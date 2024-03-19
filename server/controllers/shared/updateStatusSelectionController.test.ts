@@ -153,6 +153,20 @@ describe('UpdateStatusSelectionController', () => {
       expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: referral.id }))
     })
 
+    describe('when `referralStatusUpdateData` is for a different referral', () => {
+      it('should redirect to the status history route', async () => {
+        request.session.referralStatusUpdateData = {
+          referralId: 'DIFFERENT_REFERRAL_ID',
+          status: 'ON_PROGRAMME',
+        }
+
+        const requestHandler = controller.submitConfirmation()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: referral.id }))
+      })
+    })
+
     describe('when there is no `referralStatusUpdateData`', () => {
       it('should redirect to the status history route', async () => {
         request.session.referralStatusUpdateData = undefined
@@ -200,7 +214,12 @@ describe('UpdateStatusSelectionController', () => {
 
     beforeEach(() => {
       request.body = { reason }
-      request.session.referralStatusUpdateData = { referralId: referral.id, status: 'NOT_SUITABLE' }
+      request.session.referralStatusUpdateData = {
+        referralId: referral.id,
+        status: 'NOT_SUITABLE',
+        statusCategoryCode: 'STATUS_CATEGORY_CODE',
+        statusReasonCode: 'STATUS_REASON_CODE',
+      }
     })
 
     it('should update the referral status, delete `referralStatusUpdateData` and redirect back to the status history page of the referral', async () => {
@@ -208,12 +227,28 @@ describe('UpdateStatusSelectionController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.updateReferralStatus).toHaveBeenCalledWith(username, referral.id, {
+        category: 'STATUS_CATEGORY_CODE',
         notes: reason,
         ptUser: true,
+        reason: 'STATUS_REASON_CODE',
         status: 'NOT_SUITABLE',
       })
       expect(request.session.referralStatusUpdateData).toBeUndefined()
       expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: referral.id }))
+    })
+
+    describe('when `referralStatusUpdateData` is for a different referral', () => {
+      it('should redirect to the status history route', async () => {
+        request.session.referralStatusUpdateData = {
+          referralId: 'DIFFERENT_REFERRAL_ID',
+          status: 'ON_PROGRAMME',
+        }
+
+        const requestHandler = controller.submitReason()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: referral.id }))
+      })
     })
 
     describe('when there is no `referralStatusUpdateData`', () => {
@@ -235,8 +270,10 @@ describe('UpdateStatusSelectionController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.updateReferralStatus).toHaveBeenCalledWith(username, referral.id, {
+          category: 'STATUS_CATEGORY_CODE',
           notes: reason,
           ptUser: false,
+          reason: 'STATUS_REASON_CODE',
           status: 'NOT_SUITABLE',
         })
         expect(request.session.referralStatusUpdateData).toBeUndefined()

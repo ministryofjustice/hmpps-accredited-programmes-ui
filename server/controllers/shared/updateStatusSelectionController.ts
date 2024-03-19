@@ -23,7 +23,7 @@ export default class UpdateStatusSelectionController {
       const { token: userToken, username } = req.user
       const { referralStatusUpdateData } = req.session
 
-      if (!referralStatusUpdateData?.status || referralStatusUpdateData.referralId !== referralId) {
+      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.status) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
@@ -62,7 +62,7 @@ export default class UpdateStatusSelectionController {
       const { confirmation } = req.body
       const { referralStatusUpdateData } = req.session
 
-      if (!referralStatusUpdateData?.status) {
+      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.status) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
@@ -85,7 +85,7 @@ export default class UpdateStatusSelectionController {
       const { referralStatusUpdateData } = req.session
       const reason = req.body.reason?.trim()
 
-      if (!referralStatusUpdateData?.status) {
+      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.status) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
@@ -125,10 +125,13 @@ export default class UpdateStatusSelectionController {
 
     const { username } = req.user
     const { referralId } = req.params
+    const { referralStatusUpdateData } = req.session
 
     await this.referralService.updateReferralStatus(username, referralId, {
+      category: referralStatusUpdateData?.statusCategoryCode,
       notes,
       ptUser: isAssess,
+      reason: referralStatusUpdateData?.statusReasonCode,
       status,
     })
 
