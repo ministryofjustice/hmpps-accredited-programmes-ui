@@ -1,0 +1,74 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "moj/components/timeline/macro.njk" import mojTimeline %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkHref
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list | length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      <p>{{ pageDescription }}</p>
+
+      <h2 class="govuk-heading-m">Current status</h2>
+
+      {{ mojTimeline({
+        items: timelineItems,
+        attributes: {
+          "data-testid": "status-history-timeline"
+        },
+        classes: "govuk-!-margin-bottom-0"
+      }) }}
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukRadios({
+          name: "reasonCode",
+          fieldset: {
+            legend: {
+              text: radioLegend,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: radioItems,
+          errorMessage: errors.messages.reasonCode,
+          attributes: {
+            "data-testid": "reason-options"
+          }
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          <a href={{ cancelLink }}>Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}
