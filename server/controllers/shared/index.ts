@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import CategoryController from './categoryController'
 import ReferralsController from './referralsController'
 import RisksAndNeedsController from './risksAndNeedsController'
 import StatusHistoryController from './statusHistoryController'
@@ -40,11 +41,14 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
+  const categoryController = new CategoryController(services.referenceDataService, services.referralService)
+
   const withdrawReasonController = new WithdrawReasonController(services.referenceDataService, services.referralService)
 
   const withdrawReasonInformationController = new WithdrawReasonInformationController(services.referralService)
 
   return {
+    categoryController,
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
