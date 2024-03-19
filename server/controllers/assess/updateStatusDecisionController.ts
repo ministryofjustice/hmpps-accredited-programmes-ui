@@ -3,6 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { assessPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
+import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 export default class UpdateStatusDecisionController {
   constructor(private readonly referralService: ReferralService) {}
@@ -44,7 +45,7 @@ export default class UpdateStatusDecisionController {
   submit(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       const { referralId } = req.params
-      const { statusDecision } = req.body
+      const { statusDecision } = req.body as { statusDecision: ReferralStatusUppercase }
 
       if (!statusDecision) {
         req.flash('statusDecisionError', 'Select a status decision')
@@ -53,13 +54,12 @@ export default class UpdateStatusDecisionController {
       }
 
       req.session.referralStatusUpdateData = {
-        previousPath: req.path,
         referralId,
         status: statusDecision,
       }
 
-      if (statusDecision === 'WITHDRAWN') {
-        return res.redirect(assessPaths.withdraw.category({ referralId }))
+      if (statusDecision === 'DESELECTED' || statusDecision === 'WITHDRAWN') {
+        return res.redirect(assessPaths.updateStatus.category.show({ referralId }))
       }
 
       return res.redirect(assessPaths.updateStatus.selection.show({ referralId }))

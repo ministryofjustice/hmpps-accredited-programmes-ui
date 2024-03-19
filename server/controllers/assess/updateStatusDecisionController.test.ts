@@ -58,7 +58,10 @@ describe('UpdateStatusDecisionController', () => {
   beforeEach(() => {
     referral = referralFactory.submitted().build({})
     referralStatusHistory = [{ ...referralStatusHistoryFactory.submitted().build(), byLineText: 'You' }]
-    referralStatusTransitions = referralStatusRefDataFactory.buildList(2)
+    referralStatusTransitions = [
+      referralStatusRefDataFactory.build({ code: 'AWAITING_ASSESSMENT' }),
+      referralStatusRefDataFactory.build({ code: 'NOT_SUITABLE' }),
+    ]
     mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
@@ -100,7 +103,7 @@ describe('UpdateStatusDecisionController', () => {
       it('should keep `referralStatusUpdateData` in the session and make the call to check the correct radio item', async () => {
         const session: ReferralStatusUpdateSessionData = {
           referralId: referral.id,
-          status: referralStatusTransitions[1].code,
+          status: 'NOT_SUITABLE',
         }
         request.session.referralStatusUpdateData = session
 
@@ -110,7 +113,7 @@ describe('UpdateStatusDecisionController', () => {
         expect(request.session.referralStatusUpdateData).toEqual(session)
         expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(
           referralStatusTransitions,
-          referralStatusTransitions[1].code,
+          'NOT_SUITABLE',
         )
       })
     })
@@ -138,7 +141,6 @@ describe('UpdateStatusDecisionController', () => {
       await requestHandler(request, response, next)
 
       expect(request.session.referralStatusUpdateData).toEqual({
-        previousPath: request.path,
         referralId: referral.id,
         status: 'NOT_SUITABLE',
       })
@@ -162,18 +164,36 @@ describe('UpdateStatusDecisionController', () => {
     })
 
     describe('when `statusDecision` is `WITHDRAWN`', () => {
-      it('should redirect to the withdraw category page', async () => {
+      it('should redirect to the category page show page', async () => {
         request.body = { statusDecision: 'WITHDRAWN' }
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
         expect(request.session.referralStatusUpdateData).toEqual({
-          previousPath: request.path,
           referralId: referral.id,
           status: 'WITHDRAWN',
         })
-        expect(response.redirect).toHaveBeenCalledWith(assessPaths.withdraw.category({ referralId: referral.id }))
+        expect(response.redirect).toHaveBeenCalledWith(
+          assessPaths.updateStatus.category.show({ referralId: referral.id }),
+        )
+      })
+    })
+
+    describe('when `statusDecision` is `DESELECTED`', () => {
+      it('should redirect to the category page show page', async () => {
+        request.body = { statusDecision: 'DESELECTED' }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(request.session.referralStatusUpdateData).toEqual({
+          referralId: referral.id,
+          status: 'DESELECTED',
+        })
+        expect(response.redirect).toHaveBeenCalledWith(
+          assessPaths.updateStatus.category.show({ referralId: referral.id }),
+        )
       })
     })
   })
