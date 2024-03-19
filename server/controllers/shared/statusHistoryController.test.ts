@@ -110,6 +110,15 @@ describe('StatusHistoryController', () => {
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
+    it('should reset the `referralStatusUpdateData` session data', async () => {
+      request.session.referralStatusUpdateData = { referralId: referral.id, status: 'WITHDRAWN' }
+
+      const requestHandler = controller.show()
+      await requestHandler(request, response, next)
+
+      expect(request.session.referralStatusUpdateData).toBeUndefined()
+    })
+
     describe('when the page has been visited with an `updatePerson` query parameter', () => {
       it('should pass the `updatePerson` query parameter to the `getReferral` method', async () => {
         const updatePerson = 'true'
