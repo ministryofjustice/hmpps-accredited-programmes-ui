@@ -14,6 +14,8 @@ export default class StatusHistoryController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      delete req.session.referralStatusUpdateData
+
       const { referralId } = req.params
       const { token: userToken, username } = req.user
       const { updatePerson } = req.query as Record<string, string>
