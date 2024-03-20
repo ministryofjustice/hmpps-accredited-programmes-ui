@@ -13,7 +13,7 @@ export default class WithdrawReasonPage extends Page {
   }
 
   shouldContainWithdrawalReasonRadioItems(referralStatusReasons: Array<ReferralStatusReason>) {
-    cy.get('[data-testid="withdraw-reason-options"]').within(() => {
+    cy.get('[data-testid="reason-options"]').within(() => {
       this.shouldContainRadioItems(ReferralUtils.statusOptionsToRadioItems(referralStatusReasons))
     })
   }

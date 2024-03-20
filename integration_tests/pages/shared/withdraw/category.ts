@@ -18,7 +18,7 @@ export default class WithdrawCategoryPage extends Page {
   }
 
   shouldContainWithdrawalCategoryRadioItems(referralStatusCategories: Array<ReferralStatusCategory>) {
-    cy.get('[data-testid="withdraw-category-options"]').within(() => {
+    cy.get('[data-testid="category-options"]').within(() => {
       this.shouldContainRadioItems(ReferralUtils.statusOptionsToRadioItems(referralStatusCategories))
     })
   }

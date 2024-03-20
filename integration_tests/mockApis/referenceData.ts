@@ -26,6 +26,19 @@ export default {
       },
     }),
 
+  stubReferralStatusCodeData: (referralStatus: ReferralStatusRefData): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referenceData.referralStatuses.codeData({ referralStatusCode: referralStatus.code }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: referralStatus,
+        status: 200,
+      },
+    }),
+
   stubReferralStatusCodeReasons: (args: {
     reasons: Array<ReferralStatusReason>
     referralStatus: ReferralStatusUppercase
