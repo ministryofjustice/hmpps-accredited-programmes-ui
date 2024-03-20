@@ -13,6 +13,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     put,
   } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
+    categoryController,
     referCaseListController,
     newReferralsAdditionalInformationController,
     newReferralsCourseParticipationDetailsController,
@@ -20,12 +21,12 @@ export default function routes(controllers: Controllers, router: Router): Router
     newReferralsController,
     newReferralsPeopleController,
     newReferralsOasysConfirmationController,
+    reasonController,
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
-    withdrawCategoryController,
-    withdrawReasonController,
-    withdrawReasonInformationController,
+    updateStatusActionController,
+    updateStatusSelectionController,
   } = controllers
 
   get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
@@ -88,12 +89,20 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.show.risksAndNeeds.roshAnalysis.pattern, risksAndNeedsController.roshAnalysis())
   get(referPaths.show.risksAndNeeds.thinkingAndBehaving.pattern, risksAndNeedsController.thinkingAndBehaving())
 
-  get(referPaths.withdraw.category.pattern, withdrawCategoryController.show())
-  post(referPaths.withdraw.category.pattern, withdrawCategoryController.submit())
-  get(referPaths.withdraw.reason.pattern, withdrawReasonController.show())
-  post(referPaths.withdraw.reason.pattern, withdrawReasonController.submit())
-  get(referPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.show())
-  post(referPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.submit())
+  get(referPaths.updateStatus.category.show.pattern, categoryController.show())
+  post(referPaths.updateStatus.category.submit.pattern, categoryController.submit())
+
+  get(referPaths.updateStatus.reason.show.pattern, reasonController.show())
+  post(referPaths.updateStatus.reason.submit.pattern, reasonController.submit())
+
+  get(referPaths.updateStatus.selection.show.pattern, updateStatusSelectionController.show())
+  post(
+    referPaths.updateStatus.selection.confirmation.submit.pattern,
+    updateStatusSelectionController.submitConfirmation(),
+  )
+  post(referPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
+
+  get(referPaths.withdraw.pattern, updateStatusActionController.withdraw())
 
   return router
 }

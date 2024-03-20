@@ -23,8 +23,6 @@ const referralShowPathBase = referralsPath.path(':referralId')
 
 const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
 
-const withdrawBasePath = referralShowPathBase.path('withdraw')
-
 const updateStatusPathBase = referralShowPathBase.path('update-status')
 const updateStatusSelectCategory = updateStatusPathBase.path('category')
 const updateStatusSelectReason = updateStatusPathBase.path('reason')
@@ -111,11 +109,7 @@ export default {
       show: updateStatusSelectionShowPath,
     },
   },
-  withdraw: {
-    category: withdrawBasePath,
-    reason: withdrawBasePath.path('reason'),
-    reasonInformation: withdrawBasePath.path('reason-information'),
-  },
+  withdraw: referralShowPathBase.path('withdraw'),
 }
 
 export { referPathBase }

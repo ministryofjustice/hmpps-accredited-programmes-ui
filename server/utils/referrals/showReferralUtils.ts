@@ -38,7 +38,7 @@ export default class ShowReferralUtils {
       buttons.push({
         classes: 'govuk-button--secondary',
         disabled: closed,
-        href: closed ? undefined : referPaths.withdraw.category({ referralId: referral.id }),
+        href: closed ? undefined : referPaths.withdraw({ referralId: referral.id }),
         text: 'Withdraw referral',
       })
     }

@@ -5,6 +5,7 @@ import {
   referralStatusCategoryFactory,
   referralStatusHistoryFactory,
   referralStatusReasonFactory,
+  referralStatusRefDataFactory,
   userFactory,
 } from '../../../server/testutils/factories'
 import auth from '../../mockApis/auth'
@@ -55,16 +56,17 @@ context('Withdraw referral', () => {
       categories: referralStatusCategories,
       referralStatus: 'WITHDRAWN',
     })
+    cy.task('stubReferralStatusCodeData', referralStatusRefDataFactory.build({ code: 'WITHDRAWN', hasNotes: true }))
   })
 
   describe('withdrawal category', () => {
-    const path = referPaths.withdraw.category({ referralId: referral.id })
+    const path = referPaths.withdraw({ referralId: referral.id })
 
     it('shows the withdrawal category page', () => {
       cy.visit(path)
 
       const withdrawCategoryPage = Page.verifyOnPage(WithdrawCategoryPage)
-      withdrawCategoryPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
+      withdrawCategoryPage.shouldContainBackLink('#')
       withdrawCategoryPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawCategoryPage.shouldContainWithdrawalCategoryRadioItems(referralStatusCategories)
     })
@@ -78,7 +80,7 @@ context('Withdraw referral', () => {
         withdrawCategoryPage.shouldHaveErrors([
           {
             field: 'categoryCode',
-            message: 'Select a withdrawal category',
+            message: 'Select a category',
           },
         ])
       })
@@ -87,7 +89,7 @@ context('Withdraw referral', () => {
 
   describe('withdrawal reason', () => {
     beforeEach(() => {
-      cy.visit(referPaths.withdraw.category({ referralId: referral.id }))
+      cy.visit(referPaths.withdraw({ referralId: referral.id }))
 
       const withdrawCategoryPage = Page.verifyOnPage(WithdrawCategoryPage)
       withdrawCategoryPage.selectWithdrawalCategoryAndSubmit(selectedCategory, referralStatusReasons)
@@ -95,7 +97,7 @@ context('Withdraw referral', () => {
 
     it('shows the withdrawal reason page', () => {
       const withdrawReasonPage = Page.verifyOnPage(WithdrawReasonPage)
-      withdrawReasonPage.shouldContainBackLink(referPaths.withdraw.category({ referralId: referral.id }))
+      withdrawReasonPage.shouldContainBackLink('#')
       withdrawReasonPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawReasonPage.shouldContainWithdrawalReasonRadioItems(referralStatusReasons)
     })
@@ -107,7 +109,7 @@ context('Withdraw referral', () => {
         withdrawReasonPage.shouldHaveErrors([
           {
             field: 'reasonCode',
-            message: 'Select a withdrawal reason',
+            message: 'Select a reason',
           },
         ])
       })
@@ -116,7 +118,7 @@ context('Withdraw referral', () => {
 
   describe('withdrawal reason information', () => {
     beforeEach(() => {
-      cy.visit(referPaths.withdraw.category({ referralId: referral.id }))
+      cy.visit(referPaths.withdraw({ referralId: referral.id }))
 
       const withdrawCategoryPage = Page.verifyOnPage(WithdrawCategoryPage)
       withdrawCategoryPage.selectWithdrawalCategoryAndSubmit(selectedCategory, [])
@@ -124,7 +126,7 @@ context('Withdraw referral', () => {
 
     it('shows the withdrawal reason information page', () => {
       const withdrawReasonInformationPage = Page.verifyOnPage(WithdrawReasonInformationPage)
-      withdrawReasonInformationPage.shouldContainBackLink(referPaths.withdraw.category({ referralId: referral.id }))
+      withdrawReasonInformationPage.shouldContainBackLink('#')
       withdrawReasonInformationPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
     })
 
@@ -134,8 +136,8 @@ context('Withdraw referral', () => {
         withdrawReasonInformationPage.shouldContainButton('Submit').click()
         withdrawReasonInformationPage.shouldHaveErrors([
           {
-            field: 'reasonInformation',
-            message: 'Enter withdrawal reason information',
+            field: 'reason',
+            message: 'Enter a reason',
           },
         ])
       })
@@ -146,18 +148,18 @@ context('Withdraw referral', () => {
     it('navigates through each step and redirects to the status history page', () => {
       cy.task('stubUpdateReferralStatus', referral.id)
 
-      cy.visit(referPaths.withdraw.category({ referralId: referral.id }))
+      cy.visit(referPaths.withdraw({ referralId: referral.id }))
 
       const withdrawCategoryPage = Page.verifyOnPage(WithdrawCategoryPage)
-      withdrawCategoryPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
+      withdrawCategoryPage.shouldContainBackLink('#')
       withdrawCategoryPage.selectWithdrawalCategoryAndSubmit(selectedCategory, referralStatusReasons)
 
       const withdrawReasonPage = Page.verifyOnPage(WithdrawReasonPage)
-      withdrawReasonPage.shouldContainBackLink(referPaths.withdraw.category({ referralId: referral.id }))
+      withdrawReasonPage.shouldContainBackLink('#')
       withdrawReasonPage.selectWithdrawalReasonAndSubmit(selectedReason)
 
       const withdrawReasonInformationPage = Page.verifyOnPage(WithdrawReasonInformationPage)
-      withdrawReasonInformationPage.shouldContainBackLink(referPaths.withdraw.reason({ referralId: referral.id }))
+      withdrawReasonInformationPage.shouldContainBackLink('#')
       withdrawReasonInformationPage.enterWithdrawalReasonInformationAndSubmit(reasonInformation)
 
       cy.location('pathname').should('equal', referPaths.show.statusHistory({ referralId: referral.id }))

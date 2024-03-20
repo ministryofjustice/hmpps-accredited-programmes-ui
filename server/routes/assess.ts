@@ -17,9 +17,6 @@ export default function routes(controllers: Controllers, router: Router): Router
     statusHistoryController,
     updateStatusDecisionController,
     updateStatusSelectionController,
-    withdrawCategoryController,
-    withdrawReasonController,
-    withdrawReasonInformationController,
   } = controllers
 
   get(assessPaths.caseList.index.pattern, assessCaseListController.indexRedirect())
@@ -48,25 +45,18 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.updateStatus.decision.show.pattern, updateStatusDecisionController.show())
   post(assessPaths.updateStatus.decision.submit.pattern, updateStatusDecisionController.submit())
 
+  get(assessPaths.updateStatus.category.show.pattern, categoryController.show())
+  post(assessPaths.updateStatus.category.submit.pattern, categoryController.submit())
+
+  get(assessPaths.updateStatus.reason.show.pattern, reasonController.show())
+  post(assessPaths.updateStatus.reason.submit.pattern, reasonController.submit())
+
   get(assessPaths.updateStatus.selection.show.pattern, updateStatusSelectionController.show())
   post(
     assessPaths.updateStatus.selection.confirmation.submit.pattern,
     updateStatusSelectionController.submitConfirmation(),
   )
   post(assessPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
-
-  get(assessPaths.withdraw.category.pattern, withdrawCategoryController.show())
-  post(assessPaths.withdraw.category.pattern, withdrawCategoryController.submit())
-  get(assessPaths.withdraw.reason.pattern, withdrawReasonController.show())
-  post(assessPaths.withdraw.reason.pattern, withdrawReasonController.submit())
-  get(assessPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.show())
-  post(assessPaths.withdraw.reasonInformation.pattern, withdrawReasonInformationController.submit())
-
-  get(assessPaths.updateStatus.category.show.pattern, categoryController.show())
-  post(assessPaths.updateStatus.category.submit.pattern, categoryController.submit())
-
-  get(assessPaths.updateStatus.reason.show.pattern, reasonController.show())
-  post(assessPaths.updateStatus.reason.submit.pattern, reasonController.submit())
 
   return router
 }
