@@ -10,7 +10,7 @@ import {
   ShowRisksAndNeedsUtils,
 } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { Organisation, Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -333,13 +333,17 @@ export default abstract class Page {
     })
   }
 
-  shouldContainShowReferralButtons(currentPath: string, referral: Referral): void {
+  shouldContainShowReferralButtons(
+    currentPath: string,
+    referral: Referral,
+    statusTransitions?: Array<ReferralStatusRefData>,
+  ): void {
     const currentBasePath = currentPath.startsWith(assessPathBase.pattern)
       ? assessPathBase.pattern
       : referPathBase.pattern
 
     cy.get('[data-testid="show-referral-buttons"]').then(buttonsElement => {
-      const buttons = ShowReferralUtils.buttons(currentBasePath, referral)
+      const buttons = ShowReferralUtils.buttons(currentBasePath, referral, statusTransitions)
 
       cy.wrap(buttonsElement).within(() => {
         buttons.forEach((button, buttonIndex) => {

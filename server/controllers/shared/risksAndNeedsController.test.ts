@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
 import RisksAndNeedsController from './risksAndNeedsController'
-import { referPaths } from '../../paths'
+import { assessPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
 import {
   attitudeFactory,
@@ -19,6 +19,7 @@ import {
   personFactory,
   psychiatricFactory,
   referralFactory,
+  referralStatusRefDataFactory,
   relationshipsFactory,
   risksAndAlertsFactory,
   roshAnalysisFactory,
@@ -40,7 +41,7 @@ import {
   ShowRisksAndNeedsUtils,
   ThinkingAndBehavingUtils,
 } from '../../utils'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/dateUtils')
@@ -95,6 +96,7 @@ describe('RisksAndNeedsController', () => {
   let person: Person
   let referral: Referral
   let sharedPageData: Omit<RisksAndNeedsSharedPageData, 'navigationItems' | 'subNavigationItems'>
+  let statusTransitions: Array<ReferralStatusRefData>
 
   let controller: RisksAndNeedsController
 
@@ -113,11 +115,13 @@ describe('RisksAndNeedsController', () => {
       person,
       referral,
     }
+    statusTransitions = referralStatusRefDataFactory.buildList(2)
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
+    referralService.getStatusTransitions.mockResolvedValue(statusTransitions)
 
     controller = new RisksAndNeedsController(courseService, oasysService, personService, referralService)
 
@@ -160,6 +164,24 @@ describe('RisksAndNeedsController', () => {
         when(oasysService.getAttitude).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
         request.path = referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id })
+
+        const requestHandler = controller.attitudes()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
+          ...sharedPageData,
+          navigationItems,
+          noAttitude: false,
+          subNavigationItems,
+        })
+      })
+    })
+
+    describe('when on the assess path', () => {
+      it('renders the attitudes page with the correct response locals', async () => {
+        request.path = assessPaths.show.risksAndNeeds.attitudes({ referralId: referral.id })
 
         const requestHandler = controller.attitudes()
         await requestHandler(request, response, next)
@@ -725,9 +747,17 @@ describe('RisksAndNeedsController', () => {
   })
 
   function assertSharedDataServicesAreCalledWithExpectedArguments(path?: Request['path']) {
+    const isRefer = path?.startsWith(referPathBase.pattern)
+
     expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
-    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral, isRefer ? statusTransitions : undefined)
+
+    if (isRefer) {
+      expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)
+    } else {
+      expect(referralService.getStatusTransitions).not.toHaveBeenCalled()
+    }
   }
 })

@@ -4,7 +4,7 @@ import authPaths from './auth'
 import findPaths from './find'
 import prisonApiPaths from './prisonApi'
 import prisonRegisterApiPaths from './prisonRegisterApi'
-import referPaths from './refer'
+import referPaths, { referPathBase } from './refer'
 
 export {
   apiPaths,
@@ -14,5 +14,6 @@ export {
   findPaths,
   prisonApiPaths,
   prisonRegisterApiPaths,
+  referPathBase,
   referPaths,
 }

@@ -7,6 +7,7 @@ import type {
   Referral,
   ReferralStatusGroup,
   ReferralStatusHistory,
+  ReferralStatusRefData,
   ReferralView,
 } from '@accredited-programmes/models'
 
@@ -166,6 +167,22 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.statusHistory,
+        status: 200,
+      },
+    }),
+
+  stubStatusTransitions: (args: {
+    referralId: Referral['id']
+    statusTransitions: Array<ReferralStatusRefData>
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referrals.statusTransitions({ referralId: args.referralId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.statusTransitions,
         status: 200,
       },
     }),

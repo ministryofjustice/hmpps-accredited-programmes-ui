@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import StatusHistoryController from './statusHistoryController'
-import { referPaths } from '../../paths'
+import { assessPaths, referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import {
   courseFactory,
@@ -12,10 +12,11 @@ import {
   personFactory,
   referralFactory,
   referralStatusHistoryFactory,
+  referralStatusRefDataFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, ShowReferralUtils } from '../../utils'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/referrals/showReferralUtils')
@@ -51,6 +52,7 @@ describe('StatusHistoryController', () => {
   let person: Person
   let referral: Referral
   let referralStatusHistory: Array<ReferralStatusHistoryPresenter>
+  let statusTransitions: Array<ReferralStatusRefData>
 
   let controller: StatusHistoryController
 
@@ -58,6 +60,7 @@ describe('StatusHistoryController', () => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
     referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
+    statusTransitions = referralStatusRefDataFactory.buildList(2)
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
@@ -67,6 +70,7 @@ describe('StatusHistoryController', () => {
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
+    referralService.getStatusTransitions.mockResolvedValue(statusTransitions)
 
     controller = new StatusHistoryController(courseService, personService, referralService)
 
@@ -76,6 +80,10 @@ describe('StatusHistoryController', () => {
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
   })
 
   describe('show', () => {
@@ -96,6 +104,7 @@ describe('StatusHistoryController', () => {
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id, {})
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
+      expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)
       expect(personService.getPerson).toHaveBeenCalledWith(
         username,
         referral.prisonNumber,
@@ -106,7 +115,7 @@ describe('StatusHistoryController', () => {
         'statusHistory',
         referral.id,
       )
-      expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path, referral)
+      expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path, referral, statusTransitions)
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
@@ -128,6 +137,18 @@ describe('StatusHistoryController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id, { updatePerson })
+      })
+    })
+
+    describe('when on the assess path', () => {
+      it('should not call `getStatusTransitions`', async () => {
+        request.path = assessPaths.show.statusHistory({ referralId: referral.id })
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getStatusTransitions).not.toHaveBeenCalled()
+        expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path, referral, undefined)
       })
     })
   })

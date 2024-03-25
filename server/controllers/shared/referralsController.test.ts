@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import SubmittedReferralsController from './referralsController'
-import { referPaths } from '../../paths'
+import { assessPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
   courseFactory,
@@ -14,6 +14,7 @@ import {
   organisationFactory,
   personFactory,
   referralFactory,
+  referralStatusRefDataFactory,
   userFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
@@ -26,7 +27,7 @@ import {
   ShowReferralUtils,
 } from '../../utils'
 import { releaseDateFields } from '../../utils/personUtils'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
@@ -63,6 +64,7 @@ describe('ReferralsController', () => {
   let referral: Referral
   let referringUser: User
   let sharedPageData: Omit<ReferralSharedPageData, 'navigationItems' | 'subNavigationItems'>
+  let statusTransitions: Array<ReferralStatusRefData>
 
   let controller: SubmittedReferralsController
 
@@ -85,12 +87,14 @@ describe('ReferralsController', () => {
       referral,
       submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, referringUser.name),
     }
+    statusTransitions = referralStatusRefDataFactory.buildList(2)
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
     organisationService.getOrganisation.mockResolvedValue(organisation)
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
+    referralService.getStatusTransitions.mockResolvedValue(statusTransitions)
     userService.getFullNameFromUsername.mockResolvedValue(referringUser.name)
 
     controller = new SubmittedReferralsController(
@@ -135,6 +139,24 @@ describe('ReferralsController', () => {
         const expectedError = createError(400, 'Referral has not been submitted.')
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+
+    describe('when on the assess path', () => {
+      it('renders the additional information template with the correct response locals', async () => {
+        request.path = assessPaths.show.additionalInformation({ referralId: referral.id })
+
+        const requestHandler = controller.additionalInformation()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
+          ...sharedPageData,
+          navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
+          subNavigationItems,
+          submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+        })
       })
     })
   })
@@ -383,6 +405,8 @@ describe('ReferralsController', () => {
     path?: Request['path'],
     updatePersonQueryValue?: string,
   ) {
+    const isRefer = path?.startsWith(referPathBase.pattern)
+
     expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id, {
       updatePerson: updatePersonQueryValue,
     })
@@ -390,6 +414,12 @@ describe('ReferralsController', () => {
     expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
     expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
-    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral, isRefer ? statusTransitions : undefined)
+
+    if (isRefer) {
+      expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)
+    } else {
+      expect(referralService.getStatusTransitions).not.toHaveBeenCalled()
+    }
   }
 })

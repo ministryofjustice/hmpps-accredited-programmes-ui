@@ -1,6 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
+import { referPathBase } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
   CourseUtils,
@@ -159,13 +160,15 @@ export default class ReferralsController {
     const { referralId } = req.params
     const { token: userToken, username } = req.user
     const { updatePerson } = req.query as Record<string, string>
+    const isRefer = req.path.startsWith(referPathBase.pattern)
 
     const referral = await this.referralService.getReferral(username, referralId, { updatePerson })
-    const [course, courseOffering, person, referrerUserFullName] = await Promise.all([
+    const [course, courseOffering, person, referrerUserFullName, statusTransitions] = await Promise.all([
       this.courseService.getCourseByOffering(username, referral.offeringId),
       this.courseService.getOffering(username, referral.offeringId),
       this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
       this.userService.getFullNameFromUsername(userToken, referral.referrerUsername),
+      isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
     ])
 
     const organisation = await this.organisationService.getOrganisation(userToken, courseOffering.organisationId)
@@ -173,7 +176,7 @@ export default class ReferralsController {
     const coursePresenter = CourseUtils.presentCourse(course)
 
     return {
-      buttons: ShowReferralUtils.buttons(req.path, referral),
+      buttons: ShowReferralUtils.buttons(req.path, referral, statusTransitions),
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
         coursePresenter,
         organisation.name,

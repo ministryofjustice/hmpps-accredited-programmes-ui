@@ -1,5 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import { referPathBase } from '../../paths'
 import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
 import {
   AttitudesUtils,
@@ -339,18 +340,20 @@ export default class RisksAndNeedsController {
 
     const { referralId } = req.params
     const { username } = req.user
+    const isRefer = req.path.startsWith(referPathBase.pattern)
 
     const referral = await this.referralService.getReferral(username, referralId)
 
-    const [course, person] = await Promise.all([
+    const [course, person, statusTransitions] = await Promise.all([
       this.courseService.getCourseByOffering(username, referral.offeringId),
       this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
+      isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
     ])
 
     const coursePresenter = CourseUtils.presentCourse(course)
 
     return {
-      buttons: ShowReferralUtils.buttons(req.path, referral),
+      buttons: ShowReferralUtils.buttons(req.path, referral, statusTransitions),
       navigationItems: ShowRisksAndNeedsUtils.navigationItems(req.path, referral.id),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       pageSubHeading: 'Risks and needs',
