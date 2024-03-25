@@ -14,12 +14,12 @@ context('Referral case lists', () => {
   const closedReferralStatuses = referralStatusRefDataFactory.buildList(3, { closed: true, draft: false })
   const draftReferralStatuses = referralStatusRefDataFactory.buildList(3, { closed: false, draft: true })
   const openReferralStatuses = [
-    referralStatusRefDataFactory.build({ closed: false, code: 'assessment_started', draft: false }),
-    referralStatusRefDataFactory.build({ closed: false, code: 'awaiting_assessment', draft: false }),
-    referralStatusRefDataFactory.build({ closed: false, code: 'referral_submitted', draft: false }),
+    referralStatusRefDataFactory.build({ closed: false, code: 'ASSESSMENT_STARTED', draft: false }),
+    referralStatusRefDataFactory.build({ closed: false, code: 'AWAITING_ASSESSMENT', draft: false }),
+    referralStatusRefDataFactory.build({ closed: false, code: 'REFERRAL_SUBMITTED', draft: false }),
   ]
   const referralStatuses = [...closedReferralStatuses, ...draftReferralStatuses, ...openReferralStatuses]
-  const availableStatuses = ['assessment_started', 'awaiting_assessment', 'referral_submitted']
+  const availableStatuses = ['ASSESSMENT_STARTED', 'AWAITING_ASSESSMENT', 'REFERRAL_SUBMITTED']
 
   const limeCourseReferralViews = FactoryHelpers.buildListWith(
     referralViewFactory,
@@ -133,7 +133,7 @@ context('Referral case lists', () => {
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
 
       const programmeStrandSelectedValue = 'general offence'
-      const referralStatusSelectedValue = 'assessment_started'
+      const referralStatusSelectedValue = 'ASSESSMENT_STARTED'
       const filteredReferralViews = [
         referralViewFactory.build({
           audience: 'General offence',

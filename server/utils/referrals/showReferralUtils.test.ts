@@ -6,6 +6,7 @@ import {
   organisationFactory,
   referralFactory,
   referralStatusHistoryFactory,
+  referralStatusRefDataFactory,
 } from '../../testutils/factories'
 import CourseUtils from '../courseUtils'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
@@ -76,6 +77,11 @@ describe('ShowReferralUtils', () => {
           },
           {
             classes: 'govuk-button--secondary',
+            disabled: true,
+            text: 'Put on hold',
+          },
+          {
+            classes: 'govuk-button--secondary',
             disabled: false,
             href: `/refer/referrals/${submittedReferral.id}/withdraw`,
             text: 'Withdraw referral',
@@ -99,6 +105,60 @@ describe('ShowReferralUtils', () => {
               },
             ]),
           )
+        })
+      })
+
+      describe('with `statusTransitions`', () => {
+        describe('when `statusTransitions` includes a hold status', () => {
+          const statusTransitions = [
+            referralStatusRefDataFactory.build({ code: 'ON_HOLD_REFERRAL_SUBMITTED', hold: true }),
+            referralStatusRefDataFactory.build({ code: 'NOT_SUITABLE', hold: false }),
+          ]
+
+          it('contains the "Put on hold" button with the correct href', () => {
+            expect(
+              ShowReferralUtils.buttons(
+                referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+                submittedReferral,
+                statusTransitions,
+              ),
+            ).toEqual(
+              expect.arrayContaining([
+                {
+                  classes: 'govuk-button--secondary',
+                  disabled: false,
+                  href: `/refer/referrals/${submittedReferral.id}/manage-hold?status=ON_HOLD_REFERRAL_SUBMITTED`,
+                  text: 'Put on hold',
+                },
+              ]),
+            )
+          })
+        })
+
+        describe('when `statusTransitions` includes a release status', () => {
+          const statusTransitions = [
+            referralStatusRefDataFactory.build({ code: 'REFERRAL_SUBMITTED', release: true }),
+            referralStatusRefDataFactory.build({ code: 'NOT_SUITABLE', release: false }),
+          ]
+
+          it('contains the "Remove hold" button with the correct href', () => {
+            expect(
+              ShowReferralUtils.buttons(
+                referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+                submittedReferral,
+                statusTransitions,
+              ),
+            ).toEqual(
+              expect.arrayContaining([
+                {
+                  classes: 'govuk-button--secondary',
+                  disabled: false,
+                  href: `/refer/referrals/${submittedReferral.id}/manage-hold?status=REFERRAL_SUBMITTED`,
+                  text: 'Remove hold',
+                },
+              ]),
+            )
+          })
         })
       })
     })

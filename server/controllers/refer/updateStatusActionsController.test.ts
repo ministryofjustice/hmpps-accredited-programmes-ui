@@ -24,6 +24,20 @@ describe('UpdateStatusActionsController', () => {
     response = createMock<Response>({})
   })
 
+  describe('manageHold', () => {
+    it('should set `referralStatusUpdateData` in the session and redirect to the update status select category show page', async () => {
+      request.query = { status: 'ON_HOLD_REFERRAL_SUBMITTED' }
+
+      controller.manageHold()(request, response, next)
+
+      expect(request.session.referralStatusUpdateData).toEqual({
+        referralId,
+        status: 'ON_HOLD_REFERRAL_SUBMITTED',
+      })
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.selection.show({ referralId }))
+    })
+  })
+
   describe('withdraw', () => {
     it('should set `referralStatusUpdateData` in the session and redirect to the update status select category show page', async () => {
       controller.withdraw()(request, response, next)

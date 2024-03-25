@@ -42,6 +42,16 @@
   }
 }
 
+.header-with-actions {
+  @include govuk-media-query($from: 1024px) {
+    display: flex;
+
+    .header-with-actions__title {
+      flex: 1;
+    }
+  }
+}
+
 [aria-sort] a {
   position: relative;
   padding-right: 10px;
@@ -94,4 +104,3 @@
     top: 2px;
   }
 }
-

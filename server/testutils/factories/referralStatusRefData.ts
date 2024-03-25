@@ -3,13 +3,13 @@ import { Factory } from 'fishery'
 
 import { statusDescriptionAndColour } from './referral'
 import { referralStatuses } from '../../@types/models/Referral'
-import type { ReferralStatus, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { ReferralStatusRefData, ReferralStatusUppercase } from '@accredited-programmes/models'
 import type { TagColour } from '@accredited-programmes/ui'
 
 export default Factory.define<ReferralStatusRefData>(({ params }) => {
   const { hasConfirmation: hasConfirmationParam, hasNotes: hasNotesParam } = params
 
-  const code = params.code || (faker.helpers.arrayElement(referralStatuses).toUpperCase() as ReferralStatus)
+  const code = params.code || (faker.helpers.arrayElement(referralStatuses).toUpperCase() as ReferralStatusUppercase)
   const { statusColour, statusDescription } = statusDescriptionAndColour(code)
   const colour = statusColour as TagColour
   const description = statusDescription as string

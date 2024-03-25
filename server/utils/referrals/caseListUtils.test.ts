@@ -311,12 +311,12 @@ describe('CaseListUtils', () => {
 
   describe('statusSelectItems', () => {
     const referralStatuses = [
-      referralStatusRefDataFactory.build({ code: 'assessment_started' }),
-      referralStatusRefDataFactory.build({ code: 'referral_submitted' }),
+      referralStatusRefDataFactory.build({ code: 'ASSESSMENT_STARTED' }),
+      referralStatusRefDataFactory.build({ code: 'REFERRAL_SUBMITTED' }),
     ]
     const expectedItems = {
-      assessment_started: 'Assessment started',
-      referral_submitted: 'Referral submitted',
+      ASSESSMENT_STARTED: 'Assessment started',
+      REFERRAL_SUBMITTED: 'Referral submitted',
     }
 
     it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
@@ -327,7 +327,7 @@ describe('CaseListUtils', () => {
 
     describe('when a selected value is provided', () => {
       it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        const selectedValue = 'assessment_started'
+        const selectedValue = 'ASSESSMENT_STARTED'
 
         CaseListUtils.statusSelectItems(referralStatuses, selectedValue)
 

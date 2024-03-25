@@ -3,7 +3,7 @@ import type { Request } from 'express'
 import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
-import type { Organisation, Referral } from '@accredited-programmes/models'
+import type { Organisation, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -15,7 +15,11 @@ import type { GovukFrontendButton } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
 export default class ShowReferralUtils {
-  static buttons(currentPath: Request['path'], referral: Referral): Array<GovukFrontendButton> {
+  static buttons(
+    currentPath: Request['path'],
+    referral: Referral,
+    statusTransitions?: Array<ReferralStatusRefData>,
+  ): Array<GovukFrontendButton> {
     const isAssess = currentPath.startsWith(assessPathBase.pattern)
     const paths = isAssess ? assessPaths : referPaths
     const { closed } = referral
@@ -35,12 +39,30 @@ export default class ShowReferralUtils {
         text: 'Update status',
       })
     } else {
-      buttons.push({
-        classes: 'govuk-button--secondary',
-        disabled: closed,
-        href: closed ? undefined : referPaths.withdraw({ referralId: referral.id }),
-        text: 'Withdraw referral',
-      })
+      const holdStatusCode = statusTransitions?.find(transition => transition.hold)?.code
+      const releaseStatusCode = statusTransitions?.find(transition => transition.release)?.code
+      const nextHoldOrReleaseStatus = holdStatusCode || releaseStatusCode
+
+      const manageHoldHref =
+        closed || !nextHoldOrReleaseStatus
+          ? undefined
+          : `${referPaths.manageHold({ referralId: referral.id })}?status=${nextHoldOrReleaseStatus}`
+      const withdrawHref = closed ? undefined : referPaths.withdraw({ referralId: referral.id })
+
+      buttons.push(
+        {
+          classes: 'govuk-button--secondary',
+          disabled: !manageHoldHref,
+          href: manageHoldHref,
+          text: releaseStatusCode ? 'Remove hold' : 'Put on hold',
+        },
+        {
+          classes: 'govuk-button--secondary',
+          disabled: !withdrawHref,
+          href: withdrawHref,
+          text: 'Withdraw referral',
+        },
+      )
     }
 
     return buttons

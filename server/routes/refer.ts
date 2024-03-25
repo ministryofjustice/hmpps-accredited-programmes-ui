@@ -102,6 +102,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   )
   post(referPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
 
+  get(referPaths.manageHold.pattern, updateStatusActionController.manageHold())
   get(referPaths.withdraw.pattern, updateStatusActionController.withdraw())
 
   return router

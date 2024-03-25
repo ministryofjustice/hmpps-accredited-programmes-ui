@@ -33,6 +33,7 @@ export default {
     index: caseListPath,
     show: caseListPath.path(':referralStatusGroup'),
   },
+  manageHold: referralShowPathBase.path('manage-hold'),
   new: {
     additionalInformation: {
       show: newReferralAdditionalInformationPath,

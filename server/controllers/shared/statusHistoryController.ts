@@ -1,5 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import { referPathBase } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { CourseUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 
@@ -19,19 +20,21 @@ export default class StatusHistoryController {
       const { referralId } = req.params
       const { token: userToken, username } = req.user
       const { updatePerson } = req.query as Record<string, string>
+      const isRefer = req.path.startsWith(referPathBase.pattern)
 
       const referral = await this.referralService.getReferral(username, referralId, { updatePerson })
 
-      const [course, statusHistory, person] = await Promise.all([
+      const [course, statusHistory, person, statusTransitions] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
+        isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
       ])
 
       const coursePresenter = CourseUtils.presentCourse(course)
 
       return res.render('referrals/show/statusHistory/show', {
-        buttons: ShowReferralUtils.buttons(req.path, referral),
+        buttons: ShowReferralUtils.buttons(req.path, referral, statusTransitions),
         pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
         pageSubHeading: 'Status history',
         person,

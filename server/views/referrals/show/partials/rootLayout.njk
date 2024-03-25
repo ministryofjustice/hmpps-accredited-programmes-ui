@@ -10,25 +10,19 @@
 {% endblock personBanner %}
 
 {% block content %}
-  <div class="moj-page-header-actions">
-    <div class="moj-page-header-actions__title">
-      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
-    </div>
+  <div class="header-with-actions">
+    <h1 class="header-with-actions__title govuk-heading-l">{{ pageHeading }}</h1>
 
     {% if buttons | length %}
-      <div class="moj-page-header-actions__actions">
-        <div class="moj-button-menu">
-          <div class="moj-button-menu__wrapper"  data-testid="show-referral-buttons">
-            {% for button in buttons %}
-              {{ govukButton({
-                classes: 'moj-button-menu__item moj-page-header-actions__action ' + button.classes,
-                disabled: button.disabled,
-                href: button.href,
-                text: button.text
-              }) }}
-            {% endfor %}
-          </div>
-        </div>
+      <div class="govuk-button-group"  data-testid="show-referral-buttons">
+        {% for button in buttons %}
+          {{ govukButton({
+            classes: button.classes,
+            disabled: button.disabled,
+            href: button.href,
+            text: button.text
+          }) }}
+        {% endfor %}
       </div>
     {% endif %}
   </div>

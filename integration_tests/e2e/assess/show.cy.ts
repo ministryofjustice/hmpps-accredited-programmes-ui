@@ -60,7 +60,7 @@ context('Viewing a submitted referral', () => {
     describe('When reviewing risks and alerts', () => {
       describe('and there are risks and alerts', () => {
         it('shows the correct information', () => {
-          sharedTests.risksAndNeeds.showsRisksAndAlertsPageWithData(ApplicationRoles.ACP_REFERRER)
+          sharedTests.risksAndNeeds.showsRisksAndAlertsPageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
         })
       })
 
@@ -172,13 +172,13 @@ context('Viewing a submitted referral', () => {
     describe('When reviewing Learning needs', () => {
       describe('and there is learning needs data', () => {
         it('shows the correct information', () => {
-          sharedTests.risksAndNeeds.showsLearningNeedsPageWithData(ApplicationRoles.ACP_REFERRER)
+          sharedTests.risksAndNeeds.showsLearningNeedsPageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
         })
       })
 
       describe('and there is no learning needs data', () => {
         it('shows the correct information', () => {
-          sharedTests.risksAndNeeds.showsLearningNeedsPageWithoutData(ApplicationRoles.ACP_REFERRER)
+          sharedTests.risksAndNeeds.showsLearningNeedsPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
         })
       })
     })
