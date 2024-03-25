@@ -13,6 +13,8 @@ const referralStatuses = [
   'deselected',
   'not_suitable',
   'on_hold_awaiting_assessment',
+  'on_hold_assessment_started',
+  'on_hold_referral_submitted',
   'on_programme',
   'programme_complete',
   'referral_started',
@@ -89,7 +91,7 @@ type ReferralStatusUpdate = {
 }
 
 type ReferralStatusRefData = {
-  code: ReferralStatus | ReferralStatusUppercase
+  code: ReferralStatusUppercase
   colour: TagColour
   description: string
   closed?: boolean
@@ -98,6 +100,8 @@ type ReferralStatusRefData = {
   hasConfirmation?: boolean
   hasNotes?: boolean
   hintText?: string
+  hold?: boolean
+  release?: boolean
 }
 
 type ReferralView = {
