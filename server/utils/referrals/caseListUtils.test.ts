@@ -39,26 +39,27 @@ describe('CaseListUtils', () => {
 
   describe('primaryNavigationItems', () => {
     it('returns primary navigation items, with no duplicate course names, sorted alphabetically by course name and sets the correct item as active', () => {
-      const courses = [
-        courseFactory.build({ name: 'Lime Course' }),
-        courseFactory.build({ name: 'Orange Course' }),
-        courseFactory.build({ name: 'Blue Course' }),
-      ]
+      const blueCourse = courseFactory.build({ name: 'Blue Course' })
+      const limeCourse = courseFactory.build({ name: 'Lime Course' })
+      const orangeCourse = courseFactory.build({ name: 'Orange Course' })
+      const courses = [limeCourse, orangeCourse, blueCourse]
 
-      expect(CaseListUtils.primaryNavigationItems('/assess/referrals/orange-course/case-list/open', courses)).toEqual([
+      expect(
+        CaseListUtils.primaryNavigationItems(`/assess/referrals/course/${orangeCourse.id}/case-list/open`, courses),
+      ).toEqual([
         {
           active: false,
-          href: '/assess/referrals/blue-course/case-list/open',
+          href: `/assess/referrals/course/${blueCourse.id}/case-list/open`,
           text: 'Blue Course referrals',
         },
         {
           active: false,
-          href: '/assess/referrals/lime-course/case-list/open',
+          href: `/assess/referrals/course/${limeCourse.id}/case-list/open`,
           text: 'Lime Course referrals',
         },
         {
           active: true,
-          href: '/assess/referrals/orange-course/case-list/open',
+          href: `/assess/referrals/course/${orangeCourse.id}/case-list/open`,
           text: 'Orange Course referrals',
         },
       ])

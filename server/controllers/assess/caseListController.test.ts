@@ -25,7 +25,6 @@ jest.mock('../../utils/referrals/caseListUtils')
 describe('AssessCaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
-  const courseNameSlug = 'lime-course'
   const referralStatusGroup = 'open'
   const pathWithQuery = 'path-with-query'
   const queryParamsExcludingPage: Array<QueryParam> = []
@@ -41,7 +40,9 @@ describe('AssessCaseListController', () => {
 
   let controller: AssessCaseListController
 
-  const courses = [courseFactory.build({ name: 'Orange Course' }), courseFactory.build({ name: 'Lime Course' })]
+  const orangeCourse = courseFactory.build({ name: 'Orange Course' })
+  const limeCourse = courseFactory.build({ name: 'Lime Course' })
+  const courses = [orangeCourse, limeCourse]
 
   beforeEach(() => {
     controller = new AssessCaseListController(courseService, referralService, referenceDataService)
@@ -55,14 +56,14 @@ describe('AssessCaseListController', () => {
   })
 
   describe('indexRedirect', () => {
-    it('redirects to the first course case list page', async () => {
+    it('redirects to the first course case list page after they are sorted alphabetically by name', async () => {
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
 
       const requestHandler = controller.indexRedirect()
       await requestHandler(request, response, next)
 
       expect(response.redirect).toHaveBeenCalledWith(
-        assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup }),
+        assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
       )
     })
 
@@ -79,7 +80,7 @@ describe('AssessCaseListController', () => {
   })
 
   describe('filter', () => {
-    const redirectPathBase = assessPaths.caseList.show({ courseName: courseNameSlug, referralStatusGroup })
+    const redirectPathBase = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup })
     const audience = 'General violence offence'
     const status = 'ASSESSMENT_STARTED'
 
@@ -87,7 +88,7 @@ describe('AssessCaseListController', () => {
       ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
       ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
 
-      request.params = { courseName: courseNameSlug, referralStatusGroup }
+      request.params = { courseId: limeCourse.id, referralStatusGroup }
     })
 
     it('uses utils to generate a path to the show action with the request body converted to query params, then redirects there', async () => {
@@ -125,7 +126,7 @@ describe('AssessCaseListController', () => {
     const openReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: false, draft: false })
 
     beforeEach(() => {
-      request.params = { courseName: courseNameSlug, referralStatusGroup }
+      request.params = { courseId: limeCourse.id, referralStatusGroup }
 
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
 
@@ -163,7 +164,7 @@ describe('AssessCaseListController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
-        action: assessPaths.caseList.filter({ courseName: courseNameSlug, referralStatusGroup }),
+        action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
         audienceSelectItems,
         pageHeading: 'Lime Course (LC)',
         pagination,
@@ -192,7 +193,7 @@ describe('AssessCaseListController', () => {
         paginatedReferralViews.totalPages,
       )
       expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
-        assessPaths.caseList.show({ courseName: courseNameSlug, referralStatusGroup }),
+        assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
         queryParamsExcludingSort,
       )
       expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
@@ -236,7 +237,7 @@ describe('AssessCaseListController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
-          action: assessPaths.caseList.filter({ courseName: courseNameSlug, referralStatusGroup }),
+          action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
           audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
           pageHeading: 'Lime Course (LC)',
           pagination,
@@ -267,7 +268,7 @@ describe('AssessCaseListController', () => {
           paginatedReferralViews.totalPages,
         )
         expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
-          assessPaths.caseList.show({ courseName: courseNameSlug, referralStatusGroup }),
+          assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
           queryParamsExcludingSort,
         )
         expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
@@ -292,10 +293,10 @@ describe('AssessCaseListController', () => {
 
     describe('when the course name is not found', () => {
       it('throws a 404 error', async () => {
-        request.params = { courseName: 'not-a-course', referralStatusGroup }
+        request.params = { courseId: 'not-a-course-id', referralStatusGroup }
 
         const requestHandler = controller.show()
-        const expectedError = createError(404, 'Not A Course not found.')
+        const expectedError = createError(404, 'Course with ID not-a-course-id not found.')
 
         await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
         expect(referralService.getReferralViews).not.toHaveBeenCalled()
@@ -304,7 +305,7 @@ describe('AssessCaseListController', () => {
 
     describe('when the referral status group is not valid', () => {
       it('throws a 404 error', async () => {
-        request.params = { courseName: 'lime-course', referralStatusGroup: 'invalid-group' }
+        request.params = { courseId: limeCourse.id, referralStatusGroup: 'invalid-group' }
 
         const requestHandler = controller.show()
         const expectedError = createError(404, 'Not found')

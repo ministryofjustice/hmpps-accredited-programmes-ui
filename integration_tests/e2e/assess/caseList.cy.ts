@@ -61,7 +61,7 @@ context('Referral case lists', () => {
   })
 
   it('shows the correct information', () => {
-    const path = assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' })
+    const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
     cy.visit(path)
 
     const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -95,7 +95,7 @@ context('Referral case lists', () => {
     })
 
     const path = PathUtils.pathWithQuery(
-      assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' }),
+      assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' }),
       [{ key: 'page', value: '4' }],
     )
     cy.visit(path)
@@ -120,7 +120,7 @@ context('Referral case lists', () => {
 
   describe('when using the filters', () => {
     it('shows the correct information', () => {
-      const path = assessPaths.caseList.show({ courseName: 'lime-course', referralStatusGroup: 'open' })
+      const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
@@ -174,7 +174,7 @@ context('Referral case lists', () => {
         referralViews: blueCourseReferralViews,
       })
       caseListPage.shouldContainCourseNavigation(
-        assessPaths.caseList.show({ courseName: 'blue-course', referralStatusGroup: 'open' }),
+        assessPaths.caseList.show({ courseId: blueCourse.id, referralStatusGroup: 'open' }),
         courses,
       )
       caseListPage.shouldHaveSelectedFilterValues('', '')

@@ -30,7 +30,7 @@ export default class CaseListPage extends Page {
       .map(course => {
         return {
           href: assessPaths.caseList.show({
-            courseName: StringUtils.convertToUrlSlug(course.name),
+            courseId: course.id,
             referralStatusGroup: 'open',
           }),
           text: `${course.name} referrals`,
