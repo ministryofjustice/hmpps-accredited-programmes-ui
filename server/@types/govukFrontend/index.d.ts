@@ -3,7 +3,7 @@
 // The accordion component is described at https://design-system.service.gov.uk/components/accordion.
 export interface GovukFrontendAccordion {
   /*
-    Must be unique across the domain of your service if `rememberExpanded` is `true` (as the expanded state of individual instances of the component persists across page loads using [session storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)). Used as an `id` in the HTML for the accordion as a whole, and also as a prefix for the `id`s of the section contents and the buttons that open them, so that those `id`s can be the target of `aria-labelledby` and `aria-control` attributes.
+    Must be unique across the domain of your service if `rememberExpanded` is `true` (as the expanded state of individual instances of the component persists across page loads using [session storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)). Used as an `id` in the HTML for the accordion as a whole, and also as a prefix for the `id`s of the section contents and the buttons that open them, so that those `id`s can be the target of `aria-control` attributes.
   */
   id: string
 
@@ -197,7 +197,7 @@ export interface GovukFrontendBreadcrumbsItem {
 // The button component is described at https://design-system.service.gov.uk/components/button.
 export interface GovukFrontendButton {
   /*
-    HTML element for the button component – `input`, `button` or `a`. In most cases you will not need to set this as it will be configured automatically if `href` is provided.
+    HTML element for the button component – `input`, `button` or `a`. In most cases you will not need to set this as it will be configured automatically if `href` is provided. This parameter will be removed in the next major version.
   */
   element?: string | null
 
@@ -380,6 +380,45 @@ export interface GovukFrontendCharacterCountFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before the textarea used by the character count component.
+  */
+  beforeInput?: GovukFrontendCharacterCountFormGroupBeforeInput | null
+
+  /*
+    Content to add after the textarea used by the character count component.
+  */
+  afterInput?: GovukFrontendCharacterCountFormGroupAfterInput | null
+}
+
+export interface GovukFrontendCharacterCountFormGroupBeforeInput {
+  /*
+    Text to add before the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendCharacterCountFormGroupAfterInput {
+  /*
+    Text to add after the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 export interface GovukFrontendCharacterCountCountMessage {
@@ -452,6 +491,45 @@ export interface GovukFrontendCheckboxesFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before all checkbox items within the checkboxes component.
+  */
+  beforeInputs?: GovukFrontendCheckboxesFormGroupBeforeInputs | null
+
+  /*
+    Content to add after all checkbox items within the checkboxes component.
+  */
+  afterInputs?: GovukFrontendCheckboxesFormGroupAfterInputs | null
+}
+
+export interface GovukFrontendCheckboxesFormGroupBeforeInputs {
+  /*
+    Text to add before all checkbox items. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before all checkbox items. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendCheckboxesFormGroupAfterInputs {
+  /*
+    Text to add after all checkbox items. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after all checkbox items. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 export interface GovukFrontendCheckboxesItem {
@@ -481,7 +559,7 @@ export interface GovukFrontendCheckboxesItem {
   value: string
 
   /*
-    Additional options for the label used by each checkbox item within the checkboxes component.
+    Subset of options for the label used by each checkbox item within the checkboxes component.
   */
   label?: GovukFrontendLabel | null
 
@@ -723,6 +801,45 @@ export interface GovukFrontendDateInputFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before the inputs used by the date input component.
+  */
+  beforeInputs?: GovukFrontendDateInputFormGroupBeforeInputs | null
+
+  /*
+    Content to add after the inputs used by the date input component.
+  */
+  afterInputs?: GovukFrontendDateInputFormGroupAfterInputs | null
+}
+
+export interface GovukFrontendDateInputFormGroupBeforeInputs {
+  /*
+    Text to add before the inputs. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before the inputs. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendDateInputFormGroupAfterInputs {
+  /*
+    Text to add after the inputs. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after the inputs. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 // The details component is described at https://design-system.service.gov.uk/components/details.
@@ -1052,6 +1169,45 @@ export interface GovukFrontendFileUploadFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before the input used by the file upload component.
+  */
+  beforeInput?: GovukFrontendFileUploadFormGroupBeforeInput | null
+
+  /*
+    Content to add after the input used by the file upload component.
+  */
+  afterInput?: GovukFrontendFileUploadFormGroupAfterInput | null
+}
+
+export interface GovukFrontendFileUploadFormGroupBeforeInput {
+  /*
+    Text to add before the input. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before the input. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendFileUploadFormGroupAfterInput {
+  /*
+    Text to add after the input. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after the input. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 // The footer component is described at https://design-system.service.gov.uk/components/footer.
@@ -1255,6 +1411,11 @@ export interface GovukFrontendHeader {
     HTML attributes (for example data attributes) to add to the header container.
   */
   attributes?: Record<string, unknown> | null
+
+  /*
+    Deprecated. If `true`, uses the Tudor crown from King Charles III's royal cypher. Otherwise, uses the St. Edward's crown. Default is `true`.
+  */
+  useTudorCrown?: boolean | null
 }
 
 export interface GovukFrontendHeaderNavigationElement {
@@ -1375,7 +1536,7 @@ export interface GovukFrontendInput {
   suffix?: GovukFrontendInputSuffix | null
 
   /*
-    Additional options for the form group containing the text-input component.
+    Additional options for the form group containing the text input component.
   */
   formGroup?: GovukFrontendInputFormGroup | null
 
@@ -1454,6 +1615,45 @@ export interface GovukFrontendInputFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before the input used by the text input component.
+  */
+  beforeInput?: GovukFrontendInputFormGroupBeforeInput | null
+
+  /*
+    Content to add after the input used by the text input component.
+  */
+  afterInput?: GovukFrontendInputFormGroupAfterInput | null
+}
+
+export interface GovukFrontendInputFormGroupBeforeInput {
+  /*
+    Text to add before the input. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before the input. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendInputFormGroupAfterInput {
+  /*
+    Text to add after the input. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after the input. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 // The inset text component is described at https://design-system.service.gov.uk/components/inset-text.
@@ -1807,7 +2007,7 @@ export interface GovukFrontendRadios {
   idPrefix?: string | null
 
   /*
-    Name attribute for all radio items.
+    Name attribute for the radio items.
   */
   name: string
 
@@ -1837,6 +2037,45 @@ export interface GovukFrontendRadiosFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before all radio items within the checkboxes component.
+  */
+  beforeInputs?: GovukFrontendRadiosFormGroupBeforeInputs | null
+
+  /*
+    Content to add after all radio items within the checkboxes component.
+  */
+  afterInputs?: GovukFrontendRadiosFormGroupAfterInputs | null
+}
+
+export interface GovukFrontendRadiosFormGroupBeforeInputs {
+  /*
+    Text to add before all radio items. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before all radio items. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendRadiosFormGroupAfterInputs {
+  /*
+    Text to add after all radio items. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after all radio items. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 export interface GovukFrontendRadiosItem {
@@ -1861,7 +2100,7 @@ export interface GovukFrontendRadiosItem {
   value: string
 
   /*
-    Additional options for the label used by each radio item within the radios component.
+    Subset of options for the label used by each radio item within the radios component.
   */
   label?: GovukFrontendLabel | null
 
@@ -1986,6 +2225,45 @@ export interface GovukFrontendSelectFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before the select used by the select component.
+  */
+  beforeInput?: GovukFrontendSelectFormGroupBeforeInput | null
+
+  /*
+    Content to add after the select used by the select component.
+  */
+  afterInput?: GovukFrontendSelectFormGroupAfterInput | null
+}
+
+export interface GovukFrontendSelectFormGroupBeforeInput {
+  /*
+    Text to add before the select. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before the select. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendSelectFormGroupAfterInput {
+  /*
+    Text to add after the select. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after the select. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 // The skip link component is described at https://design-system.service.gov.uk/components/skip-link.
@@ -2615,6 +2893,45 @@ export interface GovukFrontendTextareaFormGroup {
     Classes to add to the form group (for example to show error state for the whole group).
   */
   classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before the textarea used by the textarea component.
+  */
+  beforeInput?: GovukFrontendTextareaFormGroupBeforeInput | null
+
+  /*
+    Content to add after the textarea used by the textarea component.
+  */
+  afterInput?: GovukFrontendTextareaFormGroupAfterInput | null
+}
+
+export interface GovukFrontendTextareaFormGroupBeforeInput {
+  /*
+    Text to add before the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendTextareaFormGroupAfterInput {
+  /*
+    Text to add after the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after the textarea. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
 }
 
 // The warning text component is described at https://design-system.service.gov.uk/components/warning-text.
