@@ -35,7 +35,7 @@ export default class CaseListUtils {
 
     return sortedCourses.map(course => {
       const path = assessPaths.caseList.show({
-        courseName: StringUtils.convertToUrlSlug(course.name),
+        courseId: course.id,
         referralStatusGroup: 'open',
       })
 

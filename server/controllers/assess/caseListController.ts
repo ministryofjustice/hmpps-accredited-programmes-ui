@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
-import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, StringUtils, TypeUtils } from '../../utils'
+import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusGroup } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
@@ -18,11 +18,11 @@ export default class AssessCaseListController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { courseName, referralStatusGroup } = req.params
+      const { courseId, referralStatusGroup } = req.params
 
       return res.redirect(
         PathUtils.pathWithQuery(
-          assessPaths.caseList.show({ courseName, referralStatusGroup }),
+          assessPaths.caseList.show({ courseId, referralStatusGroup }),
           CaseListUtils.queryParamsExcludingPage(req.body.audience, req.body.status),
         ),
       )
@@ -41,9 +41,8 @@ export default class AssessCaseListController {
       }
 
       const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
-      const firstCourseName = StringUtils.convertToUrlSlug(sortedCourses[0].name)
 
-      res.redirect(assessPaths.caseList.show({ courseName: firstCourseName, referralStatusGroup: 'open' }))
+      res.redirect(assessPaths.caseList.show({ courseId: sortedCourses[0].id, referralStatusGroup: 'open' }))
     }
   }
 
@@ -51,7 +50,7 @@ export default class AssessCaseListController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { courseName } = req.params
+      const { courseId } = req.params
       const { page, status, strand: audience, sortColumn, sortDirection } = req.query as Record<string, string>
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
@@ -65,11 +64,10 @@ export default class AssessCaseListController {
 
       const courses = await this.courseService.getCoursesByOrganisation(username, activeCaseLoadId)
 
-      const formattedCourseName = StringUtils.convertFromUrlSlug(courseName)
-      const selectedCourse = courses.find(course => course.name === formattedCourseName)
+      const selectedCourse = courses.find(course => course.id === courseId)
 
       if (!selectedCourse) {
-        throw createError(404, `${formattedCourseName} not found.`)
+        throw createError(404, `Course with ID ${courseId} not found.`)
       }
 
       const [paginatedReferralViews, referralStatuses] = await Promise.all([
@@ -97,7 +95,7 @@ export default class AssessCaseListController {
       )
 
       const basePathExcludingSort = PathUtils.pathWithQuery(
-        assessPaths.caseList.show({ courseName, referralStatusGroup }),
+        assessPaths.caseList.show({ courseId, referralStatusGroup }),
         CaseListUtils.queryParamsExcludingSort(audience, status, page),
       )
 
@@ -113,7 +111,7 @@ export default class AssessCaseListController {
       /* eslint-enable sort-keys */
 
       return res.render('referrals/caseList/assess/show', {
-        action: assessPaths.caseList.filter({ courseName, referralStatusGroup }),
+        action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
         pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),
         pagination,
