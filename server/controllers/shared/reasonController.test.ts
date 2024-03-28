@@ -196,9 +196,11 @@ describe('ReasonController', () => {
     })
 
     describe('when there are no reasons for the provided category and status', () => {
-      it('should redirect to the selection page and set `statusReasonCode` to `undefined` ', async () => {
+      beforeEach(() => {
         referenceDataService.getReferralStatusCodeReasons.mockResolvedValue([])
+      })
 
+      it('should redirect to the selection page and set `statusReasonCode` to `undefined` ', async () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
@@ -209,6 +211,23 @@ describe('ReasonController', () => {
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.updateStatus.selection.show({ referralId: referral.id }),
         )
+      })
+
+      describe('and the initialStatusDecision is `DESELECTED|OPEN`', () => {
+        it('should redirect to the decision show page with a `deselectAndKeepOpen` query param set to `true`', async () => {
+          request.session.referralStatusUpdateData = {
+            ...referralStatusUpdateData,
+            initialStatusDecision: 'DESELECTED|OPEN',
+          }
+          referenceDataService.getReferralStatusCodeReasons.mockResolvedValue([])
+
+          const requestHandler = controller.show()
+          await requestHandler(request, response, next)
+
+          expect(response.redirect).toHaveBeenCalledWith(
+            `${assessPaths.updateStatus.decision.show({ referralId: referral.id })}?deselectAndKeepOpen=true`,
+          )
+        })
       })
     })
   })

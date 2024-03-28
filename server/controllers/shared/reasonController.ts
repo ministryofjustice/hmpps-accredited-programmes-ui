@@ -68,6 +68,10 @@ export default class ReasonController {
           statusReasonCode: undefined,
         }
 
+        if (referralStatusUpdateData.initialStatusDecision === 'DESELECTED|OPEN') {
+          return res.redirect(`${assessPaths.updateStatus.decision.show({ referralId })}?deselectAndKeepOpen=true`)
+        }
+
         return res.redirect(paths.updateStatus.selection.show({ referralId }))
       }
 
