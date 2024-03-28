@@ -44,8 +44,9 @@ type RequestWithUser = Express.RequestWithUser
 
 interface ReferralStatusUpdateSessionData {
   referralId: string
-  previousPath?: string
-  status?: ReferralStatusUppercase
+  decisionForCategoryAndReason?: ReferralStatusUppercase
+  finalStatusDecision?: ReferralStatusUppercase
+  initialStatusDecision?: ReferralStatusUppercase | Uppercase<string>
   statusCategoryCode?: Uppercase<string>
   statusReasonCode?: Uppercase<string>
 }

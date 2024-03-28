@@ -60,7 +60,13 @@ describe('ReasonController', () => {
     referral = referralFactory.submitted().build({})
     referralStatusCodeReasons = referralStatusReasonFactory.buildList(2, { referralCategoryCode: 'A' })
     referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
-    referralStatusUpdateData = { referralId: referral.id, status: 'DESELECTED', statusCategoryCode: 'STATUS-CAT-A' }
+    referralStatusUpdateData = {
+      decisionForCategoryAndReason: 'DESELECTED',
+      finalStatusDecision: 'ASSESSED_SUITABLE',
+      initialStatusDecision: 'ANOTHER_STATUS',
+      referralId: referral.id,
+      statusCategoryCode: 'STATUS-CAT-A',
+    }
     mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
@@ -106,11 +112,11 @@ describe('ReasonController', () => {
       expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
-    describe('when `referralStatusUpdateData.status` is `WITHDRAWN', () => {
+    describe('when `referralStatusUpdateData.decisionForCategoryAndReason` is `WITHDRAWN', () => {
       it('should render the show template with the correct response locals', async () => {
         request.session.referralStatusUpdateData = {
           ...referralStatusUpdateData,
-          status: 'WITHDRAWN',
+          decisionForCategoryAndReason: 'WITHDRAWN',
         }
 
         const requestHandler = controller.show()
@@ -164,9 +170,9 @@ describe('ReasonController', () => {
       })
     })
 
-    describe('when there is no `referralStatusUpdateData.status` value', () => {
+    describe('when there is no `referralStatusUpdateData.decisionForCategoryAndReason` value', () => {
       it('should redirect to the status history page', async () => {
-        delete request.session.referralStatusUpdateData?.status
+        delete request.session.referralStatusUpdateData?.decisionForCategoryAndReason
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -175,17 +181,34 @@ describe('ReasonController', () => {
       })
     })
 
-    describe('when `referralStatusUpdateData.status` does not require a category selection', () => {
+    describe('when `referralStatusUpdateData.decisionForCategoryAndReason` does not require a category selection', () => {
       it('should redirect to the status history page', async () => {
         request.session.referralStatusUpdateData = {
           ...referralStatusUpdateData,
-          status: 'AWAITING_ASSESSMENT',
+          decisionForCategoryAndReason: 'AWAITING_ASSESSMENT',
         }
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show.statusHistory({ referralId: referral.id }))
+      })
+    })
+
+    describe('when there are no reasons for the provided category and status', () => {
+      it('should redirect to the selection page and set `statusReasonCode` to `undefined` ', async () => {
+        referenceDataService.getReferralStatusCodeReasons.mockResolvedValue([])
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(request.session.referralStatusUpdateData).toEqual({
+          ...referralStatusUpdateData,
+          statusReasonCode: undefined,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(
+          referPaths.updateStatus.selection.show({ referralId: referral.id }),
+        )
       })
     })
   })
@@ -225,6 +248,19 @@ describe('ReasonController', () => {
       })
     })
 
+    describe('when there is no `referralStatusUpdateData`', () => {
+      it('should redirect to the select category page', async () => {
+        delete request.session.referralStatusUpdateData
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(
+          referPaths.updateStatus.category.show({ referralId: referral.id }),
+        )
+      })
+    })
+
     describe('when there is no `referralStatusUpdateData.statusCategoryCode` value', () => {
       it('should redirect to the select category page', async () => {
         delete request.session.referralStatusUpdateData?.statusCategoryCode
@@ -247,6 +283,22 @@ describe('ReasonController', () => {
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.reason.show({ referralId: referral.id }))
         expect(request.flash).toHaveBeenCalledWith('reasonCodeError', 'Select a reason')
+      })
+    })
+
+    describe('when the initialStatusDecision is `DESELECTED|OPEN`', () => {
+      it('should redirect to the decision show page with a `deselectAndKeepOpen` query param set to `true`', async () => {
+        request.session.referralStatusUpdateData = {
+          ...referralStatusUpdateData,
+          initialStatusDecision: 'DESELECTED|OPEN',
+        }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(
+          `${assessPaths.updateStatus.decision.show({ referralId: referral.id })}?deselectAndKeepOpen=true`,
+        )
       })
     })
   })

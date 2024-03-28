@@ -10,8 +10,8 @@ export default class UpdateStatusActionsController {
       const { status } = req.query as { status: ReferralStatusUppercase }
 
       req.session.referralStatusUpdateData = {
+        finalStatusDecision: status,
         referralId,
-        status,
       }
 
       return res.redirect(referPaths.updateStatus.selection.show({ referralId }))
@@ -21,10 +21,12 @@ export default class UpdateStatusActionsController {
   withdraw(): TypedRequestHandler<Request, Response> {
     return (req: Request, res: Response) => {
       const { referralId } = req.params
+      const withdrawStatus = 'WITHDRAWN'
 
       req.session.referralStatusUpdateData = {
+        decisionForCategoryAndReason: withdrawStatus,
+        finalStatusDecision: withdrawStatus,
         referralId,
-        status: 'WITHDRAWN',
       }
 
       return res.redirect(referPaths.updateStatus.category.show({ referralId }))

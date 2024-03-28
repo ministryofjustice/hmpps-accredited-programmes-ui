@@ -335,7 +335,7 @@ describe('ReferralService', () => {
     describe('with query values', () => {
       it('makes the correct call to the referral client', async () => {
         const referralId = 'referral-id'
-        const query = { ptUser: true }
+        const query = { deselectAndKeepOpen: true, ptUser: true }
         const statusTransitions = referralStatusRefDataFactory.buildList(2)
 
         when(referralClient.findStatusTransitions).calledWith(referralId, query).mockResolvedValue(statusTransitions)

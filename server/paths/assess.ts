@@ -8,6 +8,7 @@ const referralShowPathBase = assessPathBase.path('referrals/:referralId')
 const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
 
 const updateStatusPathBase = referralShowPathBase.path('update-status')
+const updateStatusSelectDecision = updateStatusPathBase.path('decision')
 const updateStatusSelectCategory = updateStatusPathBase.path('category')
 const updateStatusSelectReason = updateStatusPathBase.path('reason')
 const updateStatusSelectionShowPath = updateStatusPathBase.path('selection')
@@ -44,8 +45,8 @@ export default {
       submit: updateStatusSelectCategory,
     },
     decision: {
-      show: updateStatusPathBase,
-      submit: updateStatusPathBase,
+      show: updateStatusSelectDecision,
+      submit: updateStatusSelectDecision,
     },
     reason: {
       show: updateStatusSelectReason,

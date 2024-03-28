@@ -131,7 +131,10 @@ export default class ReferralService {
   async getStatusTransitions(
     username: Express.User['username'],
     referralId: Referral['id'],
-    query?: { ptUser?: boolean },
+    query?: {
+      deselectAndKeepOpen?: boolean
+      ptUser?: boolean
+    },
   ): Promise<Array<ReferralStatusRefData>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)

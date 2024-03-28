@@ -44,25 +44,24 @@ export default class ReasonController {
 
       if (
         referralStatusUpdateData?.referralId !== referralId ||
-        !referralStatusUpdateData.status ||
+        !referralStatusUpdateData.decisionForCategoryAndReason ||
         !referralStatusUpdateData.statusCategoryCode ||
-        !content[referralStatusUpdateData.status]
+        !content[referralStatusUpdateData.decisionForCategoryAndReason]
       ) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      const selectedStatus = referralStatusUpdateData.status
+      const { decisionForCategoryAndReason } = referralStatusUpdateData
 
       const [statusHistory, reasons] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referenceDataService.getReferralStatusCodeReasons(
           username,
           referralStatusUpdateData.statusCategoryCode,
-          selectedStatus,
+          decisionForCategoryAndReason,
         ),
       ])
 
-      // Redirect to final page if no options
       if (reasons.length === 0) {
         req.session.referralStatusUpdateData = {
           ...referralStatusUpdateData,
@@ -81,7 +80,7 @@ export default class ReasonController {
         cancelLink: paths.show.statusHistory({ referralId }),
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
-        ...content[selectedStatus],
+        ...content[decisionForCategoryAndReason],
       })
     }
   }
@@ -106,6 +105,10 @@ export default class ReasonController {
       req.session.referralStatusUpdateData = {
         ...referralStatusUpdateData,
         statusReasonCode: reasonCode,
+      }
+
+      if (referralStatusUpdateData.initialStatusDecision === 'DESELECTED|OPEN') {
+        return res.redirect(`${assessPaths.updateStatus.decision.show({ referralId })}?deselectAndKeepOpen=true`)
       }
 
       return res.redirect(paths.updateStatus.selection.show({ referralId }))

@@ -44,17 +44,17 @@ export default class CategoryController {
 
       if (
         referralStatusUpdateData?.referralId !== referralId ||
-        !referralStatusUpdateData.status ||
-        !content[referralStatusUpdateData.status]
+        !referralStatusUpdateData.decisionForCategoryAndReason ||
+        !content[referralStatusUpdateData.decisionForCategoryAndReason]
       ) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      const selectedStatus = referralStatusUpdateData.status
+      const { decisionForCategoryAndReason } = referralStatusUpdateData
 
       const [statusHistory, categories] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referenceDataService.getReferralStatusCodeCategories(username, selectedStatus),
+        this.referenceDataService.getReferralStatusCodeCategories(username, decisionForCategoryAndReason),
       ])
 
       const radioItems = ReferralUtils.statusOptionsToRadioItems(
@@ -68,7 +68,7 @@ export default class CategoryController {
         backLinkHref: '#',
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
-        ...content[selectedStatus],
+        ...content[decisionForCategoryAndReason],
       })
     }
   }
@@ -80,7 +80,10 @@ export default class CategoryController {
       const { categoryCode } = req.body
       const { referralStatusUpdateData } = req.session
 
-      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.status) {
+      if (
+        referralStatusUpdateData?.referralId !== referralId ||
+        !referralStatusUpdateData.decisionForCategoryAndReason
+      ) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 

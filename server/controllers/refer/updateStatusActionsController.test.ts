@@ -31,8 +31,8 @@ describe('UpdateStatusActionsController', () => {
       controller.manageHold()(request, response, next)
 
       expect(request.session.referralStatusUpdateData).toEqual({
+        finalStatusDecision: 'ON_HOLD_REFERRAL_SUBMITTED',
         referralId,
-        status: 'ON_HOLD_REFERRAL_SUBMITTED',
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.selection.show({ referralId }))
     })
@@ -43,8 +43,9 @@ describe('UpdateStatusActionsController', () => {
       controller.withdraw()(request, response, next)
 
       expect(request.session.referralStatusUpdateData).toEqual({
+        decisionForCategoryAndReason: 'WITHDRAWN',
+        finalStatusDecision: 'WITHDRAWN',
         referralId,
-        status: 'WITHDRAWN',
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.category.show({ referralId }))
     })
