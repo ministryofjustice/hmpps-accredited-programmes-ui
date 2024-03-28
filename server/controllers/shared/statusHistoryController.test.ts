@@ -120,7 +120,7 @@ describe('StatusHistoryController', () => {
     })
 
     it('should reset the `referralStatusUpdateData` session data', async () => {
-      request.session.referralStatusUpdateData = { referralId: referral.id, status: 'WITHDRAWN' }
+      request.session.referralStatusUpdateData = { referralId: referral.id }
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)

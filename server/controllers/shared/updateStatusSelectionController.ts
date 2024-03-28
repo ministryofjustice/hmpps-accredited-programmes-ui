@@ -23,13 +23,13 @@ export default class UpdateStatusSelectionController {
       const { token: userToken, username } = req.user
       const { referralStatusUpdateData } = req.session
 
-      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.status) {
+      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.finalStatusDecision) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
       const [statusHistory, referralStatusRefData] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referenceDataService.getReferralStatusCodeData(username, referralStatusUpdateData.status),
+        this.referenceDataService.getReferralStatusCodeData(username, referralStatusUpdateData.finalStatusDecision),
       ])
 
       const { description, hasConfirmation } = referralStatusRefData
@@ -62,7 +62,7 @@ export default class UpdateStatusSelectionController {
       const { confirmation } = req.body
       const { referralStatusUpdateData } = req.session
 
-      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.status) {
+      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.finalStatusDecision) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
@@ -72,7 +72,7 @@ export default class UpdateStatusSelectionController {
         return res.redirect(paths.updateStatus.selection.show({ referralId }))
       }
 
-      return this.updateReferralStatus(req, res, referralStatusUpdateData.status)
+      return this.updateReferralStatus(req, res, referralStatusUpdateData.finalStatusDecision)
     }
   }
 
@@ -85,7 +85,7 @@ export default class UpdateStatusSelectionController {
       const { referralStatusUpdateData } = req.session
       const reason = req.body.reason?.trim()
 
-      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.status) {
+      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.finalStatusDecision) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
@@ -104,7 +104,7 @@ export default class UpdateStatusSelectionController {
         return res.redirect(paths.updateStatus.selection.show({ referralId }))
       }
 
-      return this.updateReferralStatus(req, res, referralStatusUpdateData.status, reason)
+      return this.updateReferralStatus(req, res, referralStatusUpdateData.finalStatusDecision, reason)
     }
   }
 

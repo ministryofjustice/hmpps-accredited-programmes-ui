@@ -34,7 +34,7 @@ describe('ShowReferralUtils', () => {
           {
             classes: 'govuk-button--secondary',
             disabled: false,
-            href: `/assess/referrals/${submittedReferral.id}/update-status`,
+            href: `/assess/referrals/${submittedReferral.id}/update-status/decision`,
             text: 'Update status',
           },
         ])

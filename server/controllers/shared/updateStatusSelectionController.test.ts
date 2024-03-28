@@ -61,7 +61,12 @@ describe('UpdateStatusSelectionController', () => {
     request = createMock<Request>({
       params: { referralId: referral.id },
       path: assessPaths.updateStatus.selection.show({ referralId: referral.id }),
-      session: { referralStatusUpdateData: { referralId: referral.id, status: 'ON_PROGRAMME' } },
+      session: {
+        referralStatusUpdateData: {
+          finalStatusDecision: 'ON_PROGRAMME',
+          referralId: referral.id,
+        },
+      },
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
@@ -104,8 +109,21 @@ describe('UpdateStatusSelectionController', () => {
     describe('when `referralStatusUpdateData` is for a different referral', () => {
       it('should redirect to the status history route', async () => {
         request.session.referralStatusUpdateData = {
+          finalStatusDecision: 'WITHDRAWN',
           referralId: 'DIFFERENT_REFERRAL_ID',
-          status: 'WITHDRAWN',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: referral.id }))
+      })
+    })
+
+    describe('when `referralStatusUpdateData` is missing `finalStatusDecision`', () => {
+      it('should redirect to the status history route', async () => {
+        request.session.referralStatusUpdateData = {
+          referralId: referral.id,
         }
 
         const requestHandler = controller.show()
@@ -156,8 +174,8 @@ describe('UpdateStatusSelectionController', () => {
     describe('when `referralStatusUpdateData` is for a different referral', () => {
       it('should redirect to the status history route', async () => {
         request.session.referralStatusUpdateData = {
+          finalStatusDecision: 'ON_PROGRAMME',
           referralId: 'DIFFERENT_REFERRAL_ID',
-          status: 'ON_PROGRAMME',
         }
 
         const requestHandler = controller.submitConfirmation()
@@ -215,8 +233,8 @@ describe('UpdateStatusSelectionController', () => {
     beforeEach(() => {
       request.body = { reason }
       request.session.referralStatusUpdateData = {
+        finalStatusDecision: 'NOT_SUITABLE',
         referralId: referral.id,
-        status: 'NOT_SUITABLE',
         statusCategoryCode: 'STATUS_CATEGORY_CODE',
         statusReasonCode: 'STATUS_REASON_CODE',
       }
@@ -240,8 +258,8 @@ describe('UpdateStatusSelectionController', () => {
     describe('when `referralStatusUpdateData` is for a different referral', () => {
       it('should redirect to the status history route', async () => {
         request.session.referralStatusUpdateData = {
+          finalStatusDecision: 'ON_PROGRAMME',
           referralId: 'DIFFERENT_REFERRAL_ID',
-          status: 'ON_PROGRAMME',
         }
 
         const requestHandler = controller.submitReason()

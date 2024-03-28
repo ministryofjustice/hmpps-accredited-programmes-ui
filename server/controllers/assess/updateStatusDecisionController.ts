@@ -20,20 +20,36 @@ export default class UpdateStatusDecisionController {
         delete req.session.referralStatusUpdateData
       }
 
-      const [statusHistory, statusTransitions] = await Promise.all([
+      const isDeselectAndKeepOpen = this.isDeselectAndKeepOpen(req)
+
+      const [statusHistory, statusTransitionsForReferral] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referralService.getStatusTransitions(username, referralId, { ptUser: true }),
+        this.referralService.getStatusTransitions(username, referralId, {
+          deselectAndKeepOpen: isDeselectAndKeepOpen,
+          ptUser: true,
+        }),
       ])
+
+      const statusTransitions = statusTransitionsForReferral.map(statusTransition => {
+        if (statusTransition.deselectAndKeepOpen) {
+          return {
+            ...statusTransition,
+            code: `${statusTransition.code}|OPEN`,
+          }
+        }
+        return statusTransition
+      })
 
       const radioItems = ReferralUtils.statusOptionsToRadioItems(
         statusTransitions,
-        req.session.referralStatusUpdateData?.status,
+        isDeselectAndKeepOpen
+          ? req.session.referralStatusUpdateData?.finalStatusDecision
+          : req.session.referralStatusUpdateData?.initialStatusDecision,
       )
 
       FormUtils.setFieldErrors(req, res, ['statusDecision'])
 
       return res.render('referrals/updateStatus/decision/show', {
-        action: assessPaths.updateStatus.decision.submit({ referralId }),
         backLinkHref: assessPaths.show.statusHistory({ referralId }),
         pageHeading: 'Update referral status',
         radioItems,
@@ -45,7 +61,8 @@ export default class UpdateStatusDecisionController {
   submit(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       const { referralId } = req.params
-      const { statusDecision } = req.body as { statusDecision: ReferralStatusUppercase }
+      const { statusDecision } = req.body as { statusDecision: Uppercase<string> }
+      const { referralStatusUpdateData } = req.session
 
       if (!statusDecision) {
         req.flash('statusDecisionError', 'Select a status decision')
@@ -53,16 +70,29 @@ export default class UpdateStatusDecisionController {
         return res.redirect(assessPaths.updateStatus.decision.show({ referralId }))
       }
 
+      const splitStatusDecision = statusDecision.split('|')
+      const statusDecisionValue = splitStatusDecision[0] as ReferralStatusUppercase
+
       req.session.referralStatusUpdateData = {
+        decisionForCategoryAndReason: statusDecisionValue,
+        initialStatusDecision: statusDecision,
+        ...(this.isDeselectAndKeepOpen(req) ? referralStatusUpdateData : {}),
+        finalStatusDecision: statusDecisionValue,
         referralId,
-        status: statusDecision,
       }
 
-      if (statusDecision === 'DESELECTED' || statusDecision === 'WITHDRAWN') {
+      if (statusDecisionValue === 'DESELECTED' || statusDecisionValue === 'WITHDRAWN') {
         return res.redirect(assessPaths.updateStatus.category.show({ referralId }))
       }
 
       return res.redirect(assessPaths.updateStatus.selection.show({ referralId }))
     }
+  }
+
+  private isDeselectAndKeepOpen(req: Request) {
+    return (
+      req.query.deselectAndKeepOpen === 'true' &&
+      req.session.referralStatusUpdateData?.initialStatusDecision === 'DESELECTED|OPEN'
+    )
   }
 }
