@@ -96,6 +96,7 @@ type ReferralStatusRefData = {
   description: string
   closed?: boolean
   confirmationText?: string
+  deselectAndKeepOpen?: boolean
   draft?: boolean
   hasConfirmation?: boolean
   hasNotes?: boolean
