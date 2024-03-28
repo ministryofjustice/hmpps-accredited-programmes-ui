@@ -104,12 +104,14 @@ export default class ReferralClient {
   async findStatusTransitions(
     referralId: Referral['id'],
     query?: {
+      deselectAndKeepOpen?: boolean
       ptUser?: boolean
     },
   ): Promise<Array<ReferralStatusRefData>> {
     return (await this.restClient.get({
       path: apiPaths.referrals.statusTransitions({ referralId }),
       query: {
+        ...(query?.deselectAndKeepOpen && { deselectAndKeepOpen: 'true' }),
         ...(query?.ptUser && { ptUser: 'true' }),
       },
     })) as Array<ReferralStatusRefData>
