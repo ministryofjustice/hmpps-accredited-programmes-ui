@@ -90,8 +90,7 @@ describe('ReasonController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/reason/show', {
-        backLinkHref: '#',
-        cancelLink: referPaths.show.statusHistory({ referralId: referral.id }),
+        backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
         pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
         pageHeading: 'Deselection reason',
         radioItems,
@@ -112,6 +111,22 @@ describe('ReasonController', () => {
       expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
+    describe('when the request path is on the assess journey', () => {
+      it('should render the show template with the correct response locals', async () => {
+        request.path = assessPaths.updateStatus.reason.show({ referralId: referral.id })
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/updateStatus/reason/show',
+          expect.objectContaining({
+            backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
+          }),
+        )
+      })
+    })
+
     describe('when `referralStatusUpdateData.decisionForCategoryAndReason` is `WITHDRAWN', () => {
       it('should render the show template with the correct response locals', async () => {
         request.session.referralStatusUpdateData = {
@@ -123,8 +138,7 @@ describe('ReasonController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/reason/show', {
-          backLinkHref: '#',
-          cancelLink: referPaths.show.statusHistory({ referralId: referral.id }),
+          backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
           pageDescription: 'If you withdraw the referral, it will be closed.',
           pageHeading: 'Withdrawal reason',
           radioItems,

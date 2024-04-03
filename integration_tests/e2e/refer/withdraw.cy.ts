@@ -66,7 +66,7 @@ context('Withdraw referral', () => {
       cy.visit(path)
 
       const withdrawCategoryPage = Page.verifyOnPage(WithdrawCategoryPage)
-      withdrawCategoryPage.shouldContainBackLink('#')
+      withdrawCategoryPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawCategoryPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawCategoryPage.shouldContainWithdrawalCategoryRadioItems(referralStatusCategories)
     })
@@ -97,7 +97,7 @@ context('Withdraw referral', () => {
 
     it('shows the withdrawal reason page', () => {
       const withdrawReasonPage = Page.verifyOnPage(WithdrawReasonPage)
-      withdrawReasonPage.shouldContainBackLink('#')
+      withdrawReasonPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawReasonPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawReasonPage.shouldContainWithdrawalReasonRadioItems(referralStatusReasons)
     })
@@ -126,7 +126,7 @@ context('Withdraw referral', () => {
 
     it('shows the withdrawal reason information page', () => {
       const withdrawReasonInformationPage = Page.verifyOnPage(WithdrawReasonInformationPage)
-      withdrawReasonInformationPage.shouldContainBackLink('#')
+      withdrawReasonInformationPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawReasonInformationPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
     })
 
@@ -151,15 +151,12 @@ context('Withdraw referral', () => {
       cy.visit(referPaths.withdraw({ referralId: referral.id }))
 
       const withdrawCategoryPage = Page.verifyOnPage(WithdrawCategoryPage)
-      withdrawCategoryPage.shouldContainBackLink('#')
       withdrawCategoryPage.selectWithdrawalCategoryAndSubmit(selectedCategory, referralStatusReasons)
 
       const withdrawReasonPage = Page.verifyOnPage(WithdrawReasonPage)
-      withdrawReasonPage.shouldContainBackLink('#')
       withdrawReasonPage.selectWithdrawalReasonAndSubmit(selectedReason)
 
       const withdrawReasonInformationPage = Page.verifyOnPage(WithdrawReasonInformationPage)
-      withdrawReasonInformationPage.shouldContainBackLink('#')
       withdrawReasonInformationPage.enterWithdrawalReasonInformationAndSubmit(reasonInformation)
 
       cy.location('pathname').should('equal', referPaths.show.statusHistory({ referralId: referral.id }))

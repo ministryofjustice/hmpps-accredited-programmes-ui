@@ -8,6 +8,7 @@
 
 {% block backLink %}
   {{ govukBackLink({
+    classes: "js-back-link",
     text: "Back",
     href: backLinkHref
   }) }}
@@ -61,13 +62,9 @@
           }
         }) }}
 
-        <div class="govuk-button-group">
-          {{ govukButton({
+        {{ govukButton({
             text: "Continue"
-          }) }}
-
-          <a href={{ cancelLink }}>Cancel</a>
-        </div>
+        }) }}
       </form>
     </div>
   </div>

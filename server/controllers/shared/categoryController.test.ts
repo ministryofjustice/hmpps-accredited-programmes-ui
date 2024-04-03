@@ -89,7 +89,7 @@ describe('CategoryController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/category/show', {
-        backLinkHref: '#',
+        backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
         pageDescription: 'If you deselect the referral, it will be closed.',
         pageHeading: 'Deselection category',
         radioItems,
@@ -105,6 +105,22 @@ describe('CategoryController', () => {
       expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
+    describe('when the request path is on the assess journey', () => {
+      it('should render the show template with the correct response locals', async () => {
+        request.path = assessPaths.updateStatus.category.show({ referralId: referral.id })
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/updateStatus/category/show',
+          expect.objectContaining({
+            backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
+          }),
+        )
+      })
+    })
+
     describe('when `referralStatusUpdateData.decisionForCategoryAndReason` is `WITHDRAWN', () => {
       it('should render the show template with the correct response locals', async () => {
         request.session.referralStatusUpdateData = {
@@ -116,7 +132,7 @@ describe('CategoryController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/category/show', {
-          backLinkHref: '#',
+          backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
           pageDescription: 'If you withdraw the referral, it will be closed.',
           pageHeading: 'Withdrawal category',
           radioItems,

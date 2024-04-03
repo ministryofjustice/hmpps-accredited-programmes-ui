@@ -45,7 +45,7 @@ export default class UpdateStatusSelectionController {
         action: hasConfirmation
           ? paths.updateStatus.selection.confirmation.submit({ referralId })
           : paths.updateStatus.selection.reason.submit({ referralId }),
-        backLinkHref: '#',
+        backLinkHref: paths.show.statusHistory({ referralId }),
         maxLength,
         pageHeading: `Move referral to ${description.toLowerCase()}`,
         referralStatusRefData,

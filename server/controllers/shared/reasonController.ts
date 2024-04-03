@@ -80,8 +80,7 @@ export default class ReasonController {
       FormUtils.setFieldErrors(req, res, ['reasonCode'])
 
       return res.render('referrals/updateStatus/reason/show', {
-        backLinkHref: '#',
-        cancelLink: paths.show.statusHistory({ referralId }),
+        backLinkHref: paths.show.statusHistory({ referralId }),
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
         ...content[decisionForCategoryAndReason],
