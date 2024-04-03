@@ -65,7 +65,7 @@ export default class CategoryController {
       FormUtils.setFieldErrors(req, res, ['categoryCode'])
 
       return res.render('referrals/updateStatus/category/show', {
-        backLinkHref: '#',
+        backLinkHref: paths.show.statusHistory({ referralId }),
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
         ...content[decisionForCategoryAndReason],

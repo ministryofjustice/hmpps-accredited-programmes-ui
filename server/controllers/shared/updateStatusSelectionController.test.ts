@@ -83,7 +83,7 @@ describe('UpdateStatusSelectionController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/selection/show', {
         action: assessPaths.updateStatus.selection.confirmation.submit({ referralId: referral.id }),
-        backLinkHref: '#',
+        backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
         maxLength: 100,
         pageHeading: 'Move referral to on programme',
         referralStatusRefData,
@@ -93,6 +93,22 @@ describe('UpdateStatusSelectionController', () => {
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(referenceDataService.getReferralStatusCodeData).toHaveBeenCalledWith(username, 'ON_PROGRAMME')
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
+    })
+
+    describe('when the request path is on the refer journey', () => {
+      it('should render the show template with the correct response locals', async () => {
+        request.path = referPaths.updateStatus.selection.show({ referralId: referral.id })
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/updateStatus/selection/show',
+          expect.objectContaining({
+            backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
+          }),
+        )
+      })
     })
 
     describe('when `referralStatusUpdateData` is not present', () => {
