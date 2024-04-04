@@ -2,6 +2,7 @@ import type UserService from './userService'
 import logger from '../../logger'
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
+  ConfirmationFields,
   CreatedReferralResponse,
   Organisation,
   Paginated,
@@ -9,6 +10,7 @@ import type {
   ReferralStatusGroup,
   ReferralStatusRefData,
   ReferralStatusUpdate,
+  ReferralStatusUppercase,
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
@@ -32,6 +34,22 @@ export default class ReferralService {
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.create(courseOfferingId, prisonNumber)
+  }
+
+  async getConfirmationText(
+    username: Express.User['username'],
+    referralId: Referral['id'],
+    chosenStatusCode: ReferralStatusUppercase,
+    query?: {
+      deselectAndKeepOpen?: boolean
+      ptUser?: boolean
+    },
+  ): Promise<ConfirmationFields> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.findConfirmationText(referralId, chosenStatusCode, query)
   }
 
   async getMyReferralViews(

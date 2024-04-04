@@ -4,11 +4,11 @@ import type { NextFunction, Request, Response } from 'express'
 
 import UpdateStatusSelectionController from './updateStatusSelectionController'
 import { assessPaths, referPaths } from '../../paths'
-import type { ReferenceDataService, ReferralService } from '../../services'
-import { referralFactory, referralStatusHistoryFactory, referralStatusRefDataFactory } from '../../testutils/factories'
+import type { ReferralService } from '../../services'
+import { confirmationFieldsFactory, referralFactory, referralStatusHistoryFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ShowReferralUtils } from '../../utils'
-import type { Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { ConfirmationFields, Referral } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/formUtils')
@@ -25,7 +25,6 @@ describe('UpdateStatusSelectionController', () => {
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
   const referralService = createMock<ReferralService>({})
-  const referenceDataService = createMock<ReferenceDataService>({})
 
   const timelineItems: Array<MojTimelineItem> = [
     {
@@ -43,20 +42,20 @@ describe('UpdateStatusSelectionController', () => {
   ]
   let referral: Referral
   let referralStatusHistory: Array<ReferralStatusHistoryPresenter>
-  let referralStatusRefData: ReferralStatusRefData
+  let confirmationText: ConfirmationFields
 
   let controller: UpdateStatusSelectionController
 
   beforeEach(() => {
     referral = referralFactory.submitted().build()
     referralStatusHistory = [{ ...referralStatusHistoryFactory.submitted().build(), byLineText: 'You' }]
-    referralStatusRefData = referralStatusRefDataFactory.build({ description: 'On Programme', hasConfirmation: true })
+    confirmationText = confirmationFieldsFactory.build({ hasConfirmation: true })
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
-    referenceDataService.getReferralStatusCodeData.mockResolvedValue(referralStatusRefData)
+    referralService.getConfirmationText.mockResolvedValue(confirmationText)
 
-    controller = new UpdateStatusSelectionController(referenceDataService, referralService)
+    controller = new UpdateStatusSelectionController(referralService)
 
     request = createMock<Request>({
       params: { referralId: referral.id },
@@ -84,14 +83,14 @@ describe('UpdateStatusSelectionController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/selection/show', {
         action: assessPaths.updateStatus.selection.confirmation.submit({ referralId: referral.id }),
         backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
+        confirmationText,
         maxLength: 100,
-        pageHeading: 'Move referral to on programme',
-        referralStatusRefData,
+        pageHeading: confirmationText.primaryHeading,
         timelineItems: timelineItems.slice(0, 1),
       })
 
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
-      expect(referenceDataService.getReferralStatusCodeData).toHaveBeenCalledWith(username, 'ON_PROGRAMME')
+      expect(referralService.getConfirmationText).toHaveBeenCalledWith(username, referral.id, 'ON_PROGRAMME')
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
     })
 
@@ -149,10 +148,10 @@ describe('UpdateStatusSelectionController', () => {
       })
     })
 
-    describe('when the reference data requires notes instead of confirmation', () => {
+    describe('when the confirmation text endpoint returns `hasConfirmation: false`', () => {
       it('should render the template with the correct form action and call the relevant `FormUtils` methods', async () => {
-        referralStatusRefData = referralStatusRefDataFactory.build({ description: 'On Programme', hasNotes: true })
-        referenceDataService.getReferralStatusCodeData.mockResolvedValue(referralStatusRefData)
+        confirmationText = confirmationFieldsFactory.build({ hasConfirmation: false })
+        referralService.getConfirmationText.mockResolvedValue(confirmationText)
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)

@@ -1,16 +1,16 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { referPaths } from '../../../server/paths'
 import {
+  confirmationFieldsFactory,
   referralFactory,
   referralStatusCategoryFactory,
   referralStatusHistoryFactory,
   referralStatusReasonFactory,
-  referralStatusRefDataFactory,
   userFactory,
 } from '../../../server/testutils/factories'
 import auth from '../../mockApis/auth'
 import Page from '../../pages/page'
-import { WithdrawCategoryPage, WithdrawReasonInformationPage, WithdrawReasonPage } from '../../pages/shared'
+import { WithdrawCategoryPage, WithdrawConfirmSelectionPage, WithdrawReasonPage } from '../../pages/shared'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 context('Withdraw referral', () => {
@@ -56,7 +56,18 @@ context('Withdraw referral', () => {
       categories: referralStatusCategories,
       referralStatus: 'WITHDRAWN',
     })
-    cy.task('stubReferralStatusCodeData', referralStatusRefDataFactory.build({ code: 'WITHDRAWN', hasNotes: true }))
+    cy.task('stubConfirmationText', {
+      chosenStatusCode: 'WITHDRAWN',
+      confirmationText: confirmationFieldsFactory.build({
+        hasConfirmation: false,
+        primaryDescription: 'If you withdraw the referral, it will be closed.',
+        primaryHeading: 'Withdraw referral',
+        secondaryDescription: 'Provide more information about the reason for withdrawing this referral.',
+        secondaryHeading: 'Give a reason',
+        warningText: 'Submitting this will close the referral.',
+      }),
+      referralId: referral.id,
+    })
   })
 
   describe('withdrawal category', () => {
@@ -116,7 +127,7 @@ context('Withdraw referral', () => {
     })
   })
 
-  describe('withdrawal reason information', () => {
+  describe('withdrawal confirm selection', () => {
     beforeEach(() => {
       cy.visit(referPaths.withdraw({ referralId: referral.id }))
 
@@ -124,17 +135,17 @@ context('Withdraw referral', () => {
       withdrawCategoryPage.selectWithdrawalCategoryAndSubmit(selectedCategory, [])
     })
 
-    it('shows the withdrawal reason information page', () => {
-      const withdrawReasonInformationPage = Page.verifyOnPage(WithdrawReasonInformationPage)
-      withdrawReasonInformationPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
-      withdrawReasonInformationPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
+    it('shows the withdrawal confirm selection page', () => {
+      const withdrawConfirmSelectionPage = Page.verifyOnPage(WithdrawConfirmSelectionPage)
+      withdrawConfirmSelectionPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
+      withdrawConfirmSelectionPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
     })
 
-    describe('when submitting without entering reason information', () => {
+    describe('when submitting without entering a reason', () => {
       it('displays an error', () => {
-        const withdrawReasonInformationPage = Page.verifyOnPage(WithdrawReasonInformationPage)
-        withdrawReasonInformationPage.shouldContainButton('Submit').click()
-        withdrawReasonInformationPage.shouldHaveErrors([
+        const withdrawConfirmSelectionPage = Page.verifyOnPage(WithdrawConfirmSelectionPage)
+        withdrawConfirmSelectionPage.shouldContainButton('Submit').click()
+        withdrawConfirmSelectionPage.shouldHaveErrors([
           {
             field: 'reason',
             message: 'Enter a reason',
@@ -156,8 +167,8 @@ context('Withdraw referral', () => {
       const withdrawReasonPage = Page.verifyOnPage(WithdrawReasonPage)
       withdrawReasonPage.selectWithdrawalReasonAndSubmit(selectedReason)
 
-      const withdrawReasonInformationPage = Page.verifyOnPage(WithdrawReasonInformationPage)
-      withdrawReasonInformationPage.enterWithdrawalReasonInformationAndSubmit(reasonInformation)
+      const withdrawConfirmSelectionPage = Page.verifyOnPage(WithdrawConfirmSelectionPage)
+      withdrawConfirmSelectionPage.enterWithdrawalReasonInformationAndSubmit(reasonInformation)
 
       cy.location('pathname').should('equal', referPaths.show.statusHistory({ referralId: referral.id }))
     })

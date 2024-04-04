@@ -1,17 +1,14 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
-import type { ReferenceDataService, ReferralService } from '../../services'
+import type { ReferralService } from '../../services'
 import { FormUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatus, ReferralStatusUppercase } from '@accredited-programmes/models'
 
 const maxLength = 100
 
 export default class UpdateStatusSelectionController {
-  constructor(
-    private readonly referenceDataService: ReferenceDataService,
-    private readonly referralService: ReferralService,
-  ) {}
+  constructor(private readonly referralService: ReferralService) {}
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
@@ -27,12 +24,12 @@ export default class UpdateStatusSelectionController {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      const [statusHistory, referralStatusRefData] = await Promise.all([
+      const [statusHistory, confirmationText] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referenceDataService.getReferralStatusCodeData(username, referralStatusUpdateData.finalStatusDecision),
+        this.referralService.getConfirmationText(username, referralId, referralStatusUpdateData.finalStatusDecision),
       ])
 
-      const { description, hasConfirmation } = referralStatusRefData
+      const { hasConfirmation } = confirmationText
 
       if (hasConfirmation) {
         FormUtils.setFieldErrors(req, res, ['confirmation'])
@@ -46,9 +43,9 @@ export default class UpdateStatusSelectionController {
           ? paths.updateStatus.selection.confirmation.submit({ referralId })
           : paths.updateStatus.selection.reason.submit({ referralId }),
         backLinkHref: paths.show.statusHistory({ referralId }),
+        confirmationText,
         maxLength,
-        pageHeading: `Move referral to ${description.toLowerCase()}`,
-        referralStatusRefData,
+        pageHeading: confirmationText.primaryHeading,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
       })
     }

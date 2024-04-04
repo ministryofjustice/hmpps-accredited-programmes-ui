@@ -20,6 +20,7 @@ import type { Paginated } from './Paginated'
 import type { Person } from './Person'
 import type { Psychiatric } from './Psychiatric'
 import type {
+  ConfirmationFields,
   CreatedReferralResponse,
   Referral,
   ReferralStatus,
@@ -40,6 +41,7 @@ import type { RoshAnalysis } from './RoshAnalysis'
 export type {
   Attitude,
   Behaviour,
+  ConfirmationFields,
   Course,
   CourseAudience,
   CourseOffering,

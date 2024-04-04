@@ -1,8 +1,8 @@
 import Page from '../../page'
 
-export default class WithdrawReasonInformationPage extends Page {
+export default class WithdrawConfirmSelectionPage extends Page {
   constructor() {
-    super('Move referral to withdrawn')
+    super('Withdraw referral')
   }
 
   enterWithdrawalReasonInformationAndSubmit(value: string) {
