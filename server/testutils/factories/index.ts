@@ -1,6 +1,7 @@
 import attitudeFactory from './attitude'
 import behaviourFactory from './behaviour'
 import caseloadFactory from './caseload'
+import confirmationFieldsFactory from './confirmationFields'
 import courseFactory from './course'
 import courseAudienceFactory from './courseAudience'
 import courseOfferingFactory from './courseOffering'
@@ -38,6 +39,7 @@ export {
   attitudeFactory,
   behaviourFactory,
   caseloadFactory,
+  confirmationFieldsFactory,
   courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,

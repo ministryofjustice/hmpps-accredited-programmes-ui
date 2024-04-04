@@ -25,6 +25,15 @@ const referralStatuses = [
 
 const referralStatusGroups = ['open', 'draft', 'closed'] as const
 
+interface ConfirmationFields {
+  hasConfirmation: boolean
+  primaryDescription: string
+  primaryHeading: string
+  secondaryDescription: string
+  secondaryHeading: string
+  warningText: string
+}
+
 type Referral = {
   id: string // eslint-disable-next-line @typescript-eslint/member-ordering
   additionalInformation: string
@@ -131,6 +140,7 @@ type ReferralView = {
 export { referralStatusGroups, referralStatuses }
 
 export type {
+  ConfirmationFields,
   CreatedReferralResponse,
   Referral,
   ReferralStatus,
