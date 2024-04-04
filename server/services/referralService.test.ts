@@ -7,6 +7,7 @@ import logger from '../../logger'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
 import {
+  confirmationFieldsFactory,
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusRefDataFactory,
@@ -65,6 +66,46 @@ describe('ReferralService', () => {
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.create).toHaveBeenCalledWith(referral.offeringId, referral.prisonNumber)
+    })
+  })
+
+  describe('getConfirmationText', () => {
+    const referralId = 'referral-id'
+    const chosenStatusCode = 'REFERRAL_SUBMITTED'
+
+    it('returns confirmation fields for a given referral', async () => {
+      const confirmationFields = confirmationFieldsFactory.build()
+
+      when(referralClient.findConfirmationText)
+        .calledWith(referralId, chosenStatusCode, undefined)
+        .mockResolvedValue(confirmationFields)
+
+      const result = await service.getConfirmationText(username, referralId, chosenStatusCode)
+
+      expect(result).toEqual(confirmationFields)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findConfirmationText).toHaveBeenCalledWith(referralId, chosenStatusCode, undefined)
+    })
+
+    describe('with query values', () => {
+      it('makes the correct call to the referral client', async () => {
+        const query = { deselectAndKeepOpen: true, ptUser: true }
+        const confirmationFields = confirmationFieldsFactory.build()
+
+        when(referralClient.findConfirmationText)
+          .calledWith(referralId, chosenStatusCode, query)
+          .mockResolvedValue(confirmationFields)
+
+        const result = await service.getConfirmationText(username, referralId, chosenStatusCode, query)
+
+        expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(referralClient.findConfirmationText).toHaveBeenCalledWith(referralId, chosenStatusCode, query)
+        expect(result).toEqual(confirmationFields)
+      })
     })
   })
 

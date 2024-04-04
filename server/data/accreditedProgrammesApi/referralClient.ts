@@ -5,6 +5,7 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
+  ConfirmationFields,
   CreatedReferralResponse,
   Paginated,
   Referral,
@@ -12,6 +13,7 @@ import type {
   ReferralStatusHistory,
   ReferralStatusRefData,
   ReferralStatusUpdate,
+  ReferralStatusUppercase,
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
@@ -46,6 +48,23 @@ export default class ReferralClient {
         ...(query?.updatePerson && { updatePerson: query.updatePerson }),
       },
     })) as Referral
+  }
+
+  async findConfirmationText(
+    referralId: Referral['id'],
+    chosenStatusCode: ReferralStatusUppercase,
+    query?: {
+      deselectAndKeepOpen?: boolean
+      ptUser?: boolean
+    },
+  ): Promise<ConfirmationFields> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.confirmationText({ chosenStatusCode, referralId }),
+      query: {
+        ...(query?.deselectAndKeepOpen && { deselectAndKeepOpen: 'true' }),
+        ...(query?.ptUser && { ptUser: 'true' }),
+      },
+    })) as ConfirmationFields
   }
 
   async findMyReferralViews(query?: {

@@ -18,6 +18,7 @@ const dashboardPath = referralsPath.path('view/organisation/:organisationId/dash
 const myDashboardPath = referralsPath.path('view/me/dashboard')
 const statusHistoryPath = referralPath.path('status-history')
 const statusTransitionsPath = referralPath.path('status-transitions')
+const confirmationTextPath = referralPath.path('confirmation-text/:chosenStatusCode')
 
 const organisationsPath = path('/organisations')
 const coursesByOrganisationPath = organisationsPath.path(':organisationId/courses')
@@ -82,6 +83,7 @@ export default {
     },
   },
   referrals: {
+    confirmationText: confirmationTextPath,
     create: referralsPath,
     dashboard: dashboardPath,
     myDashboard: myDashboardPath,
