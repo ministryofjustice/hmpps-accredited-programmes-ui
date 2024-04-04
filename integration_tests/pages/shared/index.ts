@@ -17,7 +17,7 @@ import SentenceInformationPage from './showReferral/sentenceInformation'
 import StatusHistoryPage from './showReferral/statusHistory'
 import WithdrawCategoryPage from './withdraw/category'
 import WithdrawReasonPage from './withdraw/reason'
-import WithdrawReasonInformationPage from './withdraw/reasonInformation'
+import WithdrawConfirmSelectionPage from './withdraw/selection'
 
 export {
   AdditionalInformationPage,
@@ -38,6 +38,6 @@ export {
   StatusHistoryPage,
   ThinkingAndBehavingPage,
   WithdrawCategoryPage,
-  WithdrawReasonInformationPage,
+  WithdrawConfirmSelectionPage,
   WithdrawReasonPage,
 }

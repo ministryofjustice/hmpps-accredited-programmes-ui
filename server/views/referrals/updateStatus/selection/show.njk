@@ -3,11 +3,10 @@
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "moj/components/timeline/macro.njk" import mojTimeline %}
 
 {% extends "../../../partials/layout.njk" %}
-
-{% set formattedDescription = referralStatusRefData.description | lower %}
 
 {% block backLink %}
   {{ govukBackLink({
@@ -29,7 +28,7 @@
 
       <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
-      <p>Submitting this will change the status to {{ formattedDescription }}.</p>
+      <p>{{ confirmationText.primaryDescription }}</p>
 
       <h2 class="govuk-heading-m">Current status</h2>
 
@@ -50,23 +49,21 @@
       <form action="{{ action }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-        {% if referralStatusRefData.hasConfirmation %}
-          <h2 class="govuk-heading-m">Confirm status change</h2>
+        <h2 class="govuk-heading-m">{{ confirmationText.secondaryHeading }}</h2>
 
+        {% if confirmationText.hasConfirmation %}
           {{ govukCheckboxes({
             name: "confirmation",
             items: [
               {
                 value: "true",
-                text: referralStatusRefData.confirmationText
+                text: confirmationText.secondaryDescription
               }
             ],
             errorMessage: errors.messages.confirmation
           }) }}
         {% else %}
-          <h2 class="govuk-heading-m">Give a reason</h2>
-
-          <p>You must give a reason why this referral is being moved to {{ formattedDescription }}.</p>
+          <p>{{ confirmationText.secondaryDescription }}</p>
 
           {{ govukCharacterCount({
             id: "reason",
@@ -78,6 +75,13 @@
             value: formValues.reason,
             classes: "govuk-!-width-three-quarters",
             errorMessage: errors.messages.reason
+          }) }}
+        {% endif %}
+
+        {% if confirmationText.warningText %}
+          {{ govukWarningText({
+            text: confirmationText.warningText,
+            iconFallbackText: "Warning"
           }) }}
         {% endif %}
 

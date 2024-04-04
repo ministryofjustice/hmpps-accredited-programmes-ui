@@ -34,10 +34,7 @@ const controllers = (services: Services) => {
 
   const reasonController = new ReasonController(services.referenceDataService, services.referralService)
 
-  const updateStatusSelectionController = new UpdateStatusSelectionController(
-    services.referenceDataService,
-    services.referralService,
-  )
+  const updateStatusSelectionController = new UpdateStatusSelectionController(services.referralService)
 
   return {
     categoryController,

@@ -3,6 +3,7 @@ import type { SuperAgentRequest } from 'superagent'
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type {
+  ConfirmationFields,
   Paginated,
   Referral,
   ReferralStatusGroup,
@@ -38,6 +39,26 @@ const referralViewsMetadata = (stubArgs: {
 }
 
 export default {
+  stubConfirmationText: (args: {
+    chosenStatusCode: ReferralStatusRefData['code']
+    confirmationText: ConfirmationFields
+    referralId: Referral['id']
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referrals.confirmationText({
+          chosenStatusCode: args.chosenStatusCode,
+          referralId: args.referralId,
+        }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.confirmationText,
+        status: 200,
+      },
+    }),
+
   stubCreateReferral: (referral: Referral): SuperAgentRequest =>
     stubFor({
       request: {
