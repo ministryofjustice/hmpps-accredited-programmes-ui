@@ -26,7 +26,10 @@ export default class UpdateStatusSelectionController {
 
       const [statusHistory, confirmationText] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referralService.getConfirmationText(username, referralId, referralStatusUpdateData.finalStatusDecision),
+        this.referralService.getConfirmationText(username, referralId, referralStatusUpdateData.finalStatusDecision, {
+          deselectAndKeepOpen: referralStatusUpdateData.initialStatusDecision === 'DESELECTED|OPEN',
+          ptUser: req.path.startsWith(assessPathBase.pattern),
+        }),
       ])
 
       const { hasConfirmation } = confirmationText

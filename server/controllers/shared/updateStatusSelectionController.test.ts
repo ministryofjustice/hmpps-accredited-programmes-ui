@@ -90,12 +90,36 @@ describe('UpdateStatusSelectionController', () => {
       })
 
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
-      expect(referralService.getConfirmationText).toHaveBeenCalledWith(username, referral.id, 'ON_PROGRAMME')
+      expect(referralService.getConfirmationText).toHaveBeenCalledWith(username, referral.id, 'ON_PROGRAMME', {
+        deselectAndKeepOpen: false,
+        ptUser: true,
+      })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
     })
 
+    describe('when the `initialStatusDecision` is `DESELECTED|OPEN`', () => {
+      it('should make the correct call to `getConfirmationText`', async () => {
+        request.session.referralStatusUpdateData = {
+          decisionForCategoryAndReason: 'DESELECTED',
+          finalStatusDecision: 'DESELECTED',
+          initialStatusDecision: 'DESELECTED|OPEN',
+          referralId: referral.id,
+          statusCategoryCode: 'D_OPERATIONAL',
+          statusReasonCode: 'D_DEPORTED',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getConfirmationText).toHaveBeenCalledWith(username, referral.id, 'DESELECTED', {
+          deselectAndKeepOpen: true,
+          ptUser: true,
+        })
+      })
+    })
+
     describe('when the request path is on the refer journey', () => {
-      it('should render the show template with the correct response locals', async () => {
+      it('should render the show template with the correct response locals and make the correct call to `getConfirmationText`', async () => {
         request.path = referPaths.updateStatus.selection.show({ referralId: referral.id })
 
         const requestHandler = controller.show()
@@ -107,6 +131,11 @@ describe('UpdateStatusSelectionController', () => {
             backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
           }),
         )
+
+        expect(referralService.getConfirmationText).toHaveBeenCalledWith(username, referral.id, 'ON_PROGRAMME', {
+          deselectAndKeepOpen: false,
+          ptUser: false,
+        })
       })
     })
 

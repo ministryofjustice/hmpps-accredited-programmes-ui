@@ -42,12 +42,14 @@ export default {
   stubConfirmationText: (args: {
     chosenStatusCode: ReferralStatusRefData['code']
     confirmationText: ConfirmationFields
+    queryParameters: QueryParameters
     referralId: Referral['id']
   }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.referrals.confirmationText({
+        queryParameters: args.queryParameters,
+        urlPath: apiPaths.referrals.confirmationText({
           chosenStatusCode: args.chosenStatusCode,
           referralId: args.referralId,
         }),
