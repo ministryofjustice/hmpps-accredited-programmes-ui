@@ -22,12 +22,23 @@ export default class UpdateStatusDecisionController {
 
       const isDeselectAndKeepOpen = this.isDeselectAndKeepOpen(req)
 
-      const [statusHistory, statusTransitionsForReferral] = await Promise.all([
+      const [statusHistory, statusTransitionsForReferral, confirmationText] = await Promise.all([
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referralService.getStatusTransitions(username, referralId, {
           deselectAndKeepOpen: isDeselectAndKeepOpen,
           ptUser: true,
         }),
+        isDeselectAndKeepOpen
+          ? this.referralService.getConfirmationText(username, referralId, 'DESELECTED', {
+              deselectAndKeepOpen: true,
+              ptUser: true,
+            })
+          : {
+              primaryDescription: 'Record all decisions to keep the status up to date.',
+              primaryHeading: 'Update referral status',
+              secondaryDescription: null,
+              secondaryHeading: 'Select decision',
+            },
       ])
 
       const statusTransitions = statusTransitionsForReferral.map(statusTransition => {
@@ -51,7 +62,8 @@ export default class UpdateStatusDecisionController {
 
       return res.render('referrals/updateStatus/decision/show', {
         backLinkHref: assessPaths.show.statusHistory({ referralId }),
-        pageHeading: 'Update referral status',
+        confirmationText,
+        pageHeading: confirmationText.primaryHeading,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
       })

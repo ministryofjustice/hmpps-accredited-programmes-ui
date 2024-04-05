@@ -26,7 +26,7 @@
 
       <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
-      <p>Record all decisions to keep the status up to date.</p>
+      <p>{{ confirmationText.primaryDescription }}</p>
 
       <h2 class="govuk-heading-m">Current status</h2>
 
@@ -51,9 +51,12 @@
           name: "statusDecision",
           fieldset: {
             legend: {
-              text: "Select decision",
+              text: confirmationText.secondaryHeading,
               classes: "govuk-fieldset__legend--m"
             }
+          },
+          hint: {
+            text: confirmationText.secondaryDescription
           },
           items: radioItems,
           errorMessage: errors.messages.statusDecision,

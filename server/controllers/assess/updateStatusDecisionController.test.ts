@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import { when } from 'jest-when'
 
 import UpdateStatusDecisionController from './updateStatusDecisionController'
 import type { ReferralStatusUpdateSessionData } from '../../@types/express'
@@ -89,6 +90,12 @@ describe('UpdateStatusDecisionController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/decision/show', {
         backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
+        confirmationText: {
+          primaryDescription: 'Record all decisions to keep the status up to date.',
+          primaryHeading: 'Update referral status',
+          secondaryDescription: null,
+          secondaryHeading: 'Select decision',
+        },
         pageHeading: 'Update referral status',
         radioItems,
         timelineItems: timelineItems.slice(0, 1),
@@ -103,6 +110,7 @@ describe('UpdateStatusDecisionController', () => {
         deselectAndKeepOpen: false,
         ptUser: true,
       })
+      expect(referralService.getConfirmationText).not.toHaveBeenCalled()
     })
 
     describe('when the available status transitions have a `deselectAndKeepOpen` property', () => {
@@ -178,11 +186,22 @@ describe('UpdateStatusDecisionController', () => {
             referralStatusTransitions,
             'DESELECTED|OPEN',
           )
+          expect(referralService.getConfirmationText).not.toHaveBeenCalled()
         })
       })
 
       describe('and viewing the final decision step of `ASSESSED_SUITABLE`', () => {
-        it('should make the call to check the correct radio item', async () => {
+        it('should call `getConfirmationText`, call to check the correct radio item and render the template with the correct response locals', async () => {
+          const confirmationText = {
+            hasConfirmation: false,
+            primaryDescription:
+              'This person cannot complete the programme now. They may be able to join or restart in the future.',
+            primaryHeading: 'Deselection: keep referral open',
+            secondaryDescription:
+              'The referral will be paused at this status, for example Deselected - assessed as suitable.',
+            secondaryHeading: 'Choose the deselection status',
+            warningText: '',
+          }
           const session: ReferralStatusUpdateSessionData = {
             finalStatusDecision: 'ASSESSED_SUITABLE',
             initialStatusDecision: 'DESELECTED|OPEN',
@@ -191,8 +210,23 @@ describe('UpdateStatusDecisionController', () => {
           request.session.referralStatusUpdateData = session
           request.query = { deselectAndKeepOpen: 'true' }
 
+          when(referralService.getConfirmationText)
+            .calledWith(username, referral.id, 'DESELECTED', {
+              deselectAndKeepOpen: true,
+              ptUser: true,
+            })
+            .mockResolvedValue(confirmationText)
+
           const requestHandler = controller.show()
           await requestHandler(request, response, next)
+
+          expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/decision/show', {
+            backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
+            confirmationText,
+            pageHeading: confirmationText.primaryHeading,
+            radioItems,
+            timelineItems: timelineItems.slice(0, 1),
+          })
 
           expect(request.session.referralStatusUpdateData).toEqual(session)
           expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(
