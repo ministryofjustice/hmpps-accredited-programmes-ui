@@ -116,6 +116,7 @@ export default class AssessCaseListController {
         pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
+        referralStatusGroup,
         referralStatusSelectItems: CaseListUtils.statusSelectItems(openReferralStatuses, status),
         tableHeadings: CaseListUtils.sortableTableHeadings(
           basePathExcludingSort,

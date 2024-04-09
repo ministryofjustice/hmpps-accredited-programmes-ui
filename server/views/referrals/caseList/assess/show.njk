@@ -46,9 +46,13 @@
         }
       }) }}
 
-      {{ govukButton({
-        text: "Apply filters"
-      }) }}
+      <span class="govuk-button-group">
+        {{ govukButton({
+          text: "Apply filters"
+        }) }}
+
+        <a href="{{ referralStatusGroup }}" class="govuk-link govuk-link--no-visited-state">Clear filters</a>
+      </span>
     </form>
   </div>
 

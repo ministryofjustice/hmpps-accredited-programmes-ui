@@ -24,6 +24,10 @@ export default class CaseListPage extends Page {
     this.referralViews = referralViews
   }
 
+  shouldClearFilters() {
+    this.shouldContainLink('Clear filters', 'open').click()
+  }
+
   shouldContainCourseNavigation(currentPath: string, courses: Array<Course>): void {
     const navigationItems = courses
       .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
