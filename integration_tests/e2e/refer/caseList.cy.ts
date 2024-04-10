@@ -44,6 +44,27 @@ context('Referral case lists', () => {
     cy.signIn()
   })
 
+  describe('when viewing open referrals when none are available', () => {
+    it('shows the correct information', () => {
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'open' } },
+        referralViews: [],
+      })
+
+      const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
+      cy.visit(path)
+
+      const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders: openReferralsColumnHeaders,
+        referralViews: [],
+      })
+      caseListPage.shouldContainStatusNavigation('open')
+      caseListPage.shouldContainText('You have no open referrals.')
+      caseListPage.shouldNotContainTable()
+      caseListPage.shouldNotContainPagination()
+    })
+  })
+
   describe('when viewing open referrals', () => {
     it('shows the correct information', () => {
       cy.task('stubFindMyReferralViews', {

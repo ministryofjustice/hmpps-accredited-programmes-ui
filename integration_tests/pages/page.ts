@@ -487,6 +487,10 @@ export default abstract class Page {
     cy.wrap(tagElement).should('have.class', tag.classes)
   }
 
+  shouldContainText(content: string): void {
+    cy.get('p.govuk-body').contains(content).should('exist')
+  }
+
   shouldContainTextArea(id: string, label: string): void {
     cy.get(`.govuk-label[for="${id}"]`).then(labelElement => {
       const { actual, expected } = Helpers.parseHtml(labelElement, label)
@@ -585,6 +589,14 @@ export default abstract class Page {
 
   shouldNotContainNavigation(): void {
     cy.get('.moj-primary-navigation').should('not.exist')
+  }
+
+  shouldNotContainPagination() {
+    cy.get('.govuk-pagination').should('not.exist')
+  }
+
+  shouldNotContainTable(): void {
+    cy.get('.govuk-table').should('not.exist')
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
