@@ -152,6 +152,17 @@ context('Referral case lists', () => {
       filteredCaseListPage.shouldContainCourseNavigation(path, courses)
       filteredCaseListPage.shouldHaveSelectedFilterValues(programmeStrandSelectedValue, referralStatusSelectedValue)
       filteredCaseListPage.shouldContainTableOfReferralViews(assessPaths)
+
+      filteredCaseListPage.shouldClearFilters()
+
+      const clearedFilterListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders,
+        course: limeCourse,
+        referralViews: limeCourseReferralViews,
+      })
+      clearedFilterListPage.shouldContainCourseNavigation(path, courses)
+      clearedFilterListPage.shouldHaveSelectedFilterValues('', '')
+      clearedFilterListPage.shouldContainTableOfReferralViews(assessPaths)
     })
   })
 

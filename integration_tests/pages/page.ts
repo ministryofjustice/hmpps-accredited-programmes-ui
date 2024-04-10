@@ -213,8 +213,8 @@ export default abstract class Page {
     })
   }
 
-  shouldContainLink(text: string, href: string): void {
-    cy.contains('.govuk-link', text).should('have.attr', 'href', href)
+  shouldContainLink(text: string, href: string): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }
 
   shouldContainNavigation(currentPath: string): void {
