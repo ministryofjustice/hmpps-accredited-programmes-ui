@@ -153,7 +153,7 @@ context('Referral case lists', () => {
       filteredCaseListPage.shouldHaveSelectedFilterValues(programmeStrandSelectedValue, referralStatusSelectedValue)
       filteredCaseListPage.shouldContainTableOfReferralViews(assessPaths)
 
-      caseListPage.shouldClearFilters()
+      filteredCaseListPage.shouldClearFilters()
 
       const clearedFilterListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
