@@ -116,6 +116,25 @@ context('Referral case lists', () => {
       caseListPage.clickPaginationPage(5)
       caseListPage.shouldBeOnPaginationPage(5)
     })
+
+    it('does not show the table and displays a message when there are no referrals', () => {
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'open' } },
+        referralViews: [],
+      })
+
+      const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
+      cy.visit(path)
+
+      const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders: openReferralsColumnHeaders,
+        referralViews: [],
+      })
+      caseListPage.shouldContainStatusNavigation('open')
+      caseListPage.shouldNotContainTable()
+      caseListPage.shouldNotContainPagination()
+      caseListPage.shouldContainText('You have no open referrals.')
+    })
   })
 
   describe('when viewing draft referrals', () => {

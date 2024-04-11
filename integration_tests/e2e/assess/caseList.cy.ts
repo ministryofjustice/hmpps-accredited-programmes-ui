@@ -129,6 +129,28 @@ context('Referral case lists', () => {
       caseListPage.shouldBeOnPaginationPage(5)
     })
 
+    it('does not show the table and displays a message when there are no referrals', () => {
+      cy.task('stubFindReferralViews', {
+        organisationId: 'MRI',
+        referralViews: [],
+        statusGroup: { equalTo: 'open' },
+      })
+  
+      const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
+      cy.visit(path)
+  
+      const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders,
+        course: limeCourse,
+        referralViews: [],
+      })
+      caseListPage.shouldContainCourseNavigation(path, courses)
+      caseListPage.shouldHaveSelectedFilterValues('', '')
+      caseListPage.shouldNotContainTable()
+      caseListPage.shouldNotContainPagination()
+      caseListPage.shouldContainText('You have no open referrals.')
+    })
+
     describe('when using the filters', () => {
       it('shows the correct information', () => {
         const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })

@@ -62,10 +62,15 @@
     items: subNavigationItems
   }) }}
 
-  {{ govukTable({
-    head: tableHeadings,
-    rows: tableRows
-  }) }}
+  {% if tableRows | length %}
+    {{ govukTable({
+      head: tableHeadings,
+      rows: tableRows
+    }) }}
 
-  {{ govukPagination(pagination) }}
+    {{ govukPagination(pagination) }}
+  {% else %}
+    <p class="govuk-body">You have no {{ referralStatusGroup }} referrals.</p>
+  {% endif %}
+
 {% endblock content %}
