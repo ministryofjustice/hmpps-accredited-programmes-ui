@@ -107,6 +107,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldHavePersonDetails(person)
         programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
+        programmeHistoryPage.shouldContainHomeLink()
         programmeHistoryPage.shouldNotContainSuccessMessage()
         programmeHistoryPage.shouldContainPreHistoryText()
         programmeHistoryPage.shouldContainPreHistoryParagraph()
@@ -164,6 +165,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldHavePersonDetails(person)
         programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
+        programmeHistoryPage.shouldContainHomeLink()
         programmeHistoryPage.shouldNotContainSuccessMessage()
         programmeHistoryPage.shouldContainNoHistoryText()
         programmeHistoryPage.shouldContainNoHistoryParagraphs()
@@ -215,6 +217,7 @@ context('Programme history', () => {
           selectProgrammePage.shouldHavePersonDetails(person)
           selectProgrammePage.shouldContainNavigation(newParticipationPath)
           selectProgrammePage.shouldContainBackLink(referPaths.new.programmeHistory.index({ referralId: referral.id }))
+          selectProgrammePage.shouldContainHomeLink()
           selectProgrammePage.shouldContainCourseOptions()
           selectProgrammePage.shouldNotDisplayOtherCourseInput()
           selectProgrammePage.shouldDisplayOtherCourseInput()
@@ -282,6 +285,7 @@ context('Programme history', () => {
           selectProgrammePage.shouldHavePersonDetails(person)
           selectProgrammePage.shouldContainNavigation(courseParticipationWithKnownCourseNamePath)
           selectProgrammePage.shouldContainBackLink(referPaths.new.programmeHistory.index({ referralId: referral.id }))
+          selectProgrammePage.shouldContainHomeLink()
           selectProgrammePage.shouldContainCourseOptions()
           selectProgrammePage.shouldHaveSelectedCourse(courseParticipationWithKnownCourseName.courseName, true)
           selectProgrammePage.shouldNotDisplayOtherCourseInput()
@@ -297,6 +301,7 @@ context('Programme history', () => {
           selectProgrammePage.shouldHavePersonDetails(person)
           selectProgrammePage.shouldContainNavigation(courseParticipationWithUnknownCourseNamePath)
           selectProgrammePage.shouldContainBackLink(referPaths.new.programmeHistory.index({ referralId: referral.id }))
+          selectProgrammePage.shouldContainHomeLink()
           selectProgrammePage.shouldContainCourseOptions()
           selectProgrammePage.shouldDisplayOtherCourseInput()
           selectProgrammePage.shouldHaveSelectedCourse(courseParticipationWithUnknownCourseName.courseName, false)
@@ -372,6 +377,7 @@ context('Programme history', () => {
             referralId: referral.id,
           }),
         )
+        programmeHistoryDetailsPage.shouldContainHomeLink()
         programmeHistoryDetailsPage.shouldHaveCorrectFormValues()
         programmeHistoryDetailsPage.shouldContainSettingRadioItems()
         programmeHistoryDetailsPage.shouldNotDisplayCommunityLocationInput()
@@ -672,6 +678,7 @@ context('Programme history', () => {
       deleteProgrammeHistoryPage.shouldContainBackLink(
         referPaths.new.programmeHistory.index({ referralId: referral.id }),
       )
+      deleteProgrammeHistoryPage.shouldContainHomeLink()
       deleteProgrammeHistoryPage.shouldContainHistorySummaryCards(
         [courseParticipationWithKnownCourseNamePresenter],
         referral.id,

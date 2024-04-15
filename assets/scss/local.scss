@@ -6,6 +6,19 @@
   white-space: pre-wrap;
 }
 
+.secondary-navigation {
+  display: flex;
+  align-items: baseline;
+  gap: govuk-spacing(3);
+
+  .secondary-navigation__home-link {
+    flex: 1;
+    text-align: right;
+    margin-top: govuk-spacing(3);
+    margin-bottom: govuk-spacing(3);
+  }
+}
+
 .filters {
   @include govuk-responsive-padding(3);
   @include govuk-responsive-margin(7, 'bottom');

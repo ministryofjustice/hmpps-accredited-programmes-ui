@@ -188,6 +188,10 @@ export default abstract class Page {
       })
   }
 
+  shouldContainHomeLink(): void {
+    cy.get('[data-testid=home-link]').should('have.attr', 'href', '/')
+  }
+
   shouldContainImportedFromText(source: 'Nomis' | 'OASys', dataTestId = 'imported-from-text'): void {
     cy.get(`[data-testid="${dataTestId}"]`).then(importedFromElement => {
       const { actual, expected } = Helpers.parseHtml(
@@ -593,6 +597,10 @@ export default abstract class Page {
 
   shouldNotContainButtonLink(): void {
     cy.get('.govuk-button').should('not.exist')
+  }
+
+  shouldNotContainHomeLink(): void {
+    cy.get('[data-testid=home-link]').should('not.exist')
   }
 
   shouldNotContainLink(href: string): void {

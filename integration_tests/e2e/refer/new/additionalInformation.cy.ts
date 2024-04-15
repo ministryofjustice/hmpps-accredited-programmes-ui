@@ -49,6 +49,7 @@ context('Additional information', () => {
     additionalInformationPage.shouldHavePersonDetails(person)
     additionalInformationPage.shouldContainNavigation(path)
     additionalInformationPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
+    additionalInformationPage.shouldContainHomeLink()
     additionalInformationPage.shouldContainInstructions()
     additionalInformationPage.shouldContainAdditionalInformationTextArea()
     additionalInformationPage.shouldContainWarningText(

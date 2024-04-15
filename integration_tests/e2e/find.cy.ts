@@ -26,6 +26,7 @@ context('Find', () => {
 
       const coursesPage = Page.verifyOnPage(CoursesPage)
       coursesPage.shouldContainNavigation(path)
+      coursesPage.shouldContainHomeLink()
 
       const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
 
@@ -58,6 +59,7 @@ context('Find', () => {
       const coursePage = Page.verifyOnPage(CoursePage, courses[0])
       coursePage.shouldContainNavigation(path)
       coursePage.shouldContainBackLink(findPaths.index({}))
+      coursePage.shouldContainHomeLink()
       coursePage.shouldHaveCourse()
       coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
     })
@@ -84,6 +86,7 @@ context('Find', () => {
         })
         courseOfferingPage.shouldContainNavigation(path)
         courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
+        courseOfferingPage.shouldContainHomeLink()
         courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)
         courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
         courseOfferingPage.shouldNotContainSecondaryContactEmailSummaryListItem()
@@ -111,6 +114,7 @@ context('Find', () => {
         })
         courseOfferingPage.shouldContainNavigation(path)
         courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
+        courseOfferingPage.shouldContainHomeLink()
         courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)
         courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
         courseOfferingPage.shouldNotContainMakeAReferralButtonLink()

@@ -40,6 +40,11 @@ context('App', () => {
       const indexPage = Page.verifyOnPage(IndexPage)
       indexPage.shouldNotContainNavigation()
     })
+
+    it('does not show the home link on the index page', () => {
+      const indexPage = Page.verifyOnPage(IndexPage)
+      indexPage.shouldNotContainHomeLink()
+    })
   })
 
   describe('When the user has the `ACP_REFERRER` role', () => {

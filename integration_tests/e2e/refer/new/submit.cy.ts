@@ -122,6 +122,7 @@ context('Submitting a referral', () => {
       checkAnswersPage.shouldHavePersonDetails(person)
       checkAnswersPage.shouldContainNavigation(path)
       checkAnswersPage.shouldContainBackLink(referPaths.new.show({ referralId: submittableReferral.id }))
+      checkAnswersPage.shouldContainHomeLink()
       checkAnswersPage.shouldHaveApplicationSummary()
       checkAnswersPage.shouldContainPersonSummaryList(person)
       checkAnswersPage.shouldHaveProgrammeHistory()
