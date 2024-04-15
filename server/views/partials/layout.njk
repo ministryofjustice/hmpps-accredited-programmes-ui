@@ -61,38 +61,19 @@
     html: 'This is a new service - your <a class="govuk-link" href="' + feedbackUrl + '">feedback</a> will help us to improve it.'
   }) }}
 
-  {% block primaryNavigation %}
-    {% set primaryNavigationItems = [
-      {
-        text: 'List of programmes',
-        href: findPaths.index({}),
-        active: currentPath === (findPaths.index({}))
-      }
-    ] %}
-
-    {% for role in user.roles %}
-      {% if role === 'ROLE_ACP_REFERRER' %}
-        {% set primaryNavigationItems = primaryNavigationItems.concat([
-          {
-            text: 'My referrals',
-            href: referPaths
-              .caseList
-              .index({}),
-            active: isMyReferralsPage
-          }
-        ]) %}
-      {% endif %}
-    {% endfor %}
-
-    {{ mojPrimaryNavigation({
-      label: 'Primary navigation',
-      items: primaryNavigationItems
-    }) }}
-  {% endblock primaryNavigation %}
+  {% block primaryNavigation %}{% endblock primaryNavigation %}
 
   {% block personBanner %}{% endblock personBanner %}
 
-  {% block backLink %}{% endblock backLink %}
+  <div class="secondary-navigation">
+    {% block backLink %}{% endblock backLink %}
+
+    {% block homeLink %}
+      <div class="secondary-navigation__home-link">
+        <a href="/" class="govuk-link--no-visited-state" data-testid="home-link">Go to Accredited Programmes homepage</a>
+      </div>
+    {% endblock homeLink %}
+  </div>
 {% endblock beforeContent %}
 
 {% block footer %}
@@ -101,7 +82,7 @@
   {% else %}
     {% include "./footer.njk" %}
   {% endif %}
-{% endblock %}
+{% endblock footer %}
 
 {% block bodyEnd %}
   {# Run JavaScript at end of the

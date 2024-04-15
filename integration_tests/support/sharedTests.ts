@@ -165,7 +165,7 @@ const sharedTests = {
         referral,
       })
       additionalInformationPage.shouldHavePersonDetails(person)
-      additionalInformationPage.shouldContainNavigation(path)
+      additionalInformationPage.shouldContainHomeLink()
       additionalInformationPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       additionalInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       additionalInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -193,7 +193,7 @@ const sharedTests = {
         person,
       })
       offenceHistoryPage.shouldHavePersonDetails(person)
-      offenceHistoryPage.shouldContainNavigation(path)
+      offenceHistoryPage.shouldContainHomeLink()
       offenceHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       offenceHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -219,7 +219,7 @@ const sharedTests = {
       })
 
       programmeHistoryPage.shouldHavePersonDetails(person)
-      programmeHistoryPage.shouldContainNavigation(path)
+      programmeHistoryPage.shouldContainHomeLink()
       programmeHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       programmeHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -277,7 +277,7 @@ const sharedTests = {
         person,
       })
       offenceHistoryPage.shouldHavePersonDetails(person)
-      offenceHistoryPage.shouldContainNavigation(path)
+      offenceHistoryPage.shouldContainHomeLink()
       offenceHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       offenceHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -299,7 +299,7 @@ const sharedTests = {
         person,
       })
       personalDetailsPage.shouldHavePersonDetails(person)
-      personalDetailsPage.shouldContainNavigation(path)
+      personalDetailsPage.shouldContainHomeLink()
       personalDetailsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       personalDetailsPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       personalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -331,7 +331,7 @@ const sharedTests = {
       ]
 
       programmeHistoryPage.shouldHavePersonDetails(person)
-      programmeHistoryPage.shouldContainNavigation(path)
+      programmeHistoryPage.shouldContainHomeLink()
       programmeHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       programmeHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -359,7 +359,7 @@ const sharedTests = {
         person,
       })
       sentenceInformationPage.shouldHavePersonDetails(person)
-      sentenceInformationPage.shouldContainNavigation(path)
+      sentenceInformationPage.shouldContainHomeLink()
       sentenceInformationPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       sentenceInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -394,7 +394,7 @@ const sharedTests = {
         person,
       })
       sentenceInformationPage.shouldHavePersonDetails(person)
-      sentenceInformationPage.shouldContainNavigation(path)
+      sentenceInformationPage.shouldContainHomeLink()
       sentenceInformationPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       sentenceInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
       sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
@@ -423,7 +423,7 @@ const sharedTests = {
         course,
       })
       attitudePage.shouldHavePersonDetails(person)
-      attitudePage.shouldContainNavigation(path)
+      attitudePage.shouldContainHomeLink()
       attitudePage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       attitudePage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       attitudePage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -448,7 +448,7 @@ const sharedTests = {
         course,
       })
       attitudesPage.shouldHavePersonDetails(person)
-      attitudesPage.shouldContainNavigation(path)
+      attitudesPage.shouldContainHomeLink()
       attitudesPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       attitudesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       attitudesPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -473,7 +473,7 @@ const sharedTests = {
         psychiatric,
       })
       emotionalWellbeingPage.shouldHavePersonDetails(person)
-      emotionalWellbeingPage.shouldContainNavigation(path)
+      emotionalWellbeingPage.shouldContainHomeLink()
       emotionalWellbeingPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       emotionalWellbeingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       emotionalWellbeingPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -498,7 +498,7 @@ const sharedTests = {
         psychiatric: {},
       })
       emotionalWellbeingPage.shouldHavePersonDetails(person)
-      emotionalWellbeingPage.shouldContainNavigation(path)
+      emotionalWellbeingPage.shouldContainHomeLink()
       emotionalWellbeingPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       emotionalWellbeingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       emotionalWellbeingPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -523,7 +523,7 @@ const sharedTests = {
         health,
       })
       healthPage.shouldHavePersonDetails(person)
-      healthPage.shouldContainNavigation(path)
+      healthPage.shouldContainHomeLink()
       healthPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       healthPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       healthPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -548,7 +548,7 @@ const sharedTests = {
         health: {},
       })
       healthPage.shouldHavePersonDetails(person)
-      healthPage.shouldContainNavigation(path)
+      healthPage.shouldContainHomeLink()
       healthPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       healthPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       healthPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -572,7 +572,7 @@ const sharedTests = {
         learningNeeds,
       })
       learningNeedsPage.shouldHavePersonDetails(person)
-      learningNeedsPage.shouldContainNavigation(path)
+      learningNeedsPage.shouldContainHomeLink()
       learningNeedsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       learningNeedsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       learningNeedsPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -598,7 +598,7 @@ const sharedTests = {
         learningNeeds: {},
       })
       learningNeedsPage.shouldHavePersonDetails(person)
-      learningNeedsPage.shouldContainNavigation(path)
+      learningNeedsPage.shouldContainHomeLink()
       learningNeedsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       learningNeedsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       learningNeedsPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -623,7 +623,7 @@ const sharedTests = {
         lifestyle,
       })
       lifestyleAndAssociatesPage.shouldHavePersonDetails(person)
-      lifestyleAndAssociatesPage.shouldContainNavigation(path)
+      lifestyleAndAssociatesPage.shouldContainHomeLink()
       lifestyleAndAssociatesPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       lifestyleAndAssociatesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -648,7 +648,7 @@ const sharedTests = {
         lifestyle: {},
       })
       lifestyleAndAssociatesPage.shouldHavePersonDetails(person)
-      lifestyleAndAssociatesPage.shouldContainNavigation(path)
+      lifestyleAndAssociatesPage.shouldContainHomeLink()
       lifestyleAndAssociatesPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       lifestyleAndAssociatesPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -673,7 +673,7 @@ const sharedTests = {
         offenceDetail,
       })
       offenceAnalysisPage.shouldHavePersonDetails(person)
-      offenceAnalysisPage.shouldContainNavigation(path)
+      offenceAnalysisPage.shouldContainHomeLink()
       offenceAnalysisPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       offenceAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       offenceAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -704,7 +704,7 @@ const sharedTests = {
         offenceDetail: {},
       })
       offenceAnalysisPage.shouldHavePersonDetails(person)
-      offenceAnalysisPage.shouldContainNavigation(path)
+      offenceAnalysisPage.shouldContainHomeLink()
       offenceAnalysisPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       offenceAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       offenceAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -728,7 +728,7 @@ const sharedTests = {
         relationships,
       })
       relationshipsPage.shouldHavePersonDetails(person)
-      relationshipsPage.shouldContainNavigation(path)
+      relationshipsPage.shouldContainHomeLink()
       relationshipsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       relationshipsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       relationshipsPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -753,7 +753,7 @@ const sharedTests = {
         relationships: {},
       })
       relationshipsPage.shouldHavePersonDetails(person)
-      relationshipsPage.shouldContainNavigation(path)
+      relationshipsPage.shouldContainHomeLink()
       relationshipsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       relationshipsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       relationshipsPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -777,7 +777,7 @@ const sharedTests = {
         risksAndAlerts,
       })
       risksAndAlertsPage.shouldHavePersonDetails(person)
-      risksAndAlertsPage.shouldContainNavigation(path)
+      risksAndAlertsPage.shouldContainHomeLink()
       risksAndAlertsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -808,7 +808,7 @@ const sharedTests = {
         risksAndAlerts: {},
       })
       risksAndAlertsPage.shouldHavePersonDetails(person)
-      risksAndAlertsPage.shouldContainNavigation(path)
+      risksAndAlertsPage.shouldContainHomeLink()
       risksAndAlertsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -832,7 +832,7 @@ const sharedTests = {
         roshAnalysis,
       })
       roshAnalysisPage.shouldHavePersonDetails(person)
-      roshAnalysisPage.shouldContainNavigation(path)
+      roshAnalysisPage.shouldContainHomeLink()
       roshAnalysisPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       roshAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       roshAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -857,7 +857,7 @@ const sharedTests = {
         roshAnalysis: {},
       })
       roshAnalysisPage.shouldHavePersonDetails(person)
-      roshAnalysisPage.shouldContainNavigation(path)
+      roshAnalysisPage.shouldContainHomeLink()
       roshAnalysisPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       roshAnalysisPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       roshAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -881,7 +881,7 @@ const sharedTests = {
         course,
       })
       thinkingAndBehavingPage.shouldHavePersonDetails(person)
-      thinkingAndBehavingPage.shouldContainNavigation(path)
+      thinkingAndBehavingPage.shouldContainHomeLink()
       thinkingAndBehavingPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       thinkingAndBehavingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       thinkingAndBehavingPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -906,7 +906,7 @@ const sharedTests = {
         course,
       })
       thinkingAndBehavingPage.shouldHavePersonDetails(person)
-      thinkingAndBehavingPage.shouldContainNavigation(path)
+      thinkingAndBehavingPage.shouldContainHomeLink()
       thinkingAndBehavingPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       thinkingAndBehavingPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
       thinkingAndBehavingPage.shouldContainShowReferralSubHeading('Risks and needs')
@@ -953,7 +953,7 @@ const sharedTests = {
       const statusHistoryPage = Page.verifyOnPage(StatusHistoryPage, { course })
       statusHistoryPage.shouldHavePersonDetails(person)
       statusHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
-      statusHistoryPage.shouldContainNavigation(path)
+      statusHistoryPage.shouldContainHomeLink()
       statusHistoryPage.shouldContainShowReferralSubNavigation(path, 'statusHistory', referral.id)
       statusHistoryPage.shouldContainShowReferralSubHeading('Status history')
       statusHistoryPage.shouldContainStatusHistoryTimeline(referralStatusHistoryPresenter)

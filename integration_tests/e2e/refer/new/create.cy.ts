@@ -57,8 +57,8 @@ context('Searching for a person and creating a referral', () => {
     cy.visit(path)
 
     const startReferralPage = Page.verifyOnPage(NewReferralStartPage, { course, courseOffering, organisation })
-    startReferralPage.shouldContainNavigation(path)
     startReferralPage.shouldContainBackLink(findPaths.offerings.show({ courseOfferingId: courseOffering.id }))
+    startReferralPage.shouldContainHomeLink()
     startReferralPage.shouldContainOrganisationAndCourseHeading(startReferralPage)
     startReferralPage.shouldContainAudienceTag(startReferralPage.course.audienceTag)
     startReferralPage.shouldHaveProcessInformation()
@@ -76,16 +76,15 @@ context('Searching for a person and creating a referral', () => {
 
     it("allows users to search for a person and confirm that person's details", () => {
       const findPersonPage = Page.verifyOnPage(NewReferralFindPersonPage)
-      findPersonPage.shouldContainNavigation(path)
       findPersonPage.shouldContainBackLink(referPaths.new.start({ courseOfferingId: courseOffering.id }))
+      findPersonPage.shouldContainHomeLink()
       findPersonPage.shouldContainIdentifierForm()
 
       findPersonPage.searchForPerson(prisoner.prisonerNumber)
 
       const confirmPersonPage = Page.verifyOnPage(NewReferralConfirmPersonPage, { course, courseOffering, person })
-
-      confirmPersonPage.shouldContainNavigation(path)
       confirmPersonPage.shouldContainBackLink(referPaths.new.new({ courseOfferingId: courseOffering.id }))
+      confirmPersonPage.shouldContainHomeLink()
       confirmPersonPage.shouldContainContinueButton()
       confirmPersonPage.shouldContainDifferentIdentifierLink()
       confirmPersonPage.shouldHavePersonInformation()

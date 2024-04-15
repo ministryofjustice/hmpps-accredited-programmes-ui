@@ -47,8 +47,8 @@ context('OASys confirmation', () => {
 
     const confirmOasysPage = Page.verifyOnPage(NewReferralConfirmOasysPage, { person, referral })
     confirmOasysPage.shouldHavePersonDetails(person)
-    confirmOasysPage.shouldContainNavigation(path)
     confirmOasysPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
+    confirmOasysPage.shouldContainHomeLink()
     confirmOasysPage.shouldContainOasysAccessParagraph()
     confirmOasysPage.shouldContainWarningText(
       'You must confirm that the OASys information is accurate before submitting your application.',

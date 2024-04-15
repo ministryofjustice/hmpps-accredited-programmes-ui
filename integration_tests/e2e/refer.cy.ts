@@ -37,7 +37,8 @@ context('General Refer functionality', () => {
       const path = referPaths.new.programmeHistory.index({ referralId: referral.id })
       cy.visit(path)
 
-      Page.verifyOnPage(NewReferralCompletePage)
+      const referralCompletePage = Page.verifyOnPage(NewReferralCompletePage)
+      referralCompletePage.shouldNotContainHomeLink()
     })
   })
 

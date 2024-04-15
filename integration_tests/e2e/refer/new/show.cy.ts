@@ -62,7 +62,7 @@ context('Showing the referral task list and person page', () => {
 
     const taskListPage = Page.verifyOnPage(NewReferralTaskListPage, { course, courseOffering, organisation, referral })
     taskListPage.shouldHavePersonDetails(person)
-    taskListPage.shouldContainNavigation(path)
+    taskListPage.shouldContainHomeLink()
     taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
     taskListPage.shouldContainAudienceTag(taskListPage.course.audienceTag)
     taskListPage.shouldContainTaskList()
@@ -75,8 +75,8 @@ context('Showing the referral task list and person page', () => {
 
     const showPersonPage = Page.verifyOnPage(NewReferralShowPersonPage, { person })
     showPersonPage.shouldHavePersonDetails(person)
-    showPersonPage.shouldContainNavigation(path)
     showPersonPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
+    showPersonPage.shouldContainHomeLink()
     showPersonPage.shouldContainPersonSummaryList(person)
   })
 })
