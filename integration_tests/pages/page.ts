@@ -221,30 +221,6 @@ export default abstract class Page {
     return cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }
 
-  shouldContainNavigation(currentPath: string): void {
-    const navigationItems = [
-      { href: '/programmes', text: 'List of programmes' },
-      { href: '/refer/referrals/case-list', text: 'My referrals' },
-    ]
-
-    cy.get('.moj-primary-navigation__item').each((navigationItemElement, navigationItemElementIndex) => {
-      const { href, text } = navigationItems[navigationItemElementIndex]
-
-      const { actual, expected } = Helpers.parseHtml(navigationItemElement, text)
-      expect(actual).to.equal(expected)
-
-      cy.wrap(navigationItemElement).within(() => {
-        cy.get('a').should('have.attr', 'href', href)
-
-        if (currentPath === href) {
-          cy.get('a').should('have.attr', 'aria-current', 'page')
-        } else {
-          cy.get('a').should('not.have.attr', 'aria-current', 'page')
-        }
-      })
-    })
-  }
-
   shouldContainNotificationBanner(text: string, notificationBannerElement: JQuery<HTMLElement>): void {
     cy.wrap(notificationBannerElement).within(() => {
       cy.get('.govuk-notification-banner__content').then(contentElement => {

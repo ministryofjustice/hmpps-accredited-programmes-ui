@@ -61,34 +61,7 @@
     html: 'This is a new service - your <a class="govuk-link" href="' + feedbackUrl + '">feedback</a> will help us to improve it.'
   }) }}
 
-  {% block primaryNavigation %}
-    {% set primaryNavigationItems = [
-      {
-        text: 'List of programmes',
-        href: findPaths.index({}),
-        active: currentPath === (findPaths.index({}))
-      }
-    ] %}
-
-    {% for role in user.roles %}
-      {% if role === 'ROLE_ACP_REFERRER' %}
-        {% set primaryNavigationItems = primaryNavigationItems.concat([
-          {
-            text: 'My referrals',
-            href: referPaths
-              .caseList
-              .index({}),
-            active: isMyReferralsPage
-          }
-        ]) %}
-      {% endif %}
-    {% endfor %}
-
-    {{ mojPrimaryNavigation({
-      label: 'Primary navigation',
-      items: primaryNavigationItems
-    }) }}
-  {% endblock primaryNavigation %}
+  {% block primaryNavigation %}{% endblock primaryNavigation %}
 
   {% block personBanner %}{% endblock personBanner %}
 

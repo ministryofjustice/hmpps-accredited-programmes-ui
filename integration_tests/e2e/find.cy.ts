@@ -25,7 +25,6 @@ context('Find', () => {
       cy.visit(path)
 
       const coursesPage = Page.verifyOnPage(CoursesPage)
-      coursesPage.shouldContainNavigation(path)
       coursesPage.shouldContainHomeLink()
 
       const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
@@ -57,7 +56,6 @@ context('Find', () => {
       cy.visit(path)
 
       const coursePage = Page.verifyOnPage(CoursePage, courses[0])
-      coursePage.shouldContainNavigation(path)
       coursePage.shouldContainBackLink(findPaths.index({}))
       coursePage.shouldContainHomeLink()
       coursePage.shouldHaveCourse()
@@ -84,7 +82,6 @@ context('Find', () => {
           courseOffering,
           organisation,
         })
-        courseOfferingPage.shouldContainNavigation(path)
         courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
         courseOfferingPage.shouldContainHomeLink()
         courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)
@@ -112,7 +109,6 @@ context('Find', () => {
           courseOffering,
           organisation,
         })
-        courseOfferingPage.shouldContainNavigation(path)
         courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
         courseOfferingPage.shouldContainHomeLink()
         courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)

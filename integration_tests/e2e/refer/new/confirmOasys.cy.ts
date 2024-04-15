@@ -47,7 +47,6 @@ context('OASys confirmation', () => {
 
     const confirmOasysPage = Page.verifyOnPage(NewReferralConfirmOasysPage, { person, referral })
     confirmOasysPage.shouldHavePersonDetails(person)
-    confirmOasysPage.shouldContainNavigation(path)
     confirmOasysPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
     confirmOasysPage.shouldContainHomeLink()
     confirmOasysPage.shouldContainOasysAccessParagraph()

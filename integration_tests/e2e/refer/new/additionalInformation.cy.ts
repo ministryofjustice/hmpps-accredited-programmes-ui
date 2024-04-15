@@ -47,7 +47,6 @@ context('Additional information', () => {
 
     const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
     additionalInformationPage.shouldHavePersonDetails(person)
-    additionalInformationPage.shouldContainNavigation(path)
     additionalInformationPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
     additionalInformationPage.shouldContainHomeLink()
     additionalInformationPage.shouldContainInstructions()

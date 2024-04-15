@@ -105,7 +105,6 @@ context('Programme history', () => {
           referral,
         })
         programmeHistoryPage.shouldHavePersonDetails(person)
-        programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
         programmeHistoryPage.shouldContainHomeLink()
         programmeHistoryPage.shouldNotContainSuccessMessage()
@@ -163,7 +162,6 @@ context('Programme history', () => {
           referral,
         })
         programmeHistoryPage.shouldHavePersonDetails(person)
-        programmeHistoryPage.shouldContainNavigation(programmeHistoryPath)
         programmeHistoryPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
         programmeHistoryPage.shouldContainHomeLink()
         programmeHistoryPage.shouldNotContainSuccessMessage()
@@ -215,7 +213,6 @@ context('Programme history', () => {
         it('shows the select programme page', () => {
           const selectProgrammePage = Page.verifyOnPage(NewReferralSelectProgrammePage, { courses })
           selectProgrammePage.shouldHavePersonDetails(person)
-          selectProgrammePage.shouldContainNavigation(newParticipationPath)
           selectProgrammePage.shouldContainBackLink(referPaths.new.programmeHistory.index({ referralId: referral.id }))
           selectProgrammePage.shouldContainHomeLink()
           selectProgrammePage.shouldContainCourseOptions()
@@ -283,7 +280,6 @@ context('Programme history', () => {
 
           const selectProgrammePage = Page.verifyOnPage(NewReferralSelectProgrammePage, { courses })
           selectProgrammePage.shouldHavePersonDetails(person)
-          selectProgrammePage.shouldContainNavigation(courseParticipationWithKnownCourseNamePath)
           selectProgrammePage.shouldContainBackLink(referPaths.new.programmeHistory.index({ referralId: referral.id }))
           selectProgrammePage.shouldContainHomeLink()
           selectProgrammePage.shouldContainCourseOptions()
@@ -299,7 +295,6 @@ context('Programme history', () => {
 
           const selectProgrammePage = Page.verifyOnPage(NewReferralSelectProgrammePage, { courses })
           selectProgrammePage.shouldHavePersonDetails(person)
-          selectProgrammePage.shouldContainNavigation(courseParticipationWithUnknownCourseNamePath)
           selectProgrammePage.shouldContainBackLink(referPaths.new.programmeHistory.index({ referralId: referral.id }))
           selectProgrammePage.shouldContainHomeLink()
           selectProgrammePage.shouldContainCourseOptions()
@@ -369,7 +364,6 @@ context('Programme history', () => {
           courseParticipation: newCourseParticipation,
           person,
         })
-        programmeHistoryDetailsPage.shouldContainNavigation(newCourseParticipationDetailsPath)
         programmeHistoryDetailsPage.shouldHavePersonDetails(person)
         programmeHistoryDetailsPage.shouldContainBackLink(
           referPaths.new.programmeHistory.editProgramme({
@@ -674,7 +668,6 @@ context('Programme history', () => {
         referral,
       })
       deleteProgrammeHistoryPage.shouldHavePersonDetails(person)
-      deleteProgrammeHistoryPage.shouldContainNavigation(path)
       deleteProgrammeHistoryPage.shouldContainBackLink(
         referPaths.new.programmeHistory.index({ referralId: referral.id }),
       )
