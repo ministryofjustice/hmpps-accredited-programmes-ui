@@ -89,6 +89,18 @@ export default class CaseListUtils {
     return queryParams
   }
 
+  static referSubNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
+    return referralStatusGroups.map(referralStatusGroup => {
+      const path = referPaths.caseList.show({ referralStatusGroup })
+
+      return {
+        active: currentPath === path,
+        href: path,
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+      }
+    })
+  }
+
   static sortableTableHeadings(
     basePath: string,
     columns: Record<string, CaseListColumnHeader>,
@@ -129,18 +141,6 @@ export default class CaseListUtils {
     statusDescription?: Referral['statusDescription'],
   ): string {
     return `<strong class="govuk-tag govuk-tag--${statusColour}">${statusDescription || 'Unknown status'}</strong>`
-  }
-
-  static subNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
-    return referralStatusGroups.map(referralStatusGroup => {
-      const path = referPaths.caseList.show({ referralStatusGroup })
-
-      return {
-        active: currentPath === path,
-        href: path,
-        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
-      }
-    })
   }
 
   static tableRowContent(
