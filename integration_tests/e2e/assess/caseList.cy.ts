@@ -85,70 +85,28 @@ context('Referral case lists', () => {
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
     })
 
-    it('includes pagination', () => {
-      cy.task('stubFindReferralViews', {
-        organisationId: 'MRI',
-        queryParameters: {
-          page: { equalTo: '3' },
+    describe('when there are no referrals', () => {
+      it('does not show the table or filters ', () => {
+        cy.task('stubFindReferralViews', {
+          organisationId: 'MRI',
+          referralViews: [],
           statusGroup: { equalTo: 'open' },
-        },
-        referralViews: limeCourseReferralViews,
-        totalPages: 7,
-      })
-      cy.task('stubFindReferralViews', {
-        organisationId: 'MRI',
-        queryParameters: {
-          page: { equalTo: '4' },
-          statusGroup: { equalTo: 'open' },
-        },
-        referralViews: limeCourseReferralViews,
-        totalPages: 7,
-      })
+        })
 
-      const path = PathUtils.pathWithQuery(
-        assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' }),
-        [{ key: 'page', value: '4' }],
-      )
-      cy.visit(path)
+        const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
+        cy.visit(path)
 
-      const caseListPage = Page.verifyOnPage(CaseListPage, {
-        columnHeaders,
-        course: limeCourse,
-        referralViews: limeCourseReferralViews,
+        const caseListPage = Page.verifyOnPage(CaseListPage, {
+          columnHeaders,
+          course: limeCourse,
+          referralViews: [],
+        })
+        caseListPage.shouldContainCourseNavigation(path, courses)
+        caseListPage.shouldNotContainFilters()
+        caseListPage.shouldNotContainTable()
+        caseListPage.shouldNotContainPagination()
+        caseListPage.shouldContainText('You have no open referrals.')
       })
-      caseListPage.shouldContainPaginationPreviousButtonLink()
-      caseListPage.shouldContainPaginationNextButtonLink()
-      caseListPage.shouldContainPaginationItems(['1', '&ctdot;', '3', '4', '5', '&ctdot;', '7'])
-      caseListPage.shouldBeOnPaginationPage(4)
-
-      caseListPage.clickPaginationNextButton()
-      caseListPage.shouldBeOnPaginationPage(5)
-      caseListPage.clickPaginationPreviousButton()
-      caseListPage.shouldBeOnPaginationPage(4)
-      caseListPage.clickPaginationPage(5)
-      caseListPage.shouldBeOnPaginationPage(5)
-    })
-
-    it('does not show the table and displays a message when there are no referrals', () => {
-      cy.task('stubFindReferralViews', {
-        organisationId: 'MRI',
-        referralViews: [],
-        statusGroup: { equalTo: 'open' },
-      })
-  
-      const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
-      cy.visit(path)
-  
-      const caseListPage = Page.verifyOnPage(CaseListPage, {
-        columnHeaders,
-        course: limeCourse,
-        referralViews: [],
-      })
-      caseListPage.shouldContainCourseNavigation(path, courses)
-      caseListPage.shouldHaveSelectedFilterValues('', '')
-      caseListPage.shouldNotContainTable()
-      caseListPage.shouldNotContainPagination()
-      caseListPage.shouldContainText('You have no open referrals.')
     })
 
     describe('when using the filters', () => {
@@ -200,6 +158,78 @@ context('Referral case lists', () => {
         caseListPage.shouldContainStatusNavigation('open', limeCourse.id)
         clearedFilterListPage.shouldContainTableOfReferralViews(assessPaths)
       })
+
+      describe('and there are no referrals for the applied filters', () => {
+        it('does not show the table and displays a message ', () => {
+          cy.task('stubFindReferralViews', {
+            organisationId: 'MRI',
+            referralViews: [],
+            statusGroup: { equalTo: 'open' },
+          })
+
+          const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
+          cy.visit(`${path}?strand=general+offence`)
+
+          const programmeStrandSelectedValue = 'general offence'
+
+          const caseListPage = Page.verifyOnPage(CaseListPage, {
+            columnHeaders,
+            course: limeCourse,
+            referralViews: [],
+          })
+          caseListPage.shouldContainCourseNavigation(path, courses)
+          caseListPage.shouldHaveSelectedFilterValues(programmeStrandSelectedValue, '')
+          caseListPage.shouldNotContainTable()
+          caseListPage.shouldNotContainPagination()
+          caseListPage.shouldContainText(
+            'No results found in open referrals. Clear the filters or try a different filter.',
+          )
+        })
+      })
+    })
+
+    it('includes pagination', () => {
+      cy.task('stubFindReferralViews', {
+        organisationId: 'MRI',
+        queryParameters: {
+          page: { equalTo: '3' },
+          statusGroup: { equalTo: 'open' },
+        },
+        referralViews: limeCourseReferralViews,
+        totalPages: 7,
+      })
+      cy.task('stubFindReferralViews', {
+        organisationId: 'MRI',
+        queryParameters: {
+          page: { equalTo: '4' },
+          statusGroup: { equalTo: 'open' },
+        },
+        referralViews: limeCourseReferralViews,
+        totalPages: 7,
+      })
+
+      const path = PathUtils.pathWithQuery(
+        assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' }),
+        [{ key: 'page', value: '4' }],
+      )
+      cy.visit(path)
+
+      const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders,
+        course: limeCourse,
+        referralViews: limeCourseReferralViews,
+      })
+      caseListPage.shouldContainPaginationPreviousButtonLink()
+      caseListPage.shouldContainPaginationNextButtonLink()
+      caseListPage.shouldContainPaginationItems(['1', '&ctdot;', '3', '4', '5', '&ctdot;', '7'])
+      caseListPage.shouldBeOnPaginationPage(4)
+
+      caseListPage.clickPaginationNextButton()
+      caseListPage.shouldBeOnPaginationPage(5)
+      caseListPage.clickPaginationPreviousButton()
+      caseListPage.shouldBeOnPaginationPage(4)
+      caseListPage.clickPaginationPage(5)
+      caseListPage.shouldBeOnPaginationPage(5)
     })
 
     describe('when visiting the index, without specifying a course', () => {

@@ -18,44 +18,48 @@
   <span class="govuk-caption-l">Referrals</span>
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
-  <div class="filters">
-    <h2 class="govuk-heading-m">Filters</h2>
-    <form class="form-controls" action="{{ action }}" method="post">
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+  {% if tableRows | length or(not tableRows | length and referralsFiltered) %}
 
-      {{ govukSelect({
-        id: "audience",
-        name: "audience",
-        label: {
-          text: "Programme strand"
-        },
-        items: audienceSelectItems,
-          attributes: {
-          "data-testid": "programme-strand-select"
-        }
-      }) }}
+    <div class="filters">
+      <h2 class="govuk-heading-m">Filters</h2>
+      <form class="form-controls" action="{{ action }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-      {{ govukSelect({
-        id: "status",
-        name: "status",
-        label: {
-          text: "Referral status"
-        },
-        items: referralStatusSelectItems,
-        attributes: {
-          "data-testid": "referral-status-select"
-        }
-      }) }}
-
-      <span class="govuk-button-group">
-        {{ govukButton({
-          text: "Apply filters"
+        {{ govukSelect({
+          id: "audience",
+          name: "audience",
+          label: {
+            text: "Programme strand"
+          },
+          items: audienceSelectItems,
+            attributes: {
+            "data-testid": "programme-strand-select"
+          }
         }) }}
 
-        <a href="{{ referralStatusGroup }}" class="govuk-link govuk-link--no-visited-state">Clear filters</a>
-      </span>
-    </form>
-  </div>
+        {{ govukSelect({
+          id: "status",
+          name: "status",
+          label: {
+            text: "Referral status"
+          },
+          items: referralStatusSelectItems,
+          attributes: {
+            "data-testid": "referral-status-select"
+          }
+        }) }}
+
+        <span class="govuk-button-group">
+          {{ govukButton({
+            text: "Apply filters"
+          }) }}
+
+          <a href="{{ referralStatusGroup }}" class="govuk-link govuk-link--no-visited-state">Clear filters</a>
+        </span>
+      </form>
+    </div>
+
+  {% endif %}
 
   {{ mojSubNavigation({
     label: 'Sub navigation',
@@ -70,7 +74,11 @@
 
     {{ govukPagination(pagination) }}
   {% else %}
-    <p class="govuk-body">You have no {{ referralStatusGroup }} referrals.</p>
+    {% if referralsFiltered %}
+      <p class="govuk-body">No results found in {{ referralStatusGroup }} referrals. Clear the filters or try a different filter.</p>
+    {% else %}
+      <p class="govuk-body">You have no {{ referralStatusGroup }} referrals.</p>
+    {% endif %}
   {% endif %}
 
 {% endblock content %}

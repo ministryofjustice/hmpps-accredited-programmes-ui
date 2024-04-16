@@ -52,6 +52,7 @@ export default class AssessCaseListController {
 
       const { courseId } = req.params
       const { page, status, strand: audience, sortColumn, sortDirection } = req.query as Record<string, string>
+      const referralsFiltered = !!status || !!audience
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
       const isValidReferralStatusGroup = ['open', 'closed'].includes(referralStatusGroup)
@@ -118,6 +119,7 @@ export default class AssessCaseListController {
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusGroup,
         referralStatusSelectItems: CaseListUtils.statusSelectItems(availableStatuses, status),
+        referralsFiltered,
         subNavigationItems: CaseListUtils.assessSubNavigationItems(req.path, courseId),
         tableHeadings: CaseListUtils.sortableTableHeadings(
           basePathExcludingSort,

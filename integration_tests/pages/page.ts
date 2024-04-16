@@ -579,6 +579,10 @@ export default abstract class Page {
     cy.get('.govuk-button').should('not.exist')
   }
 
+  shouldNotContainFilters(): void {
+    cy.get('.filters').should('not.exist')
+  }
+
   shouldNotContainHomeLink(): void {
     cy.get('[data-testid=home-link]').should('not.exist')
   }
