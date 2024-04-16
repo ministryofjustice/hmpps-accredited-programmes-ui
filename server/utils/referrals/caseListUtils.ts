@@ -10,6 +10,21 @@ import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam } from
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
+  static assessSubNavigationItems(
+    currentPath: Request['path'],
+    courseId: Course['id'],
+  ): Array<MojFrontendNavigationItem> {
+    return ['open', 'closed'].map(referralStatusGroup => {
+      const path = assessPaths.caseList.show({ courseId, referralStatusGroup })
+
+      return {
+        active: currentPath === path,
+        href: path,
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+      }
+    })
+  }
+
   static audienceSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
     return this.selectItems(
       [
@@ -89,6 +104,18 @@ export default class CaseListUtils {
     return queryParams
   }
 
+  static referSubNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
+    return referralStatusGroups.map(referralStatusGroup => {
+      const path = referPaths.caseList.show({ referralStatusGroup })
+
+      return {
+        active: currentPath === path,
+        href: path,
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+      }
+    })
+  }
+
   static sortableTableHeadings(
     basePath: string,
     columns: Record<string, CaseListColumnHeader>,
@@ -129,18 +156,6 @@ export default class CaseListUtils {
     statusDescription?: Referral['statusDescription'],
   ): string {
     return `<strong class="govuk-tag govuk-tag--${statusColour}">${statusDescription || 'Unknown status'}</strong>`
-  }
-
-  static subNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
-    return referralStatusGroups.map(referralStatusGroup => {
-      const path = referPaths.caseList.show({ referralStatusGroup })
-
-      return {
-        active: currentPath === path,
-        href: path,
-        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
-      }
-    })
   }
 
   static tableRowContent(

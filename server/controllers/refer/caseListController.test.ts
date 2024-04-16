@@ -99,7 +99,7 @@ describe('ReferCaseListController', () => {
           isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
-          subNavigationItems: CaseListUtils.subNavigationItems(request.path),
+          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
           tableHeadings,
           tableRows,
         })
@@ -112,7 +112,7 @@ describe('ReferCaseListController', () => {
           paginatedReferralViews.pageNumber,
           paginatedReferralViews.totalPages,
         )
-        expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
+        expect(CaseListUtils.referSubNavigationItems).toHaveBeenCalledWith(request.path)
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
           {
@@ -160,7 +160,7 @@ describe('ReferCaseListController', () => {
             isMyReferralsPage: true,
             pageHeading: 'My referrals',
             pagination,
-            subNavigationItems: CaseListUtils.subNavigationItems(request.path),
+            subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
             tableHeadings,
             tableRows,
           })
@@ -243,7 +243,7 @@ describe('ReferCaseListController', () => {
           isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
-          subNavigationItems: CaseListUtils.subNavigationItems(request.path),
+          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
           tableHeadings: [...tableHeadings, { text: 'Progress' }],
           tableRows,
         })
@@ -260,7 +260,7 @@ describe('ReferCaseListController', () => {
           referPaths.caseList.show({ referralStatusGroup: 'draft' }),
           queryParamsExcludingSort,
         )
-        expect(CaseListUtils.subNavigationItems).toHaveBeenCalledWith(request.path)
+        expect(CaseListUtils.referSubNavigationItems).toHaveBeenCalledWith(request.path)
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
           {

@@ -83,8 +83,8 @@ export default class AssessCaseListController {
         this.referenceDataService.getReferralStatuses(username),
       ])
 
-      const openReferralStatuses = referralStatuses.filter(
-        referralStatus => !referralStatus.closed && !referralStatus.draft,
+      const availableStatuses = referralStatuses.filter(referralStatus =>
+        referralStatusGroup === 'open' ? !referralStatus.closed && !referralStatus.draft : referralStatus.closed,
       )
 
       const pagination = PaginationUtils.pagination(
@@ -117,7 +117,8 @@ export default class AssessCaseListController {
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusGroup,
-        referralStatusSelectItems: CaseListUtils.statusSelectItems(openReferralStatuses, status),
+        referralStatusSelectItems: CaseListUtils.statusSelectItems(availableStatuses, status),
+        subNavigationItems: CaseListUtils.assessSubNavigationItems(req.path, courseId),
         tableHeadings: CaseListUtils.sortableTableHeadings(
           basePathExcludingSort,
           caseListColumns,

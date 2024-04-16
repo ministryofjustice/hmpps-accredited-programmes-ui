@@ -3,6 +3,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation %}
+{% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% extends "../../../partials/layout.njk" %}
 
@@ -55,6 +56,11 @@
       </span>
     </form>
   </div>
+
+  {{ mojSubNavigation({
+    label: 'Sub navigation',
+    items: subNavigationItems
+  }) }}
 
   {{ govukTable({
     head: tableHeadings,

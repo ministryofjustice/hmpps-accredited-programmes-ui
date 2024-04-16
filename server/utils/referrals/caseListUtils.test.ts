@@ -12,6 +12,26 @@ describe('CaseListUtils', () => {
     jest.resetAllMocks()
   })
 
+  describe('assessSubNavigationItems', () => {
+    it('returns an array of sub navigation items for programme team referrals', () => {
+      const currentPath = '/assess/referrals/course/course-id/case-list/open'
+      const expectedItems = [
+        {
+          active: true,
+          href: '/assess/referrals/course/course-id/case-list/open',
+          text: 'Open referrals',
+        },
+        {
+          active: false,
+          href: '/assess/referrals/course/course-id/case-list/closed',
+          text: 'Closed referrals',
+        },
+      ]
+
+      expect(CaseListUtils.assessSubNavigationItems(currentPath, 'course-id')).toEqual(expectedItems)
+    })
+  })
+
   describe('audienceSelectItems', () => {
     const expectedItems = {
       'extremism offence': 'Extremism offence',
@@ -197,6 +217,31 @@ describe('CaseListUtils', () => {
     })
   })
 
+  describe('referSubNavigationItems', () => {
+    it('returns an array of sub navigation items for my referrals', () => {
+      const currentPath = '/refer/referrals/case-list/open'
+      const expectedItems = [
+        {
+          active: true,
+          href: '/refer/referrals/case-list/open',
+          text: 'Open referrals',
+        },
+        {
+          active: false,
+          href: '/refer/referrals/case-list/draft',
+          text: 'Draft referrals',
+        },
+        {
+          active: false,
+          href: '/refer/referrals/case-list/closed',
+          text: 'Closed referrals',
+        },
+      ]
+
+      expect(CaseListUtils.referSubNavigationItems(currentPath)).toEqual(expectedItems)
+    })
+  })
+
   describe('sortableTableHeadings', () => {
     /* eslint-disable sort-keys */
     const caseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
@@ -350,31 +395,6 @@ describe('CaseListUtils', () => {
           '<strong class="govuk-tag govuk-tag--green">Unknown status</strong>',
         )
       })
-    })
-  })
-
-  describe('subNavigationItems', () => {
-    it('returns an array of sub navigation items for my referrals', () => {
-      const currentPath = '/refer/referrals/case-list/open'
-      const expectedItems = [
-        {
-          active: true,
-          href: '/refer/referrals/case-list/open',
-          text: 'Open referrals',
-        },
-        {
-          active: false,
-          href: '/refer/referrals/case-list/draft',
-          text: 'Draft referrals',
-        },
-        {
-          active: false,
-          href: '/refer/referrals/case-list/closed',
-          text: 'Closed referrals',
-        },
-      ]
-
-      expect(CaseListUtils.subNavigationItems(currentPath)).toEqual(expectedItems)
     })
   })
 

@@ -59,30 +59,34 @@ export default class CaseListPage extends Page {
     })
   }
 
-  shouldContainStatusNavigation(currentReferralStatusGroup: ReferralStatusGroup) {
-    referralStatusGroups.forEach((referralStatusGroup, referralStatusGroupIndex) => {
-      cy.get('.moj-sub-navigation__item')
-        .eq(referralStatusGroupIndex)
-        .within(subNavigationItemElement => {
-          const { actual, expected } = Helpers.parseHtml(
-            subNavigationItemElement,
-            `${StringUtils.properCase(referralStatusGroup)} referrals`,
-          )
-          expect(actual).to.equal(expected)
-
-          cy.get('.moj-sub-navigation__link').then(subNavigationItemLinkElement => {
-            cy.wrap(subNavigationItemLinkElement).should(
-              'have.attr',
-              'href',
-              referPaths.caseList.show({ referralStatusGroup }),
+  shouldContainStatusNavigation(currentReferralStatusGroup: ReferralStatusGroup, courseId?: Course['id']) {
+    referralStatusGroups
+      .filter(statusGroup => (courseId ? statusGroup !== 'draft' : true))
+      .forEach((referralStatusGroup, referralStatusGroupIndex) => {
+        cy.get('.moj-sub-navigation__item')
+          .eq(referralStatusGroupIndex)
+          .within(subNavigationItemElement => {
+            const { actual, expected } = Helpers.parseHtml(
+              subNavigationItemElement,
+              `${StringUtils.properCase(referralStatusGroup)} referrals`,
             )
+            expect(actual).to.equal(expected)
 
-            if (currentReferralStatusGroup === referralStatusGroup) {
-              cy.wrap(subNavigationItemLinkElement).should('have.attr', 'aria-current', 'page')
-            }
+            cy.get('.moj-sub-navigation__link').then(subNavigationItemLinkElement => {
+              cy.wrap(subNavigationItemLinkElement).should(
+                'have.attr',
+                'href',
+                courseId
+                  ? assessPaths.caseList.show({ courseId, referralStatusGroup })
+                  : referPaths.caseList.show({ referralStatusGroup }),
+              )
+
+              if (currentReferralStatusGroup === referralStatusGroup) {
+                cy.wrap(subNavigationItemLinkElement).should('have.attr', 'aria-current', 'page')
+              }
+            })
           })
-        })
-    })
+      })
   }
 
   shouldContainTableOfReferralViews(paths: typeof assessPaths | typeof referPaths) {
