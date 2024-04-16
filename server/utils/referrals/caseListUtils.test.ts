@@ -12,6 +12,26 @@ describe('CaseListUtils', () => {
     jest.resetAllMocks()
   })
 
+  describe('assessSubNavigationItems', () => {
+    it('returns an array of sub navigation items for programme team referrals', () => {
+      const currentPath = '/assess/referrals/course/course-id/case-list/open'
+      const expectedItems = [
+        {
+          active: true,
+          href: '/assess/referrals/course/course-id/case-list/open',
+          text: 'Open referrals',
+        },
+        {
+          active: false,
+          href: '/assess/referrals/course/course-id/case-list/closed',
+          text: 'Closed referrals',
+        },
+      ]
+
+      expect(CaseListUtils.assessSubNavigationItems(currentPath, 'course-id')).toEqual(expectedItems)
+    })
+  })
+
   describe('audienceSelectItems', () => {
     const expectedItems = {
       'extremism offence': 'Extremism offence',
