@@ -199,6 +199,8 @@ export default class CaseListUtils {
               PRRD: 'Post Recall Release Date',
             }[referralView.nonDtoReleaseDateType]
           : 'N/A'
+      case 'Sentence type':
+        return CaseListUtils.sentenceTypeHtml(referralView, paths)
       case 'Tariff end date':
         return referralView.tariffExpiryDate
           ? DateUtils.govukFormattedFullDateString(referralView.tariffExpiryDate)
@@ -267,6 +269,11 @@ export default class CaseListUtils {
               text: CaseListUtils.tableRowContent(view, 'Release date type'),
             })
             break
+          case 'Sentence type':
+            row.push({
+              html: CaseListUtils.tableRowContent(view, 'Sentence type'),
+            })
+            break
           case 'Tariff end date':
             row.push({
               text: CaseListUtils.tableRowContent(view, 'Tariff end date'),
@@ -324,5 +331,12 @@ export default class CaseListUtils {
       Object.fromEntries(values.map(value => [value.toLowerCase(), value])),
       selectedValue,
     )
+  }
+
+  private static sentenceTypeHtml(referralView: ReferralView, paths: typeof assessPaths | typeof referPaths): string {
+    const { sentenceType } = referralView
+    return sentenceType === 'Multiple sentences'
+      ? `<a href="${paths.show.sentenceInformation({ referralId: referralView.id })}?updatePerson=true">${sentenceType}</a>`
+      : sentenceType || 'N/A'
   }
 }
