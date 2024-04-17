@@ -82,6 +82,7 @@ export default class ReferCaseListController {
         isMyReferralsPage: true,
         pageHeading: 'My referrals',
         pagination,
+        referralStatusGroup,
         subNavigationItems: CaseListUtils.referSubNavigationItems(req.path),
         tableHeadings: [
           ...CaseListUtils.sortableTableHeadings(
