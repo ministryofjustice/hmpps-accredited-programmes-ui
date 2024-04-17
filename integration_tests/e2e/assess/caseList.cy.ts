@@ -30,6 +30,7 @@ context('Referral case lists', () => {
     'Parole eligibility date',
     'Tariff end date',
     'Programme strand',
+    'Sentence type',
     'Referral status',
   ]
 

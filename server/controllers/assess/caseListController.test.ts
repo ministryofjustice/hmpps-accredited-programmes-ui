@@ -125,6 +125,7 @@ describe('AssessCaseListController', () => {
       'Parole eligibility date',
       'Tariff end date',
       'Programme strand',
+      'Sentence type',
       'Referral status',
     ]
     const closedReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: true, draft: false })
@@ -221,6 +222,7 @@ describe('AssessCaseListController', () => {
             audience: 'Programme strand',
             conditionalReleaseDate: 'Conditional release date',
             paroleEligibilityDate: 'Parole eligibility date',
+            sentenceType: 'Sentence type',
             status: 'Referral status',
             surname: 'Name / Prison number',
             tariffExpiryDate: 'Tariff end date',
@@ -300,6 +302,7 @@ describe('AssessCaseListController', () => {
               audience: 'Programme strand',
               conditionalReleaseDate: 'Conditional release date',
               paroleEligibilityDate: 'Parole eligibility date',
+              sentenceType: 'Sentence type',
               status: 'Referral status',
               surname: 'Name / Prison number',
               tariffExpiryDate: 'Tariff end date',
@@ -379,6 +382,7 @@ describe('AssessCaseListController', () => {
             audience: 'Programme strand',
             conditionalReleaseDate: 'Conditional release date',
             paroleEligibilityDate: 'Parole eligibility date',
+            sentenceType: 'Sentence type',
             status: 'Referral status',
             surname: 'Name / Prison number',
             tariffExpiryDate: 'Tariff end date',

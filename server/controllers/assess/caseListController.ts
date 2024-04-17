@@ -107,6 +107,7 @@ export default class AssessCaseListController {
         paroleEligibilityDate: 'Parole eligibility date',
         tariffExpiryDate: 'Tariff end date',
         audience: 'Programme strand',
+        sentenceType: 'Sentence type',
         status: 'Referral status',
       }
       /* eslint-enable sort-keys */
