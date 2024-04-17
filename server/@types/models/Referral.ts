@@ -128,6 +128,7 @@ type ReferralView = {
   paroleEligibilityDate?: Person['paroleEligibilityDate']
   prisonNumber?: Person['prisonNumber']
   referrerUsername?: User['username']
+  sentenceType?: string
   status?: ReferralStatus
   statusColour?: Referral['statusColour']
   statusDescription?: Referral['statusDescription']
