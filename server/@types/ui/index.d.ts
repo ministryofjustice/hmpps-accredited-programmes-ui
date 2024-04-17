@@ -73,6 +73,7 @@ type CaseListColumnHeader =
   | 'Progress'
   | 'Referral status'
   | 'Release date type'
+  | 'Sentence type'
   | 'Tariff end date'
 
 type CourseParticipationPresenter = CourseParticipation & {
@@ -203,6 +204,7 @@ type SortableCaseListColumnKey =
   | 'nonDtoReleaseDateType'
   | 'organisationName'
   | 'paroleEligibilityDate'
+  | 'sentenceType'
   | 'status'
   | 'submittedOn'
   | 'surname'
