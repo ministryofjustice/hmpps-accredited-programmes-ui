@@ -1,20 +1,20 @@
 import nock from 'nock'
 
-import PrisonerSearchClient from './prisonerSearchClient'
+import PersonClient from './personClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import { prisonerFactory } from '../../testutils/factories'
 import type { Prisoner } from '@prisoner-search'
 
-describe('PrisonerSearchClient', () => {
-  let fakePrisonerSearch: nock.Scope
-  let prisonerSearchClient: PrisonerSearchClient
+describe('PersonClient', () => {
+  let fakeAccreditedProgrammesApi: nock.Scope
+  let personClient: PersonClient
 
   const systemToken = 'token-1'
 
   beforeEach(() => {
-    fakePrisonerSearch = nock(config.apis.accreditedProgrammesApi.url)
-    prisonerSearchClient = new PrisonerSearchClient(systemToken)
+    fakeAccreditedProgrammesApi = nock(config.apis.accreditedProgrammesApi.url)
+    personClient = new PersonClient(systemToken)
   })
 
   afterEach(() => {
@@ -26,27 +26,27 @@ describe('PrisonerSearchClient', () => {
     nock.cleanAll()
   })
 
-  describe('find', () => {
+  describe('findPrisoner', () => {
     const prisoner: Prisoner = prisonerFactory.build()
 
     it('searches for a prisoner by prison number and caseload IDs and returns the first match on the assumption that there will never be multiple matches', async () => {
-      fakePrisonerSearch
+      fakeAccreditedProgrammesApi
         .post(apiPaths.prisoner.search({}))
         .matchHeader('authorization', `Bearer ${systemToken}`)
         .reply(200, [prisoner])
 
-      const output = await prisonerSearchClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
+      const output = await personClient.findPrisoner(prisoner.prisonerNumber, ['BXI', 'MDI'])
       expect(output).toEqual(prisoner)
     })
 
     describe('when no prisoner is found', () => {
       it('returns null', async () => {
-        fakePrisonerSearch
+        fakeAccreditedProgrammesApi
           .post(apiPaths.prisoner.search({}))
           .matchHeader('authorization', `Bearer ${systemToken}`)
           .reply(200, [])
 
-        const output = await prisonerSearchClient.find(prisoner.prisonerNumber, ['BXI', 'MDI'])
+        const output = await personClient.findPrisoner(prisoner.prisonerNumber, ['BXI', 'MDI'])
         expect(output).toEqual(null)
       })
     })

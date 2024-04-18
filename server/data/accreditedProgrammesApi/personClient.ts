@@ -6,18 +6,14 @@ import type { SystemToken } from '@hmpps-auth'
 import type { Caseload } from '@prison-api'
 import type { Prisoner } from '@prisoner-search'
 
-export default class PrisonerSearchClient {
+export default class PersonClient {
   restClient: RestClient
 
   constructor(systemToken: SystemToken) {
-    this.restClient = new RestClient(
-      'prisonerSearchClient',
-      config.apis.accreditedProgrammesApi as ApiConfig,
-      systemToken,
-    )
+    this.restClient = new RestClient('personClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
-  async find(
+  async findPrisoner(
     prisonNumber: Prisoner['prisonerNumber'],
     caseloadIds: Array<Caseload['caseLoadId']>,
   ): Promise<Prisoner | null> {

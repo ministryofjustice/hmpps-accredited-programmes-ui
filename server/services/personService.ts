@@ -3,8 +3,8 @@ import type { ResponseError } from 'superagent'
 
 import type {
   HmppsAuthClient,
+  PersonClient,
   PrisonApiClient,
-  PrisonerSearchClient,
   RestClientBuilder,
   RestClientBuilderWithoutToken,
 } from '../data'
@@ -17,7 +17,7 @@ export default class PersonService {
   constructor(
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>,
-    private readonly prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient>,
+    private readonly personClientBuilder: RestClientBuilder<PersonClient>,
   ) {}
 
   async getOffenceHistory(
@@ -118,12 +118,12 @@ export default class PersonService {
   ): Promise<Person> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
-    const prisonerSearchClient = this.prisonerSearchClientBuilder(systemToken)
+    const personClient = this.personClientBuilder(systemToken)
 
     const caseloadIds = caseloads.map(caseload => caseload.caseLoadId)
 
     try {
-      const prisoner = await prisonerSearchClient.find(prisonNumber, caseloadIds)
+      const prisoner = await personClient.findPrisoner(prisonNumber, caseloadIds)
 
       if (!prisoner) {
         throw createError(404, `Person with prison number ${prisonNumber} not found.`)
