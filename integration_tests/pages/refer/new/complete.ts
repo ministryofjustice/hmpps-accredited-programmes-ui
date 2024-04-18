@@ -1,3 +1,4 @@
+import { referPaths } from '../../../../server/paths'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
 
@@ -12,6 +13,10 @@ export default class NewReferralCompletePage extends Page {
         .should('have.text', 'What did you think of this service?')
         .should('have.attr', 'href', 'https://eu.surveymonkey.com/r/P76THLY')
     })
+  }
+
+  shouldContainMyReferralsLink() {
+    this.shouldContainButtonLink('Go to my referrals', referPaths.caseList.index({}))
   }
 
   shouldHaveProcessInformation() {

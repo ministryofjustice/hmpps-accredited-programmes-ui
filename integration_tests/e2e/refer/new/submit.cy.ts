@@ -229,5 +229,6 @@ context('Submitting a referral', () => {
     completePage.shouldContainPanel('Referral complete')
     completePage.shouldHaveProcessInformation()
     completePage.shouldContainFeedbackLink()
+    completePage.shouldContainMyReferralsLink()
   })
 })

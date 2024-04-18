@@ -503,7 +503,10 @@ describe('NewReferralsController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(response.render).toHaveBeenCalledWith('referrals/new/complete', { pageHeading: 'Referral complete' })
+        expect(response.render).toHaveBeenCalledWith('referrals/new/complete', {
+          myReferralsLink: referPaths.caseList.index({}),
+          pageHeading: 'Referral complete',
+        })
       })
     })
 
