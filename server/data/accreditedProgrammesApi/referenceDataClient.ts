@@ -15,7 +15,11 @@ export default class ReferenceDataClient {
   restClient: RestClient
 
   constructor(systemToken: SystemToken) {
-    this.restClient = new RestClient('oasysClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
+    this.restClient = new RestClient(
+      'referenceDataClient',
+      config.apis.accreditedProgrammesApi as ApiConfig,
+      systemToken,
+    )
   }
 
   async findReferralStatusCodeCategories(
