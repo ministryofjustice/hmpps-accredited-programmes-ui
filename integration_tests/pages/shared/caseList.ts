@@ -158,6 +158,9 @@ export default class CaseListPage extends Page {
                       CaseListUtils.tableRowContent(view, 'Release date type'),
                     )
                     break
+                  case 'Sentence type':
+                    cy.wrap(tableCellElement).should('have.html', CaseListUtils.tableRowContent(view, 'Sentence type'))
+                    break
                   case 'Tariff end date':
                     cy.wrap(tableCellElement).should(
                       'have.text',

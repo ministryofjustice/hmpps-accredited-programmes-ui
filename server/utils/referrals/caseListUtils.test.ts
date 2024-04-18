@@ -600,6 +600,32 @@ describe('CaseListUtils', () => {
       })
     })
 
+    describe('Sentence type', () => {
+      it('returns the sentence type as is', () => {
+        expect(
+          CaseListUtils.tableRowContent({ ...referralView, sentenceType: 'Life sentence' }, 'Sentence type'),
+        ).toEqual('Life sentence')
+      })
+
+      describe('when `sentenceType` is `undefined`', () => {
+        it('returns "N/A"', () => {
+          expect(CaseListUtils.tableRowContent({ ...referralView, sentenceType: undefined }, 'Sentence type')).toEqual(
+            'N/A',
+          )
+        })
+      })
+
+      describe('when `sentenceType` is `Multiple sentences`', () => {
+        it('returns a link to the sentence information page', () => {
+          expect(
+            CaseListUtils.tableRowContent({ ...referralView, sentenceType: 'Multiple sentences' }, 'Sentence type'),
+          ).toEqual(
+            '<a href="/assess/referrals/referral-123/sentence-information?updatePerson=true">Multiple sentences</a>',
+          )
+        })
+      })
+    })
+
     describe('Tariff end date', () => {
       it('returns a formatted tariff end date', () => {
         expect(CaseListUtils.tableRowContent(referralView, 'Tariff end date')).toEqual('1 January 2024')
@@ -628,6 +654,7 @@ describe('CaseListUtils', () => {
         organisationName: 'Whatton (HMP)',
         paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
         prisonNumber: 'ABC1234',
+        sentenceType: 'Multiple sentences',
         status: 'referral_started',
         submittedOn: undefined,
         surname: 'HATTON',
@@ -645,6 +672,7 @@ describe('CaseListUtils', () => {
         organisationName: undefined,
         paroleEligibilityDate: undefined,
         prisonNumber: 'DEF1234',
+        sentenceType: 'Life sentence',
         status: 'referral_submitted',
         submittedOn: new Date('2021-01-01T00:00:00.000000').toISOString(),
         surname: undefined,
@@ -666,6 +694,7 @@ describe('CaseListUtils', () => {
         'Progress',
         'Referral status',
         'Release date type',
+        'Sentence type',
         'Tariff end date',
       ]
 
@@ -682,6 +711,7 @@ describe('CaseListUtils', () => {
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Progress') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Referral status') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Release date type') },
+          { html: CaseListUtils.tableRowContent(referralViews[0], 'Sentence type') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Tariff end date') },
         ],
         [
@@ -696,6 +726,7 @@ describe('CaseListUtils', () => {
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Progress') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Referral status') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Release date type') },
+          { html: CaseListUtils.tableRowContent(referralViews[1], 'Sentence type') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Tariff end date') },
         ],
       ])
