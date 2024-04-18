@@ -92,6 +92,7 @@ export default class NewReferralsController {
       }
 
       return res.render('referrals/new/complete', {
+        myReferralsLink: referPaths.caseList.index({}),
         pageHeading: 'Referral complete',
       })
     }
