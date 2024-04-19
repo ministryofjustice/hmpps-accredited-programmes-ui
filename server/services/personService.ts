@@ -9,7 +9,7 @@ import type {
   RestClientBuilderWithoutToken,
 } from '../data'
 import { PersonUtils } from '../utils'
-import type { Person } from '@accredited-programmes/models'
+import type { Person, SentenceDetails } from '@accredited-programmes/models'
 import type { OffenceDetails, OffenceHistory } from '@accredited-programmes/ui'
 import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 
@@ -138,6 +138,32 @@ export default class PersonService {
       }
 
       throw createError(knownError.status || 500, knownError, `Error fetching prisoner ${prisonNumber}.`)
+    }
+  }
+
+  async getSentenceDetails(
+    username: Express.User['username'],
+    prisonNumber: Person['prisonNumber'],
+  ): Promise<SentenceDetails> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const personClient = this.personClientBuilder(systemToken)
+
+    try {
+      return await personClient.findSentenceDetails(prisonNumber)
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        throw createError(404, `Sentence details for prisoner ${prisonNumber} not found.`)
+      }
+
+      const errorMessage =
+        knownError.message === 'Internal Server Error'
+          ? `Error fetching sentence details for prisoner ${prisonNumber}.`
+          : knownError.message
+
+      throw createError(knownError.status || 500, errorMessage)
     }
   }
 }

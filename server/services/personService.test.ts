@@ -12,6 +12,7 @@ import {
   offenderSentenceAndOffencesFactory,
   personFactory,
   prisonerFactory,
+  sentenceDetailsFactory,
 } from '../testutils/factories'
 import { PersonUtils } from '../utils'
 import type { InmateDetail } from '@prison-api'
@@ -316,6 +317,62 @@ describe('PersonService', () => {
 
         expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonApiClient.findSentenceAndOffenceDetails).toHaveBeenCalledWith(bookingId)
+      })
+    })
+  })
+
+  describe('getSentenceDetails', () => {
+    it('returns sentence details for a given prison number', async () => {
+      const sentenceDetails = sentenceDetailsFactory.build()
+
+      when(personClient.findSentenceDetails).calledWith(prisonerNumber).mockResolvedValue(sentenceDetails)
+
+      const result = await service.getSentenceDetails(systemToken, prisonerNumber)
+
+      expect(result).toEqual(sentenceDetails)
+
+      expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
+    })
+
+    describe('when the sentence details client throws a 404 error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(404)
+        personClient.findSentenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(404, `Sentence details for prisoner ${prisonerNumber} not found.`)
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the sentence details client throws an Internal Server Error', () => {
+      it('throws a custom error message', async () => {
+        const clientError = createError(500, { message: 'Internal Server Error' })
+        personClient.findSentenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, {
+          message: `Error fetching sentence details for prisoner ${prisonerNumber}.`,
+        })
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the sentence details client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500, { message: 'Some other error' })
+        personClient.findSentenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, { message: 'Some other error' })
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
       })
     })
   })

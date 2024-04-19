@@ -13,7 +13,6 @@ import {
   offenceDetailFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
-  offenderSentenceAndOffencesFactory,
   personFactory,
   prisonFactory,
   prisonerFactory,
@@ -24,6 +23,7 @@ import {
   relationshipsFactory,
   risksAndAlertsFactory,
   roshAnalysisFactory,
+  sentenceDetailsFactory,
   userFactory,
 } from '../../server/testutils/factories'
 import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
@@ -49,7 +49,7 @@ import {
   ThinkingAndBehavingPage,
 } from '../pages/shared'
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
-import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { Person, Referral, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { User } from '@manage-users-api'
 import type { PrisonerWithBookingId } from '@prisoner-search'
@@ -345,18 +345,16 @@ const sharedTests = {
 
     showsSentenceInformationPageWithAllData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
-      const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
-        sentenceTypeDescription: 'a description',
-      })
-      cy.task('stubOffenderSentenceAndOffences', { bookingId: prisoner.bookingId, offenderSentenceAndOffences })
+      const sentenceDetails = sentenceDetailsFactory.withData(2).build()
+      cy.task('stubSentenceDetails', { prisonNumber: prisoner.prisonerNumber, sentenceDetails })
 
       const path = pathsByRole(role).show.sentenceInformation({ referralId: referral.id })
       cy.visit(path)
 
       const sentenceInformationPage = Page.verifyOnPage(SentenceInformationPage, {
         course,
-        offenderSentenceAndOffences,
         person,
+        sentenceDetails,
       })
       sentenceInformationPage.shouldHavePersonDetails(person)
       sentenceInformationPage.shouldContainHomeLink()
@@ -366,7 +364,7 @@ const sharedTests = {
       sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText('OASys')
-      sentenceInformationPage.shouldContainSentenceDetailsSummaryCard()
+      sentenceInformationPage.shouldContainSentenceDetailsSummaryCards()
       sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
     },
 
@@ -380,18 +378,16 @@ const sharedTests = {
         person: { ...defaultPerson, sentenceStartDate: undefined, ...undefinedReleaseDates },
         prisoner: { ...defaultPrisoner, sentenceStartDate: undefined, ...undefinedReleaseDates },
       })
-      const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
-        sentenceTypeDescription: undefined,
-      })
-      cy.task('stubOffenderSentenceAndOffences', { bookingId: prisoner.bookingId, offenderSentenceAndOffences })
+      const sentenceDetails: SentenceDetails = { keyDates: [], sentences: [] }
+      cy.task('stubSentenceDetails', { prisonNumber: prisoner.prisonerNumber, sentenceDetails })
 
       const path = pathsByRole(role).show.sentenceInformation({ referralId: referral.id })
       cy.visit(path)
 
       const sentenceInformationPage = Page.verifyOnPage(SentenceInformationPage, {
         course,
-        offenderSentenceAndOffences,
         person,
+        sentenceDetails,
       })
       sentenceInformationPage.shouldHavePersonDetails(person)
       sentenceInformationPage.shouldContainHomeLink()
