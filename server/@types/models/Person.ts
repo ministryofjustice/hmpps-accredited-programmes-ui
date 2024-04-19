@@ -1,4 +1,4 @@
-export type Person = {
+interface Person {
   dateOfBirth: string
   ethnicity: string
   gender: string
@@ -16,3 +16,18 @@ export type Person = {
   sentenceStartDate?: string
   tariffDate?: string
 }
+
+interface KeyDates {
+  date?: string
+  type?: string
+}
+interface Sentence {
+  description?: string
+  sentenceStartDate?: string
+}
+interface SentenceDetails {
+  keyDates?: Array<KeyDates>
+  sentences?: Array<Sentence>
+}
+
+export type { Person, SentenceDetails }

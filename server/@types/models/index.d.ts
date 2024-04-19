@@ -17,7 +17,7 @@ import type { OffenceDetail } from './OffenceDetail'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
 import type { Paginated } from './Paginated'
-import type { Person } from './Person'
+import type { Person, SentenceDetails } from './Person'
 import type { Psychiatric } from './Psychiatric'
 import type {
   ConfirmationFields,
@@ -75,4 +75,5 @@ export type {
   RiskLevel,
   RisksAndAlerts,
   RoshAnalysis,
+  SentenceDetails,
 }
