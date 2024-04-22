@@ -173,8 +173,13 @@ describe('ShowReferralUtils', () => {
       })
       const coursePresenter = CourseUtils.presentCourse(course)
       const organisation = organisationFactory.build({ name: 'HMP Hewell' })
+      const contactEmail = 'bob.smith@test-email.co.uk'
 
-      expect(ShowReferralUtils.courseOfferingSummaryListRows(coursePresenter, organisation.name)).toEqual([
+      expect(ShowReferralUtils.courseOfferingSummaryListRows('Bob Smith', coursePresenter, contactEmail, organisation.name)).toEqual([
+        {
+          key: { text: 'Applicant name' },
+          value: { text: 'Bob Smith' },
+        },
         {
           key: { text: 'Programme name' },
           value: { text: 'Test Course (TC+)' },
@@ -186,6 +191,10 @@ describe('ShowReferralUtils', () => {
         {
           key: { text: 'Programme location' },
           value: { text: 'HMP Hewell' },
+        },
+        {
+          key: { text: 'Programme team email address' },
+          value: { html: `<a href="mailto:${contactEmail}">${contactEmail}</a>` },
         },
       ])
     })
@@ -244,8 +253,9 @@ describe('ShowReferralUtils', () => {
   describe('submissionSummaryListRows', () => {
     it('returns submission details relating to a referral in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       const referral = referralFactory.submitted().build({ submittedOn: '2023-10-31T00:00:00.000000' })
+      const referrerEmail = 'test.user@test-email.co.uk'
 
-      expect(ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, 'Test User')).toEqual([
+      expect(ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, 'Test User', referrerEmail)).toEqual([
         {
           key: { text: 'Date referred' },
           value: { text: '31 October 2023' },
@@ -254,6 +264,10 @@ describe('ShowReferralUtils', () => {
           key: { text: 'Referrer name' },
           value: { text: 'Test User' },
         },
+        {
+          key: { text: 'Referrer email address' },
+          value: { html: `<a href="mailto:${referrerEmail}">${referrerEmail}</a>` },
+        },
       ])
     })
 
@@ -261,7 +275,7 @@ describe('ShowReferralUtils', () => {
       it("returns submission details with 'Not known' for the 'Date referred' value", () => {
         const referral = referralFactory.submitted().build({ submittedOn: undefined })
 
-        expect(ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, 'Test User')).toEqual(
+        expect(ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, 'Test User', 'test@test.com')).toEqual(
           expect.arrayContaining([
             {
               key: { text: 'Date referred' },

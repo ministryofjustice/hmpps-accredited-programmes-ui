@@ -3,7 +3,7 @@ import type { Request } from 'express'
 import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
-import type { Organisation, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -12,7 +12,7 @@ import type {
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendButton } from '@govuk-frontend'
-import type { User } from '@manage-users-api'
+import type { User, UserEmail } from '@manage-users-api'
 
 export default class ShowReferralUtils {
   static buttons(
@@ -69,10 +69,16 @@ export default class ShowReferralUtils {
   }
 
   static courseOfferingSummaryListRows(
+    applicantName: User['name'],
     coursePresenter: CoursePresenter,
+    contactEmail: CourseOffering['contactEmail'],
     organisationName: Organisation['name'],
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
+      {
+        key: { text: 'Applicant name' },
+        value: { text: applicantName },
+      },
       {
         key: { text: 'Programme name' },
         value: { text: coursePresenter.nameAndAlternateName },
@@ -84,6 +90,10 @@ export default class ShowReferralUtils {
       {
         key: { text: 'Programme location' },
         value: { text: organisationName },
+      },
+      {
+        key: { text: 'Programme team email address' },
+        value: { html: `<a href="mailto:${contactEmail}">${contactEmail}</a>` },
       },
     ]
   }
@@ -117,6 +127,7 @@ export default class ShowReferralUtils {
   static submissionSummaryListRows(
     referralSubmissionDate: Referral['submittedOn'],
     referrerName: User['name'],
+    referrerEmail: UserEmail['email'],
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
@@ -128,6 +139,10 @@ export default class ShowReferralUtils {
       {
         key: { text: 'Referrer name' },
         value: { text: referrerName },
+      },
+      {
+        key: { text: 'Referrer email address' },
+        value: { html: `<a href="mailto:${referrerEmail}">${referrerEmail}</a>` },
       },
     ]
   }

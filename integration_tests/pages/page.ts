@@ -10,7 +10,7 @@ import {
   ShowRisksAndNeedsUtils,
 } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { Organisation, Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type {CourseOffering, Organisation, Person, Referral, ReferralStatusRefData} from '@accredited-programmes/models'
 import type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -27,7 +27,7 @@ import type {
   GovukFrontendSummaryListCardTitle,
   GovukFrontendWarningText,
 } from '@govuk-frontend'
-import type { User } from '@manage-users-api'
+import type {User, UserEmail} from '@manage-users-api'
 
 export type PageElement = Cypress.Chainable<JQuery>
 
@@ -117,10 +117,10 @@ export default abstract class Page {
     })
   }
 
-  shouldContainCourseOfferingSummaryList(course: CoursePresenter, organisationName: Organisation['name']) {
+  shouldContainCourseOfferingSummaryList(applicantName: User['name'], course: CoursePresenter, contactEmail: CourseOffering['contactEmail'], organisationName: Organisation['name']) {
     cy.get('[data-testid="course-offering-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
-        ShowReferralUtils.courseOfferingSummaryListRows(course, organisationName),
+        ShowReferralUtils.courseOfferingSummaryListRows(applicantName, course, contactEmail, organisationName),
         summaryListElement,
       )
     })
@@ -386,10 +386,11 @@ export default abstract class Page {
   shouldContainSubmissionSummaryList(
     referralSubmissionDate: Referral['submittedOn'],
     referrerName: User['name'],
+    referrerEmail: CourseOffering['contactEmail']
   ): void {
     cy.get('[data-testid="submission-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
-        ShowReferralUtils.submissionSummaryListRows(referralSubmissionDate, referrerName),
+        ShowReferralUtils.submissionSummaryListRows(referralSubmissionDate, referrerName, referrerEmail),
         summaryListElement,
       )
     })
