@@ -1,6 +1,6 @@
 import RestClient from './restClient'
 import config from '../config'
-import type { User } from '@manage-users-api'
+import type { User, UserEmail } from '@manage-users-api'
 
 export default class HmppsManageUsersClient {
   restClient: RestClient
@@ -11,6 +11,10 @@ export default class HmppsManageUsersClient {
 
   getCurrentUsername(): Promise<Pick<User, 'username'>> {
     return this.restClient.get({ path: '/users/me' }) as Promise<Pick<User, 'username'>>
+  }
+
+  getEmailFromUsername(username: User['username']): Promise<UserEmail> {
+    return this.restClient.get({ path: `/users/${username}/email` }) as Promise<UserEmail>
   }
 
   getUserFromUsername(username: User['username']): Promise<User> {

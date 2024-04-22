@@ -78,6 +78,56 @@ describe('UserService', () => {
     })
   })
 
+  describe('getEmailFromUsername', () => {
+    it('returns the email address for the given user', async () => {
+      hmppsManageUsersClient.getEmailFromUsername.mockResolvedValue({
+        email: 'bob.smith@test-email.co.uk',
+        username,
+        verified: true,
+      })
+
+      const result = await userService.getEmailFromUsername(userToken, username)
+      expect(result).toEqual('bob.smith@test-email.co.uk')
+      expect(hmppsManageUsersClient.getEmailFromUsername).toHaveBeenCalledWith(username)
+    })
+
+    describe('when the HMPPS Manage Users client throws a 404 error', () => {
+      it('re-throws the error with a custom message', async () => {
+        const clientError = createError(404)
+        hmppsManageUsersClient.getEmailFromUsername.mockRejectedValue(clientError)
+
+        const expectedError = createError(404, { message: `User with username ${username} not found.` })
+        await expect(userService.getEmailFromUsername(userToken, username)).rejects.toEqual(expectedError)
+
+        expect(hmppsManageUsersClient.getEmailFromUsername).toHaveBeenCalledWith(username)
+      })
+    })
+
+    describe('when the HMPPS Manage Users client throws an Internal Server Error', () => {
+      it('re-throws the error with a custom message', async () => {
+        const clientError = createError(500, { message: 'Internal Server Error' })
+        hmppsManageUsersClient.getEmailFromUsername.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, { message: `Error fetching email for ${username}.` })
+        await expect(userService.getEmailFromUsername(userToken, username)).rejects.toEqual(expectedError)
+
+        expect(hmppsManageUsersClient.getEmailFromUsername).toHaveBeenCalledWith(username)
+      })
+    })
+
+    describe('when the HMPPS Manage Users client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500, { message: 'Some other error' })
+        hmppsManageUsersClient.getEmailFromUsername.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, { message: 'Some other error' })
+        await expect(userService.getEmailFromUsername(userToken, username)).rejects.toEqual(expectedError)
+
+        expect(hmppsManageUsersClient.getEmailFromUsername).toHaveBeenCalledWith(username)
+      })
+    })
+  })
+
   describe('getFullNameFromUsername', () => {
     beforeEach(() => {
       hmppsManageUsersClient.getUserFromUsername.mockResolvedValue(user)

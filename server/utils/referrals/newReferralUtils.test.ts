@@ -10,7 +10,7 @@ import CourseUtils from '../courseUtils'
 import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
 
 describe('NewReferralUtils', () => {
-  describe('applicationSummaryListRows', () => {
+  describe('courseOfferingSummaryListRows', () => {
     it('formats referral information in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       const course = courseFactory.build({
         alternateName: 'TC+',
@@ -21,16 +21,9 @@ describe('NewReferralUtils', () => {
       const coursePresenter = CourseUtils.presentCourse(course)
       const organisation = organisationFactory.build({ name: 'HMP Hewell' })
       const person = personFactory.build({ name: 'Del Hatton' })
-      const referrerName = 'Bobby Brown'
 
       expect(
-        NewReferralUtils.applicationSummaryListRows(
-          courseOffering,
-          coursePresenter,
-          organisation,
-          person,
-          referrerName,
-        ),
+        NewReferralUtils.courseOfferingSummaryListRows(courseOffering, coursePresenter, organisation, person),
       ).toEqual([
         {
           key: { text: 'Applicant name' },
@@ -45,16 +38,14 @@ describe('NewReferralUtils', () => {
           value: { text: 'General offence' },
         },
         {
-          key: { text: 'Referrer name' },
-          value: { text: 'Bobby Brown' },
-        },
-        {
           key: { text: 'Programme location' },
           value: { text: 'HMP Hewell' },
         },
         {
-          key: { text: 'Contact email address' },
-          value: { text: 'nobody-hmp-what@digital.justice.gov.uk' },
+          key: { text: 'Programme team email address' },
+          value: {
+            html: '<a href="mailto:nobody-hmp-what@digital.justice.gov.uk">nobody-hmp-what@digital.justice.gov.uk</a>',
+          },
         },
       ])
     })
@@ -89,6 +80,24 @@ describe('NewReferralUtils', () => {
       const submittableReferral = referralFactory.submittable().build()
 
       expect(NewReferralUtils.isReadyForSubmission(submittableReferral)).toEqual(true)
+    })
+  })
+
+  describe('referrerSummaryListRows', () => {
+    it('formats the referral referrer information in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
+      const referrerName = 'Bob Smith'
+      const referrerEmail = 'bob.smith@test-email.co.uk'
+
+      expect(NewReferralUtils.referrerSummaryListRows(referrerName, referrerEmail)).toEqual([
+        {
+          key: { text: 'Referrer name' },
+          value: { text: referrerName },
+        },
+        {
+          key: { text: 'Referrer email address' },
+          value: { html: `<a href="mailto:${referrerEmail}">${referrerEmail}</a>` },
+        },
+      ])
     })
   })
 

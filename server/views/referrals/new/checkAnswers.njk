@@ -39,19 +39,27 @@
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
-      <h2 class="govuk-heading-m">Application summary</h2>
+      <h2 class="govuk-heading-m">Referral summary</h2>
 
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',
-        rows: applicationSummaryListRows,
+        rows: courseOfferingSummaryListRows,
         attributes: {
-          "data-testid": "application-summary-list"
+          "data-testid": "course-offering-summary-list"
+        }
+      }) }}
+
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border',
+        rows: referrerSummaryListRows,
+        attributes: {
+          "data-testid": "referrer-summary-list"
         }
       }) }}
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
-      <h2 class="govuk-heading-m">Referral details</h2>
+      <h2 class="govuk-heading-m">Person being referred</h2>
 
       {{ govukSummaryList({
         card: {

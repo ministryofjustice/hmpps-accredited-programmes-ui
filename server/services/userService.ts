@@ -6,7 +6,7 @@ import type { HmppsManageUsersClient, PrisonApiClient, RestClientBuilder } from 
 import { StringUtils } from '../utils'
 import type { UserDetails } from '@accredited-programmes/users'
 import type { SystemToken } from '@hmpps-auth'
-import type { User } from '@manage-users-api'
+import type { User, UserEmail } from '@manage-users-api'
 import type { Caseload } from '@prison-api'
 
 export default class UserService {
@@ -25,6 +25,30 @@ export default class UserService {
     ])
 
     return { ...user, caseloads, displayName: StringUtils.convertToTitleCase(user.name) }
+  }
+
+  async getEmailFromUsername(
+    userToken: Express.User['token'],
+    username: User['username'],
+  ): Promise<UserEmail['email']> {
+    const hmppsManageUsersClient = this.hmppsManageUsersClientBuilder(userToken)
+
+    try {
+      const userEmail = await hmppsManageUsersClient.getEmailFromUsername(username)
+
+      return userEmail.email
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        throw createError(knownError.status, { message: `User with username ${username} not found.` })
+      }
+
+      const errorMessage =
+        knownError.message === 'Internal Server Error' ? `Error fetching email for ${username}.` : knownError.message
+
+      throw createError(knownError.status || 500, errorMessage)
+    }
   }
 
   /*

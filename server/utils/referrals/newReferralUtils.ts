@@ -7,15 +7,14 @@ import type {
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
 } from '@accredited-programmes/ui'
-import type { User } from '@manage-users-api'
+import type { User, UserEmail } from '@manage-users-api'
 
 export default class NewReferralUtils {
-  static applicationSummaryListRows(
+  static courseOfferingSummaryListRows(
     courseOffering: CourseOffering,
     coursePresenter: CoursePresenter,
     organisation: Organisation,
     person: Person,
-    referrerName: User['name'],
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
@@ -31,22 +30,34 @@ export default class NewReferralUtils {
         value: { text: coursePresenter.audience },
       },
       {
-        key: { text: 'Referrer name' },
-        value: { text: referrerName },
-      },
-      {
         key: { text: 'Programme location' },
         value: { text: organisation.name },
       },
       {
-        key: { text: 'Contact email address' },
-        value: { text: courseOffering.contactEmail },
+        key: { text: 'Programme team email address' },
+        value: { html: `<a href="mailto:${courseOffering.contactEmail}">${courseOffering.contactEmail}</a>` },
       },
     ]
   }
 
   static isReadyForSubmission(referral: Referral): boolean {
     return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
+  }
+
+  static referrerSummaryListRows(
+    referrerName: User['name'],
+    referrerEmail: UserEmail['email'],
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    return [
+      {
+        key: { text: 'Referrer name' },
+        value: { text: referrerName },
+      },
+      {
+        key: { text: 'Referrer email address' },
+        value: { html: `<a href="mailto:${referrerEmail}">${referrerEmail}</a>` },
+      },
+    ]
   }
 
   static taskListSections(referral: Referral): Array<ReferralTaskListSection> {

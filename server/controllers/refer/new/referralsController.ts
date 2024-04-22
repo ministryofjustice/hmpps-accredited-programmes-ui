@@ -35,12 +35,13 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.show({ referralId }))
       }
 
-      const [person, courseOffering, course] = await Promise.all([
+      const [person, courseOffering, course, referrerName, referrerEmail] = await Promise.all([
         this.personService.getPerson(req.user.username, referral.prisonNumber, res.locals.user.caseloads),
         this.courseService.getOffering(req.user.token, referral.offeringId),
         this.courseService.getCourseByOffering(req.user.token, referral.offeringId),
+        this.userService.getFullNameFromUsername(req.user.token, referral.referrerUsername),
+        this.userService.getEmailFromUsername(req.user.token, referral.referrerUsername),
       ])
-      const referrerName = await this.userService.getFullNameFromUsername(req.user.token, referral.referrerUsername)
 
       const [organisation, participationSummaryListsOptions] = await Promise.all([
         this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId),
@@ -59,18 +60,18 @@ export default class NewReferralsController {
 
       return res.render('referrals/new/checkAnswers', {
         additionalInformation: referral.additionalInformation,
-        applicationSummaryListRows: NewReferralUtils.applicationSummaryListRows(
+        courseOfferingSummaryListRows: NewReferralUtils.courseOfferingSummaryListRows(
           courseOffering,
           coursePresenter,
           organisation,
           person,
-          referrerName,
         ),
         pageHeading: 'Check your answers',
         participationSummaryListsOptions,
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
+        referrerSummaryListRows: NewReferralUtils.referrerSummaryListRows(referrerName, referrerEmail),
       })
     }
   }

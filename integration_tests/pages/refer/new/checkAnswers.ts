@@ -3,7 +3,7 @@ import { CourseUtils, NewReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Course, CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, CoursePresenter } from '@accredited-programmes/ui'
-import type { User } from '@manage-users-api'
+import type { User, UserEmail } from '@manage-users-api'
 
 export default class NewReferralCheckAnswersPage extends Page {
   course: CoursePresenter
@@ -18,6 +18,8 @@ export default class NewReferralCheckAnswersPage extends Page {
 
   referral: Referral
 
+  referrerEmail: UserEmail['email']
+
   referrerName: User['name']
 
   constructor(args: {
@@ -27,17 +29,19 @@ export default class NewReferralCheckAnswersPage extends Page {
     participations: Array<CourseParticipationPresenter>
     person: Person
     referral: Referral
+    referrerEmail: UserEmail['email']
     referrerName: User['name']
   }) {
     super('Check your answers')
 
-    const { course, courseOffering, organisation, participations, person, referral, referrerName } = args
+    const { course, courseOffering, organisation, participations, person, referral, referrerEmail, referrerName } = args
     this.course = CourseUtils.presentCourse(course)
     this.courseOffering = courseOffering
     this.organisation = organisation
     this.participations = participations
     this.person = person
     this.referral = referral
+    this.referrerEmail = referrerEmail
     this.referrerName = referrerName
   }
 
@@ -76,26 +80,25 @@ export default class NewReferralCheckAnswersPage extends Page {
     })
   }
 
-  shouldHaveApplicationSummary() {
-    cy.get('[data-testid="application-summary-list"]').then(summaryListElement => {
-      this.shouldContainSummaryListRows(
-        NewReferralUtils.applicationSummaryListRows(
-          this.courseOffering,
-          this.course,
-          this.organisation,
-          this.person,
-          this.referrerName,
-        ),
-        summaryListElement,
-      )
-    })
-  }
-
   shouldHaveConfirmationCheckbox() {
     this.shouldContainCheckbox(
       'confirmation',
       'I confirm the information I have provided is complete, accurate and up to date.',
     )
+  }
+
+  shouldHaveCourseOfferingSummary() {
+    cy.get('[data-testid="course-offering-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        NewReferralUtils.courseOfferingSummaryListRows(
+          this.courseOffering,
+          this.course,
+          this.organisation,
+          this.person,
+        ),
+        summaryListElement,
+      )
+    })
   }
 
   shouldHaveOasysConfirmation(): void {
@@ -111,6 +114,15 @@ export default class NewReferralCheckAnswersPage extends Page {
   shouldHaveProgrammeHistory(): void {
     cy.get('[data-testid="programme-history"]').within(() => {
       this.shouldContainHistorySummaryCards(this.participations, this.referral.id, { change: true, remove: false })
+    })
+  }
+
+  shouldHaveReferrerSummary(): void {
+    cy.get('[data-testid="referrer-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        NewReferralUtils.referrerSummaryListRows(this.referrerName, this.referrerEmail),
+        summaryListElement,
+      )
     })
   }
 

@@ -2,7 +2,7 @@ import nock from 'nock'
 
 import HmppsManageUsersClient from './hmppsManageUsersClient'
 import config from '../config'
-import type { User } from '@manage-users-api'
+import type { User, UserEmail } from '@manage-users-api'
 
 jest.mock('./tokenStore')
 
@@ -33,6 +33,25 @@ describe('HmppsManageUsersClient', () => {
       fakeManageUsersApiUrl.get('/users/me').matchHeader('authorization', `Bearer ${userToken}`).reply(200, response)
 
       const output = await hmppsManageUsersClient.getCurrentUsername()
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('getEmailFromUsername', () => {
+    it('should return the email address of the user from the API', async () => {
+      const username = 'BOB_SMITH'
+      const response: UserEmail = {
+        email: 'bob.smith@test-email.co.uk',
+        username,
+        verified: true,
+      }
+
+      fakeManageUsersApiUrl
+        .get(`/users/${username}/email`)
+        .matchHeader('authorization', `Bearer ${userToken}`)
+        .reply(200, response)
+
+      const output = await hmppsManageUsersClient.getEmailFromUsername(username)
       expect(output).toEqual(response)
     })
   })

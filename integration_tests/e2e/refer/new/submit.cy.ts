@@ -15,6 +15,7 @@ import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import { NewReferralCheckAnswersPage, NewReferralCompletePage, NewReferralTaskListPage } from '../../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { UserEmail } from '@manage-users-api'
 
 context('Submitting a referral', () => {
   const course = courseFactory.build()
@@ -37,6 +38,11 @@ context('Submitting a referral', () => {
   const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
   const organisation = OrganisationUtils.organisationFromPrison(prison)
   const addedByUser1 = userFactory.build({ name: 'Bobby Brown', username: auth.mockedUser.username })
+  const addedByUser1Email: UserEmail = {
+    email: 'referrer.user@email-test.co.uk',
+    username: addedByUser1.username,
+    verified: true,
+  }
   const addedByUser2 = userFactory.build()
   const courseParticipationWithKnownCourseName = courseParticipationFactory.build({
     addedBy: addedByUser1.username,
@@ -80,6 +86,7 @@ context('Submitting a referral', () => {
     cy.task('stubPrisoner', prisoner)
     cy.task('stubUserDetails', addedByUser1)
     cy.task('stubUserDetails', addedByUser2)
+    cy.task('stubUserEmail', addedByUser1Email)
   })
 
   it('Links to the check answers page when the referral is ready for submission', () => {
@@ -117,12 +124,14 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
+        referrerEmail: addedByUser1Email.email,
         referrerName: addedByUser1.name,
       })
       checkAnswersPage.shouldHavePersonDetails(person)
       checkAnswersPage.shouldContainBackLink(referPaths.new.show({ referralId: submittableReferral.id }))
       checkAnswersPage.shouldContainHomeLink()
-      checkAnswersPage.shouldHaveApplicationSummary()
+      checkAnswersPage.shouldHaveCourseOfferingSummary()
+      checkAnswersPage.shouldHaveReferrerSummary()
       checkAnswersPage.shouldContainPersonSummaryList(person)
       checkAnswersPage.shouldHaveProgrammeHistory()
       checkAnswersPage.shouldHaveOasysConfirmation()
@@ -148,6 +157,7 @@ context('Submitting a referral', () => {
           participations: [],
           person,
           referral: submittableReferral,
+          referrerEmail: addedByUser1Email.email,
           referrerName: addedByUser1.name,
         })
         checkAnswersPage.shouldNotHaveProgrammeHistory()
@@ -175,6 +185,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
+        referrerEmail: addedByUser1Email.email,
         referrerName: addedByUser1.name,
       })
       checkAnswersPage.confirmDetailsAndSubmitReferral()
@@ -196,6 +207,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
+        referrerEmail: addedByUser1Email.email,
         referrerName: addedByUser1.name,
       })
       checkAnswersPage.shouldContainButton('Submit referral').click()
@@ -207,6 +219,7 @@ context('Submitting a referral', () => {
         participations: courseParticipationsPresenter,
         person,
         referral: submittableReferral,
+        referrerEmail: addedByUser1Email.email,
         referrerName: addedByUser1.name,
       })
       checkAnswersPageWithErrors.shouldHaveErrors([
