@@ -1,26 +1,40 @@
 import DateUtils from './dateUtils'
-import type { Person } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
-import type { OffenderSentenceAndOffences } from '@prison-api'
+import type { SentenceDetails } from '@accredited-programmes/models'
+import type { GovukFrontendSummaryList } from '@govuk-frontend'
 
 export default class SentenceInformationUtils {
-  static detailsSummaryListRows(
-    startDate: Person['sentenceStartDate'],
-    type: OffenderSentenceAndOffences['sentenceTypeDescription'],
-  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
-    return [
-      {
-        key: { text: 'Sentence type' },
-        value: { text: type || 'There is no sentence type for this person.' },
-      },
-      {
-        key: { text: 'Sentence start date' },
-        value: {
-          text: startDate
-            ? DateUtils.govukFormattedFullDateString(startDate)
-            : 'There is no sentence start date for this person.',
+  static summaryLists(sentenceDetails: SentenceDetails): Array<GovukFrontendSummaryList> {
+    if (!sentenceDetails?.sentences) {
+      return []
+    }
+
+    return sentenceDetails.sentences.map((sentence, index) => {
+      const sentenceNumber = index + 1
+
+      return {
+        card: {
+          attributes: {
+            'data-testid': `sentence-details-summary-card-${sentenceNumber}`,
+          },
+          title: {
+            text: `Sentence ${sentenceNumber}`,
+          },
         },
-      },
-    ]
+        rows: [
+          {
+            key: { text: 'Type' },
+            value: { text: sentence.description || 'There is no type for this sentence.' },
+          },
+          {
+            key: { text: 'Date' },
+            value: {
+              text: sentence.sentenceStartDate
+                ? DateUtils.govukFormattedFullDateString(sentence.sentenceStartDate)
+                : 'There is no date for this sentence.',
+            },
+          },
+        ],
+      }
+    })
   }
 }

@@ -10,11 +10,11 @@ import {
   courseFactory,
   courseOfferingFactory,
   offenceDetailsFactory,
-  offenderSentenceAndOffencesFactory,
   organisationFactory,
   personFactory,
   referralFactory,
   referralStatusRefDataFactory,
+  sentenceDetailsFactory,
   userFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
@@ -29,10 +29,10 @@ import {
 import { releaseDateFields } from '../../utils/personUtils'
 import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
-  GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
   ReferralSharedPageData,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryList } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
 jest.mock('../../utils/sentenceInformationUtils')
@@ -322,67 +322,54 @@ describe('ReferralsController', () => {
   })
 
   describe('sentenceInformation', () => {
-    const detailsSummaryListRows = [createMock<GovukFrontendSummaryListRowWithKeyAndValue>()]
+    const mockSentenceInformationUtils = SentenceInformationUtils as jest.Mocked<typeof SentenceInformationUtils>
+    const sentenceDetails = sentenceDetailsFactory.build({})
+    const sentencesSummaryLists = [createMock<GovukFrontendSummaryList>()]
 
-    describe('when there are some sentence details and release dates', () => {
-      it('renders the sentence information template with the present sentence details and release dates', async () => {
+    beforeEach(() => {
+      personService.getSentenceDetails.mockResolvedValue(sentenceDetails)
+      mockSentenceInformationUtils.summaryLists.mockReturnValue(sentencesSummaryLists)
+
+      request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+    })
+
+    describe('when there are some release dates', () => {
+      it('renders the sentence information template with the correct response locals', async () => {
         person.conditionalReleaseDate = undefined
         person.paroleEligibilityDate = '2024-01-02'
-
-        person.sentenceStartDate = '2023-01-02'
-        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
-          sentenceTypeDescription: undefined,
-        })
-        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
-        ;(SentenceInformationUtils.detailsSummaryListRows as jest.Mock).mockReturnValue(detailsSummaryListRows)
-
-        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
 
         const requestHandler = controller.sentenceInformation()
         await requestHandler(request, response, next)
 
-        expect(SentenceInformationUtils.detailsSummaryListRows).toHaveBeenCalledWith(
-          sharedPageData.person.sentenceStartDate,
-          offenderSentenceAndOffences.sentenceTypeDescription,
-        )
+        expect(SentenceInformationUtils.summaryLists).toHaveBeenCalledWith(sentenceDetails)
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
-          detailsSummaryListRows,
           hasReleaseDates: true,
-          hasSentenceDetails: true,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sharedPageData.person),
+          sentencesSummaryLists,
           subNavigationItems,
         })
       })
     })
 
-    describe('when there are no sentence details or release dates', () => {
-      it('renders the sentence information template with no sentence details and no release dates', async () => {
+    describe('when there are no release dates', () => {
+      it('renders the sentence information template with the correct response locals', async () => {
         releaseDateFields.forEach(field => {
           person[field] = undefined
         })
-        person.sentenceStartDate = undefined
-        const offenderSentenceAndOffences = offenderSentenceAndOffencesFactory.build({
-          sentenceTypeDescription: undefined,
-        })
-        personService.getOffenderSentenceAndOffences.mockResolvedValue(offenderSentenceAndOffences)
-
-        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
 
         const requestHandler = controller.sentenceInformation()
         await requestHandler(request, response, next)
 
-        expect(SentenceInformationUtils.detailsSummaryListRows).not.toHaveBeenCalled()
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
-          detailsSummaryListRows: [],
           hasReleaseDates: false,
-          hasSentenceDetails: false,
           importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           releaseDatesSummaryListRows: [],
+          sentencesSummaryLists,
           subNavigationItems,
         })
       })

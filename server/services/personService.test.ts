@@ -4,7 +4,7 @@ import { when } from 'jest-when'
 
 import PersonService from './personService'
 import type { RedisClient } from '../data'
-import { HmppsAuthClient, PrisonApiClient, PrisonerSearchClient, TokenStore } from '../data'
+import { HmppsAuthClient, PersonClient, PrisonApiClient, TokenStore } from '../data'
 import {
   caseloadFactory,
   offenceDtoFactory,
@@ -12,13 +12,14 @@ import {
   offenderSentenceAndOffencesFactory,
   personFactory,
   prisonerFactory,
+  sentenceDetailsFactory,
 } from '../testutils/factories'
 import { PersonUtils } from '../utils'
 import type { InmateDetail } from '@prison-api'
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/prisonApiClient')
-jest.mock('../data/accreditedProgrammesApi/prisonerSearchClient')
+jest.mock('../data/accreditedProgrammesApi/personClient')
 jest.mock('../utils/personUtils')
 
 const redisClient = createMock<RedisClient>({})
@@ -31,8 +32,8 @@ const bxiCaseload = caseloadFactory.inactive().build({ caseLoadId: 'BXI' })
 const caseloads = [mdiCaseload, bxiCaseload]
 
 describe('PersonService', () => {
-  const prisonerSearchClient = new PrisonerSearchClient(systemToken) as jest.Mocked<PrisonerSearchClient>
-  const prisonerSearchClientBuilder = jest.fn()
+  const personClient = new PersonClient(systemToken) as jest.Mocked<PersonClient>
+  const personClientBuilder = jest.fn()
 
   const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
   const hmppsAuthClientBuilder = jest.fn()
@@ -48,12 +49,12 @@ describe('PersonService', () => {
   beforeEach(() => {
     jest.resetAllMocks()
 
-    prisonerSearchClientBuilder.mockReturnValue(prisonerSearchClient)
+    personClientBuilder.mockReturnValue(personClient)
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     prisonApiClientBuilder.mockReturnValue(prisonApiClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
 
-    service = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
+    service = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, personClientBuilder)
   })
 
   describe('getOffenceHistory', () => {
@@ -198,7 +199,7 @@ describe('PersonService', () => {
 
         const person = personFactory.build()
 
-        prisonerSearchClient.find.mockResolvedValue(prisoner)
+        personClient.findPrisoner.mockResolvedValue(prisoner)
         ;(PersonUtils.personFromPrisoner as jest.Mock).mockReturnValue(person)
 
         const result = await service.getPerson(username, prisoner.prisonerNumber, caseloads)
@@ -207,8 +208,8 @@ describe('PersonService', () => {
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-        expect(prisonerSearchClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(prisonerSearchClient.find).toHaveBeenCalledWith(prisoner.prisonerNumber, [
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findPrisoner).toHaveBeenCalledWith(prisoner.prisonerNumber, [
           mdiCaseload.caseLoadId,
           bxiCaseload.caseLoadId,
         ])
@@ -217,7 +218,7 @@ describe('PersonService', () => {
 
     describe('when the prisoner client does not find a person in prison', () => {
       it('throws a 404', async () => {
-        prisonerSearchClient.find.mockResolvedValue(null)
+        personClient.findPrisoner.mockResolvedValue(null)
 
         const notFoundPrisonNumber = 'NOT-FOUND'
 
@@ -228,8 +229,8 @@ describe('PersonService', () => {
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-        expect(prisonerSearchClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(prisonerSearchClient.find).toHaveBeenCalledWith(notFoundPrisonNumber, [
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findPrisoner).toHaveBeenCalledWith(notFoundPrisonNumber, [
           mdiCaseload.caseLoadId,
           bxiCaseload.caseLoadId,
         ])
@@ -239,7 +240,7 @@ describe('PersonService', () => {
     describe('when the prisoner client throws any other error', () => {
       it('re-throws the error', async () => {
         const clientError = createError(500)
-        prisonerSearchClient.find.mockRejectedValue(clientError)
+        personClient.findPrisoner.mockRejectedValue(clientError)
 
         const prisonNumber = 'ABC123'
 
@@ -249,8 +250,8 @@ describe('PersonService', () => {
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
-        expect(prisonerSearchClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(prisonerSearchClient.find).toHaveBeenCalledWith(prisonNumber, [
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findPrisoner).toHaveBeenCalledWith(prisonNumber, [
           mdiCaseload.caseLoadId,
           bxiCaseload.caseLoadId,
         ])
@@ -316,6 +317,62 @@ describe('PersonService', () => {
 
         expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonApiClient.findSentenceAndOffenceDetails).toHaveBeenCalledWith(bookingId)
+      })
+    })
+  })
+
+  describe('getSentenceDetails', () => {
+    it('returns sentence details for a given prison number', async () => {
+      const sentenceDetails = sentenceDetailsFactory.build()
+
+      when(personClient.findSentenceDetails).calledWith(prisonerNumber).mockResolvedValue(sentenceDetails)
+
+      const result = await service.getSentenceDetails(systemToken, prisonerNumber)
+
+      expect(result).toEqual(sentenceDetails)
+
+      expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
+    })
+
+    describe('when the sentence details client throws a 404 error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(404)
+        personClient.findSentenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(404, `Sentence details for prisoner ${prisonerNumber} not found.`)
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the sentence details client throws an Internal Server Error', () => {
+      it('throws a custom error message', async () => {
+        const clientError = createError(500, { message: 'Internal Server Error' })
+        personClient.findSentenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, {
+          message: `Error fetching sentence details for prisoner ${prisonerNumber}.`,
+        })
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
+      })
+    })
+
+    describe('when the sentence details client throws any other error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500, { message: 'Some other error' })
+        personClient.findSentenceDetails.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, { message: 'Some other error' })
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
       })
     })
   })

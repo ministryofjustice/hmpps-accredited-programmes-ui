@@ -3,13 +3,13 @@ import type { ResponseError } from 'superagent'
 
 import type {
   HmppsAuthClient,
+  PersonClient,
   PrisonApiClient,
-  PrisonerSearchClient,
   RestClientBuilder,
   RestClientBuilderWithoutToken,
 } from '../data'
 import { PersonUtils } from '../utils'
-import type { Person } from '@accredited-programmes/models'
+import type { Person, SentenceDetails } from '@accredited-programmes/models'
 import type { OffenceDetails, OffenceHistory } from '@accredited-programmes/ui'
 import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 
@@ -17,7 +17,7 @@ export default class PersonService {
   constructor(
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>,
-    private readonly prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient>,
+    private readonly personClientBuilder: RestClientBuilder<PersonClient>,
   ) {}
 
   async getOffenceHistory(
@@ -118,12 +118,12 @@ export default class PersonService {
   ): Promise<Person> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
-    const prisonerSearchClient = this.prisonerSearchClientBuilder(systemToken)
+    const personClient = this.personClientBuilder(systemToken)
 
     const caseloadIds = caseloads.map(caseload => caseload.caseLoadId)
 
     try {
-      const prisoner = await prisonerSearchClient.find(prisonNumber, caseloadIds)
+      const prisoner = await personClient.findPrisoner(prisonNumber, caseloadIds)
 
       if (!prisoner) {
         throw createError(404, `Person with prison number ${prisonNumber} not found.`)
@@ -138,6 +138,32 @@ export default class PersonService {
       }
 
       throw createError(knownError.status || 500, knownError, `Error fetching prisoner ${prisonNumber}.`)
+    }
+  }
+
+  async getSentenceDetails(
+    username: Express.User['username'],
+    prisonNumber: Person['prisonNumber'],
+  ): Promise<SentenceDetails> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const personClient = this.personClientBuilder(systemToken)
+
+    try {
+      return await personClient.findSentenceDetails(prisonNumber)
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        throw createError(404, `Sentence details for prisoner ${prisonNumber} not found.`)
+      }
+
+      const errorMessage =
+        knownError.message === 'Internal Server Error'
+          ? `Error fetching sentence details for prisoner ${prisonNumber}.`
+          : knownError.message
+
+      throw createError(knownError.status || 500, errorMessage)
     }
   }
 }

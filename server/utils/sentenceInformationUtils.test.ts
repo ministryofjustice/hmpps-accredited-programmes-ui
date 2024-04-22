@@ -1,52 +1,69 @@
 import SentenceInformationUtils from './sentenceInformationUtils'
-import type { Person } from '@accredited-programmes/models'
-import type { OffenderSentenceAndOffences } from '@prison-api'
+import { sentenceDetailsFactory } from '../testutils/factories'
 
 describe('SentenceInformationUtils', () => {
-  describe('detailsSummaryListRows', () => {
-    const type: OffenderSentenceAndOffences['sentenceTypeDescription'] = 'Concurrent determinate sentence'
-    const startDate: Person['sentenceStartDate'] = '2010-10-31'
-
+  describe('summaryLists', () => {
     it('formats sentence details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro', () => {
-      expect(SentenceInformationUtils.detailsSummaryListRows(startDate, type)).toEqual([
+      const sentenceDetails = sentenceDetailsFactory.build({
+        sentences: [
+          {
+            description: 'Indeterminate Sentence for the Public Protection',
+            sentenceStartDate: '2011-08-31',
+          },
+          {
+            description: 'Concurrent determinate sentence',
+            sentenceStartDate: '2010-10-31',
+          },
+        ],
+      })
+
+      expect(SentenceInformationUtils.summaryLists(sentenceDetails)).toEqual([
         {
-          key: { text: 'Sentence type' },
-          value: { text: 'Concurrent determinate sentence' },
+          card: {
+            attributes: {
+              'data-testid': 'sentence-details-summary-card-1',
+            },
+            title: {
+              text: 'Sentence 1',
+            },
+          },
+          rows: [
+            {
+              key: { text: 'Type' },
+              value: { text: 'Indeterminate Sentence for the Public Protection' },
+            },
+            {
+              key: { text: 'Date' },
+              value: { text: '31 August 2011' },
+            },
+          ],
         },
         {
-          key: { text: 'Sentence start date' },
-          value: { text: '31 October 2010' },
+          card: {
+            attributes: {
+              'data-testid': 'sentence-details-summary-card-2',
+            },
+            title: {
+              text: 'Sentence 2',
+            },
+          },
+          rows: [
+            {
+              key: { text: 'Type' },
+              value: { text: 'Concurrent determinate sentence' },
+            },
+            {
+              key: { text: 'Date' },
+              value: { text: '31 October 2010' },
+            },
+          ],
         },
       ])
     })
 
-    describe('when there is no sentence type', () => {
-      it('returns a message for that field', () => {
-        expect(SentenceInformationUtils.detailsSummaryListRows(startDate, undefined)).toEqual([
-          {
-            key: { text: 'Sentence type' },
-            value: { text: 'There is no sentence type for this person.' },
-          },
-          {
-            key: { text: 'Sentence start date' },
-            value: { text: '31 October 2010' },
-          },
-        ])
-      })
-    })
-
-    describe('when there is no sentence start date', () => {
-      it('returns a message for that field', () => {
-        expect(SentenceInformationUtils.detailsSummaryListRows(undefined, type)).toEqual([
-          {
-            key: { text: 'Sentence type' },
-            value: { text: 'Concurrent determinate sentence' },
-          },
-          {
-            key: { text: 'Sentence start date' },
-            value: { text: 'There is no sentence start date for this person.' },
-          },
-        ])
+    describe('when there are no sentences', () => {
+      it('returns an empty array', () => {
+        expect(SentenceInformationUtils.summaryLists({})).toEqual([])
       })
     })
   })

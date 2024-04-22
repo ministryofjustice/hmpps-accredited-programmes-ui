@@ -422,7 +422,7 @@ prisoners.forEach(prisoner => {
           },
         ],
         method: 'POST',
-        url: apiPaths.prisoner.search({}),
+        url: apiPaths.person.prisonerSearch({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

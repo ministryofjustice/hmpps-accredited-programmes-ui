@@ -27,6 +27,7 @@ const participationsByPersonPath = path('/people/:prisonNumber/course-participat
 const participationsPath = path('/course-participations')
 const participationPath = participationsPath.path(':courseParticipationId')
 
+const peoplePath = path('/people/:prisonNumber')
 const prisonerSearchPath = path('/prisoner-search')
 
 const referenceDataPath = path('/reference-data')
@@ -71,8 +72,9 @@ export default {
   people: {
     participations: participationsByPersonPath,
   },
-  prisoner: {
-    search: prisonerSearchPath,
+  person: {
+    prisonerSearch: prisonerSearchPath,
+    prisonerSentences: peoplePath.path('sentences'),
   },
   referenceData: {
     referralStatuses: {
