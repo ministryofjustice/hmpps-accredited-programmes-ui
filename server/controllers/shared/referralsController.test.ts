@@ -88,7 +88,11 @@ describe('ReferralsController', () => {
       pageSubHeading: 'Referral summary',
       person,
       referral,
-      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, referringUser.name, referrerEmail),
+      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(
+        referral.submittedOn,
+        referringUser.name,
+        referrerEmail,
+      ),
     }
     statusTransitions = referralStatusRefDataFactory.buildList(2)
 

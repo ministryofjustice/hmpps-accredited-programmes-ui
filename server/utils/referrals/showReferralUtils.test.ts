@@ -175,7 +175,9 @@ describe('ShowReferralUtils', () => {
       const organisation = organisationFactory.build({ name: 'HMP Hewell' })
       const contactEmail = 'bob.smith@test-email.co.uk'
 
-      expect(ShowReferralUtils.courseOfferingSummaryListRows('Bob Smith', coursePresenter, contactEmail, organisation.name)).toEqual([
+      expect(
+        ShowReferralUtils.courseOfferingSummaryListRows('Bob Smith', coursePresenter, contactEmail, organisation.name),
+      ).toEqual([
         {
           key: { text: 'Applicant name' },
           value: { text: 'Bob Smith' },
