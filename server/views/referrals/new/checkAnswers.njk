@@ -43,9 +43,17 @@
 
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',
-        rows: applicationSummaryListRows,
+        rows: courseOfferingSummaryListRows,
         attributes: {
-          "data-testid": "application-summary-list"
+          "data-testid": "course-offering-summary-list"
+        }
+      }) }}
+
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border',
+        rows: referrerSummaryListRows,
+        attributes: {
+          "data-testid": "referrer-summary-list"
         }
       }) }}
 

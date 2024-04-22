@@ -16,11 +16,17 @@ import {
 } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
-import type { CoursePresenter, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
+import type {
+  CoursePresenter,
+  GovukFrontendSummaryListRowWithKeyAndValue,
+  GovukFrontendSummaryListWithRowsWithKeysAndValues,
+} from '@accredited-programmes/ui'
 
 jest.mock('../../../utils/courseUtils')
 jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/referrals/newReferralUtils')
+
+const mockNewReferralUtils = NewReferralUtils as jest.Mocked<typeof NewReferralUtils>
 
 describe('NewReferralsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -302,14 +308,26 @@ describe('NewReferralsController', () => {
 
   describe('checkAnswers', () => {
     it('renders the referral check answers page', async () => {
+      const courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
+        { key: { text: 'Course offering item 1' }, value: { text: 'Value 1' } },
+        { key: { text: 'Course offering item 2' }, value: { html: 'value 2' } },
+      ]
+      const referrerSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
+        { key: { text: 'Referrer item 1' }, value: { text: 'Value 1' } },
+        { key: { text: 'Referrer item 2' }, value: { html: 'value 2' } },
+      ]
       const referrerName = 'Bobby Brown'
+      const referrerEmail = 'referrer.email@test-email.co.uk'
       courseService.getCourseByOffering.mockResolvedValue(course)
       personService.getPerson.mockResolvedValue(person)
       userService.getFullNameFromUsername.mockResolvedValue(referrerName)
+      userService.getEmailFromUsername.mockResolvedValue(referrerEmail)
 
       request.params.referralId = referralId
       referralService.getReferral.mockResolvedValue(submittableReferral)
-      ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
+      mockNewReferralUtils.isReadyForSubmission.mockReturnValue(true)
+      mockNewReferralUtils.courseOfferingSummaryListRows.mockReturnValue(courseOfferingSummaryListRows)
+      mockNewReferralUtils.referrerSummaryListRows.mockReturnValue(referrerSummaryListRows)
 
       TypeUtils.assertHasUser(request)
 
@@ -346,19 +364,21 @@ describe('NewReferralsController', () => {
       )
       expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
         additionalInformation: submittableReferral.additionalInformation,
-        applicationSummaryListRows: NewReferralUtils.applicationSummaryListRows(
-          referableCourseOffering,
-          coursePresenter,
-          organisation,
-          person,
-          referrerName,
-        ),
+        courseOfferingSummaryListRows,
         pageHeading: 'Check your answers',
         participationSummaryListsOptions: [summaryListOptions, summaryListOptions],
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
+        referrerSummaryListRows,
       })
+      expect(NewReferralUtils.courseOfferingSummaryListRows).toHaveBeenCalledWith(
+        referableCourseOffering,
+        coursePresenter,
+        organisation,
+        person,
+      )
+      expect(NewReferralUtils.referrerSummaryListRows).toHaveBeenCalledWith(referrerName, referrerEmail)
     })
 
     describe('when the referral has been submitted', () => {
