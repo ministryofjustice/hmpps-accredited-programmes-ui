@@ -31,16 +31,16 @@ export default class NewReferralUtils {
         value: { text: coursePresenter.audience },
       },
       {
-        key: { text: 'Referrer name' },
-        value: { text: referrerName },
-      },
-      {
         key: { text: 'Programme location' },
         value: { text: organisation.name },
       },
       {
-        key: { text: 'Contact email address' },
-        value: { text: courseOffering.contactEmail },
+        key: { text: 'Programme team email address' },
+        value: { html: `<a href="mailto:${courseOffering.contactEmail}">${courseOffering.contactEmail}</a>` },
+      },
+      {
+        key: { text: 'Referrer name' },
+        value: { text: referrerName },
       },
     ]
   }
