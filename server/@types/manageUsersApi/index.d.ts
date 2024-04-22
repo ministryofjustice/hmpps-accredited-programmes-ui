@@ -1,4 +1,4 @@
-export type User = {
+interface User {
   active: boolean
   authSource: string
   name: string
@@ -8,3 +8,11 @@ export type User = {
   staffId?: number
   uuid?: string
 }
+
+interface UserEmail {
+  email: string
+  username: string
+  verified: boolean
+}
+
+export type { User, UserEmail }
