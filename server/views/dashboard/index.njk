@@ -3,6 +3,10 @@
 {% set customPageTitleEnd = "Home" %}
 {% set mainClasses = "app-container govuk-body dashboard__main" %}
 
+{% block notificationBanner %}
+  {% include "./_notificationBanner.njk" %}
+{% endblock notificationBanner %}
+
 {% block homeLink %}{% endblock homeLink %}
 
 {% block content %}

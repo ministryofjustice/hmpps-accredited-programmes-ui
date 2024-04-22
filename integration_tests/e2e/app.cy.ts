@@ -45,6 +45,21 @@ context('App', () => {
       const indexPage = Page.verifyOnPage(IndexPage)
       indexPage.shouldNotContainHomeLink()
     })
+
+    it('shows a notification banner on the index page', () => {
+      const bannerInnerHTML = `
+        <h3 class="govuk-notification-banner__heading">Rolling out the referral service</h3>
+        <p class="govuk-body">This is a new service. While we're rolling it out, referrers can only use it to refer people to Accredited Programmes at a few prisons. At the moment, you can refer to:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Onley</li>
+          <li>Stocken</li>
+          <li>Whatton</li>
+        </ul>
+        <p class="govuk-body">You can still refer to other prisons using your usual process.</p>
+      `
+      const indexPage = Page.verifyOnPage(IndexPage)
+      indexPage.shouldContainNotificationBanner('Important', bannerInnerHTML)
+    })
   })
 
   describe('When the user has the `ACP_REFERRER` role', () => {

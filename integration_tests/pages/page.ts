@@ -221,10 +221,11 @@ export default abstract class Page {
     return cy.contains('.govuk-link', text).should('have.attr', 'href', href)
   }
 
-  shouldContainNotificationBanner(text: string, notificationBannerElement: JQuery<HTMLElement>): void {
-    cy.wrap(notificationBannerElement).within(() => {
-      cy.get('.govuk-notification-banner__content').then(contentElement => {
-        const { actual, expected } = Helpers.parseHtml(contentElement, text)
+  shouldContainNotificationBanner(title: string, expectedHtml: string): void {
+    cy.get('.govuk-notification-banner').within(() => {
+      cy.get('.govuk-notification-banner__header .govuk-notification-banner__title').contains(title).should('exist')
+      cy.get('.govuk-notification-banner__content').then(notificationContentElement => {
+        const { actual, expected } = Helpers.parseHtml(notificationContentElement, expectedHtml)
         expect(actual).to.equal(expected)
       })
     })
