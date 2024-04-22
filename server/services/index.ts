@@ -15,9 +15,9 @@ import {
   hmppsComponentsClientBuilder,
   hmppsManageUsersClientBuilder,
   oasysClientBuilder,
+  personClientBuilder,
   prisonApiClientBuilder,
   prisonRegisterApiClientBuilder,
-  prisonerSearchClientBuilder,
   referenceDataClientBuilder,
   referralClientBuilder,
 } from '../data'
@@ -26,7 +26,7 @@ const services = () => {
   const hmppsComponentsService = new HmppsComponentsService(hmppsComponentsClientBuilder)
   const oasysService = new OasysService(hmppsAuthClientBuilder, oasysClientBuilder)
   const organisationService = new OrganisationService(prisonRegisterApiClientBuilder)
-  const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, prisonerSearchClientBuilder)
+  const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, personClientBuilder)
   const userService = new UserService(hmppsManageUsersClientBuilder, prisonApiClientBuilder)
   const referenceDataService = new ReferenceDataService(hmppsAuthClientBuilder, referenceDataClientBuilder)
   const referralService = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder, userService)

@@ -1,21 +1,20 @@
 import { CourseUtils, PersonUtils, SentenceInformationUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course, Person } from '@accredited-programmes/models'
-import type { OffenderSentenceAndOffences } from '@prison-api'
+import type { Course, Person, SentenceDetails } from '@accredited-programmes/models'
 
 export default class SentenceInformationPage extends Page {
-  offenderSentenceAndOffences: OffenderSentenceAndOffences
-
   person: Person
 
-  constructor(args: { course: Course; offenderSentenceAndOffences: OffenderSentenceAndOffences; person: Person }) {
-    const { course, person, offenderSentenceAndOffences } = args
+  sentenceDetails: SentenceDetails
+
+  constructor(args: { course: Course; person: Person; sentenceDetails: SentenceDetails }) {
+    const { course, person, sentenceDetails } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
     super(`Referral to ${coursePresenter.nameAndAlternateName}`)
 
     this.person = person
-    this.offenderSentenceAndOffences = offenderSentenceAndOffences
+    this.sentenceDetails = sentenceDetails
   }
 
   shouldContainNoReleaseDatesSummaryCard(): void {
@@ -49,17 +48,16 @@ export default class SentenceInformationPage extends Page {
     })
   }
 
-  shouldContainSentenceDetailsSummaryCard(): void {
-    cy.get('[data-testid="sentence-details-summary-card"]').then(summaryCardElement => {
-      this.shouldContainSummaryCard(
-        'Sentence details',
-        [],
-        SentenceInformationUtils.detailsSummaryListRows(
-          this.person.sentenceStartDate,
-          this.offenderSentenceAndOffences.sentenceTypeDescription,
-        ),
-        summaryCardElement,
-      )
+  shouldContainSentenceDetailsSummaryCards(): void {
+    this.sentenceDetails.sentences?.forEach((sentence, index) => {
+      cy.get(`[data-testid="sentence-details-summary-card-${index + 1}"]`).then(summaryCardElement => {
+        this.shouldContainSummaryCard(
+          `Sentence ${index + 1}`,
+          [],
+          SentenceInformationUtils.summaryLists(this.sentenceDetails)[index].rows,
+          summaryCardElement,
+        )
+      })
     })
   }
 }

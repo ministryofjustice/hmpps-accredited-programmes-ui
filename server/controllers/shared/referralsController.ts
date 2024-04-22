@@ -127,29 +127,19 @@ export default class ReferralsController {
         throw createError(400, 'Referral has not been submitted.')
       }
 
-      const offenderSentenceAndOffences = await this.personService.getOffenderSentenceAndOffences(
-        req.user.token,
-        sharedPageData.person.bookingId,
+      const sentenceDetails = await this.personService.getSentenceDetails(
+        req.user.username,
+        sharedPageData.person.prisonNumber,
       )
 
       const hasReleaseDates: boolean = releaseDateFields.some(field => !!person[field])
 
-      const hasSentenceDetails: boolean = !!(
-        person.sentenceStartDate || offenderSentenceAndOffences.sentenceTypeDescription
-      )
-
       return res.render('referrals/show/sentenceInformation', {
         ...sharedPageData,
-        detailsSummaryListRows: hasSentenceDetails
-          ? SentenceInformationUtils.detailsSummaryListRows(
-              person.sentenceStartDate,
-              offenderSentenceAndOffences.sentenceTypeDescription,
-            )
-          : [],
         hasReleaseDates,
-        hasSentenceDetails,
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
         releaseDatesSummaryListRows: hasReleaseDates ? PersonUtils.releaseDatesSummaryListRows(person) : [],
+        sentencesSummaryLists: SentenceInformationUtils.summaryLists(sentenceDetails),
       })
     }
   }

@@ -33,6 +33,7 @@ import referralViewFactory from './referralView'
 import relationshipsFactory from './relationships'
 import risksAndAlertsFactory from './risksAndAlerts'
 import roshAnalysisFactory from './roshAnalysis'
+import sentenceDetailsFactory from './sentenceDetails'
 import userFactory from './user'
 
 export {
@@ -71,5 +72,6 @@ export {
   relationshipsFactory,
   risksAndAlertsFactory,
   roshAnalysisFactory,
+  sentenceDetailsFactory,
   userFactory,
 }

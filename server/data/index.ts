@@ -15,7 +15,7 @@ AppInsightsUtils.buildClient()
 
 import CourseClient from './accreditedProgrammesApi/courseClient'
 import OasysClient from './accreditedProgrammesApi/oasysClient'
-import PrisonerSearchClient from './accreditedProgrammesApi/prisonerSearchClient'
+import PersonClient from './accreditedProgrammesApi/personClient'
 import ReferenceDataClient from './accreditedProgrammesApi/referenceDataClient'
 import ReferralClient from './accreditedProgrammesApi/referralClient'
 import { serviceCheckFactory } from './healthCheck'
@@ -42,10 +42,9 @@ const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> =
 const courseClientBuilder: RestClientBuilder<CourseClient> = (userToken: Express.User['token']) =>
   new CourseClient(userToken)
 const oasysClientBuilder: RestClientBuilder<OasysClient> = (systemToken: SystemToken) => new OasysClient(systemToken)
+const personClientBuilder: RestClientBuilder<PersonClient> = (systemToken: SystemToken) => new PersonClient(systemToken)
 const prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient> = (userToken: Express.User['token']) =>
   new PrisonRegisterApiClient(userToken)
-const prisonerSearchClientBuilder: RestClientBuilder<PrisonerSearchClient> = (systemToken: SystemToken) =>
-  new PrisonerSearchClient(systemToken)
 const referenceDataClientBuilder: RestClientBuilder<ReferenceDataClient> = (systemToken: SystemToken) =>
   new ReferenceDataClient(systemToken)
 const referralClientBuilder: RestClientBuilder<ReferralClient> = (userToken: Express.User['token']) =>
@@ -59,9 +58,9 @@ export {
   HmppsComponentsClient,
   HmppsManageUsersClient,
   OasysClient,
+  PersonClient,
   PrisonApiClient,
   PrisonRegisterApiClient,
-  PrisonerSearchClient,
   ReferenceDataClient,
   ReferralClient,
   TokenStore,
@@ -71,9 +70,9 @@ export {
   hmppsComponentsClientBuilder,
   hmppsManageUsersClientBuilder,
   oasysClientBuilder,
+  personClientBuilder,
   prisonApiClientBuilder,
   prisonRegisterApiClientBuilder,
-  prisonerSearchClientBuilder,
   referenceDataClientBuilder,
   referralClientBuilder,
   serviceCheckFactory,
