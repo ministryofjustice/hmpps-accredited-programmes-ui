@@ -15,4 +15,11 @@ export default class DateUtils {
       year: 'numeric',
     })
   }
+
+  static removeTimezoneOffset(dateString: string): string {
+    const date = new Date(dateString)
+    const serverTimezoneOffset = date.getTimezoneOffset() * 60000
+
+    return new Date(date.getTime() + serverTimezoneOffset).toISOString()
+  }
 }
