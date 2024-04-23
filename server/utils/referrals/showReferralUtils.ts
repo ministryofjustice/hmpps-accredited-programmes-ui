@@ -109,7 +109,7 @@ export default class ShowReferralUtils {
           text: status.byLineText,
         },
         datetime: {
-          timestamp: status.statusStartDate as string,
+          timestamp: DateUtils.removeTimezoneOffset(status.statusStartDate as string),
           type: 'datetime',
         },
         html: status.notes

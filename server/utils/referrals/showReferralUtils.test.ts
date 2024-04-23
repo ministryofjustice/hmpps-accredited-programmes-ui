@@ -210,9 +210,15 @@ describe('ShowReferralUtils', () => {
     })
 
     it('returns referral status history in the appropriate format for passing to a MoJ Frontend timeline Nunjucks macro', () => {
-      const startedReferralStatusHistory = referralStatusHistoryFactory.started().build()
-      const submittedReferralStatusHistory = referralStatusHistoryFactory.submitted().build()
-      const updatedReferralStatusHistory = referralStatusHistoryFactory.updated().build()
+      const startedReferralStatusHistory = referralStatusHistoryFactory
+        .started()
+        .build({ statusStartDate: '2017-03-21T10:25:30.000Z' })
+      const submittedReferralStatusHistory = referralStatusHistoryFactory
+        .submitted()
+        .build({ statusStartDate: '2017-03-22T10:25:30.000Z' })
+      const updatedReferralStatusHistory = referralStatusHistoryFactory
+        .updated()
+        .build({ statusStartDate: '2017-03-23T10:25:30.000Z' })
 
       const statusHistoryPresenter: Array<ReferralStatusHistoryPresenter> = [
         { ...updatedReferralStatusHistory, byLineText: 'You' },
