@@ -60,6 +60,7 @@ describe('ReferralsController', () => {
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
+  const referrerEmail = 'referrer.email@test-email.co.uk'
   let person: Person
   let referral: Referral
   let referringUser: User
@@ -78,14 +79,20 @@ describe('ReferralsController', () => {
     sharedPageData = {
       buttons,
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
+        person.name,
         coursePresenter,
+        referrerEmail,
         organisation.name,
       ),
       pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
       pageSubHeading: 'Referral summary',
       person,
       referral,
-      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(referral.submittedOn, referringUser.name),
+      submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(
+        referral.submittedOn,
+        referringUser.name,
+        referrerEmail,
+      ),
     }
     statusTransitions = referralStatusRefDataFactory.buildList(2)
 

@@ -153,13 +153,15 @@ export default class ReferralsController {
     const isRefer = req.path.startsWith(referPathBase.pattern)
 
     const referral = await this.referralService.getReferral(username, referralId, { updatePerson })
-    const [course, courseOffering, person, referrerUserFullName, statusTransitions] = await Promise.all([
-      this.courseService.getCourseByOffering(username, referral.offeringId),
-      this.courseService.getOffering(username, referral.offeringId),
-      this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
-      this.userService.getFullNameFromUsername(userToken, referral.referrerUsername),
-      isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
-    ])
+    const [course, courseOffering, person, referrerUserFullName, referrerEmailAddress, statusTransitions] =
+      await Promise.all([
+        this.courseService.getCourseByOffering(username, referral.offeringId),
+        this.courseService.getOffering(username, referral.offeringId),
+        this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
+        this.userService.getFullNameFromUsername(userToken, referral.referrerUsername),
+        this.userService.getEmailFromUsername(userToken, referral.referrerUsername),
+        isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
+      ])
 
     const organisation = await this.organisationService.getOrganisation(userToken, courseOffering.organisationId)
 
@@ -168,7 +170,9 @@ export default class ReferralsController {
     return {
       buttons: ShowReferralUtils.buttons(req.path, referral, statusTransitions),
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
+        person.name,
         coursePresenter,
+        courseOffering.contactEmail,
         organisation.name,
       ),
       navigationItems: ShowReferralUtils.viewReferralNavigationItems(req.path, referral.id),
@@ -180,6 +184,7 @@ export default class ReferralsController {
       submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(
         referral.submittedOn,
         referrerUserFullName,
+        referrerEmailAddress,
       ),
     }
   }

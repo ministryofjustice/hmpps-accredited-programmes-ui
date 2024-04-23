@@ -51,7 +51,7 @@ import {
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, Referral, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { User } from '@manage-users-api'
+import type { User, UserEmail } from '@manage-users-api'
 import type { PrisonerWithBookingId } from '@prisoner-search'
 
 type ApplicationRole = `${ApplicationRoles}`
@@ -96,6 +96,11 @@ let referral: Referral
 let referringUser: User
 const organisation = OrganisationUtils.organisationFromPrison(prison)
 const user = userFactory.build()
+const addedByUser1Email: UserEmail = {
+  email: 'referrer.email@test-email.co.uk',
+  username: '',
+  verified: true,
+}
 let courseParticipationPresenter1: CourseParticipationPresenter
 let courseParticipationPresenter2: CourseParticipationPresenter
 let statusTransitions: Array<ReferralStatusRefData>
@@ -118,6 +123,7 @@ const sharedTests = {
         ...(data?.referral || {}),
       })
       referringUser = userFactory.build({ name: 'Referring User', username: referral.referrerUsername })
+      addedByUser1Email.username = referral.referrerUsername
       courseParticipationPresenter1 = {
         ...courseParticipationFactory.build({
           addedBy: user.username,
@@ -148,6 +154,7 @@ const sharedTests = {
       cy.task('stubPrisoner', prisoner)
       cy.task('stubReferral', referral)
       cy.task('stubUserDetails', referringUser)
+      cy.task('stubUserEmail', addedByUser1Email)
       cy.task('stubStatusTransitions', {
         referralId: referral.id,
         statusTransitions,
@@ -168,8 +175,17 @@ const sharedTests = {
       additionalInformationPage.shouldContainHomeLink()
       additionalInformationPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       additionalInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      additionalInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      additionalInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      additionalInformationPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      additionalInformationPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       additionalInformationPage.shouldContainAdditionalInformationSummaryCard()
       additionalInformationPage.shouldContainSubmittedText()
@@ -196,8 +212,17 @@ const sharedTests = {
       offenceHistoryPage.shouldContainHomeLink()
       offenceHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       offenceHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      offenceHistoryPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      offenceHistoryPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       offenceHistoryPage.shouldContainImportedFromText('Nomis')
       offenceHistoryPage.shouldContainNoOffenceHistoryMessage()
@@ -222,8 +247,17 @@ const sharedTests = {
       programmeHistoryPage.shouldContainHomeLink()
       programmeHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       programmeHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      programmeHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      programmeHistoryPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      programmeHistoryPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainNoHistorySummaryCard()
     },
@@ -280,8 +314,17 @@ const sharedTests = {
       offenceHistoryPage.shouldContainHomeLink()
       offenceHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       offenceHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      offenceHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      offenceHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      offenceHistoryPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      offenceHistoryPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       offenceHistoryPage.shouldContainImportedFromText('Nomis')
       offenceHistoryPage.shouldContainIndexOffenceSummaryCard()
@@ -302,8 +345,17 @@ const sharedTests = {
       personalDetailsPage.shouldContainHomeLink()
       personalDetailsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       personalDetailsPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      personalDetailsPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      personalDetailsPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      personalDetailsPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      personalDetailsPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       personalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       personalDetailsPage.shouldContainImportedFromText('Nomis')
       personalDetailsPage.shouldContainPersonalDetailsSummaryCard()
@@ -334,8 +386,17 @@ const sharedTests = {
       programmeHistoryPage.shouldContainHomeLink()
       programmeHistoryPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       programmeHistoryPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      programmeHistoryPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      programmeHistoryPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      programmeHistoryPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      programmeHistoryPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id, {
         change: false,
@@ -360,8 +421,17 @@ const sharedTests = {
       sentenceInformationPage.shouldContainHomeLink()
       sentenceInformationPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       sentenceInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      sentenceInformationPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      sentenceInformationPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText('OASys')
       sentenceInformationPage.shouldContainSentenceDetailsSummaryCards()
@@ -393,8 +463,17 @@ const sharedTests = {
       sentenceInformationPage.shouldContainHomeLink()
       sentenceInformationPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
       sentenceInformationPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
-      sentenceInformationPage.shouldContainCourseOfferingSummaryList(coursePresenter, organisation.name)
-      sentenceInformationPage.shouldContainSubmissionSummaryList(referral.submittedOn, referringUser.name)
+      sentenceInformationPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      sentenceInformationPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText('OASys')
       sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()
