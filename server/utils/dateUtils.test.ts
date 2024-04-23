@@ -17,4 +17,20 @@ describe('DateUtils', () => {
       })
     })
   })
+
+  describe('removeTimezoneOffset', () => {
+    describe('for a date before British Summer Time (BST)', () => {
+      it('returns an unchanged ISO date string', () => {
+        const dateBeforeBST = '2017-03-23T10:25:30.000Z'
+        expect(DateUtils.removeTimezoneOffset(dateBeforeBST)).toEqual('2017-03-23T10:25:30.000Z')
+      })
+    })
+
+    describe('for a date during British Summer Time (BST)', () => {
+      it('returns an ISO date string with 1 hour removed', () => {
+        const dateDuringBST = '2017-04-23T10:25:30.000Z'
+        expect(DateUtils.removeTimezoneOffset(dateDuringBST)).toEqual('2017-04-23T09:25:30.000Z')
+      })
+    })
+  })
 })
