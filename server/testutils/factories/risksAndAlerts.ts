@@ -35,7 +35,7 @@ class RiskAndAlertsFactory extends Factory<RisksAndAlerts> {
       riskStaffCommunity: riskLevel(),
       riskStaffCustody: riskLevel(),
       rsrRisk: riskLevel(),
-      rsrScore: faker.number.float({ max: 100, min: 0, precision: 0.01 }),
+      rsrScore: faker.number.float({ max: 100, min: 0, multipleOf: 0.01 }),
     })
   }
 }
@@ -68,6 +68,6 @@ export default RiskAndAlertsFactory.define(
     riskStaffCommunity: FactoryHelpers.optionalArrayElement(riskLevel()),
     riskStaffCustody: FactoryHelpers.optionalArrayElement(riskLevel()),
     rsrRisk: FactoryHelpers.optionalArrayElement(riskLevel()),
-    rsrScore: FactoryHelpers.optionalArrayElement(faker.number.float({ max: 100, min: 0, precision: 0.01 })),
+    rsrScore: FactoryHelpers.optionalArrayElement(faker.number.float({ max: 100, min: 0, multipleOf: 0.01 })),
   }),
 )
