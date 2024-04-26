@@ -46,7 +46,7 @@ describe('CoursesOfferingsController', () => {
           courseOffering,
           course.name,
         ),
-        pageHeading: coursePresenter.nameAndAlternateName,
+        pageHeading: coursePresenter.displayName,
       })
     })
   })

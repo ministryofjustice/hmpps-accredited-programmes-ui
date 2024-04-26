@@ -8,7 +8,7 @@ export default class StatusHistoryPage extends Page {
     const { course } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.nameAndAlternateName}`)
+    super(`Referral to ${coursePresenter.displayName}`)
   }
 
   shouldContainStatusHistoryTimeline(statusHistoryPresenter: Array<ReferralStatusHistoryPresenter>) {

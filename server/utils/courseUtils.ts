@@ -8,12 +8,6 @@ import type {
 } from '@accredited-programmes/ui'
 
 export default class CourseUtils {
-  static courseNameWithAlternateName(course: Course): string {
-    return course.alternateName
-      ? `${course.name}: ${course.audience?.toLowerCase()} (${course.alternateName})`
-      : course.name
-  }
-
   static courseRadioOptions(courseNames: Array<Course['name']>): Array<GovukFrontendTagWithText> {
     return courseNames.map(courseName => {
       return {
@@ -27,7 +21,6 @@ export default class CourseUtils {
     return {
       ...course,
       audienceTag: CourseUtils.audienceTag(course.audience),
-      nameAndAlternateName: CourseUtils.courseNameWithAlternateName(course),
       prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
   }

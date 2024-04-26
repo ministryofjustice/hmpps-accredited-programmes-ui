@@ -19,7 +19,7 @@ export default class OffenceHistoryPage extends Page {
     const { course, offenderBooking, person } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.nameAndAlternateName}`)
+    super(`Referral to ${coursePresenter.displayName}`)
 
     this.offenceCodes = args.offenceCodes
     this.offenderBooking = offenderBooking

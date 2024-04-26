@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
-import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
+import { CaseListUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusGroup } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
@@ -115,7 +115,7 @@ export default class AssessCaseListController {
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
-        pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),
+        pageHeading: selectedCourse.displayName,
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusGroup,

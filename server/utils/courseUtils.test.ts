@@ -2,24 +2,6 @@ import CourseUtils from './courseUtils'
 import { courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
 
 describe('CourseUtils', () => {
-  describe('courseNameWithAlternateName', () => {
-    describe('when a course has an `alternateName`', () => {
-      it('returns the `name` and `alternateName` in brackets', () => {
-        const course = courseFactory.build({ alternateName: 'LC', audience: 'Extremism offence', name: 'Lime Course' })
-
-        expect(CourseUtils.courseNameWithAlternateName(course)).toEqual('Lime Course: extremism offence (LC)')
-      })
-    })
-
-    describe('when a course has no `alternateName`', () => {
-      it('just returns the `name`', () => {
-        const course = courseFactory.build({ alternateName: null, name: 'Lime Course' })
-
-        expect(CourseUtils.courseNameWithAlternateName(course)).toEqual('Lime Course')
-      })
-    })
-  })
-
   describe('courseRadioOptions', () => {
     it('returns a formatted array of courses to use with UI radios', () => {
       const courses = courseFactory.buildList(2)
@@ -53,7 +35,6 @@ describe('CourseUtils', () => {
           classes: 'govuk-tag govuk-tag--green audience-tag',
           text: 'Intimate partner violence offence',
         },
-        nameAndAlternateName: 'Lime Course: intimate partner violence offence (LC)',
         prerequisiteSummaryListRows: [
           {
             key: { text: 'Setting' },
@@ -86,14 +67,6 @@ describe('CourseUtils', () => {
           key: { text: 'Risk criteria' },
           value: { text: `${riskCriteriaPrerequisites[0].description}, ${riskCriteriaPrerequisites[1].description}` },
         })
-      })
-    })
-
-    describe('when a course has no `alternateName`', () => {
-      it('just uses the `name` as the `nameAndAlternateName`', () => {
-        const course = courseFactory.build({ alternateName: null })
-
-        expect(CourseUtils.presentCourse(course).nameAndAlternateName).toEqual(course.name)
       })
     })
   })

@@ -35,7 +35,7 @@ export default class StatusHistoryController {
 
       return res.render('referrals/show/statusHistory/show', {
         buttons: ShowReferralUtils.buttons(req.path, referral, statusTransitions),
-        pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+        pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Status history',
         person,
         referral,

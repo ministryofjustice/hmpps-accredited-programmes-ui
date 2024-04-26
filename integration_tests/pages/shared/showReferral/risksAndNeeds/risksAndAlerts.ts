@@ -12,7 +12,7 @@ export default class RisksAndAlertsPage extends Page {
 
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.nameAndAlternateName}`)
+    super(`Referral to ${coursePresenter.displayName}`)
 
     this.risksAndAlerts = risksAndAlerts
   }

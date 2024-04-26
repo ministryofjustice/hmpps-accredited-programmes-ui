@@ -84,7 +84,7 @@ describe('ReferralsController', () => {
         referrerEmail,
         organisation.name,
       ),
-      pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Referral summary',
       person,
       referral,

@@ -249,7 +249,7 @@ export default abstract class Page {
     const { course, organisation } = pageWithOrganisationAndCoursePresenter
 
     cy.get('.govuk-grid-column-two-thirds > h2:first-child').then(organisationAndCourseHeading => {
-      const expectedText = `${organisation.name} | ${course.nameAndAlternateName}`
+      const expectedText = `${organisation.name} | ${course.displayName}`
       const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
     })
