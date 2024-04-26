@@ -18,7 +18,7 @@ export default class CaseListPage extends Page {
   }) {
     const { columnHeaders, course, referralViews } = args
 
-    super(course ? course.name : 'My referrals')
+    super(course ? course.displayName : 'My referrals')
 
     this.columnHeaders = columnHeaders
     this.referralViews = referralViews
