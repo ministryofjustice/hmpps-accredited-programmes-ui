@@ -184,7 +184,7 @@ describe('ShowReferralUtils', () => {
         },
         {
           key: { text: 'Programme name' },
-          value: { text: 'Test Course: general offence (TC+)' },
+          value: { text: 'Test Course Course: general offence' },
         },
         {
           key: { text: 'Programme strand' },

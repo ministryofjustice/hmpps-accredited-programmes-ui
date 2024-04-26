@@ -36,7 +36,7 @@ export default class CourseOfferingsController {
           courseOffering,
           course.name,
         ),
-        pageHeading: coursePresenter.nameAndAlternateName,
+        pageHeading: coursePresenter.displayName,
       })
     }
   }

@@ -110,7 +110,7 @@ describe('RisksAndNeedsController', () => {
 
     sharedPageData = {
       buttons,
-      pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Risks and needs',
       person,
       referral,

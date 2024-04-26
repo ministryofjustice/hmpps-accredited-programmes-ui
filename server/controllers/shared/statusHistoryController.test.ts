@@ -93,7 +93,7 @@ describe('StatusHistoryController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/statusHistory/show', {
         buttons,
-        pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+        pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Status history',
         person,
         referral,

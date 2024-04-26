@@ -7,5 +7,6 @@ export type Course = {
   audience: CourseAudience
   coursePrerequisites: Array<CoursePrerequisite>
   description: string
+  displayName: string
   name: string
 }

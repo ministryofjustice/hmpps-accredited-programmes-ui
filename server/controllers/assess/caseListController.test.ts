@@ -181,7 +181,7 @@ describe('AssessCaseListController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
           audienceSelectItems,
-          pageHeading: 'Lime Course: gang offence (LC)',
+          pageHeading: 'Lime Course Course: gang offence',
           pagination,
           primaryNavigationItems,
           referralStatusGroup,
@@ -259,7 +259,7 @@ describe('AssessCaseListController', () => {
           expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
             action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
             audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
-            pageHeading: 'Lime Course: gang offence (LC)',
+            pageHeading: 'Lime Course Course: gang offence',
             pagination,
             primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
             referralStatusGroup,
@@ -341,7 +341,7 @@ describe('AssessCaseListController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup: 'closed' }),
           audienceSelectItems,
-          pageHeading: 'Lime Course: gang offence (LC)',
+          pageHeading: 'Lime Course Course: gang offence',
           pagination,
           primaryNavigationItems,
           referralStatusGroup: 'closed',

@@ -336,7 +336,6 @@ describe('NewReferralsController', () => {
 
       const coursePresenter = createMock<CoursePresenter>({
         audience: courseAudienceFactory.build(),
-        nameAndAlternateName: `${course.name} (${course.alternateName})`,
       })
       courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)

@@ -5,7 +5,7 @@ import type { Course } from '@accredited-programmes/models'
 
 export default class CoursesPage extends Page {
   constructor() {
-    super('List of accredited programmes')
+    super('Find an Accredited Programme')
   }
 
   shouldHaveCourses(courses: Array<Course>) {
@@ -14,7 +14,7 @@ export default class CoursesPage extends Page {
         const course = CourseUtils.presentCourse(courses[courseElementIndex])
 
         cy.get('.govuk-link').should('have.attr', 'href', findPaths.show({ courseId: course.id }))
-        cy.get('.govuk-heading-m .govuk-link').should('have.text', course.nameAndAlternateName)
+        cy.get('.govuk-heading-m .govuk-link').should('have.text', course.displayName)
 
         cy.get('.govuk-tag').then(tagElement => {
           this.shouldContainTag(course.audienceTag, tagElement)

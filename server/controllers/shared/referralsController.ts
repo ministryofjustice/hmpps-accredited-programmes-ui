@@ -176,7 +176,7 @@ export default class ReferralsController {
         organisation.name,
       ),
       navigationItems: ShowReferralUtils.viewReferralNavigationItems(req.path, referral.id),
-      pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Referral summary',
       person,
       referral,
