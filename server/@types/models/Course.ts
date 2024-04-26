@@ -5,6 +5,7 @@ export type Course = {
   id: string // eslint-disable-next-line @typescript-eslint/member-ordering
   alternateName: string | null
   audience: CourseAudience
+  audienceColour: string
   coursePrerequisites: Array<CoursePrerequisite>
   description: string
   name: string

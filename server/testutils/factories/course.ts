@@ -13,6 +13,7 @@ export default Factory.define<Course>(({ params }) => {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     alternateName: StringUtils.initialiseTitle(params.name || name),
     audience: courseAudienceFactory.build(),
+    audienceColour: courseAudienceFactory.build(),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),

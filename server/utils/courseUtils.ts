@@ -26,28 +26,17 @@ export default class CourseUtils {
   static presentCourse(course: Course): CoursePresenter {
     return {
       ...course,
-      audienceTag: CourseUtils.audienceTag(course.audience),
+      audienceTag: CourseUtils.audienceTag(course),
       nameAndAlternateName: CourseUtils.courseNameWithAlternateName(course),
       prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
   }
 
-  private static audienceTag(audience: CourseAudience): GovukFrontendTagWithText {
-    const audienceColourMap: Record<CourseAudience, TagColour> = {
-      'Extremism offence': 'turquoise',
-      'Gang offence': 'purple',
-      'General offence': 'pink',
-      'General violence offence': 'yellow',
-      'Intimate partner violence offence': 'green',
-      'Sexual offence': 'orange',
-    }
-
-    const colour: TagColour = audienceColourMap[audience]
-
+  private static audienceTag(course: Course): GovukFrontendTagWithText {
     return {
       attributes: { 'data-testid': 'audience-tag' },
-      classes: `govuk-tag govuk-tag--${colour} audience-tag`,
-      text: audience,
+      classes: `govuk-tag govuk-tag--${course.audienceColour} audience-tag`,
+      text: course.audience,
     }
   }
 
