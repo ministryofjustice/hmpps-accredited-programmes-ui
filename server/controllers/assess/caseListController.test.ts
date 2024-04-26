@@ -43,7 +43,7 @@ describe('AssessCaseListController', () => {
   let controller: AssessCaseListController
 
   const orangeCourse = courseFactory.build({ name: 'Orange Course' })
-  const limeCourse = courseFactory.build({ name: 'Lime Course' })
+  const limeCourse = courseFactory.build({ audience: 'Gang offence', name: 'Lime Course' })
   const courses = [orangeCourse, limeCourse]
 
   beforeEach(() => {
@@ -181,7 +181,7 @@ describe('AssessCaseListController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
           audienceSelectItems,
-          pageHeading: 'Lime Course (LC)',
+          pageHeading: 'Lime Course: gang offence (LC)',
           pagination,
           primaryNavigationItems,
           referralStatusGroup,
@@ -259,7 +259,7 @@ describe('AssessCaseListController', () => {
           expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
             action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
             audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
-            pageHeading: 'Lime Course (LC)',
+            pageHeading: 'Lime Course: gang offence (LC)',
             pagination,
             primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
             referralStatusGroup,
@@ -341,7 +341,7 @@ describe('AssessCaseListController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup: 'closed' }),
           audienceSelectItems,
-          pageHeading: 'Lime Course (LC)',
+          pageHeading: 'Lime Course: gang offence (LC)',
           pagination,
           primaryNavigationItems,
           referralStatusGroup: 'closed',

@@ -9,7 +9,9 @@ import type {
 
 export default class CourseUtils {
   static courseNameWithAlternateName(course: Course): string {
-    return course.alternateName ? `${course.name} (${course.alternateName})` : course.name
+    return course.alternateName
+      ? `${course.name}: ${course.audience?.toLowerCase()} (${course.alternateName})`
+      : course.name
   }
 
   static courseRadioOptions(courseNames: Array<Course['name']>): Array<GovukFrontendTagWithText> {
