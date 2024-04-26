@@ -5,9 +5,9 @@ describe('CourseUtils', () => {
   describe('courseNameWithAlternateName', () => {
     describe('when a course has an `alternateName`', () => {
       it('returns the `name` and `alternateName` in brackets', () => {
-        const course = courseFactory.build({ alternateName: 'LC', name: 'Lime Course' })
+        const course = courseFactory.build({ alternateName: 'LC', audience: 'Extremism offence', name: 'Lime Course' })
 
-        expect(CourseUtils.courseNameWithAlternateName(course)).toEqual('Lime Course (LC)')
+        expect(CourseUtils.courseNameWithAlternateName(course)).toEqual('Lime Course: extremism offence (LC)')
       })
     })
 
@@ -53,7 +53,7 @@ describe('CourseUtils', () => {
           classes: 'govuk-tag govuk-tag--green audience-tag',
           text: 'Intimate partner violence offence',
         },
-        nameAndAlternateName: 'Lime Course (LC)',
+        nameAndAlternateName: 'Lime Course: intimate partner violence offence (LC)',
         prerequisiteSummaryListRows: [
           {
             key: { text: 'Setting' },
