@@ -4,6 +4,20 @@ import { Factory } from 'fishery'
 import type { CoursePrerequisite } from '@accredited-programmes/models'
 
 class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
+  equivalentLDCProgramme(description?: string) {
+    return this.params({
+      description: description || 'Becoming New Me Plus',
+      name: 'Equivalent LDC programme',
+    })
+  }
+
+  equivalentNonLDCProgramme(description?: string) {
+    return this.params({
+      description: description || 'Kaizen',
+      name: 'Equivalent non-LDC programme',
+    })
+  }
+
   gender(description?: string) {
     return this.params({
       description: description || 'Male only',
@@ -29,6 +43,20 @@ class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
     return this.params({
       description: description || 'Custody',
       name: 'Setting',
+    })
+  }
+
+  suitableForPeopleWithLDCs(description?: string) {
+    return this.params({
+      description: description || 'Yes',
+      name: 'Suitable for people with learning disabilities or challenges (LDC)?',
+    })
+  }
+
+  timeToComplete(description?: string) {
+    return this.params({
+      description: description || '6 months',
+      name: 'Time to complete',
     })
   }
 }
