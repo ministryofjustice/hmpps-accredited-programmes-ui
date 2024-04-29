@@ -25,6 +25,10 @@ describe('CourseUtils', () => {
           coursePrerequisiteFactory.learningNeeds().build(),
           coursePrerequisiteFactory.riskCriteria().build(),
           coursePrerequisiteFactory.setting().build(),
+          coursePrerequisiteFactory.suitableForPeopleWithLDCs().build(),
+          coursePrerequisiteFactory.equivalentNonLDCProgramme().build(),
+          coursePrerequisiteFactory.equivalentLDCProgramme().build(),
+          coursePrerequisiteFactory.timeToComplete().build(),
         ],
         name: 'Lime Course',
       })
@@ -39,19 +43,35 @@ describe('CourseUtils', () => {
         prerequisiteSummaryListRows: [
           {
             key: { text: 'Setting' },
-            value: { text: course.coursePrerequisites[3].description },
+            value: { html: course.coursePrerequisites[3].description },
           },
           {
             key: { text: 'Gender' },
-            value: { text: course.coursePrerequisites[0].description },
+            value: { html: course.coursePrerequisites[0].description },
           },
           {
             key: { text: 'Risk criteria' },
-            value: { text: course.coursePrerequisites[2].description },
+            value: { html: course.coursePrerequisites[2].description },
           },
           {
             key: { text: 'Learning needs' },
-            value: { text: course.coursePrerequisites[1].description },
+            value: { html: course.coursePrerequisites[1].description },
+          },
+          {
+            key: { text: 'Suitable for people with learning disabilities or challenges (LDC)?' },
+            value: { html: course.coursePrerequisites[4].description },
+          },
+          {
+            key: { text: 'Equivalent non-LDC programme' },
+            value: { html: course.coursePrerequisites[5].description },
+          },
+          {
+            key: { text: 'Equivalent LDC programme' },
+            value: { html: course.coursePrerequisites[6].description },
+          },
+          {
+            key: { text: 'Time to complete' },
+            value: { html: course.coursePrerequisites[7].description },
           },
         ],
       })
@@ -66,7 +86,7 @@ describe('CourseUtils', () => {
 
         expect(riskCriteriaSummaryListRows).toEqual({
           key: { text: 'Risk criteria' },
-          value: { text: `${riskCriteriaPrerequisites[0].description}, ${riskCriteriaPrerequisites[1].description}` },
+          value: { html: `${riskCriteriaPrerequisites[0].description}<br>${riskCriteriaPrerequisites[1].description}` },
         })
       })
     })

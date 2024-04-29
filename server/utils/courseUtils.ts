@@ -3,7 +3,7 @@ import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendTagWithText,
-  HasTextString,
+  HasHtmlString,
 } from '@accredited-programmes/ui'
 
 export default class CourseUtils {
@@ -36,10 +36,14 @@ export default class CourseUtils {
     prerequisites: Array<CoursePrerequisite>,
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     const order: Record<CoursePrerequisite['name'], number> = {
+      'Equivalent LDC programme': 6,
+      'Equivalent non-LDC programme': 5,
       Gender: 1,
       'Learning needs': 3,
       'Risk criteria': 2,
       Setting: 0,
+      'Suitable for people with learning disabilities or challenges (LDC)?': 4,
+      'Time to complete': 7,
     }
 
     const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []
@@ -52,11 +56,11 @@ export default class CourseUtils {
       }
 
       if (summaryListRows[index]) {
-        ;(summaryListRows[index].value as HasTextString).text += `, ${prerequisite.description}`
+        ;(summaryListRows[index].value as HasHtmlString).html += `<br>${prerequisite.description}`
       } else {
         summaryListRows[index] = {
           key: { text: prerequisite.name },
-          value: { text: prerequisite.description },
+          value: { html: prerequisite.description },
         }
       }
     })
