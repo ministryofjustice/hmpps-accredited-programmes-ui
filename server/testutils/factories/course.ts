@@ -15,6 +15,18 @@ export default Factory.define<Course>(({ params }) => {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     alternateName: StringUtils.initialiseTitle(params.name || name),
     audience,
+    audienceColour: faker.helpers.arrayElement([
+      'blue',
+      'green',
+      'grey',
+      'light-blue',
+      'orange',
+      'pink',
+      'purple',
+      'red',
+      'turquoise',
+      'yellow',
+    ]),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),

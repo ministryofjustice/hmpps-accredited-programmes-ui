@@ -19,6 +19,7 @@ describe('CourseUtils', () => {
       const course = courseFactory.build({
         alternateName: 'LC',
         audience: 'Intimate partner violence offence',
+        audienceColour: 'green',
         coursePrerequisites: [
           coursePrerequisiteFactory.gender().build(),
           coursePrerequisiteFactory.learningNeeds().build(),
