@@ -5,9 +5,9 @@
 {% extends "../partials/risksAndNeedsLayout.njk" %}
 
 {% block primaryContent %}
-  {% if noAttitude %}
-    {{ super() }}
+  {{ super() }}
 
+  {% if hasData %}
     {{ govukSummaryList({
       card: {
         title: {
@@ -19,7 +19,7 @@
       },
       rows: attitudesSummaryListRows
     }) }}
-  {% else %}
+  {% elseif not oasysNomisErrorMessage %}
     {% set noAttittudeDataString = "No attitude data found in OASys. Add attitude data to OASys to see it here." %}
 
     {{ keylessSummaryCard("Section 12 - Attitudes", bodyText=noAttittudeDataString, testId="no-attitude-data-summary-card") }}

@@ -5,9 +5,9 @@
 {% extends "../partials/risksAndNeedsLayout.njk" %}
 
 {% block primaryContent %}
-  {% if hasBehaviourData %}
-    {{ super() }}
+  {{ super() }}
 
+  {% if hasData %}
     {{ govukSummaryList({
       card: {
         title: {
@@ -19,7 +19,7 @@
       },
       rows: thinkingAndBehavingSummaryListRows
     }) }}
-  {% else %}
+  {% elseif not oasysNomisErrorMessage %}
     {% set noBehaviourDataString = "No behaviour data found in OASys. Add behaviour data to OASys to see it here." %}
 
     {{ keylessSummaryCard("Section 11 - Thinking and behaving", bodyText=noBehaviourDataString, testId="no-behaviour-summary-card") }}

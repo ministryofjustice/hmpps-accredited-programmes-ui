@@ -5,9 +5,9 @@
 {% extends "../partials/risksAndNeedsLayout.njk" %}
 
 {% block primaryContent %}
-  {% if hasLifestyle %}
-    {{ super() }}
+  {{ super() }}
 
+  {% if hasData %}
     {{ govukSummaryList({
       card: {
         title: {
@@ -19,7 +19,7 @@
       },
       rows: reoffendingSummaryListRows
     }) }}
-  {% else %}
+  {% elseif not oasysNomisErrorMessage %}
     {% set noLifestyleDataString = "No lifestyle data found in OASys. Add lifestyle data to OASys to see them here." %}
 
     {{ keylessSummaryCard("Section 7 - Lifestyle and associates", bodyText=noLifestyleDataString, testId="no-lifestyle-data-summary-card") }}

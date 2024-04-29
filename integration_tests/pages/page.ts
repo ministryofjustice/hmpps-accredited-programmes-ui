@@ -242,6 +242,19 @@ export default abstract class Page {
     })
   }
 
+  shouldContainOasysNomisErrorBanner(): void {
+    cy.get('[data-testid="oasys-nomis-error-banner"]')
+      .should('contain.text', 'OASys or NOMIS data unavailable')
+      .should('contain.text', 'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.')
+  }
+
+  shouldContainOasysNomisErrorText(): void {
+    cy.get('[data-testid="oasys-nomis-error-text"]').should(
+      'contain.text',
+      'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.',
+    )
+  }
+
   shouldContainOrganisationAndCourseHeading(pageWithOrganisationAndCoursePresenter: {
     course: CoursePresenter
     organisation: Organisation

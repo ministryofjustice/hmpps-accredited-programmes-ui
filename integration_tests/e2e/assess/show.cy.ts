@@ -75,6 +75,12 @@ context('Viewing a submitted referral', () => {
           sharedTests.risksAndNeeds.showsRisksAndAlertsPageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
         })
       })
+
+      describe('and there are api errors', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsRisksAndAlertsPageWithApiError(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
+      })
     })
 
     describe('When reviewing Section 2 - Offence analysis', () => {

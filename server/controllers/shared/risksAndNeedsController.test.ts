@@ -152,9 +152,9 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
         ...sharedPageData,
         attitudesSummaryListRows,
+        hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
-        noAttitude: true,
         subNavigationItems,
       })
     })
@@ -172,8 +172,8 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
           ...sharedPageData,
+          hasData: false,
           navigationItems,
-          noAttitude: false,
           subNavigationItems,
         })
       })
@@ -190,10 +190,32 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
           ...sharedPageData,
+          hasData: false,
           navigationItems,
-          noAttitude: false,
           subNavigationItems,
         })
+      })
+    })
+
+    describe('when oasys service returns an error', () => {
+      it('renders the attitudes page with the correct response locals and also adds `oasysNomisErrorMessage`', async () => {
+        const error = new Error('An error')
+        when(oasysService.getAttitude).calledWith(username, person.prisonNumber).mockRejectedValue(error)
+
+        request.path = referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id })
+
+        const requestHandler = controller.attitudes()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/attitudes', {
+          ...sharedPageData,
+          hasData: false,
+          navigationItems,
+          subNavigationItems,
+        })
+        expect(response.locals.oasysNomisErrorMessage).toBe(
+          'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.',
+        )
       })
     })
   })
@@ -216,7 +238,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
         ...sharedPageData,
-        hasEmotionalWellbeingData: true,
+        hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
         psychiatricSummaryListRows,
@@ -237,7 +259,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
           ...sharedPageData,
-          hasEmotionalWellbeingData: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -265,7 +287,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
         ...sharedPageData,
-        hasLearningNeeds: true,
+        hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         informationSummaryListRows,
         navigationItems,
@@ -287,7 +309,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
           ...sharedPageData,
-          hasLearningNeeds: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -313,7 +335,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/health', {
         ...sharedPageData,
-        hasHealthData: true,
+        hasData: true,
         healthSummaryListRows,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
@@ -334,7 +356,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/health', {
           ...sharedPageData,
-          hasHealthData: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -360,7 +382,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
         ...sharedPageData,
-        hasLifestyle: true,
+        hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
         reoffendingSummaryListRows,
@@ -381,7 +403,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
           ...sharedPageData,
-          hasLifestyle: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -429,7 +451,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
         ...sharedPageData,
-        hasOffenceDetails: true,
+        hasData: true,
         impactAndConsequencesSummaryListRows,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         motivationAndTriggersText,
@@ -456,7 +478,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/offenceAnalysis', {
           ...sharedPageData,
-          hasOffenceDetails: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -483,7 +505,7 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
         ...sharedPageData,
         domesticViolenceSummaryListRows,
-        hasRelationships: true,
+        hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
         subNavigationItems,
@@ -503,7 +525,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
           ...sharedPageData,
-          hasRelationships: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -610,9 +632,9 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
         ...sharedPageData,
         alerts: risksAndAlerts.alerts,
-        hasRisksAndAlerts: true,
+        hasData: true,
         importedFromNomisText: `Imported from Nomis on ${importedFromDate}.`,
-        importedFromOasysText: `Imported from OASys on ${importedFromDate}.`,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
         ogrsYear1Box,
         ogrsYear2Box,
@@ -642,7 +664,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
           ...sharedPageData,
-          hasRisksAndAlerts: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -668,7 +690,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
         ...sharedPageData,
-        hasRoshAnalysis: true,
+        hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
         previousBehaviourSummaryListRows,
@@ -689,7 +711,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
           ...sharedPageData,
-          hasRoshAnalysis: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
@@ -717,7 +739,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
         ...sharedPageData,
-        hasBehaviourData: true,
+        hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
         subNavigationItems,
@@ -738,7 +760,7 @@ describe('RisksAndNeedsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
           ...sharedPageData,
-          hasBehaviourData: false,
+          hasData: false,
           navigationItems,
           subNavigationItems,
         })
