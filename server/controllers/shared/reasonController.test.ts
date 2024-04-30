@@ -142,7 +142,7 @@ describe('ReasonController', () => {
           pageDescription: 'If you withdraw the referral, it will be closed.',
           pageHeading: 'Withdrawal reason',
           radioItems,
-          radioLegend: 'Select the reason for withdrawal',
+          radioLegend: 'Select the reason for this withdrawal',
           timelineItems: timelineItems.slice(0, 1),
         })
 

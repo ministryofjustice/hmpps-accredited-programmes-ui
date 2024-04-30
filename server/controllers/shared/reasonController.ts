@@ -23,7 +23,7 @@ const content: Partial<SelectReasonPageContent> = {
   WITHDRAWN: {
     pageDescription: 'If you withdraw the referral, it will be closed.',
     pageHeading: 'Withdrawal reason',
-    radioLegend: 'Select the reason for withdrawal',
+    radioLegend: 'Select the reason for this withdrawal',
   },
 }
 

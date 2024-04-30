@@ -134,7 +134,7 @@ describe('CategoryController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/category/show', {
           backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
           pageDescription: 'If you withdraw the referral, it will be closed.',
-          pageHeading: 'Withdrawal category',
+          pageHeading: 'Withdraw referral',
           radioItems,
           radioLegend: 'Select the withdrawal category',
           timelineItems: timelineItems.slice(0, 1),

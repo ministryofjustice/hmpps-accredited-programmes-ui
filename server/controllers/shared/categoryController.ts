@@ -22,7 +22,7 @@ const content: Partial<SelectCategoryPageContent> = {
   },
   WITHDRAWN: {
     pageDescription: 'If you withdraw the referral, it will be closed.',
-    pageHeading: 'Withdrawal category',
+    pageHeading: 'Withdraw referral',
     radioLegend: 'Select the withdrawal category',
   },
 }
