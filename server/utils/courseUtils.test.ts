@@ -30,6 +30,7 @@ describe('CourseUtils', () => {
           coursePrerequisiteFactory.equivalentLDCProgramme().build(),
           coursePrerequisiteFactory.timeToComplete().build(),
         ],
+        id: 'lime-course-1',
         name: 'Lime Course',
       })
 
@@ -40,6 +41,7 @@ describe('CourseUtils', () => {
           classes: 'govuk-tag govuk-tag--green audience-tag',
           text: 'Intimate partner violence offence',
         },
+        href: '/find/programmes/lime-course-1',
         prerequisiteSummaryListRows: [
           {
             key: { text: 'Setting' },

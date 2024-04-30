@@ -1,9 +1,10 @@
 import { path } from 'static-path'
 
-const coursesPath = path('/programmes')
+const findPathBase = path('/find')
+const coursesPath = findPathBase.path('/programmes')
 const coursePath = coursesPath.path(':courseId')
 
-const courseOfferingPath = path('/offerings/:courseOfferingId')
+const courseOfferingPath = findPathBase.path('/offerings/:courseOfferingId')
 
 export default {
   index: coursesPath,
