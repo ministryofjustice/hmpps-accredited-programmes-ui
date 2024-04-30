@@ -61,7 +61,7 @@ export default class ReferCaseListController {
         earliestReleaseDate: 'Earliest release date',
         nonDtoReleaseDateType: 'Release date type',
         organisationName: 'Programme location',
-        courseName: 'Programme name',
+        listDisplayName: 'Programme name',
       }
       /* eslint-enable sort-keys */
 

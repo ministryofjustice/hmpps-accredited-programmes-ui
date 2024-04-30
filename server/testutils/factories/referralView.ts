@@ -21,12 +21,14 @@ class ReferralViewFactory extends Factory<ReferralView, ReferralViewTransientPar
 export default ReferralViewFactory.define(({ params, transientParams }) => {
   const { availableStatuses, requireOptionalFields } = transientParams
   const status = params.status || randomStatus(availableStatuses)
+  const courseName = params.courseName || `${StringUtils.convertToTitleCase(faker.color.human())} Course`
+  const audience = params.audience || courseAudienceFactory.build()
 
   const referralViewWithAllFields: ReferralView = {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
-    audience: courseAudienceFactory.build(),
+    audience,
     conditionalReleaseDate: FactoryHelpers.randomFutureDateString(),
-    courseName: `${StringUtils.convertToTitleCase(faker.color.human())} Course`,
+    courseName,
     earliestReleaseDate: FactoryHelpers.randomFutureDateString(),
     earliestReleaseDateType: faker.helpers.arrayElement([
       'Tariff Date',
@@ -34,6 +36,7 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
       'Conditional Release Date',
     ]),
     forename: faker.person.firstName(),
+    listDisplayName: `${courseName}: ${audience}`,
     nonDtoReleaseDateType: faker.helpers.arrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
     organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),
     organisationName: `${faker.location.county()} (HMP)`,
