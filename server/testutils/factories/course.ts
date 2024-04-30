@@ -8,7 +8,7 @@ import type { Course } from '@accredited-programmes/models'
 
 export default Factory.define<Course>(({ params }) => {
   const audience = params.audience || courseAudienceFactory.build()
-  const name = `${params.name || StringUtils.convertToTitleCase(faker.color.human())} Course`
+  const name = params.name || `${StringUtils.convertToTitleCase(faker.color.human())} Course`
   const displayName = `${name}: ${audience.toLowerCase()}`
 
   return {

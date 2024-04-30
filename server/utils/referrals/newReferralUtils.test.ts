@@ -31,7 +31,7 @@ describe('NewReferralUtils', () => {
         },
         {
           key: { text: 'Programme name' },
-          value: { text: 'Test Course Course: general offence' },
+          value: { text: 'Test Course: general offence' },
         },
         {
           key: { text: 'Programme strand' },
