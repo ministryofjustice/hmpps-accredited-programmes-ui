@@ -1,3 +1,4 @@
+import { findPaths } from '../paths'
 import type { Course, CoursePrerequisite } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
@@ -20,6 +21,7 @@ export default class CourseUtils {
     return {
       ...course,
       audienceTag: CourseUtils.audienceTag(course),
+      href: findPaths.show({ courseId: course.id }),
       prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
   }
