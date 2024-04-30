@@ -835,6 +835,31 @@ const sharedTests = {
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainNoRelationshipsSummaryCard()
     },
+    showsRisksAndAlertsPageWithApiError: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubRisksAndAlerts', {
+        prisonNumber: prisoner.prisonerNumber,
+        risksAndAlerts: null,
+        status: 500,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+      cy.visit(path)
+
+      const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
+        course,
+        risksAndAlerts: {},
+      })
+      risksAndAlertsPage.shouldContainOasysNomisErrorBanner()
+      risksAndAlertsPage.shouldContainHomeLink()
+      risksAndAlertsPage.shouldHavePersonDetails(person)
+      risksAndAlertsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
+      risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      risksAndAlertsPage.shouldContainOasysNomisErrorText()
+    },
     showsRisksAndAlertsPageWithData: (role: ApplicationRole): void => {
       const risksAndAlerts = risksAndAlertsFactory.build()
       sharedTests.referrals.beforeEach(role)
@@ -858,7 +883,7 @@ const sharedTests = {
       risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
       risksAndAlertsPage.shouldContainRisksAndNeedsOasysMessage()
       risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      risksAndAlertsPage.shouldContainImportedFromText('OASys', 'imported-from-oasys-text')
+      risksAndAlertsPage.shouldContainImportedFromText('OASys', 'imported-from-text')
       risksAndAlertsPage.shouldHaveOgrsInformation()
       risksAndAlertsPage.shouldHaveOvpInformation()
       risksAndAlertsPage.shouldHaveSaraInformation()

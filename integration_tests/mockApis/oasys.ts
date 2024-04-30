@@ -133,6 +133,7 @@ export default {
   stubRisksAndAlerts: (args: {
     prisonNumber: Referral['prisonNumber']
     risksAndAlerts: RisksAndAlerts
+    status?: number
   }): SuperAgentRequest =>
     stubFor({
       request: {
@@ -144,7 +145,7 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: args.risksAndAlerts,
-        status: 200,
+        status: args.status || 200,
       },
     }),
 

@@ -7,15 +7,9 @@
 {% extends "../partials/risksAndNeedsLayout.njk" %}
 
 {% block primaryContent %}
-  {% if hasRisksAndAlerts %}
-    {{ govukInsetText({
-      classes: "govuk-!-margin-top-0",
-      text: importedFromOasysText,
-      attributes: {
-        "data-testid": "imported-from-oasys-text"
-      }
-    }) }}
+  {{ super() }}
 
+  {% if hasData %}
     <h3 class="govuk-heading-s" data-testid="ogrs-heading">Offender group reconviction scale</h3>
 
     {{ riskBox(ogrsYear1Box) }}
@@ -85,7 +79,7 @@
         <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-0">No risks found.</p>
       {% endif %}
     </aside>
-  {% else %}
+  {% elseif not oasysNomisErrorMessage %}
     {% set noRisksAndAlertsString = "No risks and alerts data found in OASys or Nomis. Add risks and alerts data to OASys and/or Nomis to see them here." %}
 
     {{ keylessSummaryCard("Risks and alerts", bodyText=noRisksAndAlertsString, testId="no-risks-and-alerts-summary-card") }}

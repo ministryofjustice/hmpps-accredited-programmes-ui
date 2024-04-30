@@ -5,6 +5,17 @@
 
 {% extends "../../../partials/layout.njk" %}
 
+{% block beforeContent %}
+  {% if oasysNomisErrorMessage %}
+    <div class="api-error-banner" data-testid="oasys-nomis-error-banner">
+      <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-1">OASys or NOMIS data unavailable</p>
+      <p>{{ oasysNomisErrorMessage }}</p>
+    </div>
+  {% endif %}
+
+  {{ super() }}
+{% endblock beforeContent %}
+
 {% block personBanner %}
   {% include "../../_personBanner.njk" %}
 {% endblock personBanner %}

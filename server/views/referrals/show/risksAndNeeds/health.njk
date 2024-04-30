@@ -5,9 +5,9 @@
 {% extends "../partials/risksAndNeedsLayout.njk" %}
 
 {% block primaryContent %}
-  {% if hasHealthData %}
-    {{ super() }}
+  {{ super() }}
 
+  {% if hasData %}
     {{ govukSummaryList({
       card: {
         title: {
@@ -19,7 +19,7 @@
       },
       rows: healthSummaryListRows
     }) }}
-  {% else %}
+  {% elseif not oasysNomisErrorMessage %}
     {% set noHealthDataString = "No health data found in OASys. Add health data to OASys to see it here." %}
 
     {{ keylessSummaryCard("Section 13 - Health", bodyText=noHealthDataString, testId="no-health-data-summary-card") }}
