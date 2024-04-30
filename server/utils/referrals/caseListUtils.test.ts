@@ -537,15 +537,15 @@ describe('CaseListUtils', () => {
     })
 
     describe('Programme name', () => {
-      it('returns the course name', () => {
-        expect(CaseListUtils.tableRowContent(referralView, 'Programme name')).toEqual('Test Course')
+      it('returns the course name with audience', () => {
+        expect(CaseListUtils.tableRowContent(referralView, 'Programme name')).toEqual('Test Course: General offence')
       })
 
-      describe('when `courseName` is `undefined`', () => {
+      describe('when `listDisplayName` is `undefined`', () => {
         it('returns "N/A"', () => {
-          expect(CaseListUtils.tableRowContent({ ...referralView, courseName: undefined }, 'Programme name')).toEqual(
-            'N/A',
-          )
+          expect(
+            CaseListUtils.tableRowContent({ ...referralView, listDisplayName: undefined }, 'Programme name'),
+          ).toEqual('N/A')
         })
       })
     })

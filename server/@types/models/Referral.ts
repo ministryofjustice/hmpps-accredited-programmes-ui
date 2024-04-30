@@ -122,6 +122,7 @@ type ReferralView = {
   earliestReleaseDate?: Person['conditionalReleaseDate'] | Person['paroleEligibilityDate'] | Person['tariffDate']
   earliestReleaseDateType?: string
   forename?: string
+  listDisplayName?: string
   nonDtoReleaseDateType?: Prisoner['nonDtoReleaseDateType']
   organisationId?: Organisation['id']
   organisationName?: Organisation['name']

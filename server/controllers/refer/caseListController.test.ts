@@ -117,8 +117,8 @@ describe('ReferCaseListController', () => {
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
           {
-            courseName: 'Programme name',
             earliestReleaseDate: 'Earliest release date',
+            listDisplayName: 'Programme name',
             nonDtoReleaseDateType: 'Release date type',
             organisationName: 'Programme location',
             status: 'Referral status',
@@ -190,8 +190,8 @@ describe('ReferCaseListController', () => {
           expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
             pathWithQuery,
             {
-              courseName: 'Programme name',
               earliestReleaseDate: 'Earliest release date',
+              listDisplayName: 'Programme name',
               nonDtoReleaseDateType: 'Release date type',
               organisationName: 'Programme location',
               status: 'Referral status',
@@ -267,8 +267,8 @@ describe('ReferCaseListController', () => {
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
           {
-            courseName: 'Programme name',
             earliestReleaseDate: 'Earliest release date',
+            listDisplayName: 'Programme name',
             nonDtoReleaseDateType: 'Release date type',
             organisationName: 'Programme location',
             submittedOn: 'Date referred',
