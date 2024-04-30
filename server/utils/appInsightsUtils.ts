@@ -20,12 +20,13 @@ export type ContextObjects = Record<string, ContextObjectWithUser> | undefined
 export default class AppInsightsUtils {
   static addUserDataToRequests = (envelope: EnvelopeTelemetry, contextObjects: ContextObjects): boolean => {
     const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString.Request
-    const { username, activeCaseLoadId } = contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}
+    const { username, activeCaseLoadId, caseloadDescription } = contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}
     if (isRequest && username && envelope.data.baseData) {
       const { properties } = envelope.data.baseData
       // eslint-disable-next-line no-param-reassign
       envelope.data.baseData.properties = {
         activeCaseLoadId,
+        caseloadDescription,
         username,
         ...properties,
       }

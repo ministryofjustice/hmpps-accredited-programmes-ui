@@ -5,6 +5,7 @@ interface User {
   userId: string
   username: string
   activeCaseLoadId?: string
+  caseloadDescription?: string
   staffId?: number
   uuid?: string
 }
