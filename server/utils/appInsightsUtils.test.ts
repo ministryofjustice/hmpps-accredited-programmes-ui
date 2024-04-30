@@ -5,6 +5,7 @@ import AppInsightsUtils from './appInsightsUtils'
 
 const user = {
   activeCaseLoadId: 'MDI',
+  caseloadDescription: 'Moorland (HMP & YOI)',
   username: 'TEST_USER',
 }
 
@@ -16,13 +17,14 @@ const createEnvelope = (properties: Record<string, boolean | string> | undefined
     } as DataTelemetry,
   }) as EnvelopeTelemetry
 
-const createContext = (username?: string, activeCaseLoadId?: string) =>
+const createContext = (username?: string, activeCaseLoadId?: string, caseloadDescription?: string) =>
   ({
     'http.ServerRequest': {
       res: {
         locals: {
           user: {
             activeCaseLoadId,
+            caseloadDescription,
             username,
           },
         },
@@ -32,21 +34,22 @@ const createContext = (username?: string, activeCaseLoadId?: string) =>
 
 describe('AppInsightsUtils', () => {
   describe('addUserDataToRequests', () => {
-    it('merges username and activeCaseloadId with existing properties when present for sending to ApplicationInsights', () => {
-      const contextWithUserDetails = createContext(user.username, user.activeCaseLoadId)
+    it('merges username, caseloadDescription and activeCaseloadId with existing properties when present for sending to ApplicationInsights', () => {
+      const contextWithUserDetails = createContext(user.username, user.activeCaseLoadId, user.caseloadDescription)
       const envelope = createEnvelope({ other: 'things' })
 
       AppInsightsUtils.addUserDataToRequests(envelope, contextWithUserDetails)
 
       expect(envelope.data.baseData!.properties).toEqual({
         activeCaseLoadId: user.activeCaseLoadId,
+        caseloadDescription: user.caseloadDescription,
         other: 'things',
         username: user.username,
       })
     })
 
     it("sets the user fields in the envelope's baseData properties when no other envelope properties have been set", () => {
-      const context = createContext(user.username, user.activeCaseLoadId)
+      const context = createContext(user.username, user.activeCaseLoadId, user.caseloadDescription)
       const envelope = createEnvelope(undefined)
 
       AppInsightsUtils.addUserDataToRequests(envelope, context)
@@ -55,7 +58,7 @@ describe('AppInsightsUtils', () => {
     })
 
     it('does not set user data when no username is present on the context object', () => {
-      const contextWithoutUsername = createContext(undefined, user.activeCaseLoadId)
+      const contextWithoutUsername = createContext(undefined, user.activeCaseLoadId, user.caseloadDescription)
       const envelope = createEnvelope({ other: 'things' })
 
       AppInsightsUtils.addUserDataToRequests(envelope, contextWithoutUsername)
@@ -64,7 +67,7 @@ describe('AppInsightsUtils', () => {
     })
 
     it("does not set user data when the envelope's baseType is not RequestData", () => {
-      const context = createContext(user.username, user.activeCaseLoadId)
+      const context = createContext(user.username, user.activeCaseLoadId, user.caseloadDescription)
       const nonRequestTypeEnvelope = createEnvelope({ other: 'things' }, 'NOT_REQUEST_DATA')
 
       AppInsightsUtils.addUserDataToRequests(nonRequestTypeEnvelope, context)
@@ -73,7 +76,7 @@ describe('AppInsightsUtils', () => {
     })
 
     it('does not set user data when there is no baseData', () => {
-      const context = createContext(user.username, user.activeCaseLoadId)
+      const context = createContext(user.username, user.activeCaseLoadId, user.caseloadDescription)
       const envelopeWithNoBaseData = {
         data: {
           baseType: 'RequestData',
