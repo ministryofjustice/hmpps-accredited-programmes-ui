@@ -11,7 +11,10 @@ const controllers = (services: Services) => {
     services.referenceDataService,
   )
 
-  const updateStatusDecisionController = new UpdateStatusDecisionController(services.referralService)
+  const updateStatusDecisionController = new UpdateStatusDecisionController(
+    services.personService,
+    services.referralService,
+  )
 
   return {
     assessCaseListController,

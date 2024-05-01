@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
-import type { ReferenceDataService, ReferralService } from '../../services'
+import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
@@ -29,6 +29,7 @@ const content: Partial<SelectReasonPageContent> = {
 
 export default class ReasonController {
   constructor(
+    private readonly personService: PersonService,
     private readonly referenceDataService: ReferenceDataService,
     private readonly referralService: ReferralService,
   ) {}
@@ -53,7 +54,8 @@ export default class ReasonController {
 
       const { decisionForCategoryAndReason } = referralStatusUpdateData
 
-      const [statusHistory, reasons] = await Promise.all([
+      const [referral, statusHistory, reasons] = await Promise.all([
+        this.referralService.getReferral(username, referralId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referenceDataService.getReferralStatusCodeReasons(
           username,
@@ -61,6 +63,8 @@ export default class ReasonController {
           decisionForCategoryAndReason,
         ),
       ])
+
+      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
 
       if (reasons.length === 0) {
         req.session.referralStatusUpdateData = {
@@ -81,6 +85,7 @@ export default class ReasonController {
 
       return res.render('referrals/updateStatus/reason/show', {
         backLinkHref: paths.show.statusHistory({ referralId }),
+        person,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
         ...content[decisionForCategoryAndReason],

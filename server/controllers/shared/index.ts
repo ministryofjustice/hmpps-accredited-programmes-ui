@@ -30,11 +30,22 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
-  const categoryController = new CategoryController(services.referenceDataService, services.referralService)
+  const categoryController = new CategoryController(
+    services.personService,
+    services.referenceDataService,
+    services.referralService,
+  )
 
-  const reasonController = new ReasonController(services.referenceDataService, services.referralService)
+  const reasonController = new ReasonController(
+    services.personService,
+    services.referenceDataService,
+    services.referralService,
+  )
 
-  const updateStatusSelectionController = new UpdateStatusSelectionController(services.referralService)
+  const updateStatusSelectionController = new UpdateStatusSelectionController(
+    services.personService,
+    services.referralService,
+  )
 
   return {
     categoryController,

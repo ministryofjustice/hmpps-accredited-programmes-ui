@@ -5,11 +5,16 @@ import type { NextFunction, Request, Response } from 'express'
 import ReasonController from './reasonController'
 import type { ReferralStatusUpdateSessionData } from '../../@types/express'
 import { assessPaths, referPaths } from '../../paths'
-import type { ReferenceDataService, ReferralService } from '../../services'
-import { referralFactory, referralStatusHistoryFactory, referralStatusReasonFactory } from '../../testutils/factories'
+import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
+import {
+  personFactory,
+  referralFactory,
+  referralStatusHistoryFactory,
+  referralStatusReasonFactory,
+} from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ReferralUtils, ShowReferralUtils } from '../../utils'
-import type { Referral, ReferralStatusReason } from '@accredited-programmes/models'
+import type { Person, Referral, ReferralStatusReason } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { GovukFrontendRadiosItem } from '@govuk-frontend'
 
@@ -28,9 +33,11 @@ describe('ReasonController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const personService = createMock<PersonService>({})
   const referenceDataService = createMock<ReferenceDataService>({})
   const referralService = createMock<ReferralService>({})
 
+  let person: Person
   const radioItems: Array<GovukFrontendRadiosItem> = [
     { text: 'Reason A', value: 'STATUS-REASON-A' },
     { text: 'Reason B', value: 'STATUS-REASON-B' },
@@ -57,7 +64,8 @@ describe('ReasonController', () => {
   let controller: ReasonController
 
   beforeEach(() => {
-    referral = referralFactory.submitted().build({})
+    person = personFactory.build()
+    referral = referralFactory.submitted().build({ prisonNumber: person.prisonNumber })
     referralStatusCodeReasons = referralStatusReasonFactory.buildList(2, { referralCategoryCode: 'A' })
     referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
     referralStatusUpdateData = {
@@ -70,10 +78,12 @@ describe('ReasonController', () => {
     mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
+    personService.getPerson.mockResolvedValue(person)
+    referralService.getReferral.mockResolvedValue(referral)
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
     referenceDataService.getReferralStatusCodeReasons.mockResolvedValue(referralStatusCodeReasons)
 
-    controller = new ReasonController(referenceDataService, referralService)
+    controller = new ReasonController(personService, referenceDataService, referralService)
 
     request = createMock<Request>({
       params: { referralId: referral.id },
@@ -93,6 +103,7 @@ describe('ReasonController', () => {
         backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
         pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
         pageHeading: 'Deselection reason',
+        person,
         radioItems,
         radioLegend: 'Choose the deselection reason',
 
@@ -104,7 +115,13 @@ describe('ReasonController', () => {
         'STATUS-CAT-A',
         'DESELECTED',
       )
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        referral.prisonNumber,
+        response.locals.user.caseloads,
+      )
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reasonCode'])
       expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeReasons, undefined)
@@ -141,6 +158,7 @@ describe('ReasonController', () => {
           backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
           pageDescription: 'If you withdraw the referral, it will be closed.',
           pageHeading: 'Withdrawal reason',
+          person,
           radioItems,
           radioLegend: 'Select the reason for this withdrawal',
           timelineItems: timelineItems.slice(0, 1),

@@ -5,11 +5,16 @@ import type { NextFunction, Request, Response } from 'express'
 import CategoryController from './categoryController'
 import type { ReferralStatusUpdateSessionData } from '../../@types/express'
 import { assessPaths, referPaths } from '../../paths'
-import type { ReferenceDataService, ReferralService } from '../../services'
-import { referralFactory, referralStatusCategoryFactory, referralStatusHistoryFactory } from '../../testutils/factories'
+import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
+import {
+  personFactory,
+  referralFactory,
+  referralStatusCategoryFactory,
+  referralStatusHistoryFactory,
+} from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ReferralUtils, ShowReferralUtils } from '../../utils'
-import type { Referral, ReferralStatusCategory } from '@accredited-programmes/models'
+import type { Person, Referral, ReferralStatusCategory } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { GovukFrontendRadiosItem } from '@govuk-frontend'
 
@@ -28,9 +33,11 @@ describe('CategoryController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const personService = createMock<PersonService>({})
   const referenceDataService = createMock<ReferenceDataService>({})
   const referralService = createMock<ReferralService>({})
 
+  let person: Person
   const radioItems: Array<GovukFrontendRadiosItem> = [
     { text: 'Category A', value: 'A' },
     { text: 'Category B', value: 'B' },
@@ -57,7 +64,8 @@ describe('CategoryController', () => {
   let controller: CategoryController
 
   beforeEach(() => {
-    referral = referralFactory.submitted().build({})
+    person = personFactory.build()
+    referral = referralFactory.submitted().build({ prisonNumber: person.prisonNumber })
     referralStatusCodeCategories = referralStatusCategoryFactory.buildList(2, { referralStatusCode: 'WITHDRAWN' })
     referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
     referralStatusUpdateData = {
@@ -69,10 +77,12 @@ describe('CategoryController', () => {
     mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
+    personService.getPerson.mockResolvedValue(person)
+    referralService.getReferral.mockResolvedValue(referral)
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
     referenceDataService.getReferralStatusCodeCategories.mockResolvedValue(referralStatusCodeCategories)
 
-    controller = new CategoryController(referenceDataService, referralService)
+    controller = new CategoryController(personService, referenceDataService, referralService)
 
     request = createMock<Request>({
       params: { referralId: referral.id },
@@ -92,13 +102,20 @@ describe('CategoryController', () => {
         backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
         pageDescription: 'If you deselect the referral, it will be closed.',
         pageHeading: 'Deselection category',
+        person,
         radioItems,
         radioLegend: 'Choose the deselection category',
         timelineItems: timelineItems.slice(0, 1),
       })
 
       expect(referenceDataService.getReferralStatusCodeCategories).toHaveBeenCalledWith(username, 'DESELECTED')
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        referral.prisonNumber,
+        response.locals.user.caseloads,
+      )
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
       expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, undefined)
@@ -135,13 +152,20 @@ describe('CategoryController', () => {
           backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
           pageDescription: 'If you withdraw the referral, it will be closed.',
           pageHeading: 'Withdraw referral',
+          person,
           radioItems,
           radioLegend: 'Select the withdrawal category',
           timelineItems: timelineItems.slice(0, 1),
         })
 
         expect(referenceDataService.getReferralStatusCodeCategories).toHaveBeenCalledWith(username, 'WITHDRAWN')
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
+        expect(personService.getPerson).toHaveBeenCalledWith(
+          username,
+          referral.prisonNumber,
+          response.locals.user.caseloads,
+        )
 
         expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
         expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, undefined)
