@@ -10,7 +10,9 @@ import type { UserDetails } from '@accredited-programmes/users'
 type ContextObjectWithUser = {
   res?: {
     locals?: {
-      user: Partial<UserDetails>
+      user: Partial<UserDetails> & {
+        roles: Array<string>
+      }
     }
   }
 }
@@ -20,12 +22,15 @@ export type ContextObjects = Record<string, ContextObjectWithUser> | undefined
 export default class AppInsightsUtils {
   static addUserDataToRequests = (envelope: EnvelopeTelemetry, contextObjects: ContextObjects): boolean => {
     const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString.Request
-    const { username, activeCaseLoadId } = contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}
+    const { username, activeCaseLoadId, caseloads, roles } =
+      contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}
     if (isRequest && username && envelope.data.baseData) {
       const { properties } = envelope.data.baseData
       // eslint-disable-next-line no-param-reassign
       envelope.data.baseData.properties = {
+        activeCaseLoadDescription: caseloads?.find(caseload => caseload.caseLoadId === activeCaseLoadId)?.description,
         activeCaseLoadId,
+        roles,
         username,
         ...properties,
       }
