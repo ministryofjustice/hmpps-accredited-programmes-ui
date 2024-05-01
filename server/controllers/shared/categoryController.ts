@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
-import type { ReferenceDataService, ReferralService } from '../../services'
+import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
@@ -29,6 +29,7 @@ const content: Partial<SelectCategoryPageContent> = {
 
 export default class CategoryController {
   constructor(
+    private readonly personService: PersonService,
     private readonly referenceDataService: ReferenceDataService,
     private readonly referralService: ReferralService,
   ) {}
@@ -52,10 +53,13 @@ export default class CategoryController {
 
       const { decisionForCategoryAndReason } = referralStatusUpdateData
 
-      const [statusHistory, categories] = await Promise.all([
+      const [referral, statusHistory, categories] = await Promise.all([
+        this.referralService.getReferral(username, referralId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referenceDataService.getReferralStatusCodeCategories(username, decisionForCategoryAndReason),
       ])
+
+      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
 
       const radioItems = ReferralUtils.statusOptionsToRadioItems(
         categories,
@@ -66,6 +70,7 @@ export default class CategoryController {
 
       return res.render('referrals/updateStatus/category/show', {
         backLinkHref: paths.show.statusHistory({ referralId }),
+        person,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
         ...content[decisionForCategoryAndReason],

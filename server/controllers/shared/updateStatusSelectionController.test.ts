@@ -4,11 +4,16 @@ import type { NextFunction, Request, Response } from 'express'
 
 import UpdateStatusSelectionController from './updateStatusSelectionController'
 import { assessPaths, referPaths } from '../../paths'
-import type { ReferralService } from '../../services'
-import { confirmationFieldsFactory, referralFactory, referralStatusHistoryFactory } from '../../testutils/factories'
+import type { PersonService, ReferralService } from '../../services'
+import {
+  confirmationFieldsFactory,
+  personFactory,
+  referralFactory,
+  referralStatusHistoryFactory,
+} from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ShowReferralUtils } from '../../utils'
-import type { ConfirmationFields, Referral } from '@accredited-programmes/models'
+import type { ConfirmationFields, Person, Referral } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/formUtils')
@@ -24,8 +29,10 @@ describe('UpdateStatusSelectionController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
+  let person: Person
   const timelineItems: Array<MojTimelineItem> = [
     {
       byline: { text: 'Test User' },
@@ -47,15 +54,18 @@ describe('UpdateStatusSelectionController', () => {
   let controller: UpdateStatusSelectionController
 
   beforeEach(() => {
-    referral = referralFactory.submitted().build()
+    person = personFactory.build()
+    referral = referralFactory.submitted().build({ prisonNumber: person.prisonNumber })
     referralStatusHistory = [{ ...referralStatusHistoryFactory.submitted().build(), byLineText: 'You' }]
     confirmationText = confirmationFieldsFactory.build({ hasConfirmation: true })
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
+    personService.getPerson.mockResolvedValue(person)
+    referralService.getReferral.mockResolvedValue(referral)
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
     referralService.getConfirmationText.mockResolvedValue(confirmationText)
 
-    controller = new UpdateStatusSelectionController(referralService)
+    controller = new UpdateStatusSelectionController(personService, referralService)
 
     request = createMock<Request>({
       params: { referralId: referral.id },
@@ -86,14 +96,21 @@ describe('UpdateStatusSelectionController', () => {
         confirmationText,
         maxLength: 100,
         pageHeading: confirmationText.primaryHeading,
+        person,
         timelineItems: timelineItems.slice(0, 1),
       })
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(referralService.getConfirmationText).toHaveBeenCalledWith(username, referral.id, 'ON_PROGRAMME', {
         deselectAndKeepOpen: false,
         ptUser: true,
       })
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        referral.prisonNumber,
+        response.locals.user.caseloads,
+      )
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
     })
 

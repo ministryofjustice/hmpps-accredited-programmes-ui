@@ -2,6 +2,9 @@ import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMidd
 import { referPaths } from '../../../server/paths'
 import {
   confirmationFieldsFactory,
+  personFactory,
+  prisonFactory,
+  prisonerFactory,
   referralFactory,
   referralStatusCategoryFactory,
   referralStatusHistoryFactory,
@@ -15,7 +18,31 @@ import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 context('Withdraw referral', () => {
   const anotherUser = userFactory.build({ name: 'Joshua Smith' })
-  const referral = referralFactory.submitted().build({ referrerUsername: auth.mockedUser.username })
+  const prison = prisonFactory.build()
+  const prisoner = prisonerFactory.build({
+    firstName: 'Del',
+    lastName: 'Hatton',
+  })
+  const person = personFactory.build({
+    conditionalReleaseDate: '2024-10-31',
+    currentPrison: prisoner.prisonName,
+    dateOfBirth: '1 January 1980',
+    ethnicity: prisoner.ethnicity,
+    gender: prisoner.gender,
+    homeDetentionCurfewEligibilityDate: prisoner.homeDetentionCurfewEligibilityDate,
+    indeterminateSentence: false,
+    name: 'Del Hatton',
+    paroleEligibilityDate: prisoner.paroleEligibilityDate,
+    prisonNumber: prisoner.prisonerNumber,
+    religionOrBelief: prisoner.religion,
+    sentenceExpiryDate: prisoner.sentenceExpiryDate,
+    sentenceStartDate: prisoner.sentenceStartDate,
+    setting: 'Custody',
+    tariffDate: prisoner.tariffDate,
+  })
+  const referral = referralFactory
+    .submitted()
+    .build({ prisonNumber: prisoner.prisonerNumber, referrerUsername: auth.mockedUser.username })
 
   const referralStatusCategories = referralStatusCategoryFactory.buildList(4, { referralStatusCode: 'WITHDRAWN' })
   const referralStatusReasons = referralStatusReasonFactory.buildList(5)
@@ -46,6 +73,8 @@ context('Withdraw referral', () => {
     cy.task('stubDefaultCaseloads')
     cy.signIn()
 
+    cy.task('stubPrison', prison)
+    cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
     cy.task('stubUserDetails', anotherUser)
     cy.task('stubStatusHistory', {
@@ -77,6 +106,7 @@ context('Withdraw referral', () => {
       cy.visit(path)
 
       const withdrawCategoryPage = Page.verifyOnPage(WithdrawCategoryPage)
+      withdrawCategoryPage.shouldHavePersonDetails(person)
       withdrawCategoryPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawCategoryPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawCategoryPage.shouldContainWithdrawalCategoryRadioItems(referralStatusCategories)
@@ -108,6 +138,7 @@ context('Withdraw referral', () => {
 
     it('shows the withdrawal reason page', () => {
       const withdrawReasonPage = Page.verifyOnPage(WithdrawReasonPage)
+      withdrawReasonPage.shouldHavePersonDetails(person)
       withdrawReasonPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawReasonPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawReasonPage.shouldContainWithdrawalReasonRadioItems(referralStatusReasons)
@@ -137,6 +168,7 @@ context('Withdraw referral', () => {
 
     it('shows the withdrawal confirm selection page', () => {
       const withdrawConfirmSelectionPage = Page.verifyOnPage(WithdrawConfirmSelectionPage)
+      withdrawConfirmSelectionPage.shouldHavePersonDetails(person)
       withdrawConfirmSelectionPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawConfirmSelectionPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
     })
