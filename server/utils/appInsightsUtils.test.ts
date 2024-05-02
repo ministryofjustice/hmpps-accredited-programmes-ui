@@ -4,6 +4,8 @@ import type { ContextObjects } from './appInsightsUtils'
 import AppInsightsUtils from './appInsightsUtils'
 import type { Caseload } from '@prison-api'
 
+const acpRoles = ['ROLE_ACP_PROGRAMME_TEAM', 'ROLE_ACP_REFERRER']
+
 const user: {
   activeCaseLoadId: string
   caseloads: Array<Caseload>
@@ -27,7 +29,7 @@ const user: {
       type: 'INST',
     },
   ],
-  roles: ['ROLE_ACP_PROGRAMME_TEAM', 'ROLE_ACP_REFERRER'],
+  roles: [...acpRoles, 'ROLE_CREATE_USER', 'ROLE_VIEW_PRISONER_DATA'],
   username: 'TEST_USER',
 }
 
@@ -69,10 +71,10 @@ describe('AppInsightsUtils', () => {
       AppInsightsUtils.addUserDataToRequests(envelope, contextWithUserDetails)
 
       expect(envelope.data.baseData!.properties).toEqual({
+        acpRoles,
         activeCaseLoadDescription: 'Moorland (HMP & YOI)',
         activeCaseLoadId: user.activeCaseLoadId,
         other: 'things',
-        roles: user.roles,
         username: user.username,
       })
     })
@@ -84,9 +86,9 @@ describe('AppInsightsUtils', () => {
       AppInsightsUtils.addUserDataToRequests(envelope, context)
 
       expect(envelope.data.baseData!.properties).toEqual({
+        acpRoles,
         activeCaseLoadDescription: 'Moorland (HMP & YOI)',
         activeCaseLoadId: user.activeCaseLoadId,
-        roles: user.roles,
         username: user.username,
       })
     })

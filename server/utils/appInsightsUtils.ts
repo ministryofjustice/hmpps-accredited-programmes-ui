@@ -28,9 +28,9 @@ export default class AppInsightsUtils {
       const { properties } = envelope.data.baseData
       // eslint-disable-next-line no-param-reassign
       envelope.data.baseData.properties = {
+        acpRoles: roles?.filter(role => role.startsWith('ROLE_ACP_')),
         activeCaseLoadDescription: caseloads?.find(caseload => caseload.caseLoadId === activeCaseLoadId)?.description,
         activeCaseLoadId,
-        roles,
         username,
         ...properties,
       }
