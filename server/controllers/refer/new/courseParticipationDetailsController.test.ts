@@ -163,9 +163,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
   })
 
   describe('update', () => {
-    it('asks the service to update the given course participation details and redirects to the `NewReferralsCourseParticipationsController` `index` action', async () => {
-      referralService.getReferral.mockResolvedValue(draftReferral)
-
+    describe('when all the submitted data is valid', () => {
       const courseParticipationUpdate: CourseParticipationUpdate = {
         courseName: courseParticipation.courseName,
         detail: 'Some additional detail',
@@ -180,29 +178,47 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
         source: 'The source',
       }
 
-      ;(CourseParticipationUtils.processDetailsFormData as jest.Mock).mockImplementation(_request => {
-        return {
-          courseParticipationUpdate,
-          hasFormErrors: false,
-        }
+      beforeEach(() => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        ;(CourseParticipationUtils.processDetailsFormData as jest.Mock).mockImplementation(_request => {
+          return {
+            courseParticipationUpdate,
+            hasFormErrors: false,
+          }
+        })
       })
 
-      const requestHandler = controller.update()
-      await requestHandler(request, response, next)
+      it('asks the service to update the given course participation details and redirects to the `NewReferralsCourseParticipationsController` `index` action', async () => {
+        const requestHandler = controller.update()
+        await requestHandler(request, response, next)
 
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-      expect(courseService.getParticipation).toHaveBeenCalledWith(username, courseParticipationId)
-      expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
-        request,
-        courseParticipation.courseName,
-      )
-      expect(courseService.updateParticipation).toHaveBeenCalledWith(
-        username,
-        courseParticipationId,
-        courseParticipationUpdate,
-      )
-      expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully updated a programme.')
-      expect(response.redirect).toHaveBeenCalledWith(referPaths.new.programmeHistory.index({ referralId }))
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(courseService.getParticipation).toHaveBeenCalledWith(username, courseParticipationId)
+        expect(CourseParticipationUtils.processDetailsFormData).toHaveBeenCalledWith(
+          request,
+          courseParticipation.courseName,
+        )
+        expect(courseService.updateParticipation).toHaveBeenCalledWith(
+          username,
+          courseParticipationId,
+          courseParticipationUpdate,
+        )
+        expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully updated a programme.')
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.programmeHistory.index({ referralId }))
+      })
+
+      describe('when the `req.session.returnTo` is `check-answers`', () => {
+        it('redirects to the check answers page with #programmeHistory', async () => {
+          request.session.returnTo = 'check-answers'
+
+          const requestHandler = controller.update()
+          await requestHandler(request, response, next)
+
+          expect(response.redirect).toHaveBeenCalledWith(
+            `${referPaths.new.checkAnswers({ referralId })}#programmeHistory`,
+          )
+        })
+      })
     })
 
     describe('when the referral has been submitted', () => {
