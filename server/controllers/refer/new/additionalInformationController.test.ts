@@ -104,20 +104,37 @@ describe('NewReferralsAdditionalInformationController', () => {
   })
 
   describe('update', () => {
-    it('ask the service to update the referral and redirects to the referral show action', async () => {
-      referralService.getReferral.mockResolvedValue(draftReferral)
-      request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
-
-      const requestHandler = controller.update()
-      await requestHandler(request, response, next)
-
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-      expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
-        additionalInformation: 'Some additional information\nAnother paragraph',
-        hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
-        oasysConfirmed: draftReferral.oasysConfirmed,
+    describe('when there is value for `additionalInformation`', () => {
+      beforeEach(() => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
       })
-      expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+
+      it('ask the service to update the referral and redirects to the referral show action', async () => {
+        const requestHandler = controller.update()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+          additionalInformation: 'Some additional information\nAnother paragraph',
+          hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+          oasysConfirmed: draftReferral.oasysConfirmed,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+      })
+
+      describe('when `req.session.returnTo` is `check-answers`', () => {
+        it('redirects to the check answers page with #additionalInformation', async () => {
+          request.session.returnTo = 'check-answers'
+
+          const requestHandler = controller.update()
+          await requestHandler(request, response, next)
+
+          expect(response.redirect).toHaveBeenCalledWith(
+            `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
+          )
+        })
+      })
     })
 
     describe('when the referral has been submitted', () => {

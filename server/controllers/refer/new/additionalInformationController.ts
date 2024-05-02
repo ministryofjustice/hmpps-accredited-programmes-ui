@@ -75,6 +75,10 @@ export default class NewReferralsAdditionalInformationController {
 
       await this.referralService.updateReferral(req.user.username, referralId, referralUpdate)
 
+      if (req.session.returnTo === 'check-answers') {
+        return res.redirect(`${referPaths.new.checkAnswers({ referralId })}#additionalInformation`)
+      }
+
       return res.redirect(referPaths.new.show({ referralId }))
     }
   }

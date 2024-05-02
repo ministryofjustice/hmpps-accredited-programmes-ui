@@ -58,6 +58,10 @@ export default class NewReferralsController {
 
       FormUtils.setFieldErrors(req, res, ['confirmation'])
 
+      const successMessage = req.flash('successMessage')[0]
+
+      req.session.returnTo = 'check-answers'
+
       return res.render('referrals/new/checkAnswers', {
         additionalInformation: referral.additionalInformation,
         courseOfferingSummaryListRows: NewReferralUtils.courseOfferingSummaryListRows(
@@ -72,6 +76,7 @@ export default class NewReferralsController {
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
         referrerSummaryListRows: NewReferralUtils.referrerSummaryListRows(referrerName, referrerEmail),
+        successMessage,
       })
     }
   }
@@ -163,6 +168,8 @@ export default class NewReferralsController {
         res.locals.user.caseloads,
       )
       const coursePresenter = CourseUtils.presentCourse(course)
+
+      delete req.session.returnTo
 
       return res.render('referrals/new/show', {
         course: coursePresenter,

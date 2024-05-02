@@ -84,6 +84,10 @@ export default class NewReferralsCourseParticipationDetailsController {
 
       req.flash('successMessage', 'You have successfully updated a programme.')
 
+      if (req.session.returnTo === 'check-answers') {
+        return res.redirect(`${referPaths.new.checkAnswers({ referralId })}#programmeHistory`)
+      }
+
       return res.redirect(referPaths.new.programmeHistory.index({ referralId }))
     }
   }
