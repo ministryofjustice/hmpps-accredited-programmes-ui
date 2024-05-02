@@ -32,7 +32,11 @@
 
       <h2 class="govuk-heading-m">Locations</h2>
 
-      {% include "./_locationsTable.njk" %}
+      {% if organisationsTableData | length %}
+        {% include "./_locationsTable.njk" %}
+      {% else %}
+        <p data-testid="no-offerings-text">To find out where {{ course.displayName }} is offered, speak to your Offender Management Unit (custody) or regional probation team (community).</p>
+      {% endif %}
     </div>
   </div>
 {% endblock content %}
