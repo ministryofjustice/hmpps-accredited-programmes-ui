@@ -22,6 +22,13 @@ export default class CoursePage extends Page {
     )
   }
 
+  shouldContainOfferingsText() {
+    cy.get('[data-testid="offerings-text"]').should(
+      'have.text',
+      'Select a prison to contact the programme team or make a referral. Online referrals are not yet available at all sites.',
+    )
+  }
+
   shouldHaveCourse() {
     this.shouldContainAudienceTag(this.course.audienceTag)
 
@@ -43,14 +50,13 @@ export default class CoursePage extends Page {
 
         cy.wrap(tableRowElement).within(() => {
           cy.get('.govuk-table__cell:first-of-type').should('have.text', organisation.name)
-          cy.get('.govuk-table__cell:nth-of-type(2)').should('have.text', organisation.category)
-          cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', organisation.address.county || 'Not found')
-          cy.get('.govuk-table__cell:nth-of-type(4)').should('have.text', `Contact prison (${organisation.name})`)
-          cy.get('.govuk-table__cell:nth-of-type(4) .govuk-link').should(
+          cy.get('.govuk-table__cell:first-of-type a').should(
             'have.attr',
             'href',
             findPaths.offerings.show({ courseOfferingId: organisation.courseOfferingId }),
           )
+          cy.get('.govuk-table__cell:nth-of-type(2)').should('have.text', organisation.category)
+          cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', organisation.address.county || 'Not found')
         })
       })
     })
