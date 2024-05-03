@@ -51,28 +51,34 @@ describe('OrganisationUtils', () => {
 
         expect(OrganisationUtils.organisationTableRows(organisationsWithOfferingIds)).toEqual([
           [
-            { text: organisationsWithOfferingIds[0].name },
+            {
+              attributes: {
+                'data-sort-value': organisationsWithOfferingIds[0].name,
+              },
+              html: `<a href="/find/offerings/${organisationsWithOfferingIds[0].courseOfferingId}">${organisationsWithOfferingIds[0].name}</a>`,
+            },
             { text: organisationsWithOfferingIds[0].category },
             { text: organisationsWithOfferingIds[0].address.county },
-            {
-              html: `<a class="govuk-link" href="/find/offerings/${organisationsWithOfferingIds[0].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[0].name})</span></a>`,
-            },
           ],
           [
-            { text: organisationsWithOfferingIds[1].name },
+            {
+              attributes: {
+                'data-sort-value': organisationsWithOfferingIds[1].name,
+              },
+              html: `<a href="/find/offerings/${organisationsWithOfferingIds[1].courseOfferingId}">${organisationsWithOfferingIds[1].name}</a>`,
+            },
             { text: organisationsWithOfferingIds[1].category },
             { text: organisationsWithOfferingIds[1].address.county },
-            {
-              html: `<a class="govuk-link" href="/find/offerings/${organisationsWithOfferingIds[1].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[1].name})</span></a>`,
-            },
           ],
           [
-            { text: organisationsWithOfferingIds[2].name },
+            {
+              attributes: {
+                'data-sort-value': organisationsWithOfferingIds[2].name,
+              },
+              html: `<a href="/find/offerings/${organisationsWithOfferingIds[2].courseOfferingId}">${organisationsWithOfferingIds[2].name}</a>`,
+            },
             { text: organisationsWithOfferingIds[2].category },
             { text: organisationsWithOfferingIds[2].address.county },
-            {
-              html: `<a class="govuk-link" href="/find/offerings/${organisationsWithOfferingIds[2].courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationsWithOfferingIds[2].name})</span></a>`,
-            },
           ],
         ])
       })
@@ -85,12 +91,14 @@ describe('OrganisationUtils', () => {
 
         expect(OrganisationUtils.organisationTableRows([organisationWithOfferingId])).toEqual([
           [
-            { text: organisationWithOfferingId.name },
+            {
+              attributes: {
+                'data-sort-value': organisationWithOfferingId.name,
+              },
+              html: `<a href="/find/offerings/${organisationWithOfferingId.courseOfferingId}">${organisationWithOfferingId.name}</a>`,
+            },
             { text: organisationWithOfferingId.category },
             { text: 'Not found' },
-            {
-              html: `<a class="govuk-link" href="/find/offerings/${organisationWithOfferingId.courseOfferingId}">Contact prison <span class="govuk-visually-hidden">(${organisationWithOfferingId.name})</span></a>`,
-            },
           ],
         ])
       })

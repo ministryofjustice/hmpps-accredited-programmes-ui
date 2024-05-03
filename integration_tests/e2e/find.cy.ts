@@ -59,6 +59,7 @@ context('Find', () => {
       coursePage.shouldContainBackLink(findPaths.index({}))
       coursePage.shouldContainHomeLink()
       coursePage.shouldHaveCourse()
+      coursePage.shouldContainOfferingsText()
       coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
     })
 
