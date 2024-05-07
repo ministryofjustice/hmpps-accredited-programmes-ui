@@ -193,6 +193,10 @@ export default class CaseListPage extends Page {
 
     this.selectSelectItem('programme-strand-select', programmeStrandSelectedValue)
     this.selectSelectItem('referral-status-select', referralStatusSelectedValue)
+    this.shouldFilterButtonClick()
+  }
+
+  shouldFilterButtonClick() {
     this.shouldContainButton('Apply filters').click()
   }
 

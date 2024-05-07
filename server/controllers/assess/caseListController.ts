@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
-import { CaseListUtils, CourseUtils, FormUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
+import { CaseListUtils, FormUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusGroup } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 

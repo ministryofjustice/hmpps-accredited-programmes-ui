@@ -225,7 +225,7 @@ context('Submitting a referral', () => {
       checkAnswersPageWithErrors.shouldHaveErrors([
         {
           field: 'confirmation',
-          message: 'Confirm that the information you have provided is complete, accurate and up to date',
+          message: 'Tick the box to confirm the information you have provided is correct',
         },
       ])
     })
