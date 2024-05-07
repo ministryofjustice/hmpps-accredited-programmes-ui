@@ -3,10 +3,9 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
-import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 type SelectCategoryPageContent = Record<
-  ReferralStatusUppercase,
+  Uppercase<string>,
   {
     pageDescription: string
     pageHeading: string
@@ -16,7 +15,13 @@ type SelectCategoryPageContent = Record<
 
 const content: Partial<SelectCategoryPageContent> = {
   DESELECTED: {
-    pageDescription: 'If you deselect the referral, it will be closed.',
+    pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
+    pageHeading: 'Deselection category',
+    radioLegend: 'Choose the deselection category',
+  },
+  'DESELECTED|OPEN': {
+    pageDescription:
+      'Deselecting someone means they cannot continue the programme. The referral will stay open until they can rejoin or restart the programme.',
     pageHeading: 'Deselection category',
     radioLegend: 'Choose the deselection category',
   },
@@ -46,12 +51,13 @@ export default class CategoryController {
       if (
         referralStatusUpdateData?.referralId !== referralId ||
         !referralStatusUpdateData.decisionForCategoryAndReason ||
-        !content[referralStatusUpdateData.decisionForCategoryAndReason]
+        !referralStatusUpdateData.initialStatusDecision ||
+        !content[referralStatusUpdateData.initialStatusDecision]
       ) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      const { decisionForCategoryAndReason } = referralStatusUpdateData
+      const { decisionForCategoryAndReason, initialStatusDecision } = referralStatusUpdateData
 
       const [referral, statusHistory, categories] = await Promise.all([
         this.referralService.getReferral(username, referralId),
@@ -73,7 +79,7 @@ export default class CategoryController {
         person,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
-        ...content[decisionForCategoryAndReason],
+        ...content[initialStatusDecision],
       })
     }
   }

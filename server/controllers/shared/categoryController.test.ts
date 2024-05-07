@@ -70,8 +70,8 @@ describe('CategoryController', () => {
     referralStatusHistory = [{ ...referralStatusHistoryFactory.started().build(), byLineText: 'You' }]
     referralStatusUpdateData = {
       decisionForCategoryAndReason: 'DESELECTED',
-      finalStatusDecision: 'ASSESSED_SUITABLE',
-      initialStatusDecision: 'DESELECTED|OPEN',
+      finalStatusDecision: 'DESELECTED',
+      initialStatusDecision: 'DESELECTED',
       referralId: referral.id,
     }
     mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
@@ -100,7 +100,7 @@ describe('CategoryController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/category/show', {
         backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
-        pageDescription: 'If you deselect the referral, it will be closed.',
+        pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
         pageHeading: 'Deselection category',
         person,
         radioItems,
@@ -122,6 +122,42 @@ describe('CategoryController', () => {
       expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
+    describe('when the status decision is `DESELECTED|OPEN`', () => {
+      it('should render the show template with the correct response locals', async () => {
+        request.session.referralStatusUpdateData = {
+          ...referralStatusUpdateData,
+          initialStatusDecision: 'DESELECTED|OPEN',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/category/show', {
+          backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
+          pageDescription:
+            'Deselecting someone means they cannot continue the programme. The referral will stay open until they can rejoin or restart the programme.',
+          pageHeading: 'Deselection category',
+          person,
+          radioItems,
+          radioLegend: 'Choose the deselection category',
+          timelineItems: timelineItems.slice(0, 1),
+        })
+
+        expect(referenceDataService.getReferralStatusCodeCategories).toHaveBeenCalledWith(username, 'DESELECTED')
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
+        expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
+        expect(personService.getPerson).toHaveBeenCalledWith(
+          username,
+          referral.prisonNumber,
+          response.locals.user.caseloads,
+        )
+
+        expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
+        expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, undefined)
+        expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
+      })
+    })
+
     describe('when the request path is on the assess journey', () => {
       it('should render the show template with the correct response locals', async () => {
         request.path = assessPaths.updateStatus.category.show({ referralId: referral.id })
@@ -138,11 +174,12 @@ describe('CategoryController', () => {
       })
     })
 
-    describe('when `referralStatusUpdateData.decisionForCategoryAndReason` is `WITHDRAWN', () => {
+    describe('when the status decision is `WITHDRAWN', () => {
       it('should render the show template with the correct response locals', async () => {
         request.session.referralStatusUpdateData = {
           ...referralStatusUpdateData,
           decisionForCategoryAndReason: 'WITHDRAWN',
+          initialStatusDecision: 'WITHDRAWN',
         }
 
         const requestHandler = controller.show()
@@ -209,11 +246,12 @@ describe('CategoryController', () => {
       })
     })
 
-    describe('when `referralStatusUpdateData.decisionForCategoryAndReason` does not require a category selection', () => {
+    describe('when the status decision does not require a category selection', () => {
       it('should redirect to the status history page', async () => {
         request.session.referralStatusUpdateData = {
           ...referralStatusUpdateData,
           decisionForCategoryAndReason: 'AWAITING_ASSESSMENT',
+          initialStatusDecision: 'AWAITING_ASSESSMENT',
         }
 
         const requestHandler = controller.show()
