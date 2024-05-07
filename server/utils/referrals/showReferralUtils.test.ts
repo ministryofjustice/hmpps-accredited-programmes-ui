@@ -64,7 +64,7 @@ describe('ShowReferralUtils', () => {
     })
 
     describe('when on the refer journey', () => {
-      it('contains the "Back to my referrals" and "Withdraw referral" buttons with the correct hrefs', () => {
+      it('contains the correct buttons, with the "Withdraw referral" and "Hold" buttons in a disabled state', () => {
         expect(
           ShowReferralUtils.buttons(
             referPaths.show.statusHistory({ referralId: submittedReferral.id }),
@@ -82,21 +82,26 @@ describe('ShowReferralUtils', () => {
           },
           {
             classes: 'govuk-button--secondary',
-            disabled: false,
-            href: `/refer/referrals/${submittedReferral.id}/withdraw`,
+            disabled: true,
             text: 'Withdraw referral',
           },
         ])
       })
 
       describe('and the referral is closed', () => {
-        it('disables the "Withdraw referral" button', () => {
+        it('disables the "Withdraw referral" and "Hold" buttons', () => {
           const closedReferral = referralFactory.closed().build()
 
           expect(
             ShowReferralUtils.buttons(referPaths.show.statusHistory({ referralId: closedReferral.id }), closedReferral),
           ).toEqual(
             expect.arrayContaining([
+              {
+                classes: 'govuk-button--secondary',
+                disabled: true,
+                href: undefined,
+                text: 'Put on hold',
+              },
               {
                 classes: 'govuk-button--secondary',
                 disabled: true,
@@ -155,6 +160,29 @@ describe('ShowReferralUtils', () => {
                   disabled: false,
                   href: `/refer/referrals/${submittedReferral.id}/manage-hold?status=REFERRAL_SUBMITTED`,
                   text: 'Remove hold',
+                },
+              ]),
+            )
+          })
+        })
+
+        describe('when `statusTransitions` includes the withdrawn status', () => {
+          const statusTransitions = [referralStatusRefDataFactory.build({ code: 'WITHDRAWN', hold: true })]
+
+          it('contains the "Withdraw referral" button with the correct href', () => {
+            expect(
+              ShowReferralUtils.buttons(
+                referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+                submittedReferral,
+                statusTransitions,
+              ),
+            ).toEqual(
+              expect.arrayContaining([
+                {
+                  classes: 'govuk-button--secondary',
+                  disabled: false,
+                  href: `/refer/referrals/${submittedReferral.id}/withdraw`,
+                  text: 'Withdraw referral',
                 },
               ]),
             )
