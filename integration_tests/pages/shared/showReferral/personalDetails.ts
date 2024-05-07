@@ -9,7 +9,7 @@ export default class PersonalDetailsPage extends Page {
     const { course, person } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.nameAndAlternateName}`)
+    super(`Referral to ${coursePresenter.displayName}`)
 
     this.person = person
   }

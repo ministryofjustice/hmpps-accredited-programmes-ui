@@ -1,6 +1,6 @@
 import { referralStatusGroups } from '../../../server/@types/models/Referral'
 import { assessPaths, referPaths } from '../../../server/paths'
-import { CaseListUtils, CourseUtils, StringUtils } from '../../../server/utils'
+import { CaseListUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
 import type { Course, ReferralStatusGroup, ReferralView } from '@accredited-programmes/models'
@@ -18,7 +18,7 @@ export default class CaseListPage extends Page {
   }) {
     const { columnHeaders, course, referralViews } = args
 
-    super(course ? CourseUtils.courseNameWithAlternateName(course) : 'My referrals')
+    super(course ? course.name : 'My referrals')
 
     this.columnHeaders = columnHeaders
     this.referralViews = referralViews

@@ -82,7 +82,7 @@ type CourseParticipationPresenter = CourseParticipation & {
 
 type CoursePresenter = Course & {
   audienceTag: GovukFrontendTagWithText
-  nameAndAlternateName: string
+  href: string
   prerequisiteSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
 }
 
@@ -199,8 +199,8 @@ type RiskLevelOrUnknown = RiskLevel | 'UNKNOWN'
 type SortableCaseListColumnKey =
   | 'audience'
   | 'conditionalReleaseDate'
-  | 'courseName'
   | 'earliestReleaseDate'
+  | 'listDisplayName'
   | 'nonDtoReleaseDateType'
   | 'organisationName'
   | 'paroleEligibilityDate'

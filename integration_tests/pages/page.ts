@@ -242,6 +242,19 @@ export default abstract class Page {
     })
   }
 
+  shouldContainOasysNomisErrorBanner(): void {
+    cy.get('[data-testid="oasys-nomis-error-banner"]')
+      .should('contain.text', 'OASys or NOMIS data unavailable')
+      .should('contain.text', 'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.')
+  }
+
+  shouldContainOasysNomisErrorText(): void {
+    cy.get('[data-testid="oasys-nomis-error-text"]').should(
+      'contain.text',
+      'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.',
+    )
+  }
+
   shouldContainOrganisationAndCourseHeading(pageWithOrganisationAndCoursePresenter: {
     course: CoursePresenter
     organisation: Organisation
@@ -249,7 +262,7 @@ export default abstract class Page {
     const { course, organisation } = pageWithOrganisationAndCoursePresenter
 
     cy.get('.govuk-grid-column-two-thirds > h2:first-child').then(organisationAndCourseHeading => {
-      const expectedText = `${organisation.name} | ${course.nameAndAlternateName}`
+      const expectedText = `${organisation.name} | ${course.displayName}`
       const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
     })

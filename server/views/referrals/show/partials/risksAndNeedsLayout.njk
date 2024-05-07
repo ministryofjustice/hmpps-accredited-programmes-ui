@@ -7,11 +7,21 @@
 {% endblock supportingContent %}
 
 {% block primaryContent %}
-  {{ govukInsetText({
-    classes: "govuk-!-margin-top-0",
-    text: importedFromText,
-    attributes: {
-      "data-testid": "imported-from-text"
-    }
-  }) }}
+  {% if hasData %}
+    {{ govukInsetText({
+      classes: "govuk-!-margin-top-0",
+      text: importedFromText,
+      attributes: {
+        "data-testid": "imported-from-text"
+      }
+    }) }}
+  {% elseif oasysNomisErrorMessage %}
+    {{ govukInsetText({
+      classes: "govuk-!-margin-top-0",
+      text: oasysNomisErrorMessage,
+      attributes: {
+        "data-testid": "oasys-nomis-error-text"
+      }
+    }) }}
+  {% endif %}
 {% endblock primaryContent %}

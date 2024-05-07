@@ -10,7 +10,7 @@ export default class AttitudesPage extends Page {
 
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.nameAndAlternateName}`)
+    super(`Referral to ${coursePresenter.displayName}`)
 
     this.attitude = attitude
   }

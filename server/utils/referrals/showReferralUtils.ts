@@ -81,7 +81,7 @@ export default class ShowReferralUtils {
       },
       {
         key: { text: 'Programme name' },
-        value: { text: coursePresenter.nameAndAlternateName },
+        value: { text: coursePresenter.displayName },
       },
       {
         key: { text: 'Programme strand' },

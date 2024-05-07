@@ -6,7 +6,7 @@
 
 {% extends "../../partials/layout.njk" %}
 
-{% set customPageTitleEnd = course.nameAndAlternateName + ", " + organisation.name %}
+{% set customPageTitleEnd = course.displayName + ", " + organisation.name %}
 
 {% block backLink %}
   {{ govukBackLink({

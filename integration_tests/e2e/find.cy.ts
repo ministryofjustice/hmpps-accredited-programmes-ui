@@ -59,7 +59,25 @@ context('Find', () => {
       coursePage.shouldContainBackLink(findPaths.index({}))
       coursePage.shouldContainHomeLink()
       coursePage.shouldHaveCourse()
+      coursePage.shouldContainOfferingsText()
       coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
+    })
+
+    describe('when there are no offerings for a course', () => {
+      it('shows a message that there are no offerings', () => {
+        cy.task('stubCourse', courses[0])
+
+        cy.task('stubOfferingsByCourse', { courseId: courses[0].id, courseOfferings: [] })
+
+        const path = findPaths.show({ courseId: courses[0].id })
+        cy.visit(path)
+
+        const coursePage = Page.verifyOnPage(CoursePage, courses[0])
+        coursePage.shouldContainBackLink(findPaths.index({}))
+        coursePage.shouldContainHomeLink()
+        coursePage.shouldHaveCourse()
+        coursePage.shouldContainNoOfferingsText()
+      })
     })
 
     describe('Viewing a single offering', () => {

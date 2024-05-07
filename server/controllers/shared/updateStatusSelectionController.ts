@@ -1,14 +1,17 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
-import type { ReferralService } from '../../services'
+import type { PersonService, ReferralService } from '../../services'
 import { FormUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatus, ReferralStatusUppercase } from '@accredited-programmes/models'
 
 const maxLength = 100
 
 export default class UpdateStatusSelectionController {
-  constructor(private readonly referralService: ReferralService) {}
+  constructor(
+    private readonly personService: PersonService,
+    private readonly referralService: ReferralService,
+  ) {}
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
@@ -24,13 +27,16 @@ export default class UpdateStatusSelectionController {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      const [statusHistory, confirmationText] = await Promise.all([
+      const [referral, statusHistory, confirmationText] = await Promise.all([
+        this.referralService.getReferral(username, referralId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referralService.getConfirmationText(username, referralId, referralStatusUpdateData.finalStatusDecision, {
           deselectAndKeepOpen: referralStatusUpdateData.initialStatusDecision === 'DESELECTED|OPEN',
           ptUser: req.path.startsWith(assessPathBase.pattern),
         }),
       ])
+
+      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
 
       const { hasConfirmation } = confirmationText
 
@@ -49,6 +55,7 @@ export default class UpdateStatusSelectionController {
         confirmationText,
         maxLength,
         pageHeading: confirmationText.primaryHeading,
+        person,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
       })
     }

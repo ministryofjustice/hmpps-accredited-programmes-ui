@@ -123,7 +123,7 @@ export default class AssessCaseListController {
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
-        pageHeading: CourseUtils.courseNameWithAlternateName(selectedCourse),
+        pageHeading: selectedCourse.name,
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusGroup,

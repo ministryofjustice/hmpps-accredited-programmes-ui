@@ -6,11 +6,16 @@ import { when } from 'jest-when'
 import UpdateStatusDecisionController from './updateStatusDecisionController'
 import type { ReferralStatusUpdateSessionData } from '../../@types/express'
 import { assessPaths } from '../../paths'
-import type { ReferralService } from '../../services'
-import { referralFactory, referralStatusHistoryFactory, referralStatusRefDataFactory } from '../../testutils/factories'
+import type { PersonService, ReferralService } from '../../services'
+import {
+  personFactory,
+  referralFactory,
+  referralStatusHistoryFactory,
+  referralStatusRefDataFactory,
+} from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ReferralUtils, ShowReferralUtils } from '../../utils'
-import type { Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { GovukFrontendRadiosItem } from '@govuk-frontend'
 
@@ -30,8 +35,10 @@ describe('UpdateStatusDecisionController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
+  let person: Person
   const radioItems: Array<GovukFrontendRadiosItem> = [
     { text: 'Status A', value: 'STATUS-A' },
     { text: 'Status B', value: 'STATUS-B' },
@@ -57,7 +64,8 @@ describe('UpdateStatusDecisionController', () => {
   let controller: UpdateStatusDecisionController
 
   beforeEach(() => {
-    referral = referralFactory.submitted().build({})
+    person = personFactory.build()
+    referral = referralFactory.submitted().build({ prisonNumber: person.prisonNumber })
     referralStatusHistory = [{ ...referralStatusHistoryFactory.submitted().build(), byLineText: 'You' }]
     referralStatusTransitions = [
       referralStatusRefDataFactory.build({ code: 'AWAITING_ASSESSMENT' }),
@@ -66,10 +74,12 @@ describe('UpdateStatusDecisionController', () => {
     mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
+    personService.getPerson.mockResolvedValue(person)
+    referralService.getReferral.mockResolvedValue(referral)
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
     referralService.getStatusTransitions.mockResolvedValue(referralStatusTransitions)
 
-    controller = new UpdateStatusDecisionController(referralService)
+    controller = new UpdateStatusDecisionController(personService, referralService)
 
     request = createMock<Request>({
       params: { referralId: referral.id },
@@ -97,6 +107,7 @@ describe('UpdateStatusDecisionController', () => {
           secondaryHeading: 'Select decision',
         },
         pageHeading: 'Update referral status',
+        person,
         radioItems,
         timelineItems: timelineItems.slice(0, 1),
       })
@@ -105,12 +116,18 @@ describe('UpdateStatusDecisionController', () => {
       expect(mockReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusTransitions, undefined)
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
 
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id, {
         deselectAndKeepOpen: false,
         ptUser: true,
       })
       expect(referralService.getConfirmationText).not.toHaveBeenCalled()
+      expect(personService.getPerson).toHaveBeenCalledWith(
+        username,
+        referral.prisonNumber,
+        response.locals.user.caseloads,
+      )
     })
 
     describe('when the available status transitions have a `deselectAndKeepOpen` property', () => {
@@ -224,6 +241,7 @@ describe('UpdateStatusDecisionController', () => {
             backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
             confirmationText,
             pageHeading: confirmationText.primaryHeading,
+            person,
             radioItems,
             timelineItems: timelineItems.slice(0, 1),
           })

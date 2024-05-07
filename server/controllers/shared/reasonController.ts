@@ -1,12 +1,11 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
-import type { ReferenceDataService, ReferralService } from '../../services'
+import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
-import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 type SelectReasonPageContent = Record<
-  ReferralStatusUppercase,
+  Uppercase<string>,
   {
     pageDescription: string
     pageHeading: string
@@ -20,15 +19,22 @@ const content: Partial<SelectReasonPageContent> = {
     pageHeading: 'Deselection reason',
     radioLegend: 'Choose the deselection reason',
   },
+  'DESELECTED|OPEN': {
+    pageDescription:
+      'Deselecting someone means they cannot continue the programme. The referral will stay open until they can rejoin or restart the programme.',
+    pageHeading: 'Deselection reason',
+    radioLegend: 'Choose the deselection reason',
+  },
   WITHDRAWN: {
     pageDescription: 'If you withdraw the referral, it will be closed.',
     pageHeading: 'Withdrawal reason',
-    radioLegend: 'Select the reason for withdrawal',
+    radioLegend: 'Select the reason for this withdrawal',
   },
 }
 
 export default class ReasonController {
   constructor(
+    private readonly personService: PersonService,
     private readonly referenceDataService: ReferenceDataService,
     private readonly referralService: ReferralService,
   ) {}
@@ -46,14 +52,16 @@ export default class ReasonController {
         referralStatusUpdateData?.referralId !== referralId ||
         !referralStatusUpdateData.decisionForCategoryAndReason ||
         !referralStatusUpdateData.statusCategoryCode ||
-        !content[referralStatusUpdateData.decisionForCategoryAndReason]
+        !referralStatusUpdateData.initialStatusDecision ||
+        !content[referralStatusUpdateData.initialStatusDecision]
       ) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      const { decisionForCategoryAndReason } = referralStatusUpdateData
+      const { decisionForCategoryAndReason, initialStatusDecision } = referralStatusUpdateData
 
-      const [statusHistory, reasons] = await Promise.all([
+      const [referral, statusHistory, reasons] = await Promise.all([
+        this.referralService.getReferral(username, referralId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referenceDataService.getReferralStatusCodeReasons(
           username,
@@ -61,6 +69,8 @@ export default class ReasonController {
           decisionForCategoryAndReason,
         ),
       ])
+
+      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
 
       if (reasons.length === 0) {
         req.session.referralStatusUpdateData = {
@@ -81,9 +91,10 @@ export default class ReasonController {
 
       return res.render('referrals/updateStatus/reason/show', {
         backLinkHref: paths.show.statusHistory({ referralId }),
+        person,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
-        ...content[decisionForCategoryAndReason],
+        ...content[initialStatusDecision],
       })
     }
   }

@@ -26,6 +26,7 @@ export default class UpdateStatusActionsController {
       req.session.referralStatusUpdateData = {
         decisionForCategoryAndReason: withdrawStatus,
         finalStatusDecision: withdrawStatus,
+        initialStatusDecision: withdrawStatus,
         referralId,
       }
 

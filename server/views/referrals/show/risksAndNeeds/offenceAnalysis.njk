@@ -5,9 +5,9 @@
 {% extends "../partials/risksAndNeedsLayout.njk" %}
 
 {% block primaryContent %}
-  {% if hasOffenceDetails %}
-    {{ super() }}
+  {{ super() }}
 
+  {% if hasData %}
     {{ keylessSummaryCard("Section 2.1 - Brief offence details", bodyText=offenceDetailsText, testId="brief-offence-details-summary-card") }}
 
     {{ govukSummaryList({
@@ -61,7 +61,7 @@
     }) }}
 
     {{ keylessSummaryCard("Section 2.12 - Pattern of offending", bodyText=patternOffendingText, testId="pattern-offending-summary-card") }}
-  {% else %}
+  {% elseif not oasysNomisErrorMessage %}
     {% set noOffenceDetailsString = "No offence details found in OASys. Add offence details to OASys to see them here." %}
 
     {{ keylessSummaryCard("Section 2 - Offence analysis", bodyText=noOffenceDetailsString, testId="no-offence-details-summary-card") }}

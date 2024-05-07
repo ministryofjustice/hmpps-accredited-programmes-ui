@@ -20,7 +20,7 @@ export default class CoursesController {
         courses: courses
           .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
           .map(course => CourseUtils.presentCourse(course)),
-        pageHeading: 'List of accredited programmes',
+        pageHeading: 'Find an Accredited Programme',
       })
     }
   }
@@ -47,7 +47,7 @@ export default class CoursesController {
       res.render('courses/show', {
         course: coursePresenter,
         organisationsTableData,
-        pageHeading: coursePresenter.nameAndAlternateName,
+        pageHeading: coursePresenter.displayName,
       })
     }
   }

@@ -26,14 +26,17 @@ export default class OrganisationUtils {
       const offeringPath = findPaths.offerings.show({
         courseOfferingId: organisation.courseOfferingId,
       })
-      const visuallyHiddenPrisonInformation = `<span class="govuk-visually-hidden">(${organisation.name})</span>`
-      const contactLink = `<a class="govuk-link" href="${offeringPath}">Contact prison ${visuallyHiddenPrisonInformation}</a>`
+      const contactOrganisationLink = `<a href="${offeringPath}">${organisation.name}</a>`
 
       return [
-        { text: organisation.name },
+        {
+          attributes: {
+            'data-sort-value': organisation.name,
+          },
+          html: contactOrganisationLink,
+        },
         { text: organisation.category },
         { text: organisation.address.county || 'Not found' },
-        { html: contactLink },
       ]
     })
   }

@@ -35,16 +35,19 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const attitude = await this.oasysService.getAttitude(req.user.username, sharedPageData.referral.prisonNumber)
+      const attitude = await this.withErrorHandling(
+        this.oasysService.getAttitude(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
+      )
 
       const templateLocals = attitude
         ? {
             attitudesSummaryListRows: AttitudesUtils.attitudesSummaryListRows(attitude),
+            hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-            noAttitude: true,
           }
         : {
-            noAttitude: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/attitudes', { ...sharedPageData, ...templateLocals })
@@ -57,19 +60,19 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const psychiatric = await this.oasysService.getPsychiatric(
-        req.user.username,
-        sharedPageData.referral.prisonNumber,
+      const psychiatric = await this.withErrorHandling(
+        this.oasysService.getPsychiatric(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
       )
 
       const templateLocals = psychiatric
         ? {
-            hasEmotionalWellbeingData: true,
+            hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             psychiatricSummaryListRows: EmotionalWellbeingUtils.psychiatricSummaryListRows(psychiatric),
           }
         : {
-            hasEmotionalWellbeingData: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/emotionalWellbeing', {
@@ -85,16 +88,19 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const health = await this.oasysService.getHealth(req.user.username, sharedPageData.referral.prisonNumber)
+      const health = await this.withErrorHandling(
+        this.oasysService.getHealth(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
+      )
 
       const templateLocals = health
         ? {
-            hasHealthData: true,
+            hasData: true,
             healthSummaryListRows: HealthUtils.healthSummaryListRows(health),
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           }
         : {
-            hasHealthData: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/health', { ...sharedPageData, ...templateLocals })
@@ -107,20 +113,20 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const learningNeeds = await this.oasysService.getLearningNeeds(
-        req.user.username,
-        sharedPageData.referral.prisonNumber,
+      const learningNeeds = await this.withErrorHandling(
+        this.oasysService.getLearningNeeds(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
       )
 
       const templateLocals = learningNeeds
         ? {
-            hasLearningNeeds: true,
+            hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             informationSummaryListRows: LearningNeedsUtils.informationSummaryListRows(learningNeeds),
             scoreSummaryListRows: LearningNeedsUtils.scoreSummaryListRows(learningNeeds),
           }
         : {
-            hasLearningNeeds: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/learningNeeds', {
@@ -136,16 +142,19 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const lifestyle = await this.oasysService.getLifestyle(req.user.username, sharedPageData.referral.prisonNumber)
+      const lifestyle = await this.withErrorHandling(
+        this.oasysService.getLifestyle(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
+      )
 
       const templateLocals = lifestyle
         ? {
-            hasLifestyle: true,
+            hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             reoffendingSummaryListRows: LifestyleAndAssociatesUtils.reoffendingSummaryListRows(lifestyle),
           }
         : {
-            hasLifestyle: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
@@ -161,14 +170,14 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const offenceDetails = await this.oasysService.getOffenceDetails(
-        req.user.username,
-        sharedPageData.referral.prisonNumber,
+      const offenceDetails = await this.withErrorHandling(
+        this.oasysService.getOffenceDetails(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
       )
 
       const templateLocals = offenceDetails
         ? {
-            hasOffenceDetails: true,
+            hasData: true,
             impactAndConsequencesSummaryListRows:
               OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
@@ -181,7 +190,7 @@ export default class RisksAndNeedsController {
             victimsAndPartnersSummaryListRows: OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetails),
           }
         : {
-            hasOffenceDetails: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/offenceAnalysis', {
@@ -197,19 +206,19 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const relationships = await this.oasysService.getRelationships(
-        req.user.username,
-        sharedPageData.referral.prisonNumber,
+      const relationships = await this.withErrorHandling(
+        this.oasysService.getRelationships(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
       )
 
       const templateLocals = relationships
         ? {
             domesticViolenceSummaryListRows: RelationshipsUtils.domesticViolenceSummaryListRows(relationships),
-            hasRelationships: true,
+            hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           }
         : {
-            hasRelationships: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/relationships', {
@@ -225,17 +234,17 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const risksAndAlerts = await this.oasysService.getRisksAndAlerts(
-        req.user.username,
-        sharedPageData.referral.prisonNumber,
+      const risksAndAlerts = await this.withErrorHandling(
+        this.oasysService.getRisksAndAlerts(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
       )
 
       const templateLocals = risksAndAlerts
         ? {
             alerts: risksAndAlerts.alerts,
-            hasRisksAndAlerts: true,
+            hasData: true,
             importedFromNomisText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
-            importedFromOasysText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             ogrsYear1Box: RisksAndAlertsUtils.riskBox(
               'OGRS Year 1',
               risksAndAlerts.ogrsRisk,
@@ -275,7 +284,7 @@ export default class RisksAndNeedsController {
             ),
           }
         : {
-            hasRisksAndAlerts: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/risksAndAlerts', { ...sharedPageData, ...templateLocals })
@@ -288,19 +297,19 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const roshAnalysis = await this.oasysService.getRoshAnalysis(
-        req.user.username,
-        sharedPageData.referral.prisonNumber,
+      const roshAnalysis = await this.withErrorHandling(
+        this.oasysService.getRoshAnalysis(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
       )
 
       const templateLocals = roshAnalysis
         ? {
-            hasRoshAnalysis: true,
+            hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             previousBehaviourSummaryListRows: RoshAnalysisUtils.previousBehaviourSummaryListRows(roshAnalysis),
           }
         : {
-            hasRoshAnalysis: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/roshAnalysis', {
@@ -316,16 +325,19 @@ export default class RisksAndNeedsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
 
-      const behaviour = await this.oasysService.getBehaviour(req.user.username, sharedPageData.referral.prisonNumber)
+      const behaviour = await this.withErrorHandling(
+        this.oasysService.getBehaviour(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
+      )
 
       const templateLocals = behaviour
         ? {
-            hasBehaviourData: true,
+            hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             thinkingAndBehavingSummaryListRows: ThinkingAndBehavingUtils.thinkingAndBehavingSummaryListRows(behaviour),
           }
         : {
-            hasBehaviourData: false,
+            hasData: false,
           }
 
       return res.render('referrals/show/risksAndNeeds/thinkingAndBehaving', {
@@ -355,11 +367,22 @@ export default class RisksAndNeedsController {
     return {
       buttons: ShowReferralUtils.buttons(req.path, referral, statusTransitions),
       navigationItems: ShowRisksAndNeedsUtils.navigationItems(req.path, referral.id),
-      pageHeading: `Referral to ${coursePresenter.nameAndAlternateName}`,
+      pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Risks and needs',
       person,
       referral,
       subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'risksAndNeeds', referral.id),
+    }
+  }
+
+  private async withErrorHandling<T>(fn: Promise<T>, res: Response): Promise<T | null> {
+    try {
+      return await fn
+    } catch (error) {
+      res.locals.oasysNomisErrorMessage =
+        'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.'
+
+      return null
     }
   }
 }

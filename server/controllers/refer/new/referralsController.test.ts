@@ -70,7 +70,10 @@ describe('NewReferralsController', () => {
   let controller: NewReferralsController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token: userToken, username } })
+    request = createMock<Request>({
+      flash: jest.fn().mockReturnValue([]),
+      user: { token: userToken, username },
+    })
     response = Helpers.createMockResponseWithCaseloads()
     controller = new NewReferralsController(
       courseService,
@@ -183,6 +186,7 @@ describe('NewReferralsController', () => {
 
     beforeEach(() => {
       request.params.referralId = referralId
+      request.session.returnTo = 'check-answers'
     })
 
     it('renders the referral task list page', async () => {
@@ -200,6 +204,7 @@ describe('NewReferralsController', () => {
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId, { updatePerson: undefined })
+      expect(request.session.returnTo).toBeUndefined()
       expect(response.render).toHaveBeenCalledWith('referrals/new/show', {
         course: coursePresenter,
         organisation,
@@ -307,17 +312,23 @@ describe('NewReferralsController', () => {
   })
 
   describe('checkAnswers', () => {
-    it('renders the referral check answers page', async () => {
-      const courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
-        { key: { text: 'Course offering item 1' }, value: { text: 'Value 1' } },
-        { key: { text: 'Course offering item 2' }, value: { html: 'value 2' } },
-      ]
-      const referrerSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
-        { key: { text: 'Referrer item 1' }, value: { text: 'Value 1' } },
-        { key: { text: 'Referrer item 2' }, value: { html: 'value 2' } },
-      ]
-      const referrerName = 'Bobby Brown'
-      const referrerEmail = 'referrer.email@test-email.co.uk'
+    const courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
+      { key: { text: 'Course offering item 1' }, value: { text: 'Value 1' } },
+      { key: { text: 'Course offering item 2' }, value: { html: 'value 2' } },
+    ]
+    const referrerSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
+      { key: { text: 'Referrer item 1' }, value: { text: 'Value 1' } },
+      { key: { text: 'Referrer item 2' }, value: { html: 'value 2' } },
+    ]
+    const referrerName = 'Bobby Brown'
+    const referrerEmail = 'referrer.email@test-email.co.uk'
+    const coursePresenter = createMock<CoursePresenter>({
+      audience: courseAudienceFactory.build(),
+    })
+    const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
+    const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
+
+    beforeEach(() => {
       courseService.getCourseByOffering.mockResolvedValue(course)
       personService.getPerson.mockResolvedValue(person)
       userService.getFullNameFromUsername.mockResolvedValue(referrerName)
@@ -331,26 +342,22 @@ describe('NewReferralsController', () => {
 
       TypeUtils.assertHasUser(request)
 
-      const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
-      const coursePresenter = createMock<CoursePresenter>({
-        audience: courseAudienceFactory.build(),
-        nameAndAlternateName: `${course.name} (${course.alternateName})`,
-      })
       courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
-      const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
       courseService.getAndPresentParticipationsByPerson.mockResolvedValue([summaryListOptions, summaryListOptions])
-
-      const requestHandler = controller.checkAnswers()
-      await requestHandler(request, response, next)
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
         response.locals.errors = emptyErrorsLocal
       })
+    })
+
+    it('renders the referral check answers page and sets the `returnTo` value in the sesssion', async () => {
+      const requestHandler = controller.checkAnswers()
+      await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
@@ -362,6 +369,7 @@ describe('NewReferralsController', () => {
         referralId,
         { change: true, remove: false },
       )
+      expect(request.session.returnTo).toBe('check-answers')
       expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
         additionalInformation: submittableReferral.additionalInformation,
         courseOfferingSummaryListRows,
@@ -379,6 +387,23 @@ describe('NewReferralsController', () => {
         person,
       )
       expect(NewReferralUtils.referrerSummaryListRows).toHaveBeenCalledWith(referrerName, referrerEmail)
+    })
+
+    describe('when there is a success message', () => {
+      it('passes the message to the template', async () => {
+        const successMessage = 'A success message'
+        ;(request.flash as jest.Mock).mockImplementation(() => [successMessage])
+
+        const requestHandler = controller.checkAnswers()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/new/checkAnswers',
+          expect.objectContaining({
+            successMessage,
+          }),
+        )
+      })
     })
 
     describe('when the referral has been submitted', () => {

@@ -1,12 +1,15 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPaths } from '../../paths'
-import type { ReferralService } from '../../services'
+import type { PersonService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 export default class UpdateStatusDecisionController {
-  constructor(private readonly referralService: ReferralService) {}
+  constructor(
+    private readonly personService: PersonService,
+    private readonly referralService: ReferralService,
+  ) {}
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
@@ -22,7 +25,8 @@ export default class UpdateStatusDecisionController {
 
       const isDeselectAndKeepOpen = this.isDeselectAndKeepOpen(req)
 
-      const [statusHistory, statusTransitionsForReferral, confirmationText] = await Promise.all([
+      const [referral, statusHistory, statusTransitionsForReferral, confirmationText] = await Promise.all([
+        this.referralService.getReferral(username, referralId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referralService.getStatusTransitions(username, referralId, {
           deselectAndKeepOpen: isDeselectAndKeepOpen,
@@ -40,6 +44,8 @@ export default class UpdateStatusDecisionController {
               secondaryHeading: 'Select decision',
             },
       ])
+
+      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
 
       const statusTransitions = statusTransitionsForReferral.map(statusTransition => {
         if (statusTransition.deselectAndKeepOpen) {
@@ -64,6 +70,7 @@ export default class UpdateStatusDecisionController {
         backLinkHref: assessPaths.show.statusHistory({ referralId }),
         confirmationText,
         pageHeading: confirmationText.primaryHeading,
+        person,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
       })

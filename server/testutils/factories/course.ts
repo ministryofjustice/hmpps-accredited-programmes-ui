@@ -7,20 +7,39 @@ import { StringUtils } from '../../utils'
 import type { Course } from '@accredited-programmes/models'
 
 export default Factory.define<Course>(({ params }) => {
-  const name = `${StringUtils.convertToTitleCase(faker.color.human())} Course`
+  const audience = params.audience || courseAudienceFactory.build()
+  const name = params.name || `${StringUtils.convertToTitleCase(faker.color.human())} Course`
+  const displayName = `${name}: ${audience.toLowerCase()}`
 
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     alternateName: StringUtils.initialiseTitle(params.name || name),
-    audience: courseAudienceFactory.build(),
+    audience,
+    audienceColour: faker.helpers.arrayElement([
+      'blue',
+      'green',
+      'grey',
+      'light-blue',
+      'orange',
+      'pink',
+      'purple',
+      'red',
+      'turquoise',
+      'yellow',
+    ]),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),
       coursePrerequisiteFactory.riskCriteria().build(),
       coursePrerequisiteFactory.riskCriteria().build(),
       coursePrerequisiteFactory.setting().build(),
+      coursePrerequisiteFactory.suitableForPeopleWithLDCs().build(),
+      coursePrerequisiteFactory.equivalentNonLDCProgramme().build(),
+      coursePrerequisiteFactory.equivalentLDCProgramme().build(),
+      coursePrerequisiteFactory.timeToComplete().build(),
     ],
     description: faker.lorem.sentences(),
+    displayName,
     name,
   }
 })

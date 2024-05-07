@@ -1,98 +1,60 @@
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
-{% from "moj/components/timeline/macro.njk" import mojTimeline %}
 
-{% extends "../../../partials/layout.njk" %}
+{% extends "../partials/layout.njk" %}
 
-{% block backLink %}
-  {{ govukBackLink({
-    classes: "js-back-link",
-    text: "Back",
-    href: backLinkHref
-  }) }}
-{% endblock backLink %}
+{% block statusContent %}
+  <p>{{ confirmationText.primaryDescription }}</p>
+{% endblock statusContent %}
 
-{% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      {% if errors.list | length %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: errors.list
-        }) }}
-      {% endif %}
+{% block statusAction %}
+  <form action="{{ action }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+    <h2 class="govuk-heading-m">{{ confirmationText.secondaryHeading }}</h2>
 
-      <p>{{ confirmationText.primaryDescription }}</p>
-
-      <h2 class="govuk-heading-m">Current status</h2>
-
-      {{ mojTimeline({
-        items: timelineItems,
-        attributes: {
-          "data-testid": "status-history-timeline"
-        },
-        classes: "govuk-!-margin-bottom-0"
+    {% if confirmationText.hasConfirmation %}
+      {{ govukCheckboxes({
+        name: "confirmation",
+        items: [
+          {
+            value: "true",
+            text: confirmationText.secondaryDescription
+          }
+        ],
+        errorMessage: errors.messages.confirmation
       }) }}
+    {% else %}
+      <p>{{ confirmationText.secondaryDescription }}</p>
+
+      {{ govukCharacterCount({
+        id: "reason",
+        name: "reason",
+        maxlength: maxLength,
+        label: {
+          text: "Add reason",
+          classes: 'govuk-fieldset__legend--s'
+        },
+        value: formValues.reason,
+        classes: "govuk-!-width-three-quarters",
+        errorMessage: errors.messages.reason
+      }) }}
+    {% endif %}
+
+    {% if confirmationText.warningText %}
+      {{ govukWarningText({
+        text: confirmationText.warningText,
+        iconFallbackText: "Warning"
+      }) }}
+    {% endif %}
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Submit"
+      }) }}
+
+      <a href={{ backLinkHref }}>Cancel</a>
     </div>
-  </div>
-
-  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <form action="{{ action }}" method="post">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-
-        <h2 class="govuk-heading-m">{{ confirmationText.secondaryHeading }}</h2>
-
-        {% if confirmationText.hasConfirmation %}
-          {{ govukCheckboxes({
-            name: "confirmation",
-            items: [
-              {
-                value: "true",
-                text: confirmationText.secondaryDescription
-              }
-            ],
-            errorMessage: errors.messages.confirmation
-          }) }}
-        {% else %}
-          <p>{{ confirmationText.secondaryDescription }}</p>
-
-          {{ govukCharacterCount({
-            id: "reason",
-            name: "reason",
-            maxlength: maxLength,
-            label: {
-              text: "Add reason"
-            },
-            value: formValues.reason,
-            classes: "govuk-!-width-three-quarters",
-            errorMessage: errors.messages.reason
-          }) }}
-        {% endif %}
-
-        {% if confirmationText.warningText %}
-          {{ govukWarningText({
-            text: confirmationText.warningText,
-            iconFallbackText: "Warning"
-          }) }}
-        {% endif %}
-
-        <div class="govuk-button-group">
-          {{ govukButton({
-            text: "Submit"
-          }) }}
-
-          <a href={{ backLinkHref }}>Cancel</a>
-        </div>
-      </form>
-    </div>
-  </div>
-{% endblock content %}
+  </form>
+{% endblock statusAction %}

@@ -1,0 +1,54 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "moj/components/timeline/macro.njk" import mojTimeline %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "../../_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    classes: "js-back-link",
+    text: "Back",
+    href: backLinkHref
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list | length %}
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors.list
+          }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      {% block statusContent %}{% endblock statusContent %}
+
+      <h2 class="govuk-heading-m">Current status</h2>
+
+      {{ mojTimeline({
+          items: timelineItems,
+          attributes: {
+            "data-testid": "status-history-timeline"
+          },
+          classes: "govuk-!-margin-bottom-0"
+        }) }}
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% block statusAction %}{% endblock statusAction %}
+    </div>
+  </div>
+{% endblock content %}

@@ -183,7 +183,7 @@ export default class CaseListUtils {
       case 'Programme location':
         return referralView.organisationName || 'N/A'
       case 'Programme name':
-        return referralView.courseName || 'N/A'
+        return referralView.listDisplayName || 'N/A'
       case 'Programme strand':
         return referralView.audience || 'N/A'
       case 'Progress':

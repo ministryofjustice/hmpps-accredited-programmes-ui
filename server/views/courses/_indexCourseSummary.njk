@@ -6,7 +6,7 @@
   <div class="govuk-grid-row" role="listitem">
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">
-        <a class="govuk-link" href="/programmes/{{ course.id }}">{{ course.nameAndAlternateName }}</a>
+        <a class="govuk-link" href="{{ course.href }}">{{ course.displayName }}</a>
       </h2>
 
       {{ audienceTag(course.audienceTag) }}

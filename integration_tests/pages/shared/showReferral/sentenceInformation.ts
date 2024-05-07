@@ -11,7 +11,7 @@ export default class SentenceInformationPage extends Page {
     const { course, person, sentenceDetails } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.nameAndAlternateName}`)
+    super(`Referral to ${coursePresenter.displayName}`)
 
     this.person = person
     this.sentenceDetails = sentenceDetails
