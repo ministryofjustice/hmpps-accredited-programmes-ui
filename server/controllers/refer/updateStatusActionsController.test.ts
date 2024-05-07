@@ -45,6 +45,7 @@ describe('UpdateStatusActionsController', () => {
       expect(request.session.referralStatusUpdateData).toEqual({
         decisionForCategoryAndReason: 'WITHDRAWN',
         finalStatusDecision: 'WITHDRAWN',
+        initialStatusDecision: 'WITHDRAWN',
         referralId,
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.category.show({ referralId }))

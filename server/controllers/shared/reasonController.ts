@@ -3,10 +3,9 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
-import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 type SelectReasonPageContent = Record<
-  ReferralStatusUppercase,
+  Uppercase<string>,
   {
     pageDescription: string
     pageHeading: string
@@ -17,6 +16,12 @@ type SelectReasonPageContent = Record<
 const content: Partial<SelectReasonPageContent> = {
   DESELECTED: {
     pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
+    pageHeading: 'Deselection reason',
+    radioLegend: 'Choose the deselection reason',
+  },
+  'DESELECTED|OPEN': {
+    pageDescription:
+      'Deselecting someone means they cannot continue the programme. The referral will stay open until they can rejoin or restart the programme.',
     pageHeading: 'Deselection reason',
     radioLegend: 'Choose the deselection reason',
   },
@@ -47,12 +52,13 @@ export default class ReasonController {
         referralStatusUpdateData?.referralId !== referralId ||
         !referralStatusUpdateData.decisionForCategoryAndReason ||
         !referralStatusUpdateData.statusCategoryCode ||
-        !content[referralStatusUpdateData.decisionForCategoryAndReason]
+        !referralStatusUpdateData.initialStatusDecision ||
+        !content[referralStatusUpdateData.initialStatusDecision]
       ) {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      const { decisionForCategoryAndReason } = referralStatusUpdateData
+      const { decisionForCategoryAndReason, initialStatusDecision } = referralStatusUpdateData
 
       const [referral, statusHistory, reasons] = await Promise.all([
         this.referralService.getReferral(username, referralId),
@@ -88,7 +94,7 @@ export default class ReasonController {
         person,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
-        ...content[decisionForCategoryAndReason],
+        ...content[initialStatusDecision],
       })
     }
   }
