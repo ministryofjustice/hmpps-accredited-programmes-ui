@@ -191,8 +191,12 @@ export default class CaseListPage extends Page {
       referralViews: filteredReferralViews,
     })
 
-    this.selectSelectItem('programme-strand-select', programmeStrandSelectedValue)
-    this.selectSelectItem('referral-status-select', referralStatusSelectedValue)
+    this.selectSelectItem('programme-strand-select', programmeStrandSelectedValue || '')
+    this.selectSelectItem('referral-status-select', referralStatusSelectedValue || '')
+    this.shouldFilterButtonClick()
+  }
+
+  shouldFilterButtonClick() {
     this.shouldContainButton('Apply filters').click()
   }
 
