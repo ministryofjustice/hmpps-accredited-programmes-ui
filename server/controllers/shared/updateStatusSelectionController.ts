@@ -89,13 +89,20 @@ export default class UpdateStatusSelectionController {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
+      const { decisionForCategoryAndReason } = referralStatusUpdateData
+
       if (!reason) {
-        req.flash('reasonError', 'Enter a reason')
+        req.flash(
+          'reasonError',
+          decisionForCategoryAndReason === 'WITHDRAWN'
+            ? 'Enter more information about the reason for withdrawing the referral'
+            : 'Enter a reason for putting the referral on hold',
+        )
         hasErrors = true
       }
 
       if (reason?.length > maxLength) {
-        req.flash('reasonError', `Reason must be ${maxLength} characters or less`)
+        req.flash('reasonError', `Reason must be ${maxLength} characters or fewer`)
         req.flash('formValues', [JSON.stringify({ reason })])
         hasErrors = true
       }

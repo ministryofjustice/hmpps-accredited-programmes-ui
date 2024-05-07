@@ -99,8 +99,13 @@ export default class ReasonController {
         return res.redirect(paths.updateStatus.category.show({ referralId }))
       }
 
+      const { decisionForCategoryAndReason } = referralStatusUpdateData
+
       if (!reasonCode) {
-        req.flash('reasonCodeError', 'Select a reason')
+        req.flash(
+          'reasonCodeError',
+          decisionForCategoryAndReason === 'DESELECTED' ? 'Select a deselection reason' : 'Select a withdrawal reason',
+        )
 
         return res.redirect(paths.updateStatus.reason.show({ referralId }))
       }

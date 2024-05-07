@@ -18,7 +18,7 @@ export default class NewReferralsPeopleController {
       const { prisonNumber } = req.body
 
       if (!prisonNumber) {
-        req.flash('prisonNumberError', 'Please enter a prison number')
+        req.flash('prisonNumberError', 'Enter a prison number')
         return res.redirect(referPaths.new.new({ courseOfferingId }))
       }
 
@@ -44,7 +44,7 @@ export default class NewReferralsPeopleController {
         const knownError = error as ResponseError
 
         if (knownError.status === 404) {
-          req.flash('prisonNumberError', `No person with a prison number '${req.params.prisonNumber}' was found`)
+          req.flash('prisonNumberError', `No person with prison number '${req.params.prisonNumber}' found`)
           return res.redirect(referPaths.new.new({ courseOfferingId }))
         }
 

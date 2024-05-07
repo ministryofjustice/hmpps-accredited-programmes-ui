@@ -128,7 +128,10 @@ describe('NewReferralsOasysConfirmationController', () => {
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.confirmOasys.show({ referralId }))
-        expect(request.flash).toHaveBeenCalledWith('oasysConfirmedError', 'Confirm the OASys information is up to date')
+        expect(request.flash).toHaveBeenCalledWith(
+          'oasysConfirmedError',
+          'Tick the box to confirm the OASys information is up to date',
+        )
       })
     })
 

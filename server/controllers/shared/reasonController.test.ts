@@ -315,7 +315,7 @@ describe('ReasonController', () => {
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.reason.show({ referralId: referral.id }))
-        expect(request.flash).toHaveBeenCalledWith('reasonCodeError', 'Select a reason')
+        expect(request.flash).toHaveBeenCalledWith('reasonCodeError', 'Select a deselection reason')
       })
     })
 

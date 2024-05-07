@@ -281,7 +281,7 @@ describe('CategoryController', () => {
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.updateStatus.category.show({ referralId: referral.id }),
         )
-        expect(request.flash).toHaveBeenCalledWith('categoryCodeError', 'Select a category')
+        expect(request.flash).toHaveBeenCalledWith('categoryCodeError', 'Select a deselection category')
       })
     })
   })
