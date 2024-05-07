@@ -96,7 +96,7 @@ context('Searching for a person and creating a referral', () => {
         findPersonPage.shouldContainButton('Continue').click()
 
         const findPersonPageWithError = Page.verifyOnPage(NewReferralFindPersonPage)
-        findPersonPageWithError.shouldHaveErrors([{ field: 'prisonNumber', message: 'Please enter a prison number' }])
+        findPersonPageWithError.shouldHaveErrors([{ field: 'prisonNumber', message: 'Enter a prison number' }])
       })
 
       it('displays an error when the person cannot be found', () => {
@@ -109,7 +109,7 @@ context('Searching for a person and creating a referral', () => {
 
         const findPersonPageWithError = Page.verifyOnPage(NewReferralFindPersonPage)
         findPersonPageWithError.shouldHaveErrors([
-          { field: 'prisonNumber', message: `No person with a prison number '${fakeId}' was found` },
+          { field: 'prisonNumber', message: `No person with a prison number '${fakeId}' found` },
         ])
       })
     })
