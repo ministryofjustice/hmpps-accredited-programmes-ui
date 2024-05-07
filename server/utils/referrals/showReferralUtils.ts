@@ -47,7 +47,10 @@ export default class ShowReferralUtils {
         closed || !nextHoldOrReleaseStatus
           ? undefined
           : `${referPaths.manageHold({ referralId: referral.id })}?status=${nextHoldOrReleaseStatus}`
-      const withdrawHref = closed ? undefined : referPaths.withdraw({ referralId: referral.id })
+      const withdrawHref =
+        closed || !statusTransitions?.find(transition => transition.code === 'WITHDRAWN')
+          ? undefined
+          : referPaths.withdraw({ referralId: referral.id })
 
       buttons.push(
         {
