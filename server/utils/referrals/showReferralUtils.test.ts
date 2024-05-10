@@ -20,7 +20,7 @@ describe('ShowReferralUtils', () => {
 
   describe('buttons', () => {
     describe('when on the assess journey', () => {
-      it('contains the "Back to my referrals" and "Update status" buttons with the corect hrefs', () => {
+      it('contains the "Back to referrals" and "Update status" buttons with the corect hrefs', () => {
         expect(
           ShowReferralUtils.buttons(
             assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
@@ -29,7 +29,7 @@ describe('ShowReferralUtils', () => {
         ).toEqual([
           {
             href: '/assess/referrals/case-list',
-            text: 'Back to my referrals',
+            text: 'Back to referrals',
           },
           {
             classes: 'govuk-button--secondary',
@@ -73,7 +73,7 @@ describe('ShowReferralUtils', () => {
         ).toEqual([
           {
             href: '/refer/referrals/case-list',
-            text: 'Back to my referrals',
+            text: 'Back to referrals',
           },
           {
             classes: 'govuk-button--secondary',
