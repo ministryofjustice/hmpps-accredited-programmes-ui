@@ -140,7 +140,10 @@ const sharedTests = {
         }),
         addedByDisplayName: StringUtils.convertToTitleCase(user.name),
       }
-      statusTransitions = [referralStatusRefDataFactory.build({ hold: true })]
+      statusTransitions = [
+        referralStatusRefDataFactory.build({ hold: true }),
+        referralStatusRefDataFactory.build({ code: 'WITHDRAWN', hold: false }),
+      ]
 
       cy.task('reset')
       cy.task('stubSignIn', { authorities: [role] })
