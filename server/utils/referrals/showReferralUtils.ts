@@ -27,7 +27,7 @@ export default class ShowReferralUtils {
     const buttons: Array<GovukFrontendButton> = [
       {
         href: paths.caseList.index({}),
-        text: 'Back to my referrals',
+        text: 'Back to referrals',
       },
     ]
 
