@@ -366,10 +366,13 @@ describe('RisksAndNeedsController', () => {
 
   describe('lifestyleAndAssociates', () => {
     it('renders the lifestyle and associates page with the correct response locals', async () => {
-      const lifestyle = lifestyleFactory.build({ activitiesEncourageOffending: '0 - No problems' })
+      const lifestyleIssues = 'Lifestyle issues comments.'
+      const lifestyle = lifestyleFactory.build({ activitiesEncourageOffending: '0 - No problems', lifestyleIssues })
       const reoffendingSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
 
       mockLifestyleAndAssociatesUtils.reoffendingSummaryListRows.mockReturnValue(reoffendingSummaryListRows)
+
+      when(ShowRisksAndNeedsUtils.textValue).calledWith(lifestyle.lifestyleIssues).mockReturnValue(lifestyleIssues)
 
       when(oasysService.getLifestyle).calledWith(username, person.prisonNumber).mockResolvedValue(lifestyle)
 
@@ -384,6 +387,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        lifestyleIssues,
         navigationItems,
         reoffendingSummaryListRows,
         subNavigationItems,
@@ -488,12 +492,17 @@ describe('RisksAndNeedsController', () => {
 
   describe('relationships', () => {
     it('renders the relationships page with the correct response locals', async () => {
-      const relationships = relationshipsFactory.build()
+      const relIssuesDetails = 'Relationship issues details.'
+      const relationships = relationshipsFactory.build({ relIssuesDetails })
       const domesticViolenceSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
 
       mockRelationshipsUtils.domesticViolenceSummaryListRows.mockReturnValue(domesticViolenceSummaryListRows)
 
       when(oasysService.getRelationships).calledWith(username, person.prisonNumber).mockResolvedValue(relationships)
+
+      when(ShowRisksAndNeedsUtils.textValue)
+        .calledWith(relationships.relIssuesDetails)
+        .mockReturnValue(relIssuesDetails)
 
       request.path = referPaths.show.risksAndNeeds.relationships({ referralId: referral.id })
 
@@ -508,6 +517,7 @@ describe('RisksAndNeedsController', () => {
         hasData: true,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
+        relIssuesDetails,
         subNavigationItems,
       })
     })

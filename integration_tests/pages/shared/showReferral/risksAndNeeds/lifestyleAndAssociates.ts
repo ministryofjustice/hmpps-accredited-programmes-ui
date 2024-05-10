@@ -1,4 +1,4 @@
-import { CourseUtils, LifestyleAndAssociatesUtils } from '../../../../../server/utils'
+import { CourseUtils, LifestyleAndAssociatesUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
 import type { Course, Lifestyle } from '@accredited-programmes/models'
 
@@ -13,6 +13,16 @@ export default class LifestyleAndAssociatesPage extends Page {
     super(`Referral to ${coursePresenter.displayName}`)
 
     this.lifestyle = lifestyle
+  }
+
+  shouldContainLifestyleIssuesSummaryCard() {
+    cy.get('[data-testid="lifestyle-issues-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Lifestyle issues affecting risk of offending or harm',
+        ShowRisksAndNeedsUtils.textValue(this.lifestyle.lifestyleIssues),
+        summaryCardElement,
+      )
+    })
   }
 
   shouldContainNoLifestyleDataSummaryCard() {

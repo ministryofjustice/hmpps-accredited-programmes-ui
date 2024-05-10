@@ -709,6 +709,7 @@ const sharedTests = {
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       lifestyleAndAssociatesPage.shouldContainImportedFromText('OASys')
       lifestyleAndAssociatesPage.shouldContainReoffendingSummaryList()
+      lifestyleAndAssociatesPage.shouldContainLifestyleIssuesSummaryCard()
     },
     showsLifestyleAndAssociatesPageWithoutData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
@@ -814,6 +815,7 @@ const sharedTests = {
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainImportedFromText('OASys')
       relationshipsPage.shouldContainDomesticViolenceSummaryList()
+      relationshipsPage.shouldContainRelationshipIssuesSummaryCard()
     },
     showsRelationshipsPageWithoutData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)

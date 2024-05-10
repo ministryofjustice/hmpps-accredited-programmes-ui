@@ -151,6 +151,7 @@ export default class RisksAndNeedsController {
         ? {
             hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            lifestyleIssues: ShowRisksAndNeedsUtils.textValue(lifestyle.lifestyleIssues),
             reoffendingSummaryListRows: LifestyleAndAssociatesUtils.reoffendingSummaryListRows(lifestyle),
           }
         : {
@@ -216,6 +217,7 @@ export default class RisksAndNeedsController {
             domesticViolenceSummaryListRows: RelationshipsUtils.domesticViolenceSummaryListRows(relationships),
             hasData: true,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+            relIssuesDetails: ShowRisksAndNeedsUtils.textValue(relationships.relIssuesDetails),
           }
         : {
             hasData: false,
