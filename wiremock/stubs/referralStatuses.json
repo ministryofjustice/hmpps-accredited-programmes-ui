@@ -1,0 +1,31 @@
+[
+  {
+    "closed": false,
+    "code": "ASSESSMENT_STARTED",
+    "colour": "blue",
+    "confirmationText": "Confirmation text.",
+    "description": "Assessment started",
+    "draft": false,
+    "hasConfirmation": true,
+    "hasNotes": false
+  },
+  {
+    "closed": false,
+    "code": "AWAITING_ASSESSMENT",
+    "colour": "light-blue",
+    "description": "Awaiting Assessment",
+    "draft": false,
+    "hasConfirmation": false,
+    "hasNotes": true
+  },
+  {
+    "closed": false,
+    "code": "REFERRAL_SUBMITTED",
+    "colour": "green",
+    "confirmationText": "Harum amita corrigo aestus depono tepesco.",
+    "description": "Referral submitted",
+    "draft": false,
+    "hasConfirmation": true,
+    "hasNotes": false
+  }
+]

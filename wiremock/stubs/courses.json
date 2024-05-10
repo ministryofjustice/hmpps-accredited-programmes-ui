@@ -5,6 +5,7 @@
     "alternateName": "BNM+",
     "description": "Becoming New Me Plus (BNM+) is a programme...",
     "audience": "Intimate partner violence offence",
+    "displayName": "Becoming New Me Plus: intimate partner violence offence ",
     "coursePrerequisites": [
       {
         "name": "Gender",
@@ -30,6 +31,7 @@
     "alternateName": "BNM+",
     "description": "Becoming New Me Plus (BNM+) is a programme...",
     "audience": "Sexual offence",
+    "displayName": "Becoming New Me Plus: sexual offence ",
     "coursePrerequisites": [
       {
         "name": "Gender",
@@ -55,6 +57,7 @@
     "alternateName": "BBR",
     "description": "BBR is a programme...",
     "audience": "Intimate partner violence offence",
+    "displayName": "Building Better Relationships: intimate partner violence offence ",
     "coursePrerequisites": [
       {
         "name": "Gender",
@@ -84,6 +87,7 @@
     "alternateName": "HII",
     "description": "HII is a programme...",
     "audience": "Extremism offence",
+    "displayName": "Healthy Identity Intervention: extremism offence ",
     "coursePrerequisites": [
       {
         "name": "Gender",
@@ -109,6 +113,7 @@
     "alternateName": "HSP",
     "description": "HSP is a programme...",
     "audience": "Sexual offence",
+    "displayName": "Healthy Sex Programme: sexual offence ",
     "coursePrerequisites": [
       {
         "name": "Gender",
