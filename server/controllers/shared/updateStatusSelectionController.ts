@@ -99,10 +99,7 @@ export default class UpdateStatusSelectionController {
       const { decisionForCategoryAndReason } = referralStatusUpdateData
 
       if (!reason) {
-        req.flash(
-          'reasonError',
-          'Enter a reason',
-        )
+        req.flash('reasonError', 'Enter a reason')
         hasErrors = true
       }
 

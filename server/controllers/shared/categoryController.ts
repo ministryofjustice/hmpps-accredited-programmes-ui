@@ -103,9 +103,7 @@ export default class CategoryController {
       if (!categoryCode) {
         req.flash(
           'categoryCodeError',
-          decisionForCategoryAndReason === 'DESELECTED'
-            ? 'Select a deselection category'
-            : 'Select a withdrawal category',
+          `Select a ${decisionForCategoryAndReason === 'DESELECTED' ? 'deselection category' : 'withdrawal'}`,
         )
 
         return res.redirect(paths.updateStatus.category.show({ referralId }))
