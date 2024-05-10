@@ -367,7 +367,7 @@ describe('UpdateStatusSelectionController', () => {
         const requestHandler = controller.submitReason()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason for putting the referral on hold')
+        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Enter a reason')
         expect(response.redirect).toHaveBeenCalledWith(
           assessPaths.updateStatus.selection.show({ referralId: referral.id }),
         )

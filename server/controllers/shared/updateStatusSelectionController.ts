@@ -101,9 +101,7 @@ export default class UpdateStatusSelectionController {
       if (!reason) {
         req.flash(
           'reasonError',
-          decisionForCategoryAndReason === 'WITHDRAWN'
-            ? 'Enter more information about the reason for withdrawing the referral'
-            : 'Enter a reason for putting the referral on hold',
+          'Enter a reason',
         )
         hasErrors = true
       }
