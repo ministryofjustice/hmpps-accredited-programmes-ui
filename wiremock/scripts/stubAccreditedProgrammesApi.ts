@@ -19,6 +19,7 @@ import {
   oasysRoshAnalysis,
   prisoners,
   psychiatric,
+  referralStatuses,
   referralViews,
   referrals,
 } from '../stubs'
@@ -128,7 +129,7 @@ referrals.forEach(referral => {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.referrals.show({ referralId: referral.id }),
+        urlPath: apiPaths.referrals.show({ referralId: referral.id }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
@@ -147,6 +148,50 @@ referrals.forEach(referral => {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         status: 204,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: apiPaths.referrals.statusHistory({ referralId: referral.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [],
+        status: 201,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referrals.statusTransitions({ referralId: referral.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: [],
+        status: 201,
+      },
+    }),
+  )
+
+  stubs.push(() =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.offerings.course({
+          courseOfferingId: referral.offeringId,
+        }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: courses[0],
+        status: 200,
       },
     }),
   )
@@ -195,12 +240,25 @@ stubs.push(() =>
   stubFor({
     request: {
       method: 'GET',
+      urlPath: `${apiPaths.referenceData.referralStatuses.show({
+        organisationId: activeCaseLoadId,
+      })}`,
+    },
+    response: {
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: referralStatuses,
+      status: 200,
+    },
+  }),
+)
+
+stubs.push(() =>
+  stubFor({
+    request: {
+      method: 'GET',
       queryParameters: {
         size: {
           equalTo: '15',
-        },
-        status: {
-          equalTo: 'ASSESSMENT_STARTED,AWAITING_ASSESSMENT,REFERRAL_SUBMITTED',
         },
       },
       urlPath: `${apiPaths.referrals.myDashboard({})}`,
