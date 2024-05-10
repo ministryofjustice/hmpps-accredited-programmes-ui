@@ -1,4 +1,4 @@
-import { CourseUtils, RelationshipsUtils } from '../../../../../server/utils'
+import { CourseUtils, RelationshipsUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
 import type { Course, Relationships } from '@accredited-programmes/models'
 
@@ -29,6 +29,16 @@ export default class RelationshipsPage extends Page {
       this.shouldContainKeylessSummaryCard(
         'Section 6 - Relationships',
         'No relationships found in OASys. Add relationships to OASys to see it here.',
+        summaryCardElement,
+      )
+    })
+  }
+
+  shouldContainRelationshipIssuesSummaryCard() {
+    cy.get('[data-testid="relationship-issues-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard(
+        'Relationship issues affecting risk of offending or harm',
+        ShowRisksAndNeedsUtils.textValue(this.relationships.relIssuesDetails),
         summaryCardElement,
       )
     })
