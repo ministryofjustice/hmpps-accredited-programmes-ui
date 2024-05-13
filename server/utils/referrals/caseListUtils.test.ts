@@ -70,17 +70,17 @@ describe('CaseListUtils', () => {
         {
           active: false,
           href: `/assess/referrals/course/${blueCourse.id}/case-list/open`,
-          text: 'Blue Course referrals',
+          text: 'Blue Course',
         },
         {
           active: false,
           href: `/assess/referrals/course/${limeCourse.id}/case-list/open`,
-          text: 'Lime Course referrals',
+          text: 'Lime Course',
         },
         {
           active: true,
           href: `/assess/referrals/course/${orangeCourse.id}/case-list/open`,
-          text: 'Orange Course referrals',
+          text: 'Orange Course',
         },
       ])
     })

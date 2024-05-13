@@ -37,7 +37,7 @@ export default class CaseListPage extends Page {
             courseId: course.id,
             referralStatusGroup: 'open',
           }),
-          text: `${course.name} referrals`,
+          text: course.name,
         }
       })
 
