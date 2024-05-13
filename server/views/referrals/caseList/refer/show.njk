@@ -13,11 +13,12 @@
   }) }}
 
   {% if tableRows | length %}
-
-    {{ govukTable({
-      head: tableHeadings,
-      rows: tableRows
-    }) }}
+    <div class="table-scroll">
+      {{ govukTable({
+        head: tableHeadings,
+        rows: tableRows
+      }) }}
+    </div>
 
     {{ govukPagination(pagination) }}
 

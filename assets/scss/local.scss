@@ -19,6 +19,10 @@
   }
 }
 
+.table-scroll {
+  overflow-x: auto;
+}
+
 .filters {
   @include govuk-responsive-padding(3);
   @include govuk-responsive-margin(7, 'bottom');
