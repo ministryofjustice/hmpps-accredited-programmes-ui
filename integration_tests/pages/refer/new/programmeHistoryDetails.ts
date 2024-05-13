@@ -70,7 +70,7 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   }
 
   shouldContainSourceTextArea() {
-    this.shouldContainTextArea('source', 'Provide the source')
+    this.shouldContainTextArea('source', 'Provide the source (optional)')
   }
 
   shouldDisplayCommunityLocationInput() {
