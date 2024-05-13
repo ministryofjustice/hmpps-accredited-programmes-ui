@@ -57,7 +57,7 @@ export default class CaseListUtils {
       return {
         active: currentPath === path,
         href: path,
-        text: `${course.name} referrals`,
+        text: course.name,
       }
     })
   }
