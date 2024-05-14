@@ -62,7 +62,7 @@ export default class NewReferralsOasysConfirmationController {
       const { oasysConfirmed } = req.body
 
       if (!oasysConfirmed) {
-        req.flash('oasysConfirmedError', 'Confirm the OASys information is up to date')
+        req.flash('oasysConfirmedError', 'Tick the box to confirm the OASys information is up to date')
 
         return res.redirect(referPaths.new.confirmOasys.show({ referralId }))
       }

@@ -95,7 +95,7 @@ context('OASys confirmation', () => {
       confirmOasysPageWithError.shouldHaveErrors([
         {
           field: 'oasysConfirmed',
-          message: 'Confirm the OASys information is up to date',
+          message: 'Tick the box to confirm the OASys information is up to date',
         },
       ])
     })

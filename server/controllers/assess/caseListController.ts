@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
-import { CaseListUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
+import { CaseListUtils, FormUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusGroup } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
@@ -19,11 +19,17 @@ export default class AssessCaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseId, referralStatusGroup } = req.params
+      const { audience, status } = req.body
+
+      if (!audience && !status) {
+        req.flash('audienceError', 'Choose a filter')
+        return res.redirect(assessPaths.caseList.show({ courseId, referralStatusGroup }))
+      }
 
       return res.redirect(
         PathUtils.pathWithQuery(
           assessPaths.caseList.show({ courseId, referralStatusGroup }),
-          CaseListUtils.queryParamsExcludingPage(req.body.audience, req.body.status),
+          CaseListUtils.queryParamsExcludingPage(audience, status),
         ),
       )
     }
@@ -56,6 +62,7 @@ export default class AssessCaseListController {
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
       const isValidReferralStatusGroup = ['open', 'closed'].includes(referralStatusGroup)
+      FormUtils.setFieldErrors(req, res, ['audience', 'status'])
 
       if (!isValidReferralStatusGroup) {
         throw createError(404, 'Not found')

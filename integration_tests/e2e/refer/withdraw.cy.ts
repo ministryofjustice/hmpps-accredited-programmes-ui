@@ -121,7 +121,7 @@ context('Withdraw referral', () => {
         withdrawCategoryPage.shouldHaveErrors([
           {
             field: 'categoryCode',
-            message: 'Select a category',
+            message: 'Select a withdrawal category',
           },
         ])
       })
@@ -151,7 +151,7 @@ context('Withdraw referral', () => {
         withdrawReasonPage.shouldHaveErrors([
           {
             field: 'reasonCode',
-            message: 'Select a reason',
+            message: 'Select a withdrawal reason',
           },
         ])
       })

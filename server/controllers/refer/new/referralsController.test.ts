@@ -482,7 +482,7 @@ describe('NewReferralsController', () => {
 
         expect(request.flash).toHaveBeenCalledWith(
           'confirmationError',
-          'Confirm that the information you have provided is complete, accurate and up to date',
+          'Tick the box to confirm the information you have provided is correct',
         )
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.checkAnswers({ referralId }))
       })

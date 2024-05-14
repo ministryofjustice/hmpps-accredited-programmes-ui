@@ -102,7 +102,7 @@ export default class UpdateStatusSelectionController {
       }
 
       if (reason?.length > maxLength) {
-        req.flash('reasonError', `Reason must be ${maxLength} characters or less`)
+        req.flash('reasonError', `Reason must be ${maxLength} characters or fewer`)
         req.flash('formValues', [JSON.stringify({ reason })])
         hasErrors = true
       }

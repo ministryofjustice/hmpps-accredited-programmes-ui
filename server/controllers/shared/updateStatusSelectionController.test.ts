@@ -383,7 +383,7 @@ describe('UpdateStatusSelectionController', () => {
         const requestHandler = controller.submitReason()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Reason must be 100 characters or less')
+        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Reason must be 100 characters or fewer')
         expect(request.flash).toHaveBeenCalledWith('formValues', [JSON.stringify({ reason: longReason })])
         expect(response.redirect).toHaveBeenCalledWith(
           assessPaths.updateStatus.selection.show({ referralId: referral.id }),

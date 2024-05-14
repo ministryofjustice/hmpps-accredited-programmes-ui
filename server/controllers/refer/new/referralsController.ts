@@ -237,10 +237,7 @@ export default class NewReferralsController {
       const { referralId } = req.params
 
       if (req.body.confirmation !== 'true') {
-        req.flash(
-          'confirmationError',
-          'Confirm that the information you have provided is complete, accurate and up to date',
-        )
+        req.flash('confirmationError', 'Tick the box to confirm the information you have provided is correct')
 
         return res.redirect(referPaths.new.checkAnswers({ referralId }))
       }

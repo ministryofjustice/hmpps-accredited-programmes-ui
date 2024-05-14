@@ -111,6 +111,34 @@ context('Referral case lists', () => {
     })
 
     describe('when using the filters', () => {
+      it('shows an error if applied with no selections', () => {
+        const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
+        cy.visit(path)
+
+        const caseListPage = Page.verifyOnPage(CaseListPage, {
+          columnHeaders,
+          course: limeCourse,
+          referralViews: limeCourseReferralViews,
+        })
+        caseListPage.shouldContainCourseNavigation(path, courses)
+        caseListPage.shouldHaveSelectedFilterValues('', '')
+        caseListPage.shouldContainStatusNavigation('open', limeCourse.id)
+        caseListPage.shouldContainTableOfReferralViews(assessPaths)
+
+        caseListPage.shouldFilterButtonClick()
+
+        const caseListPageWithError = Page.verifyOnPage(CaseListPage, {
+          columnHeaders,
+          course: limeCourse,
+          referralViews: limeCourseReferralViews,
+        })
+        caseListPageWithError.shouldHaveErrors([
+          {
+            field: 'audience',
+            message: 'Choose a filter',
+          },
+        ])
+      })
       it('shows the correct information', () => {
         const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
         cy.visit(path)

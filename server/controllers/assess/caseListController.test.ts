@@ -104,6 +104,18 @@ describe('AssessCaseListController', () => {
       expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, queryParamsExcludingPage)
       expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
     })
+
+    it('should redirect back to the page with a flash message when filters are applied with no selections', async () => {
+      request.body.audience = ''
+      request.body.status = ''
+
+      const requestHandler = controller.filter()
+      await requestHandler(request, response, next)
+
+      expect(CaseListUtils.queryParamsExcludingPage)
+      expect(request.flash).toHaveBeenCalledWith('audienceError', 'Choose a filter')
+      expect(response.redirect).toHaveBeenCalledWith(redirectPathBase)
+    })
   })
 
   describe('show', () => {
