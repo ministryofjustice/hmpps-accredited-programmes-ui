@@ -41,9 +41,15 @@ export default class ReferenceDataClient {
   async findReferralStatusCodeReasons(
     categoryCode: Uppercase<string>,
     referralStatusCode: ReferralStatusUppercase,
+    query?: {
+      deselectAndKeepOpen?: boolean
+    },
   ): Promise<Array<ReferralStatusReason>> {
     return (await this.restClient.get({
       path: apiPaths.referenceData.referralStatuses.statusCodeReasons({ categoryCode, referralStatusCode }),
+      query: {
+        ...(query?.deselectAndKeepOpen && { deselectAndKeepOpen: 'true' }),
+      },
     })) as Array<ReferralStatusReason>
   }
 

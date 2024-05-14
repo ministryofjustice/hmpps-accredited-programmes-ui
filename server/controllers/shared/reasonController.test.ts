@@ -118,6 +118,7 @@ describe('ReasonController', () => {
         username,
         'STATUS-CAT-A',
         'DESELECTED',
+        { deselectAndKeepOpen: false },
       )
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
@@ -173,6 +174,7 @@ describe('ReasonController', () => {
           username,
           'STATUS-CAT-A',
           'WITHDRAWN',
+          { deselectAndKeepOpen: false },
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
@@ -207,6 +209,7 @@ describe('ReasonController', () => {
           username,
           'STATUS-CAT-A',
           'DESELECTED',
+          { deselectAndKeepOpen: true },
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 

@@ -39,12 +39,15 @@ export default class ReferenceDataService {
     username: Express.User['username'],
     categoryCode: Uppercase<string>,
     referralStatusCode: ReferralStatusUppercase,
+    query?: {
+      deselectAndKeepOpen?: boolean
+    },
   ): Promise<Array<ReferralStatusReason>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referenceDataClient = this.referenceDataClient(systemToken)
 
-    return referenceDataClient.findReferralStatusCodeReasons(categoryCode, referralStatusCode)
+    return referenceDataClient.findReferralStatusCodeReasons(categoryCode, referralStatusCode, query)
   }
 
   async getReferralStatuses(username: Express.User['username']): Promise<Array<ReferralStatusRefData>> {
