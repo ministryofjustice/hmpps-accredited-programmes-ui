@@ -52,7 +52,7 @@ describe('NewReferralsPeopleController', () => {
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.new({ courseOfferingId }))
-        expect(request.flash).toHaveBeenCalledWith('prisonNumberError', 'Please enter a prison number')
+        expect(request.flash).toHaveBeenCalledWith('prisonNumberError', 'Enter a prison number')
       })
     })
   })
@@ -97,7 +97,7 @@ describe('NewReferralsPeopleController', () => {
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.new({ courseOfferingId }))
         expect(request.flash).toHaveBeenCalledWith(
           'prisonNumberError',
-          `No person with a prison number '${fakeId}' was found`,
+          `No person with prison number '${fakeId}' found`,
         )
       })
     })
