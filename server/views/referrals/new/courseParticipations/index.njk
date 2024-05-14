@@ -42,7 +42,7 @@
       }) }}
 
       {% if summaryListsOptions.length %}
-        <p class="govuk-body" data-testid="pre-history-paragraph">Add another programme if you know that they started or completed a programme which is not listed below or skip this section of the referral if the history is not known.</p>
+        <p class="govuk-body" data-testid="pre-history-paragraph">Add a programme if you know they completed or started a programme not listed here. Return to the tasklist once you’ve added all known programme history.</p>
       {% else %}
         <p class="govuk-body" data-testid="no-history-paragraph-1">The programme team may use information about a person's Accredited Programme history to assess whether they are suitable.</p>
 
@@ -67,7 +67,7 @@
           }) }}
 
           {{ govukButton({
-            text: "Skip this section",
+            text: "Return to tasklist",
             classes: "govuk-button--secondary"
           }) }}
         </div>
