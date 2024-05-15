@@ -111,11 +111,7 @@ describe('CategoryController', () => {
       expect(referenceDataService.getReferralStatusCodeCategories).toHaveBeenCalledWith(username, 'DESELECTED')
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        referral.prisonNumber,
-        response.locals.user.caseloads,
-      )
+      expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
       expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, undefined)
@@ -146,11 +142,7 @@ describe('CategoryController', () => {
         expect(referenceDataService.getReferralStatusCodeCategories).toHaveBeenCalledWith(username, 'DESELECTED')
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
-        expect(personService.getPerson).toHaveBeenCalledWith(
-          username,
-          referral.prisonNumber,
-          response.locals.user.caseloads,
-        )
+        expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
 
         expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
         expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, undefined)
@@ -198,11 +190,7 @@ describe('CategoryController', () => {
         expect(referenceDataService.getReferralStatusCodeCategories).toHaveBeenCalledWith(username, 'WITHDRAWN')
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
-        expect(personService.getPerson).toHaveBeenCalledWith(
-          username,
-          referral.prisonNumber,
-          response.locals.user.caseloads,
-        )
+        expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
 
         expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['categoryCode'])
         expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeCategories, undefined)

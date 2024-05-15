@@ -106,11 +106,7 @@ describe('UpdateStatusSelectionController', () => {
         deselectAndKeepOpen: false,
         ptUser: true,
       })
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        referral.prisonNumber,
-        response.locals.user.caseloads,
-      )
+      expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
     })
 

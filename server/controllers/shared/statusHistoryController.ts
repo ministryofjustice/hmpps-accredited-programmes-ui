@@ -27,7 +27,7 @@ export default class StatusHistoryController {
       const [course, statusHistory, person, statusTransitions] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
+        this.personService.getPerson(username, referral.prisonNumber),
         isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
       ])
 

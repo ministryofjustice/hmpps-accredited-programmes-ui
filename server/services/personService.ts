@@ -114,13 +114,13 @@ export default class PersonService {
   async getPerson(
     username: Express.User['username'],
     prisonNumber: Person['prisonNumber'],
-    caseloads: Array<Caseload>,
+    caseloads?: Array<Caseload>,
   ): Promise<Person> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const personClient = this.personClientBuilder(systemToken)
 
-    const caseloadIds = caseloads.map(caseload => caseload.caseLoadId)
+    const caseloadIds = caseloads?.map(caseload => caseload.caseLoadId)
 
     try {
       const prisoner = await personClient.findPrisoner(prisonNumber, caseloadIds)

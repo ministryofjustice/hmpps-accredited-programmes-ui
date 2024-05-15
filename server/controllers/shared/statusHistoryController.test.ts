@@ -105,11 +105,7 @@ describe('StatusHistoryController', () => {
       expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        referral.prisonNumber,
-        response.locals.user.caseloads,
-      )
+      expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
       expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(
         `/refer/referrals/${referral.id}/status-history`,
         'statusHistory',

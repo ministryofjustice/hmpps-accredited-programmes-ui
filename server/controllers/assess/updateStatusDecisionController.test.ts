@@ -123,11 +123,7 @@ describe('UpdateStatusDecisionController', () => {
         ptUser: true,
       })
       expect(referralService.getConfirmationText).not.toHaveBeenCalled()
-      expect(personService.getPerson).toHaveBeenCalledWith(
-        username,
-        referral.prisonNumber,
-        response.locals.user.caseloads,
-      )
+      expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
     })
 
     describe('when the available status transitions have a `deselectAndKeepOpen` property', () => {

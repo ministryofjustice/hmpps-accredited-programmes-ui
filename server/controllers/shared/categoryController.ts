@@ -65,7 +65,7 @@ export default class CategoryController {
         this.referenceDataService.getReferralStatusCodeCategories(username, decisionForCategoryAndReason),
       ])
 
-      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
+      const person = await this.personService.getPerson(username, referral.prisonNumber)
 
       const radioItems = ReferralUtils.statusOptionsToRadioItems(
         categories,

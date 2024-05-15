@@ -71,7 +71,7 @@ export default class ReasonController {
         ),
       ])
 
-      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
+      const person = await this.personService.getPerson(username, referral.prisonNumber)
 
       if (reasons.length === 0) {
         req.session.referralStatusUpdateData = {
