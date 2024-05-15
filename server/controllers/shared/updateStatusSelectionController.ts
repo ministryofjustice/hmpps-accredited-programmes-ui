@@ -36,7 +36,7 @@ export default class UpdateStatusSelectionController {
         }),
       ])
 
-      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
+      const person = await this.personService.getPerson(username, referral.prisonNumber)
 
       const { hasConfirmation } = confirmationText
 

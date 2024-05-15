@@ -360,7 +360,7 @@ export default class RisksAndNeedsController {
 
     const [course, person, statusTransitions] = await Promise.all([
       this.courseService.getCourseByOffering(username, referral.offeringId),
-      this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
+      this.personService.getPerson(username, referral.prisonNumber),
       isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
     ])
 

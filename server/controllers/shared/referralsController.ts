@@ -157,7 +157,7 @@ export default class ReferralsController {
       await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
         this.courseService.getOffering(username, referral.offeringId),
-        this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads),
+        this.personService.getPerson(username, referral.prisonNumber),
         this.userService.getFullNameFromUsername(userToken, referral.referrerUsername),
         this.userService.getEmailFromUsername(userToken, referral.referrerUsername),
         isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,

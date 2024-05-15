@@ -16,7 +16,7 @@ export default class PersonClient {
 
   async findPrisoner(
     prisonNumber: Prisoner['prisonerNumber'],
-    caseloadIds: Array<Caseload['caseLoadId']>,
+    caseloadIds?: Array<Caseload['caseLoadId']>,
   ): Promise<Prisoner | null> {
     const prisoners: Array<Prisoner> = (await this.restClient.post({
       data: {

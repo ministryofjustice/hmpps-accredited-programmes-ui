@@ -45,7 +45,7 @@ export default class UpdateStatusDecisionController {
             },
       ])
 
-      const person = await this.personService.getPerson(username, referral.prisonNumber, res.locals.user.caseloads)
+      const person = await this.personService.getPerson(username, referral.prisonNumber)
 
       const statusTransitions = statusTransitionsForReferral.map(statusTransition => {
         if (statusTransition.deselectAndKeepOpen) {

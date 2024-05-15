@@ -406,7 +406,7 @@ describe('ReferralsController', () => {
     })
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
-    expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber, response.locals.user.caseloads)
+    expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber)
     expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
     expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral, isRefer ? statusTransitions : undefined)
 

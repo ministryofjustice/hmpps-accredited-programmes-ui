@@ -193,10 +193,10 @@ describe('PersonService', () => {
   })
 
   describe('getPerson', () => {
+    const prisoner = prisonerFactory.build()
+
     describe('when the prisoner client finds the corresponding prisoner', () => {
       it('converts the returned object to a Person', async () => {
-        const prisoner = prisonerFactory.build()
-
         const person = personFactory.build()
 
         personClient.findPrisoner.mockResolvedValue(prisoner)
@@ -255,6 +255,20 @@ describe('PersonService', () => {
           mdiCaseload.caseLoadId,
           bxiCaseload.caseLoadId,
         ])
+      })
+    })
+
+    describe('when `caseloads` are not provided', () => {
+      it('should call `personClient.findPrisoner` with `undefined` `caseLoadIds`', async () => {
+        personClient.findPrisoner.mockResolvedValue(prisoner)
+        const prisonNumber = prisoner.prisonerNumber
+
+        await service.getPerson(username, prisonNumber)
+
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findPrisoner).toHaveBeenCalledWith(prisonNumber, undefined)
       })
     })
   })
