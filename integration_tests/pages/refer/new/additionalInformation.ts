@@ -19,6 +19,10 @@ export default class NewReferralAdditionalInformationPage extends Page {
     this.shouldContainTextArea('additionalInformation', 'Provide additional information')
   }
 
+  shouldContainEnteredAdditionalInformation(additionalInformation: string) {
+    cy.get('[data-testid="additional-information-text-area"]').should('have.text', additionalInformation)
+  }
+
   shouldContainInstructions() {
     cy.get('[data-testid="instructions-paragraph"]').should(
       'have.text',
@@ -40,9 +44,8 @@ export default class NewReferralAdditionalInformationPage extends Page {
     this.shouldContainButton('Save and continue')
   }
 
-  submitAdditionalInformation() {
-    const additionalInformation = 'Wheat gluten makes great fake chicken'
-    cy.get('[data-testid="additional-information-text-area"]').type(additionalInformation)
+  submitAdditionalInformation(additionalInformation = 'Wheat gluten makes great fake chicken') {
+    cy.get('[data-testid="additional-information-text-area"]').type(additionalInformation, { delay: 0 })
     this.referral = { ...this.referral, additionalInformation }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)

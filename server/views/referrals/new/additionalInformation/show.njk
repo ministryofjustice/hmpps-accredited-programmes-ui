@@ -1,8 +1,8 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% extends "../../../partials/layout.njk" %}
@@ -50,17 +50,18 @@
       <form action="{{ referPaths.new.additionalInformation.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-        {{ govukTextarea({
-          name: "additionalInformation",
+        {{ govukCharacterCount({
           id: "additionalInformation",
+          name: "additionalInformation",
+          maxlength: maxLength,
           label: {
             text: "Provide additional information",
             classes: "govuk-fieldset__legend--s"
           },
-          value: referral.additionalInformation,
           attributes: {
             "data-testid": "additional-information-text-area"
           },
+          value: formValues.formattedAdditionalInformation or referral.additionalInformation,
           errorMessage: errors.messages.additionalInformation
         }) }}
 
