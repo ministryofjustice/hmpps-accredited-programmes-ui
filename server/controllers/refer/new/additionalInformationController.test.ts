@@ -67,6 +67,7 @@ describe('NewReferralsAdditionalInformationController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(response.render).toHaveBeenCalledWith('referrals/new/additionalInformation/show', {
+        maxLength: 4000,
         pageHeading: 'Add additional information',
         person,
         referral: draftReferral,
@@ -189,6 +190,27 @@ describe('NewReferralsAdditionalInformationController', () => {
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
         expect(request.flash).toHaveBeenCalledWith('additionalInformationError', 'Enter additional information')
+      })
+    })
+
+    describe('when `additionalInformation` is too long', () => {
+      it('redirects to the additional information show action with an error', async () => {
+        const longAdditionalInformation = 'a'.repeat(4001)
+
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        request.body = { additionalInformation: longAdditionalInformation }
+
+        const requestHandler = controller.update()
+        await requestHandler(request, response, next)
+
+        expect(request.flash).toHaveBeenCalledWith(
+          'additionalInformationError',
+          'Additional information must be 4000 characters or fewer',
+        )
+        expect(request.flash).toHaveBeenCalledWith('formValues', [
+          JSON.stringify({ formattedAdditionalInformation: longAdditionalInformation }),
+        ])
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
       })
     })
   })

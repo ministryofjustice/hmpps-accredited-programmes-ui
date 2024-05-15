@@ -5,6 +5,8 @@ import type { PersonService, ReferralService } from '../../../services'
 import { FormUtils, TypeUtils } from '../../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
+const maxLength = 4000
+
 export default class NewReferralsAdditionalInformationController {
   constructor(
     private readonly personService: PersonService,
@@ -34,8 +36,10 @@ export default class NewReferralsAdditionalInformationController {
       )
 
       FormUtils.setFieldErrors(req, res, ['additionalInformation'])
+      FormUtils.setFormValues(req, res)
 
       return res.render('referrals/new/additionalInformation/show', {
+        maxLength,
         pageHeading: 'Add additional information',
         person,
         referral,
@@ -47,6 +51,7 @@ export default class NewReferralsAdditionalInformationController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      let hasErrors = false
       const { referralId } = req.params
 
       const referral = await this.referralService.getReferral(req.user.username, referralId)
@@ -63,7 +68,16 @@ export default class NewReferralsAdditionalInformationController {
 
       if (!formattedAdditionalInformation) {
         req.flash('additionalInformationError', 'Enter additional information')
+        hasErrors = true
+      }
 
+      if (formattedAdditionalInformation?.length > maxLength) {
+        req.flash('additionalInformationError', `Additional information must be ${maxLength} characters or fewer`)
+        req.flash('formValues', [JSON.stringify({ formattedAdditionalInformation })])
+        hasErrors = true
+      }
+
+      if (hasErrors) {
         return res.redirect(referPaths.new.additionalInformation.show({ referralId }))
       }
 

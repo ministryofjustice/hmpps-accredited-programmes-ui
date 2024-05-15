@@ -102,5 +102,28 @@ context('Additional information', () => {
         },
       ])
     })
+
+    it('displays an error when too much information is provided', () => {
+      const path = referPaths.new.additionalInformation.show({ referralId: referral.id })
+      cy.visit(path)
+
+      const tooMuchInformation = 'a'.repeat(4001)
+
+      const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
+      additionalInformationPage.submitAdditionalInformation(tooMuchInformation)
+      additionalInformationPage.shouldContainButton('Save and continue').click()
+
+      const additionalInformationPageWithError = Page.verifyOnPage(NewReferralAdditionalInformationPage, {
+        person,
+        referral,
+      })
+      additionalInformationPageWithError.shouldHaveErrors([
+        {
+          field: 'additionalInformation',
+          message: 'Additional information must be 4000 characters or fewer',
+        },
+      ])
+      additionalInformationPageWithError.shouldContainEnteredAdditionalInformation(tooMuchInformation)
+    })
   })
 })
