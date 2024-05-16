@@ -22,7 +22,7 @@ export default class NewReferralsPeopleController {
         return res.redirect(referPaths.new.new({ courseOfferingId }))
       }
 
-      return res.redirect(referPaths.new.people.show({ courseOfferingId, prisonNumber }))
+      return res.redirect(referPaths.new.people.show({ courseOfferingId, prisonNumber: prisonNumber.toUpperCase() }))
     }
   }
 
