@@ -55,6 +55,20 @@ describe('NewReferralsPeopleController', () => {
         expect(request.flash).toHaveBeenCalledWith('prisonNumberError', 'Enter a prison number')
       })
     })
+
+    describe('when the provided prison number contains lowercase characters', () => {
+      it('redirects to the show action with the prisonNumber as an uppercase param', async () => {
+        request.params.courseOfferingId = courseOfferingId
+        request.body.prisonNumber = 'anumb5r'
+
+        const requestHandler = controller.find()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(
+          referPaths.new.people.show({ courseOfferingId, prisonNumber: 'ANUMB5R' }),
+        )
+      })
+    })
   })
 
   describe('show', () => {
