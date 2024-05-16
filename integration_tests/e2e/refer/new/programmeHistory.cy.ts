@@ -112,7 +112,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainPreHistoryParagraph()
         programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id)
         programmeHistoryPage.shouldContainButtonLink('Add a programme', newParticipationPath)
-        programmeHistoryPage.shouldContainButton('Skip this section')
+        programmeHistoryPage.shouldContainButton('Return to tasklist')
       })
 
       describe('and the programme history has been reviewed', () => {
@@ -168,7 +168,7 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainNoHistoryText()
         programmeHistoryPage.shouldContainNoHistoryParagraphs()
         programmeHistoryPage.shouldContainButtonLink('Add a programme', newParticipationPath)
-        programmeHistoryPage.shouldContainButton('Skip this section')
+        programmeHistoryPage.shouldContainButton('Return to tasklist')
       })
 
       describe('and the programme history has been reviewed', () => {

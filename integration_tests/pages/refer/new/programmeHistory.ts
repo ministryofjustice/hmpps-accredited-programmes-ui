@@ -23,7 +23,7 @@ export default class NewReferralProgrammeHistoryPage extends Page {
     this.referral = { ...this.referral, hasReviewedProgrammeHistory: true }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)
-    this.shouldContainButton('Skip this section').click()
+    this.shouldContainButton('Return to tasklist').click()
   }
 
   shouldContainNoHistoryParagraphs() {
@@ -51,7 +51,7 @@ export default class NewReferralProgrammeHistoryPage extends Page {
   shouldContainPreHistoryParagraph() {
     cy.get('[data-testid="pre-history-paragraph"]').should(
       'have.text',
-      'Add another programme if you know that they started or completed a programme which is not listed below or skip this section of the referral if the history is not known.',
+      'Add a programme if you know they completed or started a programme not listed here. Return to the tasklist once you’ve added all known programme history.',
     )
   }
 
