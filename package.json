@@ -62,7 +62,7 @@
     "@ministryofjustice/frontend": "2.1",
     "@sentry/node": "^7.54.0",
     "agentkeepalive": "^4.3.0",
-    "applicationinsights": "^2.5.1",
+    "applicationinsights": "^3.0.0",
     "body-parser": "^1.20.2",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
