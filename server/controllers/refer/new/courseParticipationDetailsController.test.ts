@@ -82,6 +82,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
         person,
         referralId,
       })
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['yearCompleted', 'yearStarted'])
       expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
         detail: courseParticipation.detail,

@@ -36,7 +36,7 @@ export default class NewReferralsController {
       }
 
       const [person, courseOffering, course, referrerName, referrerEmail] = await Promise.all([
-        this.personService.getPerson(req.user.username, referral.prisonNumber, res.locals.user.caseloads),
+        this.personService.getPerson(req.user.username, referral.prisonNumber),
         this.courseService.getOffering(req.user.token, referral.offeringId),
         this.courseService.getCourseByOffering(req.user.token, referral.offeringId),
         this.userService.getFullNameFromUsername(req.user.token, referral.referrerUsername),
@@ -162,11 +162,7 @@ export default class NewReferralsController {
       const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
       const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
       const coursePresenter = CourseUtils.presentCourse(course)
 
       delete req.session.returnTo
@@ -197,11 +193,7 @@ export default class NewReferralsController {
         return res.redirect(authPaths.error({}))
       }
 
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       return res.render('referrals/new/showPerson', {
         pageHeading: `${person.name}'s details`,

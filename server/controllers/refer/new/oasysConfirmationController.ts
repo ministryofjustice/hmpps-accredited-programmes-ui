@@ -27,11 +27,7 @@ export default class NewReferralsOasysConfirmationController {
         return res.redirect(authPaths.error({}))
       }
 
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       FormUtils.setFieldErrors(req, res, ['oasysConfirmed'])
 

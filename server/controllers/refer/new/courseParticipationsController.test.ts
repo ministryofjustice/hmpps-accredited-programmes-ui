@@ -195,6 +195,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           remove: false,
         },
       )
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/delete', {
         action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
@@ -281,6 +282,7 @@ describe('NewReferralsCourseParticipationsController', () => {
           const isKnownCourse = courseNameType === 'a known'
 
           expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+          expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
           expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/course', {
             action: `${referPaths.new.programmeHistory.updateProgramme({
               courseParticipationId: courseParticipation.id,
@@ -327,6 +329,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
         username,
         userToken,
@@ -422,6 +425,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/course', {
         action: referPaths.new.programmeHistory.create({ referralId }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),

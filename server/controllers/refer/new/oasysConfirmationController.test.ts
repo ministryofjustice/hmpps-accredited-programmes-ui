@@ -65,6 +65,7 @@ describe('NewReferralsOasysConfirmationController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/oasysConfirmation/show', {
         pageHeading: 'Confirm the OASys information',
         person,

@@ -73,6 +73,7 @@ describe('NewReferralsAdditionalInformationController', () => {
         referral: draftReferral,
       })
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['additionalInformation'])
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
     })
 
     describe('when the referral has been submitted', () => {

@@ -204,6 +204,7 @@ describe('NewReferralsController', () => {
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId, { updatePerson: undefined })
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(request.session.returnTo).toBeUndefined()
       expect(response.render).toHaveBeenCalledWith('referrals/new/show', {
         course: coursePresenter,
@@ -272,6 +273,7 @@ describe('NewReferralsController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/showPerson', {
         pageHeading: "Del Hatton's details",
         person,
@@ -360,6 +362,7 @@ describe('NewReferralsController', () => {
       await requestHandler(request, response, next)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(personService.getPerson).toHaveBeenCalledWith(username, submittableReferral.prisonNumber)
       expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
       expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(

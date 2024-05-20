@@ -27,11 +27,7 @@ export default class NewReferralsCourseParticipationDetailsController {
         courseParticipationId,
       )
 
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       FormUtils.setFieldErrors(req, res, ['yearCompleted', 'yearStarted'])
       FormUtils.setFormValues(req, res, {
