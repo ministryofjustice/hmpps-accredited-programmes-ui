@@ -29,11 +29,7 @@ export default class NewReferralsAdditionalInformationController {
         return res.redirect(authPaths.error({}))
       }
 
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       FormUtils.setFieldErrors(req, res, ['additionalInformation'])
       FormUtils.setFormValues(req, res)

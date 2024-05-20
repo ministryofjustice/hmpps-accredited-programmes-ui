@@ -70,11 +70,7 @@ export default class NewReferralsCourseParticipationsController {
         referralId,
         { change: false, remove: false },
       )
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       return res.render('referrals/new/courseParticipations/delete', {
         action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
@@ -123,11 +119,7 @@ export default class NewReferralsCourseParticipationsController {
       }
 
       const courseParticipation = await this.courseService.getParticipation(req.user.username, courseParticipationId)
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
       const courseNames = await this.courseService.getCourseNames(req.user.username)
 
       FormUtils.setFieldErrors(req, res, ['courseName', 'otherCourseName'])
@@ -161,11 +153,7 @@ export default class NewReferralsCourseParticipationsController {
         return res.redirect(referPaths.new.complete({ referralId }))
       }
 
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       const summaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
         req.user.username,
@@ -204,11 +192,7 @@ export default class NewReferralsCourseParticipationsController {
       }
 
       const courseNames = await this.courseService.getCourseNames(req.user.username)
-      const person = await this.personService.getPerson(
-        req.user.username,
-        referral.prisonNumber,
-        res.locals.user.caseloads,
-      )
+      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       FormUtils.setFieldErrors(req, res, ['courseName', 'otherCourseName'])
 
