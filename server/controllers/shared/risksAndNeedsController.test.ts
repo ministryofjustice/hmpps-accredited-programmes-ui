@@ -43,6 +43,7 @@ import {
 } from '../../utils'
 import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
+import type { GovukFrontendTable } from '@govuk-frontend'
 
 jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
@@ -548,6 +549,9 @@ describe('RisksAndNeedsController', () => {
       const risksAndAlerts = risksAndAlertsFactory
         .withAllOptionalFields()
         .build({ imminentRiskOfViolenceTowardsOthers: 'LOW', imminentRiskOfViolenceTowardsPartner: 'HIGH' })
+      const alertsGroupTables: Array<GovukFrontendTable> = [
+        { classes: 'alerts-group-table', head: [{ text: 'heading' }], rows: [[{ text: 'value' }]] },
+      ]
       const ogrsYear1Box: RiskBox = {
         category: 'OGRS Year 1',
         dataTestId: 'ogrs-year-1-risk-box',
@@ -606,6 +610,9 @@ describe('RisksAndNeedsController', () => {
       }
 
       when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(risksAndAlerts)
+      when(mockRisksAndAlertsUtils.alertsGroupTables)
+        .calledWith(risksAndAlerts.alerts)
+        .mockReturnValue(alertsGroupTables)
       when(mockRisksAndAlertsUtils.riskBox)
         .calledWith('OGRS Year 1', risksAndAlerts.ogrsRisk, `${risksAndAlerts.ogrsYear1?.toString()}%`)
         .mockReturnValue(ogrsYear1Box)
@@ -641,7 +648,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
         ...sharedPageData,
-        alerts: risksAndAlerts.alerts,
+        alertsGroupTables,
         hasData: true,
         importedFromNomisText: `Imported from Nomis on ${importedFromDate}.`,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,

@@ -243,7 +243,7 @@ export default class RisksAndNeedsController {
 
       const templateLocals = risksAndAlerts
         ? {
-            alerts: risksAndAlerts.alerts,
+            alertsGroupTables: RisksAndAlertsUtils.alertsGroupTables(risksAndAlerts.alerts),
             hasData: true,
             importedFromNomisText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,

@@ -2,9 +2,13 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
+import type { Alert, RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
 
-const alert = (): { description: string } => ({ description: faker.lorem.sentence() })
+const alert = (): Alert => ({
+  alertType: faker.lorem.word(),
+  dateCreated: faker.date.past().toDateString(),
+  description: faker.lorem.sentence(),
+})
 const riskLevel = () => faker.helpers.arrayElement<RiskLevel>(['LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'])
 const percentage = () => faker.number.int({ max: 100, min: 0 })
 

@@ -1,7 +1,13 @@
+interface Alert {
+  alertType: string
+  dateCreated: string
+  description: string
+}
+
 type RiskLevel = 'HIGH' | 'LOW' | 'MEDIUM' | 'VERY_HIGH'
 
 type RisksAndAlerts = {
-  alerts?: Array<{ description: string }>
+  alerts?: Array<Alert>
   imminentRiskOfViolenceTowardsOthers?: RiskLevel
   imminentRiskOfViolenceTowardsPartner?: RiskLevel
   ogrsRisk?: RiskLevel
@@ -26,4 +32,4 @@ type RisksAndAlerts = {
   rsrScore?: number
 }
 
-export type { RiskLevel, RisksAndAlerts }
+export type { Alert, RiskLevel, RisksAndAlerts }
