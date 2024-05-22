@@ -1,9 +1,30 @@
+import groupBy from 'object.groupby'
+
+import DateUtils from '../dateUtils'
 import StringUtils from '../stringUtils'
 import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
 import type { OspBox, RiskBox, RiskLevelOrUnknown } from '@accredited-programmes/ui'
 import type { GovukFrontendTable, GovukFrontendTableCell } from '@govuk-frontend'
 
 export default class RisksAndAlertsUtils {
+  static alertsGroupTables(alerts: RisksAndAlerts['alerts']): Array<GovukFrontendTable> {
+    const groupedAlerts = alerts ? groupBy(alerts, ({ alertType }) => alertType) : {}
+
+    return Object.entries(groupedAlerts).map(([category, groupAlerts], groupIndex) => ({
+      attributes: {
+        'data-testid': `alerts-group-table-${groupIndex + 1}`,
+      },
+      caption: category,
+      captionClasses: 'govuk-table__caption--s',
+      classes: 'alerts-group-table',
+      head: [{ classes: 'govuk-!-width-one-half', text: 'Details' }, { text: 'Start date' }],
+      rows: groupAlerts.map(alert => [
+        { text: alert.description },
+        { text: DateUtils.govukFormattedFullDateString(alert.dateCreated) },
+      ]),
+    }))
+  }
+
   static levelOrUnknown(level?: RiskLevel): RiskLevelOrUnknown {
     return level || 'UNKNOWN'
   }

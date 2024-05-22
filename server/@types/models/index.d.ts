@@ -35,10 +35,11 @@ import type {
   ReferralView,
 } from './Referral'
 import type { Relationships } from './Relationships'
-import type { RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
+import type { Alert, RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
 import type { RoshAnalysis } from './RoshAnalysis'
 
 export type {
+  Alert,
   Attitude,
   Behaviour,
   ConfirmationFields,

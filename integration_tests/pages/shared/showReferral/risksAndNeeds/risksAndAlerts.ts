@@ -28,19 +28,29 @@ export default class RisksAndAlertsPage extends Page {
   }
 
   shouldHaveAlertsInformation() {
-    cy.get('[data-testid="alerts-heading"]').should('have.text', 'Risk alerts')
+    cy.get('[data-testid="alerts-heading"]').should('have.text', 'Active risk alerts')
 
-    cy.get('[data-testid="alerts-box"]').within(() => {
-      cy.get('h4').should('have.text', 'Active alerts')
+    if (this.risksAndAlerts.alerts?.length) {
+      const groupedAlerts = RisksAndAlertsUtils.alertsGroupTables(this.risksAndAlerts.alerts)
 
-      if (this.risksAndAlerts.alerts?.length) {
-        this.risksAndAlerts.alerts.forEach((alert, alertIndex) => {
-          cy.get('li').eq(alertIndex).should('have.text', alert.description)
+      groupedAlerts.forEach((groupedAlert, groupIndex) => {
+        cy.get(`[data-testid="alerts-group-table-${groupIndex + 1}"]`).within(() => {
+          cy.get('caption').should('have.text', groupedAlert.caption)
+          cy.get('.govuk-table__header').eq(0).should('have.text', 'Details')
+          cy.get('.govuk-table__header').eq(1).should('have.text', 'Start date')
+          groupedAlert.rows.forEach((row, rowIndex) => {
+            cy.get('.govuk-table__row')
+              .eq(rowIndex + 1)
+              .within(() => {
+                cy.get('.govuk-table__cell').eq(0).should('have.text', row[0].text)
+                cy.get('.govuk-table__cell').eq(1).should('have.text', row[1].text)
+              })
+          })
         })
-      } else {
-        cy.get('p').should('have.text', 'No risks found.')
-      }
-    })
+      })
+    } else {
+      cy.get('[data-testid="no-risks-message"]').should('have.text', 'No risks found.')
+    }
   }
 
   shouldHaveOgrsInformation() {

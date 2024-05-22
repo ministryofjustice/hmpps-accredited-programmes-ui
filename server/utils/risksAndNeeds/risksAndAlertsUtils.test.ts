@@ -2,6 +2,44 @@ import RisksAndAlertsUtils from './risksAndAlertsUtils'
 import type { RisksAndAlerts } from '@accredited-programmes/models'
 
 describe('RisksAndAlertsUtils', () => {
+  describe('alertsGroupTables', () => {
+    it('formats alerts data in the appropriate format for passing to an alerts group table Nunjucks macro', () => {
+      const alerts = [
+        { alertType: 'Alert type 1', dateCreated: '2021-01-01', description: 'Description 1' },
+        { alertType: 'Alert type 2', dateCreated: '2021-01-02', description: 'Description 2' },
+        { alertType: 'Alert type 1', dateCreated: '2021-01-03', description: 'Description 3' },
+      ]
+
+      expect(RisksAndAlertsUtils.alertsGroupTables(alerts)).toEqual([
+        {
+          attributes: { 'data-testid': 'alerts-group-table-1' },
+          caption: 'Alert type 1',
+          captionClasses: 'govuk-table__caption--s',
+          classes: 'alerts-group-table',
+          head: [{ classes: 'govuk-!-width-one-half', text: 'Details' }, { text: 'Start date' }],
+          rows: [
+            [{ text: 'Description 1' }, { text: '1 January 2021' }],
+            [{ text: 'Description 3' }, { text: '3 January 2021' }],
+          ],
+        },
+        {
+          attributes: { 'data-testid': 'alerts-group-table-2' },
+          caption: 'Alert type 2',
+          captionClasses: 'govuk-table__caption--s',
+          classes: 'alerts-group-table',
+          head: [{ classes: 'govuk-!-width-one-half', text: 'Details' }, { text: 'Start date' }],
+          rows: [[{ text: 'Description 2' }, { text: '2 January 2021' }]],
+        },
+      ])
+    })
+
+    describe('when alerts are missing', () => {
+      it('returns an empty array', () => {
+        expect(RisksAndAlertsUtils.alertsGroupTables(undefined)).toEqual([])
+      })
+    })
+  })
+
   describe('levelOrUnknown', () => {
     describe('when provided a level', () => {
       it('returns the level unmodified', () => {

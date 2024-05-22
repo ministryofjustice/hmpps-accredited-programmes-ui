@@ -63,22 +63,17 @@
       }
     }) }}
 
-    <h3 class="govuk-heading-s" data-testid="alerts-heading">Risk alerts</h3>
+    <h3 class="govuk-heading-s" data-testid="alerts-heading">Active risk alerts</h3>
 
-    <aside class="alerts-box" aria-label="Active alerts box" data-testid="alerts-box">
-      <h4 class="govuk-heading-s govuk-!-margin-bottom-3">Active alerts</h4>
-      <hr class="govuk-section-break govuk-section-break--visible">
-
-      {% if alerts and alerts.length %}
-        <ul class="govuk-list govuk-!-margin-top-1 govuk-!-margin-bottom-0">
-          {% for alert in alerts %}
-            <li>{{ alert.description | capitalize }}</li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-0">No risks found.</p>
-      {% endif %}
-    </aside>
+    {% if alertsGroupTables | length %}
+      {% for group in alertsGroupTables %}
+        <div class="alerts-box">
+          {{ govukTable(group) }}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p data-testid="no-risks-message">No risks found.</p>
+    {% endif %}
   {% elseif not oasysNomisErrorMessage %}
     {% set noRisksAndAlertsString = "No risks and alerts data found in OASys or Nomis. Add risks and alerts data to OASys and/or Nomis to see them here." %}
 

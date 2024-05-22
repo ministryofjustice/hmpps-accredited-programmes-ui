@@ -105,4 +105,8 @@ $text-colour-low: #485b10;
   padding: govuk-spacing(4);
   background-color: #ebf7ff;
   border: 2px solid #93afc3;
+
+  & :last-child {
+    margin-bottom: 0;
+  }
 }

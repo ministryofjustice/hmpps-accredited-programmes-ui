@@ -43,6 +43,7 @@ import {
 } from '../../utils'
 import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
+import type { GovukFrontendTable } from '@govuk-frontend'
 
 jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
@@ -545,20 +546,29 @@ describe('RisksAndNeedsController', () => {
 
   describe('risksAndAlerts', () => {
     it('renders the risks and alerts page with the correct response locals', async () => {
-      const risksAndAlerts = risksAndAlertsFactory
-        .withAllOptionalFields()
-        .build({ imminentRiskOfViolenceTowardsOthers: 'LOW', imminentRiskOfViolenceTowardsPartner: 'HIGH' })
+      const risksAndAlerts = risksAndAlertsFactory.withAllOptionalFields().build({
+        imminentRiskOfViolenceTowardsOthers: 'LOW',
+        imminentRiskOfViolenceTowardsPartner: 'HIGH',
+        ogrsYear1: 65.6,
+        ogrsYear2: 89.1,
+        ovpYear1: 70.2,
+        ovpYear2: 78.5,
+        rsrScore: 32.3,
+      })
+      const alertsGroupTables: Array<GovukFrontendTable> = [
+        { classes: 'alerts-group-table', head: [{ text: 'heading' }], rows: [[{ text: 'value' }]] },
+      ]
       const ogrsYear1Box: RiskBox = {
         category: 'OGRS Year 1',
         dataTestId: 'ogrs-year-1-risk-box',
-        figure: '65.6%',
+        figure: `${risksAndAlerts.ogrsYear1?.toString()}%`,
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
       const ogrsYear2Box: RiskBox = {
         category: 'OGRS Year 2',
         dataTestId: 'ogrs-year-2-risk-box',
-        figure: '89.1%',
+        figure: `${risksAndAlerts.ogrsYear2?.toString()}%`,
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
@@ -567,14 +577,14 @@ describe('RisksAndNeedsController', () => {
       const ovpYear1Box: RiskBox = {
         category: 'OVP Year 1',
         dataTestId: 'ovp-year-1-risk-box',
-        figure: '70.2%',
+        figure: `${risksAndAlerts.ovpYear1?.toString()}%`,
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
       const ovpYear2Box: RiskBox = {
         category: 'OVP Year 2',
         dataTestId: 'ovp-year-2-risk-box',
-        figure: '78.5%',
+        figure: `${risksAndAlerts.ovpYear2?.toString()}%`,
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
@@ -588,7 +598,7 @@ describe('RisksAndNeedsController', () => {
       const rsrBox: RiskBox = {
         category: 'RSR',
         dataTestId: 'rsr-risk-box',
-        figure: '32.3',
+        figure: `${risksAndAlerts.rsrScore?.toString()}`,
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
@@ -606,6 +616,9 @@ describe('RisksAndNeedsController', () => {
       }
 
       when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(risksAndAlerts)
+      when(mockRisksAndAlertsUtils.alertsGroupTables)
+        .calledWith(risksAndAlerts.alerts)
+        .mockReturnValue(alertsGroupTables)
       when(mockRisksAndAlertsUtils.riskBox)
         .calledWith('OGRS Year 1', risksAndAlerts.ogrsRisk, `${risksAndAlerts.ogrsYear1?.toString()}%`)
         .mockReturnValue(ogrsYear1Box)
@@ -641,7 +654,7 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlerts', {
         ...sharedPageData,
-        alerts: risksAndAlerts.alerts,
+        alertsGroupTables,
         hasData: true,
         importedFromNomisText: `Imported from Nomis on ${importedFromDate}.`,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
