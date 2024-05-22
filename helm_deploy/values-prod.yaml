@@ -21,7 +21,7 @@ generic-service:
     HMPPS_COMPONENT_API_URL: 'https://frontend-components.hmpps.service.justice.gov.uk'
     HMPPS_MANAGE_USERS_API_URL: 'https://manage-users-api.hmpps.service.justice.gov.uk'
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api.prison.service.justice.gov.uk'
-    PRISON_API_URL: 'https://api.prison.service.justice.gov.uk'
+    PRISON_API_URL: 'https://prison-api.prison.service.justice.gov.uk'
     PRISON_REGISTER_API_URL: 'https://prison-register.hmpps.service.justice.gov.uk'
     REFER_ENABLED: true
 
