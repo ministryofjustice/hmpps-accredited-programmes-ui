@@ -19,11 +19,15 @@ export default class NewReferralConfirmOasysPage extends Page {
     this.referral = { ...this.referral, oasysConfirmed: true }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)
-    this.shouldContainButton('Save and continue').click()
+    this.shouldContainButton('Continue').click()
   }
 
   shouldContainConfirmationCheckbox() {
     this.shouldContainCheckbox('oasysConfirmed', 'I confirm that the OASys information is up to date.')
+  }
+
+  shouldContainContinueButton() {
+    this.shouldContainButton('Continue')
   }
 
   shouldContainOasysAccessParagraph() {
@@ -31,9 +35,5 @@ export default class NewReferralConfirmOasysPage extends Page {
       'have.text',
       'The programme team will need to access the full OASys Layer 3 to assess this referral.',
     )
-  }
-
-  shouldContainSaveAndContinueButton() {
-    this.shouldContainButton('Save and continue')
   }
 }

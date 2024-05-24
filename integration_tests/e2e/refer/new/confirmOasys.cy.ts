@@ -54,7 +54,7 @@ context('OASys confirmation', () => {
       'You must confirm that the OASys information is accurate before submitting your application.',
     )
     confirmOasysPage.shouldContainConfirmationCheckbox()
-    confirmOasysPage.shouldContainSaveAndContinueButton()
+    confirmOasysPage.shouldContainContinueButton()
   })
 
   describe('When confirming OASys information', () => {
@@ -89,7 +89,7 @@ context('OASys confirmation', () => {
       cy.visit(path)
 
       const confirmOasysPage = Page.verifyOnPage(NewReferralConfirmOasysPage, { person, referral })
-      confirmOasysPage.shouldContainButton('Save and continue').click()
+      confirmOasysPage.shouldContainButton('Continue').click()
 
       const confirmOasysPageWithError = Page.verifyOnPage(NewReferralConfirmOasysPage, { person, referral })
       confirmOasysPageWithError.shouldHaveErrors([
