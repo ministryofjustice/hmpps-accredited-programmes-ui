@@ -54,7 +54,7 @@ context('Additional information', () => {
     additionalInformationPage.shouldContainWarningText(
       'This service will provide the relevant sections from OASys that the programme team needs to assess this referral. The programme team may also need to access the full OASys Layer 3.',
     )
-    additionalInformationPage.shouldContainSaveAndContinueButton()
+    additionalInformationPage.shouldContainContinueButton()
   })
 
   describe('When updating the additional information', () => {
@@ -89,7 +89,7 @@ context('Additional information', () => {
       cy.visit(path)
 
       const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
-      additionalInformationPage.shouldContainButton('Save and continue').click()
+      additionalInformationPage.shouldContainButton('Continue').click()
 
       const additionalInformationPageWithError = Page.verifyOnPage(NewReferralAdditionalInformationPage, {
         person,
@@ -111,7 +111,7 @@ context('Additional information', () => {
 
       const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
       additionalInformationPage.submitAdditionalInformation(tooMuchInformation)
-      additionalInformationPage.shouldContainButton('Save and continue').click()
+      additionalInformationPage.shouldContainButton('Continue').click()
 
       const additionalInformationPageWithError = Page.verifyOnPage(NewReferralAdditionalInformationPage, {
         person,

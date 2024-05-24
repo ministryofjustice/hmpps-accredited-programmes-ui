@@ -55,7 +55,12 @@
           errorMessage: errors.messages.oasysConfirmed
         }) }}
 
-        {{ govukButton({ text: "Save and continue" }) }}
+        {{ govukButton({
+          attributes: {
+            'data-testid': 'oasys-confirmation-submit-button'
+          },
+          text: "Continue" 
+        }) }}
       </form>
     </div>
   </div>
