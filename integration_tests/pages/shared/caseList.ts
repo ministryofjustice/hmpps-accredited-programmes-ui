@@ -119,10 +119,10 @@ export default class CaseListPage extends Page {
                       CaseListUtils.tableRowContent(view, 'Earliest release date'),
                     )
                     break
-                  case 'Name / Prison number':
+                  case 'Name and prison number':
                     cy.wrap(tableCellElement).should(
                       'have.html',
-                      CaseListUtils.tableRowContent(view, 'Name / Prison number', paths),
+                      CaseListUtils.tableRowContent(view, 'Name and prison number', paths),
                     )
                     break
                   case 'Parole eligibility date':

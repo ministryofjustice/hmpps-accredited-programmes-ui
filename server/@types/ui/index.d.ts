@@ -65,7 +65,7 @@ type CaseListColumnHeader =
   | 'Conditional release date'
   | 'Date referred'
   | 'Earliest release date'
-  | 'Name / Prison number'
+  | 'Name and prison number'
   | 'Parole eligibility date'
   | 'Programme location'
   | 'Programme name'

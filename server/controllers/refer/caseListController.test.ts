@@ -123,7 +123,7 @@ describe('ReferCaseListController', () => {
             organisationName: 'Programme location',
             status: 'Referral status',
             submittedOn: 'Date referred',
-            surname: 'Name / Prison number',
+            surname: 'Name and prison number',
           },
           undefined,
           undefined,
@@ -131,7 +131,7 @@ describe('ReferCaseListController', () => {
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
           paginatedReferralViews.content,
           [
-            'Name / Prison number',
+            'Name and prison number',
             'Date referred',
             'Earliest release date',
             'Release date type',
@@ -196,7 +196,7 @@ describe('ReferCaseListController', () => {
               organisationName: 'Programme location',
               status: 'Referral status',
               submittedOn: 'Date referred',
-              surname: 'Name / Prison number',
+              surname: 'Name and prison number',
             },
             uiSortColumnQueryParam,
             uiSortDirectionQueryParam,
@@ -204,7 +204,7 @@ describe('ReferCaseListController', () => {
           expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
             paginatedReferralViews.content,
             [
-              'Name / Prison number',
+              'Name and prison number',
               'Date referred',
               'Earliest release date',
               'Release date type',
@@ -272,7 +272,7 @@ describe('ReferCaseListController', () => {
             nonDtoReleaseDateType: 'Release date type',
             organisationName: 'Programme location',
             submittedOn: 'Date referred',
-            surname: 'Name / Prison number',
+            surname: 'Name and prison number',
           },
           undefined,
           undefined,
@@ -280,7 +280,7 @@ describe('ReferCaseListController', () => {
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(
           expectedPaginatedReferralViewsContent,
           [
-            'Name / Prison number',
+            'Name and prison number',
             'Date referred',
             'Earliest release date',
             'Release date type',
