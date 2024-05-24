@@ -56,7 +56,7 @@ export default class ReferCaseListController {
 
       /* eslint-disable sort-keys */
       const sortableCaseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
-        surname: 'Name / Prison number',
+        surname: 'Name and prison number',
         submittedOn: 'Date referred',
         earliestReleaseDate: 'Earliest release date',
         nonDtoReleaseDateType: 'Release date type',

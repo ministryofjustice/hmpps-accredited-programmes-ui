@@ -26,7 +26,7 @@ context('Referral case lists', () => {
     15,
   )
   const baseColumnHeaders: Array<CaseListColumnHeader> = [
-    'Name / Prison number',
+    'Name and prison number',
     'Date referred',
     'Earliest release date',
     'Release date type',

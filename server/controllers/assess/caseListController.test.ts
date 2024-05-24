@@ -132,7 +132,7 @@ describe('AssessCaseListController', () => {
     ]
     const tableHeadings = 'fff' as unknown as jest.Mocked<Array<GovukFrontendTableHeadElement>>
     const columnsToInclude: Array<CaseListColumnHeader> = [
-      'Name / Prison number',
+      'Name and prison number',
       'Conditional release date',
       'Parole eligibility date',
       'Tariff end date',
@@ -236,7 +236,7 @@ describe('AssessCaseListController', () => {
             paroleEligibilityDate: 'Parole eligibility date',
             sentenceType: 'Sentence type',
             status: 'Referral status',
-            surname: 'Name / Prison number',
+            surname: 'Name and prison number',
             tariffExpiryDate: 'Tariff end date',
           },
           undefined,
@@ -316,7 +316,7 @@ describe('AssessCaseListController', () => {
               paroleEligibilityDate: 'Parole eligibility date',
               sentenceType: 'Sentence type',
               status: 'Referral status',
-              surname: 'Name / Prison number',
+              surname: 'Name and prison number',
               tariffExpiryDate: 'Tariff end date',
             },
             uiSortColumnQueryParam,
@@ -396,7 +396,7 @@ describe('AssessCaseListController', () => {
             paroleEligibilityDate: 'Parole eligibility date',
             sentenceType: 'Sentence type',
             status: 'Referral status',
-            surname: 'Name / Prison number',
+            surname: 'Name and prison number',
             tariffExpiryDate: 'Tariff end date',
           },
           undefined,
