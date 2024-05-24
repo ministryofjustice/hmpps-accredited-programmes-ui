@@ -25,7 +25,7 @@ context('Referral case lists', () => {
   const referralStatuses = [...closedReferralStatuses, ...draftReferralStatuses, ...openReferralStatuses]
 
   const columnHeaders: Array<CaseListColumnHeader> = [
-    'Name / Prison number',
+    'Name and prison number',
     'Conditional release date',
     'Parole eligibility date',
     'Tariff end date',

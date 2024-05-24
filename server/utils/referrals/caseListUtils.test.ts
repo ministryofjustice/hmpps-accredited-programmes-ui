@@ -245,7 +245,7 @@ describe('CaseListUtils', () => {
   describe('sortableTableHeadings', () => {
     /* eslint-disable sort-keys */
     const caseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
-      surname: 'Name / Prison number',
+      surname: 'Name and prison number',
       conditionalReleaseDate: 'Conditional release date',
       paroleEligibilityDate: 'Parole eligibility date',
       tariffExpiryDate: 'Tariff end date',
@@ -254,11 +254,11 @@ describe('CaseListUtils', () => {
     }
     /* eslint-enable sort-keys */
 
-    it('returns a formatted array to be used by GOV.UK Nunjucks table macro for sortable headings, wtih the default sorting set to "Name / Prison number" in `ascending` order', () => {
+    it('returns a formatted array to be used by GOV.UK Nunjucks table macro for sortable headings, wtih the default sorting set to "Name and prison number" in `ascending` order', () => {
       expect(CaseListUtils.sortableTableHeadings('/case-list', caseListColumns)).toEqual([
         {
           attributes: { 'aria-sort': 'ascending' },
-          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=surname&sortDirection=descending">Name / Prison number</a>',
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=surname&sortDirection=descending">Name and prison number</a>',
         },
         {
           attributes: { 'aria-sort': 'none' },
@@ -290,7 +290,7 @@ describe('CaseListUtils', () => {
         ).toEqual([
           {
             attributes: { 'aria-sort': 'none' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=surname&sortDirection=ascending">Name / Prison number</a>',
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=surname&sortDirection=ascending">Name and prison number</a>',
           },
           {
             attributes: { 'aria-sort': 'descending' },
@@ -328,7 +328,7 @@ describe('CaseListUtils', () => {
         ).toEqual([
           {
             attributes: { 'aria-sort': 'none' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=surname&sortDirection=ascending">Name / Prison number</a>',
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=surname&sortDirection=ascending">Name and prison number</a>',
           },
           {
             attributes: { 'aria-sort': 'ascending' },
@@ -462,9 +462,9 @@ describe('CaseListUtils', () => {
       })
     })
 
-    describe('Name / Prison number', () => {
+    describe('Name and prison number', () => {
       it('returns a HTML string with the prisoner name on the first line, which links to the referral, and their prison number on a new line', () => {
-        expect(CaseListUtils.tableRowContent(referralView, 'Name / Prison number')).toEqual(
+        expect(CaseListUtils.tableRowContent(referralView, 'Name and prison number')).toEqual(
           '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details?updatePerson=true">Del Hatton</a><br>ABC1234',
         )
       })
@@ -474,7 +474,7 @@ describe('CaseListUtils', () => {
           expect(
             CaseListUtils.tableRowContent(
               { ...referralView, status: 'referral_started', submittedOn: undefined },
-              'Name / Prison number',
+              'Name and prison number',
               assessPaths,
             ),
           ).toEqual(
@@ -485,7 +485,7 @@ describe('CaseListUtils', () => {
 
       describe('when referPaths is passed in as the paths argument', () => {
         it('links to the Refer show status history referral page', () => {
-          expect(CaseListUtils.tableRowContent(referralView, 'Name / Prison number', referPaths)).toEqual(
+          expect(CaseListUtils.tableRowContent(referralView, 'Name and prison number', referPaths)).toEqual(
             '<a class="govuk-link" href="/refer/referrals/referral-123/status-history?updatePerson=true">Del Hatton</a><br>ABC1234',
           )
         })
@@ -496,7 +496,7 @@ describe('CaseListUtils', () => {
           expect(
             CaseListUtils.tableRowContent(
               { ...referralView, forename: undefined, surname: undefined },
-              'Name / Prison number',
+              'Name and prison number',
             ),
           ).toEqual(
             '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details?updatePerson=true">ABC1234</a>',
@@ -686,7 +686,7 @@ describe('CaseListUtils', () => {
         'Conditional release date',
         'Date referred',
         'Earliest release date',
-        'Name / Prison number',
+        'Name and prison number',
         'Parole eligibility date',
         'Programme location',
         'Programme name',
@@ -703,7 +703,7 @@ describe('CaseListUtils', () => {
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Conditional release date') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
-          { html: CaseListUtils.tableRowContent(referralViews[0], 'Name / Prison number') },
+          { html: CaseListUtils.tableRowContent(referralViews[0], 'Name and prison number') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Parole eligibility date') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme name') },
@@ -718,7 +718,7 @@ describe('CaseListUtils', () => {
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Conditional release date') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
-          { html: CaseListUtils.tableRowContent(referralViews[1], 'Name / Prison number') },
+          { html: CaseListUtils.tableRowContent(referralViews[1], 'Name and prison number') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Parole eligibility date') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme name') },
@@ -751,16 +751,18 @@ describe('CaseListUtils', () => {
 
     describe('when referPaths is passed in as the paths argument', () => {
       it('passes the paths to `tableRowContent` for that row', () => {
-        expect(CaseListUtils.tableRows(referralViews, ['Name / Prison number', 'Date referred'], referPaths)).toEqual([
+        expect(CaseListUtils.tableRows(referralViews, ['Name and prison number', 'Date referred'], referPaths)).toEqual(
           [
-            { html: CaseListUtils.tableRowContent(referralViews[0], 'Name / Prison number', referPaths) },
-            { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
+            [
+              { html: CaseListUtils.tableRowContent(referralViews[0], 'Name and prison number', referPaths) },
+              { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
+            ],
+            [
+              { html: CaseListUtils.tableRowContent(referralViews[1], 'Name and prison number', referPaths) },
+              { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
+            ],
           ],
-          [
-            { html: CaseListUtils.tableRowContent(referralViews[1], 'Name / Prison number', referPaths) },
-            { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
-          ],
-        ])
+        )
       })
     })
   })
