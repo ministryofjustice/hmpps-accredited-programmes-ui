@@ -199,7 +199,7 @@ describe('ReferralsController', () => {
           },
         ],
         hasOffenceHistory: true,
-        importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+        importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
         indexOffenceSummaryListRows: OffenceUtils.summaryListRows(indexOffence),
         navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         subNavigationItems,
@@ -222,7 +222,7 @@ describe('ReferralsController', () => {
           ...sharedPageData,
           additionalOffencesSummaryLists: [],
           hasOffenceHistory: false,
-          importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+          importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
           indexOffenceSummaryListRows: null,
           navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
           subNavigationItems,
@@ -254,7 +254,7 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/personalDetails', {
         ...sharedPageData,
-        importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+        importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
         navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         personSummaryListRows: PersonUtils.summaryListRows(person),
         subNavigationItems,

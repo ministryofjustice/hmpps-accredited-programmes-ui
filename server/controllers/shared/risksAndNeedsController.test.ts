@@ -656,7 +656,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         alertsGroupTables,
         hasData: true,
-        importedFromNomisText: `Imported from Nomis on ${importedFromDate}.`,
+        importedFromNomisText: `Imported from NOMIS on ${importedFromDate}.`,
         importedFromText: `Imported from OASys on ${importedFromDate}.`,
         navigationItems,
         ogrsYear1Box,
