@@ -203,7 +203,7 @@ export default abstract class Page {
     cy.get('[data-testid=home-link]').should('have.attr', 'href', '/')
   }
 
-  shouldContainImportedFromText(source: 'Nomis' | 'OASys', dataTestId = 'imported-from-text'): void {
+  shouldContainImportedFromText(source: 'NOMIS' | 'OASys', dataTestId = 'imported-from-text'): void {
     cy.get(`[data-testid="${dataTestId}"]`).then(importedFromElement => {
       const { actual, expected } = Helpers.parseHtml(
         importedFromElement,

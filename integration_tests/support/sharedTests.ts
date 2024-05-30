@@ -227,7 +227,7 @@ const sharedTests = {
         addedByUser1Email.email,
       )
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      offenceHistoryPage.shouldContainImportedFromText('Nomis')
+      offenceHistoryPage.shouldContainImportedFromText('NOMIS')
       offenceHistoryPage.shouldContainNoOffenceHistoryMessage()
     },
 
@@ -329,7 +329,7 @@ const sharedTests = {
         addedByUser1Email.email,
       )
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      offenceHistoryPage.shouldContainImportedFromText('Nomis')
+      offenceHistoryPage.shouldContainImportedFromText('NOMIS')
       offenceHistoryPage.shouldContainIndexOffenceSummaryCard()
       offenceHistoryPage.shouldContainAdditionalOffenceSummaryCards()
     },
@@ -360,7 +360,7 @@ const sharedTests = {
         addedByUser1Email.email,
       )
       personalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      personalDetailsPage.shouldContainImportedFromText('Nomis')
+      personalDetailsPage.shouldContainImportedFromText('NOMIS')
       personalDetailsPage.shouldContainPersonalDetailsSummaryCard()
     },
 
@@ -894,7 +894,7 @@ const sharedTests = {
       risksAndAlertsPage.shouldHaveSaraInformation()
       risksAndAlertsPage.shouldHaveRsrInformation()
       risksAndAlertsPage.shouldHaveRoshInformation()
-      risksAndAlertsPage.shouldContainImportedFromText('Nomis', 'imported-from-nomis-text')
+      risksAndAlertsPage.shouldContainImportedFromText('NOMIS', 'imported-from-nomis-text')
       risksAndAlertsPage.shouldHaveAlertsInformation()
     },
     showsRisksAndAlertsPageWithoutData: (role: ApplicationRole): void => {

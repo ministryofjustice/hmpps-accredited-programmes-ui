@@ -21,7 +21,7 @@ export default class RisksAndAlertsPage extends Page {
     cy.get('[data-testid="no-risks-and-alerts-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Risks and alerts',
-        'No risks and alerts data found in OASys or Nomis. Add risks and alerts data to OASys and/or Nomis to see them here.',
+        'No risks and alerts data found in OASys or NOMIS. Add risks and alerts data to OASys and/or NOMIS to see them here.',
         summaryCardElement,
       )
     })

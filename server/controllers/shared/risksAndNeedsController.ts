@@ -245,7 +245,7 @@ export default class RisksAndNeedsController {
         ? {
             alertsGroupTables: RisksAndAlertsUtils.alertsGroupTables(risksAndAlerts.alerts),
             hasData: true,
-            importedFromNomisText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+            importedFromNomisText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
             importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             ogrsYear1Box: RisksAndAlertsUtils.riskBox(
               'OGRS Year 1',

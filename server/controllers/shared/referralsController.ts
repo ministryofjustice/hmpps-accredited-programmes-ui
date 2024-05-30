@@ -65,7 +65,7 @@ export default class ReferralsController {
           titleText: `Additional offence${offence.code ? ` (${offence.code})` : ''}`,
         })),
         hasOffenceHistory: Boolean(indexOffence) || additionalOffences.length > 0,
-        importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+        importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
         indexOffenceSummaryListRows: indexOffence ? OffenceUtils.summaryListRows(indexOffence) : null,
       })
     }
@@ -84,7 +84,7 @@ export default class ReferralsController {
 
       return res.render('referrals/show/personalDetails', {
         ...sharedPageData,
-        importedFromText: `Imported from Nomis on ${DateUtils.govukFormattedFullDateString()}.`,
+        importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
         personSummaryListRows: PersonUtils.summaryListRows(sharedPageData.person),
       })
     }
