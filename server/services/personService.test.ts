@@ -5,7 +5,6 @@ import { when } from 'jest-when'
 import PersonService from './personService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, PersonClient, PrisonApiClient, TokenStore } from '../data'
-import authorisationMiddleware from '../middleware/authorisationMiddleware'
 import {
   caseloadFactory,
   offenceDtoFactory,
