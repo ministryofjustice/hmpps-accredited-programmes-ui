@@ -8,10 +8,11 @@ import type {
   RestClientBuilder,
   RestClientBuilderWithoutToken,
 } from '../data'
-import { PersonUtils } from '../utils'
+import {PersonUtils, UserUtils} from '../utils'
 import type { Person, SentenceDetails } from '@accredited-programmes/models'
 import type { OffenceDetails, OffenceHistory } from '@accredited-programmes/ui'
 import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
+import {ApplicationRoles} from "../middleware";
 
 export default class PersonService {
   constructor(
@@ -119,8 +120,10 @@ export default class PersonService {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const personClient = this.personClientBuilder(systemToken)
+    const roles = UserUtils.getUserRolesFromToken(systemToken)
+    const canSearchAnyPrisoner = (roles?.includes(ApplicationRoles.ACP_PROGRAMME_TEAM) && roles?.includes(ApplicationRoles.ACP_REFERRER)) || false;
 
-    const caseloadIds = caseloads?.map(caseload => caseload.caseLoadId)
+    const caseloadIds = canSearchAnyPrisoner ? [] : caseloads?.map(caseload => caseload.caseLoadId)
 
     try {
       const prisoner = await personClient.findPrisoner(prisonNumber, caseloadIds)
