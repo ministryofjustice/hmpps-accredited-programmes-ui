@@ -14,8 +14,9 @@ import {
   prisonerFactory,
   sentenceDetailsFactory,
 } from '../testutils/factories'
-import { PersonUtils } from '../utils'
+import {PersonUtils, UserUtils} from '../utils'
 import type { InmateDetail } from '@prison-api'
+import authorisationMiddleware from "../middleware/authorisationMiddleware";
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/prisonApiClient')
@@ -269,6 +270,22 @@ describe('PersonService', () => {
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(personClient.findPrisoner).toHaveBeenCalledWith(prisonNumber, undefined)
+      })
+    })
+
+    describe('when PT user with refer and pt role provided', () => {
+      it('should call `personClient.findPrisoner` with `empty` `caseLoadIds`', async () => {
+
+        (UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['ROLE_ACP_PROGRAMME_TEAM', "ROLE_ACP_REFERRER"])
+        personClient.findPrisoner.mockResolvedValue(prisoner)
+        const prisonNumber = prisoner.prisonerNumber
+
+        await service.getPerson(username, prisonNumber)
+
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(personClient.findPrisoner).toHaveBeenCalledWith(prisonNumber, [])
       })
     })
   })

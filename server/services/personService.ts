@@ -122,7 +122,6 @@ export default class PersonService {
     const personClient = this.personClientBuilder(systemToken)
     const roles = UserUtils.getUserRolesFromToken(systemToken)
     const canSearchAnyPrisoner = (roles?.includes(ApplicationRoles.ACP_PROGRAMME_TEAM) && roles?.includes(ApplicationRoles.ACP_REFERRER)) || false;
-
     const caseloadIds = canSearchAnyPrisoner ? [] : caseloads?.map(caseload => caseload.caseLoadId)
 
     try {
