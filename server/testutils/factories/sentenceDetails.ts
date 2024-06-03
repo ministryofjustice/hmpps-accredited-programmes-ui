@@ -1,19 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
+import keyDatesFactory from './keyDates'
 import type { SentenceDetails } from '@accredited-programmes/models'
-
-const createKeyDates = () => {
-  return {
-    date: faker.date.past().toISOString(),
-    type: faker.helpers.arrayElement([
-      'conditionalReleaseDate',
-      'paroleEligibilityDate',
-      'sentenceExpiryDate',
-      'tariffDate',
-    ]),
-  }
-}
 
 const createSentence = () => {
   return {
@@ -25,9 +14,7 @@ const createSentence = () => {
 class SentenceDetailsFactory extends Factory<SentenceDetails> {
   withData(numberOfSentences?: number, numberOfKeyDates?: number) {
     return this.params({
-      keyDates: faker.helpers.multiple(createKeyDates, {
-        count: { max: numberOfKeyDates || 3, min: numberOfKeyDates || 1 },
-      }),
+      keyDates: keyDatesFactory.buildList(numberOfKeyDates || 3),
       sentences: faker.helpers.multiple(createSentence, {
         count: { max: numberOfSentences || 3, min: numberOfSentences || 1 },
       }),
@@ -37,7 +24,7 @@ class SentenceDetailsFactory extends Factory<SentenceDetails> {
 
 export default SentenceDetailsFactory.define(() => {
   return {
-    keyDates: faker.helpers.multiple(createKeyDates, { count: { max: 3, min: 0 } }),
+    keyDates: keyDatesFactory.buildList(3),
     sentences: faker.helpers.multiple(createSentence, { count: { max: 3, min: 0 } }),
   }
 })
