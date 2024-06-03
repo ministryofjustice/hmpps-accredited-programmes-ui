@@ -42,7 +42,7 @@ export default class SentenceInformationPage extends Page {
       this.shouldContainSummaryCard(
         'Release dates',
         [],
-        PersonUtils.releaseDatesSummaryListRows(this.person),
+        PersonUtils.releaseDatesSummaryListRows(this.sentenceDetails.keyDates),
         summaryCardElement,
       )
     })

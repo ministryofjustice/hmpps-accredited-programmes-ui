@@ -18,8 +18,12 @@ interface Person {
 }
 
 interface KeyDates {
+  code: string
+  type: string
   date?: string
-  type?: string
+  description?: string
+  earliestReleaseDate?: boolean
+  order?: number
 }
 interface Sentence {
   description?: string
@@ -30,4 +34,4 @@ interface SentenceDetails {
   sentences?: Array<Sentence>
 }
 
-export type { Person, SentenceDetails }
+export type { KeyDates, Person, SentenceDetails }

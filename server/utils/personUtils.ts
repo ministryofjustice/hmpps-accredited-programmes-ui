@@ -1,6 +1,6 @@
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
-import type { Person } from '@accredited-programmes/models'
+import type { KeyDates, Person } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 import type { Prisoner } from '@prisoner-search'
@@ -35,52 +35,28 @@ export default class PersonUtils {
     }
   }
 
-  static releaseDatesSummaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
-    const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []
-
-    type ReleaseDateField = (typeof releaseDateFields)[number]
-
-    let earliestReleaseDateField: Omit<ReleaseDateField, 'homeDetentionCurfewEligibilityDate' | 'sentenceExpiryDate'>
-
-    if (person.indeterminateSentence) {
-      earliestReleaseDateField = 'tariffDate'
-    } else if (person.paroleEligibilityDate) {
-      earliestReleaseDateField = 'paroleEligibilityDate'
-    } else if (person.conditionalReleaseDate) {
-      earliestReleaseDateField = 'conditionalReleaseDate'
+  static releaseDatesSummaryListRows(keyDates?: Array<KeyDates>): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    if (!keyDates) {
+      return []
     }
 
-    const keyTextAndFields: Array<{ field: ReleaseDateField; keyText: GovukFrontendSummaryListRowKey['text'] }> = [
-      { field: 'conditionalReleaseDate', keyText: 'Conditional release date' },
-      { field: 'tariffDate', keyText: 'Tariff end date' },
-      { field: 'sentenceExpiryDate', keyText: 'Sentence expiry date' },
-      { field: 'paroleEligibilityDate', keyText: 'Parole eligibility date' },
-      { field: 'homeDetentionCurfewEligibilityDate', keyText: 'Home detention curfew eligibility date' },
-    ]
+    const sortedKeyDates = keyDates.sort((a, b) => {
+      if (!a.date) return 1
+      if (!b.date) return -1
 
-    keyTextAndFields.forEach(keyTextAndField => {
-      const { field, keyText } = keyTextAndField
-      let key: GovukFrontendSummaryListRowKey
-
-      if (field === earliestReleaseDateField) {
-        key = {
-          html: `${keyText}<br><span class="govuk-!-font-size-16 govuk-!-font-weight-regular release-dates__earliest-indicator">(Earliest release date)</span>`,
-        }
-      } else {
-        key = { text: keyText }
-      }
-
-      const valueText = person[field]
-        ? DateUtils.govukFormattedFullDateString(person[field])
-        : 'There is no record for this date'
-
-      summaryListRows.push({
-        key,
-        value: { text: valueText },
-      })
+      return a.date.localeCompare(b.date)
     })
 
-    return summaryListRows
+    return sortedKeyDates.map(keyDate => {
+      const { date, description, earliestReleaseDate } = keyDate
+      const key: GovukFrontendSummaryListRowKey = earliestReleaseDate
+        ? {
+            html: `${description}<br><span class="govuk-!-font-size-16 govuk-!-font-weight-regular release-dates__earliest-indicator">(Earliest release date)</span>`,
+          }
+        : { text: description }
+      const value = date ? { text: DateUtils.govukFormattedFullDateString(date) } : { text: 'Unknown date' }
+      return { key, value }
+    })
   }
 
   static summaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {

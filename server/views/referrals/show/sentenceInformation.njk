@@ -22,7 +22,7 @@
     {{ keylessSummaryCard("Sentence details", bodyText="There are no sentence details for this person.", testId="no-sentence-information-summary-card") }}
   {% endif %}
 
-  {% if hasReleaseDates %}
+  {% if releaseDatesSummaryListRows | length %}
     {{ govukSummaryList({
       card: {
         title: {

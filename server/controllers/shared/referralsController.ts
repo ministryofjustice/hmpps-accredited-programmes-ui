@@ -12,7 +12,6 @@ import {
   ShowReferralUtils,
   TypeUtils,
 } from '../../utils'
-import { releaseDateFields } from '../../utils/personUtils'
 import type { ReferralSharedPageData } from '@accredited-programmes/ui'
 
 export default class ReferralsController {
@@ -121,7 +120,7 @@ export default class ReferralsController {
       TypeUtils.assertHasUser(req)
 
       const sharedPageData = await this.sharedPageData(req, res)
-      const { person, referral } = sharedPageData
+      const { referral } = sharedPageData
 
       if (referral.status === 'referral_started') {
         throw createError(400, 'Referral has not been submitted.')
@@ -132,13 +131,10 @@ export default class ReferralsController {
         sharedPageData.person.prisonNumber,
       )
 
-      const hasReleaseDates: boolean = releaseDateFields.some(field => !!person[field])
-
       return res.render('referrals/show/sentenceInformation', {
         ...sharedPageData,
-        hasReleaseDates,
         importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-        releaseDatesSummaryListRows: hasReleaseDates ? PersonUtils.releaseDatesSummaryListRows(person) : [],
+        releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sentenceDetails.keyDates),
         sentencesSummaryLists: SentenceInformationUtils.summaryLists(sentenceDetails),
       })
     }
