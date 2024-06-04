@@ -19,6 +19,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     newReferralsCourseParticipationDetailsController,
     newReferralsCourseParticipationsController,
     newReferralsController,
+    newReferralsDeleteController,
     newReferralsPeopleController,
     newReferralsOasysConfirmationController,
     reasonController,
@@ -41,6 +42,9 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(referPaths.new.create.pattern, newReferralsController.create())
   get(referPaths.new.show.pattern, newReferralsController.show())
   get(referPaths.new.showPerson.pattern, newReferralsController.showPerson())
+
+  get(referPaths.new.delete.pattern, newReferralsDeleteController.show())
+  deleteAction(referPaths.new.delete.pattern, newReferralsDeleteController.submit())
 
   get(referPaths.new.confirmOasys.show.pattern, newReferralsOasysConfirmationController.show())
   put(referPaths.new.confirmOasys.update.pattern, newReferralsOasysConfirmationController.update())
