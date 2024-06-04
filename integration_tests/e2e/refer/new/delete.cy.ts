@@ -11,9 +11,9 @@ import {
 import { OrganisationUtils } from '../../../../server/utils'
 import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
-import { NewReferralShowPersonPage, NewReferralTaskListPage } from '../../../pages/refer'
+import { NewReferralDeletePage, NewReferralTaskListPage } from '../../../pages/refer'
 
-context('Showing the referral task list and person page', () => {
+context('Deleting a referral', () => {
   const courseOffering = courseOfferingFactory.build()
   const prisoner = prisonerFactory.build({
     dateOfBirth: '1980-01-01',
@@ -47,7 +47,7 @@ context('Showing the referral task list and person page', () => {
     cy.task('stubReferral', referral)
   })
 
-  it('Shows the in-progress referral task list', () => {
+  it('Shows the delete page and the success message', () => {
     cy.task('stubOffering', { courseOffering })
 
     const course = courseFactory.build()
@@ -61,24 +61,15 @@ context('Showing the referral task list and person page', () => {
     cy.visit(path)
 
     const taskListPage = Page.verifyOnPage(NewReferralTaskListPage, { course, courseOffering, organisation, referral })
-    taskListPage.shouldContainButtonLink('Delete draft referral', referPaths.new.delete({ referralId: referral.id }))
-    taskListPage.shouldContainLink('Draft referrals', referPaths.caseList.show({ referralStatusGroup: 'draft' }))
-    taskListPage.shouldHavePersonDetails(person)
-    taskListPage.shouldContainHomeLink()
-    taskListPage.shouldContainOrganisationAndCourseHeading(taskListPage)
-    taskListPage.shouldContainAudienceTag(taskListPage.course.audienceTag)
-    taskListPage.shouldContainTaskList()
-    taskListPage.shouldNotBeReadyForSubmission()
-  })
+    taskListPage
+      .shouldContainButtonLink('Delete draft referral', referPaths.new.delete({ referralId: referral.id }))
+      .click()
 
-  it('Shows the person page for a referral', () => {
-    const path = referPaths.new.showPerson({ referralId: referral.id })
-    cy.visit(path)
-
-    const showPersonPage = Page.verifyOnPage(NewReferralShowPersonPage, { person })
-    showPersonPage.shouldHavePersonDetails(person)
-    showPersonPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
-    showPersonPage.shouldContainHomeLink()
-    showPersonPage.shouldContainPersonSummaryList(person)
+    const deletePage = Page.verifyOnPage(NewReferralDeletePage, { person, referral })
+    deletePage.shouldHavePersonDetails(person)
+    deletePage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
+    deletePage.shouldContainButton('Delete draft')
+    deletePage.shouldContainLink('Cancel', referPaths.new.show({ referralId: referral.id }))
+    deletePage.shouldDeleteSuccessfully()
   })
 })

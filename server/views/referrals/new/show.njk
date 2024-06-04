@@ -19,14 +19,13 @@
           text: pageHeading
         },
         items: [{
-          attributes: { "data-testid": "draft-referral-delete-button" },
           classes: 'govuk-button--secondary',
           href: hrefs.delete,
           text: "Delete draft referral"
         }]
       }) }}
 
-      <p class="govuk-!-margin-bottom-6">Changes you make will be saved. You can leave this page and return to it later in <a href="{{ hrefs.draftReferrals }}">Draft referrals</a>.</p>
+      <p class="govuk-!-margin-bottom-6">Changes you make will be saved. You can leave this page and return to it later in <a class="govuk-link" href="{{ hrefs.draftReferrals }}">Draft referrals</a>.</p>
 
       {% include "./_organisationAndCourse.njk" %}
 

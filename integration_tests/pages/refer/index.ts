@@ -3,6 +3,7 @@ import NewReferralCheckAnswersPage from './new/checkAnswers'
 import NewReferralCompletePage from './new/complete'
 import NewReferralConfirmOasysPage from './new/confirmOasys'
 import NewReferralConfirmPersonPage from './new/confirmPerson'
+import NewReferralDeletePage from './new/delete'
 import NewReferralDeleteProgrammeHistoryPage from './new/deleteProgrammeHistory'
 import NewReferralFindPersonPage from './new/findPerson'
 import NewReferralProgrammeHistoryPage from './new/programmeHistory'
@@ -18,6 +19,7 @@ export {
   NewReferralCompletePage,
   NewReferralConfirmOasysPage,
   NewReferralConfirmPersonPage,
+  NewReferralDeletePage,
   NewReferralDeleteProgrammeHistoryPage,
   NewReferralFindPersonPage,
   NewReferralProgrammeHistoryDetailsPage,

@@ -74,6 +74,18 @@ export default {
       },
     }),
 
+  stubDeleteReferral: (referralId: Referral['id']): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'DELETE',
+        url: apiPaths.referrals.delete({ referralId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        status: 204,
+      },
+    }),
+
   stubFindMyReferralViews: (args: {
     referralViews: Array<ReferralView>
     statusGroup: ReferralStatusGroup
