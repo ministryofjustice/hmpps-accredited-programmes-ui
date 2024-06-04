@@ -3,6 +3,7 @@
 import NewReferralsAdditionalInformationController from './additionalInformationController'
 import NewReferralsCourseParticipationDetailsController from './courseParticipationDetailsController'
 import NewReferralsCourseParticipationsController from './courseParticipationsController'
+import NewReferralsDeleteController from './deleteReferralController'
 import NewReferralsOasysConfirmationController from './oasysConfirmationController'
 import NewReferralsPeopleController from './peopleController'
 import NewReferralsController from './referralsController'
@@ -15,6 +16,10 @@ const controllers = (services: Services) => {
     services.personService,
     services.referralService,
     services.userService,
+  )
+  const newReferralsDeleteController = new NewReferralsDeleteController(
+    services.personService,
+    services.referralService,
   )
   const newReferralsPeopleController = new NewReferralsPeopleController(services.personService)
   const newReferralsAdditionalInformationController = new NewReferralsAdditionalInformationController(
@@ -41,6 +46,7 @@ const controllers = (services: Services) => {
     newReferralsController,
     newReferralsCourseParticipationDetailsController,
     newReferralsCourseParticipationsController,
+    newReferralsDeleteController,
     newReferralsOasysConfirmationController,
     newReferralsPeopleController,
   }
