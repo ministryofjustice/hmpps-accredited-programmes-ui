@@ -40,7 +40,7 @@ describe('ReferCaseListController', () => {
   beforeEach(() => {
     controller = new ReferCaseListController(referralService)
 
-    request = createMock<Request>({ user: { username } })
+    request = createMock<Request>({ flash: jest.fn().mockReturnValue([]), user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
   })
 
@@ -220,6 +220,9 @@ describe('ReferCaseListController', () => {
 
     describe('when the referral status group is "draft"', () => {
       it('renders the show template with the correct response locals', async () => {
+        const draftReferralDeletedMessage = 'Draft referral deleted message'
+
+        request.flash = jest.fn().mockReturnValue([draftReferralDeletedMessage])
         request.params = { referralStatusGroup: 'draft' }
 
         when(referralService.getNumberOfTasksCompleted)
@@ -242,6 +245,7 @@ describe('ReferCaseListController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
+          draftReferralDeletedMessage,
           isMyReferralsPage: true,
           pageHeading: 'My referrals',
           pagination,
