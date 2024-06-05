@@ -169,6 +169,10 @@ export default class NewReferralsController {
 
       return res.render('referrals/new/show', {
         course: coursePresenter,
+        hrefs: {
+          delete: referPaths.new.delete({ referralId }),
+          draftReferrals: referPaths.caseList.show({ referralStatusGroup: 'draft' }),
+        },
         organisation,
         pageHeading: 'Make a referral',
         person,

@@ -1,0 +1,37 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block personBanner %}
+  {% include "../../_personBanner.njk" %}
+{% endblock personBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: hrefs.back
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ pageHeading }}</h1>
+      <p class="govuk-hint govuk-!-margin-bottom-6">This action cannot be undone.</p>
+
+      <form action="{{ action }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Delete draft",
+            classes: "govuk-button--warning"
+          }) }}
+
+          <a href={{ hrefs.back }}>Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

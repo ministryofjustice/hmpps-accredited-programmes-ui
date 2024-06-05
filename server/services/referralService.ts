@@ -36,6 +36,14 @@ export default class ReferralService {
     return referralClient.create(courseOfferingId, prisonNumber)
   }
 
+  async deleteReferral(username: Express.User['username'], referralId: Referral['id']): Promise<void> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.deleteReferral(referralId)
+  }
+
   async getConfirmationText(
     username: Express.User['username'],
     referralId: Referral['id'],

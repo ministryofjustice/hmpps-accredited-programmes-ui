@@ -79,6 +79,7 @@ export default class ReferCaseListController {
       }
 
       return res.render('referrals/caseList/refer/show', {
+        draftReferralDeletedMessage: req.flash('draftReferralDeletedMessage')[0],
         isMyReferralsPage: true,
         pageHeading: 'My referrals',
         pagination,

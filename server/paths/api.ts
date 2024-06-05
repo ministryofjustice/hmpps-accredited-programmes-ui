@@ -88,6 +88,7 @@ export default {
     confirmationText: confirmationTextPath,
     create: referralsPath,
     dashboard: dashboardPath,
+    delete: referralPath,
     myDashboard: myDashboardPath,
     show: referralPath,
     statusHistory: statusHistoryPath,

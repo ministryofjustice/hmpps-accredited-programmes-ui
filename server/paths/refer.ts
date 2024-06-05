@@ -46,6 +46,7 @@ export default {
       update: newReferralConfirmOasysPath,
     },
     create: newReferralsPath,
+    delete: newReferralShowPath.path('delete'),
     new: offeringReferralPathBase.path('new'),
     people: {
       find: newReferralPeoplePathBase.path('search'),

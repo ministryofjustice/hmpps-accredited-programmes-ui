@@ -208,6 +208,10 @@ describe('NewReferralsController', () => {
       expect(request.session.returnTo).toBeUndefined()
       expect(response.render).toHaveBeenCalledWith('referrals/new/show', {
         course: coursePresenter,
+        hrefs: {
+          delete: '/refer/referrals/new/A-REFERRAL-ID/delete',
+          draftReferrals: '/refer/referrals/case-list/draft',
+        },
         organisation,
         pageHeading: 'Make a referral',
         person,

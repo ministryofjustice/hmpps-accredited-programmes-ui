@@ -36,6 +36,12 @@ export default class ReferralClient {
     })) as CreatedReferralResponse
   }
 
+  async deleteReferral(referralId: Referral['id']): Promise<void> {
+    await this.restClient.delete({
+      path: apiPaths.referrals.delete({ referralId }),
+    })
+  }
+
   async find(
     referralId: Referral['id'],
     query?: {

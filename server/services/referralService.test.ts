@@ -69,6 +69,20 @@ describe('ReferralService', () => {
     })
   })
 
+  describe('deleteReferral', () => {
+    it('asks the client to delete a referral', async () => {
+      const referral = referralFactory.started().build()
+
+      await service.deleteReferral(username, referral.id)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.deleteReferral).toHaveBeenCalledWith(referral.id)
+    })
+  })
+
   describe('getConfirmationText', () => {
     const referralId = 'referral-id'
     const chosenStatusCode = 'REFERRAL_SUBMITTED'
