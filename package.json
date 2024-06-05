@@ -151,7 +151,7 @@
     "sass": "^1.61.0",
     "start-server-and-test": "^2.0.0",
     "stylelint": "^16.0.2",
-    "stylelint-config-clean-order": "^5.2.0",
+    "stylelint-config-clean-order": "^6.0.0",
     "stylelint-config-standard-scss": "^13.0.0",
     "stylelint-selector-bem-pattern": "^4.0.0",
     "supertest": "^7.0.0",
