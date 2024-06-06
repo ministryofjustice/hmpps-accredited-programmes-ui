@@ -36,17 +36,7 @@ context('App', () => {
       })
     })
 
-    it('does not show navigation on the index page', () => {
-      const indexPage = Page.verifyOnPage(IndexPage)
-      indexPage.shouldNotContainNavigation()
-    })
-
-    it('does not show the home link on the index page', () => {
-      const indexPage = Page.verifyOnPage(IndexPage)
-      indexPage.shouldNotContainHomeLink()
-    })
-
-    it('shows a notification banner on the index page', () => {
+    it('Shows a notification banner on the index page', () => {
       const bannerInnerHTML = `
         <h3 class="govuk-notification-banner__heading">Rolling out the referral service</h3>
         <p class="govuk-body">This is a new service. While we're rolling it out, referrers can only use it to refer people to Accredited Programmes at a few prisons. At the moment, you can refer to:</p>
@@ -59,6 +49,13 @@ context('App', () => {
       `
       const indexPage = Page.verifyOnPage(IndexPage)
       indexPage.shouldContainNotificationBanner('Important', bannerInnerHTML)
+    })
+
+    it('Shows the correct navigation elements', () => {
+      const indexPage = Page.verifyOnPage(IndexPage)
+      indexPage.shouldNotContainNavigation()
+      indexPage.shouldContainBackLink('http://dps-url')
+      indexPage.shouldNotContainHomeLink()
     })
   })
 

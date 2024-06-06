@@ -1,3 +1,5 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
 {% extends "../partials/layout.njk" %}
 
 {% set customPageTitleEnd = "Home" %}
@@ -6,6 +8,13 @@
 {% block notificationBanner %}
   {% include "./_notificationBanner.njk" %}
 {% endblock notificationBanner %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Digital Prison Services",
+    href: dpsUrl
+  }) }}
+{% endblock backLink %}
 
 {% block homeLink %}{% endblock homeLink %}
 
