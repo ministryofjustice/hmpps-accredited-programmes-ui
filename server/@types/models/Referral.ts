@@ -119,7 +119,7 @@ type ReferralView = {
   audience?: string
   conditionalReleaseDate?: Person['conditionalReleaseDate']
   courseName?: Course['name']
-  earliestReleaseDate?: Person['conditionalReleaseDate'] | Person['paroleEligibilityDate'] | Person['tariffDate']
+  earliestReleaseDate?: string
   earliestReleaseDateType?: string
   forename?: string
   listDisplayName?: string

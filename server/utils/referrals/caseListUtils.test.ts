@@ -246,9 +246,7 @@ describe('CaseListUtils', () => {
     /* eslint-disable sort-keys */
     const caseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
       surname: 'Name and prison number',
-      conditionalReleaseDate: 'Conditional release date',
-      paroleEligibilityDate: 'Parole eligibility date',
-      tariffExpiryDate: 'Tariff end date',
+      earliestReleaseDate: 'Earliest release date',
       audience: 'Programme strand',
       status: 'Referral status',
     }
@@ -262,15 +260,7 @@ describe('CaseListUtils', () => {
         },
         {
           attributes: { 'aria-sort': 'none' },
-          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=conditionalReleaseDate&sortDirection=ascending">Conditional release date</a>',
-        },
-        {
-          attributes: { 'aria-sort': 'none' },
-          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=paroleEligibilityDate&sortDirection=ascending">Parole eligibility date</a>',
-        },
-        {
-          attributes: { 'aria-sort': 'none' },
-          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=tariffExpiryDate&sortDirection=ascending">Tariff end date</a>',
+          html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=earliestReleaseDate&sortDirection=ascending">Earliest release date</a>',
         },
         {
           attributes: { 'aria-sort': 'none' },
@@ -286,7 +276,7 @@ describe('CaseListUtils', () => {
     describe('when `sortColumn` and `sortDirection` are provided', () => {
       it('sets the correct heading with the `sortDirection` value as `aria-sort` attribute value and the `sortDirection` in the `href` is the `sortColumn` in the opposite direction', () => {
         expect(
-          CaseListUtils.sortableTableHeadings('/case-list', caseListColumns, 'conditionalReleaseDate', 'descending'),
+          CaseListUtils.sortableTableHeadings('/case-list', caseListColumns, 'earliestReleaseDate', 'descending'),
         ).toEqual([
           {
             attributes: { 'aria-sort': 'none' },
@@ -294,15 +284,7 @@ describe('CaseListUtils', () => {
           },
           {
             attributes: { 'aria-sort': 'descending' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=conditionalReleaseDate&sortDirection=ascending">Conditional release date</a>',
-          },
-          {
-            attributes: { 'aria-sort': 'none' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=paroleEligibilityDate&sortDirection=ascending">Parole eligibility date</a>',
-          },
-          {
-            attributes: { 'aria-sort': 'none' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=tariffExpiryDate&sortDirection=ascending">Tariff end date</a>',
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?sortColumn=earliestReleaseDate&sortDirection=ascending">Earliest release date</a>',
           },
           {
             attributes: { 'aria-sort': 'none' },
@@ -322,7 +304,7 @@ describe('CaseListUtils', () => {
           CaseListUtils.sortableTableHeadings(
             '/case-list?audience=general+offence',
             caseListColumns,
-            'conditionalReleaseDate',
+            'earliestReleaseDate',
             'ascending',
           ),
         ).toEqual([
@@ -332,15 +314,7 @@ describe('CaseListUtils', () => {
           },
           {
             attributes: { 'aria-sort': 'ascending' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=conditionalReleaseDate&sortDirection=descending">Conditional release date</a>',
-          },
-          {
-            attributes: { 'aria-sort': 'none' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=paroleEligibilityDate&sortDirection=ascending">Parole eligibility date</a>',
-          },
-          {
-            attributes: { 'aria-sort': 'none' },
-            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=tariffExpiryDate&sortDirection=ascending">Tariff end date</a>',
+            html: '<a class="govuk-link--no-visited-state" href="/case-list?audience=general+offence&sortColumn=earliestReleaseDate&sortDirection=descending">Earliest release date</a>',
           },
           {
             attributes: { 'aria-sort': 'none' },
@@ -404,6 +378,7 @@ describe('CaseListUtils', () => {
       conditionalReleaseDate: new Date('2023-01-01T00:00:00.000000').toISOString(),
       courseName: 'Test Course',
       earliestReleaseDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
+      earliestReleaseDateType: 'Home detention curfew eligibility date',
       forename: 'Del',
       id: 'referral-123',
       nonDtoReleaseDateType: 'ARD',
@@ -415,23 +390,6 @@ describe('CaseListUtils', () => {
       surname: 'Hatton',
       tariffExpiryDate: new Date('2024-01-01T00:00:00.000000').toISOString(),
       tasksCompleted: 4,
-    })
-
-    describe('Conditional release date', () => {
-      it('returns a formatted conditional release date', () => {
-        expect(CaseListUtils.tableRowContent(referralView, 'Conditional release date')).toEqual('1 January 2023')
-      })
-
-      describe('when `conditionalReleaseDate` is `undefined`', () => {
-        it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent(
-              { ...referralView, conditionalReleaseDate: undefined },
-              'Conditional release date',
-            ),
-          ).toEqual('N/A')
-        })
-      })
     })
 
     describe('Date referred', () => {
@@ -450,7 +408,9 @@ describe('CaseListUtils', () => {
 
     describe('Earliest release date', () => {
       it('returns a formatted earliest release date', () => {
-        expect(CaseListUtils.tableRowContent(referralView, 'Earliest release date')).toEqual('1 January 2022')
+        expect(CaseListUtils.tableRowContent(referralView, 'Earliest release date')).toEqual(
+          '1 January 2022<br>Home detention curfew eligibility date',
+        )
       })
 
       describe('when `earliestReleaseDate` is `undefined`', () => {
@@ -501,23 +461,6 @@ describe('CaseListUtils', () => {
           ).toEqual(
             '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details?updatePerson=true">ABC1234</a>',
           )
-        })
-      })
-    })
-
-    describe('Parole eligibility date', () => {
-      it('returns a formatted parole eligibility date', () => {
-        expect(CaseListUtils.tableRowContent(referralView, 'Parole eligibility date')).toEqual('1 January 2022')
-      })
-
-      describe('when `paroleEligibilityDate` is `undefined`', () => {
-        it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent(
-              { ...referralView, paroleEligibilityDate: undefined },
-              'Parole eligibility date',
-            ),
-          ).toEqual('N/A')
         })
       })
     })
@@ -586,20 +529,6 @@ describe('CaseListUtils', () => {
       })
     })
 
-    describe('Release date type', () => {
-      it('returns the non-DTO release date type in a spelled out form', () => {
-        expect(CaseListUtils.tableRowContent(referralView, 'Release date type')).toEqual('Automatic Release Date')
-      })
-
-      describe('when `nonDtoReleaseDateType` is `undefined`', () => {
-        it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent({ ...referralView, nonDtoReleaseDateType: undefined }, 'Release date type'),
-          ).toEqual('N/A')
-        })
-      })
-    })
-
     describe('Sentence type', () => {
       it('returns the sentence type as is', () => {
         expect(
@@ -622,20 +551,6 @@ describe('CaseListUtils', () => {
           ).toEqual(
             '<a href="/assess/referrals/referral-123/sentence-information?updatePerson=true">Multiple sentences</a>',
           )
-        })
-      })
-    })
-
-    describe('Tariff end date', () => {
-      it('returns a formatted tariff end date', () => {
-        expect(CaseListUtils.tableRowContent(referralView, 'Tariff end date')).toEqual('1 January 2024')
-      })
-
-      describe('when `tariffExpiryDate` is `undefined`', () => {
-        it('returns "N/A"', () => {
-          expect(
-            CaseListUtils.tableRowContent({ ...referralView, tariffExpiryDate: undefined }, 'Tariff end date'),
-          ).toEqual('N/A')
         })
       })
     })
@@ -683,68 +598,52 @@ describe('CaseListUtils', () => {
 
     it('formats referral summary information in the appropriate format for passing to a GOV.UK table Nunjucks macro, calling `tableRowContent` for text/HTML content', () => {
       const columnsToInclude: Array<CaseListColumnHeader> = [
-        'Conditional release date',
         'Date referred',
         'Earliest release date',
         'Name and prison number',
-        'Parole eligibility date',
         'Programme location',
         'Programme name',
         'Programme strand',
         'Progress',
         'Referral status',
-        'Release date type',
         'Sentence type',
-        'Tariff end date',
       ]
 
       expect(CaseListUtils.tableRows(referralViews, columnsToInclude)).toEqual([
         [
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Conditional release date') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
+          { html: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Name and prison number') },
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Parole eligibility date') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme name') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme strand') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Progress') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Referral status') },
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Release date type') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Sentence type') },
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Tariff end date') },
         ],
         [
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Conditional release date') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
+          { html: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Name and prison number') },
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Parole eligibility date') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme name') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme strand') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Progress') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Referral status') },
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Release date type') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Sentence type') },
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Tariff end date') },
         ],
       ])
     })
 
     it('only includes data corresponding to the given column headers', () => {
-      expect(
-        CaseListUtils.tableRows(referralViews, ['Conditional release date', 'Date referred', 'Earliest release date']),
-      ).toEqual([
+      expect(CaseListUtils.tableRows(referralViews, ['Date referred', 'Earliest release date'])).toEqual([
         [
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Conditional release date') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
+          { html: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
         ],
         [
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Conditional release date') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
+          { html: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
         ],
       ])
     })

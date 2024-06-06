@@ -164,22 +164,14 @@ export default class CaseListUtils {
     paths: typeof assessPaths | typeof referPaths = assessPaths,
   ): string {
     switch (column) {
-      case 'Conditional release date':
-        return referralView.conditionalReleaseDate
-          ? DateUtils.govukFormattedFullDateString(referralView.conditionalReleaseDate)
-          : 'N/A'
       case 'Date referred':
         return referralView.submittedOn ? DateUtils.govukFormattedFullDateString(referralView.submittedOn) : 'N/A'
       case 'Earliest release date':
         return referralView.earliestReleaseDate
-          ? DateUtils.govukFormattedFullDateString(referralView.earliestReleaseDate)
+          ? `${DateUtils.govukFormattedFullDateString(referralView.earliestReleaseDate)}<br>${referralView.earliestReleaseDateType}`
           : 'N/A'
       case 'Name and prison number':
         return CaseListUtils.nameAndPrisonNumberHtml(referralView, paths)
-      case 'Parole eligibility date':
-        return referralView.paroleEligibilityDate
-          ? DateUtils.govukFormattedFullDateString(referralView.paroleEligibilityDate)
-          : 'N/A'
       case 'Programme location':
         return referralView.organisationName || 'N/A'
       case 'Programme name':
@@ -190,21 +182,8 @@ export default class CaseListUtils {
         return `${referralView.tasksCompleted || 0} out of 4 tasks complete`
       case 'Referral status':
         return CaseListUtils.statusTagHtml(referralView.statusColour, referralView.statusDescription)
-      case 'Release date type':
-        return referralView.nonDtoReleaseDateType
-          ? {
-              ARD: 'Automatic Release Date',
-              CRD: 'Conditional Release Date',
-              NPD: 'Non Parole Date',
-              PRRD: 'Post Recall Release Date',
-            }[referralView.nonDtoReleaseDateType]
-          : 'N/A'
       case 'Sentence type':
         return CaseListUtils.sentenceTypeHtml(referralView, paths)
-      case 'Tariff end date':
-        return referralView.tariffExpiryDate
-          ? DateUtils.govukFormattedFullDateString(referralView.tariffExpiryDate)
-          : 'N/A'
       default:
         return ''
     }
@@ -220,11 +199,6 @@ export default class CaseListUtils {
 
       columnsToInclude.forEach(column => {
         switch (column) {
-          case 'Conditional release date':
-            row.push({
-              text: CaseListUtils.tableRowContent(view, 'Conditional release date'),
-            })
-            break
           case 'Date referred':
             row.push({
               text: CaseListUtils.tableRowContent(view, 'Date referred'),
@@ -232,17 +206,12 @@ export default class CaseListUtils {
             break
           case 'Earliest release date':
             row.push({
-              text: CaseListUtils.tableRowContent(view, 'Earliest release date'),
+              html: CaseListUtils.tableRowContent(view, 'Earliest release date'),
             })
             break
           case 'Name and prison number':
             row.push({
               html: CaseListUtils.tableRowContent(view, 'Name and prison number', paths),
-            })
-            break
-          case 'Parole eligibility date':
-            row.push({
-              text: CaseListUtils.tableRowContent(view, 'Parole eligibility date'),
             })
             break
           case 'Programme location':
@@ -264,19 +233,9 @@ export default class CaseListUtils {
               html: CaseListUtils.tableRowContent(view, 'Referral status'),
             })
             break
-          case 'Release date type':
-            row.push({
-              text: CaseListUtils.tableRowContent(view, 'Release date type'),
-            })
-            break
           case 'Sentence type':
             row.push({
               html: CaseListUtils.tableRowContent(view, 'Sentence type'),
-            })
-            break
-          case 'Tariff end date':
-            row.push({
-              text: CaseListUtils.tableRowContent(view, 'Tariff end date'),
             })
             break
           default:

@@ -59,7 +59,6 @@ export default class ReferCaseListController {
         surname: 'Name and prison number',
         submittedOn: 'Date referred',
         earliestReleaseDate: 'Earliest release date',
-        nonDtoReleaseDateType: 'Release date type',
         organisationName: 'Programme location',
         listDisplayName: 'Programme name',
       }
