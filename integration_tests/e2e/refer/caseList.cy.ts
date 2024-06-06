@@ -29,7 +29,6 @@ context('Referral case lists', () => {
     'Name and prison number',
     'Date referred',
     'Earliest release date',
-    'Release date type',
     'Programme location',
     'Programme name',
   ]

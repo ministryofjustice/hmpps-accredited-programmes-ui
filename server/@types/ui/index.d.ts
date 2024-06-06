@@ -62,19 +62,15 @@ type TagColour =
   | 'yellow'
 
 type CaseListColumnHeader =
-  | 'Conditional release date'
   | 'Date referred'
   | 'Earliest release date'
   | 'Name and prison number'
-  | 'Parole eligibility date'
   | 'Programme location'
   | 'Programme name'
   | 'Programme strand'
   | 'Progress'
   | 'Referral status'
-  | 'Release date type'
   | 'Sentence type'
-  | 'Tariff end date'
 
 type CourseParticipationPresenter = CourseParticipation & {
   addedByDisplayName: string
@@ -198,17 +194,13 @@ type RiskLevelOrUnknown = RiskLevel | 'UNKNOWN'
 
 type SortableCaseListColumnKey =
   | 'audience'
-  | 'conditionalReleaseDate'
   | 'earliestReleaseDate'
   | 'listDisplayName'
-  | 'nonDtoReleaseDateType'
   | 'organisationName'
-  | 'paroleEligibilityDate'
   | 'sentenceType'
   | 'status'
   | 'submittedOn'
   | 'surname'
-  | 'tariffExpiryDate'
 
 type HtmlOrText = { html: string } | { text: string }
 

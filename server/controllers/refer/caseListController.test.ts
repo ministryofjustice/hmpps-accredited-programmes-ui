@@ -119,7 +119,6 @@ describe('ReferCaseListController', () => {
           {
             earliestReleaseDate: 'Earliest release date',
             listDisplayName: 'Programme name',
-            nonDtoReleaseDateType: 'Release date type',
             organisationName: 'Programme location',
             status: 'Referral status',
             submittedOn: 'Date referred',
@@ -134,7 +133,6 @@ describe('ReferCaseListController', () => {
             'Name and prison number',
             'Date referred',
             'Earliest release date',
-            'Release date type',
             'Programme location',
             'Programme name',
             'Referral status',
@@ -192,7 +190,6 @@ describe('ReferCaseListController', () => {
             {
               earliestReleaseDate: 'Earliest release date',
               listDisplayName: 'Programme name',
-              nonDtoReleaseDateType: 'Release date type',
               organisationName: 'Programme location',
               status: 'Referral status',
               submittedOn: 'Date referred',
@@ -207,7 +204,6 @@ describe('ReferCaseListController', () => {
               'Name and prison number',
               'Date referred',
               'Earliest release date',
-              'Release date type',
               'Programme location',
               'Programme name',
               'Referral status',
@@ -273,7 +269,6 @@ describe('ReferCaseListController', () => {
           {
             earliestReleaseDate: 'Earliest release date',
             listDisplayName: 'Programme name',
-            nonDtoReleaseDateType: 'Release date type',
             organisationName: 'Programme location',
             submittedOn: 'Date referred',
             surname: 'Name and prison number',
@@ -287,7 +282,6 @@ describe('ReferCaseListController', () => {
             'Name and prison number',
             'Date referred',
             'Earliest release date',
-            'Release date type',
             'Programme location',
             'Programme name',
             'Progress',

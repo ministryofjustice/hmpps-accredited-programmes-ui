@@ -104,18 +104,12 @@ export default class CaseListPage extends Page {
               .eq(columnIndex)
               .then(tableCellElement => {
                 switch (column) {
-                  case 'Conditional release date':
-                    cy.wrap(tableCellElement).should(
-                      'have.text',
-                      CaseListUtils.tableRowContent(view, 'Conditional release date'),
-                    )
-                    break
                   case 'Date referred':
                     cy.wrap(tableCellElement).should('have.text', CaseListUtils.tableRowContent(view, 'Date referred'))
                     break
                   case 'Earliest release date':
                     cy.wrap(tableCellElement).should(
-                      'have.text',
+                      'have.html',
                       CaseListUtils.tableRowContent(view, 'Earliest release date'),
                     )
                     break
@@ -123,12 +117,6 @@ export default class CaseListPage extends Page {
                     cy.wrap(tableCellElement).should(
                       'have.html',
                       CaseListUtils.tableRowContent(view, 'Name and prison number', paths),
-                    )
-                    break
-                  case 'Parole eligibility date':
-                    cy.wrap(tableCellElement).should(
-                      'have.text',
-                      CaseListUtils.tableRowContent(view, 'Parole eligibility date'),
                     )
                     break
                   case 'Programme location':
@@ -152,20 +140,8 @@ export default class CaseListPage extends Page {
                       CaseListUtils.tableRowContent(view, 'Referral status'),
                     )
                     break
-                  case 'Release date type':
-                    cy.wrap(tableCellElement).should(
-                      'have.text',
-                      CaseListUtils.tableRowContent(view, 'Release date type'),
-                    )
-                    break
                   case 'Sentence type':
                     cy.wrap(tableCellElement).should('have.html', CaseListUtils.tableRowContent(view, 'Sentence type'))
-                    break
-                  case 'Tariff end date':
-                    cy.wrap(tableCellElement).should(
-                      'have.text',
-                      CaseListUtils.tableRowContent(view, 'Tariff end date'),
-                    )
                     break
                   default:
                 }
