@@ -94,7 +94,7 @@ describe('UpdateStatusSelectionController', () => {
         action: assessPaths.updateStatus.selection.confirmation.submit({ referralId: referral.id }),
         backLinkHref: assessPaths.show.statusHistory({ referralId: referral.id }),
         confirmationText,
-        maxLength: 100,
+        maxLength: 500,
         pageHeading: confirmationText.primaryHeading,
         person,
         timelineItems: timelineItems.slice(0, 1),
@@ -372,14 +372,14 @@ describe('UpdateStatusSelectionController', () => {
 
     describe('when `reason` is too long', () => {
       it('should redirect to the update status selection show page with a flash message', async () => {
-        const longReason = 'a'.repeat(101)
+        const longReason = 'a'.repeat(501)
 
         request.body = { reason: longReason }
 
         const requestHandler = controller.submitReason()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Reason must be 100 characters or fewer')
+        expect(request.flash).toHaveBeenCalledWith('reasonError', 'Reason must be 500 characters or fewer')
         expect(request.flash).toHaveBeenCalledWith('formValues', [JSON.stringify({ reason: longReason })])
         expect(response.redirect).toHaveBeenCalledWith(
           assessPaths.updateStatus.selection.show({ referralId: referral.id }),

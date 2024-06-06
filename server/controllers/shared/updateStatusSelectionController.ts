@@ -5,7 +5,7 @@ import type { PersonService, ReferralService } from '../../services'
 import { FormUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatus, ReferralStatusUppercase } from '@accredited-programmes/models'
 
-const maxLength = 100
+const maxLength = 500
 
 export default class UpdateStatusSelectionController {
   constructor(
