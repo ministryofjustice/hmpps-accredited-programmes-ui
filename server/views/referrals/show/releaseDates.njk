@@ -14,11 +14,19 @@
     }
   }) }}
 
-  {% if sentencesSummaryLists | length %}
-    {% for sentenceSummaryList in sentencesSummaryLists %}
-      {{ govukSummaryList(sentenceSummaryList) }}
-    {% endfor %}
+  {% if releaseDatesSummaryListRows | length %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Release dates"
+        },
+        attributes: {
+          "data-testid": "release-dates-summary-card"
+        }
+      },
+      rows: releaseDatesSummaryListRows
+    }) }}
   {% else %}
-    {{ keylessSummaryCard("Sentence details", bodyText="There are no sentence details for this person.", testId="no-sentence-information-summary-card") }}
+    {{ keylessSummaryCard("Release dates", bodyText="There are no release dates for this person.", testId="no-release-dates-summary-card") }}
   {% endif %}
 {% endblock primaryContent %}

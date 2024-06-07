@@ -115,6 +115,30 @@ export default class ReferralsController {
     }
   }
 
+  releaseDates(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+      const { referral } = sharedPageData
+
+      if (referral.status === 'referral_started') {
+        throw createError(400, 'Referral has not been submitted.')
+      }
+
+      const sentenceDetails = await this.personService.getSentenceDetails(
+        req.user.username,
+        sharedPageData.person.prisonNumber,
+      )
+
+      return res.render('referrals/show/releaseDates', {
+        ...sharedPageData,
+        importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
+        releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sentenceDetails.keyDates),
+      })
+    }
+  }
+
   sentenceInformation(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -133,8 +157,7 @@ export default class ReferralsController {
 
       return res.render('referrals/show/sentenceInformation', {
         ...sharedPageData,
-        importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-        releaseDatesSummaryListRows: PersonUtils.releaseDatesSummaryListRows(sentenceDetails.keyDates),
+        importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
         sentencesSummaryLists: SentenceInformationUtils.summaryLists(sentenceDetails),
       })
     }

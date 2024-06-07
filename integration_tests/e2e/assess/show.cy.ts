@@ -42,9 +42,21 @@ context('Viewing a submitted referral', () => {
         sharedTests.referrals.showsSentenceInformationPageWithAllData(ApplicationRoles.ACP_PROGRAMME_TEAM)
       })
 
-      describe('and there are no sentence details and no release dates for that person', () => {
-        it('shows the correct information, including a message for the missing sentence details and a message for the missing release dates', () => {
+      describe('and there are no sentence details for that person', () => {
+        it('shows the correct information, including a message for the missing sentence details', () => {
           sharedTests.referrals.showsSentenceInformationPageWithoutAllData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
+      })
+    })
+
+    describe('When reviewing release dates', () => {
+      it('shows the correct information', () => {
+        sharedTests.referrals.showsReleaseDatesPageWithAllData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      })
+
+      describe('and there are no release dates for that person', () => {
+        it('shows the correct information, including a message for the missing release dates', () => {
+          sharedTests.referrals.showsReleaseDatesPageWithoutAllData(ApplicationRoles.ACP_PROGRAMME_TEAM)
         })
       })
     })

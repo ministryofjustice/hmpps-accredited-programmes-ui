@@ -80,6 +80,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.show.offenceHistory.pattern, referralsController.offenceHistory())
   get(referPaths.show.personalDetails.pattern, referralsController.personalDetails())
   get(referPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
+  get(referPaths.show.releaseDates.pattern, referralsController.releaseDates())
   get(referPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
 
   get(referPaths.show.risksAndNeeds.attitudes.pattern, risksAndNeedsController.attitudes())

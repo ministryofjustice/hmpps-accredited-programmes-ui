@@ -42,6 +42,7 @@ import {
   PersonalDetailsPage,
   ProgrammeHistoryPage,
   RelationshipsPage,
+  ReleaseDatesPage,
   RisksAndAlertsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
@@ -407,6 +408,80 @@ const sharedTests = {
       })
     },
 
+    showsReleaseDatesPageWithAllData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+      const sentenceDetails = sentenceDetailsFactory.withData(2).build()
+      cy.task('stubSentenceDetails', { prisonNumber: prisoner.prisonerNumber, sentenceDetails })
+
+      const path = pathsByRole(role).show.releaseDates({ referralId: referral.id })
+      cy.visit(path)
+
+      const releaseDatesPage = Page.verifyOnPage(ReleaseDatesPage, {
+        course,
+        person,
+        sentenceDetails,
+      })
+      releaseDatesPage.shouldHavePersonDetails(person)
+      releaseDatesPage.shouldContainHomeLink()
+      releaseDatesPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      releaseDatesPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
+      releaseDatesPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      releaseDatesPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
+      releaseDatesPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      releaseDatesPage.shouldContainImportedFromText('NOMIS')
+      releaseDatesPage.shouldContainReleaseDatesSummaryCard()
+    },
+
+    showsReleaseDatesPageWithoutAllData: (role: ApplicationRole): void => {
+      let undefinedReleaseDates = {}
+      releaseDateFields.forEach(date => {
+        undefinedReleaseDates = { ...undefinedReleaseDates, [date]: undefined }
+      })
+
+      sharedTests.referrals.beforeEach(role, {
+        person: { ...defaultPerson, sentenceStartDate: undefined, ...undefinedReleaseDates },
+        prisoner: { ...defaultPrisoner, sentenceStartDate: undefined, ...undefinedReleaseDates },
+      })
+      const sentenceDetails: SentenceDetails = { keyDates: [], sentences: [] }
+      cy.task('stubSentenceDetails', { prisonNumber: prisoner.prisonerNumber, sentenceDetails })
+
+      const path = pathsByRole(role).show.releaseDates({ referralId: referral.id })
+      cy.visit(path)
+
+      const releaseDatesPage = Page.verifyOnPage(ReleaseDatesPage, {
+        course,
+        person,
+        sentenceDetails,
+      })
+      releaseDatesPage.shouldHavePersonDetails(person)
+      releaseDatesPage.shouldContainHomeLink()
+      releaseDatesPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      releaseDatesPage.shouldContainShowReferralSubNavigation(path, 'referral', referral.id)
+      releaseDatesPage.shouldContainCourseOfferingSummaryList(
+        person.name,
+        coursePresenter,
+        courseOffering.contactEmail,
+        organisation.name,
+      )
+      releaseDatesPage.shouldContainSubmissionSummaryList(
+        referral.submittedOn,
+        referringUser.name,
+        addedByUser1Email.email,
+      )
+      releaseDatesPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      releaseDatesPage.shouldContainImportedFromText('NOMIS')
+      releaseDatesPage.shouldContainNoReleaseDatesSummaryCard()
+    },
+
     showsSentenceInformationPageWithAllData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
       const sentenceDetails = sentenceDetailsFactory.withData(2).build()
@@ -436,9 +511,8 @@ const sharedTests = {
         addedByUser1Email.email,
       )
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      sentenceInformationPage.shouldContainImportedFromText('OASys')
+      sentenceInformationPage.shouldContainImportedFromText('NOMIS')
       sentenceInformationPage.shouldContainSentenceDetailsSummaryCards()
-      sentenceInformationPage.shouldContainReleaseDatesSummaryCard()
     },
 
     showsSentenceInformationPageWithoutAllData: (role: ApplicationRole): void => {
@@ -478,9 +552,8 @@ const sharedTests = {
         addedByUser1Email.email,
       )
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      sentenceInformationPage.shouldContainImportedFromText('OASys')
+      sentenceInformationPage.shouldContainImportedFromText('NOMIS')
       sentenceInformationPage.shouldContainNoSentenceDetailsSummaryCard()
-      sentenceInformationPage.shouldContainNoReleaseDatesSummaryCard()
     },
   },
   risksAndNeeds: {

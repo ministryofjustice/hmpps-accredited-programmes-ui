@@ -59,13 +59,14 @@ describe('ReferralsController', () => {
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
+  const navigationItems = [{ active: true, href: 'nav-href', text: 'Nav Item' }]
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
   const referrerEmail = 'referrer.email@test-email.co.uk'
   let person: Person
   let referral: Referral
   let referringUser: User
-  let sharedPageData: Omit<ReferralSharedPageData, 'navigationItems' | 'subNavigationItems'>
+  let sharedPageData: ReferralSharedPageData
   let statusTransitions: Array<ReferralStatusRefData>
 
   let controller: SubmittedReferralsController
@@ -74,6 +75,7 @@ describe('ReferralsController', () => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
     referringUser = userFactory.build({ name: 'Referring user', username: referral.referrerUsername })
+    mockShowReferralUtils.viewReferralNavigationItems.mockReturnValue(navigationItems)
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
 
@@ -85,10 +87,12 @@ describe('ReferralsController', () => {
         referrerEmail,
         organisation.name,
       ),
+      navigationItems,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Referral summary',
       person,
       referral,
+      subNavigationItems,
       submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(
         referral.submittedOn,
         referringUser.name,
@@ -132,8 +136,6 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
-        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-        subNavigationItems,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     })
@@ -161,8 +163,6 @@ describe('ReferralsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
           ...sharedPageData,
-          navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-          subNavigationItems,
           submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
         })
       })
@@ -202,8 +202,6 @@ describe('ReferralsController', () => {
         hasOffenceHistory: true,
         importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
         indexOffenceSummaryListRows: OffenceUtils.summaryListRows(indexOffence),
-        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-        subNavigationItems,
       })
     })
 
@@ -225,8 +223,6 @@ describe('ReferralsController', () => {
           hasOffenceHistory: false,
           importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
           indexOffenceSummaryListRows: null,
-          navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-          subNavigationItems,
         })
       })
     })
@@ -256,9 +252,7 @@ describe('ReferralsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/personalDetails', {
         ...sharedPageData,
         importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
-        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
         personSummaryListRows: PersonUtils.summaryListRows(person),
-        subNavigationItems,
       })
     })
 
@@ -311,8 +305,6 @@ describe('ReferralsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/programmeHistory', {
         ...sharedPageData,
         courseParticipationSummaryListsOptions,
-        navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-        subNavigationItems,
       })
     })
 
@@ -329,33 +321,63 @@ describe('ReferralsController', () => {
     })
   })
 
+  describe('releaseDates', () => {
+    it('renders the release dates template with the correct response locals', async () => {
+      const releaseDatesSummaryListRows = [{ key: { text: 'Release date' }, value: { text: '4 September 2099' } }]
+      const sentenceDetails = sentenceDetailsFactory.build({})
+
+      personService.getSentenceDetails.mockResolvedValue(sentenceDetails)
+      mockPersonUtils.releaseDatesSummaryListRows.mockReturnValue(releaseDatesSummaryListRows)
+
+      request.path = referPaths.show.releaseDates({ referralId: referral.id })
+
+      const requestHandler = controller.releaseDates()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/releaseDates', {
+        ...sharedPageData,
+        importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
+        releaseDatesSummaryListRows,
+      })
+    })
+
+    describe('when the referral has not been submitted', () => {
+      it('responds with a 400', async () => {
+        referral.status = 'referral_started'
+        request.path = referPaths.show.releaseDates({ referralId: referral.id })
+
+        const requestHandler = controller.releaseDates()
+        const expectedError = createError(400, 'Referral has not been submitted.')
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+      })
+    })
+  })
+
   describe('sentenceInformation', () => {
     const mockSentenceInformationUtils = SentenceInformationUtils as jest.Mocked<typeof SentenceInformationUtils>
 
-    const releaseDatesSummaryListRows = [{ key: { text: 'Release date' }, value: { text: '4 September 2099' } }]
     const sentenceDetails = sentenceDetailsFactory.build({})
     const sentencesSummaryLists = [createMock<GovukFrontendSummaryList>()]
 
     beforeEach(() => {
       personService.getSentenceDetails.mockResolvedValue(sentenceDetails)
-      mockPersonUtils.releaseDatesSummaryListRows.mockReturnValue(releaseDatesSummaryListRows)
       mockSentenceInformationUtils.summaryLists.mockReturnValue(sentencesSummaryLists)
 
       request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
     })
 
-    describe('when there are some release dates', () => {
+    describe('when there is sentence information', () => {
       it('renders the sentence information template with the correct response locals', async () => {
         const requestHandler = controller.sentenceInformation()
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/sentenceInformation', {
           ...sharedPageData,
-          importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
-          navigationItems: ShowReferralUtils.viewReferralNavigationItems(request.path, referral.id),
-          releaseDatesSummaryListRows,
+          importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
           sentencesSummaryLists,
-          subNavigationItems,
         })
         expect(mockSentenceInformationUtils.summaryLists).toHaveBeenCalledWith(sentenceDetails)
       })
@@ -388,6 +410,8 @@ describe('ReferralsController', () => {
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber)
     expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
     expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral, isRefer ? statusTransitions : undefined)
+    expect(mockShowReferralUtils.viewReferralNavigationItems).toHaveBeenCalledWith(path, referral.id)
+    expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'referral', referral.id)
 
     if (isRefer) {
       expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)

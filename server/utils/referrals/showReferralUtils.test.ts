@@ -493,6 +493,11 @@ describe('ShowReferralUtils', () => {
           },
           {
             active: false,
+            href: referPaths.show.releaseDates({ referralId: mockReferralId }),
+            text: 'Release dates',
+          },
+          {
+            active: false,
             href: referPaths.show.additionalInformation({ referralId: mockReferralId }),
             text: 'Additional information',
           },
@@ -524,6 +529,11 @@ describe('ShowReferralUtils', () => {
             active: false,
             href: assessPaths.show.sentenceInformation({ referralId: mockReferralId }),
             text: 'Sentence information',
+          },
+          {
+            active: false,
+            href: assessPaths.show.releaseDates({ referralId: mockReferralId }),
+            text: 'Release dates',
           },
           {
             active: false,

@@ -3,6 +3,7 @@ import AdditionalInformationPage from './showReferral/additionalInformation'
 import OffenceHistoryPage from './showReferral/offenceHistory'
 import PersonalDetailsPage from './showReferral/personalDetails'
 import ProgrammeHistoryPage from './showReferral/programmeHistory'
+import ReleaseDatesPage from './showReferral/releaseDates'
 import AttitudesPage from './showReferral/risksAndNeeds/attitudes'
 import EmotionalWellbeingPage from './showReferral/risksAndNeeds/emotionalWellbeing'
 import HealthPage from './showReferral/risksAndNeeds/health'
@@ -32,6 +33,7 @@ export {
   PersonalDetailsPage,
   ProgrammeHistoryPage,
   RelationshipsPage,
+  ReleaseDatesPage,
   RisksAndAlertsPage,
   RoshAnalysisPage,
   SentenceInformationPage,
