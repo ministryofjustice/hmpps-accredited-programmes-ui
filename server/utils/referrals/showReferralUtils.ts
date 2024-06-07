@@ -210,6 +210,10 @@ export default class ShowReferralUtils {
         text: 'Sentence information',
       },
       {
+        href: paths.show.releaseDates({ referralId }),
+        text: 'Release dates',
+      },
+      {
         href: paths.show.additionalInformation({ referralId }),
         text: 'Additional information',
       },
