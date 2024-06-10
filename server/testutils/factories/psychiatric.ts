@@ -1,11 +1,15 @@
-import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
 import type { Psychiatric } from '@accredited-programmes/models'
 
 export default Factory.define<Psychiatric>(() => {
+  const problemOptions = ['0-No problems', '1-Some problems']
+
   return {
-    description: FactoryHelpers.optionalArrayElement(faker.lorem.paragraphs({ max: 3, min: 1 })),
+    currPsychologicalProblems: FactoryHelpers.optionalArrayElement(problemOptions),
+    description: FactoryHelpers.optionalArrayElement(problemOptions),
+    difficultiesCoping: FactoryHelpers.optionalArrayElement(problemOptions),
+    selfHarmSuicidal: FactoryHelpers.optionalArrayElement(['No-0', 'Yes-1']),
   }
 })

@@ -18,7 +18,7 @@ export default class EmotionalWellbeing extends Page {
   shouldContainNoPsychiatricDataSummaryCard() {
     cy.get('[data-testid="no-psychiatric-data-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
-        'Section 10.6 - Psychiatric problems',
+        'Section 10 - Emotional wellbeing',
         'No psychiatric data found in OASys. Add psychiatric data to OASys to see them here.',
         summaryCardElement,
       )
