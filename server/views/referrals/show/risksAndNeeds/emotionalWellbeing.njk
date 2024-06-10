@@ -11,7 +11,7 @@
     {{ govukSummaryList({
       card: {
         title: {
-          text: "Section 10.6 - Psychiatric problems"
+          text: "Section 10 - Emotional wellbeing"
         },
         attributes: {
           "data-testid": "psychiatric-problems-summary-list"
@@ -22,6 +22,6 @@
   {% elseif not oasysNomisErrorMessage %}
     {% set noPsychiatricDataString = "No psychiatric data found in OASys. Add psychiatric data to OASys to see them here." %}
 
-    {{ keylessSummaryCard("Section 10.6 - Psychiatric problems", bodyText=noPsychiatricDataString, testId="no-psychiatric-data-summary-card") }}
+    {{ keylessSummaryCard("Section 10 - Emotional wellbeing", bodyText=noPsychiatricDataString, testId="no-psychiatric-data-summary-card") }}
   {% endif %}
 {% endblock primaryContent %}
