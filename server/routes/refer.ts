@@ -84,6 +84,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
 
   get(referPaths.show.risksAndNeeds.attitudes.pattern, risksAndNeedsController.attitudes())
+  get(referPaths.show.risksAndNeeds.drugMisuse.pattern, risksAndNeedsController.drugMisuse())
   get(referPaths.show.risksAndNeeds.emotionalWellbeing.pattern, risksAndNeedsController.emotionalWellbeing())
   get(referPaths.show.risksAndNeeds.health.pattern, risksAndNeedsController.health())
   get(referPaths.show.risksAndNeeds.learningNeeds.pattern, risksAndNeedsController.learningNeeds())

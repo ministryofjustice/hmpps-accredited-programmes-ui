@@ -11,6 +11,7 @@ import {
   behaviourFactory,
   courseFactory,
   courseOfferingFactory,
+  drugAlcoholDetailFactory,
   healthFactory,
   learningNeedsFactory,
   lifestyleFactory,
@@ -29,6 +30,7 @@ import {
   AttitudesUtils,
   CourseUtils,
   DateUtils,
+  DrugMisuseUtils,
   EmotionalWellbeingUtils,
   HealthUtils,
   LearningNeedsUtils,
@@ -49,6 +51,7 @@ jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
 jest.mock('../../utils/risksAndNeeds/attitudesUtils')
+jest.mock('../../utils/risksAndNeeds/drugMisuseUtils')
 jest.mock('../../utils/risksAndNeeds/emotionalWellbeingUtils')
 jest.mock('../../utils/risksAndNeeds/healthUtils')
 jest.mock('../../utils/risksAndNeeds/learningNeedsUtils')
@@ -63,6 +66,7 @@ const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
 const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
 const mockShowRisksAndNeedsUtils = ShowRisksAndNeedsUtils as jest.Mocked<typeof ShowRisksAndNeedsUtils>
 const mockAttitudesUtils = AttitudesUtils as jest.Mocked<typeof AttitudesUtils>
+const mockDrugMisuseUtils = DrugMisuseUtils as jest.Mocked<typeof DrugMisuseUtils>
 const mockEmotionalWellbeingUtils = EmotionalWellbeingUtils as jest.Mocked<typeof EmotionalWellbeingUtils>
 const mockHealthUtils = HealthUtils as jest.Mocked<typeof HealthUtils>
 const mockLearningNeedsUtils = LearningNeedsUtils as jest.Mocked<typeof LearningNeedsUtils>
@@ -96,7 +100,7 @@ describe('RisksAndNeedsController', () => {
   const buttons = [{ href: 'button-href', text: 'Button' }]
   let person: Person
   let referral: Referral
-  let sharedPageData: Omit<RisksAndNeedsSharedPageData, 'navigationItems' | 'subNavigationItems'>
+  let sharedPageData: RisksAndNeedsSharedPageData
   let statusTransitions: Array<ReferralStatusRefData>
 
   let controller: RisksAndNeedsController
@@ -111,10 +115,12 @@ describe('RisksAndNeedsController', () => {
 
     sharedPageData = {
       buttons,
+      navigationItems,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Risks and needs',
       person,
       referral,
+      subNavigationItems,
     }
     statusTransitions = referralStatusRefDataFactory.buildList(2)
 
@@ -217,6 +223,51 @@ describe('RisksAndNeedsController', () => {
         expect(response.locals.oasysNomisErrorMessage).toBe(
           'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.',
         )
+      })
+    })
+  })
+
+  describe('drugMisuse', () => {
+    it('renders the drug misuse page with the correct response locals', async () => {
+      const getDrugAndAlcoholDetails = drugAlcoholDetailFactory.build({})
+      const drugMisuseSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+
+      mockDrugMisuseUtils.summaryListRows.mockReturnValue(drugMisuseSummaryListRows)
+
+      when(oasysService.getDrugAndAlcoholDetails)
+        .calledWith(username, person.prisonNumber)
+        .mockResolvedValue(getDrugAndAlcoholDetails)
+
+      request.path = referPaths.show.risksAndNeeds.drugMisuse({ referralId: referral.id })
+
+      const requestHandler = controller.drugMisuse()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/drugMisuse', {
+        ...sharedPageData,
+        drugMisuseSummaryListRows,
+        hasData: true,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+      })
+    })
+
+    describe('when the oasys service returns `null`', () => {
+      it('renders the drug misuse page with the correct response locals', async () => {
+        when(oasysService.getDrugAndAlcoholDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.drugMisuse({ referralId: referral.id })
+
+        const requestHandler = controller.drugMisuse()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/drugMisuse', {
+          ...sharedPageData,
+          hasData: false,
+        })
       })
     })
   })

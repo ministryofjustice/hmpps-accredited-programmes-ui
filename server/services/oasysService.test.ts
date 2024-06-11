@@ -203,9 +203,7 @@ describe('OasysService', () => {
 
     describe('when the oasys client throws an unknown error', () => {
       it('throws a 500 error', async () => {
-        when(oasysClient.findDrugAndAlcoholDetails)
-          .calledWith(prisonNumber)
-          .mockRejectedValue(unknownError)
+        when(oasysClient.findDrugAndAlcoholDetails).calledWith(prisonNumber).mockRejectedValue(unknownError)
 
         const expectedError = createError(
           500,

@@ -5,6 +5,7 @@ import { stubFor } from '../../wiremock'
 import type {
   Attitude,
   Behaviour,
+  DrugAlcoholDetail,
   Health,
   LearningNeeds,
   Lifestyle,
@@ -39,6 +40,22 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.behaviour,
+        status: 200,
+      },
+    }),
+
+  stubDrugAndAlcoholDetails: (args: {
+    drugAndAlcoholDetails: DrugAlcoholDetail
+    prisonNumber: Referral['prisonNumber']
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.oasys.drugAndAlcoholDetails({ prisonNumber: args.prisonNumber }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.drugAndAlcoholDetails,
         status: 200,
       },
     }),

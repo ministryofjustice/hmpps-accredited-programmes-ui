@@ -26,6 +26,10 @@ export default class ShowRisksAndNeedsUtils {
         text: 'Section 7 - Lifestyle and associates',
       },
       {
+        href: paths.show.risksAndNeeds.drugMisuse({ referralId }),
+        text: 'Section 8 - Drug misuse',
+      },
+      {
         href: paths.show.risksAndNeeds.emotionalWellbeing({ referralId }),
         text: 'Section 10 - Emotional wellbeing',
       },
@@ -57,7 +61,7 @@ export default class ShowRisksAndNeedsUtils {
     }))
   }
 
-  static textValue(value?: string): string {
+  static textValue(value?: string | null): string {
     return value || 'No information available'
   }
 
