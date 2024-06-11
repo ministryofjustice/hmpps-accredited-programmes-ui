@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {{ super() }}
+
+  {% if hasData %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "8 - Drug misuse"
+        },
+        attributes: {
+          "data-testid": "drug-misuse-summary-list"
+        }
+      },
+      rows: drugMisuseSummaryListRows
+    }) }}
+  {% elseif not oasysNomisErrorMessage %}
+    {% set noDrugMisuseDataString = "No drug misuse data found in OASys. Add drug misuse data to OASys to see it here." %}
+
+    {{ keylessSummaryCard("8 - Drug misuse", bodyText=noDrugMisuseDataString, testId="no-drug-misuse-data-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}

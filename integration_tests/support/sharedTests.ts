@@ -6,6 +6,7 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  drugAlcoholDetailFactory,
   healthFactory,
   inmateDetailFactory,
   learningNeedsFactory,
@@ -34,6 +35,7 @@ import Page from '../pages/page'
 import {
   AdditionalInformationPage,
   AttitudesPage,
+  DrugMisusePage,
   HealthPage,
   LearningNeedsPage,
   LifestyleAndAssociatesPage,
@@ -606,6 +608,56 @@ const sharedTests = {
       attitudesPage.shouldContainRisksAndNeedsOasysMessage()
       attitudesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       attitudesPage.shouldContainNoAttitudeDataSummaryCard()
+    },
+    showsDrugMisusePageWithData: (role: ApplicationRole): void => {
+      const drugAndAlcoholDetails = drugAlcoholDetailFactory.build()
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubDrugAndAlcoholDetails', {
+        drugAndAlcoholDetails,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.drugMisuse({ referralId: referral.id })
+      cy.visit(path)
+
+      const drugMisusePage = Page.verifyOnPage(DrugMisusePage, {
+        course,
+        drugDetails: drugAndAlcoholDetails.drug,
+      })
+      drugMisusePage.shouldHavePersonDetails(person)
+      drugMisusePage.shouldContainHomeLink()
+      drugMisusePage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      drugMisusePage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      drugMisusePage.shouldContainShowReferralSubHeading('Risks and needs')
+      drugMisusePage.shouldContainRisksAndNeedsOasysMessage()
+      drugMisusePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      drugMisusePage.shouldContainImportedFromText('OASys')
+      drugMisusePage.shouldContainDrugMisuseSummaryList()
+    },
+    showsDrugMisusePageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubDrugAndAlcoholDetails', {
+        drugAndAlcoholDetails: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.drugMisuse({ referralId: referral.id })
+      cy.visit(path)
+
+      const drugMisusePage = Page.verifyOnPage(DrugMisusePage, {
+        course,
+        drugDetails: {},
+      })
+      drugMisusePage.shouldHavePersonDetails(person)
+      drugMisusePage.shouldContainHomeLink()
+      drugMisusePage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      drugMisusePage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      drugMisusePage.shouldContainShowReferralSubHeading('Risks and needs')
+      drugMisusePage.shouldContainRisksAndNeedsOasysMessage()
+      drugMisusePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      drugMisusePage.shouldContainNoDrugMisuseDataSummaryCard()
     },
     showsEmotionalWellbeingPageWithData: (role: ApplicationRole): void => {
       const psychiatric = psychiatricFactory.build()

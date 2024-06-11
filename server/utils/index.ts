@@ -18,6 +18,7 @@ import ReferralUtils from './referrals/referralUtils'
 import ShowReferralUtils from './referrals/showReferralUtils'
 import ShowRisksAndNeedsUtils from './referrals/showRisksAndNeedsUtils'
 import AttitudesUtils from './risksAndNeeds/attitudesUtils'
+import DrugMisuseUtils from './risksAndNeeds/drugMisuseUtils'
 import EmotionalWellbeingUtils from './risksAndNeeds/emotionalWellbeingUtils'
 import HealthUtils from './risksAndNeeds/healthUtils'
 import LearningNeedsUtils from './risksAndNeeds/learningNeedsUtils'
@@ -39,6 +40,7 @@ export {
   CourseParticipationUtils,
   CourseUtils,
   DateUtils,
+  DrugMisuseUtils,
   EmotionalWellbeingUtils,
   FormUtils,
   HealthUtils,

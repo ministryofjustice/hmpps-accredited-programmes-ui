@@ -6,6 +6,7 @@ import {
   AttitudesUtils,
   CourseUtils,
   DateUtils,
+  DrugMisuseUtils,
   EmotionalWellbeingUtils,
   HealthUtils,
   LearningNeedsUtils,
@@ -51,6 +52,31 @@ export default class RisksAndNeedsController {
           }
 
       return res.render('referrals/show/risksAndNeeds/attitudes', { ...sharedPageData, ...templateLocals })
+    }
+  }
+
+  drugMisuse(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const drugAlcoholDetail = await this.withErrorHandling(
+        this.oasysService.getDrugAndAlcoholDetails(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
+      )
+
+      const templateLocals = drugAlcoholDetail
+        ? {
+            drugMisuseSummaryListRows: DrugMisuseUtils.summaryListRows(drugAlcoholDetail.drug),
+            hasData: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          }
+        : {
+            hasData: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/drugMisuse', { ...sharedPageData, ...templateLocals })
     }
   }
 

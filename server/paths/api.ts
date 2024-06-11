@@ -47,6 +47,7 @@ export default {
   oasys: {
     attitude: oasysBasePath.path('attitude'),
     behaviour: oasysBasePath.path('behaviour'),
+    drugAndAlcoholDetails: oasysBasePath.path('drug-and-alcohol-details'),
     health: oasysBasePath.path('health'),
     learningNeeds: oasysBasePath.path('learning-needs'),
     lifestyle: oasysBasePath.path('lifestyle'),

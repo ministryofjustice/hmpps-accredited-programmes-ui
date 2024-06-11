@@ -5,6 +5,7 @@ import RestClient from '../restClient'
 import type {
   Attitude,
   Behaviour,
+  DrugAlcoholDetail,
   Health,
   LearningNeeds,
   Lifestyle,
@@ -34,6 +35,12 @@ export default class OasysClient {
     return (await this.restClient.get({
       path: apiPaths.oasys.behaviour({ prisonNumber }),
     })) as Behaviour
+  }
+
+  async findDrugAndAlcoholDetails(prisonNumber: Referral['prisonNumber']): Promise<DrugAlcoholDetail> {
+    return (await this.restClient.get({
+      path: apiPaths.oasys.drugAndAlcoholDetails({ prisonNumber }),
+    })) as DrugAlcoholDetail
   }
 
   async findHealth(prisonNumber: Referral['prisonNumber']): Promise<Health> {

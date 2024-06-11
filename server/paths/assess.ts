@@ -27,6 +27,7 @@ export default {
     releaseDates: referralShowPathBase.path('release-dates'),
     risksAndNeeds: {
       attitudes: risksAndNeedsPathBase.path('attitudes'),
+      drugMisuse: risksAndNeedsPathBase.path('drug-misuse'),
       emotionalWellbeing: risksAndNeedsPathBase.path('emotional-wellbeing'),
       health: risksAndNeedsPathBase.path('health'),
       learningNeeds: risksAndNeedsPathBase.path('learning-needs'),

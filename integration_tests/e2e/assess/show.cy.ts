@@ -137,6 +137,20 @@ context('Viewing a submitted referral', () => {
       })
     })
 
+    describe('When reviewing Section 8 - Drug misuse', () => {
+      describe('and there is drug misuse data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsDrugMisusePageWithData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
+      })
+
+      describe('and there is no drug misuse data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsDrugMisusePageWithoutData(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
+      })
+    })
+
     describe('When reviewing Section 10 - Emotional wellbeing', () => {
       describe('and there is psychiatric data', () => {
         it('shows the correct information', () => {
