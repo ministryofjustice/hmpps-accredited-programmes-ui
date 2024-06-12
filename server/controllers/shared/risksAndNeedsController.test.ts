@@ -27,6 +27,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import {
+  AlcoholMisuseUtils,
   AttitudesUtils,
   CourseUtils,
   DateUtils,
@@ -50,6 +51,7 @@ import type { GovukFrontendTable } from '@govuk-frontend'
 jest.mock('../../utils/dateUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/referrals/showRisksAndNeedsUtils')
+jest.mock('../../utils/risksAndNeeds/alcoholMisuseUtils')
 jest.mock('../../utils/risksAndNeeds/attitudesUtils')
 jest.mock('../../utils/risksAndNeeds/drugMisuseUtils')
 jest.mock('../../utils/risksAndNeeds/emotionalWellbeingUtils')
@@ -65,6 +67,7 @@ jest.mock('../../utils/risksAndNeeds/thinkingAndBehavingUtils')
 const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
 const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
 const mockShowRisksAndNeedsUtils = ShowRisksAndNeedsUtils as jest.Mocked<typeof ShowRisksAndNeedsUtils>
+const mockAlcoholMisuseUtils = AlcoholMisuseUtils as jest.Mocked<typeof AlcoholMisuseUtils>
 const mockAttitudesUtils = AttitudesUtils as jest.Mocked<typeof AttitudesUtils>
 const mockDrugMisuseUtils = DrugMisuseUtils as jest.Mocked<typeof DrugMisuseUtils>
 const mockEmotionalWellbeingUtils = EmotionalWellbeingUtils as jest.Mocked<typeof EmotionalWellbeingUtils>
@@ -138,6 +141,51 @@ describe('RisksAndNeedsController', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
+  })
+
+  describe('alcoholMisuse', () => {
+    it('renders the alcohol misuse page with the correct response locals', async () => {
+      const getDrugAndAlcoholDetails = drugAlcoholDetailFactory.build({})
+      const alcoholMisuseSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+
+      mockAlcoholMisuseUtils.summaryListRows.mockReturnValue(alcoholMisuseSummaryListRows)
+
+      when(oasysService.getDrugAndAlcoholDetails)
+        .calledWith(username, person.prisonNumber)
+        .mockResolvedValue(getDrugAndAlcoholDetails)
+
+      request.path = referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: referral.id })
+
+      const requestHandler = controller.alcoholMisuse()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/alcoholMisuse', {
+        ...sharedPageData,
+        alcoholMisuseSummaryListRows,
+        hasData: true,
+        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+      })
+    })
+
+    describe('when the oasys service returns `null`', () => {
+      it('renders the alcohol misuse page with the correct response locals', async () => {
+        when(oasysService.getDrugAndAlcoholDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+
+        request.path = referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: referral.id })
+
+        const requestHandler = controller.alcoholMisuse()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/alcoholMisuse', {
+          ...sharedPageData,
+          hasData: false,
+        })
+      })
+    })
   })
 
   describe('attitudes', () => {

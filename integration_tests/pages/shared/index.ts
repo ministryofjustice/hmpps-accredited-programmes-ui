@@ -4,6 +4,7 @@ import OffenceHistoryPage from './showReferral/offenceHistory'
 import PersonalDetailsPage from './showReferral/personalDetails'
 import ProgrammeHistoryPage from './showReferral/programmeHistory'
 import ReleaseDatesPage from './showReferral/releaseDates'
+import AlcoholMisusePage from './showReferral/risksAndNeeds/alcoholMisuse'
 import AttitudesPage from './showReferral/risksAndNeeds/attitudes'
 import DrugMisusePage from './showReferral/risksAndNeeds/drugMisuse'
 import EmotionalWellbeingPage from './showReferral/risksAndNeeds/emotionalWellbeing'
@@ -23,6 +24,7 @@ import WithdrawConfirmSelectionPage from './withdraw/selection'
 
 export {
   AdditionalInformationPage,
+  AlcoholMisusePage,
   AttitudesPage,
   CaseListPage,
   DrugMisusePage,

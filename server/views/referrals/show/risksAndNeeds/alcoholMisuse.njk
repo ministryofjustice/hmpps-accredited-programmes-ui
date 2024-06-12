@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "../../../partials/keylessSummaryCard.njk" import keylessSummaryCard %}
+
+{% extends "../partials/risksAndNeedsLayout.njk" %}
+
+{% block primaryContent %}
+  {{ super() }}
+
+  {% if hasData %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "9 - Alcohol misuse"
+        },
+        attributes: {
+          "data-testid": "alcohol-misuse-summary-list"
+        }
+      },
+      rows: alcoholMisuseSummaryListRows
+    }) }}
+  {% elseif not oasysNomisErrorMessage %}
+    {% set noAlcoholMisuseDataString = "No alcohol misuse data found in OASys. Add alcohol misuse data to OASys to see it here." %}
+
+    {{ keylessSummaryCard("9 - Alcohol misuse", bodyText=noAlcoholMisuseDataString, testId="no-alcohol-misuse-data-summary-card") }}
+  {% endif %}
+{% endblock primaryContent %}

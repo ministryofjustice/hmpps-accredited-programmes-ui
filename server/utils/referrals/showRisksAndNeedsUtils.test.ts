@@ -37,6 +37,11 @@ describe('ShowRisksAndNeedsUtils', () => {
           },
           {
             active: false,
+            href: referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: mockReferralId }),
+            text: 'Section 9 - Alcohol misuse',
+          },
+          {
+            active: false,
             href: referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId }),
             text: 'Section 10 - Emotional wellbeing',
           },
@@ -98,6 +103,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: assessPaths.show.risksAndNeeds.drugMisuse({ referralId: mockReferralId }),
             text: 'Section 8 - Drug misuse',
+          },
+          {
+            active: false,
+            href: assessPaths.show.risksAndNeeds.alcoholMisuse({ referralId: mockReferralId }),
+            text: 'Section 9 - Alcohol misuse',
           },
           {
             active: false,

@@ -30,6 +30,10 @@ export default class ShowRisksAndNeedsUtils {
         text: 'Section 8 - Drug misuse',
       },
       {
+        href: paths.show.risksAndNeeds.alcoholMisuse({ referralId }),
+        text: 'Section 9 - Alcohol misuse',
+      },
+      {
         href: paths.show.risksAndNeeds.emotionalWellbeing({ referralId }),
         text: 'Section 10 - Emotional wellbeing',
       },

@@ -26,6 +26,7 @@ export default {
     programmeHistory: referralShowPathBase.path('programme-history'),
     releaseDates: referralShowPathBase.path('release-dates'),
     risksAndNeeds: {
+      alcoholMisuse: risksAndNeedsPathBase.path('alcohol-misuse'),
       attitudes: risksAndNeedsPathBase.path('attitudes'),
       drugMisuse: risksAndNeedsPathBase.path('drug-misuse'),
       emotionalWellbeing: risksAndNeedsPathBase.path('emotional-wellbeing'),
