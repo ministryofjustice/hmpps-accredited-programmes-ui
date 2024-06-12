@@ -3,6 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { referPathBase } from '../../paths'
 import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
 import {
+  AlcoholMisuseUtils,
   AttitudesUtils,
   CourseUtils,
   DateUtils,
@@ -29,6 +30,31 @@ export default class RisksAndNeedsController {
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
+
+  alcoholMisuse(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      const drugAlcoholDetail = await this.withErrorHandling(
+        this.oasysService.getDrugAndAlcoholDetails(req.user.username, sharedPageData.referral.prisonNumber),
+        res,
+      )
+
+      const templateLocals = drugAlcoholDetail
+        ? {
+            alcoholMisuseSummaryListRows: AlcoholMisuseUtils.summaryListRows(drugAlcoholDetail.alcohol),
+            hasData: true,
+            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
+          }
+        : {
+            hasData: false,
+          }
+
+      return res.render('referrals/show/risksAndNeeds/alcoholMisuse', { ...sharedPageData, ...templateLocals })
+    }
+  }
 
   attitudes(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {

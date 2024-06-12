@@ -135,6 +135,20 @@ context('Viewing a submitted referral', () => {
       })
     })
 
+    describe('When reviewing Section 9 - Alcohol misuse', () => {
+      describe('and there is alcohol misuse data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsAlcoholMisusePageWithData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
+      describe('and there is no alcohol misuse data', () => {
+        it('shows the correct information', () => {
+          sharedTests.risksAndNeeds.showsAlcoholMisusePageWithoutData(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+    })
+
     describe('When reviewing Section 10 - Emotional wellbeing', () => {
       describe('and there is psychiatric data', () => {
         it('shows the correct information', () => {

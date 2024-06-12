@@ -34,6 +34,7 @@ import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
   AdditionalInformationPage,
+  AlcoholMisusePage,
   AttitudesPage,
   DrugMisusePage,
   HealthPage,
@@ -559,6 +560,56 @@ const sharedTests = {
     },
   },
   risksAndNeeds: {
+    showsAlcoholMisusePageWithData: (role: ApplicationRole): void => {
+      const drugAndAlcoholDetails = drugAlcoholDetailFactory.build()
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubDrugAndAlcoholDetails', {
+        drugAndAlcoholDetails,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.alcoholMisuse({ referralId: referral.id })
+      cy.visit(path)
+
+      const alcoholMisusePage = Page.verifyOnPage(AlcoholMisusePage, {
+        alcoholDetails: drugAndAlcoholDetails.alcohol,
+        course,
+      })
+      alcoholMisusePage.shouldHavePersonDetails(person)
+      alcoholMisusePage.shouldContainHomeLink()
+      alcoholMisusePage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      alcoholMisusePage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      alcoholMisusePage.shouldContainShowReferralSubHeading('Risks and needs')
+      alcoholMisusePage.shouldContainRisksAndNeedsOasysMessage()
+      alcoholMisusePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      alcoholMisusePage.shouldContainImportedFromText('OASys')
+      alcoholMisusePage.shouldContainAlcoholMisuseSummaryList()
+    },
+    showsAlcoholMisusePageWithoutData: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubDrugAndAlcoholDetails', {
+        drugAndAlcoholDetails: null,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.alcoholMisuse({ referralId: referral.id })
+      cy.visit(path)
+
+      const alcoholMisusePage = Page.verifyOnPage(AlcoholMisusePage, {
+        alcoholDetails: {},
+        course,
+      })
+      alcoholMisusePage.shouldHavePersonDetails(person)
+      alcoholMisusePage.shouldContainHomeLink()
+      alcoholMisusePage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      alcoholMisusePage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      alcoholMisusePage.shouldContainShowReferralSubHeading('Risks and needs')
+      alcoholMisusePage.shouldContainRisksAndNeedsOasysMessage()
+      alcoholMisusePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      alcoholMisusePage.shouldContainNoAlcoholMisuseDataSummaryCard()
+    },
     showsAttitudesPageWithData: (role: ApplicationRole): void => {
       const attitude = attitudeFactory.build()
       sharedTests.referrals.beforeEach(role)
