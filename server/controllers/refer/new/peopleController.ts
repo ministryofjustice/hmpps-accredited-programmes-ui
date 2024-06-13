@@ -2,6 +2,8 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 import type { ResponseError } from 'superagent'
 
+import config from '../../../config'
+import { ApplicationRoles } from '../../../middleware'
 import { referPaths } from '../../../paths'
 import type { PersonService } from '../../../services'
 import { PersonUtils, TypeUtils } from '../../../utils'
@@ -34,11 +36,16 @@ export default class NewReferralsPeopleController {
 
       let person: Person
 
+      const requiredRolesToViewAllPrisoners = [ApplicationRoles.ACP_PROGRAMME_TEAM, ApplicationRoles.ACP_REFERRER]
+      const canViewAllPrisoners =
+        config.flags.caseTransferEnabled &&
+        requiredRolesToViewAllPrisoners.every(role => res.locals.user.roles.includes(role))
+
       try {
         person = await this.personService.getPerson(
           req.user.username,
           req.params.prisonNumber,
-          res.locals.user.caseloads,
+          canViewAllPrisoners ? [] : res.locals.user.caseloads,
         )
       } catch (error) {
         const knownError = error as ResponseError
