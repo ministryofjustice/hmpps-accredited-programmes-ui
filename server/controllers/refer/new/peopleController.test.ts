@@ -4,6 +4,8 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import NewReferralsPeopleController from './peopleController'
+import config from '../../../config'
+import { ApplicationRoles } from '../../../middleware'
 import { referPaths } from '../../../paths'
 import type PersonService from '../../../services/personService'
 import { personFactory } from '../../../testutils/factories'
@@ -113,6 +115,43 @@ describe('NewReferralsPeopleController', () => {
           'prisonNumberError',
           `No person with prison number '${fakeId}' found`,
         )
+      })
+    })
+
+    describe('when caseTransferEnabled is true', () => {
+      beforeEach(() => {
+        request.params.courseOfferingId = courseOfferingId
+        config.flags.caseTransferEnabled = true
+      })
+
+      describe('and the user has the required roles to view all prisoners', () => {
+        it('calls `getPerson` with an empty caseloads array so the person can be searched for in all caseloads', async () => {
+          response.locals.user.roles = [ApplicationRoles.ACP_PROGRAMME_TEAM, ApplicationRoles.ACP_REFERRER]
+
+          personService.getPerson.mockResolvedValue(person)
+
+          const requestHandler = controller.show()
+          await requestHandler(request, response, next)
+
+          expect(personService.getPerson).toHaveBeenCalledWith(username, request.params.prisonNumber, [])
+        })
+      })
+
+      describe('and the user does not have the required roles to view all prisoners', () => {
+        it('calls `getPerson` with the user caseloads so the person can only be searched for in those caseloads', async () => {
+          response.locals.user.roles = [ApplicationRoles.ACP_PROGRAMME_TEAM]
+
+          personService.getPerson.mockResolvedValue(person)
+
+          const requestHandler = controller.show()
+          await requestHandler(request, response, next)
+
+          expect(personService.getPerson).toHaveBeenCalledWith(
+            username,
+            request.params.prisonNumber,
+            response.locals.user.caseloads,
+          )
+        })
       })
     })
   })
