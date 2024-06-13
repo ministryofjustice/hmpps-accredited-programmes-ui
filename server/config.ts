@@ -94,6 +94,7 @@ export default {
   enableApplicationInsights: production,
   environment: process.env.ENVIRONMENT || 'local',
   flags: {
+    caseTransferEnabled: get('CASE_TRANSFER_ENABLED', 'false') === 'true',
     referEnabled: get('REFER_ENABLED', 'false') === 'true',
   },
   https: production,
