@@ -24,7 +24,7 @@ generic-service:
     PRISON_API_URL: 'https://prison-api.prison.service.justice.gov.uk'
     PRISON_REGISTER_API_URL: 'https://prison-register.hmpps.service.justice.gov.uk'
     REFER_ENABLED: true
-    CASE_TRANSFER_ENABLED: false
+    CASE_TRANSFER_ENABLED: true
 
   allowlist:
     groups:
