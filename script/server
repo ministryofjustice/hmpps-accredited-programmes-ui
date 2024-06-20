@@ -10,7 +10,13 @@ cd "$(dirname "$0")/.."
 for arg in "$@"
 do
   if [[ $arg == "--mock-api" ]]; then
+    DEV_API=false
     MOCK_API=true
+  fi
+
+  if [[ $arg == "--dev-api" ]]; then
+    DEV_API=true
+    MOCK_API=false
   fi
 done
 
@@ -24,6 +30,8 @@ script/utils/launch-docker
 
 if [ "$MOCK_API" = true ]; then
   script/utils/start-backing-services --mock-api
+elif [ "$DEV_API" = true ]; then
+  script/utils/start-backing-services --dev-api
 else
   script/utils/start-backing-services
 fi
@@ -32,6 +40,8 @@ echo "==> Starting the server..."
 
 if [ "$MOCK_API" = true ]; then
   ACCREDITED_PROGRAMMES_API_URL=http://localhost:9099 PRISON_API_URL=http://localhost:9099 npm run start:dev
+elif [ "$DEV_API" = true ]; then
+  npm run start:dev
 else
   PRISON_API_URL=http://localhost:9099 npm run start:dev
 fi
