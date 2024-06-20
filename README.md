@@ -16,7 +16,13 @@ When running the application for the first time, run the following command:
 script/setup
 ```
 
-This will create `.env` files and bootstrap the application.
+However, if you intend to run the application using the dev apis then following command instead:
+
+```bash
+script/setup --dev-api
+```
+
+This will create `.env` files and bootstrap the application. If using the `--dev-api` flag then you will need to replace any variables set to `<retrieve-from-k8s-and-add-here>`, in the generated .env file.
 
 If you're coming back to the application after a certain amount of time, you can run:
 
@@ -49,6 +55,12 @@ script/server --mock-api
 ```
 
 API endpoint stubbing is set up in `/wiremock/scripts/stubAccreditedProgrammesApi.ts`.
+
+### With the dev API
+
+```bash
+script/server --dev-api
+```
 
 ### Local user accounts
 

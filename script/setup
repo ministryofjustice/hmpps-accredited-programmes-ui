@@ -15,4 +15,11 @@ if [ ! -f .env.test ]; then
   cp .env.example .env
 fi
 
+for arg in "$@"
+do
+  if [[ $arg == "--dev-api" ]]; then
+    cp .env.dev.example .env
+  fi
+done
+
 script/bootstrap

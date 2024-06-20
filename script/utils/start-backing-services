@@ -3,17 +3,26 @@
 for arg in "$@"
 do
   if [[ $arg == "--mock-api" ]]; then
+    DEV_API=false
     MOCK_API=true
     DOCKER_PARAM="--scale=hmpps-accredited-programmes-api=0 --scale=hmpps-accredited-programmes-db=0"
+  fi
+
+  if [[ $arg == "--dev-api" ]]; then
+    DEV_API=true
+    MOCK_API=false
+    DOCKER_PARAM="redis"
   fi
 done
 
 echo "==> Starting the backing services in Docker..."
 docker compose up $DOCKER_PARAM -d
 
-echo "==> Stubbing API endpoints..."
-npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts > /dev/null
-npx ts-node --transpile-only ./wiremock/scripts/stubPrisonApi.ts > /dev/null
+if [ "$DEV_API" != true ]; then
+  echo "==> Stubbing API endpoints..."
+  npx ts-node --transpile-only ./wiremock/scripts/resetStubs.ts > /dev/null
+  npx ts-node --transpile-only ./wiremock/scripts/stubPrisonApi.ts > /dev/null
+fi
 
 if [ "$MOCK_API" = true ]; then
   npx ts-node --transpile-only ./wiremock/scripts/stubAccreditedProgrammesApi.ts > /dev/null
