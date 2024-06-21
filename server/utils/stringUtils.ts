@@ -20,6 +20,10 @@ export default class StringUtils {
       .join('')
   }
 
+  static pluralise(word: string, count: number): string {
+    return count === 1 ? word : `${word}s`
+  }
+
   static properCase(word: string): string {
     return word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
   }

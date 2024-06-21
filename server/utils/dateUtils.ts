@@ -1,4 +1,18 @@
 export default class DateUtils {
+  static calculateAge(dateString: string): { months: number; years: number } {
+    const date = new Date(dateString)
+    const now = new Date()
+    let years = now.getFullYear() - date.getFullYear()
+    let months = now.getMonth() - date.getMonth()
+
+    if (months < 0) {
+      years -= 1
+      months += 12
+    }
+
+    return { months, years }
+  }
+
   /**
    * Formats an ISO8601 datetime string into the format specified by the GOV.UK Style guide
    * e.g. 1 January 2022

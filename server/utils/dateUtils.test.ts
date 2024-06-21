@@ -1,14 +1,26 @@
 import DateUtils from './dateUtils'
 
 describe('DateUtils', () => {
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  describe('calculateAge', () => {
+    it('calculates the age in years and months from a date string', () => {
+      const mockDateOfBirth = '2000-02-01'
+      const mockTodaysDate = new Date('2021-01-01')
+      jest.useFakeTimers().setSystemTime(mockTodaysDate)
+
+      expect(DateUtils.calculateAge(mockDateOfBirth)).toEqual({ months: 11, years: 20 })
+    })
+  })
+
   describe('govukFormattedFullDateString', () => {
     it('returns todays date as a date string in the format specified by the GOV.UK style guide', () => {
       const mockTodaysDate = new Date('2001-06-04')
-      jest.spyOn(global, 'Date').mockImplementation(() => mockTodaysDate)
+      jest.useFakeTimers().setSystemTime(mockTodaysDate)
 
       expect(DateUtils.govukFormattedFullDateString()).toEqual('4 June 2001')
-
-      jest.spyOn(global, 'Date').mockRestore()
     })
 
     describe('when `datestring` is provided', () => {
