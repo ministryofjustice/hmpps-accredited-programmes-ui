@@ -44,6 +44,15 @@ describe('StringUtils', () => {
     })
   })
 
+  describe('pluralise', () => {
+    it.each([
+      ['one item', 'item', 1, 'item'],
+      ['multiple items', 'item', 2, 'items'],
+    ])('handles %s: %s -> %s', (_inputType: string, word: string, count: number, expectedOutput: string) => {
+      expect(StringUtils.pluralise(word, count)).toEqual(expectedOutput)
+    })
+  })
+
   describe('properCase', () => {
     it.each([
       ['an empty string', '', ''],

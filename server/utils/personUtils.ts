@@ -60,6 +60,8 @@ export default class PersonUtils {
   }
 
   static summaryListRows(person: Person): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    const age = DateUtils.calculateAge(person.dateOfBirth)
+
     return [
       {
         key: { text: 'Name' },
@@ -71,7 +73,9 @@ export default class PersonUtils {
       },
       {
         key: { text: 'Date of birth' },
-        value: { text: person.dateOfBirth },
+        value: {
+          text: `${person.dateOfBirth} (${age.years} years, ${age.months} ${StringUtils.pluralise('month', age.months)})`,
+        },
       },
       {
         key: { text: 'Ethnicity' },

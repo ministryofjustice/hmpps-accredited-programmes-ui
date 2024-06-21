@@ -147,6 +147,8 @@ describe('PersonUtils', () => {
     })
 
     it("formats a person's details in the appropriate format for passing to a GOV.UK Summary List nunjucks macro", () => {
+      jest.useFakeTimers().setSystemTime(new Date('2021-01-01'))
+
       expect(PersonUtils.summaryListRows(person)).toEqual([
         {
           key: { text: 'Name' },
@@ -158,7 +160,7 @@ describe('PersonUtils', () => {
         },
         {
           key: { text: 'Date of birth' },
-          value: { text: '5 July 1971' },
+          value: { text: '5 July 1971 (49 years, 6 months)' },
         },
         {
           key: { text: 'Ethnicity' },
@@ -181,6 +183,8 @@ describe('PersonUtils', () => {
           value: { text: 'HMP Hewell' },
         },
       ])
+
+      jest.useRealTimers()
     })
 
     describe('when `currentPrison` is `undefined`', () => {
