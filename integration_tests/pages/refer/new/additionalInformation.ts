@@ -34,9 +34,9 @@ export default class NewReferralAdditionalInformationPage extends Page {
     )
 
     const expectedListText = [
-      'The reason for the referral',
-      "The person's motivation to complete a programme",
-      'Information to support an override',
+      'the reason for the referral',
+      "the person's motivation to complete a programme",
+      'information to support an override',
     ]
 
     cy.get('.govuk-list li').each((listItemElement, listItemElementIndex) => {
