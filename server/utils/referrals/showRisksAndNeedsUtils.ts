@@ -62,6 +62,7 @@ export default class ShowRisksAndNeedsUtils {
     return navigationItems.map(item => ({
       ...item,
       active: currentPath === item.href,
+      href: `${item.href}#content`,
     }))
   }
 

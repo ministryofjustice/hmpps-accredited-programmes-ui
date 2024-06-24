@@ -222,6 +222,7 @@ export default class ShowReferralUtils {
     return navigationItems.map(item => ({
       ...item,
       active: currentPath === item.href,
+      href: `${item.href}#content`,
     }))
   }
 }
