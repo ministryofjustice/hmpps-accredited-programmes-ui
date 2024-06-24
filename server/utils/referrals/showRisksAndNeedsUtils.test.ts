@@ -12,62 +12,62 @@ describe('ShowRisksAndNeedsUtils', () => {
         expect(ShowRisksAndNeedsUtils.navigationItems(currentRequestPath, mockReferralId)).toEqual([
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: mockReferralId })}#content`,
             text: 'Risks and alerts',
           },
           {
             active: true,
-            href: referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId })}#content`,
             text: 'Section 2 - Offence analysis',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.relationships({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.relationships({ referralId: mockReferralId })}#content`,
             text: 'Section 6 - Relationships',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId })}#content`,
             text: 'Section 7 - Lifestyle and associates',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.drugMisuse({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.drugMisuse({ referralId: mockReferralId })}#content`,
             text: 'Section 8 - Drug misuse',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: mockReferralId })}#content`,
             text: 'Section 9 - Alcohol misuse',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId })}#content`,
             text: 'Section 10 - Emotional wellbeing',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId })}#content`,
             text: 'Section 11 - Thinking and behaving',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId })}#content`,
             text: 'Section 12 - Attitudes',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.health({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.health({ referralId: mockReferralId })}#content`,
             text: 'Section 13 - Health',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId })}#content`,
             text: 'Learning needs',
           },
           {
             active: false,
-            href: referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            href: `${referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId })}#content`,
             text: 'Section R6 - RoSH analysis',
           },
         ])
@@ -81,62 +81,62 @@ describe('ShowRisksAndNeedsUtils', () => {
         expect(ShowRisksAndNeedsUtils.navigationItems(currentRequestPath, mockReferralId)).toEqual([
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: mockReferralId })}#content`,
             text: 'Risks and alerts',
           },
           {
             active: true,
-            href: assessPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId })}#content`,
             text: 'Section 2 - Offence analysis',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.relationships({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.relationships({ referralId: mockReferralId })}#content`,
             text: 'Section 6 - Relationships',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: mockReferralId })}#content`,
             text: 'Section 7 - Lifestyle and associates',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.drugMisuse({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.drugMisuse({ referralId: mockReferralId })}#content`,
             text: 'Section 8 - Drug misuse',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.alcoholMisuse({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.alcoholMisuse({ referralId: mockReferralId })}#content`,
             text: 'Section 9 - Alcohol misuse',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: mockReferralId })}#content`,
             text: 'Section 10 - Emotional wellbeing',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: mockReferralId })}#content`,
             text: 'Section 11 - Thinking and behaving',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.attitudes({ referralId: mockReferralId })}#content`,
             text: 'Section 12 - Attitudes',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.health({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.health({ referralId: mockReferralId })}#content`,
             text: 'Section 13 - Health',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId })}#content`,
             text: 'Learning needs',
           },
           {
             active: false,
-            href: assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId }),
+            href: `${assessPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId })}#content`,
             text: 'Section R6 - RoSH analysis',
           },
         ])

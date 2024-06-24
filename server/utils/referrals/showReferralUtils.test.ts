@@ -473,32 +473,32 @@ describe('ShowReferralUtils', () => {
         expect(ShowReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
           {
             active: true,
-            href: referPaths.show.personalDetails({ referralId: mockReferralId }),
+            href: `${referPaths.show.personalDetails({ referralId: mockReferralId })}#content`,
             text: 'Personal details',
           },
           {
             active: false,
-            href: referPaths.show.programmeHistory({ referralId: mockReferralId }),
+            href: `${referPaths.show.programmeHistory({ referralId: mockReferralId })}#content`,
             text: 'Programme history',
           },
           {
             active: false,
-            href: referPaths.show.offenceHistory({ referralId: mockReferralId }),
+            href: `${referPaths.show.offenceHistory({ referralId: mockReferralId })}#content`,
             text: 'Offence history',
           },
           {
             active: false,
-            href: referPaths.show.sentenceInformation({ referralId: mockReferralId }),
+            href: `${referPaths.show.sentenceInformation({ referralId: mockReferralId })}#content`,
             text: 'Sentence information',
           },
           {
             active: false,
-            href: referPaths.show.releaseDates({ referralId: mockReferralId }),
+            href: `${referPaths.show.releaseDates({ referralId: mockReferralId })}#content`,
             text: 'Release dates',
           },
           {
             active: false,
-            href: referPaths.show.additionalInformation({ referralId: mockReferralId }),
+            href: `${referPaths.show.additionalInformation({ referralId: mockReferralId })}#content`,
             text: 'Additional information',
           },
         ])
@@ -512,32 +512,32 @@ describe('ShowReferralUtils', () => {
         expect(ShowReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
           {
             active: true,
-            href: assessPaths.show.personalDetails({ referralId: mockReferralId }),
+            href: `${assessPaths.show.personalDetails({ referralId: mockReferralId })}#content`,
             text: 'Personal details',
           },
           {
             active: false,
-            href: assessPaths.show.programmeHistory({ referralId: mockReferralId }),
+            href: `${assessPaths.show.programmeHistory({ referralId: mockReferralId })}#content`,
             text: 'Programme history',
           },
           {
             active: false,
-            href: assessPaths.show.offenceHistory({ referralId: mockReferralId }),
+            href: `${assessPaths.show.offenceHistory({ referralId: mockReferralId })}#content`,
             text: 'Offence history',
           },
           {
             active: false,
-            href: assessPaths.show.sentenceInformation({ referralId: mockReferralId }),
+            href: `${assessPaths.show.sentenceInformation({ referralId: mockReferralId })}#content`,
             text: 'Sentence information',
           },
           {
             active: false,
-            href: assessPaths.show.releaseDates({ referralId: mockReferralId }),
+            href: `${assessPaths.show.releaseDates({ referralId: mockReferralId })}#content`,
             text: 'Release dates',
           },
           {
             active: false,
-            href: assessPaths.show.additionalInformation({ referralId: mockReferralId }),
+            href: `${assessPaths.show.additionalInformation({ referralId: mockReferralId })}#content`,
             text: 'Additional information',
           },
         ])

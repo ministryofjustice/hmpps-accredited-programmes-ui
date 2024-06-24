@@ -329,7 +329,7 @@ export default abstract class Page {
       cy.wrap(navigationItemElement).within(() => {
         cy.get('a').should('have.attr', 'href', href)
 
-        if (currentPath === href) {
+        if (currentPath === href.replace('#content', '')) {
           cy.get('a').should('have.attr', 'aria-current', 'location')
         } else {
           cy.get('a').should('not.have.attr', 'aria-current', 'location')
@@ -435,7 +435,7 @@ export default abstract class Page {
       cy.wrap(navigationItemElement).within(() => {
         cy.get('a').should('have.attr', 'href', href)
 
-        if (currentPath === href) {
+        if (currentPath === href.replace('#content', '')) {
           cy.get('a').should('have.attr', 'aria-current', 'location')
         } else {
           cy.get('a').should('not.have.attr', 'aria-current', 'location')
