@@ -110,6 +110,7 @@ context('Withdraw referral', () => {
       withdrawCategoryPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawCategoryPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawCategoryPage.shouldContainWithdrawalCategoryRadioItems(referralStatusCategories)
+      withdrawCategoryPage.shouldContainLink('Cancel', referPaths.show.statusHistory({ referralId: referral.id }))
     })
 
     describe('when submitting without selecting a category', () => {
@@ -142,6 +143,7 @@ context('Withdraw referral', () => {
       withdrawReasonPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawReasonPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
       withdrawReasonPage.shouldContainWithdrawalReasonRadioItems(referralStatusReasons)
+      withdrawReasonPage.shouldContainLink('Cancel', referPaths.show.statusHistory({ referralId: referral.id }))
     })
 
     describe('when submitting without selecting a reason', () => {
@@ -171,6 +173,10 @@ context('Withdraw referral', () => {
       withdrawConfirmSelectionPage.shouldHavePersonDetails(person)
       withdrawConfirmSelectionPage.shouldContainBackLink(referPaths.show.statusHistory({ referralId: referral.id }))
       withdrawConfirmSelectionPage.shouldContainCurrentStatusTimelineItem(presentedStatusHistory)
+      withdrawConfirmSelectionPage.shouldContainLink(
+        'Cancel',
+        referPaths.show.statusHistory({ referralId: referral.id }),
+      )
     })
 
     describe('when submitting without entering a reason', () => {
