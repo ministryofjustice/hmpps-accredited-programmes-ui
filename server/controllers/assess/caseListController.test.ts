@@ -27,6 +27,7 @@ const mockCaseListUtils = CaseListUtils as jest.Mocked<typeof CaseListUtils>
 describe('AssessCaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
+  const originalUrl = '/original-url'
   const referralStatusGroup = 'open'
   const pathWithQuery = 'path-with-query'
   const queryParamsExcludingPage: Array<QueryParam> = []
@@ -49,7 +50,7 @@ describe('AssessCaseListController', () => {
   beforeEach(() => {
     controller = new AssessCaseListController(courseService, referralService, referenceDataService)
 
-    request = createMock<Request>({ user: { username } })
+    request = createMock<Request>({ originalUrl, user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
   })
 
@@ -185,9 +186,12 @@ describe('AssessCaseListController', () => {
       })
 
       it('renders the show template with the correct response locals', async () => {
+        expect(request.session.recentCaseListPath).toBeUndefined()
+
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
+        expect(request.session.recentCaseListPath).toBe(originalUrl)
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
           audienceSelectItems,

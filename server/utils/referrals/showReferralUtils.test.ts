@@ -23,7 +23,7 @@ describe('ShowReferralUtils', () => {
       it('contains the "Back to referrals" and "Update status" buttons with the corect hrefs', () => {
         expect(
           ShowReferralUtils.buttons(
-            assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+            { currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }) },
             submittedReferral,
           ),
         ).toEqual([
@@ -46,7 +46,7 @@ describe('ShowReferralUtils', () => {
 
           expect(
             ShowReferralUtils.buttons(
-              assessPaths.show.statusHistory({ referralId: closedReferral.id }),
+              { currentPath: assessPaths.show.statusHistory({ referralId: closedReferral.id }) },
               closedReferral,
             ),
           ).toEqual(
@@ -61,13 +61,36 @@ describe('ShowReferralUtils', () => {
           )
         })
       })
+
+      describe('and there is a `recentCaseListPath` value', () => {
+        it('contains the "Back to referrals" button with the correct href', () => {
+          const recentCaseListPath = '/assess/referrals/case-list'
+
+          expect(
+            ShowReferralUtils.buttons(
+              {
+                currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+                recentCaseListPath,
+              },
+              submittedReferral,
+            ),
+          ).toEqual(
+            expect.arrayContaining([
+              {
+                href: recentCaseListPath,
+                text: 'Back to referrals',
+              },
+            ]),
+          )
+        })
+      })
     })
 
     describe('when on the refer journey', () => {
       it('contains the correct buttons, with the "Withdraw referral" and "Hold" buttons in a disabled state', () => {
         expect(
           ShowReferralUtils.buttons(
-            referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+            { currentPath: referPaths.show.statusHistory({ referralId: submittedReferral.id }) },
             submittedReferral,
           ),
         ).toEqual([
@@ -93,7 +116,10 @@ describe('ShowReferralUtils', () => {
           const closedReferral = referralFactory.closed().build()
 
           expect(
-            ShowReferralUtils.buttons(referPaths.show.statusHistory({ referralId: closedReferral.id }), closedReferral),
+            ShowReferralUtils.buttons(
+              { currentPath: referPaths.show.statusHistory({ referralId: closedReferral.id }) },
+              closedReferral,
+            ),
           ).toEqual(
             expect.arrayContaining([
               {
@@ -123,7 +149,7 @@ describe('ShowReferralUtils', () => {
           it('contains the "Put on hold" button with the correct href', () => {
             expect(
               ShowReferralUtils.buttons(
-                referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+                { currentPath: referPaths.show.statusHistory({ referralId: submittedReferral.id }) },
                 submittedReferral,
                 statusTransitions,
               ),
@@ -149,7 +175,7 @@ describe('ShowReferralUtils', () => {
           it('contains the "Remove hold" button with the correct href', () => {
             expect(
               ShowReferralUtils.buttons(
-                referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+                { currentPath: referPaths.show.statusHistory({ referralId: submittedReferral.id }) },
                 submittedReferral,
                 statusTransitions,
               ),
@@ -172,7 +198,7 @@ describe('ShowReferralUtils', () => {
           it('contains the "Withdraw referral" button with the correct href', () => {
             expect(
               ShowReferralUtils.buttons(
-                referPaths.show.statusHistory({ referralId: submittedReferral.id }),
+                { currentPath: referPaths.show.statusHistory({ referralId: submittedReferral.id }) },
                 submittedReferral,
                 statusTransitions,
               ),

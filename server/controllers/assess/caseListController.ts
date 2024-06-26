@@ -117,6 +117,8 @@ export default class AssessCaseListController {
       }
       /* eslint-enable sort-keys */
 
+      req.session.recentCaseListPath = req.originalUrl
+
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),

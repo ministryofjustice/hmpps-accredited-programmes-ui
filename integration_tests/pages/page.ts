@@ -348,7 +348,7 @@ export default abstract class Page {
       : referPathBase.pattern
 
     cy.get('[data-testid="show-referral-buttons"]').then(buttonsElement => {
-      const buttons = ShowReferralUtils.buttons(currentBasePath, referral, statusTransitions)
+      const buttons = ShowReferralUtils.buttons({ currentPath: currentBasePath }, referral, statusTransitions)
 
       cy.wrap(buttonsElement).within(() => {
         buttons.forEach((button, buttonIndex) => {

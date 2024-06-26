@@ -9,6 +9,7 @@ declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
     nowInMinutes: number
+    recentCaseListPath: string
     referralStatusUpdateData: ReferralStatusUpdateSessionData
     returnTo: string
     user: UserDetails
