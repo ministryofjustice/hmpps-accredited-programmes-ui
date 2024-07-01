@@ -49,6 +49,7 @@ describe('StatusHistoryController', () => {
       label: { text: 'Referral submitted' },
     },
   ]
+  const recentCaseListPath = '/case-list-path'
   let person: Person
   let referral: Referral
   let referralStatusHistory: Array<ReferralStatusHistoryPresenter>
@@ -77,6 +78,7 @@ describe('StatusHistoryController', () => {
     request = createMock<Request>({
       params: { referralId: referral.id },
       path: referPaths.show.statusHistory({ referralId: referral.id }),
+      session: { recentCaseListPath },
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
@@ -111,7 +113,11 @@ describe('StatusHistoryController', () => {
         'statusHistory',
         referral.id,
       )
-      expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path, referral, statusTransitions)
+      expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(
+        { currentPath: request.path, recentCaseListPath },
+        referral,
+        statusTransitions,
+      )
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
@@ -144,7 +150,11 @@ describe('StatusHistoryController', () => {
         await requestHandler(request, response, next)
 
         expect(referralService.getStatusTransitions).not.toHaveBeenCalled()
-        expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(request.path, referral, undefined)
+        expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(
+          { currentPath: request.path, recentCaseListPath },
+          referral,
+          undefined,
+        )
       })
     })
   })

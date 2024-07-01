@@ -101,6 +101,7 @@ describe('RisksAndNeedsController', () => {
   const navigationItems = [{ active: true, href: 'nav-href', text: 'Nav Item' }]
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
+  const recentCaseListPath = '/case-list-path'
   let person: Person
   let referral: Referral
   let sharedPageData: RisksAndNeedsSharedPageData
@@ -135,7 +136,11 @@ describe('RisksAndNeedsController', () => {
 
     controller = new RisksAndNeedsController(courseService, oasysService, personService, referralService)
 
-    request = createMock<Request>({ params: { referralId: referral.id }, user: { token: userToken, username } })
+    request = createMock<Request>({
+      params: { referralId: referral.id },
+      session: { recentCaseListPath },
+      user: { token: userToken, username },
+    })
     response = Helpers.createMockResponseWithCaseloads()
   })
 
@@ -896,7 +901,11 @@ describe('RisksAndNeedsController', () => {
     expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber)
-    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral, isRefer ? statusTransitions : undefined)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(
+      { currentPath: path, recentCaseListPath },
+      referral,
+      isRefer ? statusTransitions : undefined,
+    )
 
     if (isRefer) {
       expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)

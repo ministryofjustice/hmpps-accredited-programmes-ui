@@ -25,6 +25,7 @@ jest.mock('../../utils/referrals/caseListUtils')
 describe('ReferCaseListController', () => {
   const username = 'USERNAME'
   const activeCaseLoadId = 'MDI'
+  const originalUrl = '/original-url'
   const pathWithQuery = 'path-with-query'
   const queryParamsExcludingPage: Array<QueryParam> = []
   const queryParamsExcludingSort: Array<QueryParam> = []
@@ -40,7 +41,7 @@ describe('ReferCaseListController', () => {
   beforeEach(() => {
     controller = new ReferCaseListController(referralService)
 
-    request = createMock<Request>({ flash: jest.fn().mockReturnValue([]), user: { username } })
+    request = createMock<Request>({ flash: jest.fn().mockReturnValue([]), originalUrl, user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
   })
 
@@ -92,9 +93,12 @@ describe('ReferCaseListController', () => {
       })
 
       it('renders the show template with the correct response locals', async () => {
+        expect(request.session.recentCaseListPath).toBeUndefined()
+
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
+        expect(request.session.recentCaseListPath).toBe(originalUrl)
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
           isMyReferralsPage: true,
           pageHeading: 'My referrals',

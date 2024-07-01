@@ -63,6 +63,7 @@ describe('ReferralsController', () => {
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
   const referrerEmail = 'referrer.email@test-email.co.uk'
+  const recentCaseListPath = '/case-list-path'
   let person: Person
   let referral: Referral
   let referringUser: User
@@ -117,7 +118,11 @@ describe('ReferralsController', () => {
       userService,
     )
 
-    request = createMock<Request>({ params: { referralId: referral.id }, user: { token: userToken, username } })
+    request = createMock<Request>({
+      params: { referralId: referral.id },
+      session: { recentCaseListPath },
+      user: { token: userToken, username },
+    })
     response = Helpers.createMockResponseWithCaseloads()
   })
 
@@ -409,7 +414,11 @@ describe('ReferralsController', () => {
     expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber)
     expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
-    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(path, referral, isRefer ? statusTransitions : undefined)
+    expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(
+      { currentPath: path, recentCaseListPath },
+      referral,
+      isRefer ? statusTransitions : undefined,
+    )
     expect(mockShowReferralUtils.viewReferralNavigationItems).toHaveBeenCalledWith(path, referral.id)
     expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'referral', referral.id)
 

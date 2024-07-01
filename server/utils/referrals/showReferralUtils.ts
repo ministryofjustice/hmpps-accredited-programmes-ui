@@ -16,17 +16,20 @@ import type { User, UserEmail } from '@manage-users-api'
 
 export default class ShowReferralUtils {
   static buttons(
-    currentPath: Request['path'],
+    referencePaths: {
+      currentPath: Request['path']
+      recentCaseListPath?: string
+    },
     referral: Referral,
     statusTransitions?: Array<ReferralStatusRefData>,
   ): Array<GovukFrontendButton> {
-    const isAssess = currentPath.startsWith(assessPathBase.pattern)
+    const isAssess = referencePaths.currentPath.startsWith(assessPathBase.pattern)
     const paths = isAssess ? assessPaths : referPaths
     const { closed } = referral
 
     const buttons: Array<GovukFrontendButton> = [
       {
-        href: paths.caseList.index({}),
+        href: referencePaths.recentCaseListPath || paths.caseList.index({}),
         text: 'Back to referrals',
       },
     ]

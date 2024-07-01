@@ -77,6 +77,8 @@ export default class ReferCaseListController {
         sortableCaseListColumns.status = 'Referral status'
       }
 
+      req.session.recentCaseListPath = req.originalUrl
+
       return res.render('referrals/caseList/refer/show', {
         draftReferralDeletedMessage: req.flash('draftReferralDeletedMessage')[0],
         isMyReferralsPage: true,
