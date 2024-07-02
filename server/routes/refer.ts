@@ -103,10 +103,6 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(referPaths.updateStatus.reason.submit.pattern, reasonController.submit())
 
   get(referPaths.updateStatus.selection.show.pattern, updateStatusSelectionController.show())
-  post(
-    referPaths.updateStatus.selection.confirmation.submit.pattern,
-    updateStatusSelectionController.submitConfirmation(),
-  )
   post(referPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
 
   get(referPaths.manageHold.pattern, updateStatusActionController.manageHold())

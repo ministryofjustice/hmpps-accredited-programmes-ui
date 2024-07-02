@@ -44,6 +44,7 @@ const controllers = (services: Services) => {
 
   const updateStatusSelectionController = new UpdateStatusSelectionController(
     services.personService,
+    services.referenceDataService,
     services.referralService,
   )
 

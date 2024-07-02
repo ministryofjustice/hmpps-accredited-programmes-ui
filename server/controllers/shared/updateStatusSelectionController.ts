@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
-import type { PersonService, ReferralService } from '../../services'
+import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatus, ReferralStatusUppercase } from '@accredited-programmes/models'
 
@@ -10,6 +10,7 @@ const maxLength = 500
 export default class UpdateStatusSelectionController {
   constructor(
     private readonly personService: PersonService,
+    private readonly referenceDataService: ReferenceDataService,
     private readonly referralService: ReferralService,
   ) {}
 
@@ -38,19 +39,11 @@ export default class UpdateStatusSelectionController {
 
       const person = await this.personService.getPerson(username, referral.prisonNumber)
 
-      const { hasConfirmation } = confirmationText
-
-      if (hasConfirmation) {
-        FormUtils.setFieldErrors(req, res, ['confirmation'])
-      } else {
-        FormUtils.setFieldErrors(req, res, ['reason'])
-        FormUtils.setFormValues(req, res)
-      }
+      FormUtils.setFieldErrors(req, res, ['reason'])
+      FormUtils.setFormValues(req, res)
 
       return res.render('referrals/updateStatus/selection/show', {
-        action: hasConfirmation
-          ? paths.updateStatus.selection.confirmation.submit({ referralId })
-          : paths.updateStatus.selection.reason.submit({ referralId }),
+        action: paths.updateStatus.selection.reason.submit({ referralId }),
         backLinkHref: paths.show.statusHistory({ referralId }),
         confirmationText,
         maxLength,
@@ -61,30 +54,10 @@ export default class UpdateStatusSelectionController {
     }
   }
 
-  submitConfirmation(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      const paths = this.getPaths(req)
-
-      const { referralId } = req.params
-      const { confirmation } = req.body
-      const { referralStatusUpdateData } = req.session
-
-      if (referralStatusUpdateData?.referralId !== referralId || !referralStatusUpdateData.finalStatusDecision) {
-        return res.redirect(paths.show.statusHistory({ referralId }))
-      }
-
-      if (!confirmation) {
-        req.flash('confirmationError', 'Select confirmation')
-
-        return res.redirect(paths.updateStatus.selection.show({ referralId }))
-      }
-
-      return this.updateReferralStatus(req, res, referralStatusUpdateData.finalStatusDecision)
-    }
-  }
-
   submitReason(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
       let hasErrors = false
       const paths = this.getPaths(req)
 
@@ -96,7 +69,12 @@ export default class UpdateStatusSelectionController {
         return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
-      if (!reason) {
+      const finalStatusDecisionCodeData = await this.referenceDataService.getReferralStatusCodeData(
+        req.user.username,
+        referralStatusUpdateData.finalStatusDecision,
+      )
+
+      if (!finalStatusDecisionCodeData.notesOptional && !reason) {
         req.flash('reasonError', 'Enter a reason')
         hasErrors = true
       }
