@@ -15,7 +15,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ReferralUtils, ShowReferralUtils } from '../../utils'
-import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { ConfirmationFields, Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { GovukFrontendRadiosItem } from '@govuk-frontend'
 
@@ -205,8 +205,9 @@ describe('UpdateStatusDecisionController', () => {
 
       describe('and viewing the final decision step of `ASSESSED_SUITABLE`', () => {
         it('should call `getConfirmationText`, call to check the correct radio item and render the template with the correct response locals', async () => {
-          const confirmationText = {
+          const confirmationText: ConfirmationFields = {
             hasConfirmation: false,
+            notesOptional: false,
             primaryDescription:
               'This person cannot complete the programme now. They may be able to join or restart in the future.',
             primaryHeading: 'Deselection: keep referral open',

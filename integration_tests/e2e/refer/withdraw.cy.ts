@@ -9,6 +9,7 @@ import {
   referralStatusCategoryFactory,
   referralStatusHistoryFactory,
   referralStatusReasonFactory,
+  referralStatusRefDataFactory,
   userFactory,
 } from '../../../server/testutils/factories'
 import auth from '../../mockApis/auth'
@@ -65,6 +66,12 @@ context('Withdraw referral', () => {
   const selectedCategory = referralStatusCategories[0].code
   const selectedReason = referralStatusReasons[0].code
   const reasonInformation = 'Some reason information'
+  const referralStatusCodeData = referralStatusRefDataFactory.build({
+    code: 'WITHDRAWN',
+    hasConfirmation: false,
+    hasNotes: true,
+    notesOptional: false,
+  })
 
   beforeEach(() => {
     cy.task('reset')
@@ -97,6 +104,7 @@ context('Withdraw referral', () => {
       }),
       referralId: referral.id,
     })
+    cy.task('stubReferralStatusCodeData', referralStatusCodeData)
   })
 
   describe('withdrawal category', () => {

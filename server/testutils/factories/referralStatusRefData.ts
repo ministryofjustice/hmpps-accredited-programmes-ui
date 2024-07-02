@@ -27,5 +27,6 @@ export default Factory.define<ReferralStatusRefData>(({ params }) => {
     draft: faker.datatype.boolean(),
     hasConfirmation,
     hasNotes,
+    notesOptional: hasNotes ? faker.datatype.boolean() : false,
   }
 })

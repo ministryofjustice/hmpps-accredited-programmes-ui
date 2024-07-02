@@ -14,33 +14,20 @@
 
     <h2 class="govuk-heading-m">{{ confirmationText.secondaryHeading }}</h2>
 
-    {% if confirmationText.hasConfirmation %}
-      {{ govukCheckboxes({
-        name: "confirmation",
-        items: [
-          {
-            value: "true",
-            text: confirmationText.secondaryDescription
-          }
-        ],
-        errorMessage: errors.messages.confirmation
-      }) }}
-    {% else %}
-      <p>{{ confirmationText.secondaryDescription }}</p>
+    <p>{{ confirmationText.secondaryDescription }}</p>
 
-      {{ govukCharacterCount({
-        id: "reason",
-        name: "reason",
-        maxlength: maxLength,
-        label: {
-          text: "Add reason",
-          classes: 'govuk-fieldset__legend--s'
-        },
-        value: formValues.reason,
-        classes: "govuk-!-width-three-quarters",
-        errorMessage: errors.messages.reason
-      }) }}
-    {% endif %}
+    {{ govukCharacterCount({
+      id: "reason",
+      name: "reason",
+      maxlength: maxLength,
+      label: {
+        text: "Add reason" + (" (optional)" if confirmationText.notesOptional),
+        classes: 'govuk-fieldset__legend--s'
+      },
+      value: formValues.reason,
+      classes: "govuk-!-width-three-quarters",
+      errorMessage: errors.messages.reason
+    }) }}
 
     {% if confirmationText.warningText %}
       {{ govukWarningText({

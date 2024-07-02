@@ -27,6 +27,7 @@ const referralStatusGroups = ['open', 'draft', 'closed'] as const
 
 interface ConfirmationFields {
   hasConfirmation: boolean
+  notesOptional: boolean
   primaryDescription: string
   primaryHeading: string
   secondaryDescription: string
@@ -111,6 +112,7 @@ type ReferralStatusRefData = {
   hasNotes?: boolean
   hintText?: string
   hold?: boolean
+  notesOptional?: boolean
   release?: boolean
 }
 

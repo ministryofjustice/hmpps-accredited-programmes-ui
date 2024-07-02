@@ -55,10 +55,6 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(assessPaths.updateStatus.reason.submit.pattern, reasonController.submit())
 
   get(assessPaths.updateStatus.selection.show.pattern, updateStatusSelectionController.show())
-  post(
-    assessPaths.updateStatus.selection.confirmation.submit.pattern,
-    updateStatusSelectionController.submitConfirmation(),
-  )
   post(assessPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
 
   return router

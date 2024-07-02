@@ -6,6 +6,7 @@ import type { ConfirmationFields } from '@accredited-programmes/models'
 export default Factory.define<ConfirmationFields>(() => {
   return {
     hasConfirmation: faker.datatype.boolean(),
+    notesOptional: faker.datatype.boolean(),
     primaryDescription: faker.lorem.sentence(),
     primaryHeading: faker.lorem.words({ max: 4, min: 2 }),
     secondaryDescription: faker.lorem.sentence(),
