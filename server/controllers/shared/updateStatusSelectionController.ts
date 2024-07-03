@@ -75,12 +75,12 @@ export default class UpdateStatusSelectionController {
       )
 
       if (!finalStatusDecisionCodeData.notesOptional && !reason) {
-        req.flash('reasonError', 'Enter a reason')
+        req.flash('reasonError', 'Enter additional information')
         hasErrors = true
       }
 
       if (reason?.length > maxLength) {
-        req.flash('reasonError', `Reason must be ${maxLength} characters or fewer`)
+        req.flash('reasonError', `Additional information must be ${maxLength} characters or fewer`)
         req.flash('formValues', [JSON.stringify({ reason })])
         hasErrors = true
       }

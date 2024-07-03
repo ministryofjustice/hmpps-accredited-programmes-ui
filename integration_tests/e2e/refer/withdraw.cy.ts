@@ -194,7 +194,7 @@ context('Withdraw referral', () => {
         withdrawConfirmSelectionPage.shouldHaveErrors([
           {
             field: 'reason',
-            message: 'Enter a reason',
+            message: 'Enter additional information',
           },
         ])
       })
