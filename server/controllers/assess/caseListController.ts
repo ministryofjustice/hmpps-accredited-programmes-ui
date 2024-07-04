@@ -29,7 +29,7 @@ export default class AssessCaseListController {
       return res.redirect(
         PathUtils.pathWithQuery(
           assessPaths.caseList.show({ courseId, referralStatusGroup }),
-          CaseListUtils.queryParamsExcludingPage(audience, status),
+          CaseListUtils.queryParamsExcludingPage(audience, undefined, status),
         ),
       )
     }
@@ -57,7 +57,14 @@ export default class AssessCaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseId } = req.params
-      const { page, status, strand: audience, sortColumn, sortDirection } = req.query as Record<string, string>
+      const {
+        nameOrId,
+        page,
+        status,
+        strand: audience,
+        sortColumn,
+        sortDirection,
+      } = req.query as Record<string, string>
       const referralsFiltered = !!status || !!audience
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
@@ -82,6 +89,7 @@ export default class AssessCaseListController {
         this.referralService.getReferralViews(username, activeCaseLoadId, {
           audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
           courseName: selectedCourse.name,
+          nameOrId,
           page: page ? (Number(page) - 1).toString() : undefined,
           sortColumn,
           sortDirection,
@@ -97,14 +105,14 @@ export default class AssessCaseListController {
 
       const pagination = PaginationUtils.pagination(
         req.path,
-        CaseListUtils.queryParamsExcludingPage(audience, status, sortColumn, sortDirection),
+        CaseListUtils.queryParamsExcludingPage(audience, nameOrId, status, sortColumn, sortDirection),
         paginatedReferralViews.pageNumber,
         paginatedReferralViews.totalPages,
       )
 
       const basePathExcludingSort = PathUtils.pathWithQuery(
         assessPaths.caseList.show({ courseId, referralStatusGroup }),
-        CaseListUtils.queryParamsExcludingSort(audience, status, page),
+        CaseListUtils.queryParamsExcludingSort(audience, nameOrId, status, page),
       )
 
       /* eslint-disable sort-keys */

@@ -64,6 +64,7 @@ export default class CaseListUtils {
 
   static queryParamsExcludingPage(
     audience?: string,
+    nameOrId?: string,
     status?: string,
     sortColumn?: string,
     sortDirection?: string,
@@ -72,6 +73,10 @@ export default class CaseListUtils {
 
     if (audience) {
       queryParams.push({ key: 'strand', value: audience })
+    }
+
+    if (nameOrId) {
+      queryParams.push({ key: 'nameOrId', value: nameOrId })
     }
 
     if (status) {
@@ -86,11 +91,20 @@ export default class CaseListUtils {
     return queryParams
   }
 
-  static queryParamsExcludingSort(audience?: string, status?: string, page?: string): Array<QueryParam> {
+  static queryParamsExcludingSort(
+    audience?: string,
+    nameOrId?: string,
+    status?: string,
+    page?: string,
+  ): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
     if (audience) {
       queryParams.push({ key: 'strand', value: audience })
+    }
+
+    if (nameOrId) {
+      queryParams.push({ key: 'nameOrId', value: nameOrId })
     }
 
     if (status) {

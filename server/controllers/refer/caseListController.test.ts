@@ -148,10 +148,12 @@ describe('ReferCaseListController', () => {
 
       describe('when there are query parameters', () => {
         it('renders the show template with the correct response locals', async () => {
+          const uiNameOrIdParam = 'ABC1234'
           const uiSortColumnQueryParam = 'surname'
           const uiSortDirectionQueryParam = 'ascending'
 
           request.query = {
+            nameOrId: uiNameOrIdParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
           }
@@ -169,15 +171,23 @@ describe('ReferCaseListController', () => {
             tableRows,
           })
           expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
+            nameOrId: uiNameOrIdParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
             statusGroup: 'open',
           })
           expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
             undefined,
+            uiNameOrIdParam,
             undefined,
             uiSortColumnQueryParam,
             uiSortDirectionQueryParam,
+          )
+          expect(CaseListUtils.queryParamsExcludingSort).toHaveBeenLastCalledWith(
+            undefined,
+            uiNameOrIdParam,
+            undefined,
+            undefined,
           )
           expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
             request.path,
