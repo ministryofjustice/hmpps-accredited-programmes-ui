@@ -101,7 +101,7 @@ describe('AssessCaseListController', () => {
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
 
-      expect(CaseListUtils.queryParamsExcludingPage)
+      expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenCalledWith(audience, undefined, status)
       expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, queryParamsExcludingPage)
       expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
     })
@@ -113,7 +113,7 @@ describe('AssessCaseListController', () => {
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
 
-      expect(CaseListUtils.queryParamsExcludingPage)
+      expect(CaseListUtils.queryParamsExcludingPage).not.toHaveBeenCalled()
       expect(request.flash).toHaveBeenCalledWith('audienceError', 'Choose a filter')
       expect(response.redirect).toHaveBeenCalledWith(redirectPathBase)
     })
@@ -217,6 +217,7 @@ describe('AssessCaseListController', () => {
           undefined,
           undefined,
           undefined,
+          undefined,
         )
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
@@ -292,6 +293,7 @@ describe('AssessCaseListController', () => {
           })
           expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
             uiAudienceQueryParam,
+            undefined,
             uiStatusQueryParam,
             uiSortColumnQueryParam,
             uiSortDirectionQueryParam,
@@ -369,6 +371,7 @@ describe('AssessCaseListController', () => {
           statusGroup: 'closed',
         })
         expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
+          undefined,
           undefined,
           undefined,
           undefined,
