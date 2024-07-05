@@ -11,6 +11,22 @@ import { type CaseListColumnHeader, type SortableCaseListColumnKey } from '@accr
 export default class ReferCaseListController {
   constructor(private readonly referralService: ReferralService) {}
 
+  filter(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { referralStatusGroup } = req.params
+      const { nameOrId } = req.body
+
+      return res.redirect(
+        PathUtils.pathWithQuery(
+          referPaths.caseList.show({ referralStatusGroup }),
+          CaseListUtils.queryParamsExcludingPage(undefined, nameOrId),
+        ),
+      )
+    }
+  }
+
   indexRedirect(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -81,8 +97,11 @@ export default class ReferCaseListController {
       req.session.recentCaseListPath = req.originalUrl
 
       return res.render('referrals/caseList/refer/show', {
+        action: referPaths.caseList.filter({ referralStatusGroup }),
         draftReferralDeletedMessage: req.flash('draftReferralDeletedMessage')[0],
         isMyReferralsPage: true,
+        nameOrId,
+        otherStatusGroups: referralStatusGroups.filter(group => group !== referralStatusGroup),
         pageHeading: 'My referrals',
         pagination,
         referralStatusGroup,
