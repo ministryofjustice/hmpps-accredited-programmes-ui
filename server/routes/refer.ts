@@ -32,6 +32,7 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
   get(referPaths.caseList.show.pattern, referCaseListController.show())
+  post(referPaths.caseList.filter.pattern, referCaseListController.filter())
 
   get(referPaths.new.start.pattern, newReferralsController.start())
   get(referPaths.new.new.pattern, newReferralsController.new())

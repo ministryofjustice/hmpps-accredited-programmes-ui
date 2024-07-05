@@ -24,33 +24,33 @@
   @include govuk-responsive-margin(7, 'bottom');
 
   background-color: govuk-colour('light-grey');
+}
 
-  .form-controls {
+.form-controls {
+  * {
+    width: 100%;
+  }
+
+  :last-child {
+    margin-bottom: 0;
+  }
+
+  @include govuk-media-query($from: desktop) {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
     * {
-      width: 100%;
+      width: auto;
     }
 
-    :last-child {
+    .govuk-button {
+      margin-bottom: $govuk-border-width-form-element;
+    }
+
+    .govuk-form-group {
       margin-bottom: 0;
-    }
-
-    @include govuk-media-query($from: desktop) {
-      display: flex;
-      align-items: flex-end;
-      flex-wrap: wrap;
-
-      * {
-        width: auto;
-      }
-
-      .govuk-button {
-        margin-bottom: $govuk-border-width-form-element;
-      }
-
-      .govuk-form-group {
-        margin-bottom: 0;
-        margin-right: govuk-spacing(3);
-      }
+      margin-right: govuk-spacing(3);
     }
   }
 }

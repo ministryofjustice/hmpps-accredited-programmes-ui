@@ -30,6 +30,7 @@ const updateStatusSelectionShowPath = updateStatusPathBase.path('selection')
 
 export default {
   caseList: {
+    filter: caseListPath.path(':referralStatusGroup'),
     index: caseListPath,
     show: caseListPath.path(':referralStatusGroup'),
   },
