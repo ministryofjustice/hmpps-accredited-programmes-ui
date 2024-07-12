@@ -254,7 +254,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - APG-225-PT-case-list-search
 
       - hmpps/deploy_env:
           name: deploy_dev
@@ -263,7 +263,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - APG-225-PT-case-list-search
           requires:
             - helm_lint
             - unit_test

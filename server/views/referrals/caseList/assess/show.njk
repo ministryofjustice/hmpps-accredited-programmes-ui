@@ -1,4 +1,5 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
@@ -36,6 +37,19 @@
       <h2 class="govuk-heading-m">Filters</h2>
       <form class="form-controls" action="{{ action }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukInput({
+          label: {
+            text: "Search by name or prison number"
+          },
+          classes: "govuk-!-width-full",
+          id: "name-or-id",
+          name: "nameOrId",
+          value: nameOrId,
+          attributes: {
+            "data-testid": "search-input"
+          }
+        }) }}
 
         {{ govukSelect({
           id: "audience",
