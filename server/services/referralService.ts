@@ -63,7 +63,6 @@ export default class ReferralService {
   async getMyReferralViews(
     username: Express.User['username'],
     query?: {
-      nameOrId?: string
       page?: string
       sortColumn?: string
       sortDirection?: string
@@ -141,7 +140,6 @@ export default class ReferralService {
     query?: {
       audience?: string
       courseName?: string
-      nameOrId?: string
       page?: string
       sortColumn?: string
       sortDirection?: string

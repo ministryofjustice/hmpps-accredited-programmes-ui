@@ -88,7 +88,6 @@ describe('CaseListUtils', () => {
 
   describe('queryParamsExcludingPage', () => {
     const audienceQueryParam = { key: 'audience', value: 'general violence offence' }
-    const nameOrIdQueryParam = { key: 'nameOrId', value: 'ABC123' }
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
     const sortColumnQueryParam = { key: 'sortColumn', value: 'conditionalReleaseDate' }
     const sortDirectionQueryParam = { key: 'sortDirection', value: 'ascending' }
@@ -98,14 +97,12 @@ describe('CaseListUtils', () => {
         expect(
           CaseListUtils.queryParamsExcludingPage(
             audienceQueryParam.value,
-            nameOrIdQueryParam.value,
             statusQueryParam.value,
             sortColumnQueryParam.value,
             sortDirectionQueryParam.value,
           ),
         ).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
-          { key: 'nameOrId', value: nameOrIdQueryParam.value },
           { key: 'status', value: statusQueryParam.value },
           { key: 'sortColumn', value: sortColumnQueryParam.value },
           { key: 'sortDirection', value: sortDirectionQueryParam.value },
@@ -115,7 +112,7 @@ describe('CaseListUtils', () => {
 
     describe('when only status is provided', () => {
       it('returns an array with a status `QueryParam`', async () => {
-        expect(CaseListUtils.queryParamsExcludingPage(undefined, undefined, statusQueryParam.value)).toEqual([
+        expect(CaseListUtils.queryParamsExcludingPage(undefined, statusQueryParam.value)).toEqual([
           { key: 'status', value: statusQueryParam.value },
         ])
       })
@@ -123,7 +120,7 @@ describe('CaseListUtils', () => {
 
     describe('when only strand is provided', () => {
       it('returns an array with a strand `QueryParam`, converted from "audience"', async () => {
-        expect(CaseListUtils.queryParamsExcludingPage(audienceQueryParam.value)).toEqual([
+        expect(CaseListUtils.queryParamsExcludingPage(audienceQueryParam.value, undefined)).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
         ])
       })
@@ -132,13 +129,7 @@ describe('CaseListUtils', () => {
     describe('when only sortColumn is provided', () => {
       it('returns an empty array', async () => {
         expect(
-          CaseListUtils.queryParamsExcludingPage(
-            undefined,
-            undefined,
-            undefined,
-            sortColumnQueryParam.value,
-            undefined,
-          ),
+          CaseListUtils.queryParamsExcludingPage(undefined, undefined, sortColumnQueryParam.value, undefined),
         ).toEqual([])
       })
     })
@@ -146,13 +137,7 @@ describe('CaseListUtils', () => {
     describe('when only sortDirection is provided', () => {
       it('returns an empty array', async () => {
         expect(
-          CaseListUtils.queryParamsExcludingPage(
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            sortDirectionQueryParam.value,
-          ),
+          CaseListUtils.queryParamsExcludingPage(undefined, undefined, undefined, sortDirectionQueryParam.value),
         ).toEqual([])
       })
     })
@@ -163,7 +148,6 @@ describe('CaseListUtils', () => {
           CaseListUtils.queryParamsExcludingPage(
             undefined,
             undefined,
-            undefined,
             sortColumnQueryParam.value,
             sortDirectionQueryParam.value,
           ),
@@ -176,14 +160,13 @@ describe('CaseListUtils', () => {
 
     describe('when all params are undefined', () => {
       it('returns an empty array', async () => {
-        expect(CaseListUtils.queryParamsExcludingPage()).toEqual([])
+        expect(CaseListUtils.queryParamsExcludingPage(undefined, undefined, undefined, undefined)).toEqual([])
       })
     })
   })
 
   describe('queryParamsExcludingSort', () => {
     const audienceQueryParam = { key: 'audience', value: 'general violence offence' }
-    const nameOrIdQueryParam = { key: 'nameOrId', value: 'ABC123' }
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
     const pageQueryParam = { key: 'page', value: '2' }
 
@@ -192,13 +175,11 @@ describe('CaseListUtils', () => {
         expect(
           CaseListUtils.queryParamsExcludingSort(
             audienceQueryParam.value,
-            nameOrIdQueryParam.value,
             statusQueryParam.value,
             pageQueryParam.value,
           ),
         ).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
-          { key: 'nameOrId', value: nameOrIdQueryParam.value },
           { key: 'status', value: statusQueryParam.value },
           { key: 'page', value: pageQueryParam.value },
         ])
@@ -207,7 +188,7 @@ describe('CaseListUtils', () => {
 
     describe('when only status is provided', () => {
       it('returns an array with a status `QueryParam`', async () => {
-        expect(CaseListUtils.queryParamsExcludingSort(undefined, undefined, statusQueryParam.value)).toEqual([
+        expect(CaseListUtils.queryParamsExcludingSort(undefined, statusQueryParam.value, undefined)).toEqual([
           { key: 'status', value: statusQueryParam.value },
         ])
       })
@@ -215,7 +196,7 @@ describe('CaseListUtils', () => {
 
     describe('when only strand is provided', () => {
       it('returns an array with a strand `QueryParam`, converted from "audience"', async () => {
-        expect(CaseListUtils.queryParamsExcludingSort(audienceQueryParam.value)).toEqual([
+        expect(CaseListUtils.queryParamsExcludingSort(audienceQueryParam.value, undefined, undefined)).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
         ])
       })
@@ -223,7 +204,7 @@ describe('CaseListUtils', () => {
 
     describe('when only page is provided', () => {
       it('returns an array with a page `QueryParam`', async () => {
-        expect(CaseListUtils.queryParamsExcludingSort(undefined, undefined, undefined, pageQueryParam.value)).toEqual([
+        expect(CaseListUtils.queryParamsExcludingSort(undefined, undefined, pageQueryParam.value)).toEqual([
           { key: 'page', value: pageQueryParam.value },
         ])
       })
@@ -231,7 +212,7 @@ describe('CaseListUtils', () => {
 
     describe('when all params are undefined', () => {
       it('returns an empty array', async () => {
-        expect(CaseListUtils.queryParamsExcludingSort()).toEqual([])
+        expect(CaseListUtils.queryParamsExcludingSort(undefined, undefined, undefined)).toEqual([])
       })
     })
   })
