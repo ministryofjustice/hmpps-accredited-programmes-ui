@@ -11,22 +11,6 @@ import { type CaseListColumnHeader, type SortableCaseListColumnKey } from '@accr
 export default class ReferCaseListController {
   constructor(private readonly referralService: ReferralService) {}
 
-  filter(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      TypeUtils.assertHasUser(req)
-
-      const { referralStatusGroup } = req.params
-      const { nameOrId } = req.body
-
-      return res.redirect(
-        PathUtils.pathWithQuery(
-          referPaths.caseList.show({ referralStatusGroup }),
-          CaseListUtils.queryParamsExcludingPage(undefined, nameOrId),
-        ),
-      )
-    }
-  }
-
   indexRedirect(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -39,7 +23,7 @@ export default class ReferCaseListController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { nameOrId, page, sortColumn, sortDirection } = req.query as Record<string, string>
+      const { page, sortColumn, sortDirection } = req.query as Record<string, string>
       const { username } = res.locals.user
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
@@ -50,7 +34,6 @@ export default class ReferCaseListController {
       }
 
       const paginatedReferralViews = await this.referralService.getMyReferralViews(username, {
-        nameOrId,
         page: page ? (Number(page) - 1).toString() : undefined,
         sortColumn,
         sortDirection,
@@ -61,14 +44,14 @@ export default class ReferCaseListController {
 
       const pagination = PaginationUtils.pagination(
         req.path,
-        CaseListUtils.queryParamsExcludingPage(undefined, nameOrId, undefined, sortColumn, sortDirection),
+        CaseListUtils.queryParamsExcludingPage(undefined, undefined, sortColumn, sortDirection),
         paginatedReferralViews.pageNumber,
         paginatedReferralViews.totalPages,
       )
 
       const basePathExcludingSort = PathUtils.pathWithQuery(
         referPaths.caseList.show({ referralStatusGroup }),
-        CaseListUtils.queryParamsExcludingSort(undefined, nameOrId, undefined, page),
+        CaseListUtils.queryParamsExcludingSort(undefined, undefined, page),
       )
 
       /* eslint-disable sort-keys */
@@ -97,11 +80,8 @@ export default class ReferCaseListController {
       req.session.recentCaseListPath = req.originalUrl
 
       return res.render('referrals/caseList/refer/show', {
-        action: referPaths.caseList.filter({ referralStatusGroup }),
         draftReferralDeletedMessage: req.flash('draftReferralDeletedMessage')[0],
         isMyReferralsPage: true,
-        nameOrId,
-        otherStatusGroups: referralStatusGroups.filter(group => group !== referralStatusGroup),
         pageHeading: 'My referrals',
         pagination,
         referralStatusGroup,

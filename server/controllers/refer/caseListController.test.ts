@@ -41,50 +41,12 @@ describe('ReferCaseListController', () => {
   beforeEach(() => {
     controller = new ReferCaseListController(referralService)
 
-    request = createMock<Request>({ body: {}, flash: jest.fn().mockReturnValue([]), originalUrl, user: { username } })
+    request = createMock<Request>({ flash: jest.fn().mockReturnValue([]), originalUrl, user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
   })
 
   afterEach(() => {
     jest.resetAllMocks()
-  })
-
-  describe('filter', () => {
-    beforeEach(() => {
-      ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
-      ;(CaseListUtils.queryParamsExcludingPage as jest.Mock).mockReturnValue(queryParamsExcludingPage)
-
-      request.params = { referralStatusGroup: 'open' }
-    })
-
-    it('redirects to the show action with the selected referral status group', async () => {
-      const requestHandler = controller.filter()
-      await requestHandler(request, response, next)
-
-      expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
-        referPaths.caseList.show({ referralStatusGroup: 'open' }),
-        [],
-      )
-      expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenCalledWith(undefined, undefined)
-      expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-    })
-
-    describe('when there is `nameOrId` in the request body', () => {
-      it('redirects to the show action with the selected referral status group and `nameOrId`', async () => {
-        const nameOrId = 'ABC1234'
-        request.body = { nameOrId }
-
-        const requestHandler = controller.filter()
-        await requestHandler(request, response, next)
-
-        expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
-          referPaths.caseList.show({ referralStatusGroup: 'open' }),
-          [],
-        )
-        expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenCalledWith(undefined, nameOrId)
-        expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
-      })
-    })
   })
 
   describe('indexRedirect', () => {
@@ -138,9 +100,7 @@ describe('ReferCaseListController', () => {
 
         expect(request.session.recentCaseListPath).toBe(originalUrl)
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
-          action: '/refer/referrals/case-list/open',
           isMyReferralsPage: true,
-          otherStatusGroups: ['draft', 'closed'],
           pageHeading: 'My referrals',
           pagination,
           referralStatusGroup: 'open',
@@ -188,12 +148,10 @@ describe('ReferCaseListController', () => {
 
       describe('when there are query parameters', () => {
         it('renders the show template with the correct response locals', async () => {
-          const uiNameOrIdParam = 'ABC1234'
           const uiSortColumnQueryParam = 'surname'
           const uiSortDirectionQueryParam = 'ascending'
 
           request.query = {
-            nameOrId: uiNameOrIdParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
           }
@@ -202,10 +160,7 @@ describe('ReferCaseListController', () => {
           await requestHandler(request, response, next)
 
           expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
-            action: '/refer/referrals/case-list/open',
             isMyReferralsPage: true,
-            nameOrId: uiNameOrIdParam,
-            otherStatusGroups: ['draft', 'closed'],
             pageHeading: 'My referrals',
             pagination,
             referralStatusGroup: 'open',
@@ -214,23 +169,15 @@ describe('ReferCaseListController', () => {
             tableRows,
           })
           expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
-            nameOrId: uiNameOrIdParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
             statusGroup: 'open',
           })
           expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
             undefined,
-            uiNameOrIdParam,
             undefined,
             uiSortColumnQueryParam,
             uiSortDirectionQueryParam,
-          )
-          expect(CaseListUtils.queryParamsExcludingSort).toHaveBeenLastCalledWith(
-            undefined,
-            uiNameOrIdParam,
-            undefined,
-            undefined,
           )
           expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
             request.path,
@@ -298,10 +245,8 @@ describe('ReferCaseListController', () => {
         await requestHandler(request, response, next)
 
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
-          action: '/refer/referrals/case-list/draft',
           draftReferralDeletedMessage,
           isMyReferralsPage: true,
-          otherStatusGroups: ['open', 'closed'],
           pageHeading: 'My referrals',
           pagination,
           referralStatusGroup: 'draft',
@@ -358,17 +303,6 @@ describe('ReferCaseListController', () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(response.render).toHaveBeenCalledWith('referrals/caseList/refer/show', {
-          action: '/refer/referrals/case-list/closed',
-          isMyReferralsPage: true,
-          otherStatusGroups: ['open', 'draft'],
-          pageHeading: 'My referrals',
-          pagination,
-          referralStatusGroup: 'closed',
-          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
-          tableHeadings,
-          tableRows,
-        })
         expect(referralService.getMyReferralViews).toHaveBeenCalledWith(username, {
           statusGroup: 'closed',
         })
