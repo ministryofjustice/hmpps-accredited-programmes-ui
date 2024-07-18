@@ -8,6 +8,15 @@ import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredite
 jest.mock('../formUtils')
 
 describe('CaseListUtils', () => {
+  const referralViewsBase = {
+    content: [],
+    pageIsEmpty: false,
+    pageNumber: 0,
+    pageSize: 10,
+    totalElements: 0,
+    totalPages: 1,
+  }
+
   beforeEach(() => {
     jest.resetAllMocks()
   })
@@ -19,16 +28,22 @@ describe('CaseListUtils', () => {
         {
           active: true,
           href: '/assess/referrals/course/course-id/case-list/open',
-          text: 'Open referrals',
+          text: 'Open referrals (3)',
         },
         {
           active: false,
           href: '/assess/referrals/course/course-id/case-list/closed',
-          text: 'Closed referrals',
+          text: 'Closed referrals (1)',
         },
       ]
 
-      expect(CaseListUtils.assessSubNavigationItems(currentPath, 'course-id')).toEqual(expectedItems)
+      expect(
+        CaseListUtils.assessSubNavigationItems(currentPath, 'course-id', {
+          closed: { ...referralViewsBase, totalElements: 1 },
+          draft: { ...referralViewsBase, totalElements: 2 },
+          open: { ...referralViewsBase, totalElements: 3 },
+        }),
+      ).toEqual(expectedItems)
     })
   })
 
@@ -243,21 +258,27 @@ describe('CaseListUtils', () => {
         {
           active: true,
           href: '/refer/referrals/case-list/open',
-          text: 'Open referrals',
+          text: 'Open referrals (3)',
         },
         {
           active: false,
           href: '/refer/referrals/case-list/draft',
-          text: 'Draft referrals',
+          text: 'Draft referrals (2)',
         },
         {
           active: false,
           href: '/refer/referrals/case-list/closed',
-          text: 'Closed referrals',
+          text: 'Closed referrals (1)',
         },
       ]
 
-      expect(CaseListUtils.referSubNavigationItems(currentPath)).toEqual(expectedItems)
+      expect(
+        CaseListUtils.referSubNavigationItems(currentPath, {
+          closed: { ...referralViewsBase, totalElements: 1 },
+          draft: { ...referralViewsBase, totalElements: 2 },
+          open: { ...referralViewsBase, totalElements: 3 },
+        }),
+      ).toEqual(expectedItems)
     })
   })
 

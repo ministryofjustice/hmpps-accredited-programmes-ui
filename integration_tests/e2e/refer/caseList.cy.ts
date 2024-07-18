@@ -49,6 +49,14 @@ context('Referral case lists', () => {
         queryParameters: { statusGroup: { equalTo: 'open' } },
         referralViews: openReferralViews,
       })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'draft' } },
+        referralViews: draftReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
+      })
 
       const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
       cy.visit(path)
@@ -71,6 +79,14 @@ context('Referral case lists', () => {
         queryParameters: { page: { equalTo: '4' }, statusGroup: { equalTo: 'open' } },
         referralViews: openReferralViews,
         totalPages: 7,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'draft' } },
+        referralViews: draftReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
       })
 
       const path = PathUtils.pathWithQuery(referPaths.caseList.show({ referralStatusGroup: 'open' }), [
@@ -100,6 +116,14 @@ context('Referral case lists', () => {
         queryParameters: { statusGroup: { equalTo: 'open' } },
         referralViews: [],
       })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'draft' } },
+        referralViews: [],
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'closed' } },
+        referralViews: [],
+      })
 
       const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
       cy.visit(path)
@@ -125,6 +149,14 @@ context('Referral case lists', () => {
         queryParameters: { statusGroup: { equalTo: 'draft' } },
         referralViews: draftReferralViews,
       })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'open' } },
+        referralViews: openReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
+      })
 
       const path = referPaths.caseList.show({ referralStatusGroup: 'draft' })
       cy.visit(path)
@@ -147,6 +179,14 @@ context('Referral case lists', () => {
         queryParameters: { page: { equalTo: '4' }, statusGroup: { equalTo: 'draft' } },
         referralViews: draftReferralViews,
         totalPages: 7,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'open' } },
+        referralViews: openReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
       })
 
       const path = PathUtils.pathWithQuery(referPaths.caseList.show({ referralStatusGroup: 'draft' }), [
@@ -178,6 +218,14 @@ context('Referral case lists', () => {
         queryParameters: { statusGroup: { equalTo: 'closed' } },
         referralViews: closedReferralViews,
       })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'open' } },
+        referralViews: openReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'draft' } },
+        referralViews: draftReferralViews,
+      })
 
       const path = referPaths.caseList.show({ referralStatusGroup: 'closed' })
       cy.visit(path)
@@ -200,6 +248,14 @@ context('Referral case lists', () => {
         queryParameters: { page: { equalTo: '4' }, statusGroup: { equalTo: 'closed' } },
         referralViews: closedReferralViews,
         totalPages: 7,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'open' } },
+        referralViews: openReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'draft' } },
+        referralViews: draftReferralViews,
       })
 
       const path = PathUtils.pathWithQuery(referPaths.caseList.show({ referralStatusGroup: 'closed' }), [
@@ -230,6 +286,14 @@ context('Referral case lists', () => {
       cy.task('stubFindMyReferralViews', {
         queryParameters: { statusGroup: { equalTo: 'open' } },
         referralViews: openReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'closed' } },
+        referralViews: closedReferralViews,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { statusGroup: { equalTo: 'draft' } },
+        referralViews: draftReferralViews,
       })
 
       const path = referPaths.caseList.index({})

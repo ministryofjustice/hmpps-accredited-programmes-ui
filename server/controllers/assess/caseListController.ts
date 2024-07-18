@@ -68,7 +68,8 @@ export default class AssessCaseListController {
       const referralsFiltered = !!status || !!audience
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
-      const isValidReferralStatusGroup = ['open', 'closed'].includes(referralStatusGroup)
+      const statusGroups: Array<ReferralStatusGroup> = ['open', 'closed']
+      const isValidReferralStatusGroup = statusGroups.includes(referralStatusGroup)
       FormUtils.setFieldErrors(req, res, ['audience', 'status'])
 
       if (!isValidReferralStatusGroup) {
@@ -85,17 +86,38 @@ export default class AssessCaseListController {
         throw createError(404, `Course with ID ${courseId} not found.`)
       }
 
-      const [paginatedReferralViews, referralStatuses] = await Promise.all([
-        this.referralService.getReferralViews(username, activeCaseLoadId, {
-          audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
-          courseName: selectedCourse.name,
-          nameOrId,
-          page: page ? (Number(page) - 1).toString() : undefined,
-          sortColumn,
-          sortDirection,
-          status,
-          statusGroup: referralStatusGroup,
-        }),
+      // const [paginatedReferralViews, referralStatuses] = await Promise.all([
+      //   this.referralService.getReferralViews(username, activeCaseLoadId, {
+      //     audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
+      //     courseName: selectedCourse.name,
+      //     page: page ? (Number(page) - 1).toString() : undefined,
+      //     sortColumn,
+      //     sortDirection,
+      //     status,
+      //     statusGroup: referralStatusGroup,
+      //   }),
+      //   this.referenceDataService.getReferralStatuses(username),
+      // ])
+
+      const [allReferralViews, referralStatuses] = await Promise.all([
+        Object.fromEntries(
+          await Promise.all(
+            statusGroups.map(async group => {
+              const referralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
+                audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
+                courseName: selectedCourse.name,
+                nameOrId,
+                page: page ? (Number(page) - 1).toString() : undefined,
+                sortColumn,
+                sortDirection,
+                status,
+                statusGroup: group,
+              })
+
+              return [group, referralViews]
+            }),
+          ),
+        ),
         this.referenceDataService.getReferralStatuses(username),
       ])
 
@@ -103,11 +125,13 @@ export default class AssessCaseListController {
         referralStatusGroup === 'open' ? !referralStatus.closed && !referralStatus.draft : referralStatus.closed,
       )
 
+      const selectedReferralViews = allReferralViews[referralStatusGroup]
+
       const pagination = PaginationUtils.pagination(
         req.path,
         CaseListUtils.queryParamsExcludingPage(audience, nameOrId, status, sortColumn, sortDirection),
-        paginatedReferralViews.pageNumber,
-        paginatedReferralViews.totalPages,
+        selectedReferralViews.pageNumber,
+        selectedReferralViews.totalPages,
       )
 
       const basePathExcludingSort = PathUtils.pathWithQuery(
@@ -138,7 +162,12 @@ export default class AssessCaseListController {
         referralStatusGroup,
         referralStatusSelectItems: CaseListUtils.statusSelectItems(availableStatuses, status),
         referralsFiltered,
-        subNavigationItems: CaseListUtils.assessSubNavigationItems(req.path, courseId),
+        subNavigationItems: CaseListUtils.assessSubNavigationItems(
+          req.path,
+          courseId,
+          allReferralViews,
+          CaseListUtils.queryParamsExcludingPage(audience, nameOrId, status, sortColumn, sortDirection),
+        ),
         tableHeadings: CaseListUtils.sortableTableHeadings(
           basePathExcludingSort,
           caseListColumns,
@@ -146,7 +175,7 @@ export default class AssessCaseListController {
           sortDirection,
         ),
         tableRows: CaseListUtils.tableRows(
-          paginatedReferralViews.content,
+          selectedReferralViews.content,
           Object.values(caseListColumns).map(value => value),
         ),
       })

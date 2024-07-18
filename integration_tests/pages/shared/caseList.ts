@@ -70,7 +70,7 @@ export default class CaseListPage extends Page {
               subNavigationItemElement,
               `${StringUtils.properCase(referralStatusGroup)} referrals`,
             )
-            expect(actual).to.equal(expected)
+            expect(actual).to.contain(expected)
 
             cy.get('.moj-sub-navigation__link').then(subNavigationItemLinkElement => {
               cy.wrap(subNavigationItemLinkElement).should(

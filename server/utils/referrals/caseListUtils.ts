@@ -4,8 +4,16 @@ import { referralStatusGroups } from '../../@types/models/Referral'
 import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
+import PathUtils from '../pathUtils'
 import StringUtils from '../stringUtils'
-import type { Course, Referral, ReferralStatusRefData, ReferralView } from '@accredited-programmes/models'
+import type {
+  Course,
+  Paginated,
+  Referral,
+  ReferralStatusGroup,
+  ReferralStatusRefData,
+  ReferralView,
+} from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
@@ -13,14 +21,18 @@ export default class CaseListUtils {
   static assessSubNavigationItems(
     currentPath: Request['path'],
     courseId: Course['id'],
+    allReferralViews: Record<ReferralStatusGroup, Paginated<ReferralView>>,
+    queryParams: Array<QueryParam> = [],
   ): Array<MojFrontendNavigationItem> {
-    return ['open', 'closed'].map(referralStatusGroup => {
+    const statusGroups: Array<ReferralStatusGroup> = ['open', 'closed']
+
+    return statusGroups.map(referralStatusGroup => {
       const path = assessPaths.caseList.show({ courseId, referralStatusGroup })
 
       return {
         active: currentPath === path,
-        href: path,
-        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+        href: PathUtils.pathWithQuery(path, queryParams),
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals (${allReferralViews[referralStatusGroup].totalElements})`,
       }
     })
   }
@@ -118,14 +130,18 @@ export default class CaseListUtils {
     return queryParams
   }
 
-  static referSubNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
+  static referSubNavigationItems(
+    currentPath: Request['path'],
+    allReferralViews: Record<ReferralStatusGroup, Paginated<ReferralView>>,
+    queryParams: Array<QueryParam> = [],
+  ): Array<MojFrontendNavigationItem> {
     return referralStatusGroups.map(referralStatusGroup => {
       const path = referPaths.caseList.show({ referralStatusGroup })
 
       return {
         active: currentPath === path,
-        href: path,
-        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+        href: PathUtils.pathWithQuery(path, queryParams),
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals (${allReferralViews[referralStatusGroup].totalElements})`,
       }
     })
   }
