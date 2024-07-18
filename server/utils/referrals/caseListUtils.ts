@@ -170,6 +170,8 @@ export default class CaseListUtils {
         return referralView.earliestReleaseDate
           ? `${DateUtils.govukFormattedFullDateString(referralView.earliestReleaseDate)}<br>${referralView.earliestReleaseDateType}`
           : 'N/A'
+      case 'Location':
+        return referralView.location || 'N/A'
       case 'Name and prison number':
         return CaseListUtils.nameAndPrisonNumberHtml(referralView, paths)
       case 'Programme location':
@@ -207,6 +209,11 @@ export default class CaseListUtils {
           case 'Earliest release date':
             row.push({
               html: CaseListUtils.tableRowContent(view, 'Earliest release date'),
+            })
+            break
+          case 'Location':
+            row.push({
+              text: CaseListUtils.tableRowContent(view, 'Location'),
             })
             break
           case 'Name and prison number':

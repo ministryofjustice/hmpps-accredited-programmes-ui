@@ -64,6 +64,7 @@ type TagColour =
 type CaseListColumnHeader =
   | 'Date referred'
   | 'Earliest release date'
+  | 'Location'
   | 'Name and prison number'
   | 'Programme location'
   | 'Programme name'
@@ -196,6 +197,7 @@ type SortableCaseListColumnKey =
   | 'audience'
   | 'earliestReleaseDate'
   | 'listDisplayName'
+  | 'location'
   | 'organisationName'
   | 'sentenceType'
   | 'status'

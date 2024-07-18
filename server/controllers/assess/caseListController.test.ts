@@ -134,6 +134,7 @@ describe('AssessCaseListController', () => {
     const tableHeadings = 'fff' as unknown as jest.Mocked<Array<GovukFrontendTableHeadElement>>
     const columnsToInclude: Array<CaseListColumnHeader> = [
       'Name and prison number',
+      'Location',
       'Earliest release date',
       'Programme strand',
       'Sentence type',
@@ -235,6 +236,7 @@ describe('AssessCaseListController', () => {
           {
             audience: 'Programme strand',
             earliestReleaseDate: 'Earliest release date',
+            location: 'Location',
             sentenceType: 'Sentence type',
             status: 'Referral status',
             surname: 'Name and prison number',
@@ -313,6 +315,7 @@ describe('AssessCaseListController', () => {
             {
               audience: 'Programme strand',
               earliestReleaseDate: 'Earliest release date',
+              location: 'Location',
               sentenceType: 'Sentence type',
               status: 'Referral status',
               surname: 'Name and prison number',
@@ -391,6 +394,7 @@ describe('AssessCaseListController', () => {
           {
             audience: 'Programme strand',
             earliestReleaseDate: 'Earliest release date',
+            location: 'Location',
             sentenceType: 'Sentence type',
             status: 'Referral status',
             surname: 'Name and prison number',

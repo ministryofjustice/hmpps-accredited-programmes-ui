@@ -381,6 +381,7 @@ describe('CaseListUtils', () => {
       earliestReleaseDateType: 'Home detention curfew eligibility date',
       forename: 'Del',
       id: 'referral-123',
+      location: 'Whatton (HMP)',
       nonDtoReleaseDateType: 'ARD',
       organisationName: 'Whatton (HMP)',
       paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
@@ -418,6 +419,18 @@ describe('CaseListUtils', () => {
           expect(
             CaseListUtils.tableRowContent({ ...referralView, earliestReleaseDate: undefined }, 'Earliest release date'),
           ).toEqual('N/A')
+        })
+      })
+    })
+
+    describe('Location', () => {
+      it('returns the location', () => {
+        expect(CaseListUtils.tableRowContent(referralView, 'Location')).toEqual('Whatton (HMP)')
+      })
+
+      describe('when `location` is `undefined`', () => {
+        it('returns "N/A"', () => {
+          expect(CaseListUtils.tableRowContent({ ...referralView, location: undefined }, 'Location')).toEqual('N/A')
         })
       })
     })
@@ -600,6 +613,7 @@ describe('CaseListUtils', () => {
       const columnsToInclude: Array<CaseListColumnHeader> = [
         'Date referred',
         'Earliest release date',
+        'Location',
         'Name and prison number',
         'Programme location',
         'Programme name',
@@ -613,6 +627,7 @@ describe('CaseListUtils', () => {
         [
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Date referred') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Earliest release date') },
+          { text: CaseListUtils.tableRowContent(referralViews[0], 'Location') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Name and prison number') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme name') },
@@ -624,6 +639,7 @@ describe('CaseListUtils', () => {
         [
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Date referred') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Earliest release date') },
+          { text: CaseListUtils.tableRowContent(referralViews[1], 'Location') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Name and prison number') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme name') },

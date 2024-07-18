@@ -37,6 +37,7 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
     ]),
     forename: faker.person.firstName(),
     listDisplayName: `${courseName}: ${audience}`,
+    location: `${faker.location.county()} (HMP)`,
     nonDtoReleaseDateType: faker.helpers.arrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
     organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),
     organisationName: `${faker.location.county()} (HMP)`,
