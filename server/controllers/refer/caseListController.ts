@@ -5,7 +5,7 @@ import { referralStatusGroups } from '../../@types/models/Referral'
 import { referPaths } from '../../paths'
 import type { ReferralService } from '../../services'
 import { CaseListUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
-import type { ReferralStatusGroup } from '@accredited-programmes/models'
+import type { Paginated, ReferralStatusGroup, ReferralView } from '@accredited-programmes/models'
 import { type CaseListColumnHeader, type SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
 export default class ReferCaseListController {
@@ -49,21 +49,31 @@ export default class ReferCaseListController {
         throw createHttpError(404, 'Not found')
       }
 
-      const paginatedReferralViews = await this.referralService.getMyReferralViews(username, {
-        nameOrId,
-        page: page ? (Number(page) - 1).toString() : undefined,
-        sortColumn,
-        sortDirection,
-        statusGroup: referralStatusGroup,
-      })
+      const allReferralViews: Record<ReferralStatusGroup, Paginated<ReferralView>> = Object.fromEntries(
+        await Promise.all(
+          referralStatusGroups.map(async group => {
+            const referralViews = await this.referralService.getMyReferralViews(username, {
+              nameOrId,
+              page: page ? (Number(page) - 1).toString() : undefined,
+              sortColumn,
+              sortDirection,
+              statusGroup: group,
+            })
 
-      let paginatedReferralViewsContent = paginatedReferralViews.content
+            return [group, referralViews]
+          }),
+        ),
+      )
+
+      const selectedReferralViews = allReferralViews[referralStatusGroup]
+
+      let selectedReferralViewsPaginatedContent = selectedReferralViews.content
 
       const pagination = PaginationUtils.pagination(
         req.path,
         CaseListUtils.queryParamsExcludingPage(undefined, nameOrId, undefined, sortColumn, sortDirection),
-        paginatedReferralViews.pageNumber,
-        paginatedReferralViews.totalPages,
+        selectedReferralViews.pageNumber,
+        selectedReferralViews.totalPages,
       )
 
       const basePathExcludingSort = PathUtils.pathWithQuery(
@@ -84,8 +94,8 @@ export default class ReferCaseListController {
       const isDraftCaseList = referralStatusGroup === 'draft'
 
       if (isDraftCaseList) {
-        paginatedReferralViewsContent = await Promise.all(
-          paginatedReferralViewsContent.map(async referralView => {
+        selectedReferralViewsPaginatedContent = await Promise.all(
+          selectedReferralViewsPaginatedContent.map(async referralView => {
             const tasksCompleted = await this.referralService.getNumberOfTasksCompleted(username, referralView.id)
             return { ...referralView, tasksCompleted }
           }),
@@ -105,7 +115,11 @@ export default class ReferCaseListController {
         pageHeading: 'My referrals',
         pagination,
         referralStatusGroup,
-        subNavigationItems: CaseListUtils.referSubNavigationItems(req.path),
+        subNavigationItems: CaseListUtils.referSubNavigationItems(
+          req.path,
+          allReferralViews,
+          CaseListUtils.queryParamsExcludingPage(undefined, nameOrId, undefined, sortColumn, sortDirection),
+        ),
         tableHeadings: [
           ...CaseListUtils.sortableTableHeadings(
             basePathExcludingSort,
@@ -116,7 +130,7 @@ export default class ReferCaseListController {
           ...(isDraftCaseList ? [{ text: 'Progress' }] : []),
         ],
         tableRows: CaseListUtils.tableRows(
-          paginatedReferralViewsContent,
+          selectedReferralViewsPaginatedContent,
           [
             ...Object.values(sortableCaseListColumns).map(value => value),
             ...(isDraftCaseList ? (['Progress'] as Array<CaseListColumnHeader>) : []),

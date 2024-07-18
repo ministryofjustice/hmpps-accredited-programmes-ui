@@ -144,7 +144,11 @@ describe('ReferCaseListController', () => {
           pageHeading: 'My referrals',
           pagination,
           referralStatusGroup: 'open',
-          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
+          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path, {
+            closed: paginatedReferralViews,
+            draft: paginatedReferralViews,
+            open: paginatedReferralViews,
+          }),
           tableHeadings,
           tableRows,
         })
@@ -157,7 +161,11 @@ describe('ReferCaseListController', () => {
           paginatedReferralViews.pageNumber,
           paginatedReferralViews.totalPages,
         )
-        expect(CaseListUtils.referSubNavigationItems).toHaveBeenCalledWith(request.path)
+        expect(CaseListUtils.referSubNavigationItems).toHaveBeenCalledWith(request.path, {
+          closed: paginatedReferralViews,
+          draft: paginatedReferralViews,
+          open: paginatedReferralViews,
+        })
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
           {
@@ -209,7 +217,11 @@ describe('ReferCaseListController', () => {
             pageHeading: 'My referrals',
             pagination,
             referralStatusGroup: 'open',
-            subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
+            subNavigationItems: CaseListUtils.referSubNavigationItems(request.path, {
+              closed: paginatedReferralViews,
+              draft: paginatedReferralViews,
+              open: paginatedReferralViews,
+            }),
             tableHeadings,
             tableRows,
           })
@@ -305,7 +317,11 @@ describe('ReferCaseListController', () => {
           pageHeading: 'My referrals',
           pagination,
           referralStatusGroup: 'draft',
-          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
+          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path, {
+            closed: paginatedReferralViews,
+            draft: paginatedReferralViews,
+            open: paginatedReferralViews,
+          }),
           tableHeadings: [...tableHeadings, { text: 'Progress' }],
           tableRows,
         })
@@ -322,7 +338,11 @@ describe('ReferCaseListController', () => {
           referPaths.caseList.show({ referralStatusGroup: 'draft' }),
           queryParamsExcludingSort,
         )
-        expect(CaseListUtils.referSubNavigationItems).toHaveBeenCalledWith(request.path)
+        expect(CaseListUtils.referSubNavigationItems).toHaveBeenCalledWith(request.path, {
+          closed: paginatedReferralViews,
+          draft: paginatedReferralViews,
+          open: paginatedReferralViews,
+        })
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
           {
@@ -365,7 +385,11 @@ describe('ReferCaseListController', () => {
           pageHeading: 'My referrals',
           pagination,
           referralStatusGroup: 'closed',
-          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path),
+          subNavigationItems: CaseListUtils.referSubNavigationItems(request.path, {
+            closed: paginatedReferralViews,
+            draft: paginatedReferralViews,
+            open: paginatedReferralViews,
+          }),
           tableHeadings,
           tableRows,
         })

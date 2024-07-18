@@ -244,7 +244,15 @@ describe('AssessCaseListController', () => {
           undefined,
         )
         expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, undefined)
-        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(request.path, limeCourse.id)
+        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(
+          request.path,
+          limeCourse.id,
+          {
+            closed: paginatedReferralViews,
+            open: paginatedReferralViews,
+          },
+          [],
+        )
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
       })
 
@@ -323,7 +331,15 @@ describe('AssessCaseListController', () => {
             uiSortDirectionQueryParam,
           )
           expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, uiStatusQueryParam)
-          expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(request.path, limeCourse.id)
+          expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(
+            request.path,
+            limeCourse.id,
+            {
+              closed: paginatedReferralViews,
+              open: paginatedReferralViews,
+            },
+            [],
+          )
           expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
         })
       })
@@ -402,7 +418,15 @@ describe('AssessCaseListController', () => {
           undefined,
         )
         expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(closedReferralStatuses, undefined)
-        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(request.path, limeCourse.id)
+        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(
+          request.path,
+          limeCourse.id,
+          {
+            closed: paginatedReferralViews,
+            open: paginatedReferralViews,
+          },
+          [],
+        )
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
       })
     })
