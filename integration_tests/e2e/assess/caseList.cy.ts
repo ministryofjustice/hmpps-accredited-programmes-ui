@@ -26,6 +26,7 @@ context('Referral case lists', () => {
 
   const columnHeaders: Array<CaseListColumnHeader> = [
     'Name and prison number',
+    'Location',
     'Earliest release date',
     'Programme strand',
     'Sentence type',

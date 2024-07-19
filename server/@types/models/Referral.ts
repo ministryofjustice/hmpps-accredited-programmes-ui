@@ -125,6 +125,7 @@ type ReferralView = {
   earliestReleaseDateType?: string
   forename?: string
   listDisplayName?: string
+  location?: string
   nonDtoReleaseDateType?: Prisoner['nonDtoReleaseDateType']
   organisationId?: Organisation['id']
   organisationName?: Organisation['name']

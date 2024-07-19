@@ -110,6 +110,7 @@ export default class AssessCaseListController {
       /* eslint-disable sort-keys */
       const caseListColumns: Partial<Record<SortableCaseListColumnKey, CaseListColumnHeader>> = {
         surname: 'Name and prison number',
+        location: 'Location',
         earliestReleaseDate: 'Earliest release date',
         audience: 'Programme strand',
         sentenceType: 'Sentence type',
