@@ -3,6 +3,7 @@ import type { ResponseError } from 'superagent'
 
 import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
+  AssessmentDateInfo,
   Attitude,
   Behaviour,
   DrugAlcoholDetail,
@@ -22,6 +23,32 @@ export default class OasysService {
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly oasysClientBuilder: RestClientBuilder<OasysClient>,
   ) {}
+
+  async getAssessmentDateInfo(
+    username: Express.User['username'],
+    prisonNumber: Referral['prisonNumber'],
+  ): Promise<AssessmentDateInfo | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const oasysClient = this.oasysClientBuilder(systemToken)
+
+    try {
+      const assessmentDateInfo = await oasysClient.findAssessmentDateInfo(prisonNumber)
+
+      return assessmentDateInfo
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      if (knownError.status === 404) {
+        return null
+      }
+
+      throw createError(
+        knownError.status || 500,
+        `Error fetching assessment date info for prison number ${prisonNumber}.`,
+      )
+    }
+  }
 
   async getAttitude(
     username: Express.User['username'],

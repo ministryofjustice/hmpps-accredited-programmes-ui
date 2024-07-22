@@ -45,6 +45,7 @@ export default {
     show: coursePath,
   },
   oasys: {
+    assessmentDate: oasysBasePath.path('assessment_date'),
     attitude: oasysBasePath.path('attitude'),
     behaviour: oasysBasePath.path('behaviour'),
     drugAndAlcoholDetails: oasysBasePath.path('drug-and-alcohol-details'),
