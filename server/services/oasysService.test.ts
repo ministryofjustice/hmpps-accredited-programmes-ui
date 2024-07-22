@@ -6,6 +6,7 @@ import OasysService from './oasysService'
 import type { RedisClient } from '../data'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
 import {
+  assessmentDateInfoFactory,
   attitudeFactory,
   behaviourFactory,
   drugAlcoholDetailFactory,
@@ -47,6 +48,60 @@ describe('OasysService', () => {
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     oasysClientBuilder.mockReturnValue(oasysClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+  })
+
+  describe('getAssessmentDateInfo', () => {
+    it('returns assessment date info for given prison number', async () => {
+      const assessmentDateInfo = assessmentDateInfoFactory.build()
+
+      when(oasysClient.findAssessmentDateInfo).calledWith(prisonNumber).mockResolvedValue(assessmentDateInfo)
+
+      const result = await service.getAssessmentDateInfo(username, prisonNumber)
+
+      expect(result).toEqual(assessmentDateInfo)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(oasysClient.findAssessmentDateInfo).toHaveBeenCalledWith(prisonNumber)
+    })
+
+    describe('when the oasys client throws a 404 error', () => {
+      it('returns null', async () => {
+        when(oasysClient.findAssessmentDateInfo).calledWith(prisonNumber).mockRejectedValue(notFoundClientError)
+
+        const result = await service.getAssessmentDateInfo(username, prisonNumber)
+        expect(result).toBeNull()
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findAssessmentDateInfo).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws a 500 error', () => {
+      it('throws an error', async () => {
+        when(oasysClient.findAssessmentDateInfo).calledWith(prisonNumber).mockRejectedValue(generalClientError)
+
+        const expectedError = createError(500, `Error fetching assessment date info for prison number ${prisonNumber}.`)
+        await expect(service.getAssessmentDateInfo(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findAssessmentDateInfo).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
+
+    describe('when the oasys client throws an unknown error', () => {
+      it('throws a 500 error', async () => {
+        when(oasysClient.findAssessmentDateInfo).calledWith(prisonNumber).mockRejectedValue(unknownError)
+
+        const expectedError = createError(500, `Error fetching assessment date info for prison number ${prisonNumber}.`)
+        await expect(service.getAssessmentDateInfo(username, prisonNumber)).rejects.toThrow(expectedError)
+
+        expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(oasysClient.findAssessmentDateInfo).toHaveBeenCalledWith(prisonNumber)
+      })
+    })
   })
 
   describe('getAttitude', () => {

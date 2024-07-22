@@ -27,6 +27,7 @@ const controllers = (services: Services) => {
     services.referralService,
   )
   const newReferralsOasysConfirmationController = new NewReferralsOasysConfirmationController(
+    services.oasysService,
     services.personService,
     services.referralService,
   )

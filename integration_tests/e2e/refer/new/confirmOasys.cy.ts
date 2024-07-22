@@ -42,6 +42,11 @@ context('OASys confirmation', () => {
   })
 
   it('Shows the confirm OASys form page', () => {
+    cy.task('stubAssessmentDateInfo', {
+      assessmentDateInfo: { hasOpenAssessment: true, recentCompletedAssessmentDate: '2023-12-19' },
+      prisonNumber: person.prisonNumber,
+    })
+
     const path = referPaths.new.confirmOasys.show({ referralId: referral.id })
     cy.visit(path)
 
@@ -49,12 +54,45 @@ context('OASys confirmation', () => {
     confirmOasysPage.shouldHavePersonDetails(person)
     confirmOasysPage.shouldContainBackLink(referPaths.new.show({ referralId: referral.id }))
     confirmOasysPage.shouldContainHomeLink()
-    confirmOasysPage.shouldContainOasysAccessParagraph()
-    confirmOasysPage.shouldContainWarningText(
-      'You must confirm that the OASys information is accurate before submitting your application.',
+    confirmOasysPage.shouldContainOasysInformationParagraph(
+      'The latest approved layer 3 assessment for Del Hatton was completed on 19 December 2023. A newer assessment exists, but is incomplete, so will not be shown in the referral.',
     )
     confirmOasysPage.shouldContainConfirmationCheckbox()
     confirmOasysPage.shouldContainContinueButton()
+  })
+
+  describe('when there a completed assessment date but no open assessment', () => {
+    it('displays the correct message', () => {
+      cy.task('stubAssessmentDateInfo', {
+        assessmentDateInfo: { hasOpenAssessment: false, recentCompletedAssessmentDate: '2023-12-19' },
+        prisonNumber: person.prisonNumber,
+      })
+
+      const path = referPaths.new.confirmOasys.show({ referralId: referral.id })
+      cy.visit(path)
+
+      const confirmOasysPage = Page.verifyOnPage(NewReferralConfirmOasysPage, { person, referral })
+      confirmOasysPage.shouldContainOasysInformationParagraph(
+        'The latest approved layer 3 assessment for Del Hatton was completed on 19 December 2023.',
+      )
+    })
+  })
+
+  describe('when there is no assessment information', () => {
+    it('displays the correct message', () => {
+      cy.task('stubAssessmentDateInfo', {
+        assessmentDateInfo: {},
+        prisonNumber: person.prisonNumber,
+      })
+
+      const path = referPaths.new.confirmOasys.show({ referralId: referral.id })
+      cy.visit(path)
+
+      const confirmOasysPage = Page.verifyOnPage(NewReferralConfirmOasysPage, { person, referral })
+      confirmOasysPage.shouldContainOasysInformationParagraph(
+        'There is no completed and approved layer 3 assessment for Del Hatton.',
+      )
+    })
   })
 
   describe('When confirming OASys information', () => {

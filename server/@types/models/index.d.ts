@@ -1,3 +1,4 @@
+import type { AssessmentDateInfo } from './AssessmentDateInfo'
 import type { Attitude } from './Attitude'
 import type { Behaviour } from './Behaviour'
 import type { Course } from './Course'
@@ -41,6 +42,7 @@ import type { RoshAnalysis } from './RoshAnalysis'
 
 export type {
   Alert,
+  AssessmentDateInfo,
   Attitude,
   Behaviour,
   ConfirmationFields,
