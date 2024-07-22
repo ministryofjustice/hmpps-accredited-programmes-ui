@@ -7,7 +7,7 @@ export default class NewReferralConfirmOasysPage extends Page {
   referral: Referral
 
   constructor(args: { person: Person; referral: Referral }) {
-    super('Confirm the OASys information')
+    super('Check risks and needs information (OASys)')
 
     const { person, referral } = args
     this.person = person
@@ -30,10 +30,7 @@ export default class NewReferralConfirmOasysPage extends Page {
     this.shouldContainButton('Continue')
   }
 
-  shouldContainOasysAccessParagraph() {
-    cy.get('[data-testid="oasys-access-paragraph"]').should(
-      'have.text',
-      'The programme team will need to access the full OASys Layer 3 to assess this referral.',
-    )
+  shouldContainOasysInformationParagraph(text: string) {
+    cy.get('[data-testid="oasys-information-paragraph"]').should('contain.text', text)
   }
 }

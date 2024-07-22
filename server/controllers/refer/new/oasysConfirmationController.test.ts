@@ -4,12 +4,15 @@ import type { NextFunction, Request, Response } from 'express'
 
 import NewReferralsOasysConfirmationController from './oasysConfirmationController'
 import { authPaths, referPaths } from '../../../paths'
-import type { PersonService, ReferralService } from '../../../services'
+import type { OasysService, PersonService, ReferralService } from '../../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
-import { FormUtils, TypeUtils } from '../../../utils'
+import { DateUtils, FormUtils, TypeUtils } from '../../../utils'
 
+jest.mock('../../../utils/dateUtils')
 jest.mock('../../../utils/formUtils')
+
+const mockDateUtils = DateUtils as jest.Mocked<typeof DateUtils>
 
 describe('NewReferralsOasysConfirmationController', () => {
   const username = 'SOME_USERNAME'
@@ -18,6 +21,7 @@ describe('NewReferralsOasysConfirmationController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const oasysService = createMock<OasysService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
@@ -38,13 +42,16 @@ describe('NewReferralsOasysConfirmationController', () => {
     prisonNumber: person.prisonNumber,
     referrerUsername: username,
   })
+  const assessmentDateInfo = { hasOpenAssessment: true, recentCompletedAssessmentDate: '2023-12-19' }
 
   let controller: NewReferralsOasysConfirmationController
 
   beforeEach(() => {
     request = createMock<Request>({ params: { referralId }, user: { username } })
     response = Helpers.createMockResponseWithCaseloads()
-    controller = new NewReferralsOasysConfirmationController(personService, referralService)
+    controller = new NewReferralsOasysConfirmationController(oasysService, personService, referralService)
+
+    mockDateUtils.govukFormattedFullDateString.mockReturnValue('19 December 2023')
   })
 
   afterEach(() => {
@@ -52,14 +59,13 @@ describe('NewReferralsOasysConfirmationController', () => {
   })
 
   describe('show', () => {
-    it('renders the show template for confirming OASys information is up to date', async () => {
-      referralService.getReferral.mockResolvedValue(draftReferral)
+    beforeEach(() => {
       personService.getPerson.mockResolvedValue(person)
+      referralService.getReferral.mockResolvedValue(draftReferral)
+    })
 
-      const emptyErrorsLocal = { list: [], messages: {} }
-      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
-        response.locals.errors = emptyErrorsLocal
-      })
+    it('renders the show template for confirming OASys information is up to date', async () => {
+      oasysService.getAssessmentDateInfo.mockResolvedValue(assessmentDateInfo)
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
@@ -67,11 +73,37 @@ describe('NewReferralsOasysConfirmationController', () => {
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/oasysConfirmation/show', {
-        pageHeading: 'Confirm the OASys information',
+        hasOpenAssessment: true,
+        pageHeading: 'Check risks and needs information (OASys)',
         person,
+        recentCompletedAssessmentDate: '19 December 2023',
         referral: draftReferral,
       })
+      expect(DateUtils.govukFormattedFullDateString).toHaveBeenCalledWith(
+        assessmentDateInfo.recentCompletedAssessmentDate,
+      )
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['oasysConfirmed'])
+    })
+
+    describe('when there is no assessment information', () => {
+      it('renders the show template without the assessment information', async () => {
+        oasysService.getAssessmentDateInfo.mockResolvedValue({})
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
+        expect(response.render).toHaveBeenCalledWith('referrals/new/oasysConfirmation/show', {
+          hasOpenAssessment: undefined,
+          pageHeading: 'Check risks and needs information (OASys)',
+          person,
+          recentCompletedAssessmentDate: undefined,
+          referral: draftReferral,
+        })
+        expect(DateUtils.govukFormattedFullDateString).not.toHaveBeenCalled()
+        expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['oasysConfirmed'])
+      })
     })
 
     describe('when the referral has been submitted', () => {

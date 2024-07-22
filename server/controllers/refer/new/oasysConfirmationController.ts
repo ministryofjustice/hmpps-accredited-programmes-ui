@@ -1,12 +1,13 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { authPaths, referPaths } from '../../../paths'
-import type { PersonService, ReferralService } from '../../../services'
-import { FormUtils, TypeUtils } from '../../../utils'
+import type { OasysService, PersonService, ReferralService } from '../../../services'
+import { DateUtils, FormUtils, TypeUtils } from '../../../utils'
 import type { ReferralUpdate } from '@accredited-programmes/models'
 
 export default class NewReferralsOasysConfirmationController {
   constructor(
+    private readonly oasysService: OasysService,
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
@@ -27,13 +28,20 @@ export default class NewReferralsOasysConfirmationController {
         return res.redirect(authPaths.error({}))
       }
 
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+      const [assessmentDateInfo, person] = await Promise.all([
+        this.oasysService.getAssessmentDateInfo(req.user.username, referral.prisonNumber),
+        this.personService.getPerson(req.user.username, referral.prisonNumber),
+      ])
 
       FormUtils.setFieldErrors(req, res, ['oasysConfirmed'])
 
       return res.render('referrals/new/oasysConfirmation/show', {
-        pageHeading: 'Confirm the OASys information',
+        hasOpenAssessment: assessmentDateInfo?.hasOpenAssessment,
+        pageHeading: 'Check risks and needs information (OASys)',
         person,
+        recentCompletedAssessmentDate: assessmentDateInfo?.recentCompletedAssessmentDate
+          ? DateUtils.govukFormattedFullDateString(assessmentDateInfo.recentCompletedAssessmentDate)
+          : undefined,
         referral,
       })
     }
