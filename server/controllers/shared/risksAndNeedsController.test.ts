@@ -97,7 +97,8 @@ describe('RisksAndNeedsController', () => {
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
-  const importedFromDate = '10 January 2024'
+  const recentCompletedAssessmentDate = '2023-12-19'
+  const recentCompletedAssessmentDateString = '19 December 2023'
   const navigationItems = [{ active: true, href: 'nav-href', text: 'Nav Item' }]
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
@@ -112,7 +113,7 @@ describe('RisksAndNeedsController', () => {
   beforeEach(() => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
-    mockDateUtils.govukFormattedFullDateString.mockReturnValue(importedFromDate)
+    mockDateUtils.govukFormattedFullDateString.mockReturnValue(recentCompletedAssessmentDateString)
     mockShowRisksAndNeedsUtils.navigationItems.mockReturnValue(navigationItems)
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
@@ -123,6 +124,7 @@ describe('RisksAndNeedsController', () => {
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Risks and needs',
       person,
+      recentCompletedAssessmentDate: recentCompletedAssessmentDateString,
       referral,
       subNavigationItems,
     }
@@ -130,6 +132,7 @@ describe('RisksAndNeedsController', () => {
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
+    oasysService.getAssessmentDateInfo.mockResolvedValue({ hasOpenAssessment: false, recentCompletedAssessmentDate })
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
     referralService.getStatusTransitions.mockResolvedValue(statusTransitions)
@@ -170,13 +173,13 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         alcoholMisuseSummaryListRows,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
       })
     })
 
     describe('when the oasys service returns `null`', () => {
       it('renders the alcohol misuse page with the correct response locals', async () => {
         when(oasysService.getDrugAndAlcoholDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
+        when(oasysService.getAssessmentDateInfo).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
         request.path = referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: referral.id })
 
@@ -188,6 +191,7 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/alcoholMisuse', {
           ...sharedPageData,
           hasData: false,
+          recentCompletedAssessmentDate: undefined,
         })
       })
     })
@@ -213,7 +217,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         attitudesSummaryListRows,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         navigationItems,
         subNavigationItems,
       })
@@ -302,7 +306,6 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         drugMisuseSummaryListRows,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
       })
     })
 
@@ -344,7 +347,7 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
         ...sharedPageData,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         navigationItems,
         psychiatricSummaryListRows,
         subNavigationItems,
@@ -393,7 +396,7 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
         ...sharedPageData,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         informationSummaryListRows,
         navigationItems,
         scoreSummaryListRows,
@@ -442,7 +445,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         hasData: true,
         healthSummaryListRows,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         navigationItems,
         subNavigationItems,
       })
@@ -491,7 +494,7 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
         ...sharedPageData,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         lifestyleIssues,
         navigationItems,
         reoffendingSummaryListRows,
@@ -562,7 +565,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         hasData: true,
         impactAndConsequencesSummaryListRows,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         motivationAndTriggersText,
         navigationItems,
         offenceDetailsText,
@@ -620,7 +623,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         domesticViolenceSummaryListRows,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         navigationItems,
         relIssuesDetails,
         subNavigationItems,
@@ -760,8 +763,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         alertsGroupTables,
         hasData: true,
-        importedFromNomisText: `Imported from NOMIS on ${importedFromDate}.`,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+        importedFromNomisText: `Imported from NOMIS on ${recentCompletedAssessmentDateString}.`,
         navigationItems,
         ogrsYear1Box,
         ogrsYear2Box,
@@ -818,7 +820,7 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
         ...sharedPageData,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         navigationItems,
         previousBehaviourSummaryListRows,
         subNavigationItems,
@@ -867,7 +869,7 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
         ...sharedPageData,
         hasData: true,
-        importedFromText: `Imported from OASys on ${importedFromDate}.`,
+
         navigationItems,
         subNavigationItems,
         thinkingAndBehavingSummaryListRows,
@@ -898,6 +900,7 @@ describe('RisksAndNeedsController', () => {
   function assertSharedDataServicesAreCalledWithExpectedArguments(path?: Request['path']) {
     const isRefer = path?.startsWith(referPathBase.pattern)
 
+    expect(oasysService.getAssessmentDateInfo).toHaveBeenCalledWith(username, person.prisonNumber)
     expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber)

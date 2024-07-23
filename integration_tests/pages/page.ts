@@ -95,6 +95,10 @@ export default abstract class Page {
     })
   }
 
+  shouldContainAssessmentCompletedText(date: string): void {
+    cy.get('[data-testid="last-assessment-date-text"]').should('contain.text', `Assessment completed ${date}`)
+  }
+
   shouldContainAudienceTag(audienceTag: CoursePresenter['audienceTag']) {
     cy.get('[data-testid="audience-tag"]').then(tagElement => {
       this.shouldContainTag(audienceTag, tagElement)
