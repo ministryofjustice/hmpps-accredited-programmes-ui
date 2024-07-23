@@ -157,6 +157,7 @@ type RisksAndNeedsSharedPageData = {
   person: Person
   referral: Referral
   subNavigationItems: Array<MojFrontendNavigationItem>
+  recentCompletedAssessmentDate?: string
 }
 
 type ReferralTaskListSection = {

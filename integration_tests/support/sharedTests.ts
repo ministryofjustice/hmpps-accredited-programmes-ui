@@ -96,6 +96,8 @@ const defaultPerson = personFactory.build({
   setting: 'Custody',
   tariffDate: defaultPrisoner.tariffDate,
 })
+const recentCompletedAssessmentDate = '2023-12-19'
+const recentCompletedAssessmentDateString = '19 December 2023'
 let referral: Referral
 let referringUser: User
 const organisation = OrganisationUtils.organisationFromPrison(prison)
@@ -560,9 +562,16 @@ const sharedTests = {
     },
   },
   risksAndNeeds: {
+    beforeEach: (): void => {
+      cy.task('stubAssessmentDateInfo', {
+        assessmentDateInfo: { recentCompletedAssessmentDate },
+        prisonNumber: person.prisonNumber,
+      })
+    },
     showsAlcoholMisusePageWithData: (role: ApplicationRole): void => {
       const drugAndAlcoholDetails = drugAlcoholDetailFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubDrugAndAlcoholDetails', {
         drugAndAlcoholDetails,
@@ -583,11 +592,12 @@ const sharedTests = {
       alcoholMisusePage.shouldContainShowReferralSubHeading('Risks and needs')
       alcoholMisusePage.shouldContainRisksAndNeedsOasysMessage()
       alcoholMisusePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      alcoholMisusePage.shouldContainImportedFromText('OASys')
+      alcoholMisusePage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       alcoholMisusePage.shouldContainAlcoholMisuseSummaryList()
     },
     showsAlcoholMisusePageWithoutData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubDrugAndAlcoholDetails', {
         drugAndAlcoholDetails: null,
@@ -613,6 +623,7 @@ const sharedTests = {
     showsAttitudesPageWithData: (role: ApplicationRole): void => {
       const attitude = attitudeFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubAttitude', {
         attitude,
@@ -633,11 +644,12 @@ const sharedTests = {
       attitudePage.shouldContainShowReferralSubHeading('Risks and needs')
       attitudePage.shouldContainRisksAndNeedsOasysMessage()
       attitudePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      attitudePage.shouldContainImportedFromText('OASys')
+      attitudePage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       attitudePage.shouldContainAttitudesSummaryList()
     },
     showsAttitudesPageWithoutData: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubAttitude', {
         attitude: null,
@@ -663,6 +675,7 @@ const sharedTests = {
     showsDrugMisusePageWithData: (role: ApplicationRole): void => {
       const drugAndAlcoholDetails = drugAlcoholDetailFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubDrugAndAlcoholDetails', {
         drugAndAlcoholDetails,
@@ -683,7 +696,7 @@ const sharedTests = {
       drugMisusePage.shouldContainShowReferralSubHeading('Risks and needs')
       drugMisusePage.shouldContainRisksAndNeedsOasysMessage()
       drugMisusePage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      drugMisusePage.shouldContainImportedFromText('OASys')
+      drugMisusePage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       drugMisusePage.shouldContainDrugMisuseSummaryList()
     },
     showsDrugMisusePageWithoutData: (role: ApplicationRole): void => {
@@ -713,6 +726,7 @@ const sharedTests = {
     showsEmotionalWellbeingPageWithData: (role: ApplicationRole): void => {
       const psychiatric = psychiatricFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubPsychiatric', {
         prisonNumber: prisoner.prisonerNumber,
@@ -733,7 +747,7 @@ const sharedTests = {
       emotionalWellbeingPage.shouldContainShowReferralSubHeading('Risks and needs')
       emotionalWellbeingPage.shouldContainRisksAndNeedsOasysMessage()
       emotionalWellbeingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      emotionalWellbeingPage.shouldContainImportedFromText('OASys')
+      emotionalWellbeingPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       emotionalWellbeingPage.shouldContainPsychiatricProblemsSummaryList()
     },
     showsEmotionalWellbeingPageWithoutData: (role: ApplicationRole): void => {
@@ -763,6 +777,7 @@ const sharedTests = {
     showsHealthPageWithData: (role: ApplicationRole): void => {
       const health = healthFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubHealth', {
         health,
@@ -783,7 +798,7 @@ const sharedTests = {
       healthPage.shouldContainShowReferralSubHeading('Risks and needs')
       healthPage.shouldContainRisksAndNeedsOasysMessage()
       healthPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      healthPage.shouldContainImportedFromText('OASys')
+      healthPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       healthPage.shouldContainHealthSummaryList()
     },
     showsHealthPageWithoutData: (role: ApplicationRole): void => {
@@ -812,6 +827,7 @@ const sharedTests = {
     showsLearningNeedsPageWithData: (role: ApplicationRole): void => {
       const learningNeeds = learningNeedsFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubLearningNeeds', {
         learningNeeds,
@@ -832,7 +848,7 @@ const sharedTests = {
       learningNeedsPage.shouldContainShowReferralSubHeading('Risks and needs')
       learningNeedsPage.shouldContainRisksAndNeedsOasysMessage()
       learningNeedsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      learningNeedsPage.shouldContainImportedFromText('OASys')
+      learningNeedsPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       learningNeedsPage.shouldContainInformationSummaryList()
       learningNeedsPage.shouldContainScoreSummaryList()
     },
@@ -863,6 +879,7 @@ const sharedTests = {
     showsLifestyleAndAssociatesPageWithData: (role: ApplicationRole): void => {
       const lifestyle = lifestyleFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubLifestyle', {
         lifestyle,
@@ -883,7 +900,7 @@ const sharedTests = {
       lifestyleAndAssociatesPage.shouldContainShowReferralSubHeading('Risks and needs')
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsOasysMessage()
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      lifestyleAndAssociatesPage.shouldContainImportedFromText('OASys')
+      lifestyleAndAssociatesPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       lifestyleAndAssociatesPage.shouldContainReoffendingSummaryList()
       lifestyleAndAssociatesPage.shouldContainLifestyleIssuesSummaryCard()
     },
@@ -914,6 +931,7 @@ const sharedTests = {
     showsOffenceAnalysisPageWithData: (role: ApplicationRole): void => {
       const offenceDetail = offenceDetailFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubOffenceDetails', {
         offenceDetail,
@@ -934,7 +952,7 @@ const sharedTests = {
       offenceAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
       offenceAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
       offenceAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      offenceAnalysisPage.shouldContainImportedFromText('OASys')
+      offenceAnalysisPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       offenceAnalysisPage.shouldContainBriefOffenceDetailsSummaryCard()
       offenceAnalysisPage.shouldContainVictimsAndPartnersSummaryList()
       offenceAnalysisPage.shouldContainImpactAndConsequencesSummaryList()
@@ -969,6 +987,7 @@ const sharedTests = {
     showsRelationshipsPageWithData: (role: ApplicationRole): void => {
       const relationships = relationshipsFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubRelationships', {
         prisonNumber: prisoner.prisonerNumber,
@@ -989,7 +1008,7 @@ const sharedTests = {
       relationshipsPage.shouldContainShowReferralSubHeading('Risks and needs')
       relationshipsPage.shouldContainRisksAndNeedsOasysMessage()
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      relationshipsPage.shouldContainImportedFromText('OASys')
+      relationshipsPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       relationshipsPage.shouldContainDomesticViolenceSummaryList()
       relationshipsPage.shouldContainRelationshipIssuesSummaryCard()
     },
@@ -1044,6 +1063,7 @@ const sharedTests = {
     showsRisksAndAlertsPageWithData: (role: ApplicationRole): void => {
       const risksAndAlerts = risksAndAlertsFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubRisksAndAlerts', {
         prisonNumber: prisoner.prisonerNumber,
@@ -1064,7 +1084,7 @@ const sharedTests = {
       risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
       risksAndAlertsPage.shouldContainRisksAndNeedsOasysMessage()
       risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      risksAndAlertsPage.shouldContainImportedFromText('OASys', 'imported-from-text')
+      risksAndAlertsPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       risksAndAlertsPage.shouldHaveOgrsInformation()
       risksAndAlertsPage.shouldHaveOvpInformation()
       risksAndAlertsPage.shouldHaveSaraInformation()
@@ -1099,6 +1119,7 @@ const sharedTests = {
     showsRoshAnalysisPageWithData: (role: ApplicationRole): void => {
       const roshAnalysis = roshAnalysisFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubRoshAnalysis', {
         prisonNumber: prisoner.prisonerNumber,
@@ -1119,7 +1140,7 @@ const sharedTests = {
       roshAnalysisPage.shouldContainShowReferralSubHeading('Risks and needs')
       roshAnalysisPage.shouldContainRisksAndNeedsOasysMessage()
       roshAnalysisPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      roshAnalysisPage.shouldContainImportedFromText('OASys')
+      roshAnalysisPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       roshAnalysisPage.shouldContainPreviousBehaviourSummaryList()
     },
     showsRoshAnalysisPageWithoutData: (role: ApplicationRole): void => {
@@ -1148,6 +1169,7 @@ const sharedTests = {
     showsThinkingAndBehavingPageWithData: (role: ApplicationRole): void => {
       const behaviour = behaviourFactory.build()
       sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
 
       cy.task('stubBehaviour', {
         behaviour,
@@ -1168,7 +1190,7 @@ const sharedTests = {
       thinkingAndBehavingPage.shouldContainShowReferralSubHeading('Risks and needs')
       thinkingAndBehavingPage.shouldContainRisksAndNeedsOasysMessage()
       thinkingAndBehavingPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
-      thinkingAndBehavingPage.shouldContainImportedFromText('OASys')
+      thinkingAndBehavingPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       thinkingAndBehavingPage.shouldContainThinkingAndBehavingSummaryList()
     },
     showsThinkingAndBehavingPageWithoutData: (role: ApplicationRole): void => {

@@ -46,7 +46,6 @@ export default class RisksAndNeedsController {
         ? {
             alcoholMisuseSummaryListRows: AlcoholMisuseUtils.summaryListRows(drugAlcoholDetail.alcohol),
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           }
         : {
             hasData: false,
@@ -71,7 +70,6 @@ export default class RisksAndNeedsController {
         ? {
             attitudesSummaryListRows: AttitudesUtils.attitudesSummaryListRows(attitude),
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           }
         : {
             hasData: false,
@@ -96,7 +94,6 @@ export default class RisksAndNeedsController {
         ? {
             drugMisuseSummaryListRows: DrugMisuseUtils.summaryListRows(drugAlcoholDetail.drug),
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           }
         : {
             hasData: false,
@@ -120,7 +117,6 @@ export default class RisksAndNeedsController {
       const templateLocals = psychiatric
         ? {
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             psychiatricSummaryListRows: EmotionalWellbeingUtils.psychiatricSummaryListRows(psychiatric),
           }
         : {
@@ -149,7 +145,6 @@ export default class RisksAndNeedsController {
         ? {
             hasData: true,
             healthSummaryListRows: HealthUtils.healthSummaryListRows(health),
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
           }
         : {
             hasData: false,
@@ -173,7 +168,6 @@ export default class RisksAndNeedsController {
       const templateLocals = learningNeeds
         ? {
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             informationSummaryListRows: LearningNeedsUtils.informationSummaryListRows(learningNeeds),
             scoreSummaryListRows: LearningNeedsUtils.scoreSummaryListRows(learningNeeds),
           }
@@ -202,7 +196,6 @@ export default class RisksAndNeedsController {
       const templateLocals = lifestyle
         ? {
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             lifestyleIssues: ShowRisksAndNeedsUtils.textValue(lifestyle.lifestyleIssues),
             reoffendingSummaryListRows: LifestyleAndAssociatesUtils.reoffendingSummaryListRows(lifestyle),
           }
@@ -233,7 +226,6 @@ export default class RisksAndNeedsController {
             hasData: true,
             impactAndConsequencesSummaryListRows:
               OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             motivationAndTriggersText: ShowRisksAndNeedsUtils.textValue(offenceDetails.motivationAndTriggers),
             offenceDetailsText: ShowRisksAndNeedsUtils.textValue(offenceDetails.offenceDetails),
             otherOffendersAndInfluencesSummaryListRows:
@@ -268,7 +260,6 @@ export default class RisksAndNeedsController {
         ? {
             domesticViolenceSummaryListRows: RelationshipsUtils.domesticViolenceSummaryListRows(relationships),
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             relIssuesDetails: ShowRisksAndNeedsUtils.textValue(relationships.relIssuesDetails),
           }
         : {
@@ -298,7 +289,6 @@ export default class RisksAndNeedsController {
             alertsGroupTables: RisksAndAlertsUtils.alertsGroupTables(risksAndAlerts.alerts),
             hasData: true,
             importedFromNomisText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             ogrsYear1Box: RisksAndAlertsUtils.riskBox(
               'OGRS Year 1',
               risksAndAlerts.ogrsRisk,
@@ -359,7 +349,6 @@ export default class RisksAndNeedsController {
       const templateLocals = roshAnalysis
         ? {
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             previousBehaviourSummaryListRows: RoshAnalysisUtils.previousBehaviourSummaryListRows(roshAnalysis),
           }
         : {
@@ -387,7 +376,6 @@ export default class RisksAndNeedsController {
       const templateLocals = behaviour
         ? {
             hasData: true,
-            importedFromText: `Imported from OASys on ${DateUtils.govukFormattedFullDateString()}.`,
             thinkingAndBehavingSummaryListRows: ThinkingAndBehavingUtils.thinkingAndBehavingSummaryListRows(behaviour),
           }
         : {
@@ -410,7 +398,8 @@ export default class RisksAndNeedsController {
 
     const referral = await this.referralService.getReferral(username, referralId)
 
-    const [course, person, statusTransitions] = await Promise.all([
+    const [assessmentDateInfo, course, person, statusTransitions] = await Promise.all([
+      this.oasysService.getAssessmentDateInfo(username, referral.prisonNumber),
       this.courseService.getCourseByOffering(username, referral.offeringId),
       this.personService.getPerson(username, referral.prisonNumber),
       isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
@@ -428,6 +417,9 @@ export default class RisksAndNeedsController {
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Risks and needs',
       person,
+      recentCompletedAssessmentDate: assessmentDateInfo?.recentCompletedAssessmentDate
+        ? DateUtils.govukFormattedFullDateString(assessmentDateInfo.recentCompletedAssessmentDate)
+        : undefined,
       referral,
       subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'risksAndNeeds', referral.id),
     }
