@@ -3,7 +3,9 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
+  Audience,
   Course,
+  CourseCreateRequest,
   CourseOffering,
   CourseParticipation,
   CourseParticipationUpdate,
@@ -20,6 +22,13 @@ export default class CourseClient {
 
   async all(): Promise<Array<Course>> {
     return (await this.restClient.get({ path: apiPaths.courses.index({}) })) as Array<Course>
+  }
+
+  async createCourse(courseCreateRequest: CourseCreateRequest): Promise<Course> {
+    return (await this.restClient.post({
+      data: { ...courseCreateRequest },
+      path: apiPaths.courses.create({}),
+    })) as Course
   }
 
   async createParticipation(
@@ -40,6 +49,12 @@ export default class CourseClient {
 
   async find(courseId: Course['id']): Promise<Course> {
     return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
+  }
+
+  async findCourseAudiences(): Promise<Array<Audience>> {
+    return (await this.restClient.get({
+      path: apiPaths.courses.audiences({}),
+    })) as Array<Audience>
   }
 
   async findCourseByOffering(courseOfferingId: CourseOffering['id']): Promise<Course> {

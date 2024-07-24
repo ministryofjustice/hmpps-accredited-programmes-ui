@@ -5,12 +5,13 @@ import CourseClient from './courseClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import {
+  audienceFactory,
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
 } from '../../testutils/factories'
-import type { CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CourseCreateRequest, CourseParticipationUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -52,6 +53,42 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await courseClient.all()
 
       expect(result).toEqual(courses)
+    })
+  })
+
+  describe('createCourse', () => {
+    const course = courseFactory.build()
+    const courseCreateRequest: CourseCreateRequest = {
+      alternateName: course.alternateName,
+      audienceId: 'test-audience-id',
+      description: course.description,
+      name: course.name,
+      withdrawn: false,
+    }
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'A course can be created',
+        uponReceiving: 'A request to create a course',
+        willRespondWith: {
+          body: Matchers.like(course),
+          status: 201,
+        },
+        withRequest: {
+          body: { ...courseCreateRequest },
+          headers: {
+            authorization: `Bearer ${systemToken}`,
+          },
+          method: 'POST',
+          path: apiPaths.courses.create({}),
+        },
+      })
+    })
+
+    it('creates a course', async () => {
+      const result = await courseClient.createCourse(courseCreateRequest)
+
+      expect(result).toEqual(course)
     })
   })
 
@@ -133,6 +170,39 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       const result = await courseClient.find('d3abc217-75ee-46e9-a010-368f30282367')
 
       expect(result).toEqual(course)
+    })
+  })
+
+  describe('findCourseAudiences', () => {
+    const audiences = [
+      audienceFactory.build({ id: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2' }),
+      audienceFactory.build({ id: 'e9f9a8d8-2f7d-4a88-8f39-5d3b9071e75b' }),
+      audienceFactory.build({ id: '7e2db7fc-18c5-4bda-bb0d-ec39bfa20414' }),
+    ]
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state:
+          'Audiences e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2, e9f9a8d8-2f7d-4a88-8f39-5d3b9071e75b, and 7e2db7fc-18c5-4bda-bb0d-ec39bfa20414 and no others exist',
+        uponReceiving: 'A request for all audiences',
+        willRespondWith: {
+          body: Matchers.like(audiences),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${systemToken}`,
+          },
+          method: 'GET',
+          path: apiPaths.courses.audiences({}),
+        },
+      })
+    })
+
+    it('fetches all audiences', async () => {
+      const result = await courseClient.findCourseAudiences()
+
+      expect(result).toEqual(audiences)
     })
   })
 
