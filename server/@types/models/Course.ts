@@ -4,7 +4,7 @@ import type { TagColour } from '@accredited-programmes/ui'
 
 export type Course = {
   id: string // eslint-disable-next-line @typescript-eslint/member-ordering
-  alternateName: string | null
+  alternateName?: string
   audience: CourseAudience
   audienceColour: TagColour
   coursePrerequisites: Array<CoursePrerequisite>

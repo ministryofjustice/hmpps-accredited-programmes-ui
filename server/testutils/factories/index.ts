@@ -1,5 +1,6 @@
 import assessmentDateInfoFactory from './assessmentDateInfo'
 import attitudeFactory from './attitude'
+import audienceFactory from './audience'
 import behaviourFactory from './behaviour'
 import caseloadFactory from './caseload'
 import confirmationFieldsFactory from './confirmationFields'
@@ -42,6 +43,7 @@ import userFactory from './user'
 export {
   assessmentDateInfoFactory,
   attitudeFactory,
+  audienceFactory,
   behaviourFactory,
   caseloadFactory,
   confirmationFieldsFactory,
