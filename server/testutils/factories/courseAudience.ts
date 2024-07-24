@@ -5,6 +5,7 @@ import type { CourseAudience } from '@accredited-programmes/models'
 
 export default Factory.define<CourseAudience>(() =>
   faker.helpers.arrayElement([
+    'All offences',
     'Extremism offence',
     'Gang offence',
     'General offence',
