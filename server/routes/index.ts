@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import assessRoutes from './assess'
+import editorRoutes from './editor'
 import findRoutes from './find'
 import referRoutes from './refer'
 import config from '../config'
@@ -14,6 +15,7 @@ export default function routes(controllers: Controllers): Router {
   const { dashboardController } = controllers
   get('/', dashboardController.index())
 
+  editorRoutes(controllers, router)
   findRoutes(controllers, router)
   if (config.flags.referEnabled) {
     assessRoutes(controllers, router)
