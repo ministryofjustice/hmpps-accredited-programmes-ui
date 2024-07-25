@@ -1,0 +1,83 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% extends "../../partials/layout.njk" %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukSelect({
+          id: "programme-audience",
+          name: "audienceId",
+          label: {
+            text: "Audience"
+          },
+          items: audienceSelectItems,
+            attributes: {
+            "data-testid": "audience-select"
+          },
+          errorMessage: errors.messages.audience
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Programme name"
+          },
+          id: "programme-name",
+          name: "name",
+          errorMessage: errors.messages.name
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Alternative name (optional)"
+          },
+          classes: "govuk-input--width-10",
+          id: "programme-alternate-name",
+          name: "alternateName",
+          hint: {
+            text: "Usually an abbreviation or acronym for the programme name"
+          },
+          errorMessage: errors.messages.alternateName
+        }) }}
+
+        {{ govukTextarea({
+          name: "description",
+          id: "programme-description",
+          label: {
+            text: "Description"
+          }
+        }) }}
+
+        {{ govukRadios({
+          name: "withdrawn",
+          fieldset: {
+            legend: {
+              text: "Withdrawn"
+            }
+          },
+          items: [
+            {
+              value: "true",
+              text: "Yes"
+            },
+            {
+              value: "false",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({ text: "Submit" }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}
