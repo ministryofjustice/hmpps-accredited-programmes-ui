@@ -60,7 +60,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const course = courseFactory.build()
     const courseCreateRequest: CourseCreateRequest = {
       alternateName: course.alternateName,
-      audienceId: 'test-audience-id',
+      audienceId: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2',
       description: course.description,
       name: course.name,
       withdrawn: false,
