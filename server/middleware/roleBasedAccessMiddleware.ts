@@ -4,6 +4,7 @@ import logger from '../../logger'
 import type { MiddlewareOptions } from '@accredited-programmes/users'
 
 export enum ApplicationRoles {
+  ACP_EDITOR = 'ROLE_ACP_EDITOR',
   ACP_PROGRAMME_TEAM = 'ROLE_ACP_PROGRAMME_TEAM',
   ACP_REFERRER = 'ROLE_ACP_REFERRER',
 }
