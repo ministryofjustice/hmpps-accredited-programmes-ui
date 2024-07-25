@@ -5,7 +5,9 @@ import type UserService from './userService'
 import type { CourseClient, HmppsAuthClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import { CourseParticipationUtils } from '../utils'
 import type {
+  Audience,
   Course,
+  CourseCreateRequest,
   CourseOffering,
   CourseParticipation,
   CourseParticipationUpdate,
@@ -21,6 +23,14 @@ export default class CourseService {
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly userService: UserService,
   ) {}
+
+  async createCourse(username: Express.User['username'], courseCreateRequest: CourseCreateRequest): Promise<Course> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    return courseClient.createCourse(courseCreateRequest)
+  }
 
   async createParticipation(
     username: Express.User['username'],
@@ -72,6 +82,14 @@ export default class CourseService {
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.find(courseId)
+  }
+
+  async getCourseAudiences(username: Express.User['username']): Promise<Array<Audience>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    return courseClient.findCourseAudiences()
   }
 
   async getCourseByOffering(username: Express.User['username'], courseOfferingId: CourseOffering['id']) {
