@@ -1,13 +1,23 @@
 import { findPaths } from '../paths'
-import type { Course, CoursePrerequisite } from '@accredited-programmes/models'
+import type { Audience, Course, CoursePrerequisite } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendTagWithText,
   HasHtmlString,
 } from '@accredited-programmes/ui'
+import type { GovukFrontendSelectItem } from '@govuk-frontend'
 
 export default class CourseUtils {
+  static audienceSelectItems(audiences: Array<Audience>): Array<GovukFrontendSelectItem> {
+    return audiences.map(audience => {
+      return {
+        text: audience.name,
+        value: audience.id,
+      }
+    })
+  }
+
   static courseRadioOptions(courseNames: Array<Course['name']>): Array<GovukFrontendTagWithText> {
     return courseNames.map(courseName => {
       return {

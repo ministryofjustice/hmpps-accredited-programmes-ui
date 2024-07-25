@@ -8,6 +8,7 @@ import type UserService from './userService'
 import type { RedisClient } from '../data'
 import { CourseClient, HmppsAuthClient, TokenStore } from '../data'
 import {
+  audienceFactory,
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
@@ -15,7 +16,7 @@ import {
   userFactory,
 } from '../testutils/factories'
 import { CourseParticipationUtils, StringUtils } from '../utils'
-import type { CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CourseCreateRequest, CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../data/hmppsAuthClient')
@@ -44,6 +45,28 @@ describe('CourseService', () => {
     courseClientBuilder.mockReturnValue(courseClient)
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+  })
+
+  describe('createCourse', () => {
+    it('creates a course using the `courseCreateRequest` values', async () => {
+      const course = courseFactory.build()
+      const courseCreateRequest: CourseCreateRequest = {
+        alternateName: course.alternateName,
+        audienceId: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2',
+        description: course.description,
+        name: course.name,
+        withdrawn: false,
+      }
+
+      when(courseClient.createCourse).calledWith(courseCreateRequest).mockResolvedValue(course)
+
+      const result = await service.createCourse(username, courseCreateRequest)
+
+      expect(result).toEqual(course)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.createCourse).toHaveBeenCalledWith(courseCreateRequest)
+    })
   })
 
   describe('createParticipation', () => {
@@ -197,6 +220,20 @@ describe('CourseService', () => {
 
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.find).toHaveBeenCalledWith(course.id)
+    })
+  })
+
+  describe('getCourseAudiences', () => {
+    it('returns a list of all course audiences', async () => {
+      const audiences = audienceFactory.buildList(3)
+      when(courseClient.findCourseAudiences).mockResolvedValue(audiences)
+
+      const result = await service.getCourseAudiences(username)
+
+      expect(result).toEqual(audiences)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.findCourseAudiences).toHaveBeenCalled()
     })
   })
 
