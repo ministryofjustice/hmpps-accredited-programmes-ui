@@ -9,6 +9,16 @@ import type { Prison } from '@prison-register-api'
 export default class OrganisationService {
   constructor(private readonly prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient>) {}
 
+  async getAllOrganisations(userToken: Express.User['token']): Promise<Array<Prison>> {
+    const prisonRegisterApiClient = this.prisonRegisterApiClientBuilder(userToken)
+
+    try {
+      return await prisonRegisterApiClient.all()
+    } catch (error) {
+      throw createError(500, 'Error fetching organisations.')
+    }
+  }
+
   async getOrganisation(userToken: Express.User['token'], organisationId: Organisation['id']): Promise<Organisation> {
     const prisonRegisterApiClient = this.prisonRegisterApiClientBuilder(userToken)
 

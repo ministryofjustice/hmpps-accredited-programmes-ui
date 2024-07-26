@@ -25,6 +25,17 @@ describe('PrisonRegisterApiClient', () => {
     nock.cleanAll()
   })
 
+  describe('all', () => {
+    const prisons: Array<Prison> = prisonFactory.buildList(3)
+
+    it('fetches all prisons', async () => {
+      fakePrisonRegisterApi.get('/prisons').matchHeader('authorization', `Bearer ${userToken}`).reply(200, prisons)
+
+      const output = await prisonRegisterApiClient.all()
+      expect(output).toEqual(prisons)
+    })
+  })
+
   describe('find', () => {
     const prison: Prison = prisonFactory.build()
 
