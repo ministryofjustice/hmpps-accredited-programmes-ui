@@ -1,3 +1,4 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -5,6 +6,13 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
 {% extends "../../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: findPaths.index({})
+  }) }}
+{% endblock backLink %}
 
 {% block content %}
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
