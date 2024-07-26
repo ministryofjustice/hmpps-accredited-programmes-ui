@@ -30,6 +30,7 @@ context('Find', () => {
       const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
 
       coursesPage.shouldHaveCourses(sortedCourses)
+      coursesPage.shouldNotContainAddNewProgrammeLink()
     })
 
     it('Shows a single course and its offerings', () => {
@@ -133,6 +134,23 @@ context('Find', () => {
         courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
         courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
       })
+    })
+  })
+
+  describe('For a user with the `ROLE_ACP_EDITOR` role', () => {
+    it('should show the "Add a new programme" button', () => {
+      cy.task('reset')
+      cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_EDITOR] })
+      cy.task('stubAuthUser')
+      cy.task('stubDefaultCaseloads')
+      cy.signIn()
+      cy.task('stubCourses', courses)
+
+      const path = findPaths.index({})
+      cy.visit(path)
+
+      const coursesPage = Page.verifyOnPage(CoursesPage)
+      coursesPage.shouldContainAddNewProgrammeLink()
     })
   })
 

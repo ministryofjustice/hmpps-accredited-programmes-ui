@@ -1,5 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
 import type { CourseOffering } from '@accredited-programmes/models'
@@ -17,6 +18,7 @@ export default class CoursesController {
       const courses = await this.courseService.getCourses(req.user.token)
 
       res.render('courses/index', {
+        addProgrammePath: findPaths.course.add.show({}),
         courses: courses
           .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
           .map(course => CourseUtils.presentCourse(course)),

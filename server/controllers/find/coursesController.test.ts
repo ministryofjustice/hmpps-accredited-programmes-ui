@@ -3,6 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import CoursesController from './coursesController'
+import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
@@ -38,6 +39,7 @@ describe('CoursesController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/index', {
+        addProgrammePath: findPaths.course.add.show({}),
         courses: sortedCourses.map(course => CourseUtils.presentCourse(course)),
         pageHeading: 'Find an Accredited Programme',
       })

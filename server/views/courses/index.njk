@@ -1,9 +1,24 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
 {% from "./_indexCourseSummary.njk" import indexCourseSummary %}
 
 {% extends "../partials/layout.njk" %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <div class="header-with-actions">
+    <h1 class="header-with-actions__title govuk-heading-l">{{ pageHeading }}</h1>
+
+    {% if 'ROLE_ACP_EDITOR' in user.roles %}
+      {{ govukButton({
+        text: "Add a new programme",
+        href: addProgrammePath,
+        classes: "govuk-button--secondary",
+        attributes: {
+          "data-testid": "add-programme-link"
+        }
+      }) }}
+    {% endif %}
+  </div>
 
   <div role="list">
     {% for course in courses %}

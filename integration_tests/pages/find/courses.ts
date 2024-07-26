@@ -8,6 +8,12 @@ export default class CoursesPage extends Page {
     super('Find an Accredited Programme')
   }
 
+  shouldContainAddNewProgrammeLink() {
+    cy.get('[data-testid="add-programme-link"]')
+      .should('contain.text', 'Add a new programme')
+      .and('have.attr', 'href', findPaths.course.add.show({}))
+  }
+
   shouldHaveCourses(courses: Array<Course>) {
     cy.get('div[role=listitem]').each((courseElement, courseElementIndex) => {
       cy.wrap(courseElement).within(() => {
@@ -27,5 +33,9 @@ export default class CoursesPage extends Page {
         })
       })
     })
+  }
+
+  shouldNotContainAddNewProgrammeLink() {
+    cy.get('[data-testid="add-programme-link"]').should('not.exist')
   }
 }
