@@ -62,6 +62,7 @@ export default {
   },
   offerings: {
     course: courseByOfferingPath,
+    create: offeringsByCoursePath,
     show: offeringPath,
   },
   organisations: {

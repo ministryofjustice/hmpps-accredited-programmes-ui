@@ -84,7 +84,7 @@ context('Find', () => {
     describe('Viewing a single offering', () => {
       it('shows a single offering with no secondary email address', () => {
         const courseOffering = courseOfferingFactory.build({
-          secondaryContactEmail: null,
+          secondaryContactEmail: undefined,
         })
         cy.task('stubOffering', { courseOffering })
         cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
