@@ -1,0 +1,98 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkHref
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="{{ action }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukSelect({
+          id: "location-organisation-id",
+          name: "organisationId",
+          label: {
+            text: "Organisation"
+          },
+          items: organisationSelectItems,
+            attributes: {
+            "data-testid": "organisation-select"
+          },
+          errorMessage: errors.messages.organisationId
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Contact email"
+          },
+          id: "location-contact-email",
+          name: "contactEmail",
+          errorMessage: errors.messages.contactEmail
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Secondary contact email"
+          },
+          id: "location-secondary-contact-email",
+          name: "secondaryContactEmail",
+          errorMessage: errors.messages.secondaryContactEmail
+        }) }}
+
+        {{ govukRadios({
+          name: "referable",
+          fieldset: {
+            legend: {
+              text: "Referable"
+            }
+          },
+          items: [
+            {
+              value: "true",
+              text: "Yes"
+            },
+            {
+              value: "false",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        {{ govukRadios({
+          name: "withdrawn",
+          fieldset: {
+            legend: {
+              text: "Withdrawn"
+            }
+          },
+          items: [
+            {
+              value: "true",
+              text: "Yes"
+            },
+            {
+              value: "false",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({ text: "Submit" }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}

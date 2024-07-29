@@ -6,6 +6,7 @@ const coursePath = coursesPath.path(':courseId')
 
 const addCoursePath = coursesPath.path('/add')
 
+const addCourseOfferingPath = coursePath.path('/offerings/add')
 const courseOfferingPath = findPathBase.path('/offerings/:courseOfferingId')
 
 export default {
@@ -17,6 +18,10 @@ export default {
   },
   index: coursesPath,
   offerings: {
+    add: {
+      create: addCourseOfferingPath,
+      show: addCourseOfferingPath,
+    },
     show: courseOfferingPath,
   },
   show: coursePath,
