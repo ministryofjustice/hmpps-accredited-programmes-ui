@@ -32,6 +32,20 @@ describe('OrganisationUtils', () => {
     })
   })
 
+  describe('organisationSelectItems', () => {
+    it('returns an array of `GovukFrontendSelectItem` objects from an array of prisons', () => {
+      const prisons = [
+        prisonFactory.build({ prisonId: 'an-ID-1', prisonName: 'Prison 1' }),
+        prisonFactory.build({ prisonId: 'an-ID-2', prisonName: 'Prison 2' }),
+      ]
+
+      expect(OrganisationUtils.organisationSelectItems(prisons)).toEqual([
+        { text: prisons[0].prisonName, value: prisons[0].prisonId },
+        { text: prisons[1].prisonName, value: prisons[1].prisonId },
+      ])
+    })
+  })
+
   describe('organisationTableRows', () => {
     let organisationsWithOfferingIds: Array<OrganisationWithOfferingId>
 
