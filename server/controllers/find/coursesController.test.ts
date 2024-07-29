@@ -80,6 +80,7 @@ describe('CoursesController', () => {
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {
+          addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
@@ -119,6 +120,7 @@ describe('CoursesController', () => {
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {
+          addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,

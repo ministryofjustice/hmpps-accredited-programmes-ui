@@ -60,6 +60,7 @@ context('Find', () => {
       coursePage.shouldContainBackLink(findPaths.index({}))
       coursePage.shouldContainHomeLink()
       coursePage.shouldHaveCourse()
+      coursePage.shouldNotContainAddCourseOfferingLink()
       coursePage.shouldContainOfferingsText()
       coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
     })
@@ -138,12 +139,15 @@ context('Find', () => {
   })
 
   describe('For a user with the `ROLE_ACP_EDITOR` role', () => {
-    it('should show the "Add a new programme" button', () => {
+    beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_EDITOR] })
       cy.task('stubAuthUser')
       cy.task('stubDefaultCaseloads')
       cy.signIn()
+    })
+
+    it('shows the "Add a new programme" button', () => {
       cy.task('stubCourses', courses)
 
       const path = findPaths.index({})
@@ -151,6 +155,20 @@ context('Find', () => {
 
       const coursesPage = Page.verifyOnPage(CoursesPage)
       coursesPage.shouldContainAddNewProgrammeLink()
+    })
+
+    it('shows the "Add a new location" link', () => {
+      cy.task('stubCourse', courses[0])
+
+      const courseOfferings: Array<CourseOffering> = []
+
+      cy.task('stubOfferingsByCourse', { courseId: courses[0].id, courseOfferings })
+
+      const path = findPaths.show({ courseId: courses[0].id })
+      cy.visit(path)
+
+      const coursePage = Page.verifyOnPage(CoursePage, courses[0])
+      coursePage.shouldContainAddCourseOfferingLink()
     })
   })
 

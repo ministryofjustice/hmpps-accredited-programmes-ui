@@ -47,6 +47,7 @@ export default class CoursesController {
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/show', {
+        addOfferingPath: findPaths.offerings.add.create({ courseId: course.id }),
         course: coursePresenter,
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
