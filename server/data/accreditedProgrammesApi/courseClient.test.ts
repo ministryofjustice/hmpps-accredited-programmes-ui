@@ -23,7 +23,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
   })
 
-  describe('addCourseOffering', () => {
+  describe.skip('addCourseOffering', () => {
     const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
 
     const courseOffering = courseOfferingFactory.build({

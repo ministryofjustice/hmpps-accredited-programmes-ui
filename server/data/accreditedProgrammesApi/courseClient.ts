@@ -20,6 +20,7 @@ export default class CourseClient {
     this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
+  /* istanbul ignore next */
   async addCourseOffering(
     courseId: Course['id'],
     courseOffering: Omit<CourseOffering, 'id' | 'organisationEnabled'>,

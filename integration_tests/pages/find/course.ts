@@ -15,6 +15,12 @@ export default class CoursePage extends Page {
     this.course = coursePresenter
   }
 
+  shouldContainAddCourseOfferingLink() {
+    cy.get('[data-testid="add-programme-offering-link"]')
+      .should('contain.text', 'Add a new location')
+      .and('have.attr', 'href', findPaths.offerings.add.show({ courseId: this.course.id }))
+  }
+
   shouldContainNoOfferingsText() {
     cy.get('[data-testid="no-offerings-text"]').should(
       'have.text',
@@ -60,5 +66,9 @@ export default class CoursePage extends Page {
         })
       })
     })
+  }
+
+  shouldNotContainAddCourseOfferingLink() {
+    cy.get('[data-testid="add-programme-offering-link"]').should('not.exist')
   }
 }

@@ -5,7 +5,7 @@ import type {
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
 } from '@accredited-programmes/ui'
-import type { GovukFrontendTableRow } from '@govuk-frontend'
+import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 import type { Prison } from '@prison-register-api'
 
 export default class OrganisationUtils {
@@ -19,6 +19,15 @@ export default class OrganisationUtils {
       category: categories,
       name: prison.prisonName,
     }
+  }
+
+  static organisationSelectItems(organisations: Array<Prison>): Array<GovukFrontendSelectItem> {
+    return organisations.map(organisation => {
+      return {
+        text: organisation.prisonName,
+        value: organisation.prisonId,
+      }
+    })
   }
 
   static organisationTableRows(organisations: Array<OrganisationWithOfferingId>): Array<GovukFrontendTableRow> {

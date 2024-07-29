@@ -1,4 +1,5 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% from "../partials/audienceTag.njk" import audienceTag %}
@@ -30,7 +31,20 @@
 
       <p class="govuk-body" data-testid="description-paragraph">{{ course.description }}</p>
 
-      <h2 class="govuk-heading-m">Locations</h2>
+      <div class="header-with-actions">
+        <h2 class="header-with-actions__title govuk-heading-m">Locations</h2>
+
+        {% if 'ROLE_ACP_EDITOR' in user.roles %}
+          {{ govukButton({
+            text: "Add a new location",
+            href: addOfferingPath,
+            classes: "govuk-button--secondary",
+            attributes: {
+              "data-testid": "add-programme-offering-link"
+            }
+          }) }}
+        {% endif %}
+      </div>
 
       {% if organisationsTableData | length %}
         <p data-testid="offerings-text">Select a prison to contact the programme team or make a referral. Online referrals are not yet available at all sites.</p>
