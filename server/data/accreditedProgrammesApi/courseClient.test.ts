@@ -28,6 +28,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     const courseOffering = courseOfferingFactory.build({
       id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537',
+      organisationId: 'BWN',
     })
     const courseOfferingRequestBody: Omit<CourseOffering, 'id' | 'organisationEnabled'> = {
       contactEmail: courseOffering.contactEmail,
