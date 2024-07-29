@@ -16,7 +16,7 @@ import {
   userFactory,
 } from '../testutils/factories'
 import { CourseParticipationUtils, StringUtils } from '../utils'
-import type { CourseCreateRequest, CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CourseCreateRequest, CourseOffering, CourseParticipationUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../data/hmppsAuthClient')
@@ -45,6 +45,29 @@ describe('CourseService', () => {
     courseClientBuilder.mockReturnValue(courseClient)
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+  })
+
+  describe('addCourseOffering', () => {
+    it('adds a course offering using the `courseOfferingRequest` values', async () => {
+      const courseId = courseFactory.build().id
+      const courseOffering = courseOfferingFactory.build({})
+      const courseOfferingRequest: Omit<CourseOffering, 'id' | 'organisationEnabled'> = {
+        contactEmail: courseOffering.contactEmail,
+        organisationId: courseOffering.organisationId,
+        referable: courseOffering.referable,
+        secondaryContactEmail: courseOffering.secondaryContactEmail,
+        withdrawn: courseOffering.withdrawn,
+      }
+
+      when(courseClient.addCourseOffering).calledWith(courseId, courseOfferingRequest).mockResolvedValue(courseOffering)
+
+      const result = await service.addCourseOffering(username, courseId, courseOfferingRequest)
+
+      expect(result).toEqual(courseOffering)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.addCourseOffering).toHaveBeenCalledWith(courseId, courseOfferingRequest)
+    })
   })
 
   describe('createCourse', () => {

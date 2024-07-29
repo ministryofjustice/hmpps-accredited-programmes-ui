@@ -24,6 +24,18 @@ export default class CourseService {
     private readonly userService: UserService,
   ) {}
 
+  async addCourseOffering(
+    username: Express.User['username'],
+    courseId: Course['id'],
+    courseOffering: Omit<CourseOffering, 'id' | 'organisationEnabled'>,
+  ): Promise<CourseOffering> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    return courseClient.addCourseOffering(courseId, courseOffering)
+  }
+
   async createCourse(username: Express.User['username'], courseCreateRequest: CourseCreateRequest): Promise<Course> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
