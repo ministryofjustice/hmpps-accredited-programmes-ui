@@ -11,7 +11,7 @@ import {
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
 } from '../../testutils/factories'
-import type { CourseCreateRequest, CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CourseCreateRequest, CourseOffering, CourseParticipationUpdate } from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -21,6 +21,49 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   beforeEach(() => {
     courseClient = new CourseClient(systemToken)
     config.apis.accreditedProgrammesApi.url = provider.mockService.baseUrl
+  })
+
+  describe('addCourseOffering', () => {
+    const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
+
+    const courseOffering = courseOfferingFactory.build({
+      id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537',
+    })
+    const courseOfferingRequestBody: Omit<CourseOffering, 'id' | 'organisationEnabled'> = {
+      contactEmail: courseOffering.contactEmail,
+      organisationId: courseOffering.organisationId,
+      referable: courseOffering.referable,
+      secondaryContactEmail: courseOffering.secondaryContactEmail,
+      withdrawn: courseOffering.withdrawn,
+    }
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'A course offering can be added to a course',
+        uponReceiving: 'A request to add an offering to course d3abc217-75ee-46e9-a010-368f30282367',
+        willRespondWith: {
+          body: Matchers.like(courseOffering),
+          status: 200,
+        },
+        withRequest: {
+          body: courseOfferingRequestBody,
+          headers: {
+            authorization: `Bearer ${systemToken}`,
+          },
+          method: 'PUT',
+          path: apiPaths.offerings.create({ courseId: course.id }),
+        },
+      })
+    })
+
+    it('adds an offering to the given course', async () => {
+      const result = await courseClient.addCourseOffering(
+        'd3abc217-75ee-46e9-a010-368f30282367',
+        courseOfferingRequestBody,
+      )
+
+      expect(result).toEqual(courseOffering)
+    })
   })
 
   describe('all', () => {

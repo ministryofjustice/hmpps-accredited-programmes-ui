@@ -20,6 +20,16 @@ export default class CourseClient {
     this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
+  async addCourseOffering(
+    courseId: Course['id'],
+    courseOffering: Omit<CourseOffering, 'id' | 'organisationEnabled'>,
+  ): Promise<CourseOffering> {
+    return (await this.restClient.put({
+      data: courseOffering,
+      path: apiPaths.offerings.create({ courseId }),
+    })) as CourseOffering
+  }
+
   async all(): Promise<Array<Course>> {
     return (await this.restClient.get({ path: apiPaths.courses.index({}) })) as Array<Course>
   }

@@ -11,6 +11,10 @@ export default class PrisonRegisterApiClient {
     this.restClient = new RestClient('prisonRegisterApiClient', config.apis.prisonRegisterApi as ApiConfig, userToken)
   }
 
+  async all(): Promise<Array<Prison>> {
+    return (await this.restClient.get({ path: prisonRegisterApiPaths.prisons.all({}) })) as Array<Prison>
+  }
+
   async find(prisonId: string): Promise<Prison> {
     return (await this.restClient.get({ path: prisonRegisterApiPaths.prisons.show({ prisonId }) })) as Prison
   }

@@ -13,7 +13,7 @@ context('Find', () => {
 
     const course = courseFactory.build()
     const courseOffering = courseOfferingFactory.build({
-      secondaryContactEmail: null,
+      secondaryContactEmail: undefined,
     })
     cy.task('stubOffering', { courseOffering })
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })

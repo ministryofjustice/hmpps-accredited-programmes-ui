@@ -21,6 +21,33 @@ describe('OrganisationService', () => {
     prisonRegisterApiClientBuilder.mockReturnValue(prisonRegisterApiClient)
   })
 
+  describe('getAllOrganisations', () => {
+    it('returns all organisations', async () => {
+      const prisons = prisonFactory.buildList(3)
+      prisonRegisterApiClient.all.mockResolvedValue(prisons)
+
+      const result = await service.getAllOrganisations(userToken)
+
+      expect(result).toEqual(prisons)
+
+      expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
+      expect(prisonRegisterApiClient.all).toHaveBeenCalled()
+    })
+
+    describe('when the prison client throws an error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(500)
+        prisonRegisterApiClient.all.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, 'Error fetching organisations.')
+        expect(() => service.getAllOrganisations(userToken)).rejects.toThrowError(expectedError)
+
+        expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
+        expect(prisonRegisterApiClient.all).toHaveBeenCalled()
+      })
+    })
+  })
+
   describe('getOrganisation', () => {
     describe('when the prison client finds the corresponding prison', () => {
       describe("and it's active", () => {
