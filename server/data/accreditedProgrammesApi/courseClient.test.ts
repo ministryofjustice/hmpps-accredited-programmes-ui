@@ -11,7 +11,12 @@ import {
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
 } from '../../testutils/factories'
-import type { CourseCreateRequest, CourseOffering, CourseParticipationUpdate } from '@accredited-programmes/models'
+import type {
+  CourseCreateRequest,
+  CourseOffering,
+  CourseParticipationUpdate,
+  CoursePrerequisite,
+} from '@accredited-programmes/models'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -481,13 +486,19 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('updateCoursePrerequisites', () => {
     const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
+    const prerequisites: Array<CoursePrerequisite> = [
+      {
+        description: 'Male',
+        name: 'Gender',
+      },
+    ]
 
     beforeEach(() => {
       provider.addInteraction({
         state: 'Course prerequisites for d3abc217-75ee-46e9-a010-368f30282367 can be updated',
         uponReceiving: 'A request to update course prerequisites for d3abc217-75ee-46e9-a010-368f30282367',
         willRespondWith: {
-          body: Matchers.like(course),
+          body: Matchers.like(prerequisites),
           status: 200,
         },
         withRequest: {
@@ -501,14 +512,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('updates the course with the given course prerequisites', async () => {
-      const result = await courseClient.updateCoursePrerequisites(course.id, [
-        {
-          description: 'Male',
-          name: 'Gender',
-        },
-      ])
+      const result = await courseClient.updateCoursePrerequisites(course.id, prerequisites)
 
-      expect(result).toEqual(course)
+      expect(result).toEqual(prerequisites)
     })
   })
 
