@@ -22,7 +22,7 @@ interface GetRequest {
 interface DeleteRequest extends GetRequest {}
 
 interface PostRequest {
-  data?: Record<string, unknown>
+  data?: Array<Record<string, unknown>> | Record<string, unknown>
   headers?: Record<string, string>
   path?: string
   raw?: boolean
