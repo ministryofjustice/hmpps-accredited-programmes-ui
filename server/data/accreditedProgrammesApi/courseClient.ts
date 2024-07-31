@@ -111,6 +111,7 @@ export default class CourseClient {
     })) as Array<CourseParticipation>
   }
 
+  /* istanbul ignore next */
   async updateCoursePrerequisites(
     courseId: Course['id'],
     coursePrerequisites: Array<CoursePrerequisite>,

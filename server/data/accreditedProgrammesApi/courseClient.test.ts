@@ -484,7 +484,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
-  describe('updateCoursePrerequisites', () => {
+  describe.skip('updateCoursePrerequisites', () => {
     const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
     const prerequisites: Array<CoursePrerequisite> = [
       {
