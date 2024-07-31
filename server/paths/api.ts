@@ -44,6 +44,7 @@ export default {
     index: coursesPath,
     names: courseNamesPath,
     offerings: offeringsByCoursePath,
+    prerequisites: coursePath.path('prerequisites'),
     show: coursePath,
   },
   oasys: {

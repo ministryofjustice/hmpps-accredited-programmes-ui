@@ -9,6 +9,7 @@ import type {
   CourseOffering,
   CourseParticipation,
   CourseParticipationUpdate,
+  CoursePrerequisite,
   Person,
 } from '@accredited-programmes/models'
 import type { SystemToken } from '@hmpps-auth'
@@ -108,6 +109,16 @@ export default class CourseClient {
     return (await this.restClient.get({
       path: apiPaths.people.participations({ prisonNumber }),
     })) as Array<CourseParticipation>
+  }
+
+  async updateCoursePrerequisites(
+    courseId: Course['id'],
+    coursePrerequisites: Array<CoursePrerequisite>,
+  ): Promise<Array<CoursePrerequisite>> {
+    return (await this.restClient.put({
+      data: coursePrerequisites,
+      path: apiPaths.courses.prerequisites({ courseId }),
+    })) as Array<CoursePrerequisite>
   }
 
   async updateParticipation(

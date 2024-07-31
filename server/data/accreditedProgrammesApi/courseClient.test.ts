@@ -479,6 +479,39 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
   })
 
+  describe('updateCoursePrerequisites', () => {
+    const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
+
+    beforeEach(() => {
+      provider.addInteraction({
+        state: 'Course prerequisites for d3abc217-75ee-46e9-a010-368f30282367 can be updated',
+        uponReceiving: 'A request to update course prerequisites for d3abc217-75ee-46e9-a010-368f30282367',
+        willRespondWith: {
+          body: Matchers.like(course),
+          status: 200,
+        },
+        withRequest: {
+          headers: {
+            authorization: `Bearer ${systemToken}`,
+          },
+          method: 'PUT',
+          path: apiPaths.courses.prerequisites({ courseId: course.id }),
+        },
+      })
+    })
+
+    it('updates the course with the given course prerequisites', async () => {
+      const result = await courseClient.updateCoursePrerequisites(course.id, [
+        {
+          description: 'Male',
+          name: 'Gender',
+        },
+      ])
+
+      expect(result).toEqual(course)
+    })
+  })
+
   describe('updateParticipation', () => {
     const courseParticipation = courseParticipationFactory.build({
       id: 'cc8eb19e-050a-4aa9-92e0-c654e5cfe281',
