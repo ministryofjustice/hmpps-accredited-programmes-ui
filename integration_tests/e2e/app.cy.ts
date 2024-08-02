@@ -43,6 +43,8 @@ context('App', () => {
         <ul class="govuk-list govuk-list--bullet">
           <li>Fosse Way (HMP & YOI)</li>
           <li>Onley (HMP)</li>
+          <li>Peterborough Female (HMP & YOI)</li>
+          <li>Peterborough (HMP & YOI)</li>
           <li>Stocken (HMP)</li>
           <li>Whatton (HMP)</li>
         </ul>
