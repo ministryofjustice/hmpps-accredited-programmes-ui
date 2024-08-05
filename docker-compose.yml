@@ -81,8 +81,8 @@ services:
     environment:
       - SERVER_PORT=8080
       - SPRING_PROFILES_ACTIVE=dev,local-postgres
-      - SPRING_R2DBC_URL=r2dbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db?sslmode=prefer
-      - SPRING_FLYWAY_URL=jdbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db?sslmode=prefer
+      - SPRING_R2DBC_URL=r2dbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db?sslmode=verify-full
+      - SPRING_FLYWAY_URL=jdbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db?sslmode=verify-full
       - API_BASE_URL_OAUTH=http://hmpps-auth:8080/auth
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
