@@ -25,3 +25,7 @@ script/utils/generateApiTypes/prisonApi
 echo "==> Updating Prisoner Search types..."
 
 script/utils/generateApiTypes/prisonerSearch
+
+echo "==> Updating Accredited Programmes types..."
+
+script/utils/generateApiTypes/accreditedProgrammesApi
