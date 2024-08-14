@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# script/generateApiTypes/accreditedProgrammesApi: Generate types for the Accredited Programmes API.
+#  
+
+npx swagger-typescript-api -p https://accredited-programmes-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/accreditedProgrammesApi -n index.d.ts --no-client

@@ -17,6 +17,7 @@
     "experimentalDecorators": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"],
     "paths": {
+      "@accredited-programmes-api": ["./server/@types/accreditedProgrammesApi/index.d.ts"],
       "@accredited-programmes/models": ["./server/@types/models/index.d.ts"],
       "@accredited-programmes/ui": ["./server/@types/ui/index.d.ts"],
       "@accredited-programmes/users": ["./server/@types/users/index.d.ts"],
