@@ -1,33 +1,66 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { Relationships } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { Relationships } from '@accredited-programmes-api'
 
 export default class RelationshipsUtils {
+  static closeRelationshipsSummaryListRows(
+    relationships: Relationships,
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    return [
+      {
+        key: { text: 'Previous experience of close relationships' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(relationships.prevCloseRelationships) },
+      },
+    ]
+  }
+
   static domesticViolenceSummaryListRows(
     relationships: Relationships,
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {
-        key: { text: '6.7 - Evidence of domestic violence / partner abuse' },
+        key: { text: 'Evidence of domestic violence or partner abuse' },
         value: { text: ShowRisksAndNeedsUtils.yesOrNo(relationships.dvEvidence) },
       },
       {
-        key: { text: '6.7.1.1 - Is the victim a current or former partner?' },
+        key: { text: 'Is the victim a current or former partner?' },
         value: { text: ShowRisksAndNeedsUtils.yesOrNo(relationships.victimFormerPartner) },
       },
       {
-        key: { text: '6.7.1.2 - Is the victim a family member?' },
+        key: { text: 'Is the victim a family member?' },
         value: { text: ShowRisksAndNeedsUtils.yesOrNo(relationships.victimFamilyMember) },
       },
       {
         key: {
-          text: '6.7.2.1 - Is the perpetrator a victim of partner or family abuse?',
+          text: 'Is the perpetrator a victim of partner or family abuse?',
         },
         value: { text: ShowRisksAndNeedsUtils.yesOrNo(relationships.victimOfPartnerFamily) },
       },
       {
-        key: { text: '6.7.2.2 - Are they the perpetrator of partner or family abuse?' },
+        key: { text: 'Are they the perpetrator of partner or family abuse?' },
         value: { text: ShowRisksAndNeedsUtils.yesOrNo(relationships.perpOfPartnerOrFamily) },
+      },
+    ]
+  }
+
+  static familyRelationshipsSummaryListRows(
+    relationships: Relationships,
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    return [
+      {
+        key: { text: 'Current relationship with close family members' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(relationships.relCloseFamily) },
+      },
+    ]
+  }
+
+  static relationshipToChildrenSummaryListRows(
+    relationships: Relationships,
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    return [
+      {
+        key: { text: 'Emotional congruence with children, or feeling closer to children than adults' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(relationships.emotionalCongruence) },
       },
     ]
   }
