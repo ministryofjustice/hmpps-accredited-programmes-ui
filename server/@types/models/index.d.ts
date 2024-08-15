@@ -37,7 +37,6 @@ import type {
   ReferralUpdate,
   ReferralView,
 } from './Referral'
-import type { Relationships } from './Relationships'
 import type { Alert, RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
 import type { RoshAnalysis } from './RoshAnalysis'
 
@@ -80,7 +79,6 @@ export type {
   ReferralStatusUppercase,
   ReferralUpdate,
   ReferralView,
-  Relationships,
   RiskLevel,
   RisksAndAlerts,
   RoshAnalysis,

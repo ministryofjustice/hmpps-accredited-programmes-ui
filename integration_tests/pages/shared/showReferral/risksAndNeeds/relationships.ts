@@ -1,6 +1,7 @@
 import { CourseUtils, RelationshipsUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, Relationships } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
+import type { Relationships } from '@accredited-programmes-api'
 
 export default class RelationshipsPage extends Page {
   relationships: Relationships
@@ -15,10 +16,28 @@ export default class RelationshipsPage extends Page {
     this.relationships = relationships
   }
 
+  shouldContainCloseRelationshipsSummaryList() {
+    cy.get('[data-testid="close-relationships-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        RelationshipsUtils.closeRelationshipsSummaryListRows(this.relationships),
+        summaryListElement,
+      )
+    })
+  }
+
   shouldContainDomesticViolenceSummaryList() {
     cy.get('[data-testid="domestic-violence-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
         RelationshipsUtils.domesticViolenceSummaryListRows(this.relationships),
+        summaryListElement,
+      )
+    })
+  }
+
+  shouldContainFamilyRelationshipsSummaryList() {
+    cy.get('[data-testid="family-relationships-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        RelationshipsUtils.familyRelationshipsSummaryListRows(this.relationships),
         summaryListElement,
       )
     })
@@ -40,6 +59,15 @@ export default class RelationshipsPage extends Page {
         'Relationship issues affecting risk of offending or harm',
         ShowRisksAndNeedsUtils.textValue(this.relationships.relIssuesDetails),
         summaryCardElement,
+      )
+    })
+  }
+
+  shouldContainRelationshipToChildrenSummaryList() {
+    cy.get('[data-testid="relationship-to-children-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        RelationshipsUtils.relationshipToChildrenSummaryListRows(this.relationships),
+        summaryListElement,
       )
     })
   }

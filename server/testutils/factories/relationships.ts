@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { Relationships } from '@accredited-programmes/models'
+import type { Relationships } from '@accredited-programmes-api'
 
 export default Factory.define<Relationships>(() => {
   return {

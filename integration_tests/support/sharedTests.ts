@@ -1009,7 +1009,10 @@ const sharedTests = {
       relationshipsPage.shouldContainRisksAndNeedsOasysMessage()
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
+      relationshipsPage.shouldContainFamilyRelationshipsSummaryList()
+      relationshipsPage.shouldContainCloseRelationshipsSummaryList()
       relationshipsPage.shouldContainDomesticViolenceSummaryList()
+      relationshipsPage.shouldContainRelationshipToChildrenSummaryList()
       relationshipsPage.shouldContainRelationshipIssuesSummaryCard()
     },
     showsRelationshipsPageWithoutData: (role: ApplicationRole): void => {

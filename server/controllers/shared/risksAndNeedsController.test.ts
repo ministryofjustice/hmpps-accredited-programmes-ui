@@ -602,9 +602,19 @@ describe('RisksAndNeedsController', () => {
     it('renders the relationships page with the correct response locals', async () => {
       const relIssuesDetails = 'Relationship issues details.'
       const relationships = relationshipsFactory.build({ relIssuesDetails })
-      const domesticViolenceSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+      const closeRelationshipsSummaryListRows = [{ key: { text: 'close-relationships' }, value: { text: 'Value' } }]
+      const domesticViolenceSummaryListRows = [{ key: { text: 'domestic-violence' }, value: { text: 'Value' } }]
+      const familyRelationshipsSummaryListRows = [{ key: { text: 'family-relationships' }, value: { text: 'Value' } }]
+      const relationshipToChildrenSummaryListRows = [
+        { key: { text: 'children-relationship' }, value: { text: 'Value' } },
+      ]
 
+      mockRelationshipsUtils.closeRelationshipsSummaryListRows.mockReturnValue(closeRelationshipsSummaryListRows)
       mockRelationshipsUtils.domesticViolenceSummaryListRows.mockReturnValue(domesticViolenceSummaryListRows)
+      mockRelationshipsUtils.familyRelationshipsSummaryListRows.mockReturnValue(familyRelationshipsSummaryListRows)
+      mockRelationshipsUtils.relationshipToChildrenSummaryListRows.mockReturnValue(
+        relationshipToChildrenSummaryListRows,
+      )
 
       when(oasysService.getRelationships).calledWith(username, person.prisonNumber).mockResolvedValue(relationships)
 
@@ -621,12 +631,13 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
         ...sharedPageData,
+        closeRelationshipsSummaryListRows,
         domesticViolenceSummaryListRows,
+        familyRelationshipsSummaryListRows,
         hasData: true,
-
         navigationItems,
         relIssuesDetails,
-        subNavigationItems,
+        relationshipToChildrenSummaryListRows,
       })
     })
 
@@ -644,8 +655,6 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
           ...sharedPageData,
           hasData: false,
-          navigationItems,
-          subNavigationItems,
         })
       })
     })

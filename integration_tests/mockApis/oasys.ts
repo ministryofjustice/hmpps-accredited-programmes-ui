@@ -13,10 +13,10 @@ import type {
   OffenceDetail,
   Psychiatric,
   Referral,
-  Relationships,
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
+import type { Relationships } from '@accredited-programmes-api'
 
 export default {
   stubAssessmentDateInfo: (args: {

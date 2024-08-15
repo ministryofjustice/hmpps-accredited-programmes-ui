@@ -11,13 +11,49 @@
     {{ govukSummaryList({
       card: {
         title: {
-          text: "Section 6.7 - Domestic violence"
+          text: "6.1 - Family relationship"
+        },
+        attributes: {
+          "data-testid": "family-relationships-summary-list"
+        }
+      },
+      rows: familyRelationshipsSummaryListRows
+    }) }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "6.6 - Close relationships"
+        },
+        attributes: {
+          "data-testid": "close-relationships-summary-list"
+        }
+      },
+      rows: closeRelationshipsSummaryListRows
+    }) }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "6.7 - Domestic violence"
         },
         attributes: {
           "data-testid": "domestic-violence-summary-list"
         }
       },
       rows: domesticViolenceSummaryListRows
+    }) }}
+
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "6.12 - Relationship to children"
+        },
+        attributes: {
+          "data-testid": "relationship-to-children-summary-list"
+        }
+      },
+      rows: relationshipToChildrenSummaryListRows
     }) }}
 
     {{ keylessSummaryCard("Relationship issues affecting risk of offending or harm", bodyText=relIssuesDetails, testId="relationship-issues-summary-card") }}
