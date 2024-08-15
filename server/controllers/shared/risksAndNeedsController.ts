@@ -258,9 +258,13 @@ export default class RisksAndNeedsController {
 
       const templateLocals = relationships
         ? {
+            closeRelationshipsSummaryListRows: RelationshipsUtils.closeRelationshipsSummaryListRows(relationships),
             domesticViolenceSummaryListRows: RelationshipsUtils.domesticViolenceSummaryListRows(relationships),
+            familyRelationshipsSummaryListRows: RelationshipsUtils.familyRelationshipsSummaryListRows(relationships),
             hasData: true,
             relIssuesDetails: ShowRisksAndNeedsUtils.textValue(relationships.relIssuesDetails),
+            relationshipToChildrenSummaryListRows:
+              RelationshipsUtils.relationshipToChildrenSummaryListRows(relationships),
           }
         : {
             hasData: false,
