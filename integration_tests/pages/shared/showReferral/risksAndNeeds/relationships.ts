@@ -1,6 +1,7 @@
 import { CourseUtils, RelationshipsUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, Relationships } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
+import type { Relationships } from '@accredited-programmes-api'
 
 export default class RelationshipsPage extends Page {
   relationships: Relationships
