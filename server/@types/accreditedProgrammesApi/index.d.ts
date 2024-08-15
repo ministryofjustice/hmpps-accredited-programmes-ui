@@ -964,11 +964,13 @@ export interface Relationships {
   /** @example "This person has a history of domestic violence" */
   relIssuesDetails?: string
   /** @example "0-No problems" */
-  emotionalCongruence?: string
+  relCloseFamily?: string
   /** @example "Not in a relationship" */
   relCurrRelationshipStatus?: string
   /** @example "2-Significant problems" */
   prevCloseRelationships?: string
+  /** @example "0-No problems" */
+  emotionalCongruence?: string
 }
 
 export interface Psychiatric {
