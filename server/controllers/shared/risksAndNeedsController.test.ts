@@ -476,8 +476,12 @@ describe('RisksAndNeedsController', () => {
     it('renders the lifestyle and associates page with the correct response locals', async () => {
       const lifestyleIssues = 'Lifestyle issues comments.'
       const lifestyle = lifestyleFactory.build({ activitiesEncourageOffending: '0 - No problems', lifestyleIssues })
-      const reoffendingSummaryListRows = [{ key: { text: 'key-one' }, value: { text: 'value one' } }]
+      const criminalAssociatesSummaryListRows = [{ key: { text: 'criminial-associates' }, value: { text: 'Value' } }]
+      const reoffendingSummaryListRows = [{ key: { text: 'reoffending' }, value: { text: 'Value' } }]
 
+      mockLifestyleAndAssociatesUtils.criminalAssociatesSummaryListRows.mockReturnValue(
+        criminalAssociatesSummaryListRows,
+      )
       mockLifestyleAndAssociatesUtils.reoffendingSummaryListRows.mockReturnValue(reoffendingSummaryListRows)
 
       when(ShowRisksAndNeedsUtils.textValue).calledWith(lifestyle.lifestyleIssues).mockReturnValue(lifestyleIssues)
@@ -493,12 +497,10 @@ describe('RisksAndNeedsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
         ...sharedPageData,
+        criminalAssociatesSummaryListRows,
         hasData: true,
-
         lifestyleIssues,
-        navigationItems,
         reoffendingSummaryListRows,
-        subNavigationItems,
       })
     })
 
@@ -516,8 +518,6 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
           ...sharedPageData,
           hasData: false,
-          navigationItems,
-          subNavigationItems,
         })
       })
     })

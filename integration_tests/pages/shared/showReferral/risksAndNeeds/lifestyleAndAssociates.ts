@@ -15,6 +15,15 @@ export default class LifestyleAndAssociatesPage extends Page {
     this.lifestyle = lifestyle
   }
 
+  shouldContainCriminalAssociatesSummaryList() {
+    cy.get('[data-testid="criminal-associates-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        LifestyleAndAssociatesUtils.criminalAssociatesSummaryListRows(this.lifestyle),
+        summaryListElement,
+      )
+    })
+  }
+
   shouldContainLifestyleIssuesSummaryCard() {
     cy.get('[data-testid="lifestyle-issues-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(

@@ -195,6 +195,7 @@ export default class RisksAndNeedsController {
 
       const templateLocals = lifestyle
         ? {
+            criminalAssociatesSummaryListRows: LifestyleAndAssociatesUtils.criminalAssociatesSummaryListRows(lifestyle),
             hasData: true,
             lifestyleIssues: ShowRisksAndNeedsUtils.textValue(lifestyle.lifestyleIssues),
             reoffendingSummaryListRows: LifestyleAndAssociatesUtils.reoffendingSummaryListRows(lifestyle),
