@@ -9,14 +9,13 @@ import type {
   DrugAlcoholDetail,
   Health,
   LearningNeeds,
-  Lifestyle,
   OffenceDetail,
   Psychiatric,
   Referral,
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
-import type { Relationships } from '@accredited-programmes-api'
+import type { Lifestyle, Relationships } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class OasysClient {

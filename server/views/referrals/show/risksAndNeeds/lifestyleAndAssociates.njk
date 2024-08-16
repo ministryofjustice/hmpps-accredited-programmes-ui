@@ -20,6 +20,18 @@
       rows: reoffendingSummaryListRows
     }) }}
 
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: "Section 7.3 - Criminal associates"
+        },
+        attributes: {
+          "data-testid": "criminal-associates-summary-list"
+        }
+      },
+      rows: criminalAssociatesSummaryListRows
+    }) }}
+
     {{ keylessSummaryCard("Lifestyle issues affecting risk of offending or harm", bodyText=lifestyleIssues, testId="lifestyle-issues-summary-card") }}
   {% elseif not oasysNomisErrorMessage %}
     {% set noLifestyleDataString = "No lifestyle data found in OASys. Add lifestyle data to OASys to see them here." %}

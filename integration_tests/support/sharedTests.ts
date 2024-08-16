@@ -902,6 +902,7 @@ const sharedTests = {
       lifestyleAndAssociatesPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       lifestyleAndAssociatesPage.shouldContainAssessmentCompletedText(recentCompletedAssessmentDateString)
       lifestyleAndAssociatesPage.shouldContainReoffendingSummaryList()
+      lifestyleAndAssociatesPage.shouldContainCriminalAssociatesSummaryList()
       lifestyleAndAssociatesPage.shouldContainLifestyleIssuesSummaryCard()
     },
     showsLifestyleAndAssociatesPageWithoutData: (role: ApplicationRole): void => {

@@ -1,6 +1,7 @@
 import { CourseUtils, LifestyleAndAssociatesUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, Lifestyle } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
+import type { Lifestyle } from '@accredited-programmes-api'
 
 export default class LifestyleAndAssociatesPage extends Page {
   lifestyle: Lifestyle
@@ -13,6 +14,15 @@ export default class LifestyleAndAssociatesPage extends Page {
     super(`Referral to ${coursePresenter.displayName}`)
 
     this.lifestyle = lifestyle
+  }
+
+  shouldContainCriminalAssociatesSummaryList() {
+    cy.get('[data-testid="criminal-associates-summary-list"]').then(summaryListElement => {
+      this.shouldContainSummaryListRows(
+        LifestyleAndAssociatesUtils.criminalAssociatesSummaryListRows(this.lifestyle),
+        summaryListElement,
+      )
+    })
   }
 
   shouldContainLifestyleIssuesSummaryCard() {
