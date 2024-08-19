@@ -5,7 +5,6 @@ import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilder
 import type {
   AssessmentDateInfo,
   Attitude,
-  Behaviour,
   DrugAlcoholDetail,
   Health,
   LearningNeeds,
@@ -14,7 +13,7 @@ import type {
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
-import type { Lifestyle, Psychiatric, Relationships } from '@accredited-programmes-api'
+import type { Behaviour, Lifestyle, Psychiatric, Relationships } from '@accredited-programmes-api'
 
 export default class OasysService {
   constructor(

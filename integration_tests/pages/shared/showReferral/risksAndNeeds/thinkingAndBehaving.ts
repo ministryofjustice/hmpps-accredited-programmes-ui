@@ -1,6 +1,7 @@
 import { CourseUtils, ThinkingAndBehavingUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Behaviour, Course } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes/models'
+import type { Behaviour } from '@accredited-programmes-api'
 
 export default class ThinkingAndBehavingPage extends Page {
   behaviour: Behaviour
