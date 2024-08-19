@@ -1,10 +1,18 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { Behaviour } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { Behaviour } from '@accredited-programmes-api'
 
 export default class ThinkingAndBehavingUtils {
   static thinkingAndBehavingSummaryListRows(behaviour: Behaviour): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
+      {
+        key: { text: '11.2 - Impulsivity' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(behaviour.impulsivity) },
+      },
+      {
+        key: { text: '11.3 - Aggressive or controlling behaviour' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(behaviour.aggressiveControllingBehaviour) },
+      },
       {
         key: { text: '11.4 - Temper control' },
         value: { text: ShowRisksAndNeedsUtils.textValue(behaviour.temperControl) },
@@ -26,8 +34,16 @@ export default class ThinkingAndBehavingUtils {
         value: { text: ShowRisksAndNeedsUtils.textValue(behaviour.understandsViewsOfOthers) },
       },
       {
-        key: { text: '11.10 - Concrete / abstract thinking (optional)' },
+        key: { text: '11.10 - Concrete or abstract thinking (optional)' },
         value: { text: ShowRisksAndNeedsUtils.textValue(behaviour.concreteAbstractThinking) },
+      },
+      {
+        key: { text: '11.11 - Sexual preoccupation' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(behaviour.sexualPreOccupation) },
+      },
+      {
+        key: { text: '11.12 - Offence-related sexual interests' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(behaviour.offenceRelatedSexualInterests) },
       },
     ]
   }
