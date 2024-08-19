@@ -1,7 +1,7 @@
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { Psychiatric } from '@accredited-programmes/models'
+import type { Psychiatric } from '@accredited-programmes-api'
 
 export default Factory.define<Psychiatric>(() => {
   const problemOptions = ['0-No problems', '1-Some problems']

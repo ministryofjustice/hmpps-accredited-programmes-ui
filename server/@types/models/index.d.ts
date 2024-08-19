@@ -20,7 +20,6 @@ import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
 import type { Paginated } from './Paginated'
 import type { KeyDates, Person, SentenceDetails } from './Person'
-import type { Psychiatric } from './Psychiatric'
 import type {
   ConfirmationFields,
   CreatedReferralResponse,
@@ -65,7 +64,6 @@ export type {
   OrganisationAddress,
   Paginated,
   Person,
-  Psychiatric,
   Referral,
   ReferralStatus,
   ReferralStatusCategory,
