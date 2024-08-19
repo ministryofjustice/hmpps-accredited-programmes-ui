@@ -13,6 +13,10 @@ describe('EmotionalWellbeingUtils', () => {
     it('formats phsychiatric data in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       expect(EmotionalWellbeingUtils.psychiatricSummaryListRows(psychiatric)).toEqual([
         {
+          key: { text: '10.1 - Difficulties coping' },
+          value: { text: '1-Some problems' },
+        },
+        {
           key: { text: '10.2 - Current psychological problems or depression' },
           value: { text: psychiatric.currPsychologicalProblems },
         },

@@ -10,12 +10,11 @@ import type {
   Health,
   LearningNeeds,
   OffenceDetail,
-  Psychiatric,
   Referral,
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
-import type { Lifestyle, Relationships } from '@accredited-programmes-api'
+import type { Lifestyle, Psychiatric, Relationships } from '@accredited-programmes-api'
 
 export default class OasysService {
   constructor(
