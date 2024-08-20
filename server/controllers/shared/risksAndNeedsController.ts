@@ -404,7 +404,7 @@ export default class RisksAndNeedsController {
     const referral = await this.referralService.getReferral(username, referralId)
 
     const [assessmentDateInfo, course, person, statusTransitions] = await Promise.all([
-      this.oasysService.getAssessmentDateInfo(username, referral.prisonNumber),
+      this.withErrorHandling(this.oasysService.getAssessmentDateInfo(username, referral.prisonNumber), res),
       this.courseService.getCourseByOffering(username, referral.offeringId),
       this.personService.getPerson(username, referral.prisonNumber),
       isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
