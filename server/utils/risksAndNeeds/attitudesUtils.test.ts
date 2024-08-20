@@ -3,6 +3,7 @@ import { attitudeFactory } from '../../testutils/factories'
 
 describe('AttitudesUtils', () => {
   const attitude = attitudeFactory.build({
+    hostileOrientation: '0 - No problems',
     motivationToAddressBehaviour: '1 - Quite motivated',
     proCriminalAttitudes: '1 - Some problems',
   })
@@ -17,6 +18,10 @@ describe('AttitudesUtils', () => {
         {
           key: { text: '12.8 - Motivation to address offending behaviour' },
           value: { text: '1 - Quite motivated' },
+        },
+        {
+          key: { text: '12.9 - Hostile orientation' },
+          value: { text: '0 - No problems' },
         },
       ])
     })

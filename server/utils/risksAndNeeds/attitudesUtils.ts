@@ -1,6 +1,6 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { Attitude } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { Attitude } from '@accredited-programmes-api'
 
 export default class AttitudesUtils {
   static attitudesSummaryListRows(attitude: Attitude): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
@@ -12,6 +12,10 @@ export default class AttitudesUtils {
       {
         key: { text: '12.8 - Motivation to address offending behaviour' },
         value: { text: ShowRisksAndNeedsUtils.textValue(attitude.motivationToAddressBehaviour) },
+      },
+      {
+        key: { text: '12.9 - Hostile orientation' },
+        value: { text: ShowRisksAndNeedsUtils.textValue(attitude.hostileOrientation) },
       },
     ]
   }
