@@ -1,5 +1,4 @@
 import type { AssessmentDateInfo } from './AssessmentDateInfo'
-import type { Attitude } from './Attitude'
 import type { Course } from './Course'
 import type { Audience, CourseAudience } from './CourseAudience'
 import type { CourseCreateRequest } from './CourseCreateRequest'
@@ -40,7 +39,6 @@ import type { RoshAnalysis } from './RoshAnalysis'
 export type {
   Alert,
   AssessmentDateInfo,
-  Attitude,
   Audience,
   ConfirmationFields,
   Course,

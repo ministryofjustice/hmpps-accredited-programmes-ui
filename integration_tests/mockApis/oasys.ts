@@ -4,7 +4,6 @@ import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type {
   AssessmentDateInfo,
-  Attitude,
   DrugAlcoholDetail,
   Health,
   LearningNeeds,
@@ -13,7 +12,7 @@ import type {
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
-import type { Behaviour, Lifestyle, Psychiatric, Relationships } from '@accredited-programmes-api'
+import type { Attitude, Behaviour, Lifestyle, Psychiatric, Relationships } from '@accredited-programmes-api'
 
 export default {
   stubAssessmentDateInfo: (args: {
