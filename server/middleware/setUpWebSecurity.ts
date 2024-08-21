@@ -32,13 +32,6 @@ export default function setUpWebSecurity(): Router {
   const fontSrc = ["'self'"]
   const formAction = [`'self' ${config.apis.hmppsAuth.externalUrl} ${config.dpsUrl}`]
 
-  if (config.apis.hmppsComponents.url) {
-    scriptSrc.push(config.apis.hmppsComponents.url)
-    styleSrc.push(config.apis.hmppsComponents.url)
-    imgSrc.push(config.apis.hmppsComponents.url)
-    fontSrc.push(config.apis.hmppsComponents.url)
-  }
-
   router.use(
     helmet({
       contentSecurityPolicy: {
