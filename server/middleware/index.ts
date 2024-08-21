@@ -1,5 +1,4 @@
 import authorisationMiddleware from './authorisationMiddleware'
-import getFrontendComponents from './getFrontendComponents'
 import { ApplicationRoles } from './roleBasedAccessMiddleware'
 import setUpAuthentication from './setUpAuthentication'
 import setUpCsrf from './setUpCsrf'
@@ -15,7 +14,6 @@ import setUpWebSession from './setUpWebSession'
 export {
   ApplicationRoles,
   authorisationMiddleware,
-  getFrontendComponents,
   setUpAuthentication,
   setUpCsrf,
   setUpCurrentUser,

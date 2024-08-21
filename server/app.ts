@@ -1,15 +1,16 @@
 /* istanbul ignore file */
 
+import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
 import express from 'express'
 import createError from 'http-errors'
 import methodOverride from 'method-override'
 import path from 'path'
 
+import config from './config'
 import type { Controllers } from './controllers'
 import errorHandler from './errorHandler'
 import {
   authorisationMiddleware,
-  getFrontendComponents,
   setUpAuthentication,
   setUpCsrf,
   setUpCurrentUser,
@@ -51,7 +52,13 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.get('*', getFrontendComponents(services.hmppsComponentsService))
+  app.get(
+    '*',
+    dpsComponents.getPageComponents({
+      dpsUrl: config.dpsUrl,
+      includeMeta: true,
+    }),
+  )
   app.use(routes(controllers))
 
   app.use((req, res, next) => next(createError(404, 'Not Found')))
