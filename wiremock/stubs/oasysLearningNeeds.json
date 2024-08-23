@@ -1,6 +1,6 @@
 {
   "basicSkillsScore": "6",
-  "basicSkillsScoreDescription": "Extra detail about the learning needs score",
+  "basicSkillsScoreDescription": "Extra detail about the learning needs score.\r\n\r\nSome more details.",
   "learningDifficulties": "0 - No problems",
   "noFixedAbodeOrTransient": false,
   "problemsReadWriteNum": "0 - No problems",

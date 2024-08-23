@@ -8,7 +8,7 @@
   {{ super() }}
 
   {% if hasData %}
-    {{ keylessSummaryCard("Section 2.1 - Brief offence details", bodyText=offenceDetailsText, testId="brief-offence-details-summary-card") }}
+    {{ keylessSummaryCard("Section 2.1 - Brief offence details", bodyHtml=offenceDetailsText, testId="brief-offence-details-summary-card") }}
 
     {{ govukSummaryList({
       card: {
@@ -46,7 +46,7 @@
       rows: otherOffendersAndInfluencesSummaryListRows
     }) }}
 
-    {{ keylessSummaryCard("Section 2.8 - Motivation and triggers", bodyText=motivationAndTriggersText, testId="motivation-and-triggers-summary-card") }}
+    {{ keylessSummaryCard("Section 2.8 - Motivation and triggers", bodyHtml=motivationAndTriggersText, testId="motivation-and-triggers-summary-card") }}
 
     {{ govukSummaryList({
       card: {
@@ -60,7 +60,7 @@
       rows: responsibilitySummaryListRows
     }) }}
 
-    {{ keylessSummaryCard("Section 2.12 - Pattern of offending", bodyText=patternOffendingText, testId="pattern-offending-summary-card") }}
+    {{ keylessSummaryCard("Section 2.12 - Pattern of offending", bodyHtml=patternOffendingText, testId="pattern-offending-summary-card") }}
   {% elseif not oasysNomisErrorMessage %}
     {% set noOffenceDetailsString = "No offence details found in OASys. Add offence details to OASys to see them here." %}
 

@@ -19,7 +19,7 @@ export default class OffenceAnalysisPage extends Page {
     cy.get('[data-testid="brief-offence-details-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Section 2.1 - Brief offence details',
-        ShowRisksAndNeedsUtils.textValue(this.offenceDetail.offenceDetails),
+        ShowRisksAndNeedsUtils.htmlTextValue(this.offenceDetail.offenceDetails),
         summaryCardElement,
       )
     })
@@ -38,7 +38,7 @@ export default class OffenceAnalysisPage extends Page {
     cy.get('[data-testid="motivation-and-triggers-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Section 2.8 - Motivation and triggers',
-        ShowRisksAndNeedsUtils.textValue(this.offenceDetail.motivationAndTriggers),
+        ShowRisksAndNeedsUtils.htmlTextValue(this.offenceDetail.motivationAndTriggers),
         summaryCardElement,
       )
     })
@@ -67,7 +67,7 @@ export default class OffenceAnalysisPage extends Page {
     cy.get('[data-testid="pattern-offending-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Section 2.12 - Pattern of offending',
-        ShowRisksAndNeedsUtils.textValue(this.offenceDetail.patternOffending),
+        ShowRisksAndNeedsUtils.htmlTextValue(this.offenceDetail.patternOffending),
         summaryCardElement,
       )
     })

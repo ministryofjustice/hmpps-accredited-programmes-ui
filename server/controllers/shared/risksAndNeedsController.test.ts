@@ -484,7 +484,7 @@ describe('RisksAndNeedsController', () => {
       )
       mockLifestyleAndAssociatesUtils.reoffendingSummaryListRows.mockReturnValue(reoffendingSummaryListRows)
 
-      when(ShowRisksAndNeedsUtils.textValue).calledWith(lifestyle.lifestyleIssues).mockReturnValue(lifestyleIssues)
+      when(ShowRisksAndNeedsUtils.htmlTextValue).calledWith(lifestyle.lifestyleIssues).mockReturnValue(lifestyleIssues)
 
       when(oasysService.getLifestyle).calledWith(username, person.prisonNumber).mockResolvedValue(lifestyle)
 
@@ -544,13 +544,13 @@ describe('RisksAndNeedsController', () => {
       mockOffenceAnalysisUtils.victimsAndPartnersSummaryListRows.mockReturnValue(victimsAndPartnersSummaryListRows)
 
       when(oasysService.getOffenceDetails).calledWith(username, person.prisonNumber).mockResolvedValue(offenceDetails)
-      when(ShowRisksAndNeedsUtils.textValue)
+      when(ShowRisksAndNeedsUtils.htmlTextValue)
         .calledWith(offenceDetails.motivationAndTriggers)
         .mockReturnValue(motivationAndTriggersText)
-      when(ShowRisksAndNeedsUtils.textValue)
+      when(ShowRisksAndNeedsUtils.htmlTextValue)
         .calledWith(offenceDetails.patternOffending)
         .mockReturnValue(patternOffendingText)
-      when(ShowRisksAndNeedsUtils.textValue)
+      when(ShowRisksAndNeedsUtils.htmlTextValue)
         .calledWith(offenceDetails.offenceDetails)
         .mockReturnValue(offenceDetailsText)
 
@@ -618,7 +618,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getRelationships).calledWith(username, person.prisonNumber).mockResolvedValue(relationships)
 
-      when(ShowRisksAndNeedsUtils.textValue)
+      when(ShowRisksAndNeedsUtils.htmlTextValue)
         .calledWith(relationships.relIssuesDetails)
         .mockReturnValue(relIssuesDetails)
 

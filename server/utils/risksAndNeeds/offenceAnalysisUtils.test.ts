@@ -54,13 +54,13 @@ describe('OffenceAnalysisUtils', () => {
         {
           key: { text: 'Was the offender the leader?' },
           value: {
-            text: 'Detail about the others involved',
+            html: 'Detail about the others involved',
           },
         },
         {
           key: { text: 'Peer group influences (eg offender easily led, gang member)' },
           value: {
-            text: 'Detail about influences',
+            html: 'Detail about influences',
           },
         },
       ])
@@ -119,7 +119,7 @@ describe('OffenceAnalysisUtils', () => {
             text: 'How much responsibility does the offender acknowledge for the offence(s). Do they blame others, minimise the extent of their offending?',
           },
           value: {
-            text: 'Detail about the persons acceptance',
+            html: 'Detail about the persons acceptance',
           },
         },
       ])

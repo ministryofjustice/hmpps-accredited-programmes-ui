@@ -29,7 +29,7 @@ export default class LifestyleAndAssociatesPage extends Page {
     cy.get('[data-testid="lifestyle-issues-summary-card"]').then(summaryCardElement => {
       this.shouldContainKeylessSummaryCard(
         'Lifestyle issues affecting risk of offending or harm',
-        ShowRisksAndNeedsUtils.textValue(this.lifestyle.lifestyleIssues),
+        ShowRisksAndNeedsUtils.htmlTextValue(this.lifestyle.lifestyleIssues),
         summaryCardElement,
       )
     })

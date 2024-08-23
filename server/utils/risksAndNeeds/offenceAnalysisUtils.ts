@@ -39,13 +39,13 @@ export default class OffenceAnalysisUtils {
       {
         key: { text: 'Was the offender the leader?' },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(offenceDetail.othersInvolvedDetail),
+          html: ShowRisksAndNeedsUtils.htmlTextValue(offenceDetail.othersInvolvedDetail),
         },
       },
       {
         key: { text: 'Peer group influences (eg offender easily led, gang member)' },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(offenceDetail.peerGroupInfluences),
+          html: ShowRisksAndNeedsUtils.htmlTextValue(offenceDetail.peerGroupInfluences),
         },
       },
     ]
@@ -66,7 +66,7 @@ export default class OffenceAnalysisUtils {
           text: 'How much responsibility does the offender acknowledge for the offence(s). Do they blame others, minimise the extent of their offending?',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(offenceDetail.acceptsResponsibilityDetail),
+          html: ShowRisksAndNeedsUtils.htmlTextValue(offenceDetail.acceptsResponsibilityDetail),
         },
       },
     ]

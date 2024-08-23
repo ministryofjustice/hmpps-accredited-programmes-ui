@@ -4,7 +4,12 @@ import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import type { Referral } from '@accredited-programmes/models'
 import type { MojFrontendNavigationItem } from '@accredited-programmes/ui'
 
+const noInfoString = 'No information available'
 export default class ShowRisksAndNeedsUtils {
+  static htmlTextValue(value?: string | null): string {
+    return value?.trim().replace(/(?:\r\n|\r|\n)/g, '<br>') || noInfoString
+  }
+
   static navigationItems(currentPath: Request['path'], referralId: Referral['id']): Array<MojFrontendNavigationItem> {
     const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
 
@@ -67,7 +72,7 @@ export default class ShowRisksAndNeedsUtils {
   }
 
   static textValue(value?: string | null): string {
-    return value || 'No information available'
+    return value || noInfoString
   }
 
   static yesOrNo(value?: boolean): 'No' | 'Yes' {

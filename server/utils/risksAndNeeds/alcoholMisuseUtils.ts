@@ -10,7 +10,7 @@ export default class AlcoholMisuseUtils {
       {
         key: { text: '9.1 - Is current use a problem?' },
         value: {
-          html: `${ShowRisksAndNeedsUtils.textValue(alcoholDetails.alcoholLinkedToHarm)}<br><br>${ShowRisksAndNeedsUtils.textValue(alcoholDetails.alcoholIssuesDetails)}`,
+          html: `${ShowRisksAndNeedsUtils.textValue(alcoholDetails.alcoholLinkedToHarm)}<br><br>${ShowRisksAndNeedsUtils.htmlTextValue(alcoholDetails.alcoholIssuesDetails)}`,
         },
       },
       {

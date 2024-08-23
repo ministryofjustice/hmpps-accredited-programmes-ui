@@ -2,6 +2,28 @@ import ShowRisksAndNeedsUtils from './showRisksAndNeedsUtils'
 import { assessPaths, referPaths } from '../../paths'
 
 describe('ShowRisksAndNeedsUtils', () => {
+  describe('htmlTextValue', () => {
+    describe('when the value is undefined', () => {
+      it('returns "No information available"', () => {
+        expect(ShowRisksAndNeedsUtils.htmlTextValue(undefined)).toEqual('No information available')
+      })
+    })
+
+    describe('when the value is an empty string', () => {
+      it('returns "No information available"', () => {
+        expect(ShowRisksAndNeedsUtils.htmlTextValue('')).toEqual('No information available')
+      })
+    })
+
+    describe('when the value is a string', () => {
+      it('returns the value with line breaks replaced by <br> tags', () => {
+        expect(ShowRisksAndNeedsUtils.htmlTextValue('Mock string value\nwith line breaks')).toEqual(
+          'Mock string value<br>with line breaks',
+        )
+      })
+    })
+  })
+
   describe('navigationItems', () => {
     const mockReferralId = 'mock-referral-id'
 
