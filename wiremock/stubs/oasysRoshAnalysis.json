@@ -1,9 +1,9 @@
 {
-  "anyoneElsePresent": "Detail about anyone else present",
-  "howDone": "Detail about how it was done",
-  "offenceDetails": "Detail about the offence",
-  "sources": "Detail about the source of information",
-  "whereAndWhen": "Detail about where and when it was done",
-  "whoVictims": "Detail about the victims",
-  "whyDone": "Detail about why it was done"
+  "anyoneElsePresent": "Detail about anyone else present.\r\n\r\nSome more details.",
+  "howDone": "Detail about how it was done.\r\n\r\nSome more details.",
+  "offenceDetails": "Detail about the offence.\r\n\r\nSome more details.",
+  "sources": "Detail about the source of information.\r\n\r\nSome more details.",
+  "whereAndWhen": "Detail about where and when it was done.\r\n\r\nSome more details.",
+  "whoVictims": "Detail about the victims.\r\n\r\nSome more details.",
+  "whyDone": "Detail about why it was done.\r\n\r\nSome more details."
 }

@@ -9,33 +9,33 @@ export default class RoshAnalysisUtils {
     return [
       {
         key: { text: 'What exactly did they do?' },
-        value: { text: ShowRisksAndNeedsUtils.textValue(roshAnalysis.offenceDetails) },
+        value: { html: ShowRisksAndNeedsUtils.htmlTextValue(roshAnalysis.offenceDetails) },
       },
       {
         key: { text: 'Where and when did they do it?' },
-        value: { text: ShowRisksAndNeedsUtils.textValue(roshAnalysis.whereAndWhen) },
+        value: { html: ShowRisksAndNeedsUtils.htmlTextValue(roshAnalysis.whereAndWhen) },
       },
       {
         key: { text: 'How did they do it (was there any pre-planning, use of weapon, tool etc)?' },
-        value: { text: ShowRisksAndNeedsUtils.textValue(roshAnalysis.howDone) },
+        value: { html: ShowRisksAndNeedsUtils.htmlTextValue(roshAnalysis.howDone) },
       },
       {
         key: {
           text: 'Who were the victims (were there concerns about targeting, type, age, race or vulnerability of victim)?',
         },
-        value: { text: ShowRisksAndNeedsUtils.textValue(roshAnalysis.whoVictims) },
+        value: { html: ShowRisksAndNeedsUtils.htmlTextValue(roshAnalysis.whoVictims) },
       },
       {
         key: { text: 'Was anyone else present / involved?' },
-        value: { text: ShowRisksAndNeedsUtils.textValue(roshAnalysis.anyoneElsePresent) },
+        value: { html: ShowRisksAndNeedsUtils.htmlTextValue(roshAnalysis.anyoneElsePresent) },
       },
       {
         key: { text: 'Why did they do it (motivation and triggers)?' },
-        value: { text: ShowRisksAndNeedsUtils.textValue(roshAnalysis.whyDone) },
+        value: { html: ShowRisksAndNeedsUtils.htmlTextValue(roshAnalysis.whyDone) },
       },
       {
         key: { text: 'Source of information' },
-        value: { text: ShowRisksAndNeedsUtils.textValue(roshAnalysis.sources) },
+        value: { html: ShowRisksAndNeedsUtils.htmlTextValue(roshAnalysis.sources) },
       },
     ]
   }

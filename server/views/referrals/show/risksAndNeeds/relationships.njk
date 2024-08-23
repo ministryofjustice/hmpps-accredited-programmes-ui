@@ -56,7 +56,7 @@
       rows: relationshipToChildrenSummaryListRows
     }) }}
 
-    {{ keylessSummaryCard("Relationship issues affecting risk of offending or harm", bodyText=relIssuesDetails, testId="relationship-issues-summary-card") }}
+    {{ keylessSummaryCard("Relationship issues affecting risk of offending or harm", bodyHtml=relIssuesDetails, testId="relationship-issues-summary-card") }}
   {% elseif not oasysNomisErrorMessage %}
     {% set noRelationshipsString = "No relationships found in OASys. Add relationships to OASys to see it here." %}
 

@@ -30,7 +30,10 @@ export default class LearningNeedsUtils {
 
   static scoreSummaryListRows(learningNeeds: LearningNeeds): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     const scoreText = ShowRisksAndNeedsUtils.textValue(learningNeeds.basicSkillsScore)
-    const valueHtml = [scoreText, learningNeeds.basicSkillsScoreDescription].filter(text => text).join('<br><br>')
+    const descriptionText = learningNeeds.basicSkillsScoreDescription
+      ? ShowRisksAndNeedsUtils.htmlTextValue(learningNeeds.basicSkillsScoreDescription)
+      : undefined
+    const valueHtml = [scoreText, descriptionText].filter(text => text).join('<br><br>')
 
     return [
       {

@@ -197,7 +197,7 @@ export default class RisksAndNeedsController {
         ? {
             criminalAssociatesSummaryListRows: LifestyleAndAssociatesUtils.criminalAssociatesSummaryListRows(lifestyle),
             hasData: true,
-            lifestyleIssues: ShowRisksAndNeedsUtils.textValue(lifestyle.lifestyleIssues),
+            lifestyleIssues: ShowRisksAndNeedsUtils.htmlTextValue(lifestyle.lifestyleIssues),
             reoffendingSummaryListRows: LifestyleAndAssociatesUtils.reoffendingSummaryListRows(lifestyle),
           }
         : {
@@ -227,11 +227,11 @@ export default class RisksAndNeedsController {
             hasData: true,
             impactAndConsequencesSummaryListRows:
               OffenceAnalysisUtils.impactAndConsequencesSummaryListRows(offenceDetails),
-            motivationAndTriggersText: ShowRisksAndNeedsUtils.textValue(offenceDetails.motivationAndTriggers),
-            offenceDetailsText: ShowRisksAndNeedsUtils.textValue(offenceDetails.offenceDetails),
+            motivationAndTriggersText: ShowRisksAndNeedsUtils.htmlTextValue(offenceDetails.motivationAndTriggers),
+            offenceDetailsText: ShowRisksAndNeedsUtils.htmlTextValue(offenceDetails.offenceDetails),
             otherOffendersAndInfluencesSummaryListRows:
               OffenceAnalysisUtils.otherOffendersAndInfluencesSummaryListRows(offenceDetails),
-            patternOffendingText: ShowRisksAndNeedsUtils.textValue(offenceDetails.patternOffending),
+            patternOffendingText: ShowRisksAndNeedsUtils.htmlTextValue(offenceDetails.patternOffending),
             responsibilitySummaryListRows: OffenceAnalysisUtils.responsibilitySummaryListRows(offenceDetails),
             victimsAndPartnersSummaryListRows: OffenceAnalysisUtils.victimsAndPartnersSummaryListRows(offenceDetails),
           }
@@ -263,7 +263,7 @@ export default class RisksAndNeedsController {
             domesticViolenceSummaryListRows: RelationshipsUtils.domesticViolenceSummaryListRows(relationships),
             familyRelationshipsSummaryListRows: RelationshipsUtils.familyRelationshipsSummaryListRows(relationships),
             hasData: true,
-            relIssuesDetails: ShowRisksAndNeedsUtils.textValue(relationships.relIssuesDetails),
+            relIssuesDetails: ShowRisksAndNeedsUtils.htmlTextValue(relationships.relIssuesDetails),
             relationshipToChildrenSummaryListRows:
               RelationshipsUtils.relationshipToChildrenSummaryListRows(relationships),
           }

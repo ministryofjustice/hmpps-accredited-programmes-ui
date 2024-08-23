@@ -17,33 +17,33 @@ describe('RoshAnalysisUtils', () => {
       expect(RoshAnalysisUtils.previousBehaviourSummaryListRows(roshAnalysis)).toEqual([
         {
           key: { text: 'What exactly did they do?' },
-          value: { text: 'Detail about the offence' },
+          value: { html: 'Detail about the offence' },
         },
         {
           key: { text: 'Where and when did they do it?' },
-          value: { text: 'Detail about where and when it was done' },
+          value: { html: 'Detail about where and when it was done' },
         },
         {
           key: { text: 'How did they do it (was there any pre-planning, use of weapon, tool etc)?' },
-          value: { text: 'Detail about how it was done' },
+          value: { html: 'Detail about how it was done' },
         },
         {
           key: {
             text: 'Who were the victims (were there concerns about targeting, type, age, race or vulnerability of victim)?',
           },
-          value: { text: 'Detail about the victims' },
+          value: { html: 'Detail about the victims' },
         },
         {
           key: { text: 'Was anyone else present / involved?' },
-          value: { text: 'Detail about anyone else present' },
+          value: { html: 'Detail about anyone else present' },
         },
         {
           key: { text: 'Why did they do it (motivation and triggers)?' },
-          value: { text: 'Detail about why it was done' },
+          value: { html: 'Detail about why it was done' },
         },
         {
           key: { text: 'Source of information' },
-          value: { text: 'Detail about the source of information' },
+          value: { html: 'Detail about the source of information' },
         },
       ])
     })

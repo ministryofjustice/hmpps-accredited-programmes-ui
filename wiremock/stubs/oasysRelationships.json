@@ -1,7 +1,7 @@
 {
   "dvEvidence": true,
   "perpOfPartnerOrFamily": false,
-  "relIssuesDetails": "Free text",
+  "relIssuesDetails": "Free text\n\nWith loads of line breaks.\n\nHere\n\nThere\n\nEverywhere",
   "victimFamilyMember": false,
   "victimFormerPartner": false,
   "victimOfPartnerFamily": false

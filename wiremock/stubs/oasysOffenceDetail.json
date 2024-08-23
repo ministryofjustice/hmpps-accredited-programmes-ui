@@ -9,10 +9,10 @@
   "stalking": false,
   "recognisesImpact": false,
   "numberOfOthersInvolved": 2,
-  "othersInvolvedDetail": "Detail about the others involved",
-  "peerGroupInfluences": "Detail about influences",
-  "motivationAndTriggers": "Detail about motivation and triggers",
+  "othersInvolvedDetail": "Detail about the others involved.\r\n\r\nSome more details.",
+  "peerGroupInfluences": "Detail about influence.\r\n\r\nSome more details.",
+  "motivationAndTriggers": "Detail about motivation and triggers.\r\n\r\nSome more details.",
   "acceptsResponsibility": false,
-  "acceptsResponsibilityDetail": "Detail about the persons acceptance",
-  "patternOffending": "Detail about the pattern of offending"
+  "acceptsResponsibilityDetail": "Detail about the persons acceptance.\r\n\r\nSome more details.",
+  "patternOffending": "Detail about the pattern of offending.\r\n\r\nSome more details."
 }
