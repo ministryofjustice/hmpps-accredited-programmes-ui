@@ -8,13 +8,15 @@
 .dashboard__cards-wrapper {
   @include full-width-within-govuk-width-container;
 
-  flex: 1;
+  & {
+    flex: 1;
 
-  margin-bottom: -2.1875rem;
-  padding-top: 1.875rem;
-  padding-bottom: 1.875rem;
+    margin-bottom: -2.1875rem;
+    padding-top: 1.875rem;
+    padding-bottom: 1.875rem;
 
-  background: #f0f4f5;
+    background: #f0f4f5;
+  }
 
   @media (width > 40em) {
     margin-bottom: -3.75rem;
