@@ -12,6 +12,7 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  coursePrerequisiteFactory,
   personFactory,
   userFactory,
 } from '../testutils/factories'
@@ -423,6 +424,22 @@ describe('CourseService', () => {
       const result = await service.presentCourseParticipation(userToken, courseParticipation, referralId)
 
       expect(result).toEqual('course participation 1 options')
+    })
+  })
+
+  describe('updateCoursePrerequisites', () => {
+    it('asks the client to update course prerequisites', async () => {
+      const courseId = 'COURSE_ID'
+      const prerequisites = coursePrerequisiteFactory.buildList(3)
+
+      when(courseClient.updateCoursePrerequisites).calledWith(courseId, prerequisites).mockResolvedValue(prerequisites)
+
+      const result = await service.updateCoursePrerequisites(username, courseId, prerequisites)
+
+      expect(result).toEqual(prerequisites)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.updateCoursePrerequisites).toHaveBeenCalledWith(courseId, prerequisites)
     })
   })
 
