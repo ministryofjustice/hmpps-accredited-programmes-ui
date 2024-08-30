@@ -117,7 +117,7 @@ export default class CourseClient {
     coursePrerequisites: Array<CoursePrerequisite>,
   ): Promise<Array<CoursePrerequisite>> {
     return (await this.restClient.put({
-      data: coursePrerequisites,
+      data: { prerequisites: coursePrerequisites },
       path: apiPaths.courses.prerequisites({ courseId }),
     })) as Array<CoursePrerequisite>
   }
