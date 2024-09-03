@@ -1,5 +1,6 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
@@ -65,6 +66,48 @@
           }
         }) }}
 
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+        {% call govukFieldset({
+          legend: {
+            text: "Programme criteria",
+            classes: "govuk-fieldset__legend--m"
+          }
+        }) %}
+
+        <div id="js-repeater-section-1" class="govuk-grid-row">
+          {{ govukInput({
+              label: {
+                text: "Name"
+              },
+              id: "prerequisites[1][name]",
+              name: "prerequisites[1][name]",
+              formGroup: {
+                classes: "govuk-grid-column-one-third"
+              }
+            }) }}
+
+          {{ govukInput({
+              label: {
+                text: "Description"
+              },
+              id: "prerequisites[1][description]",
+              name: "prerequisites[1][description]",
+              formGroup: {
+                classes: "govuk-grid-column-two-thirds"
+              }
+            }) }}
+        </div>
+        {% endcall %}
+
+        {{ govukButton({
+          type: "button",
+          text: "Add more criteria",
+          classes: "govuk-button--secondary js-repeater-button govuk-!-margin-bottom-0"
+        }) }}
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
         {{ govukRadios({
           name: "withdrawn",
           fieldset: {
@@ -89,3 +132,8 @@
     </div>
   </div>
 {% endblock content %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/fieldRepeater.js"></script>
+{% endblock bodyEnd %}
