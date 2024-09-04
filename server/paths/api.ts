@@ -47,6 +47,7 @@ export default {
     offerings: offeringsByCoursePath,
     prerequisites: coursePath.path('prerequisites'),
     show: coursePath,
+    update: coursePath,
   },
   oasys: {
     assessmentDate: oasysBasePath.path('assessment_date'),

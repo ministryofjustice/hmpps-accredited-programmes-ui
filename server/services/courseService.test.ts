@@ -439,6 +439,28 @@ describe('CourseService', () => {
     })
   })
 
+  describe('updateCourse', () => {
+    it('asks the client to update a course', async () => {
+      const course = courseFactory.build()
+      const courseUpdate: CourseCreateRequest = {
+        alternateName: 'Updated alternate name',
+        audienceId: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2',
+        description: 'Updated description',
+        name: 'Updated name',
+        withdrawn: false,
+      }
+
+      when(courseClient.updateCourse).calledWith(course.id, courseUpdate).mockResolvedValue(course)
+
+      const result = await service.updateCourse(username, course.id, courseUpdate)
+
+      expect(result).toEqual(course)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.updateCourse).toHaveBeenCalledWith(course.id, courseUpdate)
+    })
+  })
+
   describe('updateCoursePrerequisites', () => {
     it('asks the client to update course prerequisites', async () => {
       const courseId = 'COURSE_ID'
