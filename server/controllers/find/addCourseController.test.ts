@@ -50,7 +50,9 @@ describe('AddCourseController', () => {
       expect(courseService.getCourseAudiences).toHaveBeenCalledWith(userToken)
 
       expect(response.render).toHaveBeenCalledWith('courses/form/show', {
+        action: '/find/programmes/add',
         audienceSelectItems,
+        backLinkHref: '/find/programmes',
         pageHeading: 'Add a Programme',
       })
       expect(CourseUtils.audienceSelectItems).toHaveBeenCalledWith(audiences)

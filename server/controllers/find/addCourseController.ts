@@ -4,7 +4,7 @@ import { findPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { CourseUtils, TypeUtils } from '../../utils'
 
-interface CourseBody {
+export interface CourseBody {
   _csrf: string
   alternateName: string
   audienceId: string
@@ -30,7 +30,9 @@ export default class AddCourseController {
       const audiences = await this.courseService.getCourseAudiences(req.user.token)
 
       res.render('courses/form/show', {
+        action: findPaths.course.add.create({}),
         audienceSelectItems: CourseUtils.audienceSelectItems(audiences),
+        backLinkHref: findPaths.index({}),
         pageHeading: 'Add a Programme',
       })
     }
