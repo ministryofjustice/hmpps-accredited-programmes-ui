@@ -16,7 +16,23 @@
 {% endblock backLink %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <div class="header-with-actions">
+    <h1 class="header-with-actions__title govuk-heading-l">{{ pageHeading }}</h1>
+
+    <form action="{{ deleteOfferingAction }}" method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: "Delete",
+          classes: "govuk-button--warning",
+          attributes: {
+          "data-testid": "delete-programme-offering-link"
+          }
+        }) }}
+      </div>
+    </form>
+  </div>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

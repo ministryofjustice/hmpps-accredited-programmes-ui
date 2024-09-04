@@ -41,7 +41,7 @@ export default class CourseOfferingPage extends Page {
   }
 
   shouldNotContainMakeAReferralButtonLink() {
-    this.shouldNotContainButtonLink()
+    cy.get('.govuk-button').contains('Make a referral').should('not.exist')
   }
 
   shouldNotContainSecondaryContactEmailSummaryListItem() {

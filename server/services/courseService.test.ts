@@ -112,6 +112,18 @@ describe('CourseService', () => {
     })
   })
 
+  describe('deleteOffering', () => {
+    it('asks the client to delete a course offering', async () => {
+      const courseId = 'COURSE-ID'
+      const courseOfferingId = 'COURSE-OFFERING-ID'
+
+      await service.deleteOffering(username, courseId, courseOfferingId)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.destroyOffering).toHaveBeenCalledWith(courseId, courseOfferingId)
+    })
+  })
+
   describe('deleteParticipation', () => {
     it('asks the client to delete a course participation', async () => {
       const courseParticipation = courseParticipationFactory.build()

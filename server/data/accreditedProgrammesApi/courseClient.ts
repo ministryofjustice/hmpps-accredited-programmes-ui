@@ -53,6 +53,13 @@ export default class CourseClient {
     })) as CourseParticipation
   }
 
+  /* istanbul ignore next */
+  async destroyOffering(courseId: Course['id'], courseOfferingId: CourseOffering['id']): Promise<void> {
+    await this.restClient.delete({
+      path: apiPaths.courses.offering({ courseId, courseOfferingId }),
+    })
+  }
+
   async destroyParticipation(courseParticipationId: CourseParticipation['id']): Promise<void> {
     await this.restClient.delete({
       path: apiPaths.participations.delete({ courseParticipationId }),
