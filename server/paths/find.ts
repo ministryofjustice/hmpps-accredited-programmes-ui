@@ -5,6 +5,7 @@ const coursesPath = findPathBase.path('/programmes')
 const coursePath = coursesPath.path(':courseId')
 
 const addCoursePath = coursesPath.path('/add')
+const updateCoursePath = coursePath.path('/update')
 
 const addCourseOfferingPath = coursePath.path('/offerings/add')
 const deleteCourseOfferingPath = coursePath.path('/offerings/:courseOfferingId/delete')
@@ -15,6 +16,10 @@ export default {
     add: {
       create: addCoursePath,
       show: addCoursePath,
+    },
+    update: {
+      show: updateCoursePath,
+      submit: updateCoursePath,
     },
   },
   index: coursesPath,
