@@ -84,6 +84,7 @@ describe('CoursesController', () => {
           course: coursePresenter,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })
     })
@@ -124,6 +125,7 @@ describe('CoursesController', () => {
           course: coursePresenter,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })
     })

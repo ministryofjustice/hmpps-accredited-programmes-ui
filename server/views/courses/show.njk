@@ -14,7 +14,18 @@
 {% endblock backLink %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <div class="header-with-actions">
+    <h1 class="header-with-actions__title govuk-heading-l">{{ pageHeading }}</h1>
+
+    {{ govukButton({
+      text: "Update programme",
+      href: updateProgrammePath,
+      classes: "govuk-button--secondary",
+      attributes: {
+        "data-testid": "update-programme-link"
+      }
+    }) }}
+  </div>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

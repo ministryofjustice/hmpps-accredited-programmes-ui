@@ -51,6 +51,7 @@ export default class CoursesController {
         course: coursePresenter,
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
+        updateProgrammePath: findPaths.course.update.show({ courseId: course.id }),
       })
     }
   }
