@@ -51,6 +51,9 @@ export default class CourseOfferingsController {
           course.name,
         ),
         pageHeading: coursePresenter.displayName,
+        updateOfferingPath: findPaths.offerings.update.show({
+          courseOfferingId: courseOffering.id,
+        }),
       })
     }
   }

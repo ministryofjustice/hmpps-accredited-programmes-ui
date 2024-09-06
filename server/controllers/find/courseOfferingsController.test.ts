@@ -63,6 +63,7 @@ describe('CoursesOfferingsController', () => {
           course.name,
         ),
         pageHeading: coursePresenter.displayName,
+        updateOfferingPath: `/find/offerings/${courseOffering.id}/update`,
       })
     })
   })
