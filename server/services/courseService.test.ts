@@ -461,6 +461,32 @@ describe('CourseService', () => {
     })
   })
 
+  describe('updateCourseOffering', () => {
+    it('updates a course offering using the `courseOfferingRequest` values', async () => {
+      const course = courseFactory.build()
+      const courseOffering = courseOfferingFactory.build()
+      const courseOfferingRequest: Omit<CourseOffering, 'organisationEnabled'> = {
+        contactEmail: 'contact-email-1@test.com',
+        id: courseOffering.id,
+        organisationId: 'MDI',
+        referable: true,
+        secondaryContactEmail: 'contact-email-2@test.com',
+        withdrawn: false,
+      }
+
+      when(courseClient.updateCourseOffering)
+        .calledWith(course.id, courseOfferingRequest)
+        .mockResolvedValue(courseOffering)
+
+      const result = await service.updateCourseOffering(username, course.id, courseOfferingRequest)
+
+      expect(result).toEqual(courseOffering)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.updateCourseOffering).toHaveBeenCalledWith(course.id, courseOfferingRequest)
+    })
+  })
+
   describe('updateCoursePrerequisites', () => {
     it('asks the client to update course prerequisites', async () => {
       const courseId = 'COURSE_ID'

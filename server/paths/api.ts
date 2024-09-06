@@ -67,6 +67,7 @@ export default {
     course: courseByOfferingPath,
     create: offeringsByCoursePath,
     show: offeringPath,
+    update: offeringsByCoursePath,
   },
   organisations: {
     courses: coursesByOrganisationPath,
