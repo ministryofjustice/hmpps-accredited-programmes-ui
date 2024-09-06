@@ -32,7 +32,8 @@
             attributes: {
             "data-testid": "organisation-select"
           },
-          errorMessage: errors.messages.organisationId
+          errorMessage: errors.messages.organisationId,
+          value: offering.organisationId
         }) }}
 
         {{ govukInput({
@@ -41,7 +42,8 @@
           },
           id: "location-contact-email",
           name: "contactEmail",
-          errorMessage: errors.messages.contactEmail
+          errorMessage: errors.messages.contactEmail,
+          value: offering.contactEmail
         }) }}
 
         {{ govukInput({
@@ -50,7 +52,8 @@
           },
           id: "location-secondary-contact-email",
           name: "secondaryContactEmail",
-          errorMessage: errors.messages.secondaryContactEmail
+          errorMessage: errors.messages.secondaryContactEmail,
+          value: offering.secondaryContactEmail
         }) }}
 
         {{ govukRadios({
@@ -63,11 +66,13 @@
           items: [
             {
               value: "true",
-              text: "Yes"
+              text: "Yes",
+              checked: offering.referable === true
             },
             {
               value: "false",
-              text: "No"
+              text: "No",
+              checked: offering.referable === false
             }
           ]
         }) }}
@@ -82,11 +87,13 @@
           items: [
             {
               value: "true",
-              text: "Yes"
+              text: "Yes",
+              checked: offering.withdrawn === true
             },
             {
               value: "false",
-              text: "No"
+              text: "No",
+              checked: offering.withdrawn === false
             }
           ]
         }) }}
