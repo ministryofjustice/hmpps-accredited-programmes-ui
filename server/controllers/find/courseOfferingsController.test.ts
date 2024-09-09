@@ -8,26 +8,41 @@ import { courseFactory, courseOfferingFactory, organisationFactory } from '../..
 import { CourseUtils, OrganisationUtils } from '../../utils'
 
 describe('CoursesOfferingsController', () => {
+  const userToken = 'SOME_TOKEN'
+  let request: DeepMocked<Request>
+  let response: DeepMocked<Response>
+  const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
+  const courseService = createMock<CourseService>({})
+  const organisationService = createMock<OrganisationService>({})
+  const course = courseFactory.build()
+  const courseOffering = courseOfferingFactory.build()
+
+  let controller: CourseOfferingsController
+
+  beforeEach(() => {
+    request = createMock<Request>({ user: { token: userToken } })
+    response = createMock<Response>({})
+    controller = new CourseOfferingsController(courseService, organisationService)
+  })
+
+  describe('delete', () => {
+    it('deletes the course offering and redirects to the course show page', async () => {
+      const courseId = 'COURSE-ID'
+      const courseOfferingId = 'COURSE-OFFERING-ID'
+
+      request.params = { courseId, courseOfferingId }
+
+      const requestHandler = controller.delete()
+      await requestHandler(request, response, next)
+
+      expect(courseService.deleteOffering).toHaveBeenCalledWith(userToken, courseId, courseOfferingId)
+      expect(response.redirect).toHaveBeenCalledWith(`/find/programmes/${courseId}`)
+    })
+  })
+
   describe('show', () => {
-    const userToken = 'SOME_TOKEN'
-    let request: DeepMocked<Request>
-    let response: DeepMocked<Response>
-    const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
-    const courseService = createMock<CourseService>({})
-    const organisationService = createMock<OrganisationService>({})
-    const course = courseFactory.build()
-    const courseOffering = courseOfferingFactory.build()
-
-    let controller: CourseOfferingsController
-
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
-
-    beforeEach(() => {
-      request = createMock<Request>({ user: { token: userToken } })
-      response = createMock<Response>({})
-      controller = new CourseOfferingsController(courseService, organisationService)
-    })
 
     it('renders the course offering show template', async () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })
@@ -41,6 +56,7 @@ describe('CoursesOfferingsController', () => {
       expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
         course: coursePresenter,
         courseOffering,
+        deleteOfferingAction: `/find/programmes/${course.id}/offerings/${courseOffering.id}/delete?_method=DELETE`,
         organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,

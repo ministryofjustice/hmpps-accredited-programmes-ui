@@ -1,5 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
@@ -9,6 +10,18 @@ export default class CourseOfferingsController {
     private readonly courseService: CourseService,
     private readonly organisationService: OrganisationService,
   ) {}
+
+  delete(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { courseId, courseOfferingId } = req.params
+
+      await this.courseService.deleteOffering(req.user.token, courseId, courseOfferingId)
+
+      res.redirect(findPaths.show({ courseId }))
+    }
+  }
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
@@ -31,6 +44,7 @@ export default class CourseOfferingsController {
       res.render('courses/offerings/show', {
         course: coursePresenter,
         courseOffering,
+        deleteOfferingAction: `${findPaths.offerings.delete({ courseId: course.id, courseOfferingId: courseOffering.id })}?_method=DELETE`,
         organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,

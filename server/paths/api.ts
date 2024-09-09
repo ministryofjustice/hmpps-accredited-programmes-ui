@@ -43,6 +43,7 @@ export default {
     create: coursesPath,
     index: coursesPath,
     names: courseNamesPath,
+    offering: offeringsByCoursePath.path(':courseOfferingId'),
     offerings: offeringsByCoursePath,
     prerequisites: coursePath.path('prerequisites'),
     show: coursePath,

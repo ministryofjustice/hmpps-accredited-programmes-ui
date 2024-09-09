@@ -57,6 +57,18 @@ export default class CourseService {
     return courseClient.createParticipation(prisonNumber, courseName)
   }
 
+  async deleteOffering(
+    username: Express.User['username'],
+    courseId: Course['id'],
+    courseOfferingId: CourseOffering['id'],
+  ): Promise<void> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    return courseClient.destroyOffering(courseId, courseOfferingId)
+  }
+
   async deleteParticipation(
     username: Express.User['username'],
     courseParticipationId: CourseParticipation['id'],
