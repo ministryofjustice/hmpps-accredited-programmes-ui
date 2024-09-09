@@ -24,6 +24,16 @@
 
       <div class="govuk-button-group">
         {{ govukButton({
+          type: "button",
+          text: "Update",
+          href: updateOfferingPath,
+          classes: "govuk-button--secondary",
+          attributes: {
+          "data-testid": "update-programme-offering-link"
+          }
+        }) }}
+
+        {{ govukButton({
           text: "Delete",
           classes: "govuk-button--warning",
           attributes: {

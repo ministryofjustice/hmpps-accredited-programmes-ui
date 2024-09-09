@@ -127,6 +127,17 @@ export default class CourseClient {
   }
 
   /* istanbul ignore next */
+  async updateCourseOffering(
+    courseId: Course['id'],
+    courseOffering: Omit<CourseOffering, 'organisationEnabled'>,
+  ): Promise<CourseOffering> {
+    return (await this.restClient.put({
+      data: courseOffering,
+      path: apiPaths.offerings.update({ courseId }),
+    })) as CourseOffering
+  }
+
+  /* istanbul ignore next */
   async updateCoursePrerequisites(
     courseId: Course['id'],
     coursePrerequisites: Array<CoursePrerequisite>,
