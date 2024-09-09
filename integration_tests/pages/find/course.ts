@@ -35,6 +35,12 @@ export default class CoursePage extends Page {
     )
   }
 
+  shouldContainUpdateProgrammeLink() {
+    cy.get('[data-testid="update-programme-link"]')
+      .should('contain.text', 'Update programme')
+      .and('have.attr', 'href', findPaths.course.update.show({ courseId: this.course.id }))
+  }
+
   shouldHaveCourse() {
     this.shouldContainAudienceTag(this.course.audienceTag)
 
@@ -70,5 +76,9 @@ export default class CoursePage extends Page {
 
   shouldNotContainAddCourseOfferingLink() {
     cy.get('[data-testid="add-programme-offering-link"]').should('not.exist')
+  }
+
+  shouldNotContainUpdateProgrammeLink() {
+    cy.get('[data-testid="update-programme-link"]').should('not.exist')
   }
 }

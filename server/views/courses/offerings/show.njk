@@ -19,29 +19,31 @@
   <div class="header-with-actions">
     <h1 class="header-with-actions__title govuk-heading-l">{{ pageHeading }}</h1>
 
-    <form action="{{ deleteOfferingAction }}" method="post">
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+    {% if 'ROLE_ACP_EDITOR' in user.roles %}
+      <form action="{{ deleteOfferingAction }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-      <div class="govuk-button-group">
-        {{ govukButton({
-          type: "button",
-          text: "Update",
-          href: updateOfferingPath,
-          classes: "govuk-button--secondary",
-          attributes: {
-          "data-testid": "update-programme-offering-link"
-          }
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            type: "button",
+            text: "Update",
+            href: updateOfferingPath,
+            classes: "govuk-button--secondary",
+            attributes: {
+            "data-testid": "update-programme-offering-link"
+            }
+          }) }}
 
-        {{ govukButton({
-          text: "Delete",
-          classes: "govuk-button--warning",
-          attributes: {
-          "data-testid": "delete-programme-offering-link"
-          }
-        }) }}
-      </div>
-    </form>
+          {{ govukButton({
+            text: "Delete",
+            classes: "govuk-button--warning",
+            attributes: {
+            "data-testid": "delete-programme-offering-button"
+            }
+          }) }}
+        </div>
+      </form>
+    {% endif %}
   </div>
 
   <div class="govuk-grid-row">
@@ -58,7 +60,10 @@
       {% if referEnabled and user.hasReferrerRole and courseOffering.referable and courseOffering.organisationEnabled %}
         {{ govukButton({
             text: "Make a referral",
-            href: referPaths.new.start({ courseOfferingId: courseOffering.id })
+            href: referPaths.new.start({ courseOfferingId: courseOffering.id }),
+            attributes: {
+              "data-testid": "make-referral-link"
+            }
         }) }}
       {% endif %}
     </div>

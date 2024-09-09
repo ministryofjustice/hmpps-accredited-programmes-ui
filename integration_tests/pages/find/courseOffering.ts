@@ -1,4 +1,4 @@
-import { referPaths } from '../../../server/paths'
+import { findPaths, referPaths } from '../../../server/paths'
 import { CourseUtils, OrganisationUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
@@ -28,8 +28,18 @@ export default class CourseOfferingPage extends Page {
     )
   }
 
+  shouldContainDeleteOfferingButton() {
+    cy.get('[data-testid="delete-programme-offering-button"]').should('contain.text', 'Delete')
+  }
+
   shouldContainMakeAReferralButtonLink() {
     this.shouldContainButtonLink('Make a referral', referPaths.new.start({ courseOfferingId: this.courseOffering.id }))
+  }
+
+  shouldContainUpdateCourseOfferingLink() {
+    cy.get('[data-testid="update-programme-offering-link"]')
+      .should('contain.text', 'Update')
+      .and('have.attr', 'href', findPaths.offerings.update.show({ courseOfferingId: this.courseOffering.id }))
   }
 
   shouldHaveOrganisationWithOfferingEmails() {
@@ -40,11 +50,19 @@ export default class CourseOfferingPage extends Page {
     })
   }
 
+  shouldNotContainDeleteOfferingButton() {
+    cy.get('[data-testid="delete-programme-offering-button"]').should('not.exist')
+  }
+
   shouldNotContainMakeAReferralButtonLink() {
-    cy.get('.govuk-button').contains('Make a referral').should('not.exist')
+    cy.get('[data-testid="make-referral-link"]').should('not.exist')
   }
 
   shouldNotContainSecondaryContactEmailSummaryListItem() {
     cy.get('.govuk-summary-list').should('not.contain', 'Secondary email address')
+  }
+
+  shouldNotContainUpdateCourseOfferingLink() {
+    cy.get('[data-testid="update-programme-offering-link"]').should('not.exist')
   }
 }
