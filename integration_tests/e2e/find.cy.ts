@@ -60,6 +60,7 @@ context('Find', () => {
       coursePage.shouldContainBackLink(findPaths.index({}))
       coursePage.shouldContainHomeLink()
       coursePage.shouldHaveCourse()
+      coursePage.shouldNotContainUpdateProgrammeLink()
       coursePage.shouldNotContainAddCourseOfferingLink()
       coursePage.shouldContainOfferingsText()
       coursePage.shouldHaveOrganisations(organisationsWithOfferingIds)
@@ -147,28 +148,56 @@ context('Find', () => {
       cy.signIn()
     })
 
-    it('shows the "Add a new programme" button', () => {
-      cy.task('stubCourses', courses)
+    describe('when viewing all programmes', () => {
+      it('shows the "Add a new programme" button', () => {
+        cy.task('stubCourses', courses)
 
-      const path = findPaths.index({})
-      cy.visit(path)
+        const path = findPaths.index({})
+        cy.visit(path)
 
-      const coursesPage = Page.verifyOnPage(CoursesPage)
-      coursesPage.shouldContainAddNewProgrammeLink()
+        const coursesPage = Page.verifyOnPage(CoursesPage)
+        coursesPage.shouldContainAddNewProgrammeLink()
+      })
     })
 
-    it('shows the "Add a new location" link', () => {
-      cy.task('stubCourse', courses[0])
+    describe('when viewing an individual programme', () => {
+      it('shows the "Add a new location" and "Update programme" links', () => {
+        cy.task('stubCourse', courses[0])
 
-      const courseOfferings: Array<CourseOffering> = []
+        const courseOfferings: Array<CourseOffering> = []
 
-      cy.task('stubOfferingsByCourse', { courseId: courses[0].id, courseOfferings })
+        cy.task('stubOfferingsByCourse', { courseId: courses[0].id, courseOfferings })
 
-      const path = findPaths.show({ courseId: courses[0].id })
-      cy.visit(path)
+        const path = findPaths.show({ courseId: courses[0].id })
+        cy.visit(path)
 
-      const coursePage = Page.verifyOnPage(CoursePage, courses[0])
-      coursePage.shouldContainAddCourseOfferingLink()
+        const coursePage = Page.verifyOnPage(CoursePage, courses[0])
+        coursePage.shouldContainUpdateProgrammeLink()
+        coursePage.shouldContainAddCourseOfferingLink()
+      })
+    })
+
+    describe('when viewing an individual offering', () => {
+      it('shows contain update and delete buttons ', () => {
+        const courseOffering = courseOfferingFactory.build({ referable: true })
+        cy.task('stubOffering', { courseOffering })
+        cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
+
+        const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+        const organisation = OrganisationUtils.organisationFromPrison(prison)
+        cy.task('stubPrison', prison)
+
+        const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
+        cy.visit(path)
+
+        const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
+          course: courses[0],
+          courseOffering,
+          organisation,
+        })
+        courseOfferingPage.shouldContainUpdateCourseOfferingLink()
+        courseOfferingPage.shouldContainDeleteOfferingButton()
+      })
     })
   })
 
@@ -210,6 +239,8 @@ context('Find', () => {
             organisation,
           })
           courseOfferingPage.shouldContainMakeAReferralButtonLink()
+          courseOfferingPage.shouldNotContainUpdateCourseOfferingLink()
+          courseOfferingPage.shouldNotContainDeleteOfferingButton()
         })
       })
 
@@ -231,6 +262,8 @@ context('Find', () => {
             organisation,
           })
           courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
+          courseOfferingPage.shouldNotContainUpdateCourseOfferingLink()
+          courseOfferingPage.shouldNotContainDeleteOfferingButton()
         })
       })
     })
@@ -252,6 +285,8 @@ context('Find', () => {
           organisation,
         })
         courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
+        courseOfferingPage.shouldNotContainUpdateCourseOfferingLink()
+        courseOfferingPage.shouldNotContainDeleteOfferingButton()
       })
     })
   })
