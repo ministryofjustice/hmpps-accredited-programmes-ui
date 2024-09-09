@@ -58,23 +58,23 @@ describe('AddCourseController', () => {
   })
 
   describe('submit', () => {
-    it('creates a course and redirects to the newly created course page', async () => {
-      const audience = audienceFactory.build()
-      const newCourseBody: Record<string, string> = {
-        alternateName: 'TC+1',
-        audienceId: audience.id,
-        description: 'Test course description',
-        name: 'Test Course',
-        withdrawn: 'false',
-      }
-      const createdCourse = courseFactory.build({
-        alternateName: newCourseBody.alternateName,
-        audience: audience.name,
-        audienceColour: audience.colour,
-        description: newCourseBody.description,
-        name: newCourseBody.name,
-      })
+    const audience = audienceFactory.build()
+    const newCourseBody: Record<string, string> = {
+      alternateName: 'TC+1',
+      audienceId: audience.id,
+      description: 'Test course description',
+      name: 'Test Course',
+      withdrawn: 'false',
+    }
+    const createdCourse = courseFactory.build({
+      alternateName: newCourseBody.alternateName,
+      audience: audience.name,
+      audienceColour: audience.colour,
+      description: newCourseBody.description,
+      name: newCourseBody.name,
+    })
 
+    it('creates a course and redirects to the newly created course page', async () => {
       courseService.createCourse.mockResolvedValue(createdCourse)
 
       request.body = newCourseBody
@@ -84,6 +84,31 @@ describe('AddCourseController', () => {
 
       expect(courseService.createCourse).toHaveBeenCalledWith(username, { ...newCourseBody, withdrawn: false })
       expect(response.redirect).toHaveBeenCalledWith(findPaths.show({ courseId: createdCourse.id }))
+      expect(courseService.updateCoursePrerequisites).not.toHaveBeenCalled()
+    })
+
+    describe('when prerequisites are provided', () => {
+      it('creates a course with prerequisites and redirects to the newly created course page', async () => {
+        const prerequisites = {
+          '1': { description: 'Prerequisite 1 description', name: 'Prerequisite 1' },
+          '2': { description: 'Prerequisite 2 description', name: '' },
+          '3': { description: '', name: 'Prerequisite 3' },
+          '4': { description: '', name: '' },
+        }
+
+        courseService.createCourse.mockResolvedValue(createdCourse)
+
+        request.body = { ...newCourseBody, prerequisites }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(courseService.createCourse).toHaveBeenCalledWith(username, { ...newCourseBody, withdrawn: false })
+        expect(courseService.updateCoursePrerequisites).toHaveBeenCalledWith(username, createdCourse.id, [
+          { description: 'Prerequisite 1 description', name: 'Prerequisite 1' },
+        ])
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.show({ courseId: createdCourse.id }))
+      })
     })
   })
 })

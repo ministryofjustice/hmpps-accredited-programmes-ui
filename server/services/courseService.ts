@@ -11,6 +11,7 @@ import type {
   CourseOffering,
   CourseParticipation,
   CourseParticipationUpdate,
+  CoursePrerequisite,
   Person,
   Referral,
 } from '@accredited-programmes/models'
@@ -212,6 +213,18 @@ export default class CourseService {
     }
 
     return CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, withActions)
+  }
+
+  async updateCoursePrerequisites(
+    username: Express.User['username'],
+    courseId: Course['id'],
+    prerequisites: Array<CoursePrerequisite>,
+  ): Promise<Array<CoursePrerequisite>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    return courseClient.updateCoursePrerequisites(courseId, prerequisites)
   }
 
   async updateParticipation(

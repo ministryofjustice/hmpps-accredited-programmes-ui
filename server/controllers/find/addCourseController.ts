@@ -4,6 +4,22 @@ import { findPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { CourseUtils, TypeUtils } from '../../utils'
 
+interface CourseBody {
+  _csrf: string
+  alternateName: string
+  audienceId: string
+  description: string
+  name: string
+  prerequisites: Record<
+    string,
+    {
+      description: string
+      name: string
+    }
+  >
+  withdrawn: string
+}
+
 export default class AddCourseController {
   constructor(private readonly courseService: CourseService) {}
 
@@ -20,11 +36,11 @@ export default class AddCourseController {
     }
   }
 
-  submit(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
+  submit(): TypedRequestHandler<Request<unknown, unknown, CourseBody>, Response> {
+    return async (req: Request<unknown, unknown, CourseBody>, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { audienceId, name, alternateName, description, withdrawn } = req.body as Record<string, string>
+      const { alternateName, audienceId, description, name, prerequisites, withdrawn } = req.body
 
       const createdCourse = await this.courseService.createCourse(req.user.username, {
         alternateName,
@@ -33,6 +49,14 @@ export default class AddCourseController {
         name,
         withdrawn: withdrawn === 'true',
       })
+
+      if (prerequisites) {
+        await this.courseService.updateCoursePrerequisites(
+          req.user.username,
+          createdCourse.id,
+          Object.values(prerequisites).filter(prerequisite => prerequisite.name && prerequisite.description),
+        )
+      }
 
       res.redirect(findPaths.show({ courseId: createdCourse.id }))
     }
