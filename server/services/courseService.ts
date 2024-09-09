@@ -227,6 +227,18 @@ export default class CourseService {
     return CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, withActions)
   }
 
+  async updateCourse(
+    username: Express.User['username'],
+    courseId: Course['id'],
+    courseUpdate: CourseCreateRequest,
+  ): Promise<Course> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    return courseClient.updateCourse(courseId, courseUpdate)
+  }
+
   async updateCoursePrerequisites(
     username: Express.User['username'],
     courseId: Course['id'],

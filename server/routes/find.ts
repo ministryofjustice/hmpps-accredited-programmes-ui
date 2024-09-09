@@ -5,13 +5,16 @@ import { findPaths } from '../paths'
 import { RouteUtils } from '../utils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
-  const { delete: deleteAction, get } = RouteUtils.actions(router)
-  const { coursesController, courseOfferingsController } = controllers
+  const { delete: deleteAction, get, put } = RouteUtils.actions(router)
+  const { coursesController, courseOfferingsController, updateCourseController } = controllers
 
   get(findPaths.index.pattern, coursesController.index())
   get(findPaths.show.pattern, coursesController.show())
   get(findPaths.offerings.show.pattern, courseOfferingsController.show())
   deleteAction(findPaths.offerings.delete.pattern, courseOfferingsController.delete())
+
+  get(findPaths.course.update.show.pattern, updateCourseController.show())
+  put(findPaths.course.update.submit.pattern, updateCourseController.submit())
 
   return router
 }

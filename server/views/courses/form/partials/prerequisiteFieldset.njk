@@ -1,0 +1,68 @@
+{% call govukFieldset({
+  legend: {
+    text: "Programme criteria",
+    classes: "govuk-fieldset__legend--m"
+  }
+}) %}
+
+{% if formValues.coursePrerequisites | length %}
+  {% for prerequisite in formValues.coursePrerequisites %}
+    <div id={{ "js-repeater-section-" + loop.index }} class="govuk-grid-row">
+      {{ govukInput({
+        label: {
+          text: "Name"
+        },
+        id: "prerequisites[" + loop.index + "][name]",
+        name: "prerequisites[" + loop.index + "][name]",
+        formGroup: {
+          classes: "govuk-grid-column-one-third"
+        },
+        value: prerequisite.name
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Description"
+        },
+        id: "prerequisites[" + loop.index + "][description]",
+        name: "prerequisites[" + loop.index + "][description]",
+        formGroup: {
+          classes: "govuk-grid-column-two-thirds"
+        },
+        value: prerequisite.description
+      }) }}
+    </div>
+  {% endfor %}
+{% else %}
+  <div id="js-repeater-section-1" class="govuk-grid-row">
+    {{ govukInput({
+      label: {
+        text: "Name"
+      },
+      id: "prerequisites[1][name]",
+      name: "prerequisites[1][name]",
+      formGroup: {
+        classes: "govuk-grid-column-one-third"
+      }
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Description"
+      },
+      id: "prerequisites[1][description]",
+      name: "prerequisites[1][description]",
+      formGroup: {
+        classes: "govuk-grid-column-two-thirds"
+      }
+    }) }}
+  </div>
+{% endif %}
+
+{% endcall %}
+
+{{ govukButton({
+  type: "button",
+  text: "Add more criteria",
+  classes: "govuk-button--secondary js-repeater-button govuk-!-margin-bottom-0"
+}) }}
