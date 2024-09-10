@@ -1,5 +1,5 @@
-import RestClient from './restClient'
 import type { ApiConfig } from '../config'
+import RestClient from './restClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
 import type { SystemToken } from '@hmpps-auth'

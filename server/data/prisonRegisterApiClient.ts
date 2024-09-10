@@ -1,5 +1,5 @@
-import RestClient from './restClient'
 import type { ApiConfig } from '../config'
+import RestClient from './restClient'
 import config from '../config'
 import { prisonRegisterApiPaths } from '../paths'
 import type { Prison } from '@prison-register-api'

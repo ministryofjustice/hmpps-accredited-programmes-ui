@@ -2,8 +2,8 @@ import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import PersonService from './personService'
 import type { RedisClient } from '../data'
+import PersonService from './personService'
 import { HmppsAuthClient, PersonClient, PrisonApiClient, TokenStore } from '../data'
 import {
   caseloadFactory,
