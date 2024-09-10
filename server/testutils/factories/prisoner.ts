@@ -20,7 +20,7 @@ export default PrisonerFactory.define(({ params }) => {
   const county = faker.location.county()
   const prisonName = params.prisonName || `${county} (HMP)`
 
-  const dateOfBirth = faker.date.birthdate({ min: 18, mode: 'age' })
+  const dateOfBirth = faker.date.birthdate({ max: 99, min: 18, mode: 'age' })
   const year = dateOfBirth.getFullYear()
   const month = dateOfBirth.getMonth() + 1
   const day = dateOfBirth.getDate()
