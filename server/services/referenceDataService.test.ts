@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { when } from 'jest-when'
 
-import ReferenceDataService from './referenceDataService'
 import type { RedisClient } from '../data'
+import ReferenceDataService from './referenceDataService'
 import { HmppsAuthClient, ReferenceDataClient, TokenStore } from '../data'
 import {
   referralStatusCategoryFactory,

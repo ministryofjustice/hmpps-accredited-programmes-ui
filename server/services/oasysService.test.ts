@@ -2,8 +2,8 @@ import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import OasysService from './oasysService'
 import type { RedisClient } from '../data'
+import OasysService from './oasysService'
 import { HmppsAuthClient, OasysClient, TokenStore } from '../data'
 import {
   assessmentDateInfoFactory,
