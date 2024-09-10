@@ -1,3 +1,9 @@
 {
-  "extends": ["github>ministryofjustice/arn-renovate-config"]
+  "extends": ["github>ministryofjustice/arn-renovate-config"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@golevelup/ts-jest"],
+      "allowedVersions": "0.5.0"
+    }
+  ]
 }
