@@ -26,7 +26,7 @@ export default class CourseClient {
     courseId: Course['id'],
     courseOffering: Omit<CourseOffering, 'id' | 'organisationEnabled'>,
   ): Promise<CourseOffering> {
-    return (await this.restClient.put({
+    return (await this.restClient.post({
       data: courseOffering,
       path: apiPaths.offerings.create({ courseId }),
     })) as CourseOffering
