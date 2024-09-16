@@ -25,6 +25,7 @@ import HealthUtils from './risksAndNeeds/healthUtils'
 import LearningNeedsUtils from './risksAndNeeds/learningNeedsUtils'
 import LifestyleAndAssociatesUtils from './risksAndNeeds/lifestyleAndAssociatesUtils'
 import OffenceAnalysisUtils from './risksAndNeeds/offenceAnalysisUtils'
+import PniUtils from './risksAndNeeds/pniUtils'
 import RelationshipsUtils from './risksAndNeeds/relationshipsUtils'
 import RisksAndAlertsUtils from './risksAndNeeds/risksAndAlertsUtils'
 import RoshAnalysisUtils from './risksAndNeeds/roshAnalysisUtils'
@@ -55,6 +56,7 @@ export {
   PaginationUtils,
   PathUtils,
   PersonUtils,
+  PniUtils,
   ReferralUtils,
   RelationshipsUtils,
   RisksAndAlertsUtils,
