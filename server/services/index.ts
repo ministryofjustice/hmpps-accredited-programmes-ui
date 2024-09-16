@@ -14,11 +14,13 @@ import {
   hmppsManageUsersClientBuilder,
   oasysClientBuilder,
   personClientBuilder,
+  pniClientBuilder,
   prisonApiClientBuilder,
   prisonRegisterApiClientBuilder,
   referenceDataClientBuilder,
   referralClientBuilder,
 } from '../data'
+import PniService from './pniService'
 
 const services = () => {
   const oasysService = new OasysService(hmppsAuthClientBuilder, oasysClientBuilder)
@@ -28,12 +30,14 @@ const services = () => {
   const referenceDataService = new ReferenceDataService(hmppsAuthClientBuilder, referenceDataClientBuilder)
   const referralService = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder, userService)
   const courseService = new CourseService(courseClientBuilder, hmppsAuthClientBuilder, userService)
+  const pniService = new PniService(hmppsAuthClientBuilder, pniClientBuilder)
 
   return {
     courseService,
     oasysService,
     organisationService,
     personService,
+    pniService,
     referenceDataService,
     referralService,
     userService,
@@ -47,6 +51,7 @@ export {
   OasysService,
   OrganisationService,
   PersonService,
+  PniService,
   ReferenceDataService,
   ReferralService,
   UserService,
