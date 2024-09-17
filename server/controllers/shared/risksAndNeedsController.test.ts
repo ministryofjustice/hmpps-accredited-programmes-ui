@@ -93,6 +93,7 @@ describe('RisksAndNeedsController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
+  const activeCaseLoadId = 'MDI'
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
@@ -145,6 +146,7 @@ describe('RisksAndNeedsController', () => {
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
+    response.locals.user.activeCaseLoadId = activeCaseLoadId
   })
 
   afterEach(() => {
@@ -917,6 +919,12 @@ describe('RisksAndNeedsController', () => {
       { currentPath: path, recentCaseListPath },
       referral,
       isRefer ? statusTransitions : undefined,
+    )
+    expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(
+      path,
+      'risksAndNeeds',
+      referral.id,
+      activeCaseLoadId,
     )
 
     if (isRefer) {

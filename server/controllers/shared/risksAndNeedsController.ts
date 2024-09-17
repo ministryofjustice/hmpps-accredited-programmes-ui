@@ -399,6 +399,7 @@ export default class RisksAndNeedsController {
 
     const { referralId } = req.params
     const { username } = req.user
+    const { activeCaseLoadId } = res.locals.user
     const isRefer = req.path.startsWith(referPathBase.pattern)
 
     const referral = await this.referralService.getReferral(username, referralId)
@@ -426,7 +427,12 @@ export default class RisksAndNeedsController {
         ? DateUtils.govukFormattedFullDateString(assessmentDateInfo.recentCompletedAssessmentDate)
         : undefined,
       referral,
-      subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'risksAndNeeds', referral.id),
+      subNavigationItems: ShowReferralUtils.subNavigationItems(
+        req.path,
+        'risksAndNeeds',
+        referral.id,
+        activeCaseLoadId,
+      ),
     }
   }
 

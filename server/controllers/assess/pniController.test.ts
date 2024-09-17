@@ -34,6 +34,7 @@ describe('PniController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
+  const usersActiveCaseLoadId = 'MDI'
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
@@ -73,6 +74,7 @@ describe('PniController', () => {
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
+    response.locals.user.activeCaseLoadId = usersActiveCaseLoadId
   })
 
   afterEach(() => {
@@ -98,6 +100,13 @@ describe('PniController', () => {
       subNavigationItems,
       thinkingSummaryListRows,
     })
+
+    expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(
+      request.path,
+      'pni',
+      referral.id,
+      usersActiveCaseLoadId,
+    )
   })
 
   describe('when the pni service returns `null`', () => {

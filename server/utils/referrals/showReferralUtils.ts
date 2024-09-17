@@ -158,9 +158,16 @@ export default class ShowReferralUtils {
     currentPath: Request['path'],
     currentSection: 'pni' | 'referral' | 'risksAndNeeds' | 'statusHistory',
     referralId: Referral['id'],
+    usersActiveCaseLoadId?: User['activeCaseLoadId'],
   ): Array<MojFrontendNavigationItem> {
     const isAssess = currentPath.startsWith(assessPathBase.pattern)
     const paths = isAssess ? assessPaths : referPaths
+
+    const pniLink: MojFrontendNavigationItem = {
+      active: currentSection === 'pni',
+      href: assessPaths.show.pni({ referralId }),
+      text: 'Programme needs identifier',
+    }
 
     const statusHistoryLink: MojFrontendNavigationItem = {
       active: currentSection === 'statusHistory',
@@ -182,6 +189,10 @@ export default class ShowReferralUtils {
     ]
 
     if (isAssess) {
+      if (usersActiveCaseLoadId && config.flags.pniEnabledOrganisations.includes(usersActiveCaseLoadId)) {
+        navigationItems.push(pniLink)
+      }
+
       navigationItems.push(statusHistoryLink)
     } else {
       navigationItems.unshift(statusHistoryLink)

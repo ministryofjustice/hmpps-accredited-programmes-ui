@@ -17,6 +17,7 @@ export default class PniController {
 
       const { referralId } = req.params
       const { username } = req.user
+      const { activeCaseLoadId } = res.locals.user
 
       const referral = await this.referralService.getReferral(username, referralId)
       const [course, person, pni] = await Promise.all([
@@ -56,7 +57,7 @@ export default class PniController {
         pageSubHeading: 'Programme needs identifier',
         person,
         referral,
-        subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'pni', referral.id),
+        subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'pni', referral.id, activeCaseLoadId),
         ...templateLocals,
       })
     }
