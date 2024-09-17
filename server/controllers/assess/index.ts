@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import AssessCaseListController from './caseListController'
+import PniController from './pniController'
 import UpdateStatusDecisionController from './updateStatusDecisionController'
 import type { Services } from '../../services'
 
@@ -11,6 +12,13 @@ const controllers = (services: Services) => {
     services.referenceDataService,
   )
 
+  const pniController = new PniController(
+    services.courseService,
+    services.pniService,
+    services.personService,
+    services.referralService,
+  )
+
   const updateStatusDecisionController = new UpdateStatusDecisionController(
     services.personService,
     services.referralService,
@@ -18,6 +26,7 @@ const controllers = (services: Services) => {
 
   return {
     assessCaseListController,
+    pniController,
     updateStatusDecisionController,
   }
 }

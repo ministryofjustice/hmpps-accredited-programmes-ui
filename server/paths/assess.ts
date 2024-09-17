@@ -23,6 +23,7 @@ export default {
     additionalInformation: referralShowPathBase.path('additional-information'),
     offenceHistory: referralShowPathBase.path('offence-history'),
     personalDetails: referralShowPathBase.path('personal-details'),
+    pni: referralShowPathBase.path('pni'),
     programmeHistory: referralShowPathBase.path('programme-history'),
     releaseDates: referralShowPathBase.path('release-dates'),
     risksAndNeeds: {

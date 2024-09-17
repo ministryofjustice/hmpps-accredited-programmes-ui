@@ -24,6 +24,7 @@ import offenderSentenceAndOffencesFactory from './offenderSentenceAndOffences'
 import organisationFactory from './organisation'
 import organisationAddressFactory from './organisationAddress'
 import personFactory from './person'
+import pniScoreFactory from './pniScore'
 import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
 import prisonerFactory from './prisoner'
@@ -67,6 +68,7 @@ export {
   organisationAddressFactory,
   organisationFactory,
   personFactory,
+  pniScoreFactory,
   prisonAddressFactory,
   prisonFactory,
   prisonerFactory,

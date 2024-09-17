@@ -35,6 +35,7 @@ describe('StatusHistoryController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
+  const activeCaseLoadId = 'MDI'
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
@@ -82,6 +83,7 @@ describe('StatusHistoryController', () => {
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
+    response.locals.user.activeCaseLoadId = activeCaseLoadId
   })
 
   afterEach(() => {
@@ -112,6 +114,7 @@ describe('StatusHistoryController', () => {
         `/refer/referrals/${referral.id}/status-history`,
         'statusHistory',
         referral.id,
+        activeCaseLoadId,
       )
       expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(
         { currentPath: request.path, recentCaseListPath },

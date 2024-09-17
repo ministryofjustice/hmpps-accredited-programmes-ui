@@ -1,0 +1,49 @@
+.pathway-content {
+  $self: &;
+
+  padding: govuk-spacing(4);
+  border-style: solid;
+  border-width: 2px;
+
+  &--high {
+    border-color: #d4351c;
+
+    #{$self}__heading {
+      color: #942514;
+    }
+  }
+
+  &--moderate {
+    border-color: #f47738;
+
+    #{$self}__heading {
+      color: #a34e00;
+    }
+  }
+
+  &--alternative {
+    border-color: #b3b4b6;
+
+    #{$self}__heading {
+      color: #505a5f;
+    }
+  }
+
+  &--missing {
+    border-color: #1d70b8;
+
+    #{$self}__heading {
+      color: #1d70b8;
+    }
+  }
+
+  &__heading {
+    margin-top: 0;
+    margin-bottom: govuk-spacing(1);
+    text-transform: uppercase;
+  }
+
+  &__text {
+    margin-bottom: 0;
+  }
+}

@@ -28,6 +28,10 @@ export default class FactoryHelpers {
     return faker.helpers.arrayElement(fullOptions.concat(options))
   }
 
+  static optionalNumber(max?: number): number | undefined {
+    return FactoryHelpers.optionalArrayElement(faker.number.int({ max, min: 0 }))
+  }
+
   static optionalRandomFutureDateString(): string | undefined {
     return FactoryHelpers.optionalArrayElement(this.randomFutureDateString())
   }

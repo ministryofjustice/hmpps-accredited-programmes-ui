@@ -37,13 +37,13 @@ export interface ReferralUpdate {
 export type Unit = object
 
 export interface ReferralStatusUpdate {
-  /** @example "null" */
+  /** @example "ON_HOLD_REFERRAL_SUBMITTED" */
   status: string
-  /** @example "null" */
+  /** @example "W_ADMIN" */
   category?: string
-  /** @example "null" */
+  /** @example "Duplicate referral" */
   reason?: string
-  /** @example "null" */
+  /** @example "E2E test put on hold reason" */
   notes?: string
   /**
    * is the user a pt user
@@ -641,6 +641,16 @@ export interface ReferralStatusHistory {
    * @example "null"
    */
   username?: string
+  /**
+   * The description of the category - if appropriate.
+   * @example "null"
+   */
+  categoryDescription?: string
+  /**
+   * The description of the reason - if appropriate.
+   * @example "null"
+   */
+  reasonDescription?: string
 }
 
 export interface ConfirmationFields {
@@ -1128,6 +1138,14 @@ export interface Audience {
   colour?: string
 }
 
+/** @example 5 */
+export interface DomainScore {
+  SexDomainScore: SexDomainScore
+  ThinkingDomainScore: ThinkingDomainScore
+  RelationshipDomainScore: RelationshipDomainScore
+  SelfManagementDomainScore: SelfManagementDomainScore
+}
+
 export interface IndividualCognitiveScores {
   /**
    * @format int32
@@ -1139,19 +1157,6 @@ export interface IndividualCognitiveScores {
    * @example 2
    */
   hostileOrientation?: number
-}
-
-export interface IndividualNeedsAndRiskScores {
-  Needs: IndividualNeedsScores
-  RiskScores: IndividualRiskScores
-}
-
-/** @example "{ sexScores=SexScores(sexualPreOccupation=null, offenceRelatedSexualInterests=null, emotionalCongruence=0), cognitiveScores=CognitiveScores(proCriminalAttitudes=1, hostileOrientation=null), relationshipScores=RelationshipScores(curRelCloseFamily=null, prevExpCloseRel=2, easilyInfluenced=null, aggressiveControllingBehaviour=null), selfManagementScores=SelfManagementScores(impulsivity=null, temperControl=null, problemSolvingSkills=null, difficultiesCoping=null)}" */
-export interface IndividualNeedsScores {
-  IndividualSexScores: IndividualSexScores
-  IndividualCognitiveScores: IndividualCognitiveScores
-  IndividualRelationshipScores: IndividualRelationshipScores
-  IndividualSelfManagementScores: IndividualSelfManagementScores
 }
 
 export interface IndividualRelationshipScores {
@@ -1177,7 +1182,7 @@ export interface IndividualRelationshipScores {
   aggressiveControllingBehaviour?: number
 }
 
-/** @example "{ogrs3=8, ovp=8, ospDc=1.07, ospIic=0.11, rsr=1.46, sara=High}" */
+/** @example 2 */
 export interface IndividualRiskScores {
   /** @example 1 */
   ogrs3?: number
@@ -1230,4 +1235,130 @@ export interface IndividualSexScores {
    */
   emotionalCongruence?: number
   isAllValuesPresent: boolean
+}
+
+/**
+ * @example "{
+ *   "prisonNumber": "A1234BC",
+ *   "crn": "X739590",
+ *   "assessmentId": 2114584,
+ *   "needsScore": {
+ *     "overallNeedsScore": 6,
+ *     "domainScore": {
+ *       "sexDomainScore": {
+ *         "overAllSexDomainScore": 2,
+ *         "individualSexScores": {
+ *           "sexualPreOccupation": 2,
+ *           "offenceRelatedSexualInterests": 2,
+ *           "emotionalCongruence": 0
+ *         }
+ *       },
+ *       "thinkingDomainScore": {
+ *         "overallThinkingDomainScore": 1,
+ *         "individualThinkingScores": {
+ *           "proCriminalAttitudes": 1,
+ *           "hostileOrientation": 1
+ *         }
+ *       },
+ *       "relationshipDomainScore": {
+ *         "overallRelationshipDomainScore": 1,
+ *         "individualRelationshipScores": {
+ *           "curRelCloseFamily": 0,
+ *           "prevExpCloseRel": 2,
+ *           "easilyInfluenced": 1,
+ *           "aggressiveControllingBehaviour": 1
+ *         }
+ *       },
+ *       "selfManagementDomainScore": {
+ *         "overallSelfManagementDomainScore": 2,
+ *         "individualSelfManagementScores": {
+ *           "impulsivity": 1,
+ *           "temperControl": 4,
+ *           "problemSolvingSkills": 2,
+ *           "difficultiesCoping": null
+ *         }
+ *       }
+ *     }
+ *   },
+ * }
+ * "
+ */
+export interface NeedsScore {
+  /**
+   * @format int32
+   * @example 5
+   */
+  overallNeedsScore: number
+  /** @example "High Intensity BC" */
+  classification: string
+  DomainScore: DomainScore
+}
+
+export interface PniScore {
+  /** @example "A1234BC" */
+  prisonNumber: string
+  /** @example "D602550" */
+  crn: string
+  /**
+   * @format int64
+   * @example 2512235167
+   */
+  assessmentId: number
+  /** @example "HIGH_INTENSITY_BC" */
+  programmePathway: string
+  NeedsScore: NeedsScore
+  RiskScore: RiskScore
+  /** @example "['impulsivity is missing ']" */
+  validationErrors: string[]
+}
+
+/** @example 1 */
+export interface RelationshipDomainScore {
+  /** @format int32 */
+  overallRelationshipDomainScore: number
+  individualRelationshipScores: IndividualRelationshipScores
+  isAllValuesPresent: string[]
+}
+
+/**
+ * @example "  "riskScores": {
+ *     "ogrs3": 15.0,
+ *     "ovp": 15.0,
+ *     "ospDc": 1.07,
+ *     "ospIic": 0.11,
+ *     "rsr": 1.46,
+ *     "sara": "High"
+ *   }
+ * "
+ */
+export interface RiskScore {
+  /** @example "High Risk" */
+  classification: string
+  IndividualRiskScores: IndividualRiskScores
+}
+
+/** @example 1 */
+export interface SelfManagementDomainScore {
+  /** @format int32 */
+  overallSelfManagementDomainScore: number
+  individualSelfManagementScores: IndividualSelfManagementScores
+  isAllValuesPresent: string[]
+}
+
+/** @example 1 */
+export interface SexDomainScore {
+  /**
+   * @format int32
+   * @example 2
+   */
+  overallSexDomainScore: number
+  individualSexScores: IndividualSexScores
+}
+
+/** @example 2 */
+export interface ThinkingDomainScore {
+  /** @format int32 */
+  overallThinkingDomainScore: number
+  individualThinkingScores: IndividualCognitiveScores
+  isAllValuesPresent: string[]
 }

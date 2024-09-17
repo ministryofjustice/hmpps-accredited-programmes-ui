@@ -10,6 +10,8 @@ const courseByOfferingPath = offeringPath.path('course')
 
 const oasysBasePath = path('/oasys/:prisonNumber')
 
+const pniPathBasePath = path('/PNI')
+
 const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
 const updateStatusPath = referralPath.path('status')
@@ -84,6 +86,9 @@ export default {
   person: {
     prisonerSearch: prisonerSearchPath,
     prisonerSentences: peoplePath.path('sentences'),
+  },
+  pni: {
+    show: pniPathBasePath.path(':prisonNumber'),
   },
   referenceData: {
     referralStatuses: {

@@ -1,0 +1,81 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "moj/components/timeline/macro.njk" import mojTimeline %}
+
+{% extends "../partials/rootLayout.njk" %}
+
+{% block supportingContent %}
+  <p data-testid="programme-needs-identifier-message">This is the recommended Accredited Programmes pathway. It is based on the person's risks and needs.</p>
+
+  {% include "./_pathway.njk" %}
+
+  {% if hasData %}
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+  {% endif %}
+{% endblock supportingContent %}
+
+{% block content %}
+  {{ super() }}
+
+  {% if hasData %}
+    <div id="content" class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters">
+        <h2 class="govuk-heading-m" data-testid="calculated-sub-heading">How is this calculated?</h2>
+        <p>The recommended pathway is based on a combination of:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
+          <li>
+            <a href="{{ riskScoresHref }}">risk scores</a>
+          </li>
+          <li>the programme needs identifier (PNI), which uses the following scores</li>
+        </ul>
+
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: "Sex"
+            }
+          },
+          rows: sexSummaryListRows,
+          attributes: {
+            "data-testid": "sex-summary-list"
+          }
+        }) }}
+
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: "Thinking"
+            }
+          },
+          rows: thinkingSummaryListRows,
+          attributes: {
+            "data-testid": "thinking-summary-list"
+          }
+        }) }}
+
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: "Relationships"
+            }
+          },
+          rows: relationshipsSummaryListRows,
+          attributes: {
+            "data-testid": "relationships-summary-list"
+          }
+        }) }}
+
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: "Self-management"
+            }
+          },
+          rows: selfManagementSummaryListRows,
+          attributes: {
+            "data-testid": "self-management-summary-list"
+          }
+        }) }}
+      </div>
+    </div>
+  {% endif %}
+{% endblock content %}

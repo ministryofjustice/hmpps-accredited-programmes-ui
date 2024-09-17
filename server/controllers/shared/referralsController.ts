@@ -168,6 +168,7 @@ export default class ReferralsController {
 
     const { referralId } = req.params
     const { token: userToken, username } = req.user
+    const { activeCaseLoadId } = res.locals.user
     const { updatePerson } = req.query as Record<string, string>
     const isRefer = req.path.startsWith(referPathBase.pattern)
 
@@ -203,7 +204,7 @@ export default class ReferralsController {
       pageSubHeading: 'Referral summary',
       person,
       referral,
-      subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'referral', referral.id),
+      subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'referral', referral.id, activeCaseLoadId),
       submissionSummaryListRows: ShowReferralUtils.submissionSummaryListRows(
         referral.submittedOn,
         referrerUserFullName,
