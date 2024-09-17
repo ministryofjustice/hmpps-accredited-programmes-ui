@@ -2,6 +2,7 @@ import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import PniController from './pniController'
+import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import {
   courseFactory,
@@ -103,6 +104,7 @@ describe('PniController', () => {
       person,
       referral,
       relationshipsSummaryListRows,
+      riskScoresHref: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }),
       selfManagementSummaryListRows,
       sexSummaryListRows,
       subNavigationItems,
@@ -132,6 +134,7 @@ describe('PniController', () => {
         pathwayContent,
         person,
         referral,
+        riskScoresHref: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }),
         subNavigationItems,
       })
     })

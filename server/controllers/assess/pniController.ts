@@ -1,5 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import { CourseUtils, PniUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 
@@ -58,6 +59,7 @@ export default class PniController {
         pathwayContent: PniUtils.pathwayContent(person.name, pni?.programmePathway),
         person,
         referral,
+        riskScoresHref: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId }),
         subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'pni', referral.id, activeCaseLoadId),
         ...templateLocals,
       })
