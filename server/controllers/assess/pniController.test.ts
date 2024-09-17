@@ -46,6 +46,12 @@ describe('PniController', () => {
   const selfManagementSummaryListRows = [{ key: { text: 'Self management key' }, value: { text: 'Value' } }]
   const sexSummaryListRows = [{ key: { text: 'Sex key' }, value: { text: 'Value' } }]
   const thinkingSummaryListRows = [{ key: { text: 'Thinking key' }, value: { text: 'Value' } }]
+  const pathwayContent = {
+    bodyText: 'Pathway content',
+    class: 'pathway-content',
+    dataTestId: 'pathway-content',
+    headingText: 'High intensity',
+  }
   let person: Person
   let referral: Referral
 
@@ -60,6 +66,7 @@ describe('PniController', () => {
     mockPniUtils.selfManagementSummaryListRows.mockReturnValue(selfManagementSummaryListRows)
     mockPniUtils.sexSummaryListRows.mockReturnValue(sexSummaryListRows)
     mockPniUtils.thinkingSummaryListRows.mockReturnValue(thinkingSummaryListRows)
+    mockPniUtils.pathwayContent.mockReturnValue(pathwayContent)
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
@@ -92,6 +99,7 @@ describe('PniController', () => {
       hasData: true,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Programme needs identifier',
+      pathwayContent,
       person,
       referral,
       relationshipsSummaryListRows,
@@ -121,6 +129,7 @@ describe('PniController', () => {
         hasData: false,
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Programme needs identifier',
+        pathwayContent,
         person,
         referral,
         subNavigationItems,
