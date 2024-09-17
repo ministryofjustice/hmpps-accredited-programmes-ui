@@ -73,6 +73,57 @@ describe('PniUtils', () => {
     })
   })
 
+  describe('pathwayContent', () => {
+    const personName = 'Del Hatton'
+    it('returns the pathway content for the given person name and HIGH_INTENSITY_BC programme pathway', () => {
+      const pathwayContent = PniUtils.pathwayContent(personName, 'HIGH_INTENSITY_BC')
+
+      expect(pathwayContent).toEqual({
+        bodyText:
+          'Based on the risk and need scores, Del Hatton may be eligible for the high intensity Accredited Programmes pathway.',
+        class: 'pathway-content--high',
+        dataTestId: 'high-intensity-pathway-content',
+        headingText: 'High Intensity',
+      })
+    })
+
+    it('returns the pathway content for the given person name and MODERATE_INTENSITY_BC programme pathway', () => {
+      const pathwayContent = PniUtils.pathwayContent(personName, 'MODERATE_INTENSITY_BC')
+
+      expect(pathwayContent).toEqual({
+        bodyText:
+          'Based on the risk and need scores, Del Hatton may be eligible for the moderate intensity Accredited Programmes pathway.',
+        class: 'pathway-content--moderate',
+        dataTestId: 'moderate-intensity-pathway-content',
+        headingText: 'Moderate Intensity',
+      })
+    })
+
+    it('returns the pathway content for the given person name and ALTERNATIVE_PATHWAY programme pathway', () => {
+      const pathwayContent = PniUtils.pathwayContent(personName, 'ALTERNATIVE_PATHWAY')
+
+      expect(pathwayContent).toEqual({
+        bodyText:
+          'Based on the risk and need scores, Del Hatton may not be eligible for either the moderate or high intensity Accredited Programmes pathway. Speak to the Offender Management team about other options.',
+        class: 'pathway-content--alternative',
+        dataTestId: 'alternative-pathway-content',
+        headingText: 'Not eligible',
+      })
+    })
+
+    it('returns the pathway content for the given person name and an unknown programme pathway', () => {
+      const pathwayContent = PniUtils.pathwayContent(personName)
+
+      expect(pathwayContent).toEqual({
+        bodyText:
+          'There is not enough information in the layer 3 assessment to calculate the recommended programme pathway.',
+        class: 'pathway-content--missing',
+        dataTestId: 'unknown-pathway',
+        headingText: 'Information missing',
+      })
+    })
+  })
+
   describe('relationshipsSummaryListRows', () => {
     it('returns the summary list rows for the relationship domain score', () => {
       const rows = PniUtils.relationshipsSummaryListRows(pniScore.NeedsScore.DomainScore.RelationshipDomainScore)

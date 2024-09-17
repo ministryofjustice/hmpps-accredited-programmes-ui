@@ -1,6 +1,8 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
+import type { Person } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 import type {
+  PniScore,
   RelationshipDomainScore,
   SelfManagementDomainScore,
   SexDomainScore,
@@ -18,6 +20,50 @@ export default class PniUtils {
         return 'High need'
       default:
         return 'Unknown'
+    }
+  }
+
+  static pathwayContent(
+    personName: Person['name'],
+    programmePathway?: PniScore['programmePathway'],
+  ): {
+    bodyText: string
+    class: string
+    dataTestId: string
+    headingText: string
+  } {
+    const bodyTextPrefix = `Based on the risk and need scores, ${personName} may`
+
+    switch (programmePathway) {
+      case 'HIGH_INTENSITY_BC':
+        return {
+          bodyText: `${bodyTextPrefix} be eligible for the high intensity Accredited Programmes pathway.`,
+          class: 'pathway-content--high',
+          dataTestId: 'high-intensity-pathway-content',
+          headingText: 'High Intensity',
+        }
+      case 'MODERATE_INTENSITY_BC':
+        return {
+          bodyText: `${bodyTextPrefix} be eligible for the moderate intensity Accredited Programmes pathway.`,
+          class: 'pathway-content--moderate',
+          dataTestId: 'moderate-intensity-pathway-content',
+          headingText: 'Moderate Intensity',
+        }
+      case 'ALTERNATIVE_PATHWAY':
+        return {
+          bodyText: `${bodyTextPrefix} not be eligible for either the moderate or high intensity Accredited Programmes pathway. Speak to the Offender Management team about other options.`,
+          class: 'pathway-content--alternative',
+          dataTestId: 'alternative-pathway-content',
+          headingText: 'Not eligible',
+        }
+      default:
+        return {
+          bodyText:
+            'There is not enough information in the layer 3 assessment to calculate the recommended programme pathway.',
+          class: 'pathway-content--missing',
+          dataTestId: 'unknown-pathway',
+          headingText: 'Information missing',
+        }
     }
   }
 
