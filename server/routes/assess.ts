@@ -1,6 +1,7 @@
 import type { Router } from 'express'
 
 import type { Controllers } from '../controllers'
+import { pniAccessMiddleware } from '../middleware'
 import { ApplicationRoles } from '../middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../paths'
 import { RouteUtils } from '../utils'
@@ -11,6 +12,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   const {
     assessCaseListController,
     categoryController,
+    pniController,
     reasonController,
     referralsController,
     risksAndNeedsController,
@@ -24,6 +26,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(assessPaths.caseList.filter.pattern, assessCaseListController.filter())
 
   get(assessPaths.show.statusHistory.pattern, statusHistoryController.show())
+
+  get(assessPaths.show.pni.pattern, pniAccessMiddleware(pniController.show()))
 
   get(assessPaths.show.additionalInformation.pattern, referralsController.additionalInformation())
   get(assessPaths.show.offenceHistory.pattern, referralsController.offenceHistory())
