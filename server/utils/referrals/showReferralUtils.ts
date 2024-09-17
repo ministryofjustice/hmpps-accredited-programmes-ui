@@ -1,6 +1,7 @@
 import type { Request } from 'express'
 
 import CaseListUtils from './caseListUtils'
+import config from '../../config'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import type { CourseOffering, Organisation, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
@@ -155,7 +156,7 @@ export default class ShowReferralUtils {
 
   static subNavigationItems(
     currentPath: Request['path'],
-    currentSection: 'referral' | 'risksAndNeeds' | 'statusHistory',
+    currentSection: 'pni' | 'referral' | 'risksAndNeeds' | 'statusHistory',
     referralId: Referral['id'],
   ): Array<MojFrontendNavigationItem> {
     const isAssess = currentPath.startsWith(assessPathBase.pattern)
