@@ -38,6 +38,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             text: 'Risks and alerts',
           },
           {
+            active: false,
+            href: `${referPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId })}#content`,
+            text: 'Learning needs',
+          },
+          {
             active: true,
             href: `${referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: mockReferralId })}#content`,
             text: 'Section 2 - Offence analysis',
@@ -84,11 +89,6 @@ describe('ShowRisksAndNeedsUtils', () => {
           },
           {
             active: false,
-            href: `${referPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId })}#content`,
-            text: 'Learning needs',
-          },
-          {
-            active: false,
             href: `${referPaths.show.risksAndNeeds.roshAnalysis({ referralId: mockReferralId })}#content`,
             text: 'Section R6 - RoSH analysis',
           },
@@ -105,6 +105,11 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: `${assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: mockReferralId })}#content`,
             text: 'Risks and alerts',
+          },
+          {
+            active: false,
+            href: `${assessPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId })}#content`,
+            text: 'Learning needs',
           },
           {
             active: true,
@@ -150,11 +155,6 @@ describe('ShowRisksAndNeedsUtils', () => {
             active: false,
             href: `${assessPaths.show.risksAndNeeds.health({ referralId: mockReferralId })}#content`,
             text: 'Section 13 - Health',
-          },
-          {
-            active: false,
-            href: `${assessPaths.show.risksAndNeeds.learningNeeds({ referralId: mockReferralId })}#content`,
-            text: 'Learning needs',
           },
           {
             active: false,

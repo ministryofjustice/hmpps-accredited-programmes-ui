@@ -19,6 +19,10 @@ export default class ShowRisksAndNeedsUtils {
         text: 'Risks and alerts',
       },
       {
+        href: paths.show.risksAndNeeds.learningNeeds({ referralId }),
+        text: 'Learning needs',
+      },
+      {
         href: paths.show.risksAndNeeds.offenceAnalysis({ referralId }),
         text: 'Section 2 - Offence analysis',
       },
@@ -53,10 +57,6 @@ export default class ShowRisksAndNeedsUtils {
       {
         href: paths.show.risksAndNeeds.health({ referralId }),
         text: 'Section 13 - Health',
-      },
-      {
-        href: paths.show.risksAndNeeds.learningNeeds({ referralId }),
-        text: 'Learning needs',
       },
       {
         href: paths.show.risksAndNeeds.roshAnalysis({ referralId }),
