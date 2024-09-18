@@ -23,7 +23,7 @@ export default class PniService {
     } catch (error) {
       const knownError = error as ResponseError
 
-      if (knownError.status === 404) {
+      if (knownError.status === 400 || knownError.status === 404) {
         return null
       }
 
