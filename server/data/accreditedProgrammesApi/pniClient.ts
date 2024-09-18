@@ -13,9 +13,17 @@ export default class PniClient {
     this.restClient = new RestClient('pniClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
-  async findPni(prisonNumber: Referral['prisonNumber']): Promise<PniScore> {
+  async findPni(
+    prisonNumber: Referral['prisonNumber'],
+    query?: {
+      gender?: string
+    },
+  ): Promise<PniScore> {
     return (await this.restClient.get({
       path: apiPaths.pni.show({ prisonNumber }),
+      query: {
+        ...(query?.gender && { gender: query.gender }),
+      },
     })) as PniScore
   }
 }

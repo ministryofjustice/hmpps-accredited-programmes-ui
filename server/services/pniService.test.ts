@@ -32,11 +32,11 @@ describe('PniService', () => {
   })
 
   describe('getPni', () => {
-    it('returns the PNI score for the given prison number', async () => {
-      const pniScore = pniScoreFactory.build()
-
+    const pniScore = pniScoreFactory.build()
+    beforeEach(() => {
       pniClient.findPni.mockResolvedValue(pniScore)
-
+    })
+    it('returns the PNI score for the given prison number', async () => {
       const result = await service.getPni(username, prisonNumber)
 
       expect(result).toEqual(pniScore)
@@ -44,7 +44,15 @@ describe('PniService', () => {
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber)
+      expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
+    })
+
+    describe('when there are query params', () => {
+      it('passes the query params to the PNI client', async () => {
+        await service.getPni(username, prisonNumber, { gender: 'Male' })
+
+        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, { gender: 'Male' })
+      })
     })
 
     describe('when the PNI client throws an error', () => {
@@ -59,7 +67,7 @@ describe('PniService', () => {
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber)
+        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
       })
 
       it('returns null when the error status is 404', async () => {
@@ -73,7 +81,7 @@ describe('PniService', () => {
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber)
+        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
       })
 
       it('re-throws the error when the status is not 404', async () => {
@@ -86,7 +94,7 @@ describe('PniService', () => {
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
         expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber)
+        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
       })
     })
   })

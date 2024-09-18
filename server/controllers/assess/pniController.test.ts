@@ -117,6 +117,7 @@ describe('PniController', () => {
       referral.id,
       usersActiveCaseLoadId,
     )
+    expect(pniService.getPni).toHaveBeenCalledWith(username, referral.prisonNumber, { gender: person.gender })
   })
 
   describe('when the pni service returns `null`', () => {
