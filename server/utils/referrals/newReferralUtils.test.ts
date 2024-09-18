@@ -134,7 +134,7 @@ describe('NewReferralUtils', () => {
                 classes: 'govuk-tag--grey moj-task-list__task-completed',
                 text: 'Not started',
               },
-              text: 'Confirm the OASys information',
+              text: 'Check risks and needs information (OASys)',
               url: `/refer/referrals/new/${referral.id}/confirm-oasys`,
             },
             {
@@ -178,7 +178,7 @@ describe('NewReferralUtils', () => {
         referralInformationSection,
       ).statusTag
       const confirmOasysStatusTag = getTaskListItem(
-        'Confirm the OASys information',
+        'Check risks and needs information (OASys)',
         referralInformationSection,
       ).statusTag
 

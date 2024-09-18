@@ -94,7 +94,7 @@ export default class NewReferralUtils {
               referral.oasysConfirmed ? 'Completed' : 'Not started',
               'confirm-oasys-tag',
             ),
-            text: 'Confirm the OASys information',
+            text: 'Check risks and needs information (OASys)',
             url: referPaths.new.confirmOasys.show({ referralId }),
           },
           {
