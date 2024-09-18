@@ -11,13 +11,17 @@ export default class PniService {
     private readonly pniClientBuilder: RestClientBuilder<PniClient>,
   ) {}
 
-  async getPni(username: Express.User['username'], prisonNumber: Referral['prisonNumber']): Promise<PniScore | null> {
+  async getPni(
+    username: Express.User['username'],
+    prisonNumber: Referral['prisonNumber'],
+    query?: { gender?: string },
+  ): Promise<PniScore | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const pniClient = this.pniClientBuilder(systemToken)
 
     try {
-      const pni = await pniClient.findPni(prisonNumber)
+      const pni = await pniClient.findPni(prisonNumber, query)
 
       return pni
     } catch (error) {

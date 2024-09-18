@@ -21,10 +21,10 @@ export default class PniController {
       const { activeCaseLoadId } = res.locals.user
 
       const referral = await this.referralService.getReferral(username, referralId)
-      const [course, person, pni] = await Promise.all([
+      const person = await this.personService.getPerson(username, referral.prisonNumber)
+      const [course, pni] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
-        this.personService.getPerson(username, referral.prisonNumber),
-        this.pniService.getPni(username, referral.prisonNumber),
+        this.pniService.getPni(username, referral.prisonNumber, { gender: person.gender }),
       ])
 
       const coursePresenter = CourseUtils.presentCourse(course)
