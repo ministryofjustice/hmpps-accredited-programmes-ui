@@ -109,7 +109,20 @@ export default class ShowReferralUtils {
     statusHistoryPresenter: Array<ReferralStatusHistoryPresenter>,
   ): Array<MojTimelineItem> {
     return statusHistoryPresenter.map(status => {
-      const html = CaseListUtils.statusTagHtml(status.statusColour, status.statusDescription)
+      let html = CaseListUtils.statusTagHtml(status.statusColour, status.statusDescription)
+
+      const additionalTextItems = [
+        { label: 'Reason', value: status.reasonDescription },
+        { label: 'Status details', value: status.notes },
+      ].filter(item => Boolean(item.value))
+
+      if (additionalTextItems.length) {
+        html = html.concat(
+          `<dl class="govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+          ${additionalTextItems.map(item => `<div><dt class="govuk-!-display-inline govuk-!-font-weight-bold">${item.label}:</dt><dd class="govuk-!-display-inline govuk-!-margin-left-1">${item.value}</dd></div>`).join('')}
+          </dl>`,
+        )
+      }
 
       return {
         byline: {
@@ -119,11 +132,7 @@ export default class ShowReferralUtils {
           timestamp: DateUtils.removeTimezoneOffset(status.statusStartDate as string),
           type: 'datetime',
         },
-        html: status.notes
-          ? html.concat(
-              `<p class="govuk-!-margin-top-4 govuk-!-margin-bottom-0"><strong>Status details: </strong>${status.notes}</p>`,
-            )
-          : html,
+        html,
         label: {
           text: status.status?.toLowerCase() === 'referral_submitted' ? 'Referral submitted' : 'Status update',
         },
