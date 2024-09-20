@@ -1,9 +1,10 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
+import FactoryHelpers from './factoryHelpers'
 import { randomStatus, statusDescriptionAndColour } from './referral'
 import { referralStatuses } from '../../@types/models/Referral'
-import type { ReferralStatusHistory } from '@accredited-programmes/models'
+import type { ReferralStatusHistory } from '@accredited-programmes-api'
 
 class ReferralStatusHistoryFactory extends Factory<ReferralStatusHistory> {
   started() {
@@ -38,10 +39,12 @@ export default ReferralStatusHistoryFactory.define(({ params }) => {
 
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
+    categoryDescription: FactoryHelpers.optionalArrayElement(faker.word.words({ count: { max: 3, min: 1 } })),
     notes: faker.lorem.paragraph({ max: 5, min: 0 }),
     previousStatus,
     previousStatusColour: previousStatusColourAndDescription.statusColour,
     previousStatusDescription: previousStatusColourAndDescription.statusDescription,
+    reasonDescription: FactoryHelpers.optionalArrayElement(faker.word.words({ count: { max: 3, min: 1 } })),
     referralId: faker.internet.userName(),
     status: currentStatus,
     statusColour: currentStatusDescriptionAndColour.statusColour,

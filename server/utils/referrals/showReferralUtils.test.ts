@@ -266,13 +266,13 @@ describe('ShowReferralUtils', () => {
     it('returns referral status history in the appropriate format for passing to a MoJ Frontend timeline Nunjucks macro', () => {
       const startedReferralStatusHistory = referralStatusHistoryFactory
         .started()
-        .build({ statusStartDate: '2017-03-21T10:25:30.000Z' })
+        .build({ notes: undefined, reasonDescription: undefined, statusStartDate: '2017-03-21T10:25:30.000Z' })
       const submittedReferralStatusHistory = referralStatusHistoryFactory
         .submitted()
-        .build({ statusStartDate: '2017-03-22T10:25:30.000Z' })
+        .build({ notes: undefined, reasonDescription: undefined, statusStartDate: '2017-03-22T10:25:30.000Z' })
       const updatedReferralStatusHistory = referralStatusHistoryFactory
         .updated()
-        .build({ statusStartDate: '2017-03-23T10:25:30.000Z' })
+        .build({ notes: 'Updated notes', reasonDescription: 'A reason', statusStartDate: '2017-03-23T10:25:30.000Z' })
 
       const statusHistoryPresenter: Array<ReferralStatusHistoryPresenter> = [
         { ...updatedReferralStatusHistory, byLineText: 'You' },
@@ -287,7 +287,7 @@ describe('ShowReferralUtils', () => {
             timestamp: updatedReferralStatusHistory.statusStartDate,
             type: 'datetime',
           },
-          html: expect.stringContaining(updatedReferralStatusHistory.notes as string),
+          html: expect.stringMatching(/^(?=.*A reason)(?=.*Updated notes).*$/im),
           label: { text: 'Status update' },
         },
         {

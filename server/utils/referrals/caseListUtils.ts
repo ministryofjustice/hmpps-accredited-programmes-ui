@@ -151,10 +151,7 @@ export default class CaseListUtils {
     )
   }
 
-  static statusTagHtml(
-    statusColour?: Referral['statusColour'],
-    statusDescription?: Referral['statusDescription'],
-  ): string {
+  static statusTagHtml(statusColour?: string, statusDescription?: Referral['statusDescription']): string {
     return `<strong class="govuk-tag govuk-tag--${statusColour}">${statusDescription || 'Unknown status'}</strong>`
   }
 
