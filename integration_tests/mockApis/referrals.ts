@@ -7,10 +7,10 @@ import type {
   Paginated,
   Referral,
   ReferralStatusGroup,
-  ReferralStatusHistory,
   ReferralStatusRefData,
   ReferralView,
 } from '@accredited-programmes/models'
+import type { ReferralStatusHistory } from '@accredited-programmes-api'
 
 interface ReferralAndScenarioOptions {
   referral: Referral

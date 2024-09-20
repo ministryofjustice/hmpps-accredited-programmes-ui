@@ -78,20 +78,6 @@ type ReferralStatusReason = {
   referralCategoryCode: Uppercase<string>
 }
 
-type ReferralStatusHistory = {
-  id?: string
-  notes?: string
-  previousStatus?: Referral['status']
-  previousStatusColour?: Referral['statusColour']
-  previousStatusDescription?: Referral['statusDescription']
-  referralId?: Referral['id']
-  status?: Referral['status']
-  statusColour?: Referral['statusColour']
-  statusDescription?: Referral['statusDescription']
-  statusStartDate?: string
-  username?: User['username']
-}
-
 type ReferralStatusUpdate = {
   status: ReferralStatus | ReferralStatusUppercase
   category?: Uppercase<string>
@@ -151,7 +137,6 @@ export type {
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,
-  ReferralStatusHistory,
   ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUpdate,

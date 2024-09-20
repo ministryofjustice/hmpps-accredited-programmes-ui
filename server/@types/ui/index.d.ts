@@ -5,9 +5,9 @@ import type {
   Organisation,
   Person,
   Referral,
-  ReferralStatusHistory,
   RiskLevel,
 } from '@accredited-programmes/models'
+import type { ReferralStatusHistory } from '@accredited-programmes-api'
 import type {
   GovukFrontendButton,
   GovukFrontendPagination,
