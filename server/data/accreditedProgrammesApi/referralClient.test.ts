@@ -7,7 +7,8 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import { referralFactory, referralViewFactory } from '../../testutils/factories'
 import FactoryHelpers from '../../testutils/factories/factoryHelpers'
-import type { CreatedReferralResponse, Paginated, ReferralUpdate, ReferralView } from '@accredited-programmes/models'
+import type { Paginated, ReferralUpdate, ReferralView } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let referralClient: ReferralClient
@@ -20,7 +21,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('create', () => {
-    const createdReferralResponse: CreatedReferralResponse = { referralId: faker.string.uuid() }
+    const createdReferralResponse: Partial<Referral> = { id: faker.string.uuid() }
     const prisonNumber = 'A1234AA'
 
     beforeEach(() => {
