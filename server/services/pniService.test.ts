@@ -49,9 +49,9 @@ describe('PniService', () => {
 
     describe('when there are query params', () => {
       it('passes the query params to the PNI client', async () => {
-        await service.getPni(username, prisonNumber, { gender: 'Male' })
+        await service.getPni(username, prisonNumber, { gender: 'Male', savePNI: true })
 
-        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, { gender: 'Male' })
+        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, { gender: 'Male', savePNI: true })
       })
     })
 

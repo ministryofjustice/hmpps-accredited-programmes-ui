@@ -14,7 +14,7 @@ export default class PniService {
   async getPni(
     username: Express.User['username'],
     prisonNumber: Referral['prisonNumber'],
-    query?: { gender?: string },
+    query?: { gender?: string; savePNI?: boolean },
   ): Promise<PniScore | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
