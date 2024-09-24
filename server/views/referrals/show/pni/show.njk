@@ -3,12 +3,14 @@
 
 {% extends "../partials/rootLayout.njk" %}
 
+{% set showCalculatedData = hasData and not missingInformation %}
+
 {% block supportingContent %}
   <p data-testid="programme-needs-identifier-message">This is the recommended Accredited Programmes pathway. It is based on the person's risks and needs.</p>
 
   {% include "./_pathway.njk" %}
 
-  {% if hasData %}
+  {% if showCalculatedData %}
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
   {% endif %}
 {% endblock supportingContent %}
@@ -16,7 +18,7 @@
 {% block content %}
   {{ super() }}
 
-  {% if hasData %}
+  {% if showCalculatedData %}
     <div id="content" class="govuk-grid-row">
       <div class="govuk-grid-column-three-quarters">
         <h2 class="govuk-heading-m" data-testid="calculated-sub-heading">How is this calculated?</h2>

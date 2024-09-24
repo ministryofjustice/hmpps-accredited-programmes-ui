@@ -90,7 +90,7 @@ describe('PniController', () => {
   })
 
   it('renders the show pni page with the correct response locals', async () => {
-    pniService.getPni.mockResolvedValue(pniScoreFactory.build())
+    pniService.getPni.mockResolvedValue(pniScoreFactory.build({ programmePathway: 'HIGH_INTENSITY_BC' }))
 
     const requestHandler = controller.show()
     await requestHandler(request, response, next)
@@ -98,6 +98,7 @@ describe('PniController', () => {
     expect(response.render).toHaveBeenCalledWith('referrals/show/pni/show', {
       buttons,
       hasData: true,
+      missingInformation: false,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Programme needs identifier',
       pathwayContent,
@@ -120,6 +121,23 @@ describe('PniController', () => {
     expect(pniService.getPni).toHaveBeenCalledWith(username, referral.prisonNumber, {
       gender: person.gender,
       savePNI: true,
+    })
+  })
+
+  describe('when the pni service returns `MISSING_INFORMATION`', () => {
+    it('renders the show pni page with the correct response locals', async () => {
+      pniService.getPni.mockResolvedValue(pniScoreFactory.build({ programmePathway: 'MISSING_INFORMATION' }))
+
+      const requestHandler = controller.show()
+      await requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith(
+        'referrals/show/pni/show',
+        expect.objectContaining({
+          hasData: true,
+          missingInformation: true,
+        }),
+      )
     })
   })
 
