@@ -17,12 +17,14 @@ export default class PniClient {
     prisonNumber: Referral['prisonNumber'],
     query?: {
       gender?: string
+      savePNI?: boolean
     },
   ): Promise<PniScore> {
     return (await this.restClient.get({
       path: apiPaths.pni.show({ prisonNumber }),
       query: {
         ...(query?.gender && { gender: query.gender }),
+        ...(query?.savePNI && { savePNI: 'true' }),
       },
     })) as PniScore
   }
