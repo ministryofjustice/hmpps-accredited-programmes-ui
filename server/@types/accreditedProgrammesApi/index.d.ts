@@ -1234,14 +1234,10 @@ export interface IndividualSexScores {
    * @example 1
    */
   emotionalCongruence?: number
-  isAllValuesPresent: boolean
 }
 
 /**
  * @example "{
- *   "prisonNumber": "A1234BC",
- *   "crn": "X739590",
- *   "assessmentId": 2114584,
  *   "needsScore": {
  *     "overallNeedsScore": 6,
  *     "domainScore": {
@@ -1289,6 +1285,11 @@ export interface NeedsScore {
    * @example 5
    */
   overallNeedsScore: number
+  /**
+   * @format int32
+   * @example 6
+   */
+  basicSkillsScore?: number
   /** @example "High Intensity BC" */
   classification: string
   DomainScore: DomainScore
@@ -1317,7 +1318,6 @@ export interface RelationshipDomainScore {
   /** @format int32 */
   overallRelationshipDomainScore: number
   individualRelationshipScores: IndividualRelationshipScores
-  isAllValuesPresent: string[]
 }
 
 /**
@@ -1342,7 +1342,6 @@ export interface SelfManagementDomainScore {
   /** @format int32 */
   overallSelfManagementDomainScore: number
   individualSelfManagementScores: IndividualSelfManagementScores
-  isAllValuesPresent: string[]
 }
 
 /** @example 1 */
@@ -1360,5 +1359,4 @@ export interface ThinkingDomainScore {
   /** @format int32 */
   overallThinkingDomainScore: number
   individualThinkingScores: IndividualCognitiveScores
-  isAllValuesPresent: string[]
 }
