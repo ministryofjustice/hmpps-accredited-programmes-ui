@@ -12,7 +12,6 @@ describe('PniUtils', () => {
             easilyInfluenced: 2,
             prevExpCloseRel: 3,
           },
-          isAllValuesPresent: [],
           overallRelationshipDomainScore: 0,
         },
         SelfManagementDomainScore: {
@@ -22,13 +21,11 @@ describe('PniUtils', () => {
             problemSolvingSkills: 2,
             temperControl: 3,
           },
-          isAllValuesPresent: [],
           overallSelfManagementDomainScore: 1,
         },
         SexDomainScore: {
           individualSexScores: {
             emotionalCongruence: 0,
-            isAllValuesPresent: true,
             offenceRelatedSexualInterests: 1,
             sexualPreOccupation: 2,
           },
@@ -39,7 +36,6 @@ describe('PniUtils', () => {
             hostileOrientation: 1,
             proCriminalAttitudes: 2,
           },
-          isAllValuesPresent: [],
           overallThinkingDomainScore: 1,
         },
       },

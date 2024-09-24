@@ -42,6 +42,7 @@ export default class PniController {
 
         templateLocals = {
           hasData: true,
+          missingInformation: pni?.programmePathway === 'MISSING_INFORMATION',
           relationshipsSummaryListRows: PniUtils.relationshipsSummaryListRows(RelationshipDomainScore),
           selfManagementSummaryListRows: PniUtils.selfManagementSummaryListRows(SelfManagementDomainScore),
           sexSummaryListRows: PniUtils.sexSummaryListRows(SexDomainScore),
