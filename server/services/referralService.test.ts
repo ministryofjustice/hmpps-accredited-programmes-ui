@@ -13,12 +13,7 @@ import {
   referralStatusRefDataFactory,
   referralViewFactory,
 } from '../testutils/factories'
-import type {
-  CreatedReferralResponse,
-  ReferralStatusGroup,
-  ReferralStatusUpdate,
-  ReferralUpdate,
-} from '@accredited-programmes/models'
+import type { ReferralStatusGroup, ReferralStatusUpdate, ReferralUpdate } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
@@ -51,15 +46,12 @@ describe('ReferralService', () => {
   describe('createReferral', () => {
     it('returns a created referral', async () => {
       const referral = referralFactory.started().build()
-      const createdReferralResponse: CreatedReferralResponse = { referralId: referral.id }
 
-      when(referralClient.create)
-        .calledWith(referral.offeringId, referral.prisonNumber)
-        .mockResolvedValue(createdReferralResponse)
+      when(referralClient.create).calledWith(referral.offeringId, referral.prisonNumber).mockResolvedValue(referral)
 
       const result = await service.createReferral(username, referral.offeringId, referral.prisonNumber)
 
-      expect(result).toEqual(createdReferralResponse)
+      expect(result).toEqual(referral)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)

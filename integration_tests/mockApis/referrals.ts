@@ -69,7 +69,7 @@ export default {
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { referralId: referral.id },
+        jsonBody: referral,
         status: 201,
       },
     }),
