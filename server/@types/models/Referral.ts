@@ -50,10 +50,6 @@ type Referral = {
   submittedOn?: string
 }
 
-type CreatedReferralResponse = {
-  referralId: Referral['id']
-}
-
 type ReferralUpdate = {
   hasReviewedProgrammeHistory: Referral['hasReviewedProgrammeHistory']
   oasysConfirmed: Referral['oasysConfirmed']
@@ -132,7 +128,6 @@ export { referralStatusGroups, referralStatuses }
 
 export type {
   ConfirmationFields,
-  CreatedReferralResponse,
   Referral,
   ReferralStatus,
   ReferralStatusCategory,
