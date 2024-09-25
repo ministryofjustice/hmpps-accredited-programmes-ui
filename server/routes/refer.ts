@@ -108,5 +108,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.manageHold.pattern, updateStatusActionController.manageHold())
   get(referPaths.withdraw.pattern, updateStatusActionController.withdraw())
 
+  get(referPaths.show.duplicate.pattern, referralsController.duplicate())
+
   return router
 }

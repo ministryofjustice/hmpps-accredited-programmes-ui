@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import SubmittedReferralsController from './referralsController'
-import { assessPaths, referPathBase, referPaths } from '../../paths'
+import { assessPaths, findPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
   courseFactory,
@@ -83,6 +83,7 @@ describe('ReferralsController', () => {
 
     sharedPageData = {
       buttons,
+      course,
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
         person.name,
         coursePresenter,
@@ -90,6 +91,7 @@ describe('ReferralsController', () => {
         organisation.name,
       ),
       navigationItems,
+      organisation,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Referral summary',
       person,
@@ -172,6 +174,28 @@ describe('ReferralsController', () => {
           ...sharedPageData,
           submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
         })
+      })
+    })
+  })
+
+  describe('duplicate', () => {
+    it('renders the duplicate template with the correct response locals', async () => {
+      request.path = referPaths.show.duplicate({ referralId: referral.id })
+
+      const requestHandler = controller.duplicate()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/duplicate', {
+        ...sharedPageData,
+        backLinkHref: referPaths.new.people.show({
+          courseOfferingId: sharedPageData.course.id,
+          prisonNumber: sharedPageData.person.prisonNumber,
+        }),
+        pageHeading: 'Duplicate referral found',
+        programmeListHref: findPaths.index({}),
+        summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.name}.`,
       })
     })
   })

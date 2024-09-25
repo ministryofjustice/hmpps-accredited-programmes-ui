@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
-import { referPathBase } from '../../paths'
+import { findPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
   CourseUtils,
@@ -37,6 +37,25 @@ export default class ReferralsController {
       return res.render('referrals/show/additionalInformation', {
         ...sharedPageData,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+      })
+    }
+  }
+
+  duplicate(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+
+      return res.render('referrals/show/duplicate', {
+        ...sharedPageData,
+        backLinkHref: referPaths.new.people.show({
+          courseOfferingId: sharedPageData.course.id,
+          prisonNumber: sharedPageData.person.prisonNumber,
+        }),
+        pageHeading: 'Duplicate referral found',
+        programmeListHref: findPaths.index({}),
+        summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.name}.`,
       })
     }
   }
@@ -193,6 +212,7 @@ export default class ReferralsController {
         referral,
         statusTransitions,
       ),
+      course,
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
         person.name,
         coursePresenter,
@@ -200,6 +220,7 @@ export default class ReferralsController {
         organisation.name,
       ),
       navigationItems: ShowReferralUtils.viewReferralNavigationItems(req.path, referral.id),
+      organisation,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Referral summary',
       person,
