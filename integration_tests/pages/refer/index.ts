@@ -5,6 +5,7 @@ import NewReferralConfirmOasysPage from './new/confirmOasys'
 import NewReferralConfirmPersonPage from './new/confirmPerson'
 import NewReferralDeletePage from './new/delete'
 import NewReferralDeleteProgrammeHistoryPage from './new/deleteProgrammeHistory'
+import NewReferralDuplicatePage from './new/duplicate'
 import NewReferralFindPersonPage from './new/findPerson'
 import NewReferralProgrammeHistoryPage from './new/programmeHistory'
 import NewReferralProgrammeHistoryDetailsPage from './new/programmeHistoryDetails'
@@ -21,6 +22,7 @@ export {
   NewReferralConfirmPersonPage,
   NewReferralDeletePage,
   NewReferralDeleteProgrammeHistoryPage,
+  NewReferralDuplicatePage,
   NewReferralFindPersonPage,
   NewReferralProgrammeHistoryDetailsPage,
   NewReferralProgrammeHistoryPage,

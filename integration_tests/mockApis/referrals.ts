@@ -61,7 +61,7 @@ export default {
       },
     }),
 
-  stubCreateReferral: (referral: Referral): SuperAgentRequest =>
+  stubCreateReferral: (args: { referral: Referral; status?: number }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'POST',
@@ -69,8 +69,8 @@ export default {
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: referral,
-        status: 201,
+        jsonBody: args.referral,
+        status: args.status || 201,
       },
     }),
 
