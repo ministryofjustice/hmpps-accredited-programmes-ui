@@ -20,7 +20,6 @@ import type { Paginated } from './Paginated'
 import type { KeyDates, Person, SentenceDetails } from './Person'
 import type {
   ConfirmationFields,
-  CreatedReferralResponse,
   Referral,
   ReferralStatus,
   ReferralStatusCategory,
@@ -49,7 +48,6 @@ export type {
   CourseParticipationSetting,
   CourseParticipationUpdate,
   CoursePrerequisite,
-  CreatedReferralResponse,
   DrugAlcoholDetail,
   Health,
   KeyDates,

@@ -5,6 +5,7 @@ import createError from 'http-errors'
 
 import NewReferralsController from './referralsController'
 import { authPaths, referPaths } from '../../../paths'
+import sanitiseError from '../../../sanitisedError'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
   courseAudienceFactory,
@@ -148,7 +149,7 @@ describe('NewReferralsController', () => {
 
       TypeUtils.assertHasUser(request)
 
-      referralService.createReferral.mockResolvedValue({ referralId })
+      referralService.createReferral.mockResolvedValue(referralFactory.started().build({ id: referralId }))
 
       const requestHandler = controller.create()
       await requestHandler(request, response, next)
@@ -177,6 +178,49 @@ describe('NewReferralsController', () => {
 
         expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
         expect(courseService.getOffering).toHaveBeenCalledWith(username, nonReferableCourseOffering.id)
+      })
+    })
+
+    describe('when there is a duplicate referral', () => {
+      it('redirects to the show duplicate action', async () => {
+        const duplicateReferral = referralFactory.started().build({ id: referralId })
+        const error = createError(409, 'Duplicate referral', { response: { body: duplicateReferral, status: 409 } })
+        const sanitisedError = sanitiseError(error)
+
+        referralService.createReferral.mockRejectedValue(sanitisedError)
+
+        request.body.courseOfferingId = draftReferral.offeringId
+        request.body.prisonNumber = draftReferral.prisonNumber
+
+        courseService.getOffering.mockResolvedValue(referableCourseOffering)
+
+        TypeUtils.assertHasUser(request)
+
+        const requestHandler = controller.create()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show.duplicate({ referralId: duplicateReferral.id }))
+      })
+    })
+
+    describe('when there is an error creating the referral', () => {
+      it('re-throws the error', async () => {
+        referralService.createReferral.mockRejectedValue(createError(500, 'An error occurred'))
+
+        request.body.courseOfferingId = draftReferral.offeringId
+        request.body.prisonNumber = draftReferral.prisonNumber
+
+        courseService.getOffering.mockResolvedValue(referableCourseOffering)
+
+        TypeUtils.assertHasUser(request)
+
+        const requestHandler = controller.create()
+        const expectedError = createError(
+          500,
+          `Unable to create referral for prison number ${draftReferral.prisonNumber} to course offering ${draftReferral.offeringId}`,
+        )
+
+        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
       })
     })
   })

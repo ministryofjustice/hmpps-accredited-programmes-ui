@@ -3,7 +3,6 @@ import logger from '../../logger'
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
   ConfirmationFields,
-  CreatedReferralResponse,
   Organisation,
   Paginated,
   Referral,
@@ -28,7 +27,7 @@ export default class ReferralService {
     username: Express.User['username'],
     courseOfferingId: Referral['offeringId'],
     prisonNumber: Referral['prisonNumber'],
-  ): Promise<CreatedReferralResponse> {
+  ): Promise<Referral> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referralClient = this.referralClientBuilder(systemToken)

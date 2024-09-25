@@ -7,12 +7,14 @@ import {
   prisonFactory,
   prisonerFactory,
   referralFactory,
+  userFactory,
 } from '../../../../server/testutils/factories'
 import { OrganisationUtils } from '../../../../server/utils'
 import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import {
   NewReferralConfirmPersonPage,
+  NewReferralDuplicatePage,
   NewReferralFindPersonPage,
   NewReferralStartPage,
   NewReferralTaskListPage,
@@ -124,7 +126,7 @@ context('Searching for a person and creating a referral', () => {
       prisonNumber: person.prisonNumber,
       referrerUsername: auth.mockedUser.username,
     })
-    cy.task('stubCreateReferral', referral)
+    cy.task('stubCreateReferral', { referral })
     cy.task('stubReferral', referral)
 
     const path = referPaths.new.people.show({
@@ -136,5 +138,58 @@ context('Searching for a person and creating a referral', () => {
     confirmPersonPage.confirmPerson()
 
     Page.verifyOnPage(NewReferralTaskListPage, { course, courseOffering, organisation, referral })
+  })
+
+  describe('When a referral already exists for the person on the course offering', () => {
+    it("On confirming a person's details, redirects to the duplicate referral page", () => {
+      const referral = referralFactory.submitted().build({
+        offeringId: courseOffering.id,
+        prisonNumber: person.prisonNumber,
+        referrerUsername: auth.mockedUser.username,
+      })
+
+      cy.task('stubPrison', prison)
+      cy.task('stubPrisoner', prisoner)
+      cy.task('stubCreateReferral', { referral, status: 409 })
+      cy.task('stubReferral', referral)
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubOffering', { courseId: course.id, courseOffering })
+      cy.task('stubPrison', prison)
+      cy.task('stubPrisoner', prisoner)
+      cy.task('stubUserDetails', userFactory.build({ name: 'Referring User', username: referral.referrerUsername }))
+      cy.task('stubUserEmail', {
+        email: 'referrer.email@test-email.co.uk',
+        username: referral.referrerUsername,
+        verified: true,
+      })
+      cy.task('stubStatusTransitions', {
+        referralId: referral.id,
+        statusTransitions: [],
+      })
+
+      const path = referPaths.new.people.show({
+        courseOfferingId: courseOffering.id,
+        prisonNumber: person.prisonNumber,
+      })
+      cy.visit(path)
+      const confirmPersonPage = Page.verifyOnPage(NewReferralConfirmPersonPage, { course, courseOffering, person })
+      confirmPersonPage.confirmPerson()
+
+      const duplicatePage = Page.verifyOnPage(NewReferralDuplicatePage, {
+        course,
+        courseOffering,
+        organisation,
+        person,
+        referral,
+      })
+      duplicatePage.shouldContainBackLink(
+        referPaths.new.people.show({ courseOfferingId: course.id, prisonNumber: person.prisonNumber }),
+      )
+      duplicatePage.shouldContainReferralExistsText()
+      duplicatePage.shouldContainCourseOfferingSummaryList()
+      duplicatePage.shouldContainSubmissionSummaryList('Referring User', 'referrer.email@test-email.co.uk')
+      duplicatePage.shouldContainWarningText('You cannot create this referral while a duplicate referral is open.')
+      duplicatePage.shouldContainButtonLink('Return to programme list', findPaths.index({}))
+    })
   })
 })

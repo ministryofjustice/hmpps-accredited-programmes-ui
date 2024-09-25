@@ -6,7 +6,6 @@ import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
   ConfirmationFields,
-  CreatedReferralResponse,
   Paginated,
   Referral,
   ReferralStatusGroup,
@@ -26,14 +25,11 @@ export default class ReferralClient {
     this.restClient = new RestClient('referralClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
   }
 
-  async create(
-    courseOfferingId: Referral['offeringId'],
-    prisonNumber: Referral['prisonNumber'],
-  ): Promise<CreatedReferralResponse> {
+  async create(courseOfferingId: Referral['offeringId'], prisonNumber: Referral['prisonNumber']): Promise<Referral> {
     return (await this.restClient.post({
       data: { offeringId: courseOfferingId, prisonNumber },
       path: apiPaths.referrals.create({}),
-    })) as CreatedReferralResponse
+    })) as Referral
   }
 
   async deleteReferral(referralId: Referral['id']): Promise<void> {

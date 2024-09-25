@@ -1,5 +1,5 @@
 import type { SanitisedError, UnsanitisedError } from './sanitisedError'
-import sanitiseError from './sanitisedError'
+import sanitiseError, { isErrorWithData } from './sanitisedError'
 
 describe('sanitiseError', () => {
   it('returns an error without the request headers', () => {
@@ -52,5 +52,26 @@ describe('sanitiseError', () => {
 
       expect(sanitiseError(error)).toEqual(sanitisedError)
     })
+  })
+})
+
+describe('isErrorWithData', () => {
+  it('returns true if the error has data', () => {
+    const error = {
+      data: 'data',
+      message: 'message',
+      stack: 'stack',
+    } as SanitisedError
+
+    expect(isErrorWithData(error)).toBe(true)
+  })
+
+  it('returns false if the error does not have data', () => {
+    const error = {
+      message: 'message',
+      stack: 'stack',
+    } as SanitisedError
+
+    expect(isErrorWithData(error)).toBe(false)
   })
 })

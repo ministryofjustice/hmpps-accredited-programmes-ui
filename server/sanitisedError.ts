@@ -26,4 +26,8 @@ export default function sanitiseError(error: UnsanitisedError): SanitisedError {
   return sanitisedError
 }
 
+export function isErrorWithData<T>(error: unknown): error is SanitisedError & { data: T } {
+  return (error as SanitisedError).data !== undefined
+}
+
 export type { SanitisedError, UnsanitisedError }

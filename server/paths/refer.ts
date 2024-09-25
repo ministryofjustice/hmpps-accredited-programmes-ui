@@ -74,6 +74,7 @@ export default {
   },
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),
+    duplicate: referralShowPathBase.path('duplicate'),
     offenceHistory: referralShowPathBase.path('offence-history'),
     personalDetails: referralShowPathBase.path('personal-details'),
     programmeHistory: referralShowPathBase.path('programme-history'),

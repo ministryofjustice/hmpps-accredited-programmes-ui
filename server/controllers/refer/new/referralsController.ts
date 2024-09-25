@@ -1,10 +1,11 @@
-import type { Request, Response, TypedRequestHandler } from 'express'
+import { type Request, type Response, type TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
 import { authPaths, referPaths } from '../../../paths'
+import { type SanitisedError, isErrorWithData } from '../../../sanitisedError'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
-import type { CreatedReferralResponse } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 export default class NewReferralsController {
   constructor(
@@ -116,13 +117,26 @@ export default class NewReferralsController {
         throw createError(400, 'Course offering is not referable.')
       }
 
-      const createdReferralResponse: CreatedReferralResponse = await this.referralService.createReferral(
-        username,
-        courseOfferingId,
-        prisonNumber,
-      )
+      try {
+        const createReferralResponse = await this.referralService.createReferral(
+          username,
+          courseOfferingId,
+          prisonNumber,
+        )
 
-      res.redirect(referPaths.new.show({ referralId: createdReferralResponse.referralId }))
+        return res.redirect(referPaths.new.show({ referralId: createReferralResponse.id }))
+      } catch (error) {
+        const sanitisedError = error as SanitisedError
+
+        if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.status === 409) {
+          return res.redirect(referPaths.show.duplicate({ referralId: sanitisedError.data.id }))
+        }
+
+        throw createError(
+          sanitisedError.status || 500,
+          `Unable to create referral for prison number ${prisonNumber} to course offering ${courseOfferingId}`,
+        )
+      }
     }
   }
 
