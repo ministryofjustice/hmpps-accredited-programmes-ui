@@ -19,6 +19,7 @@ import PersonClient from './accreditedProgrammesApi/personClient'
 import PniClient from './accreditedProgrammesApi/pniClient'
 import ReferenceDataClient from './accreditedProgrammesApi/referenceDataClient'
 import ReferralClient from './accreditedProgrammesApi/referralClient'
+import StatisticsClient from './accreditedProgrammesApi/statisticsClient'
 import { serviceCheckFactory } from './healthCheck'
 import HmppsAuthClient from './hmppsAuthClient'
 import HmppsManageUsersClient from './hmppsManageUsersClient'
@@ -48,6 +49,8 @@ const referenceDataClientBuilder: RestClientBuilder<ReferenceDataClient> = (syst
   new ReferenceDataClient(systemToken)
 const referralClientBuilder: RestClientBuilder<ReferralClient> = (userToken: Express.User['token']) =>
   new ReferralClient(userToken)
+const statisticsClientBuilder: RestClientBuilder<StatisticsClient> = (systemToken: SystemToken) =>
+  new StatisticsClient(systemToken)
 const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (systemToken: SystemToken) =>
   new PrisonApiClient(systemToken)
 
@@ -62,6 +65,7 @@ export {
   PrisonRegisterApiClient,
   ReferenceDataClient,
   ReferralClient,
+  StatisticsClient,
   TokenStore,
   courseClientBuilder,
   createRedisClient,
@@ -75,6 +79,7 @@ export {
   referenceDataClientBuilder,
   referralClientBuilder,
   serviceCheckFactory,
+  statisticsClientBuilder,
   verifyToken,
 }
 

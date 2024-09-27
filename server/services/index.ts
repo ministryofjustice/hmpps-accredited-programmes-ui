@@ -7,6 +7,7 @@ import OrganisationService from './organisationService'
 import PersonService from './personService'
 import ReferenceDataService from './referenceDataService'
 import ReferralService from './referralService'
+import StatisticsService from './statisticsService'
 import UserService from './userService'
 import {
   courseClientBuilder,
@@ -19,6 +20,7 @@ import {
   prisonRegisterApiClientBuilder,
   referenceDataClientBuilder,
   referralClientBuilder,
+  statisticsClientBuilder,
 } from '../data'
 import PniService from './pniService'
 
@@ -31,6 +33,7 @@ const services = () => {
   const referralService = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder, userService)
   const courseService = new CourseService(courseClientBuilder, hmppsAuthClientBuilder, userService)
   const pniService = new PniService(hmppsAuthClientBuilder, pniClientBuilder)
+  const statisticsService = new StatisticsService(hmppsAuthClientBuilder, statisticsClientBuilder)
 
   return {
     courseService,
@@ -40,6 +43,7 @@ const services = () => {
     pniService,
     referenceDataService,
     referralService,
+    statisticsService,
     userService,
   }
 }
@@ -54,6 +58,7 @@ export {
   PniService,
   ReferenceDataService,
   ReferralService,
+  StatisticsService,
   UserService,
   healthCheck,
   services,

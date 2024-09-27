@@ -12,6 +12,8 @@ const oasysBasePath = path('/oasys/:prisonNumber')
 
 const pniPathBasePath = path('/PNI')
 
+const statisticsBasePath = path('/statistics')
+
 const referralsPath = path('/referrals')
 const referralPath = referralsPath.path(':referralId')
 const updateStatusPath = referralPath.path('status')
@@ -110,5 +112,8 @@ export default {
     submit: submitPath,
     update: referralPath,
     updateStatus: updateStatusPath,
+  },
+  statistics: {
+    report: statisticsBasePath.path('report/:reportType'),
   },
 }
