@@ -36,6 +36,7 @@ import referralStatusReasonFactory from './referralStatusReason'
 import referralStatusRefDataFactory from './referralStatusRefData'
 import referralViewFactory from './referralView'
 import relationshipsFactory from './relationships'
+import reportContentFactory from './reportContent'
 import risksAndAlertsFactory from './risksAndAlerts'
 import roshAnalysisFactory from './roshAnalysis'
 import sentenceDetailsFactory from './sentenceDetails'
@@ -80,6 +81,7 @@ export {
   referralStatusRefDataFactory,
   referralViewFactory,
   relationshipsFactory,
+  reportContentFactory,
   risksAndAlertsFactory,
   roshAnalysisFactory,
   sentenceDetailsFactory,
