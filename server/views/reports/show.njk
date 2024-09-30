@@ -1,0 +1,31 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "./_reportDataBlock.njk" import reportDataBlock %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/"
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if reportDataBlocks | length %}
+        {% for items in reportDataBlocks | slice(2) %}
+          <div class="govuk-grid-row govuk-!-margin-bottom-6">
+            {% for item in items %}
+              <div class="govuk-grid-column-one-third">
+                {{ reportDataBlock(item) }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
