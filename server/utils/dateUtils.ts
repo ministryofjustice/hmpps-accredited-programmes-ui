@@ -30,6 +30,17 @@ export default class DateUtils {
     })
   }
 
+  /**
+   * Uses en-GB locale to format a date. If we used toISOString() and then split() the string at T,
+   * this could sometimes return the wrong date if the date is in a different timezone.
+   * @param date
+   * @returns A date string in the format YYYY-MM-DD
+   *
+   */
+  static isoDateOnly(date: Date): string {
+    return date.toLocaleDateString('en-GB').split('/').reverse().join('-')
+  }
+
   static removeTimezoneOffset(dateString: string): string {
     const date = new Date(dateString)
     const serverTimezoneOffset = date.getTimezoneOffset() * 60000

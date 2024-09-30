@@ -30,6 +30,13 @@ describe('DateUtils', () => {
     })
   })
 
+  describe('isoDateOnly', () => {
+    it('returns a date string in the format YYYY-MM-DD', () => {
+      const mockDate = new Date('2001-06-03')
+      expect(DateUtils.isoDateOnly(mockDate)).toEqual('2001-06-03')
+    })
+  })
+
   describe('removeTimezoneOffset', () => {
     describe('for a date before British Summer Time (BST)', () => {
       it('returns an unchanged ISO date string', () => {
