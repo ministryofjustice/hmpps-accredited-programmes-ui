@@ -1,18 +1,31 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import { reportsPaths } from '../paths'
 import type { StatisticsService } from '../services'
-import { DateUtils, StatisticsReportUtils, TypeUtils } from '../utils'
+import { DateUtils, PathUtils, StatisticsReportUtils, TypeUtils } from '../utils'
 
 export default class ReportsController {
   constructor(private readonly statisticsService: StatisticsService) {}
+
+  filter(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { period, location } = req.body
+
+      return res.redirect(
+        PathUtils.pathWithQuery(reportsPaths.show({}), StatisticsReportUtils.queryParams(period, location)),
+      )
+    }
+  }
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const now = new Date()
-      const startDateOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-      const endDateOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0)
+      const { period } = req.query as Record<string, string>
+
+      const apiParams = StatisticsReportUtils.filterValuesToApiParams(period)
 
       const reportTypes = [
         'REFERRAL_COUNT',
@@ -25,17 +38,18 @@ export default class ReportsController {
       const reports = await Promise.all(
         reportTypes.map(reportType =>
           this.statisticsService.getReport(req.user.username, reportType, {
-            endDate: DateUtils.isoDateOnly(endDateOfLastMonth),
-            startDate: DateUtils.isoDateOnly(startDateOfLastMonth),
+            endDate: apiParams.endDate,
+            startDate: apiParams.startDate,
           }),
         ),
       )
 
       res.render('reports/show', {
+        filterFormAction: reportsPaths.filter({}),
+        filterValues: { period },
         pageHeading: 'Accredited Programmes data',
-        reportDataBlocks: reports.map(report =>
-          StatisticsReportUtils.reportContentDataBlock(report, startDateOfLastMonth),
-        ),
+        reportDataBlocks: reports.map(report => StatisticsReportUtils.reportContentDataBlock(report)),
+        subHeading: `Showing data for ${DateUtils.govukFormattedFullDateString(apiParams.startDate)} to ${DateUtils.govukFormattedFullDateString(apiParams.endDate)}`,
       })
     }
   }

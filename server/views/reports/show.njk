@@ -1,4 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "moj/components/filter/macro.njk" import mojFilter %}
 {% from "./_reportDataBlock.njk" import reportDataBlock %}
 
 {% extends "../partials/layout.njk" %}
@@ -10,10 +13,57 @@
   }) }}
 {% endblock backLink %}
 
+{% set filterOptionsHtml %}
+{{ govukRadios({
+  name: "period",
+  classes: "govuk-radios--small",
+  value: filterValues.period or "lastMonth",
+  fieldset: {
+    legend: {
+      text: "Reporting period",
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  items: [
+    {
+      value: "lastMonth",
+      text: "last month"
+    },
+    {
+      value: "lastQuarter",
+      text: "last quarter"
+    },
+    {
+      value: "lastSixMonths",
+      text: "last 6 months"
+    }
+  ]
+}) }}
+{% endset %}
+
 {% block content %}
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <h1 class="govuk-heading-l govuk-!-margin-bottom-1">{{ pageHeading }}</h1>
+  <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-8">{{ subHeading }}</p>
 
   <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <form action="{{ filterFormAction }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ mojFilter({
+          heading: {
+            text: 'Filters'
+          },
+          submit: {
+            attributes: {
+                "data-test-id": "submit-button"
+            }
+          },
+          optionsHtml: filterOptionsHtml
+        }) }}
+      </form>
+    </div>
+
     <div class="govuk-grid-column-two-thirds">
       {% if reportDataBlocks | length %}
         {% for items in reportDataBlocks | slice(2) %}
