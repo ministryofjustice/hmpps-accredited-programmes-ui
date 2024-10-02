@@ -1,20 +1,23 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { reportsPaths } from '../paths'
-import type { StatisticsService } from '../services'
-import { DateUtils, PathUtils, StatisticsReportUtils, TypeUtils } from '../utils'
+import type { OrganisationService, StatisticsService } from '../services'
+import { DateUtils, OrganisationUtils, PathUtils, StatisticsReportUtils, TypeUtils } from '../utils'
 
 export default class ReportsController {
-  constructor(private readonly statisticsService: StatisticsService) {}
+  constructor(
+    private readonly organisationsService: OrganisationService,
+    private readonly statisticsService: StatisticsService,
+  ) {}
 
   filter(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { period, location } = req.body
+      const { location, period, region } = req.body
 
       return res.redirect(
-        PathUtils.pathWithQuery(reportsPaths.show({}), StatisticsReportUtils.queryParams(period, location)),
+        PathUtils.pathWithQuery(reportsPaths.show({}), StatisticsReportUtils.queryParams(period, location, region)),
       )
     }
   }
@@ -23,7 +26,7 @@ export default class ReportsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { period } = req.query as Record<string, string>
+      const { location, period } = req.query as Record<string, string>
 
       const apiParams = StatisticsReportUtils.filterValuesToApiParams(period)
 
@@ -35,21 +38,39 @@ export default class ReportsController {
         'DESELECTED_COUNT',
       ]
 
-      const reports = await Promise.all(
-        reportTypes.map(reportType =>
-          this.statisticsService.getReport(req.user.username, reportType, {
-            endDate: apiParams.endDate,
-            startDate: apiParams.startDate,
-          }),
+      const [reports, organisations] = await Promise.all([
+        Promise.all(
+          reportTypes.map(reportType =>
+            this.statisticsService.getReport(req.user.username, reportType, {
+              endDate: apiParams.endDate,
+              locationCodes: location ? [location] : undefined,
+              startDate: apiParams.startDate,
+            }),
+          ),
         ),
-      )
+        this.organisationsService.getAllOrganisations(req.user.token),
+      ])
+
+      const selectedPrison = organisations.find(org => org.prisonId === location)?.prisonName
+
+      const subHeading = [
+        'Showing data',
+        selectedPrison ? `for ${selectedPrison}` : '',
+        'from',
+        DateUtils.govukFormattedFullDateString(apiParams.startDate),
+        'to',
+        DateUtils.govukFormattedFullDateString(apiParams.endDate),
+      ]
+        .filter(Boolean)
+        .join(' ')
 
       res.render('reports/show', {
         filterFormAction: reportsPaths.filter({}),
-        filterValues: { period },
+        filterValues: { location, period },
         pageHeading: 'Accredited Programmes data',
+        prisonLocationOptions: OrganisationUtils.organisationRadioItems(organisations),
         reportDataBlocks: reports.map(report => StatisticsReportUtils.reportContentDataBlock(report)),
-        subHeading: `Showing data for ${DateUtils.govukFormattedFullDateString(apiParams.startDate)} to ${DateUtils.govukFormattedFullDateString(apiParams.endDate)}`,
+        subHeading,
       })
     }
   }

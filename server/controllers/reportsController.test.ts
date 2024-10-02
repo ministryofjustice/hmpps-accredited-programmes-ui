@@ -1,14 +1,16 @@
 import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import type { StatisticsService } from '../services'
+import type { OrganisationService, StatisticsService } from '../services'
 import ReportsController from './reportsController'
-import { reportContentFactory } from '../testutils/factories'
-import { PathUtils, StatisticsReportUtils } from '../utils'
+import { prisonFactory, reportContentFactory } from '../testutils/factories'
+import { OrganisationUtils, PathUtils, StatisticsReportUtils } from '../utils'
 
+jest.mock('../utils/organisationUtils')
 jest.mock('../utils/statisticsReportUtils')
 jest.mock('../utils/pathUtils')
 
+const mockOrganisationUtils = OrganisationUtils as jest.Mocked<typeof OrganisationUtils>
 const mockStatisticsReportUtils = StatisticsReportUtils as jest.Mocked<typeof StatisticsReportUtils>
 const mockPathUtils = PathUtils as jest.Mocked<typeof PathUtils>
 
@@ -21,11 +23,20 @@ describe('ReportsController', () => {
   }
   const queryParams = [{ key: 'period', value: 'lastSixMonths' }]
   const pathWithQuery = '/reports?period=lastSixMonths'
+  const allOrganisations = [
+    prisonFactory.build({ prisonId: 'MDI', prisonName: 'Moorland' }),
+    prisonFactory.build({ prisonId: 'LEI', prisonName: 'Leeds' }),
+  ]
+  const prisonLocationOptions = [
+    { text: 'Leeds', value: 'LEI' },
+    { text: 'Moorland', value: 'MDI' },
+  ]
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const organisationsService = createMock<OrganisationService>({})
   const statisticsService = createMock<StatisticsService>({})
 
   const reportDataBlock = {
@@ -37,12 +48,15 @@ describe('ReportsController', () => {
   let controller: ReportsController
 
   beforeEach(() => {
+    mockOrganisationUtils.organisationRadioItems.mockReturnValue(prisonLocationOptions)
     mockStatisticsReportUtils.reportContentDataBlock.mockReturnValue(reportDataBlock)
     mockStatisticsReportUtils.filterValuesToApiParams.mockReturnValue(lastMonth)
     mockStatisticsReportUtils.queryParams.mockReturnValue(queryParams)
     mockPathUtils.pathWithQuery.mockReturnValue(pathWithQuery)
 
-    controller = new ReportsController(statisticsService)
+    organisationsService.getAllOrganisations.mockResolvedValue(allOrganisations)
+
+    controller = new ReportsController(organisationsService, statisticsService)
 
     request = createMock<Request>({
       user: { username },
@@ -59,12 +73,12 @@ describe('ReportsController', () => {
 
   describe('filter', () => {
     it('should redirect to the reports show page with the correct query params', async () => {
-      request.body = { location: 'MDI', period: 'lastSixMonths' }
+      request.body = { location: 'MDI', period: 'lastSixMonths', region: 'prison' }
 
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
 
-      expect(StatisticsReportUtils.queryParams).toHaveBeenCalledWith('lastSixMonths', 'MDI')
+      expect(StatisticsReportUtils.queryParams).toHaveBeenCalledWith('lastSixMonths', 'MDI', 'prison')
       expect(PathUtils.pathWithQuery).toHaveBeenCalledWith('/reports', queryParams)
       expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
     })
@@ -102,21 +116,25 @@ describe('ReportsController', () => {
         filterFormAction: '/reports',
         filterValues: {},
         pageHeading: 'Accredited Programmes data',
+        prisonLocationOptions,
         reportDataBlocks: Array(reportTypes.length).fill(reportDataBlock),
-        subHeading: 'Showing data for 1 January 2024 to 31 January 2024',
+        subHeading: 'Showing data from 1 January 2024 to 31 January 2024',
       })
     })
 
     describe('with query params', () => {
       it('should render the reports/show view with the correct data', async () => {
-        request.query = { period: 'lastSixMonths' }
+        request.query = { location: 'MDI', period: 'lastSixMonths' }
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         expect(statisticsService.getReport).toHaveBeenCalledTimes(reportTypes.length)
         reportTypes.forEach(reportType => {
-          expect(statisticsService.getReport).toHaveBeenCalledWith(username, reportType, lastMonth)
+          expect(statisticsService.getReport).toHaveBeenCalledWith(username, reportType, {
+            ...lastMonth,
+            locationCodes: ['MDI'],
+          })
         })
 
         expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledTimes(1)
@@ -126,10 +144,11 @@ describe('ReportsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('reports/show', {
           filterFormAction: '/reports',
-          filterValues: { period: 'lastSixMonths' },
+          filterValues: { location: 'MDI', period: 'lastSixMonths' },
           pageHeading: 'Accredited Programmes data',
+          prisonLocationOptions,
           reportDataBlocks: Array(reportTypes.length).fill(reportDataBlock),
-          subHeading: 'Showing data for 1 January 2024 to 31 January 2024',
+          subHeading: 'Showing data for Moorland from 1 January 2024 to 31 January 2024',
         })
       })
     })
