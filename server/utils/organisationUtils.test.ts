@@ -32,6 +32,20 @@ describe('OrganisationUtils', () => {
     })
   })
 
+  describe('organisationRadioItems', () => {
+    it('returns an array of `GovukFrontendRadiosItem` objects from an array of prisons, sorted by `prisonName`', () => {
+      const prisons = [
+        prisonFactory.build({ prisonId: 'B', prisonName: 'B Prison' }),
+        prisonFactory.build({ prisonId: 'A', prisonName: 'A Prison' }),
+      ]
+
+      expect(OrganisationUtils.organisationRadioItems(prisons)).toEqual([
+        { text: 'A Prison', value: 'A' },
+        { text: 'B Prison', value: 'B' },
+      ])
+    })
+  })
+
   describe('organisationSelectItems', () => {
     it('returns an array of `GovukFrontendSelectItem` objects from an array of prisons', () => {
       const prisons = [
