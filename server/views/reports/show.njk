@@ -13,6 +13,21 @@
   }) }}
 {% endblock backLink %}
 
+{% set locationOptionsHtml %}
+{{ govukRadios({
+  name: "location",
+  classes: "govuk-radios--small",
+  value: filterValues.location,
+  fieldset: {
+    legend: {
+      text: "Select a prison",
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  items: prisonLocationOptions
+}) }}
+{% endset %}
+
 {% set filterOptionsHtml %}
 {{ govukRadios({
   name: "period",
@@ -39,6 +54,35 @@
     }
   ]
 }) }}
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+{{ govukRadios({
+  name: "region",
+  classes: "govuk-radios--small scroll-conditional-options",
+  fieldset: {
+    legend: {
+      text: "Location",
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  items: [
+    {
+      value: "national",
+      text: "national data",
+      checked: true if not filterValues.location
+    },
+    {
+      value: "prison",
+      text: "data by prison",
+      checked: true if filterValues.location,
+      conditional: {
+        html: locationOptionsHtml
+      }
+    }
+  ]
+}) }}
+
 {% endset %}
 
 {% block content %}

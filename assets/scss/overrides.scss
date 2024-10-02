@@ -5,3 +5,8 @@
 .moj-timeline .govuk-tag {
   max-width: none;
 }
+
+.scroll-conditional-options .govuk-radios__conditional {
+  max-height: 500px;
+  overflow-y: auto;
+}

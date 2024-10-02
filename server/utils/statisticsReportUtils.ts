@@ -63,13 +63,13 @@ export default class StatisticsReportUtils {
     return { endDate, startDate }
   }
 
-  static queryParams(period?: string, location?: string): Array<QueryParam> {
+  static queryParams(period?: string, location?: string, region?: string): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
     if (period) {
       queryParams.push({ key: 'period', value: period })
     }
-    if (location) {
+    if (location && region === 'prison') {
       queryParams.push({ key: 'location', value: location })
     }
 

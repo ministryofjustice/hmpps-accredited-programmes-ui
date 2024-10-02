@@ -64,24 +64,30 @@ describe('StatisticsReportUtils', () => {
   })
 
   describe('queryParams', () => {
-    it('returns the query params', () => {
-      expect(StatisticsReportUtils.queryParams('lastQuarter', 'MDI')).toEqual([
+    it('returns all the query params', () => {
+      expect(StatisticsReportUtils.queryParams('lastQuarter', 'MDI', 'prison')).toEqual([
         { key: 'period', value: 'lastQuarter' },
         { key: 'location', value: 'MDI' },
       ])
     })
 
-    describe('when period is `undefined`', () => {
-      it('returns the query params without the period key', () => {
-        expect(StatisticsReportUtils.queryParams(undefined, 'MDI')).toEqual([{ key: 'location', value: 'MDI' }])
+    describe("when `location` is provided on it's own", () => {
+      it('returns no query params', () => {
+        expect(StatisticsReportUtils.queryParams(undefined, 'MDI')).toEqual([])
       })
     })
 
-    describe('when location is `undefined`', () => {
-      it('returns the query params without the location key', () => {
-        expect(StatisticsReportUtils.queryParams('lastQuarter', undefined)).toEqual([
-          { key: 'period', value: 'lastQuarter' },
+    describe('when `location` and `region` are provided', () => {
+      it('returns only the `location` query param', () => {
+        expect(StatisticsReportUtils.queryParams(undefined, 'MDI', 'prison')).toEqual([
+          { key: 'location', value: 'MDI' },
         ])
+      })
+    })
+
+    describe('when only the `period` is provided', () => {
+      it('returns only the `period` key', () => {
+        expect(StatisticsReportUtils.queryParams('lastQuarter')).toEqual([{ key: 'period', value: 'lastQuarter' }])
       })
     })
   })
