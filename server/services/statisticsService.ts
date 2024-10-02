@@ -16,6 +16,7 @@ export default class StatisticsService {
     query: {
       startDate: string
       endDate?: string
+      locationCodes?: Array<string>
     },
   ): Promise<ReportContent | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()

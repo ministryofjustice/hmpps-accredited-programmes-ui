@@ -17,6 +17,7 @@ export default class StatisticsClient {
     query: {
       startDate: string
       endDate?: string
+      locationCodes?: Array<string>
     },
   ): Promise<ReportContent> {
     return (await this.restClient.get({
@@ -24,6 +25,7 @@ export default class StatisticsClient {
       query: {
         startDate: query.startDate,
         ...(query.endDate && { endDate: query.endDate }),
+        ...(query.locationCodes && { locationCodes: query.locationCodes.join(',') }),
       },
     })) as ReportContent
   }
