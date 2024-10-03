@@ -31,6 +31,7 @@ describe('ReportsController', () => {
     { text: 'Leeds', value: 'LEI' },
     { text: 'Moorland', value: 'MDI' },
   ]
+  const errorMessages = {}
 
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
@@ -52,6 +53,7 @@ describe('ReportsController', () => {
     mockStatisticsReportUtils.reportContentDataBlock.mockReturnValue(reportDataBlock)
     mockStatisticsReportUtils.filterValuesToApiParams.mockReturnValue(lastMonth)
     mockStatisticsReportUtils.queryParams.mockReturnValue(queryParams)
+    mockStatisticsReportUtils.validateFilterValues.mockReturnValue(errorMessages)
     mockPathUtils.pathWithQuery.mockReturnValue(pathWithQuery)
 
     organisationsService.getAllOrganisations.mockResolvedValue(allOrganisations)
@@ -73,12 +75,12 @@ describe('ReportsController', () => {
 
   describe('filter', () => {
     it('should redirect to the reports show page with the correct query params', async () => {
-      request.body = { location: 'MDI', period: 'lastSixMonths', region: 'prison' }
+      request.body = { dateFrom: '1/2/2023', dateTo: '1/3/2023', location: 'MDI', period: 'custom', region: 'prison' }
 
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
 
-      expect(StatisticsReportUtils.queryParams).toHaveBeenCalledWith('lastSixMonths', 'MDI', 'prison')
+      expect(StatisticsReportUtils.queryParams).toHaveBeenCalledWith('custom', 'MDI', 'prison', '1/2/2023', '1/3/2023')
       expect(PathUtils.pathWithQuery).toHaveBeenCalledWith('/reports', queryParams)
       expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
     })
@@ -108,11 +110,19 @@ describe('ReportsController', () => {
       })
 
       expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledTimes(1)
-      expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledWith(undefined)
+      expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledWith(undefined, undefined, undefined)
       expect(StatisticsReportUtils.reportContentDataBlock).toHaveBeenCalledTimes(reportTypes.length)
       expect(StatisticsReportUtils.reportContentDataBlock).toHaveBeenCalledWith(reportContent)
+      expect(StatisticsReportUtils.validateFilterValues).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      )
 
       expect(response.render).toHaveBeenCalledWith('reports/show', {
+        errorMessages,
         filterFormAction: '/reports',
         filterValues: {},
         pageHeading: 'Accredited Programmes data',
@@ -138,11 +148,16 @@ describe('ReportsController', () => {
         })
 
         expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledTimes(1)
-        expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledWith('lastSixMonths')
+        expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledWith(
+          'lastSixMonths',
+          undefined,
+          undefined,
+        )
         expect(StatisticsReportUtils.reportContentDataBlock).toHaveBeenCalledTimes(reportTypes.length)
         expect(StatisticsReportUtils.reportContentDataBlock).toHaveBeenCalledWith(reportContent)
 
         expect(response.render).toHaveBeenCalledWith('reports/show', {
+          errorMessages,
           filterFormAction: '/reports',
           filterValues: { location: 'MDI', period: 'lastSixMonths' },
           pageHeading: 'Accredited Programmes data',
@@ -150,6 +165,32 @@ describe('ReportsController', () => {
           reportDataBlocks: Array(reportTypes.length).fill(reportDataBlock),
           subHeading: 'Showing data for Moorland from 1 January 2024 to 31 January 2024',
         })
+      })
+    })
+
+    describe('when there are `errorMessages`', () => {
+      it('defaults to `lastMonth` period but maintains the filter values', async () => {
+        request.query = { dateTo: '2/10/2024', location: 'MDI', period: 'custom' }
+
+        mockStatisticsReportUtils.validateFilterValues.mockReturnValue({
+          dateFrom: { text: 'Please enter a valid date' },
+        })
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(StatisticsReportUtils.filterValuesToApiParams).toHaveBeenCalledWith('lastMonth', undefined, '2/10/2024')
+        expect(response.render).toHaveBeenCalledWith(
+          'reports/show',
+          expect.objectContaining({
+            errorMessages: { dateFrom: { text: 'Please enter a valid date' } },
+            filterValues: {
+              dateTo: '2/10/2024',
+              location: 'MDI',
+              period: 'custom',
+            },
+          }),
+        )
       })
     })
   })

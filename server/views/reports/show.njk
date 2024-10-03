@@ -1,6 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "moj/components/filter/macro.njk" import mojFilter %}
 {% from "./_reportDataBlock.njk" import reportDataBlock %}
 
@@ -13,10 +14,39 @@
   }) }}
 {% endblock backLink %}
 
+{% set customDatesHtml %}
+{{ mojDatePicker({
+  id: "date-from",
+  name: "dateFrom",
+  value: filterValues.dateFrom,
+  classes: "govuk-!-margin-bottom-3",
+  errorMessage: errorMessages.dateFrom,
+  label: {
+    text: "Date from"
+  },
+  hint: {
+    text: "For example, 17/5/2024."
+  }
+}) }}
+{{ mojDatePicker({
+  id: "date-to",
+  name: "dateTo",
+  value: filterValues.dateTo,
+  errorMessage: errorMessages.dateTo,
+  label: {
+    text: "Date to"
+  },
+  hint: {
+    text: "For example, 17/5/2024."
+  }
+}) }}
+{% endset %}
+
 {% set locationOptionsHtml %}
 {{ govukRadios({
   name: "location",
   classes: "govuk-radios--small",
+  errorMessage: errorMessages.location,
   value: filterValues.location,
   fieldset: {
     legend: {
@@ -51,6 +81,16 @@
     {
       value: "lastSixMonths",
       text: "last 6 months"
+    },
+    {
+      divider: "or"
+    },
+    {
+      value: "custom",
+      text: "custom dates",
+      conditional: {
+        html: customDatesHtml
+      }
     }
   ]
 }) }}
@@ -60,6 +100,7 @@
 {{ govukRadios({
   name: "region",
   classes: "govuk-radios--small scroll-conditional-options",
+  value: filterValues.region or "national",
   fieldset: {
     legend: {
       text: "Location",
@@ -69,13 +110,11 @@
   items: [
     {
       value: "national",
-      text: "national data",
-      checked: true if not filterValues.location
+      text: "national data"
     },
     {
       value: "prison",
       text: "data by prison",
-      checked: true if filterValues.location,
       conditional: {
         html: locationOptionsHtml
       }
