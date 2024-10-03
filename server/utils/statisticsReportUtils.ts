@@ -1,6 +1,7 @@
 import DateUtils from './dateUtils'
 import type { QueryParam } from '@accredited-programmes/ui'
 import type { ReportContent } from '@accredited-programmes-api'
+import type { GovukFrontendErrorMessage } from '@govuk-frontend'
 
 interface ReportContentDataBlock {
   testId: string
@@ -9,7 +10,18 @@ interface ReportContentDataBlock {
 }
 
 export default class StatisticsReportUtils {
-  static filterValuesToApiParams(period?: string): { endDate: string; startDate: string } {
+  static filterValuesToApiParams(
+    period?: string,
+    dateFrom?: string,
+    dateTo?: string,
+  ): { endDate: string; startDate: string } {
+    if (period === 'custom' && dateFrom && dateTo) {
+      return {
+        endDate: DateUtils.isoDateOnly(DateUtils.convertStringToDate(dateTo)),
+        startDate: DateUtils.isoDateOnly(DateUtils.convertStringToDate(dateFrom)),
+      }
+    }
+
     const now = new Date()
     const month = now.getMonth()
     const year = now.getFullYear()
@@ -63,14 +75,35 @@ export default class StatisticsReportUtils {
     return { endDate, startDate }
   }
 
-  static queryParams(period?: string, location?: string, region?: string): Array<QueryParam> {
+  static queryParams(
+    period?: string,
+    location?: string,
+    region?: string,
+    dateFrom?: string,
+    dateTo?: string,
+  ): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
     if (period) {
       queryParams.push({ key: 'period', value: period })
     }
+
+    if (period === 'custom') {
+      if (dateFrom) {
+        queryParams.push({ key: 'dateFrom', value: dateFrom })
+      }
+
+      if (dateTo) {
+        queryParams.push({ key: 'dateTo', value: dateTo })
+      }
+    }
+
     if (location && region === 'prison') {
       queryParams.push({ key: 'location', value: location })
+    }
+
+    if (region) {
+      queryParams.push({ key: 'region', value: region })
     }
 
     return queryParams
@@ -99,5 +132,66 @@ export default class StatisticsReportUtils {
       default:
         return 'Unknown'
     }
+  }
+
+  static validateFilterValues(
+    period?: string,
+    dateFrom?: string,
+    dateTo?: string,
+    region?: string,
+    location?: string,
+  ): Record<string, GovukFrontendErrorMessage> {
+    const errorMessages: Record<string, GovukFrontendErrorMessage> = {}
+    const invalidDateText = 'Enter a valid date'
+    const missingDateText = 'Enter a date'
+    const earliestDateText = 'Date must be after 8 May 2024'
+    const futureDateText = 'Date cannot be in the future'
+
+    if (period === 'custom') {
+      if (!dateFrom) {
+        errorMessages.dateFrom = { text: missingDateText }
+      } else if (Number.isNaN(DateUtils.convertStringToDate(dateFrom).getTime())) {
+        errorMessages.dateFrom = { text: invalidDateText }
+      }
+
+      if (!dateTo) {
+        errorMessages.dateTo = { text: missingDateText }
+      } else if (Number.isNaN(DateUtils.convertStringToDate(dateTo).getTime())) {
+        errorMessages.dateTo = { text: invalidDateText }
+      }
+
+      if (dateFrom && dateTo) {
+        const dateNow = new Date().getTime()
+        const earliestDate = new Date(2024, 4, 8).getTime()
+        const dateFromTime = DateUtils.convertStringToDate(dateFrom).getTime()
+        const dateToTime = DateUtils.convertStringToDate(dateTo).getTime()
+
+        if (dateFromTime > dateToTime) {
+          errorMessages.dateTo = { text: 'Date must be after date from' }
+        }
+
+        if (dateFromTime < earliestDate) {
+          errorMessages.dateFrom = { text: earliestDateText }
+        }
+
+        if (dateFromTime > dateNow) {
+          errorMessages.dateFrom = { text: futureDateText }
+        }
+
+        if (dateToTime > dateNow) {
+          errorMessages.dateTo = { text: futureDateText }
+        }
+
+        if (dateToTime < earliestDate) {
+          errorMessages.dateTo = { text: earliestDateText }
+        }
+      }
+    }
+
+    if (region === 'prison' && !location) {
+      errorMessages.location = { text: 'Select a prison' }
+    }
+
+    return errorMessages
   }
 }
