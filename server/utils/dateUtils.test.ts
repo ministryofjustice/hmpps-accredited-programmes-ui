@@ -15,6 +15,12 @@ describe('DateUtils', () => {
     })
   })
 
+  describe('convertStringToDate', () => {
+    it('converts a date string in the format DD/MM/YYYY to a Date object', () => {
+      expect(DateUtils.convertStringToDate('01/02/2000')).toEqual(new Date('2000-02-01'))
+    })
+  })
+
   describe('govukFormattedFullDateString', () => {
     it('returns todays date as a date string in the format specified by the GOV.UK style guide', () => {
       const mockTodaysDate = new Date('2001-06-04')

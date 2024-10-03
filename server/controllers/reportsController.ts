@@ -14,10 +14,13 @@ export default class ReportsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { location, period, region } = req.body
+      const { dateFrom, dateTo, location, period, region } = req.body
 
       return res.redirect(
-        PathUtils.pathWithQuery(reportsPaths.show({}), StatisticsReportUtils.queryParams(period, location, region)),
+        PathUtils.pathWithQuery(
+          reportsPaths.show({}),
+          StatisticsReportUtils.queryParams(period, location, region, dateFrom, dateTo),
+        ),
       )
     }
   }
@@ -26,9 +29,17 @@ export default class ReportsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { location, period } = req.query as Record<string, string>
+      const { dateFrom, dateTo, location, period: periodQuery, region } = req.query as Record<string, string>
 
-      const apiParams = StatisticsReportUtils.filterValuesToApiParams(period)
+      let period = periodQuery
+
+      const errorMessages = StatisticsReportUtils.validateFilterValues(period, dateFrom, dateTo, region, location)
+
+      if (Object.keys(errorMessages).length) {
+        period = 'lastMonth'
+      }
+
+      const apiParams = StatisticsReportUtils.filterValuesToApiParams(period, dateFrom, dateTo)
 
       const reportTypes = [
         'REFERRAL_COUNT',
@@ -65,8 +76,9 @@ export default class ReportsController {
         .join(' ')
 
       res.render('reports/show', {
+        errorMessages,
         filterFormAction: reportsPaths.filter({}),
-        filterValues: { location, period },
+        filterValues: { dateFrom, dateTo, location, period: periodQuery, region },
         pageHeading: 'Accredited Programmes data',
         prisonLocationOptions: OrganisationUtils.organisationRadioItems(organisations),
         reportDataBlocks: reports.map(report => StatisticsReportUtils.reportContentDataBlock(report)),

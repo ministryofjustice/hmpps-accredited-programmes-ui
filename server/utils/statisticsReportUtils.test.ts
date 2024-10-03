@@ -44,6 +44,15 @@ describe('StatisticsReportUtils', () => {
         })
       })
     })
+
+    describe('when the period is `custom` and `dateFrom` and `dateTo` are provided', () => {
+      it('formats and returns the custom start and end dates', () => {
+        expect(StatisticsReportUtils.filterValuesToApiParams('custom', '1/6/2023', '31/12/2023')).toEqual({
+          endDate: '2023-12-31',
+          startDate: '2023-06-01',
+        })
+      })
+    })
   })
 
   describe('lastFinancialQuarter', () => {
@@ -68,6 +77,7 @@ describe('StatisticsReportUtils', () => {
       expect(StatisticsReportUtils.queryParams('lastQuarter', 'MDI', 'prison')).toEqual([
         { key: 'period', value: 'lastQuarter' },
         { key: 'location', value: 'MDI' },
+        { key: 'region', value: 'prison' },
       ])
     })
 
@@ -81,6 +91,7 @@ describe('StatisticsReportUtils', () => {
       it('returns only the `location` query param', () => {
         expect(StatisticsReportUtils.queryParams(undefined, 'MDI', 'prison')).toEqual([
           { key: 'location', value: 'MDI' },
+          { key: 'region', value: 'prison' },
         ])
       })
     })
@@ -88,6 +99,16 @@ describe('StatisticsReportUtils', () => {
     describe('when only the `period` is provided', () => {
       it('returns only the `period` key', () => {
         expect(StatisticsReportUtils.queryParams('lastQuarter')).toEqual([{ key: 'period', value: 'lastQuarter' }])
+      })
+    })
+
+    describe('when the `period` is `custom`', () => {
+      it('returns the `dateFrom` and `dateTo` query params', () => {
+        expect(StatisticsReportUtils.queryParams('custom', undefined, undefined, '2022-01-01', '2022-01-31')).toEqual([
+          { key: 'period', value: 'custom' },
+          { key: 'dateFrom', value: '2022-01-01' },
+          { key: 'dateTo', value: '2022-01-31' },
+        ])
       })
     })
   })
@@ -159,6 +180,82 @@ describe('StatisticsReportUtils', () => {
     describe('when the report type is undefined', () => {
       it('returns "Unknown"', () => {
         expect(StatisticsReportUtils.reportContentTitle(undefined)).toEqual('Unknown')
+      })
+    })
+  })
+
+  describe('validateFilterValues', () => {
+    it('returns an empty object when all values are valid', () => {
+      expect(
+        StatisticsReportUtils.validateFilterValues('lastQuarter', '1/10/2024', '2/10/2024', 'prison', 'MDI'),
+      ).toEqual({})
+    })
+
+    describe('when `period` is `custom`', () => {
+      describe('and `dateFrom` and `dateTo` are missing', () => {
+        it('returns an error message', () => {
+          expect(StatisticsReportUtils.validateFilterValues('custom', '', '', 'prison', 'MDI')).toEqual({
+            dateFrom: { text: 'Enter a date' },
+            dateTo: { text: 'Enter a date' },
+          })
+        })
+      })
+
+      describe('and `dateFrom` and `dateTo` are invalid', () => {
+        it('returns an error message', () => {
+          expect(
+            StatisticsReportUtils.validateFilterValues('custom', 'invalidDate', 'invalidDate', 'prison', 'MDI'),
+          ).toEqual({
+            dateFrom: { text: 'Enter a valid date' },
+            dateTo: { text: 'Enter a valid date' },
+          })
+        })
+      })
+
+      describe('and `dateFrom` and `dateTo` are provided', () => {
+        describe('but `dateFrom` is after `dateTo`', () => {
+          it('returns an error message', () => {
+            expect(
+              StatisticsReportUtils.validateFilterValues('custom', '2/10/2024', '1/10/2024', 'prison', 'MDI'),
+            ).toEqual({
+              dateTo: { text: 'Date must be after date from' },
+            })
+          })
+        })
+
+        describe('and `dateFrom` and `dateTo` are before the earliest possible date', () => {
+          it('returns an error message', () => {
+            expect(
+              StatisticsReportUtils.validateFilterValues('custom', '6/5/2024', '7/5/2024', 'prison', 'MDI'),
+            ).toEqual({
+              dateFrom: { text: 'Date must be after 8 May 2024' },
+              dateTo: { text: 'Date must be after 8 May 2024' },
+            })
+          })
+        })
+
+        describe('and `dateFrom` and `dateTo` are in the future', () => {
+          it('returns an error message', () => {
+            jest.useFakeTimers().setSystemTime(new Date(2023, 0, 31))
+
+            expect(
+              StatisticsReportUtils.validateFilterValues('custom', '1/10/2024', '2/10/2024', 'prison', 'MDI'),
+            ).toEqual({
+              dateFrom: { text: 'Date cannot be in the future' },
+              dateTo: { text: 'Date cannot be in the future' },
+            })
+          })
+        })
+      })
+    })
+
+    describe('when `region` is `prison` and `location` is missing', () => {
+      it('returns an error message', () => {
+        expect(
+          StatisticsReportUtils.validateFilterValues(undefined, undefined, undefined, 'prison', undefined),
+        ).toEqual({
+          location: { text: 'Select a prison' },
+        })
       })
     })
   })

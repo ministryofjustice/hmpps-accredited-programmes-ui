@@ -13,6 +13,11 @@ export default class DateUtils {
     return { months, years }
   }
 
+  static convertStringToDate(dateString: string): Date {
+    const dateParts = dateString.split('/').map(Number)
+    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0])
+  }
+
   /**
    * Formats an ISO8601 datetime string into the format specified by the GOV.UK Style guide
    * e.g. 1 January 2022
