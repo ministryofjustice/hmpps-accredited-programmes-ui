@@ -10,6 +10,7 @@ import {
 } from '../testutils/factories'
 import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
+import type { EnabledOrganisation } from '@accredited-programmes-api'
 
 describe('OrganisationUtils', () => {
   describe('organisationFromPrison', () => {
@@ -34,15 +35,29 @@ describe('OrganisationUtils', () => {
 
   describe('organisationRadioItems', () => {
     it('returns an array of `GovukFrontendRadiosItem` objects from an array of prisons, sorted by `prisonName`', () => {
-      const prisons = [
-        prisonFactory.build({ prisonId: 'B', prisonName: 'B Prison' }),
-        prisonFactory.build({ prisonId: 'A', prisonName: 'A Prison' }),
+      const enabledOrganisations: Array<EnabledOrganisation> = [
+        { code: 'B', description: 'B Prison' },
+        { code: 'A', description: 'A Prison' },
       ]
 
-      expect(OrganisationUtils.organisationRadioItems(prisons)).toEqual([
+      expect(OrganisationUtils.organisationRadioItems(enabledOrganisations)).toEqual([
         { text: 'A Prison', value: 'A' },
         { text: 'B Prison', value: 'B' },
       ])
+    })
+
+    describe('when a organisation has an `undefined` code or description', () => {
+      it('filters out the organisation from the returned array', () => {
+        const enabledOrganisations: Array<EnabledOrganisation> = [
+          { code: 'B', description: 'B Prison' },
+          { code: undefined, description: 'A Prison' },
+          { code: 'A', description: undefined },
+        ]
+
+        expect(OrganisationUtils.organisationRadioItems(enabledOrganisations)).toEqual([
+          { text: 'B Prison', value: 'B' },
+        ])
+      })
     })
   })
 
