@@ -1,12 +1,12 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { reportsPaths } from '../paths'
-import type { OrganisationService, StatisticsService } from '../services'
+import type { ReferenceDataService, StatisticsService } from '../services'
 import { DateUtils, OrganisationUtils, PathUtils, StatisticsReportUtils, TypeUtils } from '../utils'
 
 export default class ReportsController {
   constructor(
-    private readonly organisationsService: OrganisationService,
+    private readonly referenceDataService: ReferenceDataService,
     private readonly statisticsService: StatisticsService,
   ) {}
 
@@ -43,6 +43,7 @@ export default class ReportsController {
 
       const reportTypes = [
         'REFERRAL_COUNT',
+        'ON_PROGRAMME_COUNT',
         'PROGRAMME_COMPLETE_COUNT',
         'NOT_ELIGIBLE_COUNT',
         'WITHDRAWN_COUNT',
@@ -59,10 +60,10 @@ export default class ReportsController {
             }),
           ),
         ),
-        this.organisationsService.getAllOrganisations(req.user.token),
+        this.referenceDataService.getEnabledOrganisations(req.user.token),
       ])
 
-      const selectedPrison = organisations.find(org => org.prisonId === location)?.prisonName
+      const selectedPrison = organisations.find(org => org.code === location)?.description
 
       const subHeading = [
         'Showing data',
