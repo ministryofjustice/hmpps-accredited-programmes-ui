@@ -10,7 +10,7 @@ import sharedControllers from './shared'
 
 export const controllers = (services: Services) => {
   const dashboardController = new DashboardController()
-  const reportsController = new ReportsController(services.organisationService, services.statisticsService)
+  const reportsController = new ReportsController(services.referenceDataService, services.statisticsService)
 
   return {
     dashboardController,

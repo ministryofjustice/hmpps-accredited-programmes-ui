@@ -1,10 +1,11 @@
 import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import type { OrganisationService, StatisticsService } from '../services'
+import type { ReferenceDataService, StatisticsService } from '../services'
 import ReportsController from './reportsController'
-import { prisonFactory, reportContentFactory } from '../testutils/factories'
+import { reportContentFactory } from '../testutils/factories'
 import { OrganisationUtils, PathUtils, StatisticsReportUtils } from '../utils'
+import type { EnabledOrganisation } from '@accredited-programmes-api'
 
 jest.mock('../utils/organisationUtils')
 jest.mock('../utils/statisticsReportUtils')
@@ -23,9 +24,9 @@ describe('ReportsController', () => {
   }
   const queryParams = [{ key: 'period', value: 'lastSixMonths' }]
   const pathWithQuery = '/reports?period=lastSixMonths'
-  const allOrganisations = [
-    prisonFactory.build({ prisonId: 'MDI', prisonName: 'Moorland' }),
-    prisonFactory.build({ prisonId: 'LEI', prisonName: 'Leeds' }),
+  const enabledOrganisations: Array<EnabledOrganisation> = [
+    { code: 'MDI', description: 'Moorland' },
+    { code: 'LEI', description: 'Leeds' },
   ]
   const prisonLocationOptions = [
     { text: 'Leeds', value: 'LEI' },
@@ -37,7 +38,7 @@ describe('ReportsController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
-  const organisationsService = createMock<OrganisationService>({})
+  const referenceDataService = createMock<ReferenceDataService>({})
   const statisticsService = createMock<StatisticsService>({})
 
   const reportDataBlock = {
@@ -56,9 +57,9 @@ describe('ReportsController', () => {
     mockStatisticsReportUtils.validateFilterValues.mockReturnValue(errorMessages)
     mockPathUtils.pathWithQuery.mockReturnValue(pathWithQuery)
 
-    organisationsService.getAllOrganisations.mockResolvedValue(allOrganisations)
+    referenceDataService.getEnabledOrganisations.mockResolvedValue(enabledOrganisations)
 
-    controller = new ReportsController(organisationsService, statisticsService)
+    controller = new ReportsController(referenceDataService, statisticsService)
 
     request = createMock<Request>({
       user: { username },
