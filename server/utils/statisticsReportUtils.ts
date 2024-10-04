@@ -121,6 +121,8 @@ export default class StatisticsReportUtils {
     switch (reportType) {
       case 'REFERRAL_COUNT':
         return 'Total referrals submitted'
+      case 'ON_PROGRAMME_COUNT':
+        return 'Total programmes started'
       case 'PROGRAMME_COMPLETE_COUNT':
         return 'Total programmes completed'
       case 'NOT_ELIGIBLE_COUNT':

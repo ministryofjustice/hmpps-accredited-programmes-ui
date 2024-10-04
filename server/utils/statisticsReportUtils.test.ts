@@ -165,6 +165,7 @@ describe('StatisticsReportUtils', () => {
   describe('reportContentTitle', () => {
     it('returns the title for the given report type', () => {
       expect(StatisticsReportUtils.reportContentTitle('REFERRAL_COUNT')).toEqual('Total referrals submitted')
+      expect(StatisticsReportUtils.reportContentTitle('ON_PROGRAMME_COUNT')).toEqual('Total programmes started')
       expect(StatisticsReportUtils.reportContentTitle('PROGRAMME_COMPLETE_COUNT')).toEqual('Total programmes completed')
       expect(StatisticsReportUtils.reportContentTitle('NOT_ELIGIBLE_COUNT')).toEqual('Total referrals not eligible')
       expect(StatisticsReportUtils.reportContentTitle('WITHDRAWN_COUNT')).toEqual('Total referrals withdrawn')

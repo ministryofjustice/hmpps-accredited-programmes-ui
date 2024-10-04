@@ -43,6 +43,7 @@ export default class ReportsController {
 
       const reportTypes = [
         'REFERRAL_COUNT',
+        'ON_PROGRAMME_COUNT',
         'PROGRAMME_COMPLETE_COUNT',
         'NOT_ELIGIBLE_COUNT',
         'WITHDRAWN_COUNT',
