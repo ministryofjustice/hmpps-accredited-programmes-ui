@@ -130,7 +130,7 @@ describe('ReportsController', () => {
         pageHeading: 'Accredited Programmes data',
         prisonLocationOptions,
         reportDataBlocks: Array(reportTypes.length).fill(reportDataBlock),
-        subHeading: 'Showing data from 1 January 2024 to 31 January 2024',
+        subHeading: 'Showing national data from 1 January 2024 to 31 January 2024',
       })
     })
 
