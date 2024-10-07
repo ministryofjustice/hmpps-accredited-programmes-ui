@@ -27,6 +27,7 @@ describe('DashboardController', () => {
         findPath: findPaths.index({}),
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: '/refer/referrals/case-list',
+        reportPath: '/reports',
       })
     })
   })
