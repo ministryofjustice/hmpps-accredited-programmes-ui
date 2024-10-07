@@ -1,6 +1,6 @@
 import type { Request, RequestHandler, Response } from 'express'
 
-import { assessPaths, findPaths, referPaths } from '../paths'
+import { assessPaths, findPaths, referPaths, reportsPaths } from '../paths'
 
 export default class DashboardController {
   index(): RequestHandler {
@@ -10,6 +10,7 @@ export default class DashboardController {
         findPath: findPaths.index({}),
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: referPaths.caseList.index({}),
+        reportPath: reportsPaths.show({}),
       })
     }
   }

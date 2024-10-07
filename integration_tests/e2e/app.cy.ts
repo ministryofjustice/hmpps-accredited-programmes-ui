@@ -73,6 +73,7 @@ context('App', () => {
       const indexPage = Page.verifyOnPage(IndexPage)
       indexPage.shouldContainLink('Find a programme and make a referral', '/find/programmes')
       indexPage.shouldContainLink('My referrals', '/refer/referrals/case-list')
+      indexPage.shouldContainLink('Reporting data', '/reports')
     })
   })
 
@@ -85,6 +86,7 @@ context('App', () => {
       const indexPage = Page.verifyOnPage(IndexPage)
       indexPage.shouldContainLink('Find a programme and make a referral', '/find/programmes')
       indexPage.shouldContainLink('Manage your programme team’s referrals', '/assess/referrals/case-list')
+      indexPage.shouldContainLink('Reporting data', '/reports')
     })
   })
 
