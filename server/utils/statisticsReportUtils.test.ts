@@ -169,7 +169,7 @@ describe('StatisticsReportUtils', () => {
       expect(StatisticsReportUtils.reportContentTitle('PROGRAMME_COMPLETE_COUNT')).toEqual('Total programmes completed')
       expect(StatisticsReportUtils.reportContentTitle('NOT_ELIGIBLE_COUNT')).toEqual('Total referrals not eligible')
       expect(StatisticsReportUtils.reportContentTitle('WITHDRAWN_COUNT')).toEqual('Total referrals withdrawn')
-      expect(StatisticsReportUtils.reportContentTitle('DESELECTED_COUNT')).toEqual('Total referrals deselected')
+      expect(StatisticsReportUtils.reportContentTitle('DESELECTED_COUNT')).toEqual('Total participants deselected')
     })
 
     describe('when the report type is unknown', () => {

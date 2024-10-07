@@ -66,7 +66,7 @@ export default class ReportsController {
       const selectedPrison = organisations.find(org => org.code === location)?.description
 
       const subHeading = [
-        'Showing data',
+        selectedPrison ? 'Showing data' : 'Showing national data',
         selectedPrison ? `for ${selectedPrison}` : '',
         'from',
         DateUtils.govukFormattedFullDateString(apiParams.startDate),

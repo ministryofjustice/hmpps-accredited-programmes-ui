@@ -130,7 +130,7 @@ export default class StatisticsReportUtils {
       case 'WITHDRAWN_COUNT':
         return 'Total referrals withdrawn'
       case 'DESELECTED_COUNT':
-        return 'Total referrals deselected'
+        return 'Total participants deselected'
       default:
         return 'Unknown'
     }
