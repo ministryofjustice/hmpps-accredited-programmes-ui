@@ -23,7 +23,9 @@
   @include govuk-responsive-padding(3);
   @include govuk-responsive-margin(7, 'bottom');
 
-  background-color: govuk-colour('light-grey');
+  & {
+    background-color: govuk-colour('light-grey');
+  }
 
   .form-controls {
     * {
