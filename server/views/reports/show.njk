@@ -1,8 +1,8 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
-{% from "moj/components/filter/macro.njk" import mojFilter %}
 {% from "./_reportDataBlock.njk" import reportDataBlock %}
 
 {% extends "../partials/layout.njk" %}
@@ -58,72 +58,6 @@
 }) }}
 {% endset %}
 
-{% set filterOptionsHtml %}
-{{ govukRadios({
-  name: "period",
-  classes: "govuk-radios--small",
-  value: filterValues.period or "lastMonth",
-  fieldset: {
-    legend: {
-      text: "Reporting period",
-      classes: "govuk-fieldset__legend--s"
-    }
-  },
-  items: [
-    {
-      value: "lastMonth",
-      text: "last month"
-    },
-    {
-      value: "lastQuarter",
-      text: "last quarter"
-    },
-    {
-      value: "lastSixMonths",
-      text: "last 6 months"
-    },
-    {
-      divider: "or"
-    },
-    {
-      value: "custom",
-      text: "custom dates",
-      conditional: {
-        html: customDatesHtml
-      }
-    }
-  ]
-}) }}
-
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
-{{ govukRadios({
-  name: "region",
-  classes: "govuk-radios--small scroll-conditional-options",
-  value: filterValues.region or "national",
-  fieldset: {
-    legend: {
-      text: "Location",
-      classes: "govuk-fieldset__legend--s"
-    }
-  },
-  items: [
-    {
-      value: "national",
-      text: "national data"
-    },
-    {
-      value: "prison",
-      text: "data by prison",
-      conditional: {
-        html: locationOptionsHtml
-      }
-    }
-  ]
-}) }}
-
-{% endset %}
-
 {% block content %}
   <h1 class="govuk-heading-l govuk-!-margin-bottom-1">{{ pageHeading }}</h1>
   <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-8">{{ subHeading }}</p>
@@ -133,17 +67,88 @@
       <form action="{{ filterFormAction }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-        {{ mojFilter({
-          heading: {
-            text: 'Filters'
-          },
-          submit: {
-            attributes: {
-                "data-test-id": "submit-button"
-            }
-          },
-          optionsHtml: filterOptionsHtml
-        }) }}
+        <div class="moj-filter">
+          <div class="moj-filter__header">
+            <div class="moj-filter__header-title">
+              <h2 class="govuk-heading-m">Filters</h2>
+            </div>
+          </div>
+
+          <div class="moj-filter__content">
+            <div class="moj-filter__options">
+              {{ govukRadios({
+                name: "period",
+                classes: "govuk-radios--small",
+                value: filterValues.period or "lastMonth",
+                fieldset: {
+                  legend: {
+                    text: "Reporting period",
+                    classes: "govuk-fieldset__legend--s"
+                  }
+                },
+                items: [
+                  {
+                    value: "lastMonth",
+                    text: "last month"
+                  },
+                  {
+                    value: "lastQuarter",
+                    text: "last quarter"
+                  },
+                  {
+                    value: "lastSixMonths",
+                    text: "last 6 months"
+                  },
+                  {
+                    divider: "or"
+                  },
+                  {
+                    value: "custom",
+                    text: "custom dates",
+                    conditional: {
+                      html: customDatesHtml
+                    }
+                  }
+                ]
+              }) }}
+
+              <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+              {{ govukRadios({
+                name: "region",
+                classes: "govuk-radios--small scroll-conditional-options",
+                value: filterValues.region or "national",
+                fieldset: {
+                  legend: {
+                    text: "Location",
+                    classes: "govuk-fieldset__legend--s"
+                  }
+                },
+                items: [
+                  {
+                    value: "national",
+                    text: "national data"
+                  },
+                  {
+                    value: "prison",
+                    text: "data by prison",
+                    conditional: {
+                      html: locationOptionsHtml
+                    }
+                  }
+                ]
+              }) }}
+
+              <div class="govuk-button-group">
+                {{ govukButton({
+                  text: "Apply filters"
+                }) }}
+
+                <a class="govuk-link govuk-link--no-visited-state" href="/reports">Clear filters</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
 
