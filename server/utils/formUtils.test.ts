@@ -36,6 +36,15 @@ describe('FormUtils', () => {
         ])
       })
     })
+
+    describe('when the placeholder should be hidden', () => {
+      it('formats the options in the appropriate format for passing to a GOV.UK Select nunjucks macro without a placeholder', () => {
+        expect(FormUtils.getSelectItems(items, undefined, true)).toEqual([
+          { selected: false, text: 'Option A', value: 'optionA' },
+          { selected: false, text: 'Option B', value: 'optionB' },
+        ])
+      })
+    })
   })
 
   describe('setFieldErrors', () => {

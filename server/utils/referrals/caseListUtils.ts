@@ -4,8 +4,15 @@ import { referralStatusGroups } from '../../@types/models/Referral'
 import { assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
+import PathUtils from '../pathUtils'
 import StringUtils from '../stringUtils'
-import type { Course, Referral, ReferralStatusRefData, ReferralView } from '@accredited-programmes/models'
+import type {
+  Course,
+  Referral,
+  ReferralStatusGroup,
+  ReferralStatusRefData,
+  ReferralView,
+} from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
@@ -13,14 +20,17 @@ export default class CaseListUtils {
   static assessSubNavigationItems(
     currentPath: Request['path'],
     courseId: Course['id'],
+    counts: Partial<Record<ReferralStatusGroup, number>>,
+    queryParams: Array<QueryParam> = [],
   ): Array<MojFrontendNavigationItem> {
-    return ['open', 'closed'].map(referralStatusGroup => {
+    const statusGroups: Array<ReferralStatusGroup> = ['open', 'closed']
+    return statusGroups.map(referralStatusGroup => {
       const path = assessPaths.caseList.show({ courseId, referralStatusGroup })
 
       return {
         active: currentPath === path,
-        href: path,
-        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+        href: PathUtils.pathWithQuery(path, queryParams),
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals (${counts[referralStatusGroup]})`,
       }
     })
   }
@@ -67,11 +77,16 @@ export default class CaseListUtils {
     status?: string,
     sortColumn?: string,
     sortDirection?: string,
+    nameOrId?: string,
   ): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
     if (audience) {
       queryParams.push({ key: 'strand', value: audience })
+    }
+
+    if (nameOrId) {
+      queryParams.push({ key: 'nameOrId', value: nameOrId })
     }
 
     if (status) {
@@ -86,11 +101,20 @@ export default class CaseListUtils {
     return queryParams
   }
 
-  static queryParamsExcludingSort(audience?: string, status?: string, page?: string): Array<QueryParam> {
+  static queryParamsExcludingSort(
+    audience?: string,
+    status?: string,
+    page?: string,
+    nameOrId?: string,
+  ): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
     if (audience) {
       queryParams.push({ key: 'strand', value: audience })
+    }
+
+    if (nameOrId) {
+      queryParams.push({ key: 'nameOrId', value: nameOrId })
     }
 
     if (status) {
@@ -144,10 +168,12 @@ export default class CaseListUtils {
   static statusSelectItems(
     statuses: Array<ReferralStatusRefData>,
     selectedValue?: string,
+    hidePlaceholder?: boolean,
   ): Array<GovukFrontendSelectItem> {
     return FormUtils.getSelectItems(
       Object.fromEntries(statuses.map(({ code, description }) => [code, description])),
       selectedValue,
+      hidePlaceholder,
     )
   }
 

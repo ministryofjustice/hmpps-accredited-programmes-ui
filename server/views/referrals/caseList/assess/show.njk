@@ -1,10 +1,13 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation %}
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
+
+{% from "./selectWithOptGroup.njk" import govukSelectWithOptgroup %}
 
 {% extends "../../../partials/layout.njk" %}
 
@@ -37,6 +40,20 @@
       <form class="form-controls" action="{{ action }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
+        {{ govukInput({
+          label: {
+            text: "Search by name or prison number"
+          },
+          classes: "govuk-!-width-full",
+          id: "nameOrId",
+          name: "nameOrId",
+          value: nameOrId,
+          attributes: {
+            "data-testid": "search-input"
+          },
+          errorMessage: errors.messages.nameOrId
+        }) }}
+
         {{ govukSelect({
           id: "audience",
           name: "audience",
@@ -50,13 +67,24 @@
           errorMessage: errors.messages.audience
         }) }}
 
-        {{ govukSelect({
+        {{
+          govukSelectWithOptgroup({
           id: "status",
           name: "status",
+          prompt: "Select",
           label: {
             text: "Referral status"
           },
-          items: referralStatusSelectItems,
+          items: [
+            {
+              label: 'Open referrals',
+              items: referralStatusSelectItems.open
+            },
+            {
+              label: 'Closed referrals',
+              items: referralStatusSelectItems.closed
+            }
+          ],
           attributes: {
             "data-testid": "referral-status-select"
           },

@@ -1,10 +1,10 @@
 import { referralStatusGroups } from '../../../server/@types/models/Referral'
 import { assessPaths, referPaths } from '../../../server/paths'
-import { CaseListUtils, StringUtils } from '../../../server/utils'
+import { CaseListUtils, PathUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
 import type { Course, ReferralStatusGroup, ReferralView } from '@accredited-programmes/models'
-import type { CaseListColumnHeader } from '@accredited-programmes/ui'
+import type { CaseListColumnHeader, QueryParam } from '@accredited-programmes/ui'
 
 export default class CaseListPage extends Page {
   columnHeaders: Array<CaseListColumnHeader>
@@ -59,7 +59,12 @@ export default class CaseListPage extends Page {
     })
   }
 
-  shouldContainStatusNavigation(currentReferralStatusGroup: ReferralStatusGroup, courseId?: Course['id']) {
+  shouldContainStatusNavigation(
+    currentReferralStatusGroup: ReferralStatusGroup,
+    courseId?: Course['id'],
+    numberOfResults?: Partial<Record<ReferralStatusGroup, number>>,
+    queryParams: Array<QueryParam> = [],
+  ) {
     referralStatusGroups
       .filter(statusGroup => (courseId ? statusGroup !== 'draft' : true))
       .forEach((referralStatusGroup, referralStatusGroupIndex) => {
@@ -68,7 +73,7 @@ export default class CaseListPage extends Page {
           .within(subNavigationItemElement => {
             const { actual, expected } = Helpers.parseHtml(
               subNavigationItemElement,
-              `${StringUtils.properCase(referralStatusGroup)} referrals`,
+              `${StringUtils.properCase(referralStatusGroup)} referrals${numberOfResults ? ` (${numberOfResults[referralStatusGroup]})` : ''}`,
             )
             expect(actual).to.equal(expected)
 
@@ -77,7 +82,7 @@ export default class CaseListPage extends Page {
                 'have.attr',
                 'href',
                 courseId
-                  ? assessPaths.caseList.show({ courseId, referralStatusGroup })
+                  ? PathUtils.pathWithQuery(assessPaths.caseList.show({ courseId, referralStatusGroup }), queryParams)
                   : referPaths.caseList.show({ referralStatusGroup }),
               )
 
@@ -155,7 +160,8 @@ export default class CaseListPage extends Page {
   shouldFilter(
     programmeStrandSelectedValue: string,
     referralStatusSelectedValue: string,
-    filteredReferralViews: Array<ReferralView>,
+    filteredOpenReferralViews: Array<ReferralView>,
+    filteredClosedReferralViews: Array<ReferralView>,
   ) {
     cy.task('stubFindReferralViews', {
       organisationId: 'MRI',
@@ -164,7 +170,18 @@ export default class CaseListPage extends Page {
         status: { equalTo: referralStatusSelectedValue },
         statusGroup: { equalTo: 'open' },
       },
-      referralViews: filteredReferralViews,
+      referralViews: filteredOpenReferralViews,
+      totalElements: filteredOpenReferralViews.length,
+    })
+    cy.task('stubFindReferralViews', {
+      organisationId: 'MRI',
+      queryParameters: {
+        audience: { equalTo: CaseListUtils.uiToApiAudienceQueryParam(programmeStrandSelectedValue) },
+        status: { equalTo: referralStatusSelectedValue },
+        statusGroup: { equalTo: 'closed' },
+      },
+      referralViews: filteredClosedReferralViews,
+      totalElements: filteredClosedReferralViews.length,
     })
 
     this.selectSelectItem('programme-strand-select', programmeStrandSelectedValue)

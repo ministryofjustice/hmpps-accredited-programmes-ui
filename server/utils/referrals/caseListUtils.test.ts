@@ -13,22 +13,48 @@ describe('CaseListUtils', () => {
   })
 
   describe('assessSubNavigationItems', () => {
+    const currentPath = '/assess/referrals/course/course-id/case-list/open'
+
     it('returns an array of sub navigation items for programme team referrals', () => {
-      const currentPath = '/assess/referrals/course/course-id/case-list/open'
       const expectedItems = [
         {
           active: true,
           href: '/assess/referrals/course/course-id/case-list/open',
-          text: 'Open referrals',
+          text: 'Open referrals (10)',
         },
         {
           active: false,
           href: '/assess/referrals/course/course-id/case-list/closed',
-          text: 'Closed referrals',
+          text: 'Closed referrals (5)',
         },
       ]
 
-      expect(CaseListUtils.assessSubNavigationItems(currentPath, 'course-id')).toEqual(expectedItems)
+      expect(CaseListUtils.assessSubNavigationItems(currentPath, 'course-id', { closed: 5, open: 10 })).toEqual(
+        expectedItems,
+      )
+    })
+
+    describe('with query params', () => {
+      it('returns an array of sub navigation items for programme team referrals with query params', () => {
+        const expectedItems = [
+          {
+            active: true,
+            href: '/assess/referrals/course/course-id/case-list/open?status=referral_started',
+            text: 'Open referrals (10)',
+          },
+          {
+            active: false,
+            href: '/assess/referrals/course/course-id/case-list/closed?status=referral_started',
+            text: 'Closed referrals (5)',
+          },
+        ]
+
+        expect(
+          CaseListUtils.assessSubNavigationItems(currentPath, 'course-id', { closed: 5, open: 10 }, [
+            { key: 'status', value: 'referral_started' },
+          ]),
+        ).toEqual(expectedItems)
+      })
     })
   })
 
@@ -88,6 +114,7 @@ describe('CaseListUtils', () => {
 
   describe('queryParamsExcludingPage', () => {
     const audienceQueryParam = { key: 'audience', value: 'general violence offence' }
+    const nameOrIdQueryParam = { key: 'nameOrId', value: 'hatton' }
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
     const sortColumnQueryParam = { key: 'sortColumn', value: 'conditionalReleaseDate' }
     const sortDirectionQueryParam = { key: 'sortDirection', value: 'ascending' }
@@ -100,13 +127,23 @@ describe('CaseListUtils', () => {
             statusQueryParam.value,
             sortColumnQueryParam.value,
             sortDirectionQueryParam.value,
+            nameOrIdQueryParam.value,
           ),
         ).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
+          { key: 'nameOrId', value: nameOrIdQueryParam.value },
           { key: 'status', value: statusQueryParam.value },
           { key: 'sortColumn', value: sortColumnQueryParam.value },
           { key: 'sortDirection', value: sortDirectionQueryParam.value },
         ])
+      })
+    })
+
+    describe('when only nameOrId is provided', () => {
+      it('returns an array with a nameOrId `QueryParam`', async () => {
+        expect(
+          CaseListUtils.queryParamsExcludingPage(undefined, undefined, undefined, undefined, nameOrIdQueryParam.value),
+        ).toEqual([{ key: 'nameOrId', value: nameOrIdQueryParam.value }])
       })
     })
 
@@ -167,6 +204,7 @@ describe('CaseListUtils', () => {
 
   describe('queryParamsExcludingSort', () => {
     const audienceQueryParam = { key: 'audience', value: 'general violence offence' }
+    const nameOrIdQueryParam = { key: 'nameOrId', value: 'hatton' }
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
     const pageQueryParam = { key: 'page', value: '2' }
 
@@ -177,9 +215,11 @@ describe('CaseListUtils', () => {
             audienceQueryParam.value,
             statusQueryParam.value,
             pageQueryParam.value,
+            nameOrIdQueryParam.value,
           ),
         ).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
+          { key: 'nameOrId', value: nameOrIdQueryParam.value },
           { key: 'status', value: statusQueryParam.value },
           { key: 'page', value: pageQueryParam.value },
         ])
@@ -342,7 +382,7 @@ describe('CaseListUtils', () => {
     it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
       CaseListUtils.statusSelectItems(referralStatuses)
 
-      expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
+      expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined, undefined)
     })
 
     describe('when a selected value is provided', () => {
@@ -351,7 +391,15 @@ describe('CaseListUtils', () => {
 
         CaseListUtils.statusSelectItems(referralStatuses, selectedValue)
 
-        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, selectedValue)
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, selectedValue, undefined)
+      })
+    })
+
+    describe('when choosing to hide the placeholder', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with the correct `hidePlaceholder` parameter', () => {
+        CaseListUtils.statusSelectItems(referralStatuses, undefined, true)
+
+        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined, true)
       })
     })
   })
