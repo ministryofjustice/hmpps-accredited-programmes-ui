@@ -128,14 +128,18 @@ export default class CaseListUtils {
     return queryParams
   }
 
-  static referSubNavigationItems(currentPath: Request['path']): Array<MojFrontendNavigationItem> {
+  static referSubNavigationItems(
+    currentPath: Request['path'],
+    counts: Record<ReferralStatusGroup, number>,
+    queryParams: Array<QueryParam> = [],
+  ): Array<MojFrontendNavigationItem> {
     return referralStatusGroups.map(referralStatusGroup => {
       const path = referPaths.caseList.show({ referralStatusGroup })
 
       return {
         active: currentPath === path,
-        href: path,
-        text: `${StringUtils.properCase(referralStatusGroup)} referrals`,
+        href: PathUtils.pathWithQuery(path, queryParams),
+        text: `${StringUtils.properCase(referralStatusGroup)} referrals (${counts[referralStatusGroup]})`,
       }
     })
   }

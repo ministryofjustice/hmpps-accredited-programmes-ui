@@ -24,6 +24,17 @@ export default class NewReferralTaskListPage extends Page {
     cy.task('stubFindMyReferralViews', {
       queryParameters: { statusGroup: { equalTo: 'draft' } },
       referralViews: draftReferralViews,
+      totalElements: draftReferralViews.length,
+    })
+    cy.task('stubFindMyReferralViews', {
+      queryParameters: { statusGroup: { equalTo: 'open' } },
+      referralViews: [],
+      totalElements: 0,
+    })
+    cy.task('stubFindMyReferralViews', {
+      queryParameters: { statusGroup: { equalTo: 'closed' } },
+      referralViews: [],
+      totalElements: 0,
     })
 
     this.shouldContainButton('Delete draft').click()

@@ -142,7 +142,8 @@ describe('ReferralService', () => {
 
     describe('with query values', () => {
       it('makes the correct call to the referral client', async () => {
-        const query: { page: string; status: string; statusGroup: ReferralStatusGroup } = {
+        const query: { nameOrId: string; page: string; status: string; statusGroup: ReferralStatusGroup } = {
+          nameOrId: 'Hatton',
           page: '1',
           status: 'REFERRAL_SUBMITTED',
           statusGroup: 'open',

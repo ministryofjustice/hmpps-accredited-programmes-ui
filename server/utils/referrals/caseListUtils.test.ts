@@ -264,21 +264,52 @@ describe('CaseListUtils', () => {
         {
           active: true,
           href: '/refer/referrals/case-list/open',
-          text: 'Open referrals',
+          text: 'Open referrals (15)',
         },
         {
           active: false,
           href: '/refer/referrals/case-list/draft',
-          text: 'Draft referrals',
+          text: 'Draft referrals (10)',
         },
         {
           active: false,
           href: '/refer/referrals/case-list/closed',
-          text: 'Closed referrals',
+          text: 'Closed referrals (5)',
         },
       ]
 
-      expect(CaseListUtils.referSubNavigationItems(currentPath)).toEqual(expectedItems)
+      expect(CaseListUtils.referSubNavigationItems(currentPath, { closed: 5, draft: 10, open: 15 })).toEqual(
+        expectedItems,
+      )
+    })
+
+    describe('with query params', () => {
+      it('returns an array of sub navigation items for my referrals with query params', () => {
+        const currentPath = '/refer/referrals/case-list/open'
+        const expectedItems = [
+          {
+            active: true,
+            href: '/refer/referrals/case-list/open?nameOrId=Hatton',
+            text: 'Open referrals (15)',
+          },
+          {
+            active: false,
+            href: '/refer/referrals/case-list/draft?nameOrId=Hatton',
+            text: 'Draft referrals (10)',
+          },
+          {
+            active: false,
+            href: '/refer/referrals/case-list/closed?nameOrId=Hatton',
+            text: 'Closed referrals (5)',
+          },
+        ]
+
+        expect(
+          CaseListUtils.referSubNavigationItems(currentPath, { closed: 5, draft: 10, open: 15 }, [
+            { key: 'nameOrId', value: 'Hatton' },
+          ]),
+        ).toEqual(expectedItems)
+      })
     })
   })
 

@@ -30,6 +30,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     updateStatusSelectionController,
   } = controllers
 
+  post(referPaths.caseList.filter.pattern, referCaseListController.filter())
   get(referPaths.caseList.index.pattern, referCaseListController.indexRedirect())
   get(referPaths.caseList.show.pattern, referCaseListController.show())
 

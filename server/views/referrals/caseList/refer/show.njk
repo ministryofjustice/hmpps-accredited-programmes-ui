@@ -1,3 +1,5 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
@@ -17,6 +19,27 @@
 
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
+  <form class="horizontal-filter govuk-!-margin-bottom-6" action="{{ action }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+    {{ govukInput({
+      label: {
+        text: "Search by name or prison number",
+        classes: "govuk-label--m"
+      },
+      classes: "govuk-!-width-full",
+      id: "nameOrId",
+      name: "nameOrId",
+      value: nameOrId,
+        attributes: {
+          "data-testid": "search-input"
+        },
+      errorMessage: errors.messages.nameOrId
+    }) }}
+    {{ govukButton({
+      text: "Search"
+    }) }}
+  </form>
+
   {{ mojSubNavigation({
     label: 'Sub navigation',
     items: subNavigationItems
@@ -33,7 +56,11 @@
     {{ govukPagination(pagination) }}
 
   {% else %}
-    <p class="govuk-body">You have no {{ referralStatusGroup }} referrals.</p>
+    {% if nameOrId %}
+      <p class="govuk-body">No person found in {{ referralStatusGroup }} referrals. Try another name, or search {{ otherStatusGroups | join(" or ") }} referrals.</p>
+    {% else %}
+      <p class="govuk-body">You have no {{ referralStatusGroup }} referrals.</p>
+    {% endif %}
   {% endif %}
 
 {% endblock content %}

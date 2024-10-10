@@ -70,6 +70,7 @@ export default class ReferralClient {
   }
 
   async findMyReferralViews(query?: {
+    nameOrId?: string
     page?: string
     sortColumn?: string
     sortDirection?: string
@@ -79,6 +80,7 @@ export default class ReferralClient {
     return (await this.restClient.get({
       path: apiPaths.referrals.myDashboard({}),
       query: {
+        ...(query?.nameOrId && { nameOrId: query.nameOrId }),
         ...(query?.page && { page: query.page }),
         ...(query?.status && { status: query.status }),
         ...(query?.statusGroup && { statusGroup: query.statusGroup }),
