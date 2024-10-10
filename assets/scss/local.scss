@@ -19,38 +19,42 @@
   overflow-x: auto;
 }
 
-.filters {
-  @include govuk-responsive-padding(3);
-  @include govuk-responsive-margin(7, 'bottom');
+.horizontal-filter {
+  * {
+    width: 100%;
+  }
 
-  background-color: govuk-colour('light-grey');
+  :last-child {
+    margin-bottom: 0;
+  }
 
-  .form-controls {
+  .govuk-button {
+    margin-top: govuk-spacing(3);
+    margin-right: 0;
+  }
+
+  @include govuk-media-query($from: desktop) {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    row-gap: govuk-spacing(3);
+
     * {
-      width: 100%;
+      width: auto;
     }
 
-    :last-child {
+    .govuk-select--restrict-width {
+      max-width: 250px;
+    }
+
+    .govuk-button {
+      margin-right: govuk-spacing(3);
+      margin-bottom: $govuk-border-width-form-element;
+    }
+
+    .govuk-form-group {
       margin-bottom: 0;
-    }
-
-    @include govuk-media-query($from: desktop) {
-      display: flex;
-      align-items: flex-end;
-      flex-wrap: wrap;
-
-      * {
-        width: auto;
-      }
-
-      .govuk-button {
-        margin-bottom: $govuk-border-width-form-element;
-      }
-
-      .govuk-form-group {
-        margin-bottom: 0;
-        margin-right: govuk-spacing(3);
-      }
+      margin-right: govuk-spacing(3);
     }
   }
 }
