@@ -85,6 +85,7 @@ describe('AssessCaseListController', () => {
   describe('filter', () => {
     const redirectPathBase = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup })
     const audience = 'General violence offence'
+    const nameOrId = 'Hatton'
     const status = 'ASSESSMENT_STARTED'
 
     beforeEach(() => {
@@ -96,12 +97,19 @@ describe('AssessCaseListController', () => {
 
     it('uses utils to generate a path to the show action with the request body converted to query params, then redirects there', async () => {
       request.body.audience = audience
+      request.body.nameOrId = nameOrId
       request.body.status = status
 
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
 
-      expect(CaseListUtils.queryParamsExcludingPage)
+      expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenCalledWith(
+        audience,
+        status,
+        undefined,
+        undefined,
+        nameOrId,
+      )
       expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, queryParamsExcludingPage)
       expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
     })
@@ -109,19 +117,21 @@ describe('AssessCaseListController', () => {
     it('should redirect back to the page with a flash message when filters are applied with no selections', async () => {
       request.body.audience = ''
       request.body.status = ''
+      request.body.nameOrId = ''
 
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
 
-      expect(CaseListUtils.queryParamsExcludingPage)
+      expect(CaseListUtils.queryParamsExcludingPage).not.toHaveBeenCalled()
       expect(request.flash).toHaveBeenCalledWith('audienceError', 'Choose a filter')
+      expect(request.flash).toHaveBeenCalledWith('nameOrIdError', 'Enter a name or prison number')
       expect(response.redirect).toHaveBeenCalledWith(redirectPathBase)
     })
   })
 
   describe('show', () => {
-    const sortedCourses = courses.sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
-    let paginatedReferralViews: Paginated<ReferralView>
+    let openPaginatedReferralViews: Paginated<ReferralView>
+    let closedPaginatedReferralViews: Paginated<ReferralView>
     const audienceSelectItems = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const referralStatusSelectItems = 'bbb' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const tableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
@@ -149,17 +159,30 @@ describe('AssessCaseListController', () => {
 
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
 
-      const referralViews = referralViewFactory.buildList(3)
-      paginatedReferralViews = {
-        content: referralViews,
+      const openReferralViews = referralViewFactory.buildList(3, { status: 'referral_submitted' })
+      const closedReferralViews = referralViewFactory.buildList(1, { status: 'programme_complete' })
+
+      openPaginatedReferralViews = {
+        content: openReferralViews,
         pageIsEmpty: false,
         pageNumber: 0,
         pageSize: 10,
-        totalElements: referralViews.length,
+        totalElements: openReferralViews.length,
         totalPages: 1,
       }
 
-      referralService.getReferralViews.mockResolvedValue(paginatedReferralViews)
+      closedPaginatedReferralViews = {
+        ...openPaginatedReferralViews,
+        content: closedReferralViews,
+        totalElements: closedReferralViews.length,
+      }
+
+      when(referralService.getReferralViews)
+        .calledWith(username, activeCaseLoadId, expect.objectContaining({ statusGroup: 'open' }))
+        .mockResolvedValue(openPaginatedReferralViews)
+      when(referralService.getReferralViews)
+        .calledWith(username, activeCaseLoadId, expect.objectContaining({ statusGroup: 'closed' }))
+        .mockResolvedValue(closedPaginatedReferralViews)
       referenceDataService.getReferralStatuses.mockResolvedValue([
         ...closedReferralStatuses,
         ...draftReferralStatuses,
@@ -200,7 +223,10 @@ describe('AssessCaseListController', () => {
           pagination,
           primaryNavigationItems,
           referralStatusGroup,
-          referralStatusSelectItems,
+          referralStatusSelectItems: {
+            closed: referralStatusSelectItems,
+            open: referralStatusSelectItems,
+          },
           referralsFiltered: false,
           subNavigationItems,
           tableHeadings,
@@ -218,12 +244,13 @@ describe('AssessCaseListController', () => {
           undefined,
           undefined,
           undefined,
+          undefined,
         )
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
           queryParamsExcludingPage,
-          paginatedReferralViews.pageNumber,
-          paginatedReferralViews.totalPages,
+          openPaginatedReferralViews.pageNumber,
+          openPaginatedReferralViews.totalPages,
         )
         expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
           assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
@@ -244,19 +271,30 @@ describe('AssessCaseListController', () => {
           undefined,
           undefined,
         )
-        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, undefined)
-        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(request.path, limeCourse.id)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(closedReferralStatuses, undefined, true)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, undefined, true)
+        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(
+          request.path,
+          limeCourse.id,
+          {
+            closed: 1,
+            open: 3,
+          },
+          queryParamsExcludingPage,
+        )
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(openPaginatedReferralViews.content, columnsToInclude)
       })
 
       describe('when there are query parameters', () => {
         it('renders the show template with the correct response locals', async () => {
           const uiAudienceQueryParam = 'general offence'
+          const uiNameOrIdQueryParam = 'Hatton'
           const uiSortColumnQueryParam = 'surname'
           const uiSortDirectionQueryParam = 'ascending'
           const uiStatusQueryParam = 'REFERRAL_SUBMITTED'
 
           request.query = {
+            nameOrId: uiNameOrIdQueryParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
             status: uiStatusQueryParam,
@@ -273,20 +311,25 @@ describe('AssessCaseListController', () => {
           expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
             action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
             audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
+            nameOrId: uiNameOrIdQueryParam,
             pageHeading: 'Lime Course',
             pagination,
-            primaryNavigationItems: CaseListUtils.primaryNavigationItems(request.path, sortedCourses),
+            primaryNavigationItems,
             referralStatusGroup,
-            referralStatusSelectItems: CaseListUtils.statusSelectItems(openReferralStatuses, uiStatusQueryParam),
+            referralStatusSelectItems: {
+              closed: referralStatusSelectItems,
+              open: referralStatusSelectItems,
+            },
             referralsFiltered: true,
             subNavigationItems,
             tableHeadings,
-            tableRows: CaseListUtils.tableRows(paginatedReferralViews.content, columnsToInclude),
+            tableRows: CaseListUtils.tableRows(openPaginatedReferralViews.content, columnsToInclude),
           })
           expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(uiAudienceQueryParam)
           expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
             audience: apiAudienceQueryParam,
             courseName: 'Lime Course',
+            nameOrId: uiNameOrIdQueryParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
             status: apiStatusQueryParam,
@@ -297,12 +340,13 @@ describe('AssessCaseListController', () => {
             uiStatusQueryParam,
             uiSortColumnQueryParam,
             uiSortDirectionQueryParam,
+            uiNameOrIdQueryParam,
           )
           expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
             request.path,
             queryParamsExcludingPage,
-            paginatedReferralViews.pageNumber,
-            paginatedReferralViews.totalPages,
+            openPaginatedReferralViews.pageNumber,
+            openPaginatedReferralViews.totalPages,
           )
           expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
             assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
@@ -323,9 +367,15 @@ describe('AssessCaseListController', () => {
             uiSortColumnQueryParam,
             uiSortDirectionQueryParam,
           )
-          expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, uiStatusQueryParam)
-          expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(request.path, limeCourse.id)
-          expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
+          expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(closedReferralStatuses, uiStatusQueryParam, true)
+          expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, uiStatusQueryParam, true)
+          expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(
+            request.path,
+            limeCourse.id,
+            { closed: 1, open: 3 },
+            queryParamsExcludingPage,
+          )
+          expect(CaseListUtils.tableRows).toHaveBeenCalledWith(openPaginatedReferralViews.content, columnsToInclude)
         })
       })
 
@@ -358,7 +408,10 @@ describe('AssessCaseListController', () => {
           pagination,
           primaryNavigationItems,
           referralStatusGroup: 'closed',
-          referralStatusSelectItems,
+          referralStatusSelectItems: {
+            closed: referralStatusSelectItems,
+            open: referralStatusSelectItems,
+          },
           referralsFiltered: false,
           subNavigationItems,
           tableHeadings,
@@ -376,12 +429,13 @@ describe('AssessCaseListController', () => {
           undefined,
           undefined,
           undefined,
+          undefined,
         )
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
           queryParamsExcludingPage,
-          paginatedReferralViews.pageNumber,
-          paginatedReferralViews.totalPages,
+          closedPaginatedReferralViews.pageNumber,
+          closedPaginatedReferralViews.totalPages,
         )
         expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
           assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'closed' }),
@@ -402,9 +456,15 @@ describe('AssessCaseListController', () => {
           undefined,
           undefined,
         )
-        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(closedReferralStatuses, undefined)
-        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(request.path, limeCourse.id)
-        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(paginatedReferralViews.content, columnsToInclude)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(closedReferralStatuses, undefined, true)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, undefined, true)
+        expect(CaseListUtils.assessSubNavigationItems).toHaveBeenCalledWith(
+          request.path,
+          limeCourse.id,
+          { closed: 1, open: 3 },
+          queryParamsExcludingPage,
+        )
+        expect(CaseListUtils.tableRows).toHaveBeenCalledWith(closedPaginatedReferralViews.content, columnsToInclude)
       })
     })
 

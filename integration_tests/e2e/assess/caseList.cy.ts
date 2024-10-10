@@ -43,22 +43,29 @@ context('Referral case lists', () => {
     cy.signIn()
   })
 
+  const availableOpenStatuses = ['ASSESSMENT_STARTED', 'AWAITING_ASSESSMENT', 'REFERRAL_SUBMITTED']
+  const availableClosedStatuses = ['WITHDRAWN', 'PROGRAMME_COMPLETE', 'DESELECTED']
+
+  const limeCourseOpenReferralViews = FactoryHelpers.buildListWith(
+    referralViewFactory,
+    { courseName: limeCourse.name },
+    { transient: { availableStatuses: availableOpenStatuses } },
+    15,
+  )
+  const limeCourseClosedReferralViews = FactoryHelpers.buildListWith(
+    referralViewFactory,
+    { courseName: limeCourse.name },
+    { transient: { availableStatuses: availableClosedStatuses } },
+    5,
+  )
+  const blueCourseReferralViews = FactoryHelpers.buildListWith(
+    referralViewFactory,
+    { courseName: blueCourse.name },
+    { transient: { availableStatuses: availableOpenStatuses } },
+    15,
+  )
+
   describe('when viewing open referrals for a course', () => {
-    const availableStatuses = ['ASSESSMENT_STARTED', 'AWAITING_ASSESSMENT', 'REFERRAL_SUBMITTED']
-
-    const limeCourseReferralViews = FactoryHelpers.buildListWith(
-      referralViewFactory,
-      { courseName: limeCourse.name },
-      { transient: { availableStatuses } },
-      15,
-    )
-    const blueCourseReferralViews = FactoryHelpers.buildListWith(
-      referralViewFactory,
-      { courseName: blueCourse.name },
-      { transient: { availableStatuses } },
-      15,
-    )
-
     beforeEach(() => {
       cy.task('stubFindReferralViews', {
         organisationId: 'MRI',
@@ -66,7 +73,17 @@ context('Referral case lists', () => {
           courseName: { equalTo: limeCourse.name },
           statusGroup: { equalTo: 'open' },
         },
-        referralViews: limeCourseReferralViews,
+        referralViews: limeCourseOpenReferralViews,
+        totalElements: limeCourseOpenReferralViews.length,
+      })
+      cy.task('stubFindReferralViews', {
+        organisationId: 'MRI',
+        queryParameters: {
+          courseName: { equalTo: limeCourse.name },
+          statusGroup: { equalTo: 'closed' },
+        },
+        referralViews: limeCourseClosedReferralViews,
+        totalElements: limeCourseClosedReferralViews.length,
       })
     })
 
@@ -77,11 +94,14 @@ context('Referral case lists', () => {
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
         course: limeCourse,
-        referralViews: limeCourseReferralViews,
+        referralViews: limeCourseOpenReferralViews,
       })
       caseListPage.shouldContainCourseNavigation(path, courses)
       caseListPage.shouldHaveSelectedFilterValues('', '')
-      caseListPage.shouldContainStatusNavigation('open', limeCourse.id)
+      caseListPage.shouldContainStatusNavigation('open', limeCourse.id, {
+        closed: limeCourseClosedReferralViews.length,
+        open: limeCourseOpenReferralViews.length,
+      })
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
     })
 
@@ -91,6 +111,13 @@ context('Referral case lists', () => {
           organisationId: 'MRI',
           referralViews: [],
           statusGroup: { equalTo: 'open' },
+          totalElements: 0,
+        })
+        cy.task('stubFindReferralViews', {
+          organisationId: 'MRI',
+          referralViews: [],
+          statusGroup: { equalTo: 'closed' },
+          totalElements: 0,
         })
 
         const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
@@ -117,11 +144,14 @@ context('Referral case lists', () => {
         const caseListPage = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
-          referralViews: limeCourseReferralViews,
+          referralViews: limeCourseOpenReferralViews,
         })
         caseListPage.shouldContainCourseNavigation(path, courses)
         caseListPage.shouldHaveSelectedFilterValues('', '')
-        caseListPage.shouldContainStatusNavigation('open', limeCourse.id)
+        caseListPage.shouldContainStatusNavigation('open', limeCourse.id, {
+          closed: limeCourseClosedReferralViews.length,
+          open: limeCourseOpenReferralViews.length,
+        })
         caseListPage.shouldContainTableOfReferralViews(assessPaths)
 
         caseListPage.shouldFilterButtonClick()
@@ -129,15 +159,20 @@ context('Referral case lists', () => {
         const caseListPageWithError = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
-          referralViews: limeCourseReferralViews,
+          referralViews: limeCourseOpenReferralViews,
         })
         caseListPageWithError.shouldHaveErrors([
           {
             field: 'audience',
             message: 'Choose a filter',
           },
+          {
+            field: 'nameOrId',
+            message: 'Enter a name or prison number',
+          },
         ])
       })
+
       it('shows the correct information', () => {
         const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
         cy.visit(path)
@@ -145,16 +180,19 @@ context('Referral case lists', () => {
         const caseListPage = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
-          referralViews: limeCourseReferralViews,
+          referralViews: limeCourseOpenReferralViews,
         })
         caseListPage.shouldContainCourseNavigation(path, courses)
         caseListPage.shouldHaveSelectedFilterValues('', '')
-        caseListPage.shouldContainStatusNavigation('open', limeCourse.id)
+        caseListPage.shouldContainStatusNavigation('open', limeCourse.id, {
+          closed: limeCourseClosedReferralViews.length,
+          open: limeCourseOpenReferralViews.length,
+        })
         caseListPage.shouldContainTableOfReferralViews(assessPaths)
 
         const programmeStrandSelectedValue = 'general offence'
         const referralStatusSelectedValue = 'ASSESSMENT_STARTED'
-        const filteredReferralViews = [
+        const filteredOpenReferralViews = [
           referralViewFactory.build({
             audience: 'General offence',
             courseName: limeCourse.name,
@@ -162,16 +200,32 @@ context('Referral case lists', () => {
           }),
         ]
 
-        caseListPage.shouldFilter(programmeStrandSelectedValue, referralStatusSelectedValue, filteredReferralViews)
+        caseListPage.shouldFilter(
+          programmeStrandSelectedValue,
+          referralStatusSelectedValue,
+          filteredOpenReferralViews,
+          [],
+        )
 
         const filteredCaseListPage = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
-          referralViews: filteredReferralViews,
+          referralViews: filteredOpenReferralViews,
         })
         filteredCaseListPage.shouldContainCourseNavigation(path, courses)
         filteredCaseListPage.shouldHaveSelectedFilterValues(programmeStrandSelectedValue, referralStatusSelectedValue)
-        caseListPage.shouldContainStatusNavigation('open', limeCourse.id)
+        caseListPage.shouldContainStatusNavigation(
+          'open',
+          limeCourse.id,
+          {
+            closed: 0,
+            open: filteredOpenReferralViews.length,
+          },
+          [
+            { key: 'strand', value: 'general offence' },
+            { key: 'status', value: 'ASSESSMENT_STARTED' },
+          ],
+        )
         filteredCaseListPage.shouldContainTableOfReferralViews(assessPaths)
 
         filteredCaseListPage.shouldClearFilters()
@@ -179,11 +233,14 @@ context('Referral case lists', () => {
         const clearedFilterListPage = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
-          referralViews: limeCourseReferralViews,
+          referralViews: limeCourseOpenReferralViews,
         })
         clearedFilterListPage.shouldContainCourseNavigation(path, courses)
         clearedFilterListPage.shouldHaveSelectedFilterValues('', '')
-        caseListPage.shouldContainStatusNavigation('open', limeCourse.id)
+        caseListPage.shouldContainStatusNavigation('open', limeCourse.id, {
+          closed: limeCourseClosedReferralViews.length,
+          open: limeCourseOpenReferralViews.length,
+        })
         clearedFilterListPage.shouldContainTableOfReferralViews(assessPaths)
       })
 
@@ -193,6 +250,13 @@ context('Referral case lists', () => {
             organisationId: 'MRI',
             referralViews: [],
             statusGroup: { equalTo: 'open' },
+            totalElements: 0,
+          })
+          cy.task('stubFindReferralViews', {
+            organisationId: 'MRI',
+            referralViews: [],
+            statusGroup: { equalTo: 'closed' },
+            totalElements: 0,
           })
 
           const path = assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'open' })
@@ -223,7 +287,7 @@ context('Referral case lists', () => {
           page: { equalTo: '3' },
           statusGroup: { equalTo: 'open' },
         },
-        referralViews: limeCourseReferralViews,
+        referralViews: limeCourseOpenReferralViews,
         totalPages: 7,
       })
       cy.task('stubFindReferralViews', {
@@ -232,7 +296,7 @@ context('Referral case lists', () => {
           page: { equalTo: '4' },
           statusGroup: { equalTo: 'open' },
         },
-        referralViews: limeCourseReferralViews,
+        referralViews: limeCourseOpenReferralViews,
         totalPages: 7,
       })
 
@@ -245,7 +309,7 @@ context('Referral case lists', () => {
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
         course: limeCourse,
-        referralViews: limeCourseReferralViews,
+        referralViews: limeCourseOpenReferralViews,
       })
       caseListPage.shouldContainPaginationPreviousButtonLink()
       caseListPage.shouldContainPaginationNextButtonLink()
@@ -266,8 +330,19 @@ context('Referral case lists', () => {
           organisationId: 'MRI',
           queryParameters: {
             courseName: { equalTo: blueCourse.name },
+            statusGroup: { equalTo: 'open' },
           },
           referralViews: blueCourseReferralViews,
+          totalElements: blueCourseReferralViews.length,
+        })
+        cy.task('stubFindReferralViews', {
+          organisationId: 'MRI',
+          queryParameters: {
+            courseName: { equalTo: blueCourse.name },
+            statusGroup: { equalTo: 'closed' },
+          },
+          referralViews: [],
+          totalElements: 0,
         })
 
         const path = assessPaths.caseList.index({})
@@ -283,30 +358,34 @@ context('Referral case lists', () => {
           courses,
         )
         caseListPage.shouldHaveSelectedFilterValues('', '')
-        caseListPage.shouldContainStatusNavigation('open', blueCourse.id)
+        caseListPage.shouldContainStatusNavigation('open', blueCourse.id, {
+          closed: 0,
+          open: blueCourseReferralViews.length,
+        })
         caseListPage.shouldContainTableOfReferralViews(assessPaths)
       })
     })
   })
 
   describe('when viewing closed referrals for a course', () => {
-    const availableStatuses = ['WITHDRAWN', 'PROGRAMME_COMPLETE', 'DESELECTED']
-
-    const limeCourseReferralViews = FactoryHelpers.buildListWith(
-      referralViewFactory,
-      { courseName: limeCourse.name },
-      { transient: { availableStatuses } },
-      15,
-    )
-
     beforeEach(() => {
+      cy.task('stubFindReferralViews', {
+        organisationId: 'MRI',
+        queryParameters: {
+          courseName: { equalTo: limeCourse.name },
+          statusGroup: { equalTo: 'open' },
+        },
+        referralViews: limeCourseOpenReferralViews,
+        totalElements: limeCourseOpenReferralViews.length,
+      })
       cy.task('stubFindReferralViews', {
         organisationId: 'MRI',
         queryParameters: {
           courseName: { equalTo: limeCourse.name },
           statusGroup: { equalTo: 'closed' },
         },
-        referralViews: limeCourseReferralViews,
+        referralViews: limeCourseClosedReferralViews,
+        totalElements: limeCourseClosedReferralViews.length,
       })
     })
 
@@ -317,11 +396,14 @@ context('Referral case lists', () => {
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
         course: limeCourse,
-        referralViews: limeCourseReferralViews,
+        referralViews: limeCourseClosedReferralViews,
       })
       caseListPage.shouldContainCourseNavigation(path, courses)
       caseListPage.shouldHaveSelectedFilterValues('', '')
-      caseListPage.shouldContainStatusNavigation('closed', limeCourse.id)
+      caseListPage.shouldContainStatusNavigation('closed', limeCourse.id, {
+        closed: limeCourseClosedReferralViews.length,
+        open: limeCourseOpenReferralViews.length,
+      })
       caseListPage.shouldContainTableOfReferralViews(assessPaths)
     })
   })

@@ -100,6 +100,7 @@ export default class ReferralClient {
     query?: {
       audience?: string
       courseName?: string
+      nameOrId?: string
       page?: string
       sortColumn?: string
       sortDirection?: string
@@ -112,6 +113,7 @@ export default class ReferralClient {
       query: {
         ...(query?.audience && { audience: query.audience }),
         ...(query?.courseName && { courseName: query.courseName }),
+        ...(query?.nameOrId && { nameOrId: query.nameOrId }),
         ...(query?.page && { page: query.page }),
         ...(query?.sortColumn && { sortColumn: query.sortColumn }),
         ...(query?.sortDirection && { sortDirection: query.sortDirection }),

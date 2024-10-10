@@ -1,10 +1,13 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation %}
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
+
+{% from "./selectWithOptGroup.njk" import govukSelectWithOptgroup %}
 
 {% extends "../../../partials/layout.njk" %}
 
@@ -32,45 +35,81 @@
 
   {% if tableRows | length or(not tableRows | length and referralsFiltered) %}
 
-    <div class="filters">
-      <h2 class="govuk-heading-m">Filters</h2>
-      <form class="form-controls" action="{{ action }}" method="post">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+    <div class="moj-filter govuk-!-margin-bottom-7">
+      <div class="moj-filter__header">
+        <div class="moj-filter__header-title">
+          <h2 class="govuk-heading-m">Filters</h2>
+        </div>
+      </div>
 
-        {{ govukSelect({
-          id: "audience",
-          name: "audience",
-          label: {
-            text: "Programme strand"
-          },
-          items: audienceSelectItems,
-            attributes: {
-            "data-testid": "programme-strand-select"
-          },
-          errorMessage: errors.messages.audience
-        }) }}
+      <div class="moj-filter__content">
+        <div class="moj-filter__options">
+          <form class="horizontal-filter" action="{{ action }}" method="post">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-        {{ govukSelect({
-          id: "status",
-          name: "status",
-          label: {
-            text: "Referral status"
-          },
-          items: referralStatusSelectItems,
-          attributes: {
-            "data-testid": "referral-status-select"
-          },
-          errorMessage: errors.messages.audience
-        }) }}
+            {{ govukInput({
+              label: {
+                text: "Search by name or prison number"
+              },
+              classes: "govuk-!-width-full",
+              id: "nameOrId",
+              name: "nameOrId",
+              value: nameOrId,
+              attributes: {
+                "data-testid": "search-input"
+              },
+              errorMessage: errors.messages.nameOrId
+            }) }}
 
-        <span class="govuk-button-group">
-          {{ govukButton({
-            text: "Apply filters"
-          }) }}
+            {{ govukSelect({
+              id: "audience",
+              name: "audience",
+              label: {
+                text: "Programme strand"
+              },
+              items: audienceSelectItems,
+                attributes: {
+                "data-testid": "programme-strand-select"
+              },
+              classes: "govuk-select--restrict-width",
+              errorMessage: errors.messages.audience
+            }) }}
 
-          <a href="{{ referralStatusGroup }}" class="govuk-link govuk-link--no-visited-state">Clear filters</a>
-        </span>
-      </form>
+            {{
+              govukSelectWithOptgroup({
+              id: "status",
+              name: "status",
+              prompt: "Select",
+              label: {
+                text: "Referral status"
+              },
+              items: [
+                {
+                  label: 'Open referrals',
+                  items: referralStatusSelectItems.open
+                },
+                {
+                  label: 'Closed referrals',
+                  items: referralStatusSelectItems.closed
+                }
+              ],
+              attributes: {
+                "data-testid": "referral-status-select"
+              },
+              classes: "govuk-select--restrict-width",
+              errorMessage: errors.messages.audience
+            }) }}
+
+            <span class="govuk-button-group">
+              {{ govukButton({
+                text: "Apply filters"
+              }) }}
+
+              <a href="{{ referralStatusGroup }}" class="govuk-link govuk-link--no-visited-state">Clear filters</a>
+            </span>
+          </form>
+        </div>
+      </div>
     </div>
 
   {% endif %}

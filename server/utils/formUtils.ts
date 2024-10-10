@@ -7,9 +7,13 @@ import type {
 } from '@govuk-frontend'
 
 export default class FormUtils {
-  static getSelectItems(items: Record<string, string>, selectedValue?: string): Array<GovukFrontendSelectItem> {
+  static getSelectItems(
+    items: Record<string, string>,
+    selectedValue?: string,
+    hidePlaceholder?: boolean,
+  ): Array<GovukFrontendSelectItem> {
     return [
-      { selected: Boolean(!selectedValue), text: 'Select', value: '' },
+      ...(!hidePlaceholder ? [{ selected: Boolean(!selectedValue), text: 'Select', value: '' }] : []),
       ...Object.entries(items).map(([value, text]) => ({
         selected: value === selectedValue,
         text,
