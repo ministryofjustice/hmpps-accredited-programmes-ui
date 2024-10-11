@@ -62,6 +62,7 @@ export default class ReferralService {
   async getMyReferralViews(
     username: Express.User['username'],
     query?: {
+      nameOrId?: string
       page?: string
       sortColumn?: string
       sortDirection?: string

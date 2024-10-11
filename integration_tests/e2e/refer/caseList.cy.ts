@@ -15,7 +15,7 @@ context('Referral case lists', () => {
     { transient: { availableStatuses: openStatuses } },
     15,
   )
-  const draftReferrals = referralFactory.buildList(15)
+  const draftReferrals = referralFactory.buildList(5)
   const draftReferralViews = draftReferrals.map(referral => {
     return referralViewFactory.build({ id: referral.id, status: 'referral_started' })
   })
@@ -23,7 +23,7 @@ context('Referral case lists', () => {
     referralViewFactory,
     {},
     { transient: { availableStatuses: ['programme_complete'] } },
-    15,
+    10,
   )
   const baseColumnHeaders: Array<CaseListColumnHeader> = [
     'Name and prison number',
@@ -32,7 +32,7 @@ context('Referral case lists', () => {
     'Programme location',
     'Programme name',
   ]
-  const openReferralsColumnHeaders: Array<CaseListColumnHeader> = baseColumnHeaders.concat('Referral status')
+  const nonDraftReferralsColumnHeaders: Array<CaseListColumnHeader> = baseColumnHeaders.concat('Referral status')
   const draftReferralsColumnHeaders: Array<CaseListColumnHeader> = baseColumnHeaders.concat('Progress')
 
   beforeEach(() => {
@@ -41,23 +41,35 @@ context('Referral case lists', () => {
     cy.task('stubAuthUser')
     cy.task('stubDefaultCaseloads')
     cy.signIn()
+
+    cy.task('stubFindMyReferralViews', {
+      queryParameters: { statusGroup: { equalTo: 'open' } },
+      referralViews: openReferralViews,
+      totalElements: openReferralViews.length,
+    })
+    cy.task('stubFindMyReferralViews', {
+      queryParameters: { statusGroup: { equalTo: 'draft' } },
+      referralViews: draftReferralViews,
+      totalElements: draftReferralViews.length,
+    })
+    cy.task('stubFindMyReferralViews', {
+      queryParameters: { statusGroup: { equalTo: 'closed' } },
+      referralViews: closedReferralViews,
+      totalElements: closedReferralViews.length,
+    })
   })
 
   describe('when viewing open referrals', () => {
     it('shows the correct information', () => {
-      cy.task('stubFindMyReferralViews', {
-        queryParameters: { statusGroup: { equalTo: 'open' } },
-        referralViews: openReferralViews,
-      })
-
       const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
-        columnHeaders: openReferralsColumnHeaders,
+        columnHeaders: nonDraftReferralsColumnHeaders,
         referralViews: openReferralViews,
       })
-      caseListPage.shouldContainStatusNavigation('open')
+      caseListPage.shouldContainSearchInput()
+      caseListPage.shouldContainStatusNavigation('open', undefined, { closed: 10, draft: 5, open: 15 })
       caseListPage.shouldContainTableOfReferralViews(referPaths)
     })
 
@@ -79,7 +91,7 @@ context('Referral case lists', () => {
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
-        columnHeaders: openReferralsColumnHeaders,
+        columnHeaders: nonDraftReferralsColumnHeaders,
         referralViews: openReferralViews,
       })
       caseListPage.shouldContainPaginationPreviousButtonLink()
@@ -99,16 +111,17 @@ context('Referral case lists', () => {
       cy.task('stubFindMyReferralViews', {
         queryParameters: { statusGroup: { equalTo: 'open' } },
         referralViews: [],
+        totalElements: 0,
       })
 
       const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
-        columnHeaders: openReferralsColumnHeaders,
+        columnHeaders: nonDraftReferralsColumnHeaders,
         referralViews: [],
       })
-      caseListPage.shouldContainStatusNavigation('open')
+      caseListPage.shouldContainStatusNavigation('open', undefined, { closed: 10, draft: 5, open: 0 })
       caseListPage.shouldNotContainTable()
       caseListPage.shouldNotContainPagination()
       caseListPage.shouldContainText('You have no open referrals.')
@@ -121,11 +134,6 @@ context('Referral case lists', () => {
     })
 
     it('shows the correct information', () => {
-      cy.task('stubFindMyReferralViews', {
-        queryParameters: { statusGroup: { equalTo: 'draft' } },
-        referralViews: draftReferralViews,
-      })
-
       const path = referPaths.caseList.show({ referralStatusGroup: 'draft' })
       cy.visit(path)
 
@@ -133,7 +141,7 @@ context('Referral case lists', () => {
         columnHeaders: draftReferralsColumnHeaders,
         referralViews: draftReferralViews,
       })
-      caseListPage.shouldContainStatusNavigation('draft')
+      caseListPage.shouldContainStatusNavigation('draft', undefined, { closed: 10, draft: 5, open: 15 })
       caseListPage.shouldContainTableOfReferralViews(referPaths)
     })
 
@@ -174,11 +182,6 @@ context('Referral case lists', () => {
 
   describe('when viewing closed referrals', () => {
     it('shows the correct information', () => {
-      cy.task('stubFindMyReferralViews', {
-        queryParameters: { statusGroup: { equalTo: 'closed' } },
-        referralViews: closedReferralViews,
-      })
-
       const path = referPaths.caseList.show({ referralStatusGroup: 'closed' })
       cy.visit(path)
 
@@ -186,7 +189,7 @@ context('Referral case lists', () => {
         columnHeaders: baseColumnHeaders,
         referralViews: closedReferralViews,
       })
-      caseListPage.shouldContainStatusNavigation('closed')
+      caseListPage.shouldContainStatusNavigation('closed', undefined, { closed: 10, draft: 5, open: 15 })
       caseListPage.shouldContainTableOfReferralViews(referPaths)
     })
 
@@ -227,19 +230,65 @@ context('Referral case lists', () => {
 
   describe('when visiting the index, without specifying a status group', () => {
     it('redirects to the open referrals case list page', () => {
-      cy.task('stubFindMyReferralViews', {
-        queryParameters: { statusGroup: { equalTo: 'open' } },
-        referralViews: openReferralViews,
-      })
-
       const path = referPaths.caseList.index({})
       cy.visit(path)
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
-        columnHeaders: openReferralsColumnHeaders,
+        columnHeaders: nonDraftReferralsColumnHeaders,
         referralViews: openReferralViews,
       })
-      caseListPage.shouldContainStatusNavigation('open')
+      caseListPage.shouldContainStatusNavigation('open', undefined, { closed: 10, draft: 5, open: 15 })
+      caseListPage.shouldContainTableOfReferralViews(referPaths)
+    })
+  })
+
+  describe('when searching for a referral', () => {
+    it('filters the referrals by name or ID', () => {
+      const searchQuery = { nameOrId: { equalTo: 'Hatton' } }
+      const searchResultReferralViews = FactoryHelpers.buildListWith(
+        referralViewFactory,
+        { surname: 'Hatton' },
+        { transient: { availableStatuses: openStatuses } },
+        10,
+      )
+
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { ...searchQuery, statusGroup: { equalTo: 'open' } },
+        referralViews: searchResultReferralViews,
+        totalElements: searchResultReferralViews.length,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { ...searchQuery, statusGroup: { equalTo: 'closed' } },
+        referralViews: [],
+        totalElements: 0,
+      })
+      cy.task('stubFindMyReferralViews', {
+        queryParameters: { ...searchQuery, statusGroup: { equalTo: 'draft' } },
+        referralViews: [],
+        totalElements: 0,
+      })
+
+      const path = referPaths.caseList.show({ referralStatusGroup: 'open' })
+      cy.visit(path)
+
+      const caseListPage = Page.verifyOnPage(CaseListPage, {
+        columnHeaders: nonDraftReferralsColumnHeaders,
+        referralViews: searchResultReferralViews,
+      })
+
+      caseListPage.shouldContainSearchInput()
+      caseListPage.searchFor('Hatton')
+      caseListPage.shouldContainSearchInput('Hatton')
+      caseListPage.shouldContainStatusNavigation(
+        'open',
+        undefined,
+        {
+          closed: 0,
+          draft: 0,
+          open: searchResultReferralViews.length,
+        },
+        [{ key: 'nameOrId', value: 'Hatton' }],
+      )
       caseListPage.shouldContainTableOfReferralViews(referPaths)
     })
   })

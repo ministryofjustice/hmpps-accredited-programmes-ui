@@ -24,6 +24,11 @@ export default class CaseListPage extends Page {
     this.referralViews = referralViews
   }
 
+  searchFor(searchTerm: string) {
+    cy.get('[data-testid="search-input"]').type(searchTerm)
+    cy.get('form').submit()
+  }
+
   shouldClearFilters() {
     this.shouldContainLink('Clear filters', 'open').click()
   }
@@ -59,6 +64,10 @@ export default class CaseListPage extends Page {
     })
   }
 
+  shouldContainSearchInput(searchTerm?: string) {
+    cy.get('[data-testid="search-input"]').should('have.value', searchTerm || '')
+  }
+
   shouldContainStatusNavigation(
     currentReferralStatusGroup: ReferralStatusGroup,
     courseId?: Course['id'],
@@ -83,7 +92,7 @@ export default class CaseListPage extends Page {
                 'href',
                 courseId
                   ? PathUtils.pathWithQuery(assessPaths.caseList.show({ courseId, referralStatusGroup }), queryParams)
-                  : referPaths.caseList.show({ referralStatusGroup }),
+                  : PathUtils.pathWithQuery(referPaths.caseList.show({ referralStatusGroup }), queryParams),
               )
 
               if (currentReferralStatusGroup === referralStatusGroup) {
