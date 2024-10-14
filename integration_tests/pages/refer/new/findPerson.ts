@@ -15,7 +15,7 @@ export default class NewReferralFindPersonPage extends Page {
 
   shouldContainIdentifierForm() {
     cy.get('form').within(() => {
-      cy.contains('.govuk-label', "Enter the prison number. We'll import their details into your application.").should(
+      cy.contains('.govuk-label', "Enter a prison number. We'll import the person's details into the referral.").should(
         'have.attr',
         'for',
         'prisonNumber',
