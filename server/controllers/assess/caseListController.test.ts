@@ -146,8 +146,8 @@ describe('AssessCaseListController', () => {
       'Name and prison number',
       'Location',
       'Earliest release date',
-      'Programme strand',
       'Sentence type',
+      'Programme strand',
       'Referral status',
     ]
     const closedReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: true, draft: false })

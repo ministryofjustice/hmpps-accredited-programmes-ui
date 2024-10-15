@@ -636,12 +636,19 @@ describe('CaseListUtils', () => {
         })
       })
 
-      describe('when `sentenceType` is `Multiple sentences`', () => {
-        it('returns a link to the sentence information page', () => {
+      describe('when `sentenceType` contains "Recall"', () => {
+        it('returns the sentence type with "Recall" text in an `moj-badge`', () => {
           expect(
-            CaseListUtils.tableRowContent({ ...referralView, sentenceType: 'Multiple sentences' }, 'Sentence type'),
-          ).toEqual(
-            '<a href="/assess/referrals/referral-123/sentence-information?updatePerson=true">Multiple sentences</a>',
+            CaseListUtils.tableRowContent(
+              { ...referralView, sentenceType: 'Indeterminate and Recall' },
+              'Sentence type',
+            ),
+          ).toEqual('Indeterminate <span class="moj-badge">Recall</span>')
+        })
+
+        it('returns "Recall" text in an `moj-badge`', () => {
+          expect(CaseListUtils.tableRowContent({ ...referralView, sentenceType: 'Recall' }, 'Sentence type')).toEqual(
+            '<span class="moj-badge">Recall</span>',
           )
         })
       })
@@ -661,7 +668,7 @@ describe('CaseListUtils', () => {
         organisationName: 'Whatton (HMP)',
         paroleEligibilityDate: new Date('2022-01-01T00:00:00.000000').toISOString(),
         prisonNumber: 'ABC1234',
-        sentenceType: 'Multiple sentences',
+        sentenceType: 'Determinate and Recall',
         status: 'referral_started',
         submittedOn: undefined,
         surname: 'HATTON',
