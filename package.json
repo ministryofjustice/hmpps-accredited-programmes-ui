@@ -148,7 +148,7 @@
     "nodemon": "^3.0.0",
     "openapi-typescript": "^7.0.0",
     "prettier": "^3.0.0",
-    "prettier-plugin-jinja-template": "^1.0.0",
+    "prettier-plugin-jinja-template": "^2.0.0",
     "sass": "^1.61.0",
     "start-server-and-test": "^2.0.0",
     "stylelint": "^16.0.2",
