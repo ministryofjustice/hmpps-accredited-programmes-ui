@@ -45,8 +45,8 @@ describe('PniUtils', () => {
     RiskScore: {
       IndividualRiskScores: {
         ogrs3: 1,
-        ospDc: 2,
-        ospIic: 3,
+        ospDc: '2',
+        ospIic: '3',
         ovp: 4,
         rsr: 5,
         sara: 'MEDIUM',
