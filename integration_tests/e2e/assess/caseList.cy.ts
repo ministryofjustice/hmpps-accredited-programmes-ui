@@ -28,8 +28,8 @@ context('Referral case lists', () => {
     'Name and prison number',
     'Location',
     'Earliest release date',
-    'Programme strand',
     'Sentence type',
+    'Programme strand',
     'Referral status',
   ]
 

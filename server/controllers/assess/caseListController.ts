@@ -133,8 +133,8 @@ export default class AssessCaseListController {
         surname: 'Name and prison number',
         location: 'Location',
         earliestReleaseDate: 'Earliest release date',
-        audience: 'Programme strand',
         sentenceType: 'Sentence type',
+        audience: 'Programme strand',
         status: 'Referral status',
       }
       /* eslint-enable sort-keys */

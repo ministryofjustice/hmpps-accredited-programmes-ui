@@ -212,7 +212,7 @@ export default class CaseListUtils {
       case 'Referral status':
         return CaseListUtils.statusTagHtml(referralView.statusColour, referralView.statusDescription)
       case 'Sentence type':
-        return CaseListUtils.sentenceTypeHtml(referralView, paths)
+        return CaseListUtils.sentenceTypeHtml(referralView)
       default:
         return ''
     }
@@ -326,10 +326,17 @@ export default class CaseListUtils {
     )
   }
 
-  private static sentenceTypeHtml(referralView: ReferralView, paths: typeof assessPaths | typeof referPaths): string {
+  private static sentenceTypeHtml(referralView: ReferralView): string {
     const { sentenceType } = referralView
-    return sentenceType === 'Multiple sentences'
-      ? `<a href="${paths.show.sentenceInformation({ referralId: referralView.id })}?updatePerson=true">${sentenceType}</a>`
-      : sentenceType || 'N/A'
+
+    if (!sentenceType) {
+      return 'N/A'
+    }
+
+    if (sentenceType.includes('Recall')) {
+      return sentenceType.replace(/(and )?Recall/, '<span class="moj-badge">Recall</span>')
+    }
+
+    return sentenceType
   }
 }
