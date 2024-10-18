@@ -99,6 +99,7 @@ export default {
       show: referralStatusesPath,
       statusCodeCategories: referralStatusCodeCategoriesPath,
       statusCodeReasons: referralStatusCodeReasonsPath,
+      statusCodeReasonsWithCategories: referralStatusCodeCategoriesPath.path('reasons'),
     },
   },
   referrals: {

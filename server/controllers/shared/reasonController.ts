@@ -9,7 +9,6 @@ type SelectReasonPageContent = Record<
   {
     pageDescription: string
     pageHeading: string
-    radioLegend: string
   }
 >
 
@@ -17,18 +16,15 @@ const content: Partial<SelectReasonPageContent> = {
   DESELECTED: {
     pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
     pageHeading: 'Deselection reason',
-    radioLegend: 'Choose the deselection reason',
   },
   'DESELECTED|OPEN': {
     pageDescription:
       'Deselecting someone means they cannot continue the programme. The referral will stay open until they can rejoin or restart the programme.',
     pageHeading: 'Deselection reason',
-    radioLegend: 'Choose the deselection reason',
   },
   WITHDRAWN: {
     pageDescription: 'If you withdraw the referral, it will be closed.',
     pageHeading: 'Withdrawal reason',
-    radioLegend: 'Select the reason for this withdrawal',
   },
 }
 
@@ -51,7 +47,6 @@ export default class ReasonController {
       if (
         referralStatusUpdateData?.referralId !== referralId ||
         !referralStatusUpdateData.decisionForCategoryAndReason ||
-        !referralStatusUpdateData.statusCategoryCode ||
         !referralStatusUpdateData.initialStatusDecision ||
         !content[referralStatusUpdateData.initialStatusDecision]
       ) {
@@ -63,37 +58,26 @@ export default class ReasonController {
       const [referral, statusHistory, reasons] = await Promise.all([
         this.referralService.getReferral(username, referralId),
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
-        this.referenceDataService.getReferralStatusCodeReasons(
+        this.referenceDataService.getReferralStatusCodeReasonsWithCategory(
           username,
-          referralStatusUpdateData.statusCategoryCode,
-          decisionForCategoryAndReason,
-          { deselectAndKeepOpen: referralStatusUpdateData.initialStatusDecision === 'DESELECTED|OPEN' },
+          decisionForCategoryAndReason as 'DESELECTED' | 'WITHDRAWN',
         ),
       ])
 
       const person = await this.personService.getPerson(username, referral.prisonNumber)
 
-      if (reasons.length === 0) {
-        req.session.referralStatusUpdateData = {
-          ...referralStatusUpdateData,
-          statusReasonCode: undefined,
-        }
-
-        if (referralStatusUpdateData.initialStatusDecision === 'DESELECTED|OPEN') {
-          return res.redirect(`${assessPaths.updateStatus.decision.show({ referralId })}?deselectAndKeepOpen=true`)
-        }
-
-        return res.redirect(paths.updateStatus.selection.show({ referralId }))
-      }
-
-      const radioItems = ReferralUtils.statusOptionsToRadioItems(reasons, referralStatusUpdateData.statusReasonCode)
+      const groupedReasons = ReferralUtils.groupReasonsByCategory(reasons)
+      const reasonsFieldsets = ReferralUtils.createReasonsFieldset(
+        groupedReasons,
+        referralStatusUpdateData.statusReasonCode,
+      )
 
       FormUtils.setFieldErrors(req, res, ['reasonCode'])
 
       return res.render('referrals/updateStatus/reason/show', {
         backLinkHref: paths.show.statusHistory({ referralId }),
         person,
-        radioItems,
+        reasonsFieldsets,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
         ...content[initialStatusDecision],
       })
@@ -102,13 +86,15 @@ export default class ReasonController {
 
   submit(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
       const paths = this.getPaths(req)
       const { referralId } = req.params
-      const { reasonCode } = req.body
+      let { reasonCode } = req.body
       const { referralStatusUpdateData } = req.session
 
-      if (!referralStatusUpdateData?.statusCategoryCode) {
-        return res.redirect(paths.updateStatus.category.show({ referralId }))
+      if (!referralStatusUpdateData?.decisionForCategoryAndReason) {
+        return res.redirect(paths.show.statusHistory({ referralId }))
       }
 
       const { decisionForCategoryAndReason } = referralStatusUpdateData
@@ -122,8 +108,21 @@ export default class ReasonController {
         return res.redirect(paths.updateStatus.reason.show({ referralId }))
       }
 
+      const reasons = await this.referenceDataService.getReferralStatusCodeReasonsWithCategory(
+        req.user.username,
+        decisionForCategoryAndReason as 'DESELECTED' | 'WITHDRAWN',
+      )
+
+      let categoryCode = reasons.find(reason => reason.code === reasonCode)?.referralCategoryCode
+
+      if (reasonCode === 'OTHER') {
+        categoryCode = decisionForCategoryAndReason === 'DESELECTED' ? 'D_OTHER' : 'W_OTHER'
+        reasonCode = undefined
+      }
+
       req.session.referralStatusUpdateData = {
         ...referralStatusUpdateData,
+        statusCategoryCode: categoryCode,
         statusReasonCode: reasonCode,
       }
 
