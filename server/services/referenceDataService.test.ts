@@ -112,6 +112,20 @@ describe('ReferenceDataService', () => {
     })
   })
 
+  describe('getReferralStatusCodeReasonsWithCategory', () => {
+    it('should return referral status code reasons with category', async () => {
+      const reasons = referralStatusReasonFactory.buildList(2, { referralCategoryCode: 'C' })
+
+      when(referenceDataClient.findReferralStatusCodeReasonsWithCategory)
+        .calledWith(referralStatusCode)
+        .mockResolvedValue(reasons)
+
+      const result = await service.getReferralStatusCodeReasonsWithCategory(username, referralStatusCode)
+
+      expect(result).toEqual(reasons)
+    })
+  })
+
   describe('getReferralStatuses', () => {
     it('should return referral statuses', async () => {
       const referralStatuses = referralStatusRefDataFactory.buildList(2)

@@ -16,7 +16,7 @@ import Helpers from '../../testutils/helpers'
 import { FormUtils, ReferralUtils, ShowReferralUtils } from '../../utils'
 import type { Person, Referral, ReferralStatusReason } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { GovukFrontendRadiosItem } from '@govuk-frontend'
+import type { GovukFrontendFieldsetLegend, GovukFrontendRadiosItem } from '@govuk-frontend'
 
 jest.mock('../../utils/formUtils')
 jest.mock('../../utils/referrals/referralUtils')
@@ -42,6 +42,23 @@ describe('ReasonController', () => {
     { text: 'Reason A', value: 'STATUS-REASON-A' },
     { text: 'Reason B', value: 'STATUS-REASON-B' },
   ]
+  const reasonsFieldsets: Array<{
+    legend: GovukFrontendFieldsetLegend
+    radios: Array<GovukFrontendRadiosItem>
+    testId: string
+  }> = [
+    {
+      legend: { text: 'Choose reason' },
+      radios: radioItems,
+      testId: 'STATUS-CAT-A-reason-options',
+    },
+  ]
+  const groupedReasons = {
+    'STATUS-CAT-A': [
+      { code: 'STATUS-REASON-A', description: 'Reason A', referralCategoryCode: 'STATUS-CAT-A' },
+      { code: 'STATUS-REASON-B', description: 'Reason B', referralCategoryCode: 'STATUS-CAT-A' },
+    ],
+  }
   const timelineItems: Array<MojTimelineItem> = [
     {
       byline: { text: 'Test User' },
@@ -75,13 +92,14 @@ describe('ReasonController', () => {
       referralId: referral.id,
       statusCategoryCode: 'STATUS-CAT-A',
     }
-    mockReferralUtils.statusOptionsToRadioItems.mockReturnValue(radioItems)
+    mockReferralUtils.groupReasonsByCategory.mockReturnValue(groupedReasons)
+    mockReferralUtils.createReasonsFieldset.mockReturnValue(reasonsFieldsets)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
 
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
     referralService.getReferralStatusHistory.mockResolvedValue(referralStatusHistory)
-    referenceDataService.getReferralStatusCodeReasons.mockResolvedValue(referralStatusCodeReasons)
+    referenceDataService.getReferralStatusCodeReasonsWithCategory.mockResolvedValue(referralStatusCodeReasons)
 
     controller = new ReasonController(personService, referenceDataService, referralService)
 
@@ -108,24 +126,18 @@ describe('ReasonController', () => {
         pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
         pageHeading: 'Deselection reason',
         person,
-        radioItems,
-        radioLegend: 'Choose the deselection reason',
-
+        reasonsFieldsets,
         timelineItems: timelineItems.slice(0, 1),
       })
 
-      expect(referenceDataService.getReferralStatusCodeReasons).toHaveBeenCalledWith(
-        username,
-        'STATUS-CAT-A',
-        'DESELECTED',
-        { deselectAndKeepOpen: false },
-      )
+      expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(username, 'DESELECTED')
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reasonCode'])
-      expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeReasons, undefined)
+      expect(ReferralUtils.groupReasonsByCategory).toHaveBeenCalledWith(referralStatusCodeReasons)
+      expect(ReferralUtils.createReasonsFieldset).toHaveBeenCalledWith(groupedReasons, undefined)
       expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
     })
 
@@ -161,21 +173,19 @@ describe('ReasonController', () => {
           pageDescription: 'If you withdraw the referral, it will be closed.',
           pageHeading: 'Withdrawal reason',
           person,
-          radioItems,
-          radioLegend: 'Select the reason for this withdrawal',
+          reasonsFieldsets,
           timelineItems: timelineItems.slice(0, 1),
         })
 
-        expect(referenceDataService.getReferralStatusCodeReasons).toHaveBeenCalledWith(
+        expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
           username,
-          'STATUS-CAT-A',
           'WITHDRAWN',
-          { deselectAndKeepOpen: false },
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
         expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reasonCode'])
-        expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeReasons, undefined)
+        expect(ReferralUtils.groupReasonsByCategory).toHaveBeenCalledWith(referralStatusCodeReasons)
+        expect(ReferralUtils.createReasonsFieldset).toHaveBeenCalledWith(groupedReasons, undefined)
         expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
       })
     })
@@ -196,21 +206,19 @@ describe('ReasonController', () => {
             'Deselecting someone means they cannot continue the programme. The referral will stay open until they can rejoin or restart the programme.',
           pageHeading: 'Deselection reason',
           person,
-          radioItems,
-          radioLegend: 'Choose the deselection reason',
+          reasonsFieldsets,
           timelineItems: timelineItems.slice(0, 1),
         })
 
-        expect(referenceDataService.getReferralStatusCodeReasons).toHaveBeenCalledWith(
+        expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
           username,
-          'STATUS-CAT-A',
           'DESELECTED',
-          { deselectAndKeepOpen: true },
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
         expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reasonCode'])
-        expect(ReferralUtils.statusOptionsToRadioItems).toHaveBeenCalledWith(referralStatusCodeReasons, undefined)
+        expect(ReferralUtils.groupReasonsByCategory).toHaveBeenCalledWith(referralStatusCodeReasons)
+        expect(ReferralUtils.createReasonsFieldset).toHaveBeenCalledWith(groupedReasons, undefined)
         expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
       })
     })
@@ -265,47 +273,16 @@ describe('ReasonController', () => {
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show.statusHistory({ referralId: referral.id }))
       })
     })
-
-    describe('when there are no reasons for the provided category and status', () => {
-      beforeEach(() => {
-        referenceDataService.getReferralStatusCodeReasons.mockResolvedValue([])
-      })
-
-      it('should redirect to the selection page and set `statusReasonCode` to `undefined` ', async () => {
-        const requestHandler = controller.show()
-        await requestHandler(request, response, next)
-
-        expect(request.session.referralStatusUpdateData).toEqual({
-          ...referralStatusUpdateData,
-          statusReasonCode: undefined,
-        })
-        expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.updateStatus.selection.show({ referralId: referral.id }),
-        )
-      })
-
-      describe('and the initialStatusDecision is `DESELECTED|OPEN`', () => {
-        it('should redirect to the decision show page with a `deselectAndKeepOpen` query param set to `true`', async () => {
-          request.session.referralStatusUpdateData = {
-            ...referralStatusUpdateData,
-            initialStatusDecision: 'DESELECTED|OPEN',
-          }
-          referenceDataService.getReferralStatusCodeReasons.mockResolvedValue([])
-
-          const requestHandler = controller.show()
-          await requestHandler(request, response, next)
-
-          expect(response.redirect).toHaveBeenCalledWith(
-            `${assessPaths.updateStatus.decision.show({ referralId: referral.id })}?deselectAndKeepOpen=true`,
-          )
-        })
-      })
-    })
   })
 
   describe('submit', () => {
     beforeEach(() => {
       request.body = { reasonCode: 'STATUS-REASON-A' }
+
+      referenceDataService.getReferralStatusCodeReasonsWithCategory.mockResolvedValue([
+        ...referralStatusCodeReasons,
+        referralStatusReasonFactory.build({ code: 'STATUS-REASON-A', referralCategoryCode: 'STATUS-CAT-A' }),
+      ])
     })
 
     it('should update `referralStatusUpdateData` and redirect to refer selection page', async () => {
@@ -316,6 +293,7 @@ describe('ReasonController', () => {
         ...referralStatusUpdateData,
         statusReasonCode: 'STATUS-REASON-A',
       })
+      expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(username, 'DESELECTED')
       expect(response.redirect).toHaveBeenCalledWith(
         referPaths.updateStatus.selection.show({ referralId: referral.id }),
       )
@@ -339,28 +317,24 @@ describe('ReasonController', () => {
     })
 
     describe('when there is no `referralStatusUpdateData`', () => {
-      it('should redirect to the select category page', async () => {
+      it('should redirect to the status history page', async () => {
         delete request.session.referralStatusUpdateData
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.updateStatus.category.show({ referralId: referral.id }),
-        )
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show.statusHistory({ referralId: referral.id }))
       })
     })
 
-    describe('when there is no `referralStatusUpdateData.statusCategoryCode` value', () => {
-      it('should redirect to the select category page', async () => {
-        delete request.session.referralStatusUpdateData?.statusCategoryCode
+    describe('when there is no `referralStatusUpdateData.decisionForCategoryAndReason` value', () => {
+      it('should redirect to the status history page', async () => {
+        delete request.session.referralStatusUpdateData?.decisionForCategoryAndReason
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.updateStatus.category.show({ referralId: referral.id }),
-        )
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show.statusHistory({ referralId: referral.id }))
       })
     })
 
@@ -389,6 +363,43 @@ describe('ReasonController', () => {
         expect(response.redirect).toHaveBeenCalledWith(
           `${assessPaths.updateStatus.decision.show({ referralId: referral.id })}?deselectAndKeepOpen=true`,
         )
+      })
+    })
+
+    describe('when `reasonCode` is `OTHER`', () => {
+      describe('and the status decision is `DESELECTED`', () => {
+        it('should update `referralStatusUpdateData` with the correct category code and reason code', async () => {
+          request.body = { reasonCode: 'OTHER' }
+
+          const requestHandler = controller.submit()
+          await requestHandler(request, response, next)
+
+          expect(request.session.referralStatusUpdateData).toEqual({
+            ...referralStatusUpdateData,
+            statusCategoryCode: 'D_OTHER',
+            statusReasonCode: undefined,
+          })
+        })
+      })
+
+      describe('and the status decision is `WITHDRAWN`', () => {
+        it('should update `referralStatusUpdateData` with the correct category code and reason code', async () => {
+          request.body = { reasonCode: 'OTHER' }
+          request.session.referralStatusUpdateData = {
+            ...referralStatusUpdateData,
+            decisionForCategoryAndReason: 'WITHDRAWN',
+          }
+
+          const requestHandler = controller.submit()
+          await requestHandler(request, response, next)
+
+          expect(request.session.referralStatusUpdateData).toEqual({
+            ...referralStatusUpdateData,
+            decisionForCategoryAndReason: 'WITHDRAWN',
+            statusCategoryCode: 'W_OTHER',
+            statusReasonCode: undefined,
+          })
+        })
       })
     })
   })

@@ -30,7 +30,7 @@ export default class UpdateStatusActionsController {
         referralId,
       }
 
-      return res.redirect(referPaths.updateStatus.category.show({ referralId }))
+      return res.redirect(referPaths.updateStatus.reason.show({ referralId }))
     }
   }
 }

@@ -13,8 +13,13 @@ export default class WithdrawReasonPage extends Page {
   }
 
   shouldContainWithdrawalReasonRadioItems(referralStatusReasons: Array<ReferralStatusReason>) {
-    cy.get('[data-testid="reason-options"]').within(() => {
-      this.shouldContainRadioItems(ReferralUtils.statusOptionsToRadioItems(referralStatusReasons))
+    const groupedOptions = ReferralUtils.groupReasonsByCategory(referralStatusReasons)
+    const reasonFieldsets = ReferralUtils.createReasonsFieldset(groupedOptions)
+
+    reasonFieldsets.forEach(reasonFieldset => {
+      cy.get(`[data-testid="${reasonFieldset.testId}"]`).within(() => {
+        this.shouldContainRadioItems(reasonFieldset.radios)
+      })
     })
   }
 }
