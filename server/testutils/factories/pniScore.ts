@@ -52,8 +52,8 @@ export default Factory.define<PniScore>(() => {
     RiskScore: {
       IndividualRiskScores: {
         ogrs3: FactoryHelpers.optionalNumber(3),
-        ospDc: FactoryHelpers.optionalNumber(3),
-        ospIic: FactoryHelpers.optionalNumber(3),
+        ospDc: FactoryHelpers.optionalNumber(3)?.toString(),
+        ospIic: FactoryHelpers.optionalNumber(3)?.toString(),
         ovp: FactoryHelpers.optionalNumber(3),
         rsr: FactoryHelpers.optionalNumber(3),
         sara: FactoryHelpers.optionalArrayElement(['LOW', 'MEDIUM', 'HIGH']),

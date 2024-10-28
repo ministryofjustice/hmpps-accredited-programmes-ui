@@ -221,6 +221,64 @@ export interface ReferralCreated {
   referralId: string
 }
 
+export interface CourseEntity {
+  /** @format uuid */
+  id?: string
+  /** @format int64 */
+  version: number
+  name: string
+  identifier: string
+  description?: string
+  alternateName?: string
+  /** @uniqueItems true */
+  prerequisites: PrerequisiteEntity[]
+  /** @uniqueItems true */
+  offerings: OfferingEntity[]
+  audience: string
+  audienceColour?: string
+  withdrawn: boolean
+  listDisplayName?: string
+}
+
+export interface OfferingEntity {
+  /** @format uuid */
+  id?: string
+  /** @format int64 */
+  version: number
+  organisationId: string
+  contactEmail: string
+  secondaryContactEmail?: string
+  withdrawn: boolean
+  referable: boolean
+  course: CourseEntity
+}
+
+export interface PrerequisiteEntity {
+  name: string
+  description: string
+}
+
+export interface ReferralEntity {
+  /** @format uuid */
+  id?: string
+  /** @format int64 */
+  version: number
+  offering: OfferingEntity
+  prisonNumber: string
+  referrer: ReferrerUserEntity
+  additionalInformation?: string
+  oasysConfirmed: boolean
+  hasReviewedProgrammeHistory: boolean
+  status: string
+  /** @example "2024-10-16T02:21:59" */
+  submittedOn?: object
+  deleted: boolean
+}
+
+export interface ReferrerUserEntity {
+  username: string
+}
+
 export interface ReferralCreate {
   /**
    * The id (UUID) of an active offering
@@ -449,6 +507,12 @@ export interface ReportContent {
   parameters: Parameters
   /** The result of the statistics query */
   content: Content
+}
+
+export interface ReportStatusCountProjection {
+  count: number
+  status: string
+  orgId: string
 }
 
 export interface ReportTypes {
@@ -1188,10 +1252,10 @@ export interface IndividualRiskScores {
   ogrs3?: number
   /** @example 2 */
   ovp?: number
-  /** @example 0 */
-  ospDc?: number
-  /** @example 1 */
-  ospIic?: number
+  /** @example "0" */
+  ospDc?: string
+  /** @example "1" */
+  ospIic?: string
   /** @example 5 */
   rsr?: number
   /** @example "LOW" */

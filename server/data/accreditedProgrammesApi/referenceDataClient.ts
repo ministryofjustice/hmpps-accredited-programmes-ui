@@ -60,6 +60,14 @@ export default class ReferenceDataClient {
     })) as Array<ReferralStatusReason>
   }
 
+  async findReferralStatusCodeReasonsWithCategory(
+    referralStatusCode: Extract<ReferralStatusUppercase, 'DESELECTED' | 'WITHDRAWN'>,
+  ): Promise<Array<ReferralStatusReason>> {
+    return (await this.restClient.get({
+      path: apiPaths.referenceData.referralStatuses.statusCodeReasonsWithCategories({ referralStatusCode }),
+    })) as Array<ReferralStatusReason>
+  }
+
   async findReferralStatuses(): Promise<Array<ReferralStatusRefData>> {
     return (await this.restClient.get({
       path: apiPaths.referenceData.referralStatuses.show({}),

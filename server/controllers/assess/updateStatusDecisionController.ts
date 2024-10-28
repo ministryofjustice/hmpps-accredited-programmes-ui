@@ -101,7 +101,7 @@ export default class UpdateStatusDecisionController {
       }
 
       if (statusDecisionValue === 'DESELECTED' || statusDecisionValue === 'WITHDRAWN') {
-        return res.redirect(assessPaths.updateStatus.category.show({ referralId }))
+        return res.redirect(assessPaths.updateStatus.reason.show({ referralId }))
       }
 
       return res.redirect(assessPaths.updateStatus.selection.show({ referralId }))

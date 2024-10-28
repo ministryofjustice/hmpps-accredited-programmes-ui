@@ -39,7 +39,7 @@ describe('UpdateStatusActionsController', () => {
   })
 
   describe('withdraw', () => {
-    it('should set `referralStatusUpdateData` in the session and redirect to the update status select category show page', async () => {
+    it('should set `referralStatusUpdateData` in the session and redirect to the update status select reason show page', async () => {
       controller.withdraw()(request, response, next)
 
       expect(request.session.referralStatusUpdateData).toEqual({
@@ -48,7 +48,7 @@ describe('UpdateStatusActionsController', () => {
         initialStatusDecision: 'WITHDRAWN',
         referralId,
       })
-      expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.category.show({ referralId }))
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.reason.show({ referralId }))
     })
   })
 })

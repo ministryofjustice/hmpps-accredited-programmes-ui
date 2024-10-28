@@ -288,7 +288,7 @@ describe('UpdateStatusDecisionController', () => {
     })
 
     describe('when `statusDecision` is `WITHDRAWN`', () => {
-      it('should redirect to the category page show page', async () => {
+      it('should redirect to the reason show page', async () => {
         request.body = { statusDecision: 'WITHDRAWN' }
 
         const requestHandler = controller.submit()
@@ -301,13 +301,13 @@ describe('UpdateStatusDecisionController', () => {
           referralId: referral.id,
         })
         expect(response.redirect).toHaveBeenCalledWith(
-          assessPaths.updateStatus.category.show({ referralId: referral.id }),
+          assessPaths.updateStatus.reason.show({ referralId: referral.id }),
         )
       })
     })
 
     describe('when `statusDecision` is `DESELECTED`', () => {
-      it('should redirect to the category page show page', async () => {
+      it('should redirect to the reason show page', async () => {
         request.body = { statusDecision: 'DESELECTED' }
 
         const requestHandler = controller.submit()
@@ -320,13 +320,13 @@ describe('UpdateStatusDecisionController', () => {
           referralId: referral.id,
         })
         expect(response.redirect).toHaveBeenCalledWith(
-          assessPaths.updateStatus.category.show({ referralId: referral.id }),
+          assessPaths.updateStatus.reason.show({ referralId: referral.id }),
         )
       })
     })
 
     describe('when `statusDecision` is `DESELECTED|OPEN`', () => {
-      it('should set the correct `referralStatusUpdateData` values and redirect to the category page show page', async () => {
+      it('should set the correct `referralStatusUpdateData` values and redirect to the reason show page', async () => {
         request.body = { statusDecision: 'DESELECTED|OPEN' }
 
         const requestHandler = controller.submit()
@@ -339,7 +339,7 @@ describe('UpdateStatusDecisionController', () => {
           referralId: referral.id,
         })
         expect(response.redirect).toHaveBeenCalledWith(
-          assessPaths.updateStatus.category.show({ referralId: referral.id }),
+          assessPaths.updateStatus.reason.show({ referralId: referral.id }),
         )
       })
     })
