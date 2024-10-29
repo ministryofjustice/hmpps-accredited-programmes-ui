@@ -266,9 +266,19 @@ export default class NewReferralsController {
         return res.redirect(referPaths.new.show({ referralId }))
       }
 
-      await this.referralService.submitReferral(req.user.username, referralId)
+      try {
+        await this.referralService.submitReferral(req.user.username, referralId)
 
-      return res.redirect(referPaths.new.complete({ referralId }))
+        return res.redirect(referPaths.new.complete({ referralId }))
+      } catch (error) {
+        const sanitisedError = error as SanitisedError
+
+        if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.status === 409) {
+          return res.redirect(referPaths.show.duplicate({ referralId: sanitisedError.data.id }))
+        }
+
+        throw createError(sanitisedError.status || 500, `Unable to submit referral with id ${referralId}.`)
+      }
     }
   }
 }
