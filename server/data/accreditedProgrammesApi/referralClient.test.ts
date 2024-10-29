@@ -283,7 +283,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status REFERRAL_STARTED',
         uponReceiving: 'A request to submit referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
-          status: 204,
+          status: 200,
         },
         withRequest: {
           headers: {
