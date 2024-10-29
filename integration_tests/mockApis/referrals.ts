@@ -222,15 +222,16 @@ export default {
       },
     }),
 
-  stubSubmitReferral: (referralId: Referral['id']): SuperAgentRequest =>
+  stubSubmitReferral: (args: { body: Referral; referralId: Referral['id']; status?: number }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'POST',
-        url: apiPaths.referrals.submit({ referralId }),
+        url: apiPaths.referrals.submit({ referralId: args.referralId }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        status: 204,
+        jsonBody: args.body,
+        status: args.status || 200,
       },
     }),
 

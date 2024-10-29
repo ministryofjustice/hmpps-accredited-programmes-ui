@@ -1,5 +1,5 @@
 import { ApplicationRoles } from '../../../../server/middleware/roleBasedAccessMiddleware'
-import { referPaths } from '../../../../server/paths'
+import { findPaths, referPaths } from '../../../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -13,7 +13,12 @@ import {
 import { OrganisationUtils, StringUtils } from '../../../../server/utils'
 import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
-import { NewReferralCheckAnswersPage, NewReferralCompletePage, NewReferralTaskListPage } from '../../../pages/refer'
+import {
+  NewReferralCheckAnswersPage,
+  NewReferralCompletePage,
+  NewReferralDuplicatePage,
+  NewReferralTaskListPage,
+} from '../../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type { UserEmail } from '@manage-users-api'
 
@@ -173,7 +178,7 @@ context('Submitting a referral', () => {
 
     it('redirects to the referral complete page when the user confirms the details', () => {
       cy.task('stubReferral', submittableReferral)
-      cy.task('stubSubmitReferral', submittableReferral.id)
+      cy.task('stubSubmitReferral', { body: submittableReferral, referralId: submittableReferral.id })
 
       const path = referPaths.new.checkAnswers({ referralId: submittableReferral.id })
       cy.visit(path)
@@ -228,6 +233,55 @@ context('Submitting a referral', () => {
           message: 'Tick the box to confirm the information you have provided is correct',
         },
       ])
+    })
+
+    describe('When there is a duplicate referral', () => {
+      it('redirects to the duplicate referral page', () => {
+        const duplicateReferral = referralFactory.submitted().build({
+          offeringId: courseOffering.id,
+          prisonNumber: person.prisonNumber,
+          referrerUsername: addedByUser1.username,
+        })
+
+        cy.task('stubReferral', submittableReferral)
+        cy.task('stubReferral', duplicateReferral)
+        cy.task('stubSubmitReferral', { body: duplicateReferral, referralId: submittableReferral.id, status: 409 })
+        cy.task('stubStatusTransitions', {
+          referralId: duplicateReferral.id,
+          statusTransitions: [],
+        })
+
+        const path = referPaths.new.checkAnswers({ referralId: submittableReferral.id })
+        cy.visit(path)
+
+        const checkAnswersPage = Page.verifyOnPage(NewReferralCheckAnswersPage, {
+          course,
+          courseOffering,
+          organisation,
+          participations: courseParticipationsPresenter,
+          person,
+          referral: submittableReferral,
+          referrerEmail: addedByUser1Email.email,
+          referrerName: addedByUser1.name,
+        })
+        checkAnswersPage.confirmDetailsAndSubmitReferral()
+
+        const duplicatePage = Page.verifyOnPage(NewReferralDuplicatePage, {
+          course,
+          courseOffering,
+          organisation,
+          person,
+          referral: duplicateReferral,
+        })
+        duplicatePage.shouldContainBackLink(
+          referPaths.new.people.show({ courseOfferingId: course.id, prisonNumber: person.prisonNumber }),
+        )
+        duplicatePage.shouldContainReferralExistsText()
+        duplicatePage.shouldContainCourseOfferingSummaryList()
+        duplicatePage.shouldContainSubmissionSummaryList('Bobby Brown', 'referrer.user@email-test.co.uk')
+        duplicatePage.shouldContainWarningText('You cannot create this referral while a duplicate referral is open.')
+        duplicatePage.shouldContainButtonLink('Return to programme list', findPaths.index({}))
+      })
     })
   })
 

@@ -491,7 +491,7 @@ describe('NewReferralsController', () => {
       it('redirects to the show referral action', async () => {
         request.params.referralId = draftReferral.id
         referralService.getReferral.mockResolvedValue(draftReferral)
-        ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
+        mockNewReferralUtils.isReadyForSubmission.mockReturnValue(false)
 
         TypeUtils.assertHasUser(request)
 
@@ -507,6 +507,8 @@ describe('NewReferralsController', () => {
   describe('submit', () => {
     beforeEach(() => {
       request.params.referralId = referralId
+
+      mockNewReferralUtils.isReadyForSubmission.mockReturnValue(true)
     })
 
     it('asks the service to update the referral status to submitted and redirects to the complete action', async () => {
@@ -514,7 +516,6 @@ describe('NewReferralsController', () => {
       request.body.confirmation = 'true'
 
       request.params.referralId = referralId
-      ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(true)
 
       const requestHandler = controller.submit()
       await requestHandler(request, response, next)
@@ -577,13 +578,32 @@ describe('NewReferralsController', () => {
 
         referralService.getReferral.mockResolvedValue(draftReferral)
         request.params.referralId = referralId
-        ;(NewReferralUtils.isReadyForSubmission as jest.Mock).mockReturnValue(false)
+        mockNewReferralUtils.isReadyForSubmission.mockReturnValue(false)
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+      })
+    })
+
+    describe('when there is a duplicate referral', () => {
+      it('redirects to the show duplicate action', async () => {
+        const duplicateReferral = referralFactory.started().build({ id: referralId })
+        const error = createError(409, 'Duplicate referral', { response: { body: duplicateReferral, status: 409 } })
+        const sanitisedError = sanitiseError(error)
+
+        referralService.submitReferral.mockRejectedValue(sanitisedError)
+
+        request.body.confirmation = 'true'
+        request.params.referralId = referralId
+        referralService.getReferral.mockResolvedValue(submittableReferral)
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.show.duplicate({ referralId: duplicateReferral.id }))
       })
     })
   })
