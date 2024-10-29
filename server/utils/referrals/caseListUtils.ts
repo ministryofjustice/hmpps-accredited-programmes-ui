@@ -285,7 +285,7 @@ export default class CaseListUtils {
   }
 
   private static formattedPrisonerName(forename?: ReferralView['forename'], surname?: ReferralView['surname']): string {
-    return StringUtils.convertToTitleCase([forename, surname].filter(nameComponent => nameComponent).join(' '))
+    return StringUtils.convertToTitleCase([surname, forename].filter(nameComponent => nameComponent).join(', '))
   }
 
   private static nameAndPrisonNumberHtml(

@@ -517,7 +517,7 @@ describe('CaseListUtils', () => {
     describe('Name and prison number', () => {
       it('returns a HTML string with the prisoner name on the first line, which links to the referral, and their prison number on a new line', () => {
         expect(CaseListUtils.tableRowContent(referralView, 'Name and prison number')).toEqual(
-          '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details?updatePerson=true">Del Hatton</a><br>ABC1234',
+          '<a class="govuk-link" href="/assess/referrals/referral-123/personal-details?updatePerson=true">Hatton, Del</a><br>ABC1234',
         )
       })
 
@@ -530,7 +530,7 @@ describe('CaseListUtils', () => {
               assessPaths,
             ),
           ).toEqual(
-            '<a class="govuk-link" href="/refer/referrals/new/referral-123?updatePerson=true">Del Hatton</a><br>ABC1234',
+            '<a class="govuk-link" href="/refer/referrals/new/referral-123?updatePerson=true">Hatton, Del</a><br>ABC1234',
           )
         })
       })
@@ -538,7 +538,7 @@ describe('CaseListUtils', () => {
       describe('when referPaths is passed in as the paths argument', () => {
         it('links to the Refer show status history referral page', () => {
           expect(CaseListUtils.tableRowContent(referralView, 'Name and prison number', referPaths)).toEqual(
-            '<a class="govuk-link" href="/refer/referrals/referral-123/status-history?updatePerson=true">Del Hatton</a><br>ABC1234',
+            '<a class="govuk-link" href="/refer/referrals/referral-123/status-history?updatePerson=true">Hatton, Del</a><br>ABC1234',
           )
         })
       })
