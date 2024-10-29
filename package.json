@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.0.0",
-    "@ministryofjustice/frontend": "2.2",
+    "@ministryofjustice/frontend": "3.0",
     "@ministryofjustice/hmpps-connect-dps-components": "^1.2.0",
     "@sentry/node": "^7.54.0",
     "agentkeepalive": "^4.3.0",
