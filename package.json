@@ -54,7 +54,7 @@
     "watch:views": "nodemon --watch server/views -e html,njk -x npm run copy-views"
   },
   "engines": {
-    "node": "^20",
+    "node": "^22.0.0",
     "npm": "^10.0.0"
   },
   "dependencies": {
@@ -109,7 +109,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/lodash": "^4.14.194",
     "@types/method-override": "^0.0.35",
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.0.0",
     "@types/nunjucks": "^3.2.2",
     "@types/object.groupby": "^1.0.4",
     "@types/passport": "^1.0.12",
