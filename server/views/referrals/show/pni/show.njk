@@ -3,14 +3,12 @@
 
 {% extends "../partials/rootLayout.njk" %}
 
-{% set showCalculatedData = hasData and not missingInformation %}
-
 {% block supportingContent %}
   <p data-testid="programme-needs-identifier-message">This is the recommended Accredited Programmes pathway. It is based on the person's risks and needs.</p>
 
   {% include "./_pathway.njk" %}
 
-  {% if showCalculatedData %}
+  {% if hasData %}
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
   {% endif %}
 {% endblock supportingContent %}
@@ -18,14 +16,14 @@
 {% block content %}
   {{ super() }}
 
-  {% if showCalculatedData %}
+  {% if hasData %}
     <div id="content" class="govuk-grid-row">
       <div class="govuk-grid-column-three-quarters">
-        <h2 class="govuk-heading-m" data-testid="calculated-sub-heading">How is this calculated?</h2>
+        <h2 class="govuk-heading-m" data-testid="calculated-sub-heading">{{ 'What information is missing' if missingInformation else 'How is this calculated?' }}</h2>
         <p>The recommended pathway is based on a combination of:</p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
           <li>
-            <a href="{{ riskScoresHref }}">risk scores</a>
+            <a href="{{ riskScoresHref }}">risk scores</a>{{ ' – check whether any relevant risk scores are missing' if missingInformation }}
           </li>
           <li>the programme needs identifier (PNI), which uses the following scores</li>
         </ul>

@@ -1,4 +1,3 @@
-import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
 import type { Person } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
 import type {
@@ -10,7 +9,7 @@ import type {
 } from '@accredited-programmes-api'
 
 export default class PniUtils {
-  static needScoreToString(needScore?: number): string {
+  static needScoreToString(needScore: number | null): string {
     switch (needScore) {
       case 0:
         return 'Low need'
@@ -19,7 +18,7 @@ export default class PniUtils {
       case 2:
         return 'High need'
       default:
-        return 'Unknown'
+        return 'Cannot calculate – information missing'
     }
   }
 
@@ -76,9 +75,7 @@ export default class PniUtils {
           text: '6.1 - Current relationship with close family',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            relationshipDomainScore.individualRelationshipScores.curRelCloseFamily?.toString(),
-          ),
+          text: this.scoreValueText(relationshipDomainScore.individualRelationshipScores.curRelCloseFamily),
         },
       },
       {
@@ -86,9 +83,7 @@ export default class PniUtils {
           text: '6.6 - Previous experience of close relationships',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            relationshipDomainScore.individualRelationshipScores.prevExpCloseRel?.toString(),
-          ),
+          text: this.scoreValueText(relationshipDomainScore.individualRelationshipScores.prevExpCloseRel),
         },
       },
       {
@@ -96,9 +91,7 @@ export default class PniUtils {
           text: '7.3 - Easily influenced by criminal associates',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            relationshipDomainScore.individualRelationshipScores.easilyInfluenced?.toString(),
-          ),
+          text: this.scoreValueText(relationshipDomainScore.individualRelationshipScores.easilyInfluenced),
         },
       },
       {
@@ -106,8 +99,8 @@ export default class PniUtils {
           text: '11.3 - Aggressive or controlling behaviour',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            relationshipDomainScore.individualRelationshipScores.aggressiveControllingBehaviour?.toString(),
+          text: this.scoreValueText(
+            relationshipDomainScore.individualRelationshipScores.aggressiveControllingBehaviour,
           ),
         },
       },
@@ -122,6 +115,10 @@ export default class PniUtils {
     ]
   }
 
+  static scoreValueText(value?: number | null): string {
+    return value?.toString() || 'Score missing'
+  }
+
   static selfManagementSummaryListRows(
     selfManagementDomainScore: SelfManagementDomainScore,
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
@@ -131,9 +128,7 @@ export default class PniUtils {
           text: '11.2 - Impulsivity',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            selfManagementDomainScore.individualSelfManagementScores.impulsivity?.toString(),
-          ),
+          text: this.scoreValueText(selfManagementDomainScore.individualSelfManagementScores.impulsivity),
         },
       },
       {
@@ -141,9 +136,7 @@ export default class PniUtils {
           text: '11.4 - Temper control',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            selfManagementDomainScore.individualSelfManagementScores.temperControl?.toString(),
-          ),
+          text: this.scoreValueText(selfManagementDomainScore.individualSelfManagementScores.temperControl),
         },
       },
       {
@@ -151,9 +144,7 @@ export default class PniUtils {
           text: '11.6 - Problem-solving skills',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            selfManagementDomainScore.individualSelfManagementScores.problemSolvingSkills?.toString(),
-          ),
+          text: this.scoreValueText(selfManagementDomainScore.individualSelfManagementScores.problemSolvingSkills),
         },
       },
       {
@@ -161,9 +152,7 @@ export default class PniUtils {
           text: '10.1 - Difficulties coping',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            selfManagementDomainScore.individualSelfManagementScores.difficultiesCoping?.toString(),
-          ),
+          text: this.scoreValueText(selfManagementDomainScore.individualSelfManagementScores.difficultiesCoping),
         },
       },
       {
@@ -184,7 +173,7 @@ export default class PniUtils {
           text: '11.11 - Sexual Pre-occupation',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(sexDomainScore.individualSexScores.sexualPreOccupation?.toString()),
+          text: this.scoreValueText(sexDomainScore.individualSexScores.sexualPreOccupation),
         },
       },
       {
@@ -192,9 +181,7 @@ export default class PniUtils {
           text: '11.12 - Offence related Sexual Interests',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            sexDomainScore.individualSexScores.offenceRelatedSexualInterests?.toString(),
-          ),
+          text: this.scoreValueText(sexDomainScore.individualSexScores.offenceRelatedSexualInterests),
         },
       },
       {
@@ -202,7 +189,7 @@ export default class PniUtils {
           text: '6.12 Emotional congruence with children or feeling closer to children than adults',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(sexDomainScore.individualSexScores.emotionalCongruence?.toString()),
+          text: this.scoreValueText(sexDomainScore.individualSexScores.emotionalCongruence),
         },
       },
       {
@@ -225,9 +212,7 @@ export default class PniUtils {
           text: '12.1 Pro-criminal attitudes',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            thinkingDomainScore.individualThinkingScores.proCriminalAttitudes?.toString(),
-          ),
+          text: this.scoreValueText(thinkingDomainScore.individualThinkingScores.proCriminalAttitudes),
         },
       },
       {
@@ -235,9 +220,7 @@ export default class PniUtils {
           text: '12.9 Hostile orientation',
         },
         value: {
-          text: ShowRisksAndNeedsUtils.textValue(
-            thinkingDomainScore.individualThinkingScores.hostileOrientation?.toString(),
-          ),
+          text: this.scoreValueText(thinkingDomainScore.individualThinkingScores.hostileOrientation),
         },
       },
       {

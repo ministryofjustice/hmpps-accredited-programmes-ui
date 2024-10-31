@@ -65,7 +65,7 @@ describe('PniUtils', () => {
       expect(PniUtils.needScoreToString(0)).toBe('Low need')
       expect(PniUtils.needScoreToString(1)).toBe('Medium need')
       expect(PniUtils.needScoreToString(2)).toBe('High need')
-      expect(PniUtils.needScoreToString()).toBe('Unknown')
+      expect(PniUtils.needScoreToString(null)).toBe('Cannot calculate – information missing')
     })
   })
 
@@ -166,6 +166,14 @@ describe('PniUtils', () => {
           },
         },
       ])
+    })
+  })
+
+  describe('scoreValueText', () => {
+    it('returns the string representation of the given score', () => {
+      expect(PniUtils.scoreValueText(0)).toBe('0')
+      expect(PniUtils.scoreValueText(null)).toBe('Score missing')
+      expect(PniUtils.scoreValueText(undefined)).toBe('Score missing')
     })
   })
 
