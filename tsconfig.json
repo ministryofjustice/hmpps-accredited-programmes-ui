@@ -1,15 +1,12 @@
 {
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compileOnSave": true,
   "compilerOptions": {
-    "strict": true,
-    "target": "es2018",
-    "module": "commonjs",
-    "moduleResolution": "node",
     "outDir": "./dist",
     "sourceMap": true,
     "noEmit": false,
-    "allowJs": true,
-    "checkJs": true,
+    "allowJs": false,
+    "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
