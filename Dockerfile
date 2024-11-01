@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:21-slim AS base
+FROM node:22-11-slim AS base
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available

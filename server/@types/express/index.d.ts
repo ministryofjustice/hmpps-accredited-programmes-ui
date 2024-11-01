@@ -52,7 +52,6 @@ interface ReferralStatusUpdateSessionData {
   statusReasonCode?: Uppercase<string>
 }
 
-// @ts-expect-error to fix later
 export { global }
 
 export type { ReferralStatusUpdateSessionData, RequestWithUser }
