@@ -19,7 +19,7 @@ parameters:
 
   node-version:
     type: string
-    default: 21.2-browsers
+    default: 22.11-browsers
 
 jobs:
   build:
