@@ -1,8 +1,9 @@
 import { findPaths, referPaths } from '../../../server/paths'
 import { CourseUtils, OrganisationUtils } from '../../../server/utils'
 import Page from '../page'
-import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { CoursePresenter, OrganisationWithOfferingEmailsPresenter } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes-api'
 
 export default class CourseOfferingPage extends Page {
   course: CoursePresenter
@@ -15,7 +16,7 @@ export default class CourseOfferingPage extends Page {
     const { courseOffering, organisation, course } = args
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(coursePresenter.displayName, {
+    super(coursePresenter.displayName || coursePresenter.name, {
       customPageTitleEnd: `${coursePresenter.displayName}, ${organisation.name}`,
     })
 

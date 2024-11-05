@@ -7,8 +7,9 @@ import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
-import type { Course, CourseOffering } from '@accredited-programmes/models'
+import type { CourseOffering } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes-api'
 
 describe('CoursesController', () => {
   const userToken = 'SOME_TOKEN'

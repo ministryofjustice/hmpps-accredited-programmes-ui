@@ -1,7 +1,7 @@
 import { CourseUtils, ShowReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes-api'
 
 export default class StatusHistoryPage extends Page {
   constructor(args: { course: Course }) {

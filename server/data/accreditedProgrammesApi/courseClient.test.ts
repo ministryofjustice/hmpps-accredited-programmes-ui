@@ -1,4 +1,4 @@
-import { Matchers } from '@pact-foundation/pact'
+import { type InterfaceToTemplate, Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
 import CourseClient from './courseClient'
@@ -11,12 +11,8 @@ import {
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
 } from '../../testutils/factories'
-import type {
-  CourseCreateRequest,
-  CourseOffering,
-  CourseParticipationUpdate,
-  CoursePrerequisite,
-} from '@accredited-programmes/models'
+import type { CourseCreateRequest, CourseOffering, CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { CoursePrerequisite } from '@accredited-programmes-api'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -74,9 +70,15 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('all', () => {
     const courses = [
-      courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
-      courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }),
-      courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }),
+      {
+        ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
+        coursePrerequisites: [],
+      },
+      {
+        ...courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }),
+        coursePrerequisites: [],
+      },
+      { ...courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }), coursePrerequisites: [] },
     ]
 
     beforeEach(() => {
@@ -106,12 +108,18 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('createCourse', () => {
-    const course = courseFactory.build()
+    const name = 'Things'
+    const alternateName = 'Things Course'
+    const description = 'A course about things'
+    const course = {
+      ...courseFactory.build({ alternateName, description, name }),
+      coursePrerequisites: [],
+    }
     const courseCreateRequest: CourseCreateRequest = {
-      alternateName: course.alternateName,
+      alternateName,
       audienceId: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2',
-      description: course.description,
-      name: course.name,
+      description,
+      name,
       withdrawn: false,
     }
 
@@ -195,7 +203,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('find', () => {
-    const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
+    const course = { ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }), coursePrerequisites: [] }
 
     beforeEach(() => {
       provider.addInteraction({
@@ -256,7 +264,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findCourseByOffering', () => {
-    const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
+    const course = { ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }), coursePrerequisites: [] }
 
     beforeEach(() => {
       provider.addInteraction({
@@ -313,9 +321,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('findCoursesByOrganisation', () => {
     const courses = [
-      courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
-      courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }),
-      courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }),
+      { ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }), coursePrerequisites: [] },
+      { ...courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }), coursePrerequisites: [] },
+      { ...courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }), coursePrerequisites: [] },
     ]
 
     beforeEach(() => {
@@ -486,7 +494,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe.skip('updateCoursePrerequisites', () => {
     const course = courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' })
-    const prerequisites: Array<CoursePrerequisite> = [
+    const prerequisites: Array<InterfaceToTemplate<CoursePrerequisite>> = [
       {
         description: 'Male',
         name: 'Gender',
@@ -512,7 +520,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('updates the course with the given course prerequisites', async () => {
-      const result = await courseClient.updateCoursePrerequisites(course.id, prerequisites)
+      const result = await courseClient.updateCoursePrerequisites(course.id, prerequisites as Array<CoursePrerequisite>)
 
       expect(result).toEqual(prerequisites)
     })

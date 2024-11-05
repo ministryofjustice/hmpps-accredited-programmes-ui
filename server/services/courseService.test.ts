@@ -73,11 +73,12 @@ describe('CourseService', () => {
 
   describe('createCourse', () => {
     it('creates a course using the `courseCreateRequest` values', async () => {
-      const course = courseFactory.build()
+      const description = faker.lorem.sentence()
+      const course = courseFactory.build({ description })
       const courseCreateRequest: CourseCreateRequest = {
         alternateName: course.alternateName,
         audienceId: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2',
-        description: course.description,
+        description,
         name: course.name,
         withdrawn: false,
       }

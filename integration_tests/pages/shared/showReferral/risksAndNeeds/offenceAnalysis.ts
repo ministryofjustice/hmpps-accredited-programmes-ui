@@ -1,6 +1,7 @@
 import { CourseUtils, OffenceAnalysisUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, OffenceDetail } from '@accredited-programmes/models'
+import type { OffenceDetail } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 export default class OffenceAnalysisPage extends Page {
   offenceDetail: OffenceDetail

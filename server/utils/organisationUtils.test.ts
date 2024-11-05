@@ -8,9 +8,9 @@ import {
   organisationFactory,
   prisonFactory,
 } from '../testutils/factories'
-import type { Course, CourseOffering, Organisation } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
-import type { EnabledOrganisation } from '@accredited-programmes-api'
+import type { Course, EnabledOrganisation } from '@accredited-programmes-api'
 
 describe('OrganisationUtils', () => {
   describe('organisationFromPrison', () => {

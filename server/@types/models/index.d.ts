@@ -1,5 +1,4 @@
 import type { AssessmentDateInfo } from './AssessmentDateInfo'
-import type { Course } from './Course'
 import type { Audience, CourseAudience } from './CourseAudience'
 import type { CourseCreateRequest } from './CourseCreateRequest'
 import type { CourseOffering } from './CourseOffering'
@@ -39,7 +38,6 @@ export type {
   AssessmentDateInfo,
   Audience,
   ConfirmationFields,
-  Course,
   CourseAudience,
   CourseCreateRequest,
   CourseOffering,

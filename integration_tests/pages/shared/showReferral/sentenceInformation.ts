@@ -1,6 +1,7 @@
 import { CourseUtils, SentenceInformationUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course, Person, SentenceDetails } from '@accredited-programmes/models'
+import type { Person, SentenceDetails } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 export default class SentenceInformationPage extends Page {
   person: Person

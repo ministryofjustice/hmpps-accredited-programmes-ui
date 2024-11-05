@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
-import type { CoursePrerequisite } from '@accredited-programmes/models'
+import type { CoursePrerequisite } from '@accredited-programmes-api'
 
 class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
   equivalentLDCProgramme(description?: string) {

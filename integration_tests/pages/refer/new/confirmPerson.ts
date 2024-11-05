@@ -1,6 +1,7 @@
 import { referPaths } from '../../../../server/paths'
 import Page from '../../page'
-import type { Course, CourseOffering, Person } from '@accredited-programmes/models'
+import type { CourseOffering, Person } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 export default class NewReferralConfirmPersonPage extends Page {
   courseOffering: CourseOffering

@@ -6,7 +6,6 @@ import type { CourseClient, HmppsAuthClient, RestClientBuilder, RestClientBuilde
 import { CourseParticipationUtils } from '../utils'
 import type {
   Audience,
-  Course,
   CourseCreateRequest,
   CourseOffering,
   CourseParticipation,
@@ -16,6 +15,7 @@ import type {
   Referral,
 } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
 export default class CourseService {

@@ -1,5 +1,5 @@
-import type { Course } from './Course'
 import type { Person } from './Person'
+import type { Course } from '@accredited-programmes-api'
 
 type CourseParticipationOutcome = {
   status: 'complete' | 'incomplete'

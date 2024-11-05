@@ -4,7 +4,6 @@ import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
   Audience,
-  Course,
   CourseCreateRequest,
   CourseOffering,
   CourseParticipation,
@@ -12,6 +11,7 @@ import type {
   CoursePrerequisite,
   Person,
 } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class CourseClient {
