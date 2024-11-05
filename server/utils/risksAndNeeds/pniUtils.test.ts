@@ -49,7 +49,9 @@ describe('PniUtils', () => {
         ospIic: '3',
         ovp: 4,
         rsr: 5,
-        sara: 'MEDIUM',
+        sara: {
+          sara: 'MEDIUM',
+        },
       },
       classification: 'MEDIUM_RISK',
     },

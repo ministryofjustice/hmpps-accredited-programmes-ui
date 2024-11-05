@@ -9,7 +9,7 @@ import type {
 } from '@accredited-programmes-api'
 
 export default class PniUtils {
-  static needScoreToString(needScore: number | null): string {
+  static needScoreToString(needScore?: number | null): string {
     switch (needScore) {
       case 0:
         return 'Low need'

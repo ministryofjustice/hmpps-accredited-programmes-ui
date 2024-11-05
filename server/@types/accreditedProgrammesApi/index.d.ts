@@ -86,6 +86,8 @@ export interface Course {
   audienceColour?: string
   /** @example true */
   withdrawn?: boolean
+  /** @example true */
+  displayOnProgrammeDirectory?: boolean
 }
 
 /** @example null */
@@ -145,6 +147,11 @@ export interface CourseOffering {
   secondaryContactEmail?: string
   /** @example false */
   withdrawn?: boolean
+  /**
+   * Gender for which course is offered
+   * @example "M"
+   */
+  gender?: 'MALE' | 'FEMALE'
 }
 
 export interface CourseParticipation {
@@ -158,6 +165,11 @@ export interface CourseParticipation {
    * @format uuid
    */
   id: string
+  /**
+   * The unique identifier for the associated referral.
+   * @format uuid
+   */
+  referralId: string
   /**
    * The identity of the person who added this CourseParticipation
    * @example "null"
@@ -238,6 +250,7 @@ export interface CourseEntity {
   audienceColour?: string
   withdrawn: boolean
   listDisplayName?: string
+  displayOnProgrammeDirectory?: boolean
 }
 
 export interface OfferingEntity {
@@ -270,7 +283,7 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-10-16T02:21:59" */
+  /** @example "2024-11-04T14:18:00" */
   submittedOn?: object
   deleted: boolean
 }
@@ -290,6 +303,54 @@ export interface ReferralCreate {
    * @example "A1234AA"
    */
   prisonNumber: string
+}
+
+export interface Referral {
+  /**
+   * The id (UUID) of an active offering
+   * @format uuid
+   */
+  offeringId: string
+  /**
+   * The prison number of the person who is being referred.
+   * @example "A1234AA"
+   */
+  prisonNumber: string
+  /** @example false */
+  oasysConfirmed: boolean
+  /** @example false */
+  hasReviewedProgrammeHistory: boolean
+  /**
+   * The unique id (UUID) of this referral.
+   * @format uuid
+   */
+  id: string
+  /**
+   * The status code of the referral.
+   * @example "null"
+   */
+  status: string
+  /** @example "null" */
+  referrerUsername: string
+  /** @example "null" */
+  additionalInformation?: string
+  /**
+   * Is the status of the referral a closed one.
+   * @example false
+   */
+  closed?: boolean
+  /**
+   * The status description.
+   * @example "null"
+   */
+  statusDescription?: string
+  /**
+   * The colour to display status description.
+   * @example "null"
+   */
+  statusColour?: string
+  /** @example "null" */
+  submittedOn?: string
 }
 
 export interface PeopleSearchResponse {
@@ -426,6 +487,24 @@ export interface CourseCreateRequest {
   identifier?: string
   /** @example "BNM+" */
   alternateName?: string
+  /**
+   * flag is used to display course on the find dir
+   * @example true
+   */
+  displayOnProgrammeDirectory: boolean
+}
+
+export interface BuildingChoicesSearchRequest {
+  /**
+   * Have they been convicted of a sexual offence?
+   * @example true
+   */
+  isConvictedOfSexualOffence: boolean
+  /**
+   * Are they in a women's prison?
+   * @example true
+   */
+  isInAWomensPrison: boolean
 }
 
 export interface CourseParticipationCreate {
@@ -510,9 +589,9 @@ export interface ReportContent {
 }
 
 export interface ReportStatusCountProjection {
+  orgId: string
   count: number
   status: string
-  orgId: string
 }
 
 export interface ReportTypes {
@@ -541,54 +620,6 @@ export interface StatusContent {
   /** @format int32 */
   countAtStatus: number
   courseCounts?: CourseCount[]
-}
-
-export interface Referral {
-  /**
-   * The id (UUID) of an active offering
-   * @format uuid
-   */
-  offeringId: string
-  /**
-   * The prison number of the person who is being referred.
-   * @example "A1234AA"
-   */
-  prisonNumber: string
-  /** @example false */
-  oasysConfirmed: boolean
-  /** @example false */
-  hasReviewedProgrammeHistory: boolean
-  /**
-   * The unique id (UUID) of this referral.
-   * @format uuid
-   */
-  id: string
-  /**
-   * The status code of the referral.
-   * @example "null"
-   */
-  status: string
-  /** @example "null" */
-  referrerUsername: string
-  /** @example "null" */
-  additionalInformation?: string
-  /**
-   * Is the status of the referral a closed one.
-   * @example false
-   */
-  closed?: boolean
-  /**
-   * The status description.
-   * @example "null"
-   */
-  statusDescription?: string
-  /**
-   * The colour to display status description.
-   * @example "null"
-   */
-  statusColour?: string
-  /** @example "null" */
-  submittedOn?: string
 }
 
 export interface ReferralStatusRefData {
@@ -1258,8 +1289,8 @@ export interface IndividualRiskScores {
   ospIic?: string
   /** @example 5 */
   rsr?: number
-  /** @example "LOW" */
-  sara?: string
+  /** SARA related risk score */
+  sara?: Sara
 }
 
 export interface IndividualSelfManagementScores {
@@ -1380,7 +1411,7 @@ export interface PniScore {
 /** @example 1 */
 export interface RelationshipDomainScore {
   /** @format int32 */
-  overallRelationshipDomainScore: number
+  overallRelationshipDomainScore?: number
   individualRelationshipScores: IndividualRelationshipScores
 }
 
@@ -1401,10 +1432,35 @@ export interface RiskScore {
   IndividualRiskScores: IndividualRiskScores
 }
 
+/** SARA related risk score */
+export interface Sara {
+  /**
+   * The overall SARA risk score
+   * @example "LOW"
+   */
+  sara?: 'NOT_APPLICABLE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH'
+  /**
+   * Risk of violence towards partner
+   * @example "LOW"
+   */
+  saraRiskOfViolenceTowardsPartner?: string
+  /**
+   * Risk of violence towards others
+   * @example "LOW"
+   */
+  saraRiskOfViolenceTowardsOthers?: string
+  /**
+   * Assessment ID relevant to the SARA version of the assessment
+   * @format int64
+   * @example 2512235167
+   */
+  saraAssessmentId?: number
+}
+
 /** @example 1 */
 export interface SelfManagementDomainScore {
   /** @format int32 */
-  overallSelfManagementDomainScore: number
+  overallSelfManagementDomainScore?: number
   individualSelfManagementScores: IndividualSelfManagementScores
 }
 
@@ -1421,6 +1477,6 @@ export interface SexDomainScore {
 /** @example 2 */
 export interface ThinkingDomainScore {
   /** @format int32 */
-  overallThinkingDomainScore: number
+  overallThinkingDomainScore?: number
   individualThinkingScores: IndividualCognitiveScores
 }

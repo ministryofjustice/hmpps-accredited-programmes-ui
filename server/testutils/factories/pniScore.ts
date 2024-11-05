@@ -56,7 +56,9 @@ export default Factory.define<PniScore>(() => {
         ospIic: FactoryHelpers.optionalNumber(3)?.toString(),
         ovp: FactoryHelpers.optionalNumber(3),
         rsr: FactoryHelpers.optionalNumber(3),
-        sara: FactoryHelpers.optionalArrayElement(['LOW', 'MEDIUM', 'HIGH']),
+        sara: {
+          sara: FactoryHelpers.optionalArrayElement(['LOW', 'MEDIUM', 'HIGH']),
+        },
       },
       classification: faker.helpers.arrayElement(['HIGH_RISK', 'MEDIUM_RISK', 'LOW_RISK']),
     },
