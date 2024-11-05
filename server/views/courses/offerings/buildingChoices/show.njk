@@ -1,0 +1,82 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkHref
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      <p class="govuk-body">Not all prisons can offer programmes to all prisoners. To see a list of suitable locations, tell us more about the person you're referring.</p>
+
+      <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isConvictedOfSexualOffence",
+          value: formValues.isConvictedOfSexualOffence,
+          fieldset: {
+            legend: {
+              text: "Have they been convicted of a sexual offence?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "true",
+              text: "Yes"
+            },
+            {
+              value: "false",
+              text: "No"
+            }
+          ],
+          errorMessage: errors.messages.isConvictedOfSexualOffence
+        }) }}
+
+        {{ govukRadios({
+          classes: "govuk-radios--inline",
+          name: "isInAWomensPrison",
+          value: formValues.isInAWomensPrison,
+          fieldset: {
+            legend: {
+              text: "Are they in a women's prison?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "true",
+              text: "Yes"
+            },
+            {
+              value: "false",
+              text: "No"
+            }
+          ],
+          errorMessage: errors.messages.isInAWomensPrison
+        }) }}
+
+        {{ govukButton({ text: "Continue" }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}

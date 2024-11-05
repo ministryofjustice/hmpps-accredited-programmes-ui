@@ -7,12 +7,20 @@ const coursePath = coursesPath.path(':courseId')
 const addCoursePath = coursesPath.path('add')
 const updateCoursePath = coursePath.path('update')
 
+const buildingChoicesPath = findPathBase.path('building-choices/:courseId')
+
 const addCourseOfferingPath = coursePath.path('offerings/add')
 const deleteCourseOfferingPath = coursePath.path('offerings/:courseOfferingId/delete')
 const courseOfferingPath = findPathBase.path('offerings/:courseOfferingId')
 const updateCourseOfferingPath = courseOfferingPath.path('update')
 
 export default {
+  buildingChoices: {
+    form: {
+      show: buildingChoicesPath,
+      submit: buildingChoicesPath,
+    },
+  },
   course: {
     add: {
       create: addCoursePath,
