@@ -103,5 +103,14 @@ describe('CourseUtils', () => {
         })
       })
     })
+
+    describe('when a course displayName starts with "Building Choices:"', () => {
+      it('sets the href to the building choices form', () => {
+        const course = courseFactory.build({ displayName: 'Building Choices: moderate intensity' })
+        const coursePresenter = CourseUtils.presentCourse(course)
+
+        expect(coursePresenter.href).toBe('/find/building-choices')
+      })
+    })
   })
 })

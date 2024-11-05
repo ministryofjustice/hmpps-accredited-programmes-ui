@@ -32,7 +32,9 @@ export default class CourseUtils {
     return {
       ...course,
       audienceTag: CourseUtils.audienceTag(course),
-      href: findPaths.show({ courseId: course.id }),
+      href: course.displayName?.startsWith('Building Choices:')
+        ? findPaths.buildingChoices.form.show({ courseId: course.id })
+        : findPaths.show({ courseId: course.id }),
       prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
   }
