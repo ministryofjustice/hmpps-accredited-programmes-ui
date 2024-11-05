@@ -32,7 +32,8 @@ describe('CoursesController', () => {
       const courseA = courseFactory.build({ name: 'Course A' })
       const courseB = courseFactory.build({ name: 'Course B' })
       const courseC = courseFactory.build({ name: 'Course C' })
-      courseService.getCourses.mockResolvedValue([courseC, courseB, courseA])
+      const courseD = courseFactory.build({ displayOnProgrammeDirectory: false, name: 'Course D' })
+      courseService.getCourses.mockResolvedValue([courseD, courseC, courseB, courseA])
 
       const sortedCourses = [courseA, courseB, courseC]
 

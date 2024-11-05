@@ -16,12 +16,14 @@ export default class CoursesController {
       TypeUtils.assertHasUser(req)
 
       const courses = await this.courseService.getCourses(req.user.token)
+      const coursesToDisplay = courses
+        .filter(course => course.displayOnProgrammeDirectory)
+        .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+        .map(course => CourseUtils.presentCourse(course))
 
       res.render('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),
-        courses: courses
-          .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
-          .map(course => CourseUtils.presentCourse(course)),
+        courses: coursesToDisplay,
         pageHeading: 'Find an Accredited Programme',
       })
     }
