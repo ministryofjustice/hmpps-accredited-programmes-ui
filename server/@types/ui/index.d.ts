@@ -223,7 +223,13 @@ type ReferralStatusHistoryPresenter = ReferralStatusHistory & {
   byLineText: MojTimelineItem['byline']['text']
 }
 
+interface BuildingChoicesSearchForm {
+  isConvictedOfSexualOffence: string
+  isInAWomensPrison: string
+}
+
 export type {
+  BuildingChoicesSearchForm,
   CaseListColumnHeader,
   CourseParticipationPresenter,
   CoursePresenter,

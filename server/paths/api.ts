@@ -44,6 +44,7 @@ const referralStatusCodeReasonsPath = referralStatusCodeCategoriesPath.path(':ca
 export default {
   courses: {
     audiences: coursesPath.path('audiences'),
+    buildingChoices: coursesPath.path('building-choices/:courseId'),
     create: coursesPath,
     index: coursesPath,
     names: courseNamesPath,
