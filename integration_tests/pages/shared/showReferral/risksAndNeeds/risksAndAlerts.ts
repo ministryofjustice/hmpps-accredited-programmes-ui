@@ -1,8 +1,9 @@
 import { CourseUtils, RisksAndAlertsUtils } from '../../../../../server/utils'
 import Helpers from '../../../../support/helpers'
 import Page from '../../../page'
-import type { Course, RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
+import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
 import type { RiskBox } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes-api'
 
 export default class RisksAndAlertsPage extends Page {
   risksAndAlerts: RisksAndAlerts

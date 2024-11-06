@@ -3,8 +3,9 @@ import { assessPaths, referPaths } from '../../../server/paths'
 import { CaseListUtils, PathUtils, StringUtils } from '../../../server/utils'
 import Helpers from '../../support/helpers'
 import Page from '../page'
-import type { Course, ReferralStatusGroup, ReferralView } from '@accredited-programmes/models'
+import type { ReferralStatusGroup, ReferralView } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, QueryParam } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes-api'
 
 export default class CaseListPage extends Page {
   columnHeaders: Array<CaseListColumnHeader>

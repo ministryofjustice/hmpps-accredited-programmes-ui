@@ -1,11 +1,11 @@
 import { findPaths } from '../paths'
-import type { Course, CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation, OrganisationAddress } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
 } from '@accredited-programmes/ui'
-import type { EnabledOrganisation } from '@accredited-programmes-api'
+import type { Course, EnabledOrganisation } from '@accredited-programmes-api'
 import type { GovukFrontendRadiosItem, GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 import type { Prison } from '@prison-register-api'
 

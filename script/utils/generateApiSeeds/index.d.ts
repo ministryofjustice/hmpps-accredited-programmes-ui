@@ -1,4 +1,5 @@
-import type { Course, CourseOffering, CoursePrerequisite, Referral } from '@accredited-programmes/models'
+import type { CourseOffering, CoursePrerequisite, Referral } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 type Property = { api: string; ui: string }
 type TableDefinition = {

@@ -1,6 +1,7 @@
 import { CourseUtils, HealthUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, Health } from '@accredited-programmes/models'
+import type { Health } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 export default class HealthPage extends Page {
   health: Health

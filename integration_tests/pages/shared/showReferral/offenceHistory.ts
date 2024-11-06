@@ -1,6 +1,7 @@
 import { CourseUtils, OffenceUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { Course, Person } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 import type { InmateDetail, OffenceDto } from '@prison-api'
 
 export default class OffenceHistoryPage extends Page {

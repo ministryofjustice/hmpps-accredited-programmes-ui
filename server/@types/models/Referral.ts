@@ -1,8 +1,8 @@
-import type { Course } from './Course'
 import type { CourseOffering } from './CourseOffering'
 import type { Organisation } from './Organisation'
 import type { Person } from './Person'
 import type { TagColour } from '@accredited-programmes/ui'
+import type { Course } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 import type { Prisoner } from '@prisoner-search'
 

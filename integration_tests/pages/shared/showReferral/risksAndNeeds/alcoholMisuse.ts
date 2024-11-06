@@ -1,6 +1,7 @@
 import { AlcoholMisuseUtils, CourseUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { Course, DrugAlcoholDetail } from '@accredited-programmes/models'
+import type { DrugAlcoholDetail } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 export default class AlcoholMisusePage extends Page {
   alcoholDetails: DrugAlcoholDetail['alcohol']

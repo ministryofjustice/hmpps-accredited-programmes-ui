@@ -2,7 +2,8 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { Course, CourseOffering } from '@accredited-programmes/models'
+import type { CourseOffering } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
 export default {

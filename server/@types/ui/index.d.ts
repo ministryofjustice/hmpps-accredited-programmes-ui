@@ -1,5 +1,4 @@
 import type {
-  Course,
   CourseOffering,
   CourseParticipation,
   Organisation,
@@ -7,7 +6,7 @@ import type {
   Referral,
   RiskLevel,
 } from '@accredited-programmes/models'
-import type { ReferralStatusHistory } from '@accredited-programmes-api'
+import type { Course, ReferralStatusHistory } from '@accredited-programmes-api'
 import type {
   GovukFrontendButton,
   GovukFrontendPagination,

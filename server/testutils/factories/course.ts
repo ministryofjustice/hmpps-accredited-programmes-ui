@@ -4,7 +4,7 @@ import { Factory } from 'fishery'
 import courseAudienceFactory from './courseAudience'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import { StringUtils } from '../../utils'
-import type { Course } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 export default Factory.define<Course>(({ params }) => {
   const audience = params.audience || courseAudienceFactory.build()
@@ -40,6 +40,7 @@ export default Factory.define<Course>(({ params }) => {
     ],
     description: faker.lorem.sentences(),
     displayName,
+    displayOnProgrammeDirectory: true,
     name,
   }
 })

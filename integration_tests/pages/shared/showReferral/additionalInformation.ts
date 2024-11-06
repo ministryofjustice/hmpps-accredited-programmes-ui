@@ -1,7 +1,8 @@
 import { CourseUtils, DateUtils } from '../../../../server/utils'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
-import type { Course, Referral } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes/models'
+import type { Course } from '@accredited-programmes-api'
 
 export default class AdditionalInformationPage extends Page {
   referral: Referral
