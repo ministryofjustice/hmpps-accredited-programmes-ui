@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
 import courseAudienceFactory from './courseAudience'
+import courseOfferingFactory from './courseOffering'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import { StringUtils } from '../../utils'
 import type { Course } from '@accredited-programmes-api'
@@ -27,6 +28,7 @@ export default Factory.define<Course>(({ params }) => {
       'turquoise',
       'yellow',
     ]),
+    courseOfferings: courseOfferingFactory.buildList(3),
     coursePrerequisites: [
       coursePrerequisiteFactory.gender().build(),
       coursePrerequisiteFactory.learningNeeds().build(),

@@ -72,13 +72,19 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const courses = [
       {
         ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
+        courseOfferings: [],
         coursePrerequisites: [],
       },
       {
         ...courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }),
+        courseOfferings: [],
         coursePrerequisites: [],
       },
-      { ...courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }), coursePrerequisites: [] },
+      {
+        ...courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }),
+        courseOfferings: [],
+        coursePrerequisites: [],
+      },
     ]
 
     beforeEach(() => {
@@ -113,6 +119,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const description = 'A course about things'
     const course = {
       ...courseFactory.build({ alternateName, description, name }),
+      courseOfferings: [],
       coursePrerequisites: [],
     }
     const courseCreateRequest: CourseCreateRequest = {
@@ -203,7 +210,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('find', () => {
-    const course = { ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }), coursePrerequisites: [] }
+    const course = {
+      ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
+      courseOfferings: [],
+      coursePrerequisites: [],
+    }
 
     beforeEach(() => {
       provider.addInteraction({
@@ -264,7 +275,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findCourseByOffering', () => {
-    const course = { ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }), coursePrerequisites: [] }
+    const course = {
+      ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
+      courseOfferings: [],
+      coursePrerequisites: [],
+    }
 
     beforeEach(() => {
       provider.addInteraction({
@@ -321,9 +336,21 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('findCoursesByOrganisation', () => {
     const courses = [
-      { ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }), coursePrerequisites: [] },
-      { ...courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }), coursePrerequisites: [] },
-      { ...courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }), coursePrerequisites: [] },
+      {
+        ...courseFactory.build({ id: 'd3abc217-75ee-46e9-a010-368f30282367' }),
+        courseOfferings: [],
+        coursePrerequisites: [],
+      },
+      {
+        ...courseFactory.build({ id: '28e47d30-30bf-4dab-a8eb-9fda3f6400e8' }),
+        courseOfferings: [],
+        coursePrerequisites: [],
+      },
+      {
+        ...courseFactory.build({ id: '1811faa6-d568-4fc4-83ce-41118b90242e' }),
+        courseOfferings: [],
+        coursePrerequisites: [],
+      },
     ]
 
     beforeEach(() => {

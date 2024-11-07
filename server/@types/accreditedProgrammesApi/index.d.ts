@@ -88,36 +88,11 @@ export interface Course {
   withdrawn?: boolean
   /** @example true */
   displayOnProgrammeDirectory?: boolean
-}
-
-/** @example null */
-export interface CoursePrerequisite {
-  /** @example "null" */
-  name: string
-  /** @example "null" */
-  description: string
-}
-
-export interface CourseUpdateRequest {
-  /** @example "Thinking skills programme" */
-  name?: string
-  /** @example "Thinking Skills Programme (TSP) description" */
-  description?: string
-  /** @example "BNM+" */
-  alternateName?: string
-  /** @example "Becoming New Me Plus: general violence offence (BNM+)" */
-  displayName?: string
-  /** @example "Gang offence" */
-  audience?: string
-  /** @example "#FF5733" */
-  audienceColour?: string
-  /** @example true */
-  withdrawn?: boolean
-}
-
-export interface CoursePrerequisites {
-  /** @example null */
-  prerequisites?: CoursePrerequisite[]
+  /**
+   * List of offerings for the course
+   * @example null
+   */
+  courseOfferings: CourseOffering[]
 }
 
 export interface CourseOffering {
@@ -152,6 +127,36 @@ export interface CourseOffering {
    * @example "M"
    */
   gender?: 'MALE' | 'FEMALE'
+}
+
+/** @example null */
+export interface CoursePrerequisite {
+  /** @example "null" */
+  name: string
+  /** @example "null" */
+  description: string
+}
+
+export interface CourseUpdateRequest {
+  /** @example "Thinking skills programme" */
+  name?: string
+  /** @example "Thinking Skills Programme (TSP) description" */
+  description?: string
+  /** @example "BNM+" */
+  alternateName?: string
+  /** @example "Becoming New Me Plus: general violence offence (BNM+)" */
+  displayName?: string
+  /** @example "Gang offence" */
+  audience?: string
+  /** @example "#FF5733" */
+  audienceColour?: string
+  /** @example true */
+  withdrawn?: boolean
+}
+
+export interface CoursePrerequisites {
+  /** @example null */
+  prerequisites?: CoursePrerequisite[]
 }
 
 export interface CourseParticipation {
@@ -283,7 +288,7 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-11-04T14:18:00" */
+  /** @example "2024-11-06T20:22:18" */
   submittedOn?: object
   deleted: boolean
 }
