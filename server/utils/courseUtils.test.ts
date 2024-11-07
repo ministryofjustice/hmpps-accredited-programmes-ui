@@ -25,6 +25,20 @@ describe('CourseUtils', () => {
     })
   })
 
+  describe('isBuildingChoices', () => {
+    it('returns true when the course displayName starts with "Building Choices:"', () => {
+      expect(CourseUtils.isBuildingChoices('Building Choices: moderate intensity')).toBe(true)
+    })
+
+    it('returns false when the course displayName does not start with "Building Choices:"', () => {
+      expect(CourseUtils.isBuildingChoices('Lime Course')).toBe(false)
+    })
+
+    it('returns false when the course displayName is undefined', () => {
+      expect(CourseUtils.isBuildingChoices()).toBe(false)
+    })
+  })
+
   describe('presentCourse', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
       const course = courseFactory.build({
@@ -40,6 +54,7 @@ describe('CourseUtils', () => {
           coursePrerequisiteFactory.equivalentNonLDCProgramme().build(),
           coursePrerequisiteFactory.equivalentLDCProgramme().build(),
           coursePrerequisiteFactory.timeToComplete().build(),
+          coursePrerequisiteFactory.needsCriteria().build(),
         ],
         id: 'lime-course-1',
         name: 'Lime Course',
@@ -65,6 +80,10 @@ describe('CourseUtils', () => {
           {
             key: { text: 'Risk criteria' },
             value: { html: course.coursePrerequisites[2].description },
+          },
+          {
+            key: { text: 'Needs criteria' },
+            value: { html: course.coursePrerequisites[8].description },
           },
           {
             key: { text: 'Learning needs' },
@@ -101,6 +120,15 @@ describe('CourseUtils', () => {
           key: { text: 'Risk criteria' },
           value: { html: `${riskCriteriaPrerequisites[0].description}<br>${riskCriteriaPrerequisites[1].description}` },
         })
+      })
+    })
+
+    describe('when a course displayName starts with "Building Choices:"', () => {
+      it('sets the href to the building choices form', () => {
+        const course = courseFactory.build({ displayName: 'Building Choices: moderate intensity' })
+        const coursePresenter = CourseUtils.presentCourse(course)
+
+        expect(coursePresenter.href).toBe(`/find/building-choices/${course.id}`)
       })
     })
   })

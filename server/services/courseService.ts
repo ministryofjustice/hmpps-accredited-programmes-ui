@@ -14,7 +14,10 @@ import type {
   Person,
   Referral,
 } from '@accredited-programmes/models'
-import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
+import type {
+  BuildingChoicesSearchForm,
+  GovukFrontendSummaryListWithRowsWithKeysAndValues,
+} from '@accredited-programmes/ui'
 import type { Course } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
@@ -99,6 +102,27 @@ export default class CourseService {
         this.presentCourseParticipation(userToken, participation, referralId, withActions),
       ),
     )
+  }
+
+  async getBuildingChoicesVariants(
+    username: Express.User['username'],
+    courseId: Course['id'],
+    requestBody: BuildingChoicesSearchForm,
+  ): Promise<Array<Course>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    const { isConvictedOfSexualOffence, isInAWomensPrison } = requestBody
+
+    if (isConvictedOfSexualOffence === undefined || isInAWomensPrison === undefined) {
+      throw createError(400, 'Values for isConvictedOfSexualOffence and isInAWomensPrison must be provided.')
+    }
+
+    return courseClient.findBuildingChoicesVariants(courseId, {
+      isConvictedOfSexualOffence: isConvictedOfSexualOffence === 'true',
+      isInAWomensPrison: isInAWomensPrison === 'true',
+    })
   }
 
   async getCourse(username: Express.User['username'], courseId: Course['id']): Promise<Course> {

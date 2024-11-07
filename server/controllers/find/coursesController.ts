@@ -51,6 +51,7 @@ export default class CoursesController {
       res.render('courses/show', {
         addOfferingPath: findPaths.offerings.add.create({ courseId: course.id }),
         course: coursePresenter,
+        isBuildingChoices: CourseUtils.isBuildingChoices(course.displayName),
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
         updateProgrammePath: findPaths.course.update.show({ courseId: course.id }),

@@ -18,6 +18,7 @@ import {
 } from '../testutils/factories'
 import { CourseParticipationUtils, StringUtils } from '../utils'
 import type { CourseCreateRequest, CourseOffering, CourseParticipationUpdate } from '@accredited-programmes/models'
+import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../data/hmppsAuthClient')
@@ -228,6 +229,35 @@ describe('CourseService', () => {
             remove: false,
           },
         )
+      })
+    })
+  })
+
+  describe('getBuildingChoicesVariants', () => {
+    it('returns the courses associated with a given offering', async () => {
+      const course = courseFactory.build()
+      const formRequestBody = { isConvictedOfSexualOffence: 'true', isInAWomensPrison: 'false' }
+
+      when(courseClient.findBuildingChoicesVariants)
+        .calledWith(course.id, { isConvictedOfSexualOffence: true, isInAWomensPrison: false })
+        .mockResolvedValue([course])
+
+      const result = await service.getBuildingChoicesVariants(username, course.id, formRequestBody)
+
+      expect(result).toEqual([course])
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+    })
+
+    describe('when either of the form request body values are not provided', () => {
+      it('throws an error', async () => {
+        const course = courseFactory.build()
+        const formRequestBody = { isConvictedOfSexualOffence: 'true' } as BuildingChoicesSearchForm
+
+        await expect(() =>
+          service.getBuildingChoicesVariants(username, course.id, formRequestBody),
+        ).rejects.toThrowError('Values for isConvictedOfSexualOffence and isInAWomensPrison must be provided.')
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       })
     })
   })

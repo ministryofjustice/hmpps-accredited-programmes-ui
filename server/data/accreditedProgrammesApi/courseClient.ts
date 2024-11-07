@@ -11,7 +11,7 @@ import type {
   CoursePrerequisite,
   Person,
 } from '@accredited-programmes/models'
-import type { Course } from '@accredited-programmes-api'
+import type { BuildingChoicesSearchRequest, Course } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class CourseClient {
@@ -68,6 +68,17 @@ export default class CourseClient {
 
   async find(courseId: Course['id']): Promise<Course> {
     return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
+  }
+
+  /* istanbul ignore next */
+  async findBuildingChoicesVariants(
+    courseId: Course['id'],
+    requestBody: BuildingChoicesSearchRequest,
+  ): Promise<Array<Course>> {
+    return (await this.restClient.post({
+      data: { ...requestBody },
+      path: apiPaths.courses.buildingChoices({ courseId }),
+    })) as Array<Course>
   }
 
   async findCourseAudiences(): Promise<Array<Audience>> {
