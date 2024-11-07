@@ -1,6 +1,7 @@
 import { findPaths } from '../paths'
 import type { Audience, CoursePrerequisite } from '@accredited-programmes/models'
 import type {
+  BuildingChoicesSearchForm,
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendTagWithText,
@@ -17,6 +18,27 @@ export default class CourseUtils {
         value: audience.id,
       }
     })
+  }
+
+  static buildingChoicesAnswersSummaryListRows(
+    formData: BuildingChoicesSearchForm,
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    return [
+      {
+        key: {
+          classes: 'govuk-!-width-one-third',
+          text: 'Convicted of a sexual offence',
+        },
+        value: { text: formData.isConvictedOfSexualOffence === 'true' ? 'Yes' : 'No' },
+      },
+      {
+        key: {
+          classes: 'govuk-!-width-one-third',
+          text: 'In a women’s prison',
+        },
+        value: { text: formData.isInAWomensPrison === 'true' ? 'Yes' : 'No' },
+      },
+    ]
   }
 
   static courseRadioOptions(courseNames: Array<Course['name']>): Array<GovukFrontendTagWithText> {

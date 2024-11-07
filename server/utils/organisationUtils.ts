@@ -44,7 +44,7 @@ export default class OrganisationUtils {
   static organisationTableRows(organisations: Array<OrganisationWithOfferingId>): Array<GovukFrontendTableRow> {
     return organisations.map(organisation => {
       const offeringPath = findPaths.offerings.show({
-        courseOfferingId: organisation.courseOfferingId,
+        courseOfferingId: organisation.courseOfferingId as string,
       })
       const contactOrganisationLink = `<a href="${offeringPath}">${organisation.name}</a>`
 

@@ -10,6 +10,7 @@
 
 {% block backLink %}
   {{ govukBackLink({
+    classes: "js-back-link",
     text: "Back",
     href: findPaths.show({ courseId: course.id })
   }) }}

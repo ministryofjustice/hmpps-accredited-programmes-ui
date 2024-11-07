@@ -20,6 +20,7 @@ export default {
       show: buildingChoicesPath,
       submit: buildingChoicesPath,
     },
+    show: buildingChoicesPath.path('course'),
   },
   course: {
     add: {

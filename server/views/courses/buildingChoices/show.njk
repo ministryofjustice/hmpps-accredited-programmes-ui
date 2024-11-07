@@ -2,14 +2,13 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% from "../partials/audienceTag.njk" import audienceTag %}
-
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% block backLink %}
   {{ govukBackLink({
+    classes: "js-back-link",
     text: "Back",
-    href: findPaths.index({})
+    href: backLinkHref
   }) }}
 {% endblock backLink %}
 
@@ -31,19 +30,6 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{ audienceTag(course.audienceTag) }}
-
-      <h2 class="govuk-heading-m">Programme criteria</h2>
-
-      {{ govukSummaryList({
-          classes: 'govuk-summary-list--no-border',
-          rows: course.prerequisiteSummaryListRows
-        }) }}
-
-      <h2 class="govuk-heading-m">Programme description</h2>
-
-      <p class="govuk-body" data-testid="description-paragraph">{{ course.description }}</p>
-
       <div class="header-with-actions">
         <h2 class="header-with-actions__title govuk-heading-m">Locations</h2>
 
@@ -62,7 +48,14 @@
       {% if organisationsTableData | length %}
         <p data-testid="offerings-text">Select a prison to contact the programme team or make a referral. Online referrals are not yet available at all sites.</p>
 
-        {% include "./_locationsTable.njk" %}
+        <p>The list of suitable locations is based on what you told us about the person you're referring:</p>
+
+        {{ govukSummaryList({
+          classes: 'govuk-summary-list--no-border',
+          rows: buildingChoicesAnswersSummaryListRows
+        }) }}
+
+        {% include "../_locationsTable.njk" %}
       {% else %}
         <p data-testid="no-offerings-text">To find out where {{ course.displayName }} is offered, speak to your Offender Management Unit (custody) or regional probation team (community).</p>
       {% endif %}

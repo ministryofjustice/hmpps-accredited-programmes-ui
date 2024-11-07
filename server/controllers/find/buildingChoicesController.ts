@@ -1,60 +1,50 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { findPaths } from '../../paths'
-import type { CourseService } from '../../services'
-import { FormUtils, TypeUtils } from '../../utils'
-import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
+import type { CourseService, OrganisationService } from '../../services'
+import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
 
 export default class BuildingChoicesController {
-  constructor(private readonly courseService: CourseService) {}
+  constructor(
+    private readonly courseService: CourseService,
+    private readonly organisationService: OrganisationService,
+  ) {}
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
-      FormUtils.setFieldErrors(req, res, ['isConvictedOfSexualOffence', 'isInAWomensPrison'])
-      FormUtils.setFormValues(req, res)
-
-      res.render('courses/offerings/buildingChoices/show', {
-        backLinkHref: findPaths.index({}),
-        pageHeading: "About the person you're referring",
-      })
-    }
-  }
-
-  submit(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      let hasErrors = false
+      const { buildingChoicesFormData } = req.session
+
       const { courseId } = req.params
-      const { isConvictedOfSexualOffence, isInAWomensPrison } = req.body as BuildingChoicesSearchForm
 
-      if (!isConvictedOfSexualOffence) {
-        req.flash('isConvictedOfSexualOffenceError', 'Select an option')
-        hasErrors = true
+      if (!buildingChoicesFormData?.isConvictedOfSexualOffence || !buildingChoicesFormData?.isInAWomensPrison) {
+        return res.redirect(findPaths.index({}))
       }
 
-      if (!isInAWomensPrison) {
-        req.flash('isInAWomensPrisonError', 'Select an option')
-        hasErrors = true
-      }
-
-      if (hasErrors) {
-        req.flash('formValues', [JSON.stringify({ isConvictedOfSexualOffence, isInAWomensPrison })])
-        return res.redirect(findPaths.buildingChoices.form.show({ courseId }))
-      }
-
-      const buildingChoicesCourseVariants = await this.courseService.getBuildingChoicesVariants(
-        req.user.username,
+      const courseVariants = await this.courseService.getBuildingChoicesVariants(
+        req.user?.username,
         courseId,
-        {
-          isConvictedOfSexualOffence,
-          isInAWomensPrison,
-        },
+        buildingChoicesFormData,
       )
 
-      const course = buildingChoicesCourseVariants[0]
+      const course = courseVariants[0]
 
-      return res.redirect(findPaths.show({ courseId: course.id }))
+      const organisationIds = course.courseOfferings.map(offering => offering.organisationId)
+      const organisations = await this.organisationService.getOrganisations(req.user.token, organisationIds)
+      const organisationsWithOfferingIds = organisations.map(organisation => {
+        const courseOffering = course.courseOfferings.find(offering => offering.organisationId === organisation.id)
+        return { ...organisation, courseOfferingId: courseOffering?.id }
+      })
+
+      return res.render('courses/buildingChoices/show', {
+        backLinkHref: findPaths.buildingChoices.form.show({ courseId }),
+        buildingChoicesAnswersSummaryListRows:
+          CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesFormData),
+        course,
+        organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
+        pageHeading: course.displayName,
+      })
     }
   }
 }
