@@ -31,18 +31,20 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{ audienceTag(course.audienceTag) }}
+      {% if not isBuildingChoices %}
+        {{ audienceTag(course.audienceTag) }}
 
-      <h2 class="govuk-heading-m">Programme criteria</h2>
+        <h2 class="govuk-heading-m">Programme criteria</h2>
 
-      {{ govukSummaryList({
-        classes: 'govuk-summary-list--no-border',
-        rows: course.prerequisiteSummaryListRows
-      }) }}
+        {{ govukSummaryList({
+          classes: 'govuk-summary-list--no-border',
+          rows: course.prerequisiteSummaryListRows
+        }) }}
 
-      <h2 class="govuk-heading-m">Programme description</h2>
+        <h2 class="govuk-heading-m">Programme description</h2>
 
-      <p class="govuk-body" data-testid="description-paragraph">{{ course.description }}</p>
+        <p class="govuk-body" data-testid="description-paragraph">{{ course.description }}</p>
+      {% endif %}
 
       <div class="header-with-actions">
         <h2 class="header-with-actions__title govuk-heading-m">Locations</h2>

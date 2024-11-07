@@ -9,7 +9,9 @@
         <a class="govuk-link" href="{{ course.href }}">{{ course.displayName }}</a>
       </h2>
 
-      {{ audienceTag(course.audienceTag) }}
+      {% if "building choices" not in course.displayName | lower %}
+        {{ audienceTag(course.audienceTag) }}
+      {% endif %}
 
       <p class="govuk-body">{{ course.description }}</p>
 

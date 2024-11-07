@@ -33,6 +33,7 @@ export default Factory.define<Course>(({ params }) => {
       coursePrerequisiteFactory.riskCriteria().build(),
       coursePrerequisiteFactory.riskCriteria().build(),
       coursePrerequisiteFactory.setting().build(),
+      coursePrerequisiteFactory.needsCriteria().build(),
       coursePrerequisiteFactory.suitableForPeopleWithLDCs().build(),
       coursePrerequisiteFactory.equivalentNonLDCProgramme().build(),
       coursePrerequisiteFactory.equivalentLDCProgramme().build(),

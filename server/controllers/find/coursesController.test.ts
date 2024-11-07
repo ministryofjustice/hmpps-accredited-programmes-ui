@@ -84,6 +84,7 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
+          isBuildingChoices: false,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           updateProgrammePath: `/find/programmes/${course.id}/update`,
@@ -125,6 +126,7 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
+          isBuildingChoices: false,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           updateProgrammePath: `/find/programmes/${course.id}/update`,

@@ -28,11 +28,15 @@ export default class CourseUtils {
     })
   }
 
+  static isBuildingChoices(displayName?: string): boolean {
+    return displayName?.startsWith('Building Choices:') ?? false
+  }
+
   static presentCourse(course: Course): CoursePresenter {
     return {
       ...course,
       audienceTag: CourseUtils.audienceTag(course),
-      href: course.displayName?.startsWith('Building Choices:')
+      href: this.isBuildingChoices(course.displayName)
         ? findPaths.buildingChoices.form.show({ courseId: course.id })
         : findPaths.show({ courseId: course.id }),
       prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
@@ -51,14 +55,17 @@ export default class CourseUtils {
     prerequisites: Array<CoursePrerequisite>,
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     const order: Record<CoursePrerequisite['name'], number> = {
-      'Equivalent LDC programme': 6,
-      'Equivalent non-LDC programme': 5,
-      Gender: 1,
-      'Learning needs': 3,
-      'Risk criteria': 2,
+      /* eslint-disable sort-keys */
       Setting: 0,
-      'Suitable for people with learning disabilities or challenges (LDC)?': 4,
-      'Time to complete': 7,
+      Gender: 1,
+      'Risk criteria': 2,
+      'Needs criteria': 3,
+      'Learning needs': 4,
+      'Suitable for people with learning disabilities or challenges (LDC)?': 5,
+      'Equivalent non-LDC programme': 6,
+      'Equivalent LDC programme': 7,
+      'Time to complete': 8,
+      /* eslint-enable sort-keys */
     }
 
     const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []

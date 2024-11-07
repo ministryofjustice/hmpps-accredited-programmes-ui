@@ -32,6 +32,13 @@ class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
     })
   }
 
+  needsCriteria(description?: string) {
+    return this.params({
+      description: description || 'High need, based on their programme needs identifier score',
+      name: 'Needs criteria',
+    })
+  }
+
   riskCriteria(description?: string) {
     return this.params({
       description: description || 'High ESARA/SARA/OVP, High OGRS',
