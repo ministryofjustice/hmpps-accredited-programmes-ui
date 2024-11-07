@@ -13,6 +13,46 @@ describe('CourseUtils', () => {
     })
   })
 
+  describe('buildingChoicesAnswersSummaryListRows', () => {
+    it('returns a formatted array of building choices form data to use with UI summary lists', () => {
+      const formData = {
+        isConvictedOfSexualOffence: 'false',
+        isInAWomensPrison: 'false',
+      }
+
+      expect(CourseUtils.buildingChoicesAnswersSummaryListRows(formData)).toEqual([
+        {
+          key: { classes: 'govuk-!-width-one-third', text: 'Convicted of a sexual offence' },
+          value: { text: 'No' },
+        },
+        {
+          key: { classes: 'govuk-!-width-one-third', text: 'In a women’s prison' },
+          value: { text: 'No' },
+        },
+      ])
+    })
+
+    describe('when the form data is true', () => {
+      it('returns "Yes" as the value', () => {
+        const formData = {
+          isConvictedOfSexualOffence: 'true',
+          isInAWomensPrison: 'true',
+        }
+
+        expect(CourseUtils.buildingChoicesAnswersSummaryListRows(formData)).toEqual([
+          {
+            key: { classes: 'govuk-!-width-one-third', text: 'Convicted of a sexual offence' },
+            value: { text: 'Yes' },
+          },
+          {
+            key: { classes: 'govuk-!-width-one-third', text: 'In a women’s prison' },
+            value: { text: 'Yes' },
+          },
+        ])
+      })
+    })
+  })
+
   describe('courseRadioOptions', () => {
     it('returns a formatted array of courses to use with UI radios', () => {
       const courses = courseFactory.buildList(2)

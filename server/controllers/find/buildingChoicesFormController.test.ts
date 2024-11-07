@@ -1,13 +1,11 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
-import { when } from 'jest-when'
 
 import BuildingChoicesFormController from './buildingChoicesFormController'
 import { findPaths } from '../../paths'
-import type { CourseService } from '../../services'
-import { courseFactory } from '../../testutils/factories'
 import { FormUtils } from '../../utils'
+import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/formUtils')
 
@@ -16,16 +14,16 @@ describe('BuildingChoicesFormController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  let buildingChoicesFormData: BuildingChoicesSearchForm
   let controller: BuildingChoicesFormController
 
   const username = 'SOME_USERNAME'
   const courseId = 'A_COURSE_ID'
-  const courseService = createMock<CourseService>({})
 
   beforeEach(() => {
-    request = createMock<Request>({ params: { courseId }, user: { username } })
+    request = createMock<Request>({ params: { courseId }, session: { buildingChoicesFormData }, user: { username } })
     response = createMock<Response>({})
-    controller = new BuildingChoicesFormController(courseService)
+    controller = new BuildingChoicesFormController()
   })
 
   describe('show', () => {
@@ -38,7 +36,7 @@ describe('BuildingChoicesFormController', () => {
         'isInAWomensPrison',
       ])
       expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
-      expect(response.render).toHaveBeenCalledWith('courses/offerings/buildingChoices/show', {
+      expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/form/show', {
         backLinkHref: findPaths.index({}),
         pageHeading: "About the person you're referring",
       })
@@ -47,32 +45,30 @@ describe('BuildingChoicesFormController', () => {
 
   describe('submit', () => {
     describe('when all options are selected', () => {
-      it('should redirect to the course page of the first course in the response', async () => {
-        const returnedCourses = courseFactory.buildList(2)
+      it('should set the `buildingChoicesFormData` session data and redirect to the building choices course page', async () => {
         const formValues = { isConvictedOfSexualOffence: 'no', isInAWomensPrison: 'yes' }
 
-        when(courseService.getBuildingChoicesVariants)
-          .calledWith(username, courseId, formValues)
-          .mockResolvedValue(returnedCourses)
-
         request.body = formValues
+
+        expect(request.session.buildingChoicesFormData).toBeUndefined()
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(findPaths.show({ courseId: returnedCourses[0].id }))
+        expect(request.session.buildingChoicesFormData).toEqual(formValues)
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.buildingChoices.show({ courseId }))
       })
     })
 
     describe('when no options are selected', () => {
-      it('should redirect to the show page with errors', async () => {
+      it('should redirect to the form show page with errors', async () => {
         request.body = { isConvictedOfSexualOffence: '', isInAWomensPrison: '' }
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith('isConvictedOfSexualOffenceError', 'Select an option')
-        expect(request.flash).toHaveBeenCalledWith('isInAWomensPrisonError', 'Select an option')
+        expect(request.flash).toHaveBeenCalledWith('isConvictedOfSexualOffenceError', 'Select yes or no')
+        expect(request.flash).toHaveBeenCalledWith('isInAWomensPrisonError', 'Select yes or no')
         expect(request.flash).toHaveBeenCalledWith('formValues', [
           JSON.stringify({ isConvictedOfSexualOffence: '', isInAWomensPrison: '' }),
         ])

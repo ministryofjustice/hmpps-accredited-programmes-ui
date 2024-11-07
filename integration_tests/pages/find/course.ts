@@ -65,7 +65,7 @@ export default class CoursePage extends Page {
           cy.get('.govuk-table__cell:first-of-type a').should(
             'have.attr',
             'href',
-            findPaths.offerings.show({ courseOfferingId: organisation.courseOfferingId }),
+            findPaths.offerings.show({ courseOfferingId: organisation.courseOfferingId as string }),
           )
           cy.get('.govuk-table__cell:nth-of-type(2)').should('have.text', organisation.category)
           cy.get('.govuk-table__cell:nth-of-type(3)').should('have.text', organisation.address.county || 'Not found')

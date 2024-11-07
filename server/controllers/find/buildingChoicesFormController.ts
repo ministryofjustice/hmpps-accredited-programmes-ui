@@ -1,19 +1,16 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { findPaths } from '../../paths'
-import type { CourseService } from '../../services'
 import { FormUtils, TypeUtils } from '../../utils'
 import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
 
 export default class BuildingChoicesFormController {
-  constructor(private readonly courseService: CourseService) {}
-
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       FormUtils.setFieldErrors(req, res, ['isConvictedOfSexualOffence', 'isInAWomensPrison'])
       FormUtils.setFormValues(req, res)
 
-      res.render('courses/offerings/buildingChoices/show', {
+      res.render('courses/buildingChoices/form/show', {
         backLinkHref: findPaths.index({}),
         pageHeading: "About the person you're referring",
       })
@@ -29,12 +26,12 @@ export default class BuildingChoicesFormController {
       const { isConvictedOfSexualOffence, isInAWomensPrison } = req.body as BuildingChoicesSearchForm
 
       if (!isConvictedOfSexualOffence) {
-        req.flash('isConvictedOfSexualOffenceError', 'Select an option')
+        req.flash('isConvictedOfSexualOffenceError', 'Select yes or no')
         hasErrors = true
       }
 
       if (!isInAWomensPrison) {
-        req.flash('isInAWomensPrisonError', 'Select an option')
+        req.flash('isInAWomensPrisonError', 'Select yes or no')
         hasErrors = true
       }
 
@@ -43,18 +40,9 @@ export default class BuildingChoicesFormController {
         return res.redirect(findPaths.buildingChoices.form.show({ courseId }))
       }
 
-      const buildingChoicesCourseVariants = await this.courseService.getBuildingChoicesVariants(
-        req.user.username,
-        courseId,
-        {
-          isConvictedOfSexualOffence,
-          isInAWomensPrison,
-        },
-      )
+      req.session.buildingChoicesFormData = { isConvictedOfSexualOffence, isInAWomensPrison }
 
-      const course = buildingChoicesCourseVariants[0]
-
-      return res.redirect(findPaths.show({ courseId: course.id }))
+      return res.redirect(findPaths.buildingChoices.show({ courseId }))
     }
   }
 }
