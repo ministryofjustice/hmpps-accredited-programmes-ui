@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import BuildingChoicesController from './buildingChoicesController'
+import BuildingChoicesFormController from './buildingChoicesFormController'
 import { findPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { courseFactory } from '../../testutils/factories'
@@ -11,12 +11,12 @@ import { FormUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
 
-describe('BuildingChoicesController', () => {
+describe('BuildingChoicesFormController', () => {
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
-  let controller: BuildingChoicesController
+  let controller: BuildingChoicesFormController
 
   const username = 'SOME_USERNAME'
   const courseId = 'A_COURSE_ID'
@@ -25,7 +25,7 @@ describe('BuildingChoicesController', () => {
   beforeEach(() => {
     request = createMock<Request>({ params: { courseId }, user: { username } })
     response = createMock<Response>({})
-    controller = new BuildingChoicesController(courseService)
+    controller = new BuildingChoicesFormController(courseService)
   })
 
   describe('show', () => {

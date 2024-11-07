@@ -5,7 +5,7 @@ import type { CourseService } from '../../services'
 import { FormUtils, TypeUtils } from '../../utils'
 import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
 
-export default class BuildingChoicesController {
+export default class BuildingChoicesFormController {
   constructor(private readonly courseService: CourseService) {}
 
   show(): TypedRequestHandler<Request, Response> {

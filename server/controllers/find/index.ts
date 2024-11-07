@@ -2,7 +2,7 @@
 
 import AddCourseController from './addCourseController'
 import AddCourseOfferingController from './addCourseOfferingController'
-import BuildingChoicesController from './buildingChoicesController'
+import BuildingChoicesFormController from './buildingChoicesFormController'
 import CourseOfferingsController from './courseOfferingsController'
 import CoursesController from './coursesController'
 import UpdateCourseController from './updateCourseController'
@@ -15,7 +15,7 @@ const controllers = (services: Services) => {
     services.courseService,
     services.organisationService,
   )
-  const buildingChoicesController = new BuildingChoicesController(services.courseService)
+  const buildingChoicesFormController = new BuildingChoicesFormController(services.courseService)
   const coursesController = new CoursesController(services.courseService, services.organisationService)
   const courseOfferingsController = new CourseOfferingsController(services.courseService, services.organisationService)
   const updateCourseController = new UpdateCourseController(services.courseService)
@@ -27,7 +27,7 @@ const controllers = (services: Services) => {
   return {
     addCourseController,
     addCourseOfferingController,
-    buildingChoicesController,
+    buildingChoicesFormController,
     courseOfferingsController,
     coursesController,
     updateCourseController,
