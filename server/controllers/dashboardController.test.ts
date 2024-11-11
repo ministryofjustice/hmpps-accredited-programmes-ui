@@ -16,6 +16,18 @@ describe('DashboardController', () => {
     dashboardController = new DashboardController()
   })
 
+  describe('accessibilityStatement', () => {
+    it('renders the accessibility statement template', () => {
+      const requestHandler = dashboardController.accessibilityStatement()
+
+      requestHandler(request, response, next)
+
+      expect(response.render).toHaveBeenCalledWith('accessibilityStatement/index', {
+        pageHeading: 'Accessibility statement',
+      })
+    })
+  })
+
   describe('index', () => {
     it('renders the dashboard index template', () => {
       const requestHandler = dashboardController.index()

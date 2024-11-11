@@ -1,0 +1,89 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    classes: "js-back-link",
+    text: "Back",
+    href: "/"
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      <p>HMPPS is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</p>
+
+      <p>This accessibility statement applies to the Accredited Programmes service, available at <a href="https://accredited-programmes.hmpps.service.justice.gov.uk">ttps://accredited-programmes.hmpps.service.justice.gov.uk</a>.</p>
+
+      <p>We want as many people as possible to be able to use this website. For example, that means you should be able to:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>change colours, contrast levels and fonts using browser or device settings</li>
+        <li>zoom in up to 400% without the text spilling off the screen</li>
+        <li>navigate most of the website using a keyboard or speech recognition software</li>
+        <li>listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)</li>
+      </ul>
+
+      <p>We also make the website text as simple as possible to understand.</p>
+
+      <p>AbilityNet has advice on <a href="https://mcmw.abilitynet.org.uk/">making your device easier to use</a> if you have a disability.</p>
+
+      <h2 class="govuk-heading-m">How accessible this website is</h2>
+
+      <p>Parts of this website are not fully accessible. For example:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>when zoomed to 400%, people need to use horizontal scroll to see some menu and table items. This is especially hard for people using browser zoom on some pages, because of the scroll bar position.</li>
+        <li>for screen reader users, some help text is not linked to corresponding buttons, so could be missed. Table headings also give unhelpful extra information about the table sort arrows.</li>
+        <li>for keyboard users, the tabbing order of the main DPS menu is not intuitive</li>
+        <li>some page titles shown in the browser tab are identical, which could make it harder for blind or partially-sighted people to navigate</li>
+      </ul>
+
+      <h2 class="govuk-heading-m">Compliance status</h2>
+
+      <p>This website is partially compliant with the <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.2 AA standard</a>, due to the non-compliances listed below.</p>
+
+      <h2 class="govuk-heading-m">Non-accessible content</h2>
+
+      <p>The content listed below is non-accessible for the following reasons:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>sortable column headings are announced incorrectly to screen reader users. This fails WCAG success criterion 1.3.1 (A) Info and Relationships</li>
+        <li>keyboard focus does not enter the submenu immediately once activated. This fails WCAG success criterion 2.4.3 (A) Focus Order</li>
+        <li>main menu items are partially obscured when using browser zoom, and can only be accessed through horizontal scroll. This fails WCAG success criterion 1.4.10 (AA) Reflow</li>
+        <li>redundant landmark and heading on desktop. This fails WCAG success criterion 1.3.1 (A) Info and Relationships</li>
+        <li>help text position is not intuitive. This fails WCAG success criterion 1.3.2 (A) Meaningful Sequence</li>
+        <li>some page titles are identical and do not clearly distinguish the page. This fails WCAG success criterion 2.4.2 (A) Page Titled</li>
+        <li>disabled buttons are not communicated to screen reader users. This fails WCAG success criterion 2.4.3 (A) Focus Order</li>
+      </ul>
+
+      <h2 class="govuk-heading-m">What we`re doing to improve accessibility</h2>
+
+      <p>We will continue to do internal audits to check the accessibility of this service, as well as taking feedback from users.</p>
+
+      <p>We are working to fix the non-accessible content listed in this statement as part of  our ongoing work on this service. Elements that relate to how DPS functions (rather than the Accredited Programmes service) will be raised with the DPS Connect team.</p>
+
+      <h2 class="govuk-heading-m">Preparation of this accessibility statement</h2>
+
+      <p>This statement was prepared on 21 October 2024. It was last reviewed on 24 October 2024.</p>
+
+      <p>This website was last tested in October 2024 against the WCAG 2.2 AA standard. This audit of a representative sample of pages was carried out externally by <a href="https://uservision.co.uk/">User Vision</a>.</p>
+
+      <p>We also used findings from our own testing when preparing this accessibility statement.</p>
+
+      <h2 class="govuk-heading-m">Feedback and contact information</h2>
+
+      <p>If you find any problems not listed on this page or think we`re not meeting accessibility requirements, contact <a href="mailto:team.acp@digital.justice.gov.uk">team.acp@digital.justice.gov.uk</a>.</p>
+
+      <h2 class="govuk-heading-m">Enforcement procedure</h2>
+
+      <p>The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the 'accessibility regulations').</p>
+
+      <p>If you`re not happy with how we respond to your complaint, contact the <a href="https://www.equalityadvisoryservice.com/">Equality Advisory and Support Service (EASS)</a>.</p>
+    </div>
+  </div>
+{% endblock content %}
