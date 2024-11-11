@@ -15,6 +15,7 @@ export default function routes(controllers: Controllers): Router {
 
   const { dashboardController } = controllers
   get('/', dashboardController.index())
+  get('/accessibility-statement', dashboardController.accessibilityStatement())
 
   editorRoutes(controllers, router)
   findRoutes(controllers, router)
