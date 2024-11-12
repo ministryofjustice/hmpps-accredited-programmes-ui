@@ -16,7 +16,7 @@ export default Factory.define<User>(() => {
     name: faker.helpers.arrayElement([name, name.toLowerCase()]),
     staffId: faker.number.int(),
     userId,
-    username: faker.internet.userName({ firstName, lastName }),
+    username: faker.internet.username({ firstName, lastName }),
     uuid: userId,
   }
 })

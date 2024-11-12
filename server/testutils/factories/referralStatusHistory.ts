@@ -45,11 +45,11 @@ export default ReferralStatusHistoryFactory.define(({ params }) => {
     previousStatusColour: previousStatusColourAndDescription.statusColour,
     previousStatusDescription: previousStatusColourAndDescription.statusDescription,
     reasonDescription: FactoryHelpers.optionalArrayElement(faker.word.words({ count: { max: 3, min: 1 } })),
-    referralId: faker.internet.userName(),
+    referralId: faker.internet.username(),
     status: currentStatus,
     statusColour: currentStatusDescriptionAndColour.statusColour,
     statusDescription: currentStatusDescriptionAndColour.statusDescription,
     statusStartDate: faker.date.past().toISOString(),
-    username: faker.internet.userName(),
+    username: faker.internet.username(),
   }
 })
