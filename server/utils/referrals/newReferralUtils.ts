@@ -72,7 +72,7 @@ export default class NewReferralUtils {
         heading: 'Personal details',
         items: [
           {
-            statusTag: NewReferralUtils.taskListStatusTag('Completed'),
+            statusTag: NewReferralUtils.taskListStatusTag('Completed', 'confirm-personal-details-tag'),
             text: 'Confirm personal details',
             url: referPaths.new.showPerson({ referralId }),
           },
@@ -111,8 +111,7 @@ export default class NewReferralUtils {
         heading: 'Check answers and submit',
         items: [
           {
-            statusTag: NewReferralUtils.taskListStatusTag(checkAnswersStatus),
-            testIds: NewReferralUtils.taskListTestIds('check-answers'),
+            statusTag: NewReferralUtils.taskListStatusTag(checkAnswersStatus, 'check-answers-tag'),
             text: 'Check answers and submit',
             url: checkAnswersUrl,
           },
@@ -137,13 +136,12 @@ export default class NewReferralUtils {
     }
 
     if (dataTestId) {
-      tag.attributes = { 'data-testid': dataTestId }
+      tag.attributes = {
+        'data-testid': dataTestId,
+        id: dataTestId,
+      }
     }
 
     return tag
-  }
-
-  private static taskListTestIds(base: string): { listItem: string } {
-    return { listItem: `${base}-list-item` }
   }
 }
