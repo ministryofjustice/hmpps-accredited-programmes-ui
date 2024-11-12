@@ -123,7 +123,7 @@ export default class CourseParticipationUtils {
           referralId,
         }),
         text: 'Change',
-        visuallyHiddenText: 'participation',
+        visuallyHiddenText: 'programme',
       })
     }
 
@@ -134,7 +134,7 @@ export default class CourseParticipationUtils {
           referralId,
         }),
         text: 'Remove',
-        visuallyHiddenText: 'participation',
+        visuallyHiddenText: 'programme',
       })
     }
 

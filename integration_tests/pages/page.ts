@@ -183,7 +183,7 @@ export default abstract class Page {
                   referralId,
                 }),
                 text: 'Change',
-                visuallyHiddenText: 'participation',
+                visuallyHiddenText: 'programme',
               })
             }
 
@@ -194,7 +194,7 @@ export default abstract class Page {
                   referralId,
                 }),
                 text: 'Remove',
-                visuallyHiddenText: 'participation',
+                visuallyHiddenText: 'programme',
               })
             }
 
