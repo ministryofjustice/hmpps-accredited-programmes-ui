@@ -43,7 +43,7 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
     organisationName: `${faker.location.county()} (HMP)`,
     paroleEligibilityDate: FactoryHelpers.randomFutureDateString(),
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
-    referrerUsername: faker.internet.userName(),
+    referrerUsername: faker.internet.username(),
     sentenceType: faker.helpers.arrayElement([
       'Determinate',
       'Determinate and Recall',

@@ -31,13 +31,15 @@ export default class NewReferralTaskListPage extends Page {
   }
 
   shouldBeReadyForSubmission() {
-    cy.get('[data-testid="check-answers-list-item"]').within(() => {
-      cy.get('a').should('have.attr', 'href', referPaths.new.checkAnswers({ referralId: this.referral.id }))
-      cy.get('.govuk-tag').then(tagElement => {
-        const { actual, expected } = Helpers.parseHtml(tagElement, 'Not started')
-        expect(actual).to.equal(expected)
+    cy.get('[data-testid="check-answers-tag"]')
+      .parent()
+      .within(() => {
+        cy.get('a').should('have.attr', 'href', referPaths.new.checkAnswers({ referralId: this.referral.id }))
+        cy.get('.govuk-tag').then(tagElement => {
+          const { actual, expected } = Helpers.parseHtml(tagElement, 'Not started')
+          expect(actual).to.equal(expected)
+        })
       })
-    })
   }
 
   shouldContainTaskList() {
@@ -89,12 +91,14 @@ export default class NewReferralTaskListPage extends Page {
   }
 
   shouldNotBeReadyForSubmission() {
-    cy.get('[data-testid="check-answers-list-item"]').within(() => {
-      cy.get('a').should('not.exist')
-      cy.get('.govuk-tag').then(tagElement => {
-        const { actual, expected } = Helpers.parseHtml(tagElement, 'Cannot start yet')
-        expect(actual).to.equal(expected)
+    cy.get('[data-testid="check-answers-tag"]')
+      .parent()
+      .within(() => {
+        cy.get('a').should('not.exist')
+        cy.get('.govuk-tag').then(tagElement => {
+          const { actual, expected } = Helpers.parseHtml(tagElement, 'Cannot start yet')
+          expect(actual).to.equal(expected)
+        })
       })
-    })
   }
 }
