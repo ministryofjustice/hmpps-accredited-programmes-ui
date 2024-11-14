@@ -32,8 +32,10 @@ describe('ShowReferralUtils', () => {
             text: 'Back to referrals',
           },
           {
+            attributes: {
+              'aria-disabled': false,
+            },
             classes: 'govuk-button--secondary',
-            disabled: false,
             href: `/assess/referrals/${submittedReferral.id}/update-status/decision`,
             text: 'Update status',
           },
@@ -52,8 +54,10 @@ describe('ShowReferralUtils', () => {
           ).toEqual(
             expect.arrayContaining([
               {
+                attributes: {
+                  'aria-disabled': true,
+                },
                 classes: 'govuk-button--secondary',
-                disabled: true,
                 href: undefined,
                 text: 'Update status',
               },
@@ -99,13 +103,17 @@ describe('ShowReferralUtils', () => {
             text: 'Back to referrals',
           },
           {
+            attributes: {
+              'aria-disabled': true,
+            },
             classes: 'govuk-button--secondary',
-            disabled: true,
             text: 'Put on hold',
           },
           {
+            attributes: {
+              'aria-disabled': true,
+            },
             classes: 'govuk-button--secondary',
-            disabled: true,
             text: 'Withdraw referral',
           },
         ])
@@ -123,14 +131,18 @@ describe('ShowReferralUtils', () => {
           ).toEqual(
             expect.arrayContaining([
               {
+                attributes: {
+                  'aria-disabled': true,
+                },
                 classes: 'govuk-button--secondary',
-                disabled: true,
                 href: undefined,
                 text: 'Put on hold',
               },
               {
+                attributes: {
+                  'aria-disabled': true,
+                },
                 classes: 'govuk-button--secondary',
-                disabled: true,
                 href: undefined,
                 text: 'Withdraw referral',
               },
@@ -156,8 +168,10 @@ describe('ShowReferralUtils', () => {
             ).toEqual(
               expect.arrayContaining([
                 {
+                  attributes: {
+                    'aria-disabled': false,
+                  },
                   classes: 'govuk-button--secondary',
-                  disabled: false,
                   href: `/refer/referrals/${submittedReferral.id}/manage-hold?status=ON_HOLD_REFERRAL_SUBMITTED`,
                   text: 'Put on hold',
                 },
@@ -182,8 +196,10 @@ describe('ShowReferralUtils', () => {
             ).toEqual(
               expect.arrayContaining([
                 {
+                  attributes: {
+                    'aria-disabled': false,
+                  },
                   classes: 'govuk-button--secondary',
-                  disabled: false,
                   href: `/refer/referrals/${submittedReferral.id}/manage-hold?status=REFERRAL_SUBMITTED`,
                   text: 'Remove hold',
                 },
@@ -205,8 +221,10 @@ describe('ShowReferralUtils', () => {
             ).toEqual(
               expect.arrayContaining([
                 {
+                  attributes: {
+                    'aria-disabled': false,
+                  },
                   classes: 'govuk-button--secondary',
-                  disabled: false,
                   href: `/refer/referrals/${submittedReferral.id}/withdraw`,
                   text: 'Withdraw referral',
                 },

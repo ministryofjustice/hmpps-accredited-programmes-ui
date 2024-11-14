@@ -37,8 +37,10 @@ export default class ShowReferralUtils {
 
     if (isAssess) {
       buttons.push({
+        attributes: {
+          'aria-disabled': closed,
+        },
         classes: 'govuk-button--secondary',
-        disabled: closed,
         href: closed ? undefined : assessPaths.updateStatus.decision.show({ referralId: referral.id }),
         text: 'Update status',
       })
@@ -58,14 +60,18 @@ export default class ShowReferralUtils {
 
       buttons.push(
         {
+          attributes: {
+            'aria-disabled': !manageHoldHref,
+          },
           classes: 'govuk-button--secondary',
-          disabled: !manageHoldHref,
           href: manageHoldHref,
           text: releaseStatusCode ? 'Remove hold' : 'Put on hold',
         },
         {
+          attributes: {
+            'aria-disabled': !withdrawHref,
+          },
           classes: 'govuk-button--secondary',
-          disabled: !withdrawHref,
           href: withdrawHref,
           text: 'Withdraw referral',
         },
