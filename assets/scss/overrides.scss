@@ -12,5 +12,14 @@
 }
 
 .govuk-tag {
-  color: govuk-colour('black')!important;
+  color: govuk-colour('black') !important;
+}
+
+.govuk-button--secondary[aria-disabled='true'] {
+  opacity: (0.5);
+
+  &:hover {
+    background-color: govuk-colour('light-grey');
+    cursor: not-allowed;
+  }
 }

@@ -28,8 +28,8 @@
       <div class="govuk-button-group"  data-testid="show-referral-buttons">
         {% for button in buttons %}
           {{ govukButton({
+            attributes: button.attributes,
             classes: button.classes,
-            disabled: button.disabled,
             href: button.href,
             text: button.text
           }) }}
