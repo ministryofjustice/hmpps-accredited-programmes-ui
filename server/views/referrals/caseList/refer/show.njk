@@ -48,6 +48,8 @@
   {% if tableRows | length %}
     <div class="table-scroll">
       {{ govukTable({
+        caption: "My referrals. Column headers with buttons are sortable.",
+        captionClasses: "govuk-visually-hidden",
         head: tableHeadings,
         rows: tableRows
       }) }}
