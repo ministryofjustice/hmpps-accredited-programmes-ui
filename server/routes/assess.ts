@@ -1,7 +1,6 @@
 import type { Router } from 'express'
 
 import type { Controllers } from '../controllers'
-import { pniAccessMiddleware } from '../middleware'
 import { ApplicationRoles } from '../middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../paths'
 import { RouteUtils } from '../utils'
@@ -27,7 +26,7 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   get(assessPaths.show.statusHistory.pattern, statusHistoryController.show())
 
-  get(assessPaths.show.pni.pattern, pniAccessMiddleware(pniController.show()))
+  get(assessPaths.show.pni.pattern, pniController.show())
 
   get(assessPaths.show.additionalInformation.pattern, referralsController.additionalInformation())
   get(assessPaths.show.offenceHistory.pattern, referralsController.offenceHistory())

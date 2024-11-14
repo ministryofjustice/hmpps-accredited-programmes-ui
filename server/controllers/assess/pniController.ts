@@ -18,7 +18,6 @@ export default class PniController {
 
       const { referralId } = req.params
       const { username } = req.user
-      const { activeCaseLoadId } = res.locals.user
 
       const referral = await this.referralService.getReferral(username, referralId)
       const person = await this.personService.getPerson(username, referral.prisonNumber)
@@ -61,7 +60,7 @@ export default class PniController {
         person,
         referral,
         riskScoresHref: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId }),
-        subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'pni', referral.id, activeCaseLoadId),
+        subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'pni', referral.id),
         ...templateLocals,
       })
     }

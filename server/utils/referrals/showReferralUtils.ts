@@ -1,7 +1,6 @@
 import type { Request } from 'express'
 
 import CaseListUtils from './caseListUtils'
-import config from '../../config'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
 import type { CourseOffering, Organisation, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
@@ -173,7 +172,6 @@ export default class ShowReferralUtils {
     currentPath: Request['path'],
     currentSection: 'pni' | 'referral' | 'risksAndNeeds' | 'statusHistory',
     referralId: Referral['id'],
-    usersActiveCaseLoadId?: User['activeCaseLoadId'],
   ): Array<MojFrontendNavigationItem> {
     const isAssess = currentPath.startsWith(assessPathBase.pattern)
     const paths = isAssess ? assessPaths : referPaths
@@ -204,11 +202,7 @@ export default class ShowReferralUtils {
     ]
 
     if (isAssess) {
-      if (usersActiveCaseLoadId && config.flags.pniEnabledOrganisations.includes(usersActiveCaseLoadId)) {
-        navigationItems.push(pniLink)
-      }
-
-      navigationItems.push(statusHistoryLink)
+      navigationItems.push(pniLink, statusHistoryLink)
     } else {
       navigationItems.unshift(statusHistoryLink)
     }

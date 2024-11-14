@@ -92,7 +92,6 @@ export default {
   environment: process.env.ENVIRONMENT || 'local',
   flags: {
     caseTransferEnabled: get('CASE_TRANSFER_ENABLED', 'false') === 'true',
-    pniEnabledOrganisations: get('PNI_ENABLED_ORGANISATIONS', '').split(','),
     referEnabled: get('REFER_ENABLED', 'false') === 'true',
   },
   https: production,

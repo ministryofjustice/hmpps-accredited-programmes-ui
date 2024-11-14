@@ -455,6 +455,11 @@ describe('ShowReferralUtils', () => {
           },
           {
             active: false,
+            href: '/assess/referrals/mock-referral-id/pni',
+            text: 'Programme needs identifier',
+          },
+          {
+            active: false,
             href: '/assess/referrals/mock-referral-id/status-history',
             text: 'Status history',
           },
@@ -477,6 +482,11 @@ describe('ShowReferralUtils', () => {
           },
           {
             active: false,
+            href: '/assess/referrals/mock-referral-id/pni',
+            text: 'Programme needs identifier',
+          },
+          {
+            active: false,
             href: '/assess/referrals/mock-referral-id/status-history',
             text: 'Status history',
           },
@@ -496,6 +506,11 @@ describe('ShowReferralUtils', () => {
             active: false,
             href: '/assess/referrals/mock-referral-id/risks-and-needs/risks-and-alerts',
             text: 'Risks and needs',
+          },
+          {
+            active: false,
+            href: '/assess/referrals/mock-referral-id/pni',
+            text: 'Programme needs identifier',
           },
           {
             active: true,
