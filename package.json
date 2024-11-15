@@ -163,5 +163,10 @@
   },
   "optionalDependencies": {
     "djlint": "^1.27.0"
+  },
+  "overrides": {
+    "csurf": {
+      "cookie": "0.7.2"
+    }
   }
 }
