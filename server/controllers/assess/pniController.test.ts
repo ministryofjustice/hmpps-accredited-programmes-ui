@@ -35,7 +35,6 @@ describe('PniController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
-  const usersActiveCaseLoadId = 'MDI'
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
@@ -82,7 +81,6 @@ describe('PniController', () => {
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
-    response.locals.user.activeCaseLoadId = usersActiveCaseLoadId
   })
 
   afterEach(() => {
@@ -112,12 +110,7 @@ describe('PniController', () => {
       thinkingSummaryListRows,
     })
 
-    expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(
-      request.path,
-      'pni',
-      referral.id,
-      usersActiveCaseLoadId,
-    )
+    expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(request.path, 'pni', referral.id)
     expect(pniService.getPni).toHaveBeenCalledWith(username, referral.prisonNumber, {
       gender: person.gender,
       savePNI: true,

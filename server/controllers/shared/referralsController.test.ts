@@ -55,7 +55,6 @@ describe('ReferralsController', () => {
   const referralService = createMock<ReferralService>({})
   const userService = createMock<UserService>({})
 
-  const activeCaseLoadId = 'MDI'
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
@@ -127,7 +126,6 @@ describe('ReferralsController', () => {
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
-    response.locals.user = { activeCaseLoadId }
   })
 
   afterEach(() => {
@@ -446,12 +444,7 @@ describe('ReferralsController', () => {
       isRefer ? statusTransitions : undefined,
     )
     expect(mockShowReferralUtils.viewReferralNavigationItems).toHaveBeenCalledWith(path, referral.id)
-    expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(
-      path,
-      'referral',
-      referral.id,
-      activeCaseLoadId,
-    )
+    expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'referral', referral.id)
 
     if (isRefer) {
       expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)
