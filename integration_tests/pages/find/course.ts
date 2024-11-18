@@ -31,7 +31,7 @@ export default class CoursePage extends Page {
   shouldContainOfferingsText() {
     cy.get('[data-testid="offerings-text"]').should(
       'have.text',
-      'Select a prison to contact the programme team or make a referral. Online referrals are not yet available at all sites.',
+      'Select a prison to contact the programme team or make a referral.',
     )
   }
 
