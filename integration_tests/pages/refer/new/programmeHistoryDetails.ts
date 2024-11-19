@@ -55,8 +55,8 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   shouldContainOutcomeRadioItems() {
     cy.get('[data-testid="outcome-options"]').within(() => {
       this.shouldContainRadioItems([
-        { text: 'Complete', value: 'complete' },
-        { text: 'Incomplete', value: 'incomplete' },
+        { text: 'Complete If complete, optionally enter the year completed.', value: 'complete' },
+        { text: 'Incomplete If incomplete, optionally enter the year started.', value: 'incomplete' },
       ])
     })
   }
@@ -64,8 +64,8 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   shouldContainSettingRadioItems() {
     cy.get('[data-testid="setting-options"]').within(() => {
       this.shouldContainRadioItems([
-        { text: 'Community', value: 'community' },
-        { text: 'Custody', value: 'custody' },
+        { text: 'Community If community setting, optionally enter the location.', value: 'community' },
+        { text: 'Custody If custody setting, optionally enter the location.', value: 'custody' },
       ])
     })
   }
