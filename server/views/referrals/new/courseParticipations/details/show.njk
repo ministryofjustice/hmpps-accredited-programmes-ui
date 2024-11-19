@@ -102,7 +102,7 @@
           items: [
             {
               value: "community",
-              text: "Community",
+              html: 'Community<span class="govuk-visually-hidden">If community setting, optionally enter the location.</span>',
               conditional: {
                 html: communityLocationHtml
               },
@@ -113,7 +113,7 @@
             },
             {
               value: "custody",
-              text: "Custody",
+              html: 'Custody<span class="govuk-visually-hidden">If custody setting, optionally enter the location.</span>',
               conditional: {
                 html: custodyLocationHtml
               },
@@ -139,7 +139,7 @@
           items: [
             {
               value: "complete",
-              text: "Complete",
+              html: 'Complete<span class="govuk-visually-hidden">If complete, optionally enter the year completed.</span>',
               conditional: {
                 html: yearCompletedHtml
               },
@@ -150,7 +150,7 @@
             },
             {
               value: "incomplete",
-              text: "Incomplete",
+              html: 'Incomplete<span class="govuk-visually-hidden">If incomplete, optionally enter the year started.</span>',
               conditional: {
                 html: yearStartedHtml
               },
