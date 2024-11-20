@@ -34,8 +34,9 @@ import verifyToken from './tokenVerification'
 type RestClientBuilder<T> = (token: Express.User['token'] | SystemToken) => T
 type RestClientBuilderWithoutToken<T> = () => T
 
-const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = () =>
-  new HmppsAuthClient(new TokenStore(createRedisClient()))
+const tokenStore = new TokenStore(createRedisClient())
+
+const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = () => new HmppsAuthClient(tokenStore)
 const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (userToken: Express.User['token']) =>
   new HmppsManageUsersClient(userToken)
 const courseClientBuilder: RestClientBuilder<CourseClient> = (userToken: Express.User['token']) =>
