@@ -61,7 +61,7 @@ export default class CourseUtils {
       href: this.isBuildingChoices(course.displayName)
         ? findPaths.buildingChoices.form.show({ courseId: course.id })
         : findPaths.show({ courseId: course.id }),
-      prerequisiteSummaryListRows: CourseUtils.prerequisiteSummaryListRows(course.coursePrerequisites),
+      prerequisiteSummaryListRows: this.prerequisiteSummaryListRows(course.coursePrerequisites),
     }
   }
 
@@ -92,22 +92,41 @@ export default class CourseUtils {
 
     const summaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = []
 
-    prerequisites.forEach(prerequisite => {
-      const index = order[prerequisite.name]
+    const prerequisitesCopy = [...prerequisites]
+    prerequisitesCopy
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .forEach(prerequisite => {
+        const index = order[prerequisite.name]
 
-      if (index === undefined) {
-        return
-      }
+        if (prerequisite.name === 'Risk criteria pre' || prerequisite.name === 'Risk criteria post') {
+          const riskCriteriaItems = summaryListRows[order['Risk criteria']]
 
-      if (summaryListRows[index]) {
-        ;(summaryListRows[index].value as HasHtmlString).html += `<br>${prerequisite.description}`
-      } else {
-        summaryListRows[index] = {
-          key: { text: prerequisite.name },
-          value: { html: prerequisite.description },
+          if (riskCriteriaItems) {
+            const { description } = prerequisite
+            const existingHtml = riskCriteriaItems.value.html
+
+            riskCriteriaItems.value.html =
+              prerequisite.name === 'Risk criteria pre'
+                ? `${description}<br><br>${existingHtml}`
+                : `${existingHtml}<br><br>${description}`
+          }
+
+          return
         }
-      }
-    })
+
+        if (index === undefined) {
+          return
+        }
+
+        if (summaryListRows[index]) {
+          ;(summaryListRows[index].value as HasHtmlString).html += `<br>${prerequisite.description}`
+        } else {
+          summaryListRows[index] = {
+            key: { text: prerequisite.name },
+            value: { html: prerequisite.description },
+          }
+        }
+      })
 
     return summaryListRows
   }

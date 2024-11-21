@@ -46,6 +46,21 @@ class CoursePrerequisiteFactory extends Factory<CoursePrerequisite> {
     })
   }
 
+  riskCritieriaPost(description?: string) {
+    return this.params({
+      description:
+        description || 'The person should not score high in any risk areas for the moderate intensity pathway.',
+      name: 'Risk criteria post',
+    })
+  }
+
+  riskCritieriaPre(description?: string) {
+    return this.params({
+      description: description || 'Medium in at least one of these areas:',
+      name: 'Risk criteria pre',
+    })
+  }
+
   setting(description?: string) {
     return this.params({
       description: description || 'Custody',
