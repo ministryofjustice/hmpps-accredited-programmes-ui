@@ -81,21 +81,24 @@ describe('CourseUtils', () => {
 
   describe('presentCourse', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
+      const coursePrerequisites = [
+        coursePrerequisiteFactory.gender().build(),
+        coursePrerequisiteFactory.learningNeeds().build(),
+        coursePrerequisiteFactory.riskCriteria().build(),
+        coursePrerequisiteFactory.setting().build(),
+        coursePrerequisiteFactory.suitableForPeopleWithLDCs().build(),
+        coursePrerequisiteFactory.equivalentNonLDCProgramme().build(),
+        coursePrerequisiteFactory.equivalentLDCProgramme().build(),
+        coursePrerequisiteFactory.timeToComplete().build(),
+        coursePrerequisiteFactory.needsCriteria().build(),
+        coursePrerequisiteFactory.riskCritieriaPost().build(),
+        coursePrerequisiteFactory.riskCritieriaPre().build(),
+      ]
       const course = courseFactory.build({
         alternateName: 'LC',
         audience: 'Intimate partner violence offence',
         audienceColour: 'green',
-        coursePrerequisites: [
-          coursePrerequisiteFactory.gender().build(),
-          coursePrerequisiteFactory.learningNeeds().build(),
-          coursePrerequisiteFactory.riskCriteria().build(),
-          coursePrerequisiteFactory.setting().build(),
-          coursePrerequisiteFactory.suitableForPeopleWithLDCs().build(),
-          coursePrerequisiteFactory.equivalentNonLDCProgramme().build(),
-          coursePrerequisiteFactory.equivalentLDCProgramme().build(),
-          coursePrerequisiteFactory.timeToComplete().build(),
-          coursePrerequisiteFactory.needsCriteria().build(),
-        ],
+        coursePrerequisites,
         id: 'lime-course-1',
         name: 'Lime Course',
       })
@@ -111,39 +114,41 @@ describe('CourseUtils', () => {
         prerequisiteSummaryListRows: [
           {
             key: { text: 'Setting' },
-            value: { html: course.coursePrerequisites[3].description },
+            value: { html: coursePrerequisites[3].description },
           },
           {
             key: { text: 'Gender' },
-            value: { html: course.coursePrerequisites[0].description },
+            value: { html: coursePrerequisites[0].description },
           },
           {
             key: { text: 'Risk criteria' },
-            value: { html: course.coursePrerequisites[2].description },
+            value: {
+              html: `${coursePrerequisites[10].description}<br><br>${coursePrerequisites[2].description}<br><br>${coursePrerequisites[9].description}`,
+            },
           },
           {
             key: { text: 'Needs criteria' },
-            value: { html: course.coursePrerequisites[8].description },
+            value: { html: coursePrerequisites[8].description },
           },
           {
             key: { text: 'Learning needs' },
-            value: { html: course.coursePrerequisites[1].description },
+            value: { html: coursePrerequisites[1].description },
           },
           {
             key: { text: 'Suitable for people with learning disabilities or challenges (LDC)?' },
-            value: { html: course.coursePrerequisites[4].description },
+            value: { html: coursePrerequisites[4].description },
           },
           {
             key: { text: 'Equivalent non-LDC programme' },
-            value: { html: course.coursePrerequisites[5].description },
+            value: { html: coursePrerequisites[5].description },
           },
           {
             key: { text: 'Equivalent LDC programme' },
-            value: { html: course.coursePrerequisites[6].description },
+            value: { html: coursePrerequisites[6].description },
           },
           {
             key: { text: 'Time to complete' },
-            value: { html: course.coursePrerequisites[7].description },
+            value: { html: coursePrerequisites[7].description },
           },
         ],
       })
