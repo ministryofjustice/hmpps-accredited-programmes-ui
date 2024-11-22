@@ -154,4 +154,22 @@ describe('PniController', () => {
       })
     })
   })
+
+  describe('when the pni service throws an error', () => {
+    it('render the pni page with the correct response locals', async () => {
+      pniService.getPni.mockRejectedValue(new Error('Some error'))
+
+      const requestHandler = controller.show()
+      await requestHandler(request, response, next)
+
+      expect(PniUtils.pathwayContent).toHaveBeenCalledWith(person.name, undefined)
+      expect(response.render).toHaveBeenCalledWith(
+        'referrals/show/pni/show',
+        expect.objectContaining({
+          hasData: false,
+          pathwayContent,
+        }),
+      )
+    })
+  })
 })
