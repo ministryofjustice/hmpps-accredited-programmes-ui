@@ -109,15 +109,26 @@ describe('PniUtils', () => {
       })
     })
 
-    it('returns the pathway content for the given person name and an unknown programme pathway', () => {
-      const pathwayContent = PniUtils.pathwayContent(personName)
+    it('returns the pathway content for the given person name and MISSING_INFORMATION programme pathway', () => {
+      const pathwayContent = PniUtils.pathwayContent(personName, 'MISSING_INFORMATION')
 
       expect(pathwayContent).toEqual({
         bodyText:
           'There is not enough information in the layer 3 assessment to calculate the recommended programme pathway.',
         class: 'pathway-content--missing',
-        dataTestId: 'unknown-pathway',
+        dataTestId: 'missing-informaton-pathway-content',
         headingText: 'Information missing',
+      })
+    })
+
+    it('returns the error pathway content when the pathway is undefined', () => {
+      const pathwayContent = PniUtils.pathwayContent(personName)
+
+      expect(pathwayContent).toEqual({
+        bodyText: 'The service cannot calculate the recommended pathway at the moment. Try again later.',
+        class: 'pathway-content--error',
+        dataTestId: 'error-pathway-content',
+        headingText: 'Error',
       })
     })
   })
