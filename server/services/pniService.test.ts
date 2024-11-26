@@ -56,13 +56,40 @@ describe('PniService', () => {
     })
 
     describe('when the PNI client throws an error', () => {
-      it('returns null', async () => {
-        const clientError = createError(500)
+      it('returns null when the error status is 400', async () => {
+        const clientError = createError(400)
         pniClient.findPni.mockRejectedValue(clientError)
 
         const result = await service.getPni(username, prisonNumber)
 
         expect(result).toBeNull()
+
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
+      })
+
+      it('returns null when the error status is 404', async () => {
+        const clientError = createError(404)
+        pniClient.findPni.mockRejectedValue(clientError)
+
+        const result = await service.getPni(username, prisonNumber)
+
+        expect(result).toBeNull()
+
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
+      })
+
+      it('re-throws the error when the status is not 404', async () => {
+        const clientError = createError(500)
+        pniClient.findPni.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching PNI data for prison number ${prisonNumber}.`)
+        await expect(service.getPni(username, prisonNumber)).rejects.toThrow(expectedError)
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)

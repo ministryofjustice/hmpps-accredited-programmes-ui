@@ -55,20 +55,13 @@ export default class PniUtils {
           dataTestId: 'alternative-pathway-content',
           headingText: 'Not eligible',
         }
-      case 'MISSING_INFORMATION':
+      default:
         return {
           bodyText:
             'There is not enough information in the layer 3 assessment to calculate the recommended programme pathway.',
           class: 'pathway-content--missing',
-          dataTestId: 'missing-informaton-pathway-content',
+          dataTestId: 'unknown-pathway',
           headingText: 'Information missing',
-        }
-      default:
-        return {
-          bodyText: 'The service cannot calculate the recommended pathway at the moment. Try again later.',
-          class: 'pathway-content--error',
-          dataTestId: 'error-pathway-content',
-          headingText: 'Error',
         }
     }
   }
