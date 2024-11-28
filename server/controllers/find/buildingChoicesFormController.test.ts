@@ -5,7 +5,6 @@ import type { NextFunction, Request, Response } from 'express'
 import BuildingChoicesFormController from './buildingChoicesFormController'
 import { findPaths } from '../../paths'
 import { FormUtils } from '../../utils'
-import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
 
 jest.mock('../../utils/formUtils')
 
@@ -14,14 +13,16 @@ describe('BuildingChoicesFormController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
-  let buildingChoicesFormData: BuildingChoicesSearchForm
   let controller: BuildingChoicesFormController
 
   const username = 'SOME_USERNAME'
   const courseId = 'A_COURSE_ID'
 
   beforeEach(() => {
-    request = createMock<Request>({ params: { courseId }, session: { buildingChoicesFormData }, user: { username } })
+    request = createMock<Request>({
+      params: { courseId },
+      user: { username },
+    })
     response = createMock<Response>({})
     controller = new BuildingChoicesFormController()
   })
