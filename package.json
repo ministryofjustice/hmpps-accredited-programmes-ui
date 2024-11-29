@@ -70,7 +70,7 @@
     "compression": "^1.7.4",
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.0.0",
-    "csurf": "^1.11.0",
+    "csrf-sync": "^4.0.3",
     "express": "^4.18.2",
     "express-prom-bundle": "^8.0.0",
     "express-session": "^1.17.3",
@@ -102,7 +102,6 @@
     "@types/compression": "^1.7.2",
     "@types/connect-flash": "0.0.40",
     "@types/cookie-session": "^2.0.44",
-    "@types/csurf": "^1.11.2",
     "@types/express-session": "^1.17.7",
     "@types/http-errors": "^2.0.1",
     "@types/jest": "^29.5.0",
@@ -163,10 +162,5 @@
   },
   "optionalDependencies": {
     "djlint": "^1.27.0"
-  },
-  "overrides": {
-    "csurf": {
-      "cookie": "0.7.2"
-    }
   }
 }
