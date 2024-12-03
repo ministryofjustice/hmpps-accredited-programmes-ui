@@ -288,13 +288,28 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-11-06T20:22:18" */
+  /** @example "2024-12-02T15:41:56" */
   submittedOn?: object
   deleted: boolean
+  /** @uniqueItems true */
+  staffDetails: StaffEntity[]
 }
 
 export interface ReferrerUserEntity {
   username: string
+}
+
+export interface StaffEntity {
+  /** @format uuid */
+  id?: string
+  staffId?: number
+  firstName: string
+  lastName: string
+  primaryEmail: string
+  username: string
+  pomType: 'PRIMARY_POM' | 'SECONDARY_POM'
+  accountType: 'GENERAL' | 'ADMIN'
+  referral: ReferralEntity
 }
 
 export interface ReferralCreate {
@@ -356,6 +371,19 @@ export interface Referral {
   statusColour?: string
   /** @example "null" */
   submittedOn?: string
+  /** @example null */
+  prisonOffenderManagers: StaffDetail[]
+}
+
+/** @example null */
+export interface StaffDetail {
+  staffId: number
+  firstName: string
+  lastName: string
+  primaryEmail: string
+  username: string
+  type: 'PRIMARY_POM' | 'SECONDARY_POM'
+  accountType: 'GENERAL' | 'ADMIN'
 }
 
 export interface PeopleSearchResponse {
@@ -1081,6 +1109,10 @@ export interface Relationships {
   prevCloseRelationships?: string
   /** @example "0-No problems" */
   emotionalCongruence?: string
+  /** @example "0-No problems" */
+  relationshipWithPartner?: string
+  /** @example "No" */
+  prevOrCurrentDomesticAbuse?: string
 }
 
 export interface Psychiatric {
@@ -1113,8 +1145,8 @@ export interface OffenceDetail {
   stalking?: boolean
   /** @example false */
   recognisesImpact?: boolean
-  /** @format int32 */
-  numberOfOthersInvolved?: number
+  /** @example "null" */
+  numberOfOthersInvolved?: string
   /** @example "There were two others involved who absconded at the scene" */
   othersInvolvedDetail?: string
   /** @example "This person is easily lead" */

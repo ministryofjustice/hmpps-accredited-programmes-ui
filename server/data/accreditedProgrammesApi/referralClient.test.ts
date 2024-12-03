@@ -21,7 +21,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('create', () => {
-    const createdReferralResponse: Partial<Referral> = { id: faker.string.uuid() }
+    const createdReferralResponse: Pick<Referral, 'id'> = { id: faker.string.uuid() }
     const prisonNumber = 'A1234AA'
 
     beforeEach(() => {
