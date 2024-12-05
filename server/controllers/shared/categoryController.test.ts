@@ -14,8 +14,9 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ReferralUtils, ShowReferralUtils } from '../../utils'
-import type { Person, Referral, ReferralStatusCategory } from '@accredited-programmes/models'
+import type { Person, ReferralStatusCategory } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type { GovukFrontendRadiosItem } from '@govuk-frontend'
 
 jest.mock('../../utils/formUtils')

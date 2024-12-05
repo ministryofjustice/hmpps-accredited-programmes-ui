@@ -44,8 +44,9 @@ import {
   ShowRisksAndNeedsUtils,
   ThinkingAndBehavingUtils,
 } from '../../utils'
-import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type { GovukFrontendTable } from '@govuk-frontend'
 
 jest.mock('../../utils/dateUtils')

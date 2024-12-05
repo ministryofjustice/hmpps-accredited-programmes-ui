@@ -60,7 +60,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status REFERRAL_STARTED',
         uponReceiving: 'A request for referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
-          body: Matchers.like(referral),
+          body: Matchers.like({ ...referral, prisonOffenderManagers: [] }),
           status: 200,
         },
         withRequest: {

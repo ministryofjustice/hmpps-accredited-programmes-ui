@@ -16,8 +16,9 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, ShowReferralUtils } from '../../utils'
-import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 
 jest.mock('../../utils/referrals/showReferralUtils')
 

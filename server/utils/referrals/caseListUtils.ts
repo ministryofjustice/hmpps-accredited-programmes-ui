@@ -6,9 +6,9 @@ import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import PathUtils from '../pathUtils'
 import StringUtils from '../stringUtils'
-import type { Referral, ReferralStatusGroup, ReferralStatusRefData, ReferralView } from '@accredited-programmes/models'
+import type { ReferralStatusGroup, ReferralStatusRefData, ReferralView } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
-import type { Course } from '@accredited-programmes-api'
+import type { Course, Referral } from '@accredited-programmes-api'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {

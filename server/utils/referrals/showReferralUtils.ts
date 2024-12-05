@@ -3,7 +3,7 @@ import type { Request } from 'express'
 import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
-import type { CourseOffering, Organisation, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -11,6 +11,7 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type { GovukFrontendButton } from '@govuk-frontend'
 import type { User, UserEmail } from '@manage-users-api'
 

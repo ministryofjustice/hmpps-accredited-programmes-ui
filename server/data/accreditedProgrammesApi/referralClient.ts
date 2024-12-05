@@ -7,7 +7,6 @@ import RestClient from '../restClient'
 import type {
   ConfirmationFields,
   Paginated,
-  Referral,
   ReferralStatusGroup,
   ReferralStatusRefData,
   ReferralStatusUpdate,
@@ -15,7 +14,7 @@ import type {
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { ReferralStatusHistory } from '@accredited-programmes-api'
+import type { Referral, ReferralStatusHistory } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {

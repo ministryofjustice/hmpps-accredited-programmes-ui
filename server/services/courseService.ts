@@ -12,13 +12,12 @@ import type {
   CourseParticipationUpdate,
   CoursePrerequisite,
   Person,
-  Referral,
 } from '@accredited-programmes/models'
 import type {
   BuildingChoicesSearchForm,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
-import type { Course } from '@accredited-programmes-api'
+import type { Course, Referral } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
 export default class CourseService {

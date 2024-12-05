@@ -1,5 +1,5 @@
 import { referPaths } from '../../paths'
-import type { CourseOffering, Organisation, Person, Referral } from '@accredited-programmes/models'
+import type { CourseOffering, Organisation, Person } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -7,6 +7,7 @@ import type {
   ReferralTaskListStatusTag,
   ReferralTaskListStatusText,
 } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type { User, UserEmail } from '@manage-users-api'
 
 export default class NewReferralUtils {

@@ -2,8 +2,7 @@
 import config, { type ApiConfig } from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
-import type { Referral } from '@accredited-programmes/models'
-import type { PniScore } from '@accredited-programmes-api'
+import type { PniScore, Referral } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class PniClient {

@@ -8,11 +8,10 @@ import type {
   Health,
   LearningNeeds,
   OffenceDetail,
-  Referral,
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
-import type { Attitude, Behaviour, Lifestyle, Psychiatric, Relationships } from '@accredited-programmes-api'
+import type { Attitude, Behaviour, Lifestyle, Psychiatric, Referral, Relationships } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class OasysClient {

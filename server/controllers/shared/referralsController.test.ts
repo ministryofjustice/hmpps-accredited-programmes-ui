@@ -26,11 +26,12 @@ import {
   SentenceInformationUtils,
   ShowReferralUtils,
 } from '../../utils'
-import type { Person, Referral, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
   ReferralSharedPageData,
 } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type { GovukFrontendSummaryList } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
