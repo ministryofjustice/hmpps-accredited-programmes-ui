@@ -2,8 +2,7 @@ import createHttpError from 'http-errors'
 
 import type { HmppsAuthClient, PniClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type { SanitisedError } from '../sanitisedError'
-import type { Referral } from '@accredited-programmes/models'
-import type { PniScore } from '@accredited-programmes-api'
+import type { PniScore, Referral } from '@accredited-programmes-api'
 
 export default class PniService {
   constructor(

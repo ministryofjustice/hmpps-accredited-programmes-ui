@@ -1,5 +1,6 @@
 import Page from '../../page'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 export default class NewReferralAdditionalInformationPage extends Page {
   person: Person

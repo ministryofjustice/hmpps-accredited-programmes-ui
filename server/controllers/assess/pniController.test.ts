@@ -14,7 +14,8 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, PniUtils, ShowReferralUtils } from '../../utils'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 jest.mock('../../utils/referrals/showReferralUtils')
 jest.mock('../../utils/risksAndNeeds/pniUtils')
