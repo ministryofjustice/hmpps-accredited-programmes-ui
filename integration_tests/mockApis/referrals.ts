@@ -5,12 +5,11 @@ import { stubFor } from '../../wiremock'
 import type {
   ConfirmationFields,
   Paginated,
-  Referral,
   ReferralStatusGroup,
   ReferralStatusRefData,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { ReferralStatusHistory } from '@accredited-programmes-api'
+import type { Referral, ReferralStatusHistory } from '@accredited-programmes-api'
 
 interface ReferralAndScenarioOptions {
   referral: Referral

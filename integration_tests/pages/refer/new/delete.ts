@@ -1,6 +1,7 @@
 import { referralFactory, referralViewFactory } from '../../../../server/testutils/factories'
 import Page from '../../page'
-import type { Person, Referral } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 export default class NewReferralTaskListPage extends Page {
   person: Person

@@ -53,8 +53,9 @@ import {
   ThinkingAndBehavingPage,
 } from '../pages/shared'
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
-import type { Person, Referral, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
+import type { Person, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type { User, UserEmail } from '@manage-users-api'
 import type { PrisonerWithBookingId } from '@prisoner-search'
 

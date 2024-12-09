@@ -17,7 +17,8 @@ import {
 import { randomStatus } from '../../../server/testutils/factories/referral'
 import { StringUtils } from '../../../server/utils'
 import { caseloads, prisoners } from '../../../wiremock/stubs'
-import type { Organisation, Referral } from '@accredited-programmes/models'
+import type { Organisation } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 export default class TableRecords {
   static course(): Array<CourseRecord> {

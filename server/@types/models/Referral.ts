@@ -1,8 +1,7 @@
-import type { CourseOffering } from './CourseOffering'
 import type { Organisation } from './Organisation'
 import type { Person } from './Person'
 import type { TagColour } from '@accredited-programmes/ui'
-import type { Course } from '@accredited-programmes-api'
+import type { Course, Referral } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 import type { Prisoner } from '@prisoner-search'
 
@@ -33,21 +32,6 @@ interface ConfirmationFields {
   secondaryDescription: string
   secondaryHeading: string
   warningText: string
-}
-
-type Referral = {
-  id: string // eslint-disable-next-line @typescript-eslint/member-ordering
-  additionalInformation: string
-  hasReviewedProgrammeHistory: boolean
-  oasysConfirmed: boolean
-  offeringId: CourseOffering['id']
-  prisonNumber: Person['prisonNumber']
-  referrerUsername: Express.User['username']
-  status: ReferralStatus
-  closed?: boolean
-  statusColour?: TagColour
-  statusDescription?: string
-  submittedOn?: string
 }
 
 type ReferralUpdate = {
@@ -115,7 +99,7 @@ type ReferralView = {
   prisonNumber?: Person['prisonNumber']
   referrerUsername?: User['username']
   sentenceType?: string
-  status?: ReferralStatus
+  status?: string
   statusColour?: Referral['statusColour']
   statusDescription?: Referral['statusDescription']
   submittedOn?: Referral['submittedOn']
@@ -128,7 +112,6 @@ export { referralStatusGroups, referralStatuses }
 
 export type {
   ConfirmationFields,
-  Referral,
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,

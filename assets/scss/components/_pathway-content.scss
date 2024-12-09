@@ -29,7 +29,8 @@
     }
   }
 
-  &--missing {
+  &--missing,
+  &--error {
     border-color: #1d70b8;
 
     #{$self}__heading {

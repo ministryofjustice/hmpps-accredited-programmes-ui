@@ -1,9 +1,8 @@
-import createError from 'http-errors'
-import type { ResponseError } from 'superagent'
+import createHttpError from 'http-errors'
 
 import type { HmppsAuthClient, PniClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
-import type { Referral } from '@accredited-programmes/models'
-import type { PniScore } from '@accredited-programmes-api'
+import type { SanitisedError } from '../sanitisedError'
+import type { PniScore, Referral } from '@accredited-programmes-api'
 
 export default class PniService {
   constructor(
@@ -25,13 +24,13 @@ export default class PniService {
 
       return pni
     } catch (error) {
-      const knownError = error as ResponseError
+      const sanitisedError = error as SanitisedError
 
-      if (knownError.status === 400 || knownError.status === 404) {
+      if (sanitisedError.status === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching PNI data for prison number ${prisonNumber}.`)
+      throw createHttpError(sanitisedError.status || 500, `Error fetching PNI data for prison number ${prisonNumber}.`)
     }
   }
 }

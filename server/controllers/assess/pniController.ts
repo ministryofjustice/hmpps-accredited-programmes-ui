@@ -4,6 +4,8 @@ import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import { CourseUtils, PniUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 
+const missingInformationPathway = 'MISSING_INFORMATION'
+
 export default class PniController {
   constructor(
     private readonly courseService: CourseService,
@@ -16,6 +18,7 @@ export default class PniController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      let pniError = false
       const { referralId } = req.params
       const { username } = req.user
 
@@ -23,7 +26,9 @@ export default class PniController {
       const person = await this.personService.getPerson(username, referral.prisonNumber)
       const [course, pni] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
-        this.pniService.getPni(username, referral.prisonNumber, { gender: person.gender, savePNI: true }),
+        this.pniService.getPni(username, referral.prisonNumber, { gender: person.gender, savePNI: true }).catch(() => {
+          pniError = true
+        }),
       ])
 
       const coursePresenter = CourseUtils.presentCourse(course)
@@ -41,11 +46,16 @@ export default class PniController {
 
         templateLocals = {
           hasData: true,
-          missingInformation: pni?.programmePathway === 'MISSING_INFORMATION',
+          missingInformation: pni.programmePathway === missingInformationPathway,
           relationshipsSummaryListRows: PniUtils.relationshipsSummaryListRows(RelationshipDomainScore),
           selfManagementSummaryListRows: PniUtils.selfManagementSummaryListRows(SelfManagementDomainScore),
           sexSummaryListRows: PniUtils.sexSummaryListRows(SexDomainScore),
           thinkingSummaryListRows: PniUtils.thinkingSummaryListRows(ThinkingDomainScore),
+        }
+      } else if (!pniError) {
+        templateLocals = {
+          hasData: false,
+          pathwayContent: PniUtils.pathwayContent(person.name, missingInformationPathway),
         }
       }
 

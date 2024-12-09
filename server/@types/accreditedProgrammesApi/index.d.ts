@@ -288,7 +288,7 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-12-09T08:18:14" */
+  /** @example "2024-12-05T11:36:41" */
   submittedOn?: object
   deleted: boolean
   /** @uniqueItems true */

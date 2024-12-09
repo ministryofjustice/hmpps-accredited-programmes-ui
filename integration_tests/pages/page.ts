@@ -10,13 +10,7 @@ import {
   ShowRisksAndNeedsUtils,
 } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type {
-  CourseOffering,
-  Organisation,
-  Person,
-  Referral,
-  ReferralStatusRefData,
-} from '@accredited-programmes/models'
+import type { CourseOffering, Organisation, Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -28,6 +22,7 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryListCardTitle,
