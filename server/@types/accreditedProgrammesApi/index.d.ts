@@ -288,28 +288,17 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-12-05T11:36:41" */
+  /** @example "2024-12-09T12:03:00" */
   submittedOn?: object
   deleted: boolean
-  /** @uniqueItems true */
-  staffDetails: StaffEntity[]
+  /** @format int32 */
+  primaryPomStaffId?: number
+  /** @format int32 */
+  secondaryPomStaffId?: number
 }
 
 export interface ReferrerUserEntity {
   username: string
-}
-
-export interface StaffEntity {
-  /** @format uuid */
-  id?: string
-  staffId?: number
-  firstName: string
-  lastName: string
-  primaryEmail: string
-  username: string
-  pomType: 'PRIMARY_POM' | 'SECONDARY_POM'
-  accountType: 'GENERAL' | 'ADMIN'
-  referral: ReferralEntity
 }
 
 export interface ReferralCreate {
@@ -371,18 +360,17 @@ export interface Referral {
   statusColour?: string
   /** @example "null" */
   submittedOn?: string
-  /** @example null */
-  prisonOffenderManagers: StaffDetail[]
+  primaryPrisonOffenderManager?: StaffDetail
 }
 
 /** @example null */
 export interface StaffDetail {
+  /** @format int32 */
   staffId: number
   firstName: string
   lastName: string
   primaryEmail: string
   username: string
-  type: 'PRIMARY_POM' | 'SECONDARY_POM'
   accountType: 'GENERAL' | 'ADMIN'
 }
 
