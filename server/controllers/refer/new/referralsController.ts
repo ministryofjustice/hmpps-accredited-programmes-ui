@@ -152,6 +152,8 @@ export default class NewReferralsController {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
+        pageTitle: 'Enter person\'s details - ',
+        pageTitleSuffix: 'Accredited Programmes'
       })
     }
   }
@@ -189,6 +191,8 @@ export default class NewReferralsController {
         },
         organisation,
         pageHeading: 'Make a referral',
+        pageTitle: 'Referral tasks to complete - ',
+        pageTitleSuffix: 'Accredited Programmes',
         person,
         taskListSections: NewReferralUtils.taskListSections(referral),
       })
@@ -236,6 +240,8 @@ export default class NewReferralsController {
         courseOffering,
         organisation,
         pageHeading: 'Make a referral',
+        pageTitle: 'Start referral - ',
+        pageTitleSuffix: 'Accredited Programmes'
       })
     }
   }

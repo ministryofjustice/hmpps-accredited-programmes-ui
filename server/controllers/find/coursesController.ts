@@ -25,6 +25,7 @@ export default class CoursesController {
         addProgrammePath: findPaths.course.add.show({}),
         courses: coursesToDisplay,
         pageHeading: 'Find an Accredited Programme',
+        pageTitle: 'Find an Accredited Programme'
       })
     }
   }
@@ -54,6 +55,8 @@ export default class CoursesController {
         isBuildingChoices: CourseUtils.isBuildingChoices(course.displayName),
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
+        pageTitle: coursePresenter.displayName,
+        pageTitleSuffix: 'programme description',
         updateProgrammePath: findPaths.course.update.show({ courseId: course.id }),
       })
     }

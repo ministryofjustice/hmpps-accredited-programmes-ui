@@ -61,8 +61,10 @@ export default class NewReferralsPeopleController {
       return res.render('referrals/new/people/show', {
         courseOfferingId,
         pageHeading: `Confirm ${person.name}'s details`,
+        pageTitle: 'Confirm person\'s details - ',
+        pageTitleSuffix: 'Accredited Programmes',
         personSummaryListRows: PersonUtils.summaryListRows(person),
-        prisonNumber: person.prisonNumber,
+        prisonNumber: person.prisonNumber
       })
     }
   }

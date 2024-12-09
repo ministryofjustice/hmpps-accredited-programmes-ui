@@ -3,14 +3,9 @@
 
 {% extends "govuk/template.njk" %}
 
-{% if customPageTitleEnd %}
-  {% set pageTitleEnd = " - " + customPageTitleEnd %}
-{% elif pageHeading %}
-  {% set pageTitleEnd = " - " + pageHeading %}
-{% endif %}
-
 {% block pageTitle %}
-  HMPPS {{ applicationName }}{{ pageTitleEnd }}
+  {{ pageTitle }}
+  {{pageTitleSuffix}} - DPS
 {% endblock pageTitle %}
 
 {% block head %}

@@ -42,7 +42,9 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
-  customPageTitleEnd: string | undefined
+  pageTitle: string | undefined
+
+  pageTitleSuffix: string | undefined
 
   external: boolean
 
@@ -50,11 +52,13 @@ export default abstract class Page {
     private readonly pageHeading: string,
     options?: {
       accessibilityRules?: AxeRules
-      customPageTitleEnd?: string
+      pageTitle?: string
+      pageTitleSuffix?: string
       external?: boolean
     },
   ) {
-    this.customPageTitleEnd = options?.customPageTitleEnd
+    this.pageTitle = options?.pageTitle
+    this.pageTitleSuffix = options?.pageTitleSuffix
     this.external = options?.external || false
     this.checkOnPage()
     if (!this.external) {
@@ -649,7 +653,7 @@ export default abstract class Page {
 
   private checkTitle(): void {
     let expectedTitle = 'HMPPS Accredited Programmes'
-    const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
+    const pageTitleEnd = this.pageTitle || this.pageHeading
 
     if (pageTitleEnd) {
       expectedTitle += ` - ${pageTitleEnd}`
