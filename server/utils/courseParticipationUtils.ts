@@ -8,7 +8,6 @@ import type {
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-  Referral,
 } from '@accredited-programmes/models'
 import type {
   CourseParticipationPresenter,
@@ -16,6 +15,7 @@ import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
 interface CourseParticipationDetailsBody {

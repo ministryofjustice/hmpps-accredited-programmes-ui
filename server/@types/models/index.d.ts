@@ -19,7 +19,6 @@ import type { Paginated } from './Paginated'
 import type { KeyDates, Person, SentenceDetails } from './Person'
 import type {
   ConfirmationFields,
-  Referral,
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,
@@ -55,7 +54,6 @@ export type {
   OrganisationAddress,
   Paginated,
   Person,
-  Referral,
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,

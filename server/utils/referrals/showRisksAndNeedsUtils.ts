@@ -1,8 +1,8 @@
 import type { Request } from 'express'
 
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
-import type { Referral } from '@accredited-programmes/models'
 import type { MojFrontendNavigationItem } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 
 const noInfoString = 'No information available'
 export default class ShowRisksAndNeedsUtils {

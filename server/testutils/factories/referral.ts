@@ -2,7 +2,8 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import { referralStatuses } from '../../@types/models/Referral'
-import type { Referral, ReferralStatus } from '@accredited-programmes/models'
+import type { ReferralStatus } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 class ReferralFactory extends Factory<Referral> {
   closed() {
@@ -39,7 +40,7 @@ class ReferralFactory extends Factory<Referral> {
     })
   }
 }
-const closedStatuses: Array<ReferralStatus> = ['programme_complete', 'deselected', 'not_suitable', 'withdrawn']
+const closedStatuses: Array<string> = ['programme_complete', 'deselected', 'not_suitable', 'withdrawn']
 
 const randomStatus = (availableStatuses?: Array<ReferralStatus>) =>
   faker.helpers.arrayElement(availableStatuses || referralStatuses)
@@ -88,6 +89,7 @@ export default ReferralFactory.define(({ params }) => {
     oasysConfirmed: faker.datatype.boolean(),
     offeringId: faker.string.uuid(),
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
+    prisonOffenderManagers: [],
     referrerUsername: faker.internet.username(),
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
