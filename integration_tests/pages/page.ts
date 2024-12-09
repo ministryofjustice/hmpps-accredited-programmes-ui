@@ -37,19 +37,19 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
+  external: boolean
+
   pageTitle: string | undefined
 
   pageTitleSuffix: string | undefined
-
-  external: boolean
 
   constructor(
     private readonly pageHeading: string,
     options?: {
       accessibilityRules?: AxeRules
+      external?: boolean
       pageTitle?: string
       pageTitleSuffix?: string
-      external?: boolean
     },
   ) {
     this.pageTitle = options?.pageTitle

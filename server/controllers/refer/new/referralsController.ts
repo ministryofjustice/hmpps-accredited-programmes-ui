@@ -152,8 +152,8 @@ export default class NewReferralsController {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
-        pageTitle: 'Enter person\'s details - ',
-        pageTitleSuffix: 'Accredited Programmes'
+        pageTitle: "Enter person's details - ",
+        pageTitleSuffix: 'Accredited Programmes',
       })
     }
   }
@@ -241,7 +241,7 @@ export default class NewReferralsController {
         organisation,
         pageHeading: 'Make a referral',
         pageTitle: 'Start referral - ',
-        pageTitleSuffix: 'Accredited Programmes'
+        pageTitleSuffix: 'Accredited Programmes',
       })
     }
   }
