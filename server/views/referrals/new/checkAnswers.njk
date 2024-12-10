@@ -65,6 +65,7 @@
       {{ govukSummaryList({
         card: {
           title: {
+            headingLevel: 3,
             text: "Personal details"
           }
         },
@@ -99,7 +100,12 @@
 
       <h2 class="govuk-heading-m">OASys information</h2>
 
-      {{ keylessSummaryCard("Confirm OASys information", bodyText="I confirm that the information is up to date.", testId="oasys-confirmation-summary-card") }}
+      {{ keylessSummaryCard(
+        "Confirm OASys information",
+        bodyText="I confirm that the information is up to date.",
+        testId="oasys-confirmation-summary-card",
+        headingLevel=3
+      ) }}
 
       <h2 class="govuk-heading-m" id="additionalInformation">Additional information</h2>
 
@@ -110,7 +116,8 @@
           href: referPaths.new.additionalInformation.show({ referralId: referralId })
         }],
         bodyText=additionalInformation,
-        testId="additional-information-summary-card"
+        testId="additional-information-summary-card",
+        headingLevel=3
       ) }}
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">

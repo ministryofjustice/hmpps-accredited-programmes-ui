@@ -190,6 +190,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         userToken,
         courseParticipation,
         referralId,
+        undefined,
         {
           change: false,
           remove: false,

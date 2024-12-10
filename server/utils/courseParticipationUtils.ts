@@ -112,6 +112,7 @@ export default class CourseParticipationUtils {
   static summaryListOptions(
     courseParticipation: CourseParticipationPresenter,
     referralId: Referral['id'],
+    headingLevel?: number,
     withActions = { change: true, remove: true },
   ): GovukFrontendSummaryListWithRowsWithKeysAndValues {
     const actions: GovukFrontendSummaryListCardActionsWithItems = { items: [] }
@@ -142,6 +143,7 @@ export default class CourseParticipationUtils {
       card: {
         actions,
         title: {
+          headingLevel,
           text: courseParticipation.courseName,
         },
       },

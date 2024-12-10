@@ -52,6 +52,7 @@ export default class NewReferralsController {
           person.prisonNumber,
           referralId,
           { change: true, remove: false },
+          3,
         ),
       ])
 

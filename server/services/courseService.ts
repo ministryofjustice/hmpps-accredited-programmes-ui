@@ -91,6 +91,7 @@ export default class CourseService {
       change: boolean
       remove: boolean
     },
+    headingLevel?: number,
   ): Promise<Array<GovukFrontendSummaryListWithRowsWithKeysAndValues>> {
     const sortedCourseParticipations = (await this.getParticipationsByPerson(username, prisonNumber)).sort(
       (participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt),
@@ -98,7 +99,7 @@ export default class CourseService {
 
     return Promise.all(
       sortedCourseParticipations.map(participation =>
-        this.presentCourseParticipation(userToken, participation, referralId, withActions),
+        this.presentCourseParticipation(userToken, participation, referralId, headingLevel, withActions),
       ),
     )
   }
@@ -238,6 +239,7 @@ export default class CourseService {
     userToken: Express.User['token'],
     courseParticipation: CourseParticipation,
     referralId: Referral['id'],
+    headingLevel?: number,
     withActions = { change: true, remove: true },
   ): Promise<GovukFrontendSummaryListWithRowsWithKeysAndValues> {
     const addedByDisplayName = await this.userService.getFullNameFromUsername(userToken, courseParticipation.addedBy)
@@ -247,7 +249,12 @@ export default class CourseService {
       addedByDisplayName,
     }
 
-    return CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, withActions)
+    return CourseParticipationUtils.summaryListOptions(
+      courseParticipationPresenter,
+      referralId,
+      headingLevel,
+      withActions,
+    )
   }
 
   async updateCourse(
