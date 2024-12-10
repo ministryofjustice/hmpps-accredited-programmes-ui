@@ -90,6 +90,7 @@ context('Searching for a person and creating a referral', () => {
       confirmPersonPage.shouldContainContinueButton()
       confirmPersonPage.shouldContainDifferentIdentifierLink()
       confirmPersonPage.shouldHavePersonInformation()
+      confirmPersonPage.shouldContainText('This will save a draft referral.')
     })
 
     describe("but the user's input is invalid", () => {
