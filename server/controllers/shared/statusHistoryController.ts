@@ -41,6 +41,7 @@ export default class StatusHistoryController {
         ),
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Status history',
+        pageTitle: `Status history for referral to ${coursePresenter.displayName}`,
         person,
         referral,
         subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'statusHistory', referral.id),

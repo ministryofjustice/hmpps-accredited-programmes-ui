@@ -37,6 +37,8 @@ export default class NewReferralsAdditionalInformationController {
       return res.render('referrals/new/additionalInformation/show', {
         maxLength,
         pageHeading: 'Add additional information',
+        pageTitle: 'Add additional information ',
+        pageTitleSuffix: '- Accredited Programmes',
         person,
         referral,
       })

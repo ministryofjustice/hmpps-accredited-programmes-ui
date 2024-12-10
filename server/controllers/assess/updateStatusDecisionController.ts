@@ -70,6 +70,7 @@ export default class UpdateStatusDecisionController {
         backLinkHref: assessPaths.show.statusHistory({ referralId }),
         confirmationText,
         pageHeading: confirmationText.primaryHeading,
+        pageTitle: `title ${confirmationText.primaryHeading}`,
         person,
         radioItems,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),

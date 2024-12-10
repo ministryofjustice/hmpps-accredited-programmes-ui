@@ -103,6 +103,7 @@ export default class ReferralsController {
       return res.render('referrals/show/personalDetails', {
         ...sharedPageData,
         importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
+        pageTitle: `Referral details for referral to ${sharedPageData.course.displayName}`,
         personSummaryListRows: PersonUtils.summaryListRows(sharedPageData.person),
       })
     }

@@ -48,6 +48,8 @@ export default class UpdateStatusSelectionController {
         confirmationText,
         maxLength,
         pageHeading: confirmationText.primaryHeading,
+        pageTitle: `${confirmationText.primaryHeading} `,
+        pageTitleSuffix: '- Accredited Programmes',
         person,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
       })

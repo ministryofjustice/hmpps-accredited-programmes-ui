@@ -72,6 +72,8 @@ export default class NewReferralsController {
           person,
         ),
         pageHeading: 'Check your answers',
+        pageTitle: 'Check your answers ',
+        pageTitleSuffix: '- Accredited Programmes',
         participationSummaryListsOptions,
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
@@ -101,6 +103,8 @@ export default class NewReferralsController {
       return res.render('referrals/new/complete', {
         myReferralsLink: referPaths.caseList.index({}),
         pageHeading: 'Referral complete',
+        pageTitle: 'Referral complete ',
+        pageTitleSuffix: '- Accredited Programmes',
       })
     }
   }

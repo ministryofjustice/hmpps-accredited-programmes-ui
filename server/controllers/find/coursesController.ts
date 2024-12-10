@@ -25,7 +25,6 @@ export default class CoursesController {
         addProgrammePath: findPaths.course.add.show({}),
         courses: coursesToDisplay,
         pageHeading: 'Find an Accredited Programme',
-        pageTitle: 'Find an Accredited Programme',
       })
     }
   }

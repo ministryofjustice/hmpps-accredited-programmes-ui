@@ -75,6 +75,7 @@ export default class NewReferralsCourseParticipationsController {
       return res.render('referrals/new/courseParticipations/delete', {
         action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
+        pageTitle: 'Delete Accredited Programme history',
         person,
         referralId,
         summaryListOptions,
@@ -172,6 +173,7 @@ export default class NewReferralsCourseParticipationsController {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
         historyText,
         pageHeading: 'Accredited Programme history',
+        pageTitle: "Person's Accredited Programme history",
         person,
         referralId,
         successMessage,
@@ -202,6 +204,7 @@ export default class NewReferralsCourseParticipationsController {
         formValues: {},
         otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
         pageHeading: 'Add Accredited Programme history',
+        pageTitle: 'Add Accredited Programme history',
         person,
         referralId: referral.id,
       })

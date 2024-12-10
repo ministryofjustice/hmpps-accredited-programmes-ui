@@ -76,6 +76,8 @@ export default class ReasonController {
 
       return res.render('referrals/updateStatus/reason/show', {
         backLinkHref: paths.show.statusHistory({ referralId }),
+        pageTitle: 'Withdrawal Reason ',
+        pageTitleSuffix: '- Accredited Programmes',
         person,
         reasonsFieldsets,
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
