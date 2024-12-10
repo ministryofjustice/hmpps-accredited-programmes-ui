@@ -419,6 +419,7 @@ describe('NewReferralsController', () => {
         person.prisonNumber,
         referralId,
         { change: true, remove: false },
+        3,
       )
       expect(request.session.returnTo).toBe('check-answers')
       expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {

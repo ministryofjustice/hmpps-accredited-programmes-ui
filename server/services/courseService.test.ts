@@ -180,13 +180,13 @@ describe('CourseService', () => {
     describe('when no actions are passed', () => {
       it('fetches the creator, then formats the participation and creator in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', async () => {
         when(CourseParticipationUtils.summaryListOptions as jest.Mock)
-          .calledWith({ ...earliestCourseParticipation, addedByDisplayName }, 'a-referral-id', {
+          .calledWith({ ...earliestCourseParticipation, addedByDisplayName }, 'a-referral-id', undefined, {
             change: true,
             remove: true,
           })
           .mockReturnValue('course participation 1 options')
         when(CourseParticipationUtils.summaryListOptions as jest.Mock)
-          .calledWith({ ...latestCourseParticipation, addedByDisplayName }, 'a-referral-id', {
+          .calledWith({ ...latestCourseParticipation, addedByDisplayName }, 'a-referral-id', undefined, {
             change: true,
             remove: true,
           })
@@ -203,17 +203,25 @@ describe('CourseService', () => {
       })
     })
 
-    describe('when actions are passed', () => {
+    describe('when actions and headingLevel are passed', () => {
       it('uses the specified actions when creating options for the summary list Nunjucks macro', async () => {
-        await service.getAndPresentParticipationsByPerson(username, userToken, person.prisonNumber, 'a-referral-id', {
-          change: false,
-          remove: false,
-        })
+        await service.getAndPresentParticipationsByPerson(
+          username,
+          userToken,
+          person.prisonNumber,
+          'a-referral-id',
+          {
+            change: false,
+            remove: false,
+          },
+          3,
+        )
 
         expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
           1,
           { ...earliestCourseParticipation, addedByDisplayName },
           'a-referral-id',
+          3,
           {
             change: false,
             remove: false,
@@ -224,6 +232,7 @@ describe('CourseService', () => {
           2,
           { ...latestCourseParticipation, addedByDisplayName },
           'a-referral-id',
+          3,
           {
             change: false,
             remove: false,
@@ -458,13 +467,13 @@ describe('CourseService', () => {
         .mockResolvedValue(addedByDisplayName)
 
       when(CourseParticipationUtils.summaryListOptions as jest.Mock)
-        .calledWith({ ...courseParticipation, addedByDisplayName }, referralId, {
+        .calledWith({ ...courseParticipation, addedByDisplayName }, referralId, 3, {
           change: true,
           remove: true,
         })
         .mockReturnValue('course participation 1 options')
 
-      const result = await service.presentCourseParticipation(userToken, courseParticipation, referralId)
+      const result = await service.presentCourseParticipation(userToken, courseParticipation, referralId, 3)
 
       expect(result).toEqual('course participation 1 options')
     })

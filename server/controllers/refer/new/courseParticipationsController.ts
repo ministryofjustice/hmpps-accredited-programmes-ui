@@ -68,6 +68,7 @@ export default class NewReferralsCourseParticipationsController {
         req.user.token,
         courseParticipation,
         referralId,
+        undefined,
         { change: false, remove: false },
       )
       const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
