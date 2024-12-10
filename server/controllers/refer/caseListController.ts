@@ -110,7 +110,7 @@ export default class ReferCaseListController {
         nameOrId,
         otherStatusGroups: referralStatusGroups.filter(group => group !== referralStatusGroup),
         pageHeading: 'My referrals',
-        pageTitle: 'My referrals ',
+        pageTitle: `My ${referralStatusGroup} referrals `,
         pageTitleSuffix: '- Accredited Programmes',
         pagination,
         referralStatusGroup,

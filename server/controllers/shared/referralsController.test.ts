@@ -94,6 +94,7 @@ describe('ReferralsController', () => {
       organisation,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Referral summary',
+      pageTitle: `Referral details for referral to ${coursePresenter.displayName}`,
       person,
       referral,
       subNavigationItems,

@@ -87,6 +87,8 @@ describe('CoursesController', () => {
           isBuildingChoices: false,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          pageTitle: coursePresenter.displayName,
+          pageTitleSuffix: 'programme description',
           updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })
@@ -129,6 +131,8 @@ describe('CoursesController', () => {
           isBuildingChoices: false,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          pageTitle: coursePresenter.displayName,
+          pageTitleSuffix: 'programme description',
           updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })

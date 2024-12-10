@@ -75,6 +75,8 @@ describe('NewReferralsOasysConfirmationController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/new/oasysConfirmation/show', {
         hasOpenAssessment: true,
         pageHeading: 'Check risks and needs information (OASys)',
+        pageTitle: 'Check risks and needs information ',
+        pageTitleSuffix: '- Accredited Programmes',
         person,
         recentCompletedAssessmentDate: '19 December 2023',
         referral: draftReferral,
@@ -97,6 +99,8 @@ describe('NewReferralsOasysConfirmationController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/new/oasysConfirmation/show', {
           hasOpenAssessment: undefined,
           pageHeading: 'Check risks and needs information (OASys)',
+          pageTitle: 'Check risks and needs information ',
+          pageTitleSuffix: '- Accredited Programmes',
           person,
           recentCompletedAssessmentDate: undefined,
           referral: draftReferral,

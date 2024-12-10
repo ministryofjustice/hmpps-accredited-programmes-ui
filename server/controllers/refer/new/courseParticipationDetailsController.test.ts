@@ -79,6 +79,7 @@ describe('NewReferralsCourseParticipationDetailsController', () => {
         backLinkHref: referPaths.new.programmeHistory.editProgramme({ courseParticipationId, referralId }),
         courseParticipationId,
         pageHeading: 'Add Accredited Programme details',
+        pageTitle: 'Add Accredited Programme details',
         person,
         referralId,
       })

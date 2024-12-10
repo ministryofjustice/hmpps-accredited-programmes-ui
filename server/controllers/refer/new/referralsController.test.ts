@@ -108,6 +108,8 @@ describe('NewReferralsController', () => {
         courseOffering: referableCourseOffering,
         organisation,
         pageHeading: 'Make a referral',
+        pageTitle: 'Start referral - ',
+        pageTitleSuffix: 'Accredited Programmes',
       })
     })
   })
@@ -134,6 +136,8 @@ describe('NewReferralsController', () => {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
+        pageTitle: "Enter person's details - ",
+        pageTitleSuffix: 'Accredited Programmes',
       })
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['prisonNumber'])
@@ -258,6 +262,8 @@ describe('NewReferralsController', () => {
         },
         organisation,
         pageHeading: 'Make a referral',
+        pageTitle: 'Referral tasks to complete - ',
+        pageTitleSuffix: 'Accredited Programmes',
         person,
         taskListSections: NewReferralUtils.taskListSections(draftReferral),
       })
@@ -425,6 +431,8 @@ describe('NewReferralsController', () => {
         additionalInformation: submittableReferral.additionalInformation,
         courseOfferingSummaryListRows,
         pageHeading: 'Check your answers',
+        pageTitle: 'Check your answers ',
+        pageTitleSuffix: '- Accredited Programmes',
         participationSummaryListsOptions: [summaryListOptions, summaryListOptions],
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
@@ -622,6 +630,8 @@ describe('NewReferralsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/new/complete', {
           myReferralsLink: referPaths.caseList.index({}),
           pageHeading: 'Referral complete',
+          pageTitle: 'Referral complete ',
+          pageTitleSuffix: '- Accredited Programmes',
         })
       })
     })

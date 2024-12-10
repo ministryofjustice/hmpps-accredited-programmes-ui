@@ -98,6 +98,7 @@ describe('StatusHistoryController', () => {
         buttons,
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Status history',
+        pageTitle: `Status history for referral to ${coursePresenter.displayName}`,
         person,
         referral,
         subNavigationItems,

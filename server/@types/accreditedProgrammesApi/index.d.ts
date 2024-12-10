@@ -288,7 +288,7 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-12-09T12:03:00" */
+  /** @example "2024-12-10T13:28:06" */
   submittedOn?: object
   deleted: boolean
   /** @format int32 */
@@ -610,9 +610,9 @@ export interface ReportContent {
 }
 
 export interface ReportStatusCountProjection {
+  orgId: string
   count: number
   status: string
-  orgId: string
 }
 
 export interface ReportTypes {

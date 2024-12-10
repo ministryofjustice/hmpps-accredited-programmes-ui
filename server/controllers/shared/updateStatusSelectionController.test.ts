@@ -99,6 +99,8 @@ describe('UpdateStatusSelectionController', () => {
         confirmationText,
         maxLength: 500,
         pageHeading: confirmationText.primaryHeading,
+        pageTitle: `${confirmationText.primaryHeading} `,
+        pageTitleSuffix: '- Accredited Programmes',
         person,
         timelineItems: timelineItems.slice(0, 1),
       })

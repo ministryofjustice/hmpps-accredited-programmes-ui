@@ -814,9 +814,9 @@ export interface components {
             sort?: components["schemas"]["SortObject"];
             /** Format: int32 */
             pageSize?: number;
-            paged?: boolean;
             /** Format: int32 */
             pageNumber?: number;
+            paged?: boolean;
             unpaged?: boolean;
         };
         /** @description Telephone numbers. Note that the number will contain only numeric characters [0-9] (including no break between area code and number). Therefore if searching on 'phoneNumbers.number' you should not pass any non-numeric characters. */

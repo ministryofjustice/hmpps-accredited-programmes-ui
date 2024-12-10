@@ -104,6 +104,7 @@ type ReferralSharedPageData = {
   organisation: Organisation
   pageHeading: string
   pageSubHeading: string
+  pageTitle: string
   person: Person
   referral: Referral
   submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
@@ -151,6 +152,8 @@ type RisksAndNeedsSharedPageData = {
   person: Person
   referral: Referral
   subNavigationItems: Array<MojFrontendNavigationItem>
+  pageTitle?: string
+  pageTitleSuffix?: string
   recentCompletedAssessmentDate?: string
 }
 

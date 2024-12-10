@@ -199,6 +199,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/delete', {
         action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
         pageHeading: 'Remove programme',
+        pageTitle: 'Delete Accredited Programme history',
         person,
         referralId,
         summaryListOptions,
@@ -341,6 +342,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId })}?_method=PUT`,
         historyText: `The history shows ${person.name} has previously started or completed an Accredited Programme.`,
         pageHeading: 'Accredited Programme history',
+        pageTitle: "Person's Accredited Programme history",
         person,
         referralId,
         successMessage: undefined,
@@ -432,6 +434,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         formValues: {},
         otherCourseNameChecked: false,
         pageHeading: 'Add Accredited Programme history',
+        pageTitle: 'Add Accredited Programme history',
         person,
         referralId,
       })

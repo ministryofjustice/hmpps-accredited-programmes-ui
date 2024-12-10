@@ -174,6 +174,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         alcoholMisuseSummaryListRows,
         hasData: true,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
       })
     })
 
@@ -192,6 +193,7 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/alcoholMisuse', {
           ...sharedPageData,
           hasData: false,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           recentCompletedAssessmentDate: undefined,
         })
       })
@@ -220,6 +222,7 @@ describe('RisksAndNeedsController', () => {
         hasData: true,
 
         navigationItems,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         subNavigationItems,
       })
     })
@@ -239,6 +242,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -257,6 +261,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -276,6 +281,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
         expect(response.locals.oasysNomisErrorMessage).toBe(
@@ -307,6 +313,7 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         drugMisuseSummaryListRows,
         hasData: true,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
       })
     })
 
@@ -324,6 +331,7 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/drugMisuse', {
           ...sharedPageData,
           hasData: false,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         })
       })
     })
@@ -350,6 +358,7 @@ describe('RisksAndNeedsController', () => {
         hasData: true,
 
         navigationItems,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         psychiatricSummaryListRows,
         subNavigationItems,
       })
@@ -370,6 +379,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -400,6 +410,7 @@ describe('RisksAndNeedsController', () => {
 
         informationSummaryListRows,
         navigationItems,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         scoreSummaryListRows,
         subNavigationItems,
       })
@@ -420,6 +431,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -448,6 +460,7 @@ describe('RisksAndNeedsController', () => {
         healthSummaryListRows,
 
         navigationItems,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         subNavigationItems,
       })
     })
@@ -467,6 +480,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -501,6 +515,7 @@ describe('RisksAndNeedsController', () => {
         criminalAssociatesSummaryListRows,
         hasData: true,
         lifestyleIssues,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         reoffendingSummaryListRows,
       })
     })
@@ -519,6 +534,7 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/lifestyleAndAssociates', {
           ...sharedPageData,
           hasData: false,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         })
       })
     })
@@ -571,6 +587,7 @@ describe('RisksAndNeedsController', () => {
         navigationItems,
         offenceDetailsText,
         otherOffendersAndInfluencesSummaryListRows,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         patternOffendingText,
         responsibilitySummaryListRows,
         subNavigationItems,
@@ -593,6 +610,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -637,6 +655,7 @@ describe('RisksAndNeedsController', () => {
         familyRelationshipsSummaryListRows,
         hasData: true,
         navigationItems,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         relIssuesDetails,
         relationshipToChildrenSummaryListRows,
       })
@@ -656,6 +675,7 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/relationships', {
           ...sharedPageData,
           hasData: false,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         })
       })
     })
@@ -781,6 +801,7 @@ describe('RisksAndNeedsController', () => {
         ospiBox,
         ovpYear1Box,
         ovpYear2Box,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         roshBox,
         roshTable,
         rsrBox,
@@ -805,6 +826,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -832,6 +854,7 @@ describe('RisksAndNeedsController', () => {
         hasData: true,
 
         navigationItems,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         previousBehaviourSummaryListRows,
         subNavigationItems,
       })
@@ -852,6 +875,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })
@@ -881,6 +905,7 @@ describe('RisksAndNeedsController', () => {
         hasData: true,
 
         navigationItems,
+        pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
         subNavigationItems,
         thinkingAndBehavingSummaryListRows,
       })
@@ -901,6 +926,7 @@ describe('RisksAndNeedsController', () => {
           ...sharedPageData,
           hasData: false,
           navigationItems,
+          pageTitle: `Risks and needs for referral to ${coursePresenter.displayName}`,
           subNavigationItems,
         })
       })

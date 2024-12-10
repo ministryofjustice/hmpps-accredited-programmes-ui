@@ -69,6 +69,8 @@ describe('NewReferralsAdditionalInformationController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/new/additionalInformation/show', {
         maxLength: 4000,
         pageHeading: 'Add additional information',
+        pageTitle: 'Add additional information ',
+        pageTitleSuffix: '- Accredited Programmes',
         person,
         referral: draftReferral,
       })
