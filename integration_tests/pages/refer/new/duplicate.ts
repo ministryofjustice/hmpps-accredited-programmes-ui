@@ -57,7 +57,12 @@ export default class NewReferralDuplicatePage extends Page {
   shouldContainSubmissionSummaryList(referrerName: User['name'], referrerEmail: CourseOffering['contactEmail']): void {
     cy.get('[data-testid="submission-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
-        ShowReferralUtils.submissionSummaryListRows(this.referral.submittedOn, referrerName, referrerEmail),
+        ShowReferralUtils.submissionSummaryListRows(
+          this.referral.submittedOn,
+          referrerName,
+          referrerEmail,
+          this.referral.primaryPrisonOffenderManager,
+        ),
         summaryListElement,
       )
     })

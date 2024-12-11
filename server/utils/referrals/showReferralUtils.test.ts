@@ -7,6 +7,7 @@ import {
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusRefDataFactory,
+  staffDetailFactory,
 } from '../../testutils/factories'
 import CourseUtils from '../courseUtils'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
@@ -348,6 +349,22 @@ describe('ShowReferralUtils', () => {
           key: { text: 'Referrer email address' },
           value: { html: `<a href="mailto:${referrerEmail}">${referrerEmail}</a>` },
         },
+        {
+          key: {
+            text: 'Prison Offender Manager',
+          },
+          value: {
+            text: 'Not assigned',
+          },
+        },
+        {
+          key: {
+            text: 'Prison Offender Manager email address',
+          },
+          value: {
+            text: 'Not assigned',
+          },
+        },
       ])
     })
 
@@ -360,6 +377,40 @@ describe('ShowReferralUtils', () => {
             {
               key: { text: 'Date referred' },
               value: { text: 'Not known' },
+            },
+          ]),
+        )
+      })
+    })
+
+    describe('when the referral has a prison offender manager assigned', () => {
+      const referral = referralFactory.submitted().build({
+        primaryPrisonOffenderManager: staffDetailFactory.build({
+          firstName: 'Bob',
+          lastName: 'Smith',
+          primaryEmail: 'bob.smith@email.com',
+        }),
+      })
+
+      it('returns the prison offender manager details', () => {
+        expect(
+          ShowReferralUtils.submissionSummaryListRows(
+            referral.submittedOn,
+            'Test User',
+            'test@test.com',
+            referral.primaryPrisonOffenderManager,
+          ),
+        ).toEqual(
+          expect.arrayContaining([
+            {
+              key: { text: 'Prison Offender Manager' },
+              value: { text: 'Bob Smith' },
+            },
+            {
+              key: { text: 'Prison Offender Manager email address' },
+              value: {
+                html: '<a href="mailto:bob.smith@email.com">bob.smith@email.com</a>',
+              },
             },
           ]),
         )

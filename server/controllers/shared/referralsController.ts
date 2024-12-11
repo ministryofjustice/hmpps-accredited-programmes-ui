@@ -229,6 +229,7 @@ export default class ReferralsController {
         referral.submittedOn,
         referrerUserFullName,
         referrerEmailAddress,
+        referral.primaryPrisonOffenderManager,
       ),
     }
   }
