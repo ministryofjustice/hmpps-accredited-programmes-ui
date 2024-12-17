@@ -52,10 +52,17 @@ describe('CoursesController', () => {
 
   describe('show', () => {
     let course: Course
+    const noOfferingsMessage = 'No offerings found for this course.'
 
     beforeEach(() => {
       course = courseFactory.build()
       courseService.getCourse.mockResolvedValue(course)
+
+      jest.spyOn(CourseUtils, 'noOfferingsMessage').mockReturnValue(noOfferingsMessage)
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
     })
 
     describe('when all organisations are returned by the organisation service', () => {
@@ -85,6 +92,7 @@ describe('CoursesController', () => {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           isBuildingChoices: false,
+          noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           updateProgrammePath: `/find/programmes/${course.id}/update`,
@@ -127,6 +135,7 @@ describe('CoursesController', () => {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           isBuildingChoices: false,
+          noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           updateProgrammePath: `/find/programmes/${course.id}/update`,

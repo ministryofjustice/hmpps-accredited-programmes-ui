@@ -52,6 +52,7 @@ export default class CoursesController {
         addOfferingPath: findPaths.offerings.add.create({ courseId: course.id }),
         course: coursePresenter,
         isBuildingChoices: CourseUtils.isBuildingChoices(course.displayName),
+        noOfferingsMessage: CourseUtils.noOfferingsMessage(course.name),
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
         updateProgrammePath: findPaths.course.update.show({ courseId: course.id }),
