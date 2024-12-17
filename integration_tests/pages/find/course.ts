@@ -22,10 +22,7 @@ export default class CoursePage extends Page {
   }
 
   shouldContainNoOfferingsText() {
-    cy.get('[data-testid="no-offerings-text"]').should(
-      'have.text',
-      `To find out where ${this.course.displayName} is offered, speak to your Offender Management Unit (custody) or regional probation team (community).`,
-    )
+    cy.get('[data-testid="no-offerings-text"]').should('have.text', CourseUtils.noOfferingsMessage(this.course.name))
   }
 
   shouldContainOfferingsText() {
