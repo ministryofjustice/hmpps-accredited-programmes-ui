@@ -21,7 +21,9 @@ export default class NewReferralTaskListPage extends Page {
     organisation: Organisation
     referral: Referral
   }) {
-    super('Make a referral')
+    super('Make a referral', {
+      pageTitleOverride: 'Referral tasks to complete',
+    })
 
     const { course, courseOffering, organisation, referral } = args
     this.course = CourseUtils.presentCourse(course)

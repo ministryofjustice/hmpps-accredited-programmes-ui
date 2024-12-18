@@ -6,7 +6,7 @@ export default class NewReferralShowPersonPage extends Page {
 
   constructor(args: { person: Person }) {
     const { person } = args
-    super(`${person.name}'s details`, { customPageTitleEnd: 'Personal details' })
+    super(`${person.name}'s details`, { pageTitleOverride: 'Personal details' })
 
     this.person = person
   }

@@ -38,6 +38,7 @@ export default class NewReferralsOasysConfirmationController {
       return res.render('referrals/new/oasysConfirmation/show', {
         hasOpenAssessment: assessmentDateInfo?.hasOpenAssessment,
         pageHeading: 'Check risks and needs information (OASys)',
+        pageTitleOverride: 'Check risks and needs information',
         person,
         recentCompletedAssessmentDate: assessmentDateInfo?.recentCompletedAssessmentDate
           ? DateUtils.govukFormattedFullDateString(assessmentDateInfo.recentCompletedAssessmentDate)

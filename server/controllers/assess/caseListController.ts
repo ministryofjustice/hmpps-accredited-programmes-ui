@@ -146,6 +146,7 @@ export default class AssessCaseListController {
         audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
         nameOrId,
         pageHeading: selectedCourse.name,
+        pageTitleOverride: `Manage ${referralStatusGroup} programme team referrals: ${selectedCourse.name}`,
         pagination,
         primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusGroup,
