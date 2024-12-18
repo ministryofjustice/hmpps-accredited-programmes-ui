@@ -293,7 +293,7 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-12-18T05:59:57" */
+  /** @example "2024-12-18T12:06:27" */
   submittedOn?: object
   deleted: boolean
   primaryPomStaffId?: number

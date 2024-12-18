@@ -23,7 +23,7 @@ export default class NewReferralDuplicatePage extends Page {
     person: Person
     referral: Referral
   }) {
-    super('Duplicate referral found')
+    super('Duplicate referral found', { hideTitleServiceName: true })
 
     const { course, courseOffering, organisation, person, referral } = args
     this.course = CourseUtils.presentCourse(course)

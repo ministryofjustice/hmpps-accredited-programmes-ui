@@ -100,10 +100,12 @@ type ReferralSharedPageData = {
   buttons: Array<GovukFrontendButton>
   course: Course
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
+  hideTitleServiceName: boolean
   navigationItems: Array<MojFrontendNavigationItem>
   organisation: Organisation
   pageHeading: string
   pageSubHeading: string
+  pageTitleOverride: string
   person: Person
   referral: Referral
   submissionSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
@@ -151,6 +153,8 @@ type RisksAndNeedsSharedPageData = {
   person: Person
   referral: Referral
   subNavigationItems: Array<MojFrontendNavigationItem>
+  hideTitleServiceName?: boolean
+  pageTitleOverride?: string
   recentCompletedAssessmentDate?: string
 }
 

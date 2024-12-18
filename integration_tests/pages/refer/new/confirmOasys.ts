@@ -8,7 +8,9 @@ export default class NewReferralConfirmOasysPage extends Page {
   referral: Referral
 
   constructor(args: { person: Person; referral: Referral }) {
-    super('Check risks and needs information (OASys)')
+    super('Check risks and needs information (OASys)', {
+      pageTitleOverride: 'Check risks and needs information',
+    })
 
     const { person, referral } = args
     this.person = person

@@ -4,7 +4,9 @@ import type { Person } from '@accredited-programmes/models'
 
 export default class NewReferralFindPersonPage extends Page {
   constructor() {
-    super("Enter the person's identifier")
+    super("Enter the person's identifier", {
+      pageTitleOverride: "Enter person's details",
+    })
   }
 
   searchForPerson(prisonNumber: Person['prisonNumber']) {
