@@ -12,7 +12,10 @@ export default class NewReferralProgrammeHistoryPage extends Page {
   referral: Referral
 
   constructor(args: { participations: Array<CourseParticipationPresenter>; person: Person; referral: Referral }) {
-    super('Accredited Programme history')
+    super('Accredited Programme history', {
+      hideTitleServiceName: true,
+      pageTitleOverride: "Person's Accredited Programme history",
+    })
 
     const { participations, person, referral } = args
     this.participations = participations

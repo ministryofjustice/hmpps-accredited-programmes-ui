@@ -75,7 +75,9 @@ export default class NewReferralsCourseParticipationsController {
 
       return res.render('referrals/new/courseParticipations/delete', {
         action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
+        hideTitleServiceName: true,
         pageHeading: 'Remove programme',
+        pageTitleOverride: 'Delete Accredited Programme history',
         person,
         referralId,
         summaryListOptions,
@@ -134,6 +136,7 @@ export default class NewReferralsCourseParticipationsController {
         action: `${referPaths.new.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
         courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues,
+        hideTitleServiceName: true,
         otherCourseNameChecked: !isKnownCourse || hasOtherCourseNameError,
         pageHeading: 'Add Accredited Programme history',
         person,
@@ -171,8 +174,10 @@ export default class NewReferralsCourseParticipationsController {
 
       return res.render('referrals/new/courseParticipations/index', {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
+        hideTitleServiceName: true,
         historyText,
         pageHeading: 'Accredited Programme history',
+        pageTitleOverride: "Person's Accredited Programme history",
         person,
         referralId,
         successMessage,
@@ -201,6 +206,7 @@ export default class NewReferralsCourseParticipationsController {
         action: referPaths.new.programmeHistory.create({ referralId }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues: {},
+        hideTitleServiceName: true,
         otherCourseNameChecked: !!res.locals.errors.messages.otherCourseName,
         pageHeading: 'Add Accredited Programme history',
         person,

@@ -92,6 +92,7 @@ describe('NewReferralsPeopleController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/new/people/show', {
         courseOfferingId,
         pageHeading: "Confirm Del Hatton's details",
+        pageTitleOverride: "Confirm person's details",
         personSummaryListRows: mockPersonSummaryList,
         prisonNumber: person.prisonNumber,
       })

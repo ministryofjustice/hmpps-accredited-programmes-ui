@@ -10,7 +10,10 @@ export default class CoursePage extends Page {
   constructor(course: Course) {
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(coursePresenter.displayName || coursePresenter.name)
+    super(coursePresenter.displayName || coursePresenter.name, {
+      hideTitleServiceName: true,
+      pageTitleOverride: `${coursePresenter.displayName} programme description`,
+    })
 
     this.course = coursePresenter
   }

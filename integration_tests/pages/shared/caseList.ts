@@ -16,10 +16,16 @@ export default class CaseListPage extends Page {
     columnHeaders: Array<CaseListColumnHeader>
     referralViews: Array<ReferralView>
     course?: Course
+    referralStatusGroup?: string
   }) {
-    const { columnHeaders, course, referralViews } = args
+    const { columnHeaders, course, referralStatusGroup, referralViews } = args
 
-    super(course ? course.name : 'My referrals')
+    const status = referralStatusGroup || 'open'
+    const title = course ? `Manage ${status} programme team referrals: ${course.name}` : `My ${status} referrals`
+
+    super(course ? course.name : 'My referrals', {
+      pageTitleOverride: title,
+    })
 
     this.columnHeaders = columnHeaders
     this.referralViews = referralViews

@@ -45,12 +45,14 @@ export default class CourseOfferingsController {
         course: coursePresenter,
         courseOffering,
         deleteOfferingAction: `${findPaths.offerings.delete({ courseId: course.id, courseOfferingId: courseOffering.id })}?_method=DELETE`,
+        hideTitleServiceName: true,
         organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,
           course.name,
         ),
         pageHeading: coursePresenter.displayName,
+        pageTitleOverride: `${coursePresenter.displayName} programme at ${organisation.name}`,
         updateOfferingPath: findPaths.offerings.update.show({
           courseOfferingId: courseOffering.id,
         }),

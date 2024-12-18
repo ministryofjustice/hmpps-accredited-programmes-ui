@@ -418,9 +418,11 @@ export default class RisksAndNeedsController {
         referral,
         statusTransitions,
       ),
+      hideTitleServiceName: true,
       navigationItems: ShowRisksAndNeedsUtils.navigationItems(req.path, referral.id),
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Risks and needs',
+      pageTitleOverride: `Risks and needs for referral to ${coursePresenter.displayName}`,
       person,
       recentCompletedAssessmentDate: assessmentDateInfo?.recentCompletedAssessmentDate
         ? DateUtils.govukFormattedFullDateString(assessmentDateInfo.recentCompletedAssessmentDate)

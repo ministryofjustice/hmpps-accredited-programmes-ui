@@ -13,7 +13,9 @@ export default class NewReferralStartPage extends Page {
   organisation: Organisation
 
   constructor(args: { course: Course; courseOffering: CourseOffering; organisation: Organisation }) {
-    super('Make a referral')
+    super('Make a referral', {
+      pageTitleOverride: 'Start referral',
+    })
 
     const { course, courseOffering, organisation } = args
     this.course = CourseUtils.presentCourse(course)

@@ -28,6 +28,8 @@ export default class NewReferralsDeleteController {
         action: `${referPaths.new.delete({ referralId })}?_method=DELETE`,
         hrefs: { back: referPaths.new.show({ referralId }) },
         pageHeading: 'Delete draft referral?',
+        pageTitleOverride: 'Delete draft referral ',
+
         person,
       })
     }

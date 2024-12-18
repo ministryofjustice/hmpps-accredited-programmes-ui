@@ -10,7 +10,10 @@ export default class NewReferralDeleteProgrammeHistoryPage extends Page {
   referral: Referral
 
   constructor(args: { participation: CourseParticipation; person: Person; referral: Referral }) {
-    super('Remove programme')
+    super('Remove programme', {
+      hideTitleServiceName: true,
+      pageTitleOverride: 'Delete Accredited Programme history',
+    })
 
     const { participation, person, referral } = args
     this.participation = participation

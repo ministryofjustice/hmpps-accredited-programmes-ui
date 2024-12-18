@@ -11,7 +11,10 @@ export default class AdditionalInformationPage extends Page {
 
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.displayName}`)
+    super(`Referral to ${coursePresenter.displayName}`, {
+      hideTitleServiceName: true,
+      pageTitleOverride: `Referral details for referral to ${coursePresenter.displayName}`,
+    })
 
     this.referral = referral
   }
