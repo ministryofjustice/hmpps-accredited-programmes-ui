@@ -426,7 +426,7 @@ describe('CourseParticipationUtils', () => {
 
     describe('when all fields are present on the CourseParticipation', () => {
       it('generates an object to pass into a Nunjucks macro for a GOV.UK summary list with card', () => {
-        expect(CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId)).toEqual({
+        expect(CourseParticipationUtils.summaryListOptions(courseParticipationPresenter, referralId, 3)).toEqual({
           card: {
             actions: {
               items: [
@@ -443,6 +443,7 @@ describe('CourseParticipationUtils', () => {
               ],
             },
             title: {
+              headingLevel: 3,
               text: 'A mediocre course name (aMCN)',
             },
           },
@@ -485,6 +486,7 @@ describe('CourseParticipationUtils', () => {
         const summaryListOptions = CourseParticipationUtils.summaryListOptions(
           courseParticipationPresenter,
           referralId,
+          undefined,
           withActions,
         )
 

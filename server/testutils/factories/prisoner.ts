@@ -38,6 +38,7 @@ export default PrisonerFactory.define(({ params }) => {
     paroleEligibilityDate: FactoryHelpers.optionalRandomFutureDateString(),
     prisonName,
     prisonerNumber: faker.string.alphanumeric({ casing: 'upper', length: 7 }),
+    raceCode: faker.helpers.arrayElement(['W1', 'W9', 'O9', 'B2', 'NS']),
     religion: StringUtils.properCase(faker.lorem.word()),
     sentenceExpiryDate: FactoryHelpers.optionalRandomFutureDateString(),
     sentenceStartDate: FactoryHelpers.optionalArrayElement([`${faker.date.past({ years: 20 })}`.substring(0, 10)]),

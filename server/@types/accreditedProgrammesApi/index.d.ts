@@ -196,6 +196,11 @@ export interface CourseParticipation {
   detail?: string
   /** @example "null" */
   source?: string
+  /**
+   * Whether this is a draft record or not.
+   * @example false
+   */
+  isDraft?: boolean
 }
 
 /** @example null */
@@ -288,28 +293,15 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-12-05T11:36:41" */
+  /** @example "2024-12-18T12:06:27" */
   submittedOn?: object
   deleted: boolean
-  /** @uniqueItems true */
-  staffDetails: StaffEntity[]
+  primaryPomStaffId?: number
+  secondaryPomStaffId?: number
 }
 
 export interface ReferrerUserEntity {
   username: string
-}
-
-export interface StaffEntity {
-  /** @format uuid */
-  id?: string
-  staffId?: number
-  firstName: string
-  lastName: string
-  primaryEmail: string
-  username: string
-  pomType: 'PRIMARY_POM' | 'SECONDARY_POM'
-  accountType: 'GENERAL' | 'ADMIN'
-  referral: ReferralEntity
 }
 
 export interface ReferralCreate {
@@ -371,18 +363,16 @@ export interface Referral {
   statusColour?: string
   /** @example "null" */
   submittedOn?: string
-  /** @example null */
-  prisonOffenderManagers: StaffDetail[]
+  primaryPrisonOffenderManager?: StaffDetail
 }
 
 /** @example null */
 export interface StaffDetail {
-  staffId: number
+  staffId?: number
   firstName: string
   lastName: string
   primaryEmail: string
   username: string
-  type: 'PRIMARY_POM' | 'SECONDARY_POM'
   accountType: 'GENERAL' | 'ADMIN'
 }
 
@@ -557,6 +547,16 @@ export interface CourseParticipationCreate {
   detail?: string
   /** @example "null" */
   source?: string
+  /**
+   * The unique id (UUID) of the associated referral.
+   * @format uuid
+   */
+  referralId?: string
+  /**
+   * Whether this is a draft record or not.
+   * @example false
+   */
+  isDraft?: boolean
 }
 
 export interface CaseLoad {

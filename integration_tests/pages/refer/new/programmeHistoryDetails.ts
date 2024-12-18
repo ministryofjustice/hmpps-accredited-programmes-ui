@@ -12,7 +12,10 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   constructor(args: { course: Course; courseParticipation: CourseParticipation; person: Person }) {
     // Conditional radio buttons add an additional `aria-expanded` field,
     // so ignore that rule on this page
-    super('Add Accredited Programme details', { accessibilityRules: { 'aria-allowed-attr': { enabled: false } } })
+    super('Add Accredited Programme details', {
+      accessibilityRules: { 'aria-allowed-attr': { enabled: false } },
+      hideTitleServiceName: true,
+    })
 
     const { course, courseParticipation, person } = args
     this.course = course

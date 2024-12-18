@@ -10,7 +10,10 @@ export default class CoursePage extends Page {
   constructor(course: Course) {
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(coursePresenter.displayName || coursePresenter.name)
+    super(coursePresenter.displayName || coursePresenter.name, {
+      hideTitleServiceName: true,
+      pageTitleOverride: `${coursePresenter.displayName} programme description`,
+    })
 
     this.course = coursePresenter
   }
@@ -22,10 +25,7 @@ export default class CoursePage extends Page {
   }
 
   shouldContainNoOfferingsText() {
-    cy.get('[data-testid="no-offerings-text"]').should(
-      'have.text',
-      `To find out where ${this.course.displayName} is offered, speak to your Offender Management Unit (custody) or regional probation team (community).`,
-    )
+    cy.get('[data-testid="no-offerings-text"]').should('have.text', CourseUtils.noOfferingsMessage(this.course.name))
   }
 
   shouldContainOfferingsText() {

@@ -3,14 +3,19 @@
 
 {% extends "govuk/template.njk" %}
 
-{% if customPageTitleEnd %}
-  {% set pageTitleEnd = " - " + customPageTitleEnd %}
-{% elif pageHeading %}
-  {% set pageTitleEnd = " - " + pageHeading %}
+{% set pageTitle = pageHeading %}
+
+{% if subHeading %}
+  {% set pageTitle = subHeading + " - " + pageHeading %}
+{% endif %}
+
+{% if pageTitleOverride %}
+  {% set pageTitle = pageTitleOverride %}
 {% endif %}
 
 {% block pageTitle %}
-  HMPPS {{ applicationName }}{{ pageTitleEnd }}
+  {{ pageTitle }}
+  {{ " - DPS" if hideTitleServiceName else " - " + applicationName + " - DPS" }}
 {% endblock pageTitle %}
 
 {% block head %}

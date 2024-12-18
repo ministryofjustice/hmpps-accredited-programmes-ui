@@ -54,6 +54,25 @@ export default class CourseUtils {
     return displayName?.startsWith('Building Choices:') ?? false
   }
 
+  static noOfferingsMessage(courseName: Course['name']): string {
+    const actionStrings = new Map<Course['name'], string>([
+      [
+        'Healthy Identity Intervention',
+        'contact the regional psychology counter-terrorism lead or regional psychology team.',
+      ],
+      [
+        'Healthy Sex Programme',
+        'email the national psychology team: <a href="mailto:NationalHSP@justice.gov.uk">NationalHSP@justice.gov.uk</a>',
+      ],
+    ])
+
+    const actionString =
+      actionStrings.get(courseName) ||
+      'speak to your Offender Management Unit (custody) or regional probation team (community).'
+
+    return `To find out where ${courseName} runs and for more information, ${actionString}`
+  }
+
   static presentCourse(course: Course): CoursePresenter {
     return {
       ...course,

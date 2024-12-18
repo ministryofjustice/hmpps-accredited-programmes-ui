@@ -64,7 +64,7 @@
 
         {% include "./_locationsTable.njk" %}
       {% else %}
-        <p data-testid="no-offerings-text">To find out where {{ course.displayName }} is offered, speak to your Offender Management Unit (custody) or regional probation team (community).</p>
+        <p data-testid="no-offerings-text">{{ noOfferingsMessage | safe }}</p>
       {% endif %}
     </div>
   </div>

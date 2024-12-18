@@ -170,6 +170,11 @@ export interface GovukFrontendBreadcrumbs {
     HTML attributes (for example data attributes) to add to the breadcrumbs container.
   */
   attributes?: Record<string, unknown> | null
+
+  /*
+    Plain text label identifying the landmark to screen readers. Defaults to "Breadcrumb".
+  */
+  labelText?: string | null
 }
 
 export interface GovukFrontendBreadcrumbsItem {
@@ -951,9 +956,9 @@ export interface GovukFrontendErrorSummary {
   caller?: unknown | null // nunjucks-block
 
   /*
-    The list of errors to include in the error summary.
+    A list of errors to include in the error summary.
   */
-  errorList: GovukFrontendErrorSummaryErrorListElement[]
+  errorList?: GovukFrontendErrorSummaryErrorListElement[] | null
 
   /*
     Prevent moving focus to the error summary when the page loads.
@@ -1119,7 +1124,7 @@ export interface GovukFrontendFileUpload {
   id: string
 
   /*
-    Optional initial value of the input.
+    Deprecated. Optional initial value of the input.
   */
   value?: string | null
 
@@ -1561,6 +1566,16 @@ export interface GovukFrontendInput {
   spellcheck?: boolean | null
 
   /*
+    Optional field to enable or disable autocapitalisation of user input. See [autocapitalization](https://html.spec.whatwg.org/multipage/interaction.html#autocapitalization) for a full list of values that can be used.
+  */
+  autocapitalize?: string | null
+
+  /*
+    If any of `prefix`, `suffix`, `formGroup.beforeInput` or `formGroup.afterInput` have a value, a wrapping element is added around the input and inserted content. This object allows you to customise that wrapping element.
+  */
+  inputWrapper?: GovukFrontendInputInputWrapper | null
+
+  /*
     HTML attributes (for example data attributes) to add to the input.
   */
   attributes?: Record<string, unknown> | null
@@ -1654,6 +1669,18 @@ export interface GovukFrontendInputFormGroupAfterInput {
     HTML to add after the input. If `html` is provided, the `text` option will be ignored.
   */
   html?: string | null
+}
+
+export interface GovukFrontendInputInputWrapper {
+  /*
+    Classes to add to the wrapping element.
+  */
+  classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the wrapping element.
+  */
+  attributes?: Record<string, unknown> | null
 }
 
 // The inset text component is described at https://design-system.service.gov.uk/components/inset-text.
@@ -1949,6 +1976,157 @@ export interface GovukFrontendPanel {
     HTML attributes (for example data attributes) to add to the panel container.
   */
   attributes?: Record<string, unknown> | null
+}
+
+// The password input component is described at https://design-system.service.gov.uk/components/password-input.
+export interface GovukFrontendPasswordInput {
+  /*
+    The ID of the input.
+  */
+  id: string
+
+  /*
+    The name of the input, which is submitted with the form data.
+  */
+  name: string
+
+  /*
+    Optional initial value of the input.
+  */
+  value?: string | null
+
+  /*
+    If `true`, input will be disabled.
+  */
+  disabled?: boolean | null
+
+  /*
+    One or more element IDs to add to the `aria-describedby` attribute, used to provide additional descriptive information for screenreader users.
+  */
+  describedBy?: string | null
+
+  /*
+    The label used by the text input component.
+  */
+  label: GovukFrontendLabel
+
+  /*
+    Can be used to add a hint to a text input component.
+  */
+  hint?: GovukFrontendHint | null
+
+  /*
+    Can be used to add an error message to the text input component. The error message component will not display if you use a falsy value for `errorMessage`, for example `false` or `null`.
+  */
+  errorMessage?: GovukFrontendErrorMessage | null
+
+  /*
+    Additional options for the form group containing the text input component.
+  */
+  formGroup?: GovukFrontendPasswordInputFormGroup | null
+
+  /*
+    Classes to add to the input.
+  */
+  classes?: string | null
+
+  /*
+    Attribute to [identify input purpose](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html). See [autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) for full list of values that can be used. Default is `"current-password"`.
+  */
+  autocomplete?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the input.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Button text when the password is hidden. Defaults to `"Show"`.
+  */
+  showPasswordText?: string | null
+
+  /*
+    Button text when the password is visible. Defaults to `"Hide"`.
+  */
+  hidePasswordText?: string | null
+
+  /*
+    Button text exposed to assistive technologies, like screen readers, when the password is hidden. Defaults to `"Show password"`.
+  */
+  showPasswordAriaLabelText?: string | null
+
+  /*
+    Button text exposed to assistive technologies, like screen readers, when the password is visible. Defaults to `"Hide password"`.
+  */
+  hidePasswordAriaLabelText?: string | null
+
+  /*
+    Announcement made to screen reader users when their password has become visible in plain text. Defaults to `"Your password is visible"`.
+  */
+  passwordShownAnnouncementText?: string | null
+
+  /*
+    Announcement made to screen reader users when their password has been obscured and is not visible. Defaults to `"Your password is hidden"`.
+  */
+  passwordHiddenAnnouncementText?: string | null
+
+  /*
+    Optional object allowing customisation of the toggle button.
+  */
+  button?: GovukFrontendPasswordInputButton | null
+}
+
+export interface GovukFrontendPasswordInputFormGroup {
+  /*
+    Classes to add to the form group (for example to show error state for the whole group).
+  */
+  classes?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the form group.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    Content to add before the input used by the text input component.
+  */
+  beforeInput?: GovukFrontendPasswordInputFormGroupBeforeInput | null
+
+  /*
+    Content to add after the input used by the text input component.
+  */
+  afterInput?: GovukFrontendPasswordInputFormGroupAfterInput | null
+}
+
+export interface GovukFrontendPasswordInputFormGroupBeforeInput {
+  /*
+    Text to add before the input. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add before the input. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendPasswordInputFormGroupAfterInput {
+  /*
+    Text to add after the input. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    HTML to add after the input. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+}
+
+export interface GovukFrontendPasswordInputButton {
+  /*
+    Classes to add to the button.
+  */
+  classes?: string | null
 }
 
 // The phase banner component is described at https://design-system.service.gov.uk/components/phase-banner.
@@ -2264,6 +2442,123 @@ export interface GovukFrontendSelectFormGroupAfterInput {
     HTML to add after the select. If `html` is provided, the `text` option will be ignored.
   */
   html?: string | null
+}
+
+// The service navigation component is described at https://design-system.service.gov.uk/components/service-navigation.
+export interface GovukFrontendServiceNavigation {
+  /*
+    Classes to add to the service navigation container.
+  */
+  classes?: string | null
+
+  /*
+    HTML attributes (for example, data attributes) to add to the service navigation container.
+  */
+  attributes?: Record<string, unknown> | null
+
+  /*
+    The text for the `aria-label` which labels the service navigation container when a service name is included. Defaults to `"Service information"`.
+  */
+  ariaLabel?: string | null
+
+  /*
+    The text of the mobile navigation menu toggle.
+  */
+  menuButtonText?: string | null
+
+  /*
+    The screen reader label for the mobile navigation menu toggle. Defaults to the same value as `menuButtonText` if not specified.
+  */
+  menuButtonLabel?: string | null
+
+  /*
+    The screen reader label for the mobile navigation menu. Defaults to the same value as `menuButtonText` if not specified.
+  */
+  navigationLabel?: string | null
+
+  /*
+    The ID used to associate the mobile navigation toggle with the navigation menu. Defaults to `navigation`.
+  */
+  navigationId?: string | null
+
+  /*
+    Classes to add to the navigation menu container.
+  */
+  navigationClasses?: string | null
+
+  /*
+    The name of your service.
+  */
+  serviceName?: string | null
+
+  /*
+    The homepage of your service.
+  */
+  serviceUrl?: string | null
+
+  /*
+    Used to add navigation to the service header.
+  */
+  navigation: GovukFrontendServiceNavigationNavigationElement[]
+
+  /*
+    Specified points for injecting custom HTML into the service header.
+  */
+  slots?: GovukFrontendServiceNavigationSlots | null
+}
+
+export interface GovukFrontendServiceNavigationNavigationElement {
+  /*
+    If `true`, indicates that the user is currently on this page. This takes precedence over `active`.
+  */
+  current?: boolean | null
+
+  /*
+    If `true`, indicates that the user is within this group of pages in the navigation hierarchy.
+  */
+  active?: boolean | null
+
+  /*
+    HTML for the navigation item. If `html` is provided, the `text` option will be ignored.
+  */
+  html?: string | null
+
+  /*
+    Text for the navigation item. If `html` is provided, the `text` option will be ignored.
+  */
+  text?: string | null
+
+  /*
+    URL of the navigation item anchor.
+  */
+  href?: string | null
+
+  /*
+    HTML attributes (for example data attributes) to add to the navigation item anchor.
+  */
+  attributes?: Record<string, unknown> | null
+}
+
+export interface GovukFrontendServiceNavigationSlots {
+  /*
+    HTML injected at the start of the service header container.
+  */
+  start?: string | null
+
+  /*
+    HTML injected at the end of the service header container.
+  */
+  end?: string | null
+
+  /*
+    HTML injected before the first list item in the navigation list. Requires `navigation` to be set.
+  */
+  navigationStart?: string | null
+
+  /*
+    HTML injected after the last list item in the navigation list. Requires `navigation` to be set.
+  */
+  navigationEnd?: string | null
 }
 
 // The skip link component is described at https://design-system.service.gov.uk/components/skip-link.

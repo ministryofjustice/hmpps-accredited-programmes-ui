@@ -79,6 +79,30 @@ describe('CourseUtils', () => {
     })
   })
 
+  describe('noOfferingsMessage', () => {
+    it('returns a message for when a course has no offerings', () => {
+      expect(CourseUtils.noOfferingsMessage('Test Course')).toBe(
+        'To find out where Test Course runs and for more information, speak to your Offender Management Unit (custody) or regional probation team (community).',
+      )
+    })
+
+    describe('when the course name is "Healthy Identity Intervention"', () => {
+      it('returns a message to say the user should contact the regional psychology counter-terrorism lead or regional psychology team', () => {
+        expect(CourseUtils.noOfferingsMessage('Healthy Identity Intervention')).toBe(
+          'To find out where Healthy Identity Intervention runs and for more information, contact the regional psychology counter-terrorism lead or regional psychology team.',
+        )
+      })
+    })
+
+    describe('when the course name is "Healthy Sex Programme"', () => {
+      it('returns a message with the contact details for the national psychology team', () => {
+        expect(CourseUtils.noOfferingsMessage('Healthy Sex Programme')).toBe(
+          'To find out where Healthy Sex Programme runs and for more information, email the national psychology team: <a href="mailto:NationalHSP@justice.gov.uk">NationalHSP@justice.gov.uk</a>',
+        )
+      })
+    })
+  })
+
   describe('presentCourse', () => {
     it('returns course details with UI-formatted audience and prerequisite data', () => {
       const coursePrerequisites = [

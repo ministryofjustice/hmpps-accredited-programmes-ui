@@ -43,6 +43,7 @@ describe('CoursesController', () => {
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),
         courses: sortedCourses.map(course => CourseUtils.presentCourse(course)),
+        hideTitleServiceName: true,
         pageHeading: 'Find an Accredited Programme',
       })
 
@@ -52,10 +53,17 @@ describe('CoursesController', () => {
 
   describe('show', () => {
     let course: Course
+    const noOfferingsMessage = 'No offerings found for this course.'
 
     beforeEach(() => {
       course = courseFactory.build()
       courseService.getCourse.mockResolvedValue(course)
+
+      jest.spyOn(CourseUtils, 'noOfferingsMessage').mockReturnValue(noOfferingsMessage)
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
     })
 
     describe('when all organisations are returned by the organisation service', () => {
@@ -84,9 +92,12 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
+          hideTitleServiceName: true,
           isBuildingChoices: false,
+          noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          pageTitleOverride: `${coursePresenter.displayName} programme description`,
           updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })
@@ -126,9 +137,12 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
+          hideTitleServiceName: true,
           isBuildingChoices: false,
+          noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          pageTitleOverride: `${coursePresenter.displayName} programme description`,
           updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })

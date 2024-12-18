@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { Matchers } from '@pact-foundation/pact'
+import { type InterfaceToTemplate, Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
 import ReferralClient from './referralClient'
@@ -51,16 +51,19 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('find', () => {
-    const referral = referralFactory.started().build({
-      id: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
-    })
+    const referral: InterfaceToTemplate<Referral> = {
+      ...referralFactory.started().build({
+        id: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
+      }),
+      primaryPrisonOffenderManager: undefined,
+    }
 
     beforeEach(() => {
       provider.addInteraction({
         state: 'Referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa exists with status REFERRAL_STARTED',
         uponReceiving: 'A request for referral 0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
         willRespondWith: {
-          body: Matchers.like({ ...referral, prisonOffenderManagers: [] }),
+          body: Matchers.like(referral),
           status: 200,
         },
         withRequest: {

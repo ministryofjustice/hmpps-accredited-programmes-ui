@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
+import staffDetail from './staffDetail'
 import { referralStatuses } from '../../@types/models/Referral'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { Referral } from '@accredited-programmes-api'
@@ -88,8 +89,8 @@ export default ReferralFactory.define(({ params }) => {
     hasReviewedProgrammeHistory: faker.datatype.boolean(),
     oasysConfirmed: faker.datatype.boolean(),
     offeringId: faker.string.uuid(),
+    primaryPrisonOffenderManager: staffDetail.build(),
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
-    prisonOffenderManagers: [],
     referrerUsername: faker.internet.username(),
     status,
     submittedOn: status !== 'referral_started' ? faker.date.past().toISOString() : undefined,
