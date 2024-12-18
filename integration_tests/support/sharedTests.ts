@@ -195,6 +195,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       additionalInformationPage.shouldContainAdditionalInformationSummaryCard()
@@ -232,6 +233,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       offenceHistoryPage.shouldContainImportedFromText('NOMIS')
@@ -267,6 +269,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainNoHistorySummaryCard()
@@ -334,6 +337,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       offenceHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       offenceHistoryPage.shouldContainImportedFromText('NOMIS')
@@ -365,6 +369,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       personalDetailsPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       personalDetailsPage.shouldContainImportedFromText('NOMIS')
@@ -406,6 +411,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id, {
@@ -441,6 +447,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       releaseDatesPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       releaseDatesPage.shouldContainImportedFromText('NOMIS')
@@ -482,6 +489,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       releaseDatesPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       releaseDatesPage.shouldContainImportedFromText('NOMIS')
@@ -515,6 +523,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText('NOMIS')
@@ -556,6 +565,7 @@ const sharedTests = {
         referral.submittedOn,
         referringUser.name,
         addedByUser1Email.email,
+        referral.primaryPrisonOffenderManager,
       )
       sentenceInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       sentenceInformationPage.shouldContainImportedFromText('NOMIS')

@@ -3,6 +3,7 @@ import type { Request } from 'express'
 import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import DateUtils from '../dateUtils'
+import StringUtils from '../stringUtils'
 import type { CourseOffering, Organisation, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
@@ -150,7 +151,10 @@ export default class ShowReferralUtils {
     referralSubmissionDate: Referral['submittedOn'],
     referrerName: User['name'],
     referrerEmail: UserEmail['email'],
+    prisonOffenderManager?: Referral['primaryPrisonOffenderManager'],
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    const pomNotAssignedString = 'Not assigned'
+
     return [
       {
         key: { text: 'Date referred' },
@@ -165,6 +169,26 @@ export default class ShowReferralUtils {
       {
         key: { text: 'Referrer email address' },
         value: { html: `<a href="mailto:${referrerEmail}">${referrerEmail}</a>` },
+      },
+
+      {
+        key: { text: 'Prison Offender Manager' },
+        value: {
+          text:
+            prisonOffenderManager?.firstName || prisonOffenderManager?.lastName
+              ? StringUtils.convertToTitleCase(`${prisonOffenderManager?.firstName} ${prisonOffenderManager?.lastName}`)
+              : pomNotAssignedString,
+        },
+      },
+      {
+        key: { text: 'Prison Offender Manager email address' },
+        value: {
+          ...(prisonOffenderManager?.primaryEmail
+            ? {
+                html: `<a href="mailto:${prisonOffenderManager.primaryEmail}">${prisonOffenderManager.primaryEmail}</a>`,
+              }
+            : { text: pomNotAssignedString }),
+        },
       },
     ]
   }
