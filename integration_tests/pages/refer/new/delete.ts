@@ -9,7 +9,7 @@ export default class NewReferralTaskListPage extends Page {
   referral: Referral
 
   constructor(args: { person: Person; referral: Referral }) {
-    super('Delete draft referral?')
+    super('Delete draft referral?', { pageTitleOverride: 'Delete draft referral' })
 
     const { person, referral } = args
     this.person = person

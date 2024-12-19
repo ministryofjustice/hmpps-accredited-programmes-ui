@@ -11,7 +11,9 @@ export default class NewReferralConfirmPersonPage extends Page {
   constructor(args: { course: Course; courseOffering: CourseOffering; person: Person }) {
     const { courseOffering, person } = args
 
-    super(`Confirm ${person.name}'s details`, { customPageTitleEnd: 'Confirm personal details' })
+    super(`Confirm ${person.name}'s details`, {
+      pageTitleOverride: "Confirm person's details",
+    })
 
     this.courseOffering = courseOffering
     this.person = person

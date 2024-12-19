@@ -57,12 +57,14 @@ describe('CoursesOfferingsController', () => {
         course: coursePresenter,
         courseOffering,
         deleteOfferingAction: `/find/programmes/${course.id}/offerings/${courseOffering.id}/delete?_method=DELETE`,
+        hideTitleServiceName: true,
         organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,
           course.name,
         ),
         pageHeading: coursePresenter.displayName,
+        pageTitleOverride: `${coursePresenter.displayName} programme at ${organisation.name}`,
         updateOfferingPath: `/find/offerings/${courseOffering.id}/update`,
       })
     })

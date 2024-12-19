@@ -37,6 +37,7 @@ describe('DashboardController', () => {
       expect(response.render).toHaveBeenCalledWith('dashboard/index', {
         assessCaseListPath: '/assess/referrals/case-list',
         findPath: findPaths.index({}),
+        hideTitleServiceName: true,
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: '/refer/referrals/case-list',
         reportPath: '/reports',

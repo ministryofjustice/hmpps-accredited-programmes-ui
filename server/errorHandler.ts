@@ -20,6 +20,10 @@ export default function createErrorHandler(production: boolean) {
 
     res.status(error.status || 500)
 
-    return res.render('pages/error')
+    const errorTitle = error.status === 404 ? 'Not Found' : 'Error'
+
+    return res.render('pages/error', {
+      pageTitleOverride: errorTitle,
+    })
   }
 }
