@@ -201,11 +201,6 @@ export interface CourseParticipation {
    * @example false
    */
   isDraft?: boolean
-  /**
-   * Whether this is a draft record or not.
-   * @example false
-   */
-  isDraft?: boolean
 }
 
 /** @example null */
@@ -298,11 +293,9 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-12-19T10:11:13" */
+  /** @example "2024-12-18T12:06:26" */
   submittedOn?: object
   deleted: boolean
-  primaryPomStaffId?: number
-  secondaryPomStaffId?: number
   primaryPomStaffId?: number
   secondaryPomStaffId?: number
 }
@@ -371,12 +364,10 @@ export interface Referral {
   /** @example "null" */
   submittedOn?: string
   primaryPrisonOffenderManager?: StaffDetail
-  primaryPrisonOffenderManager?: StaffDetail
 }
 
 /** @example null */
 export interface StaffDetail {
-  staffId?: number
   staffId?: number
   firstName: string
   lastName: string
@@ -556,16 +547,6 @@ export interface CourseParticipationCreate {
   detail?: string
   /** @example "null" */
   source?: string
-  /**
-   * The unique id (UUID) of the associated referral.
-   * @format uuid
-   */
-  referralId?: string
-  /**
-   * Whether this is a draft record or not.
-   * @example false
-   */
-  isDraft?: boolean
   /**
    * The unique id (UUID) of the associated referral.
    * @format uuid
