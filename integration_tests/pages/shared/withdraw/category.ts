@@ -4,9 +4,7 @@ import type { ReferralStatusCategory, ReferralStatusReason } from '@accredited-p
 
 export default class WithdrawCategoryPage extends Page {
   constructor() {
-    super('Withdraw referral', {
-      pageTitleOverride: '',
-    })
+    super('Withdraw referral')
   }
 
   selectWithdrawalCategoryAndSubmit(value: ReferralStatusCategory['code'], reasons: Array<ReferralStatusReason>) {
