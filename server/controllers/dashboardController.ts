@@ -16,6 +16,7 @@ export default class DashboardController {
       res.render('dashboard/index', {
         assessCaseListPath: assessPaths.caseList.index({}),
         findPath: findPaths.index({}),
+        hideTitleServiceName: true,
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: referPaths.caseList.index({}),
         reportPath: reportsPaths.show({}),

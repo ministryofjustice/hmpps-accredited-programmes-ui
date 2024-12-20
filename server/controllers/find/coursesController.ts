@@ -24,6 +24,7 @@ export default class CoursesController {
       res.render('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),
         courses: coursesToDisplay,
+        hideTitleServiceName: true,
         pageHeading: 'Find an Accredited Programme',
       })
     }
@@ -51,10 +52,12 @@ export default class CoursesController {
       res.render('courses/show', {
         addOfferingPath: findPaths.offerings.add.create({ courseId: course.id }),
         course: coursePresenter,
+        hideTitleServiceName: true,
         isBuildingChoices: CourseUtils.isBuildingChoices(course.displayName),
         noOfferingsMessage: CourseUtils.noOfferingsMessage(course.name),
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
+        pageTitleOverride: `${coursePresenter.displayName} programme description`,
         updateProgrammePath: findPaths.course.update.show({ courseId: course.id }),
       })
     }

@@ -11,7 +11,10 @@ export default class LearningNeedsPage extends Page {
 
     const coursePresenter = CourseUtils.presentCourse(course)
 
-    super(`Referral to ${coursePresenter.displayName}`)
+    super(`Referral to ${coursePresenter.displayName}`, {
+      hideTitleServiceName: true,
+      pageTitleOverride: `Risks and needs for referral to ${coursePresenter.displayName}`,
+    })
 
     this.learningNeeds = learningNeeds
   }

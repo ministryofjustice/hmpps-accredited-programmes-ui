@@ -45,6 +45,7 @@ export default class NewReferralsCourseParticipationDetailsController {
         action: `${referPaths.new.programmeHistory.details.update({ courseParticipationId, referralId })}?_method=PUT`,
         backLinkHref: referPaths.new.programmeHistory.editProgramme({ courseParticipationId, referralId }),
         courseParticipationId,
+        hideTitleServiceName: true,
         pageHeading: 'Add Accredited Programme details',
         person,
         referralId,

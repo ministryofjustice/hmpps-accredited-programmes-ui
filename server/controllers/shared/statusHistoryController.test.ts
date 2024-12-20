@@ -96,8 +96,10 @@ describe('StatusHistoryController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/statusHistory/show', {
         buttons,
+        hideTitleServiceName: true,
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Status history',
+        pageTitleOverride: `Status history for referral to ${coursePresenter.displayName}`,
         person,
         referral,
         subNavigationItems,

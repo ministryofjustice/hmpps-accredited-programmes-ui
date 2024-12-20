@@ -121,9 +121,11 @@ describe('RisksAndNeedsController', () => {
 
     sharedPageData = {
       buttons,
+      hideTitleServiceName: true,
       navigationItems,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Risks and needs',
+      pageTitleOverride: `Risks and needs for referral to ${coursePresenter.displayName}`,
       person,
       recentCompletedAssessmentDate: recentCompletedAssessmentDateString,
       referral,
@@ -218,7 +220,6 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         attitudesSummaryListRows,
         hasData: true,
-
         navigationItems,
         subNavigationItems,
       })
@@ -348,7 +349,6 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/emotionalWellbeing', {
         ...sharedPageData,
         hasData: true,
-
         navigationItems,
         psychiatricSummaryListRows,
         subNavigationItems,
@@ -397,7 +397,6 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/learningNeeds', {
         ...sharedPageData,
         hasData: true,
-
         informationSummaryListRows,
         navigationItems,
         scoreSummaryListRows,
@@ -446,7 +445,6 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         hasData: true,
         healthSummaryListRows,
-
         navigationItems,
         subNavigationItems,
       })
@@ -566,7 +564,6 @@ describe('RisksAndNeedsController', () => {
         ...sharedPageData,
         hasData: true,
         impactAndConsequencesSummaryListRows,
-
         motivationAndTriggersText,
         navigationItems,
         offenceDetailsText,
@@ -830,7 +827,6 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/roshAnalysis', {
         ...sharedPageData,
         hasData: true,
-
         navigationItems,
         previousBehaviourSummaryListRows,
         subNavigationItems,
@@ -879,7 +875,6 @@ describe('RisksAndNeedsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/thinkingAndBehaving', {
         ...sharedPageData,
         hasData: true,
-
         navigationItems,
         subNavigationItems,
         thinkingAndBehavingSummaryListRows,

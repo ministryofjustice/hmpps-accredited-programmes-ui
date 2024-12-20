@@ -102,6 +102,7 @@ export default class NewReferralsController {
       return res.render('referrals/new/complete', {
         myReferralsLink: referPaths.caseList.index({}),
         pageHeading: 'Referral complete',
+        pageTitleOverride: 'Referral complete',
       })
     }
   }
@@ -153,6 +154,7 @@ export default class NewReferralsController {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
+        pageTitleOverride: "Enter person's details",
       })
     }
   }
@@ -190,6 +192,7 @@ export default class NewReferralsController {
         },
         organisation,
         pageHeading: 'Make a referral',
+        pageTitleOverride: 'Referral tasks to complete',
         person,
         taskListSections: NewReferralUtils.taskListSections(referral),
       })
@@ -216,6 +219,7 @@ export default class NewReferralsController {
 
       return res.render('referrals/new/showPerson', {
         pageHeading: `${person.name}'s details`,
+        pageTitleOverride: 'Personal details',
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
@@ -237,6 +241,7 @@ export default class NewReferralsController {
         courseOffering,
         organisation,
         pageHeading: 'Make a referral',
+        pageTitleOverride: 'Start referral',
       })
     }
   }

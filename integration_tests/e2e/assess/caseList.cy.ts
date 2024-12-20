@@ -94,6 +94,7 @@ context('Referral case lists', () => {
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
         course: limeCourse,
+        referralStatusGroup: 'open',
         referralViews: limeCourseOpenReferralViews,
       })
       caseListPage.shouldContainCourseNavigation(path, courses)
@@ -144,6 +145,7 @@ context('Referral case lists', () => {
         const caseListPage = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
+          referralStatusGroup: 'open',
           referralViews: limeCourseOpenReferralViews,
         })
         caseListPage.shouldContainCourseNavigation(path, courses)
@@ -159,6 +161,7 @@ context('Referral case lists', () => {
         const caseListPageWithError = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
+          referralStatusGroup: 'open',
           referralViews: limeCourseOpenReferralViews,
         })
         caseListPageWithError.shouldHaveErrors([
@@ -180,6 +183,7 @@ context('Referral case lists', () => {
         const caseListPage = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
+          referralStatusGroup: 'open',
           referralViews: limeCourseOpenReferralViews,
         })
         caseListPage.shouldContainCourseNavigation(path, courses)
@@ -233,6 +237,7 @@ context('Referral case lists', () => {
         const clearedFilterListPage = Page.verifyOnPage(CaseListPage, {
           columnHeaders,
           course: limeCourse,
+          referralStatusGroup: 'open',
           referralViews: limeCourseOpenReferralViews,
         })
         clearedFilterListPage.shouldContainCourseNavigation(path, courses)
@@ -396,6 +401,7 @@ context('Referral case lists', () => {
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders,
         course: limeCourse,
+        referralStatusGroup: 'closed',
         referralViews: limeCourseClosedReferralViews,
       })
       caseListPage.shouldContainCourseNavigation(path, courses)
