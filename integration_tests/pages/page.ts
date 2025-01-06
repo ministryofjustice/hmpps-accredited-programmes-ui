@@ -410,10 +410,16 @@ export default abstract class Page {
     referralSubmissionDate: Referral['submittedOn'],
     referrerName: User['name'],
     referrerEmail: CourseOffering['contactEmail'],
+    prisonOffenderManager: Referral['primaryPrisonOffenderManager'],
   ): void {
     cy.get('[data-testid="submission-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
-        ShowReferralUtils.submissionSummaryListRows(referralSubmissionDate, referrerName, referrerEmail),
+        ShowReferralUtils.submissionSummaryListRows(
+          referralSubmissionDate,
+          referrerName,
+          referrerEmail,
+          prisonOffenderManager,
+        ),
         summaryListElement,
       )
     })
