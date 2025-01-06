@@ -1,4 +1,4 @@
-import RedisStore from 'connect-redis'
+import { RedisStore } from 'connect-redis'
 import type { Router } from 'express'
 import express from 'express'
 import session from 'express-session'
