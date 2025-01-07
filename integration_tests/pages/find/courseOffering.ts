@@ -17,7 +17,8 @@ export default class CourseOfferingPage extends Page {
     const coursePresenter = CourseUtils.presentCourse(course)
 
     super(coursePresenter.displayName || coursePresenter.name, {
-      customPageTitleEnd: `${coursePresenter.displayName}, ${organisation.name}`,
+      hideTitleServiceName: true,
+      pageTitleOverride: `${coursePresenter.displayName} programme at ${organisation.name}`,
     })
 
     this.courseOffering = courseOffering

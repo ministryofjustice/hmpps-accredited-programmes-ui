@@ -43,6 +43,7 @@ describe('CoursesController', () => {
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),
         courses: sortedCourses.map(course => CourseUtils.presentCourse(course)),
+        hideTitleServiceName: true,
         pageHeading: 'Find an Accredited Programme',
       })
 
@@ -91,10 +92,12 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
+          hideTitleServiceName: true,
           isBuildingChoices: false,
           noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          pageTitleOverride: `${coursePresenter.displayName} programme description`,
           updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })
@@ -134,10 +137,12 @@ describe('CoursesController', () => {
         expect(response.render).toHaveBeenCalledWith('courses/show', {
           addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
+          hideTitleServiceName: true,
           isBuildingChoices: false,
           noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
+          pageTitleOverride: `${coursePresenter.displayName} programme description`,
           updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })

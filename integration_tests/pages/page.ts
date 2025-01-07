@@ -37,19 +37,26 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
-  customPageTitleEnd: string | undefined
-
   external: boolean
+
+  hideTitleServiceName: boolean | undefined
+
+  pageTitleOverride: string | undefined
+
+  subHeading: string | undefined
 
   constructor(
     private readonly pageHeading: string,
     options?: {
       accessibilityRules?: AxeRules
-      customPageTitleEnd?: string
       external?: boolean
+      hideTitleServiceName?: boolean
+      pageTitleOverride?: string
+      subHeading?: string
     },
   ) {
-    this.customPageTitleEnd = options?.customPageTitleEnd
+    this.pageTitleOverride = options?.pageTitleOverride || pageHeading
+    this.hideTitleServiceName = options?.hideTitleServiceName
     this.external = options?.external || false
     this.checkOnPage()
     if (!this.external) {
@@ -649,11 +656,21 @@ export default abstract class Page {
   }
 
   private checkTitle(): void {
-    let expectedTitle = 'HMPPS Accredited Programmes'
-    const pageTitleEnd = this.customPageTitleEnd || this.pageHeading
+    let expectedTitle = ''
 
-    if (pageTitleEnd) {
-      expectedTitle += ` - ${pageTitleEnd}`
+    if (this.pageTitleOverride) {
+      expectedTitle = this.pageTitleOverride
+    } else {
+      if (this.subHeading) {
+        expectedTitle += `${this.subHeading} - `
+      }
+      expectedTitle += this.pageHeading
+    }
+
+    if (this.hideTitleServiceName) {
+      expectedTitle += ' - DPS'
+    } else {
+      expectedTitle += ' - Accredited Programmes - DPS'
     }
 
     cy.title().should('equal', expectedTitle)

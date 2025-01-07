@@ -61,6 +61,7 @@ export default class NewReferralsPeopleController {
       return res.render('referrals/new/people/show', {
         courseOfferingId,
         pageHeading: `Confirm ${person.name}'s details`,
+        pageTitleOverride: "Confirm person's details",
         personSummaryListRows: PersonUtils.summaryListRows(person),
         prisonNumber: person.prisonNumber,
       })

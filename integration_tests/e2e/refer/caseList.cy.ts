@@ -139,6 +139,7 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: draftReferralsColumnHeaders,
+        referralStatusGroup: 'draft',
         referralViews: draftReferralViews,
       })
       caseListPage.shouldContainStatusNavigation('draft', undefined, { closed: 10, draft: 5, open: 15 })
@@ -164,6 +165,7 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: draftReferralsColumnHeaders,
+        referralStatusGroup: 'draft',
         referralViews: draftReferralViews,
       })
       caseListPage.shouldContainPaginationPreviousButtonLink()
@@ -187,6 +189,7 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: baseColumnHeaders,
+        referralStatusGroup: 'closed',
         referralViews: closedReferralViews,
       })
       caseListPage.shouldContainStatusNavigation('closed', undefined, { closed: 10, draft: 5, open: 15 })
@@ -212,6 +215,7 @@ context('Referral case lists', () => {
 
       const caseListPage = Page.verifyOnPage(CaseListPage, {
         columnHeaders: baseColumnHeaders,
+        referralStatusGroup: 'closed',
         referralViews: closedReferralViews,
       })
       caseListPage.shouldContainPaginationPreviousButtonLink()

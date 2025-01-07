@@ -66,6 +66,7 @@ export default class PniController {
         ),
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Programme needs identifier',
+        pageTitleOverride: `Programme needs identifier for referral to ${coursePresenter.displayName}`,
         pathwayContent: PniUtils.pathwayContent(person.name, pni?.programmePathway),
         person,
         referral,

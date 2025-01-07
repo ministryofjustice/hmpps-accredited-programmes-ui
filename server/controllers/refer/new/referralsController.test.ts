@@ -108,6 +108,7 @@ describe('NewReferralsController', () => {
         courseOffering: referableCourseOffering,
         organisation,
         pageHeading: 'Make a referral',
+        pageTitleOverride: 'Start referral',
       })
     })
   })
@@ -134,6 +135,7 @@ describe('NewReferralsController', () => {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",
+        pageTitleOverride: "Enter person's details",
       })
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['prisonNumber'])
@@ -258,6 +260,7 @@ describe('NewReferralsController', () => {
         },
         organisation,
         pageHeading: 'Make a referral',
+        pageTitleOverride: 'Referral tasks to complete',
         person,
         taskListSections: NewReferralUtils.taskListSections(draftReferral),
       })
@@ -324,6 +327,7 @@ describe('NewReferralsController', () => {
       expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/showPerson', {
         pageHeading: "Del Hatton's details",
+        pageTitleOverride: 'Personal details',
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
@@ -623,6 +627,7 @@ describe('NewReferralsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/new/complete', {
           myReferralsLink: referPaths.caseList.index({}),
           pageHeading: 'Referral complete',
+          pageTitleOverride: 'Referral complete',
         })
       })
     })

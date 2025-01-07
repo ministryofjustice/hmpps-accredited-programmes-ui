@@ -5,7 +5,7 @@ import type { Course } from '@accredited-programmes-api'
 
 export default class CoursesPage extends Page {
   constructor() {
-    super('Find an Accredited Programme')
+    super('Find an Accredited Programme', { hideTitleServiceName: true })
   }
 
   shouldContainAddNewProgrammeLink() {

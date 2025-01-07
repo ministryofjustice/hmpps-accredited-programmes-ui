@@ -199,7 +199,9 @@ describe('NewReferralsCourseParticipationsController', () => {
       expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/delete', {
         action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
+        hideTitleServiceName: true,
         pageHeading: 'Remove programme',
+        pageTitleOverride: 'Delete Accredited Programme history',
         person,
         referralId,
         summaryListOptions,
@@ -291,6 +293,7 @@ describe('NewReferralsCourseParticipationsController', () => {
             })}?_method=PUT`,
             courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
             formValues: isKnownCourse ? { courseName } : { courseName: 'Other', otherCourseName: courseName },
+            hideTitleServiceName: true,
             otherCourseNameChecked: !isKnownCourse,
             pageHeading: 'Add Accredited Programme history',
             person,
@@ -340,8 +343,10 @@ describe('NewReferralsCourseParticipationsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/index', {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId })}?_method=PUT`,
+        hideTitleServiceName: true,
         historyText: `The history shows ${person.name} has previously started or completed an Accredited Programme.`,
         pageHeading: 'Accredited Programme history',
+        pageTitleOverride: "Person's Accredited Programme history",
         person,
         referralId,
         successMessage: undefined,
@@ -431,6 +436,7 @@ describe('NewReferralsCourseParticipationsController', () => {
         action: referPaths.new.programmeHistory.create({ referralId }),
         courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues: {},
+        hideTitleServiceName: true,
         otherCourseNameChecked: false,
         pageHeading: 'Add Accredited Programme history',
         person,

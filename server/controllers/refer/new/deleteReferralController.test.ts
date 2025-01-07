@@ -61,6 +61,8 @@ describe('NewReferralsDeleteController', () => {
         action: '/refer/referrals/new/A-REFERRAL-ID/delete?_method=DELETE',
         hrefs: { back: '/refer/referrals/new/A-REFERRAL-ID' },
         pageHeading: 'Delete draft referral?',
+        pageTitleOverride: 'Delete draft referral ',
+
         person,
       })
     })
