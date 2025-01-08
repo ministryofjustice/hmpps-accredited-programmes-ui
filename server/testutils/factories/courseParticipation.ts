@@ -5,7 +5,7 @@ import courseParticipationOutcomeFactory from './courseParticipationOutcome'
 import courseParticipationSettingFactory from './courseParticipationSetting'
 import FactoryHelpers from './factoryHelpers'
 import { StringUtils } from '../../utils'
-import type { CourseParticipation } from '@accredited-programmes/models'
+import type { CourseParticipation } from '@accredited-programmes-api'
 
 class CourseParticipationFactory extends Factory<CourseParticipation> {
   new() {
@@ -34,6 +34,7 @@ export default CourseParticipationFactory.define(() => ({
   detail: faker.lorem.paragraph({ max: 5, min: 0 }),
   outcome: FactoryHelpers.optionalArrayElement([courseParticipationOutcomeFactory.build()]),
   prisonNumber: faker.string.alphanumeric({ length: 7 }),
+  referralId: faker.string.uuid(),
   setting: FactoryHelpers.optionalArrayElement([courseParticipationSettingFactory.build()]),
   source: FactoryHelpers.optionalArrayElement(faker.word.words()),
 }))

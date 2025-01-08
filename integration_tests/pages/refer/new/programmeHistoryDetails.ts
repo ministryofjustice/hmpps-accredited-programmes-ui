@@ -1,6 +1,6 @@
 import Page from '../../page'
-import type { CourseParticipation, Person } from '@accredited-programmes/models'
-import type { Course } from '@accredited-programmes-api'
+import type { Person } from '@accredited-programmes/models'
+import type { Course, CourseParticipation } from '@accredited-programmes-api'
 
 export default class NewReferralProgrammeHistoryDetailsPage extends Page {
   course: Course

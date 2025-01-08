@@ -4,18 +4,18 @@ import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
 import { referPaths } from '../paths'
 import type {
-  CourseParticipation,
-  CourseParticipationOutcome,
-  CourseParticipationSetting,
-  CourseParticipationUpdate,
-} from '@accredited-programmes/models'
-import type {
   CourseParticipationPresenter,
   GovukFrontendSummaryListCardActionsWithItems,
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
-import type { Referral } from '@accredited-programmes-api'
+import type {
+  CourseParticipation,
+  CourseParticipationOutcome,
+  CourseParticipationSetting,
+  CourseParticipationUpdate,
+  Referral,
+} from '@accredited-programmes-api'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
 
 interface CourseParticipationDetailsBody {

@@ -14,8 +14,8 @@ import {
 } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../../utils'
-import type { CourseParticipation } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
+import type { CourseParticipation } from '@accredited-programmes-api'
 
 jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/courseParticipationUtils')

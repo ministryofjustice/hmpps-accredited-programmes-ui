@@ -20,8 +20,8 @@ import {
   NewReferralSelectProgrammePage,
   NewReferralTaskListPage,
 } from '../../../pages/refer'
-import type { CourseParticipation } from '@accredited-programmes/models'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { CourseParticipation } from '@accredited-programmes-api'
 
 context('Programme history', () => {
   const prisoner = prisonerFactory.build({

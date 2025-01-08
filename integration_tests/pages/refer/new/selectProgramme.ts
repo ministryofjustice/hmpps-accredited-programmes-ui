@@ -1,6 +1,5 @@
 import Page from '../../page'
-import type { CourseParticipation } from '@accredited-programmes/models'
-import type { Course } from '@accredited-programmes-api'
+import type { Course, CourseParticipation } from '@accredited-programmes-api'
 
 export default class NewReferralSelectProgrammePage extends Page {
   courses: Array<Course>

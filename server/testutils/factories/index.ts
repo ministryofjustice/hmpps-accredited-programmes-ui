@@ -9,6 +9,7 @@ import courseAudienceFactory from './courseAudience'
 import courseOfferingFactory from './courseOffering'
 import courseParticipationFactory from './courseParticipation'
 import courseParticipationOutcomeFactory from './courseParticipationOutcome'
+import courseParticipationSettingFactory from './courseParticipationSetting'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import drugAlcoholDetailFactory from './drugAlcoholDetail'
 import healthFactory from './health'
@@ -55,6 +56,7 @@ export {
   courseOfferingFactory,
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
+  courseParticipationSettingFactory,
   coursePrerequisiteFactory,
   drugAlcoholDetailFactory,
   healthFactory,
