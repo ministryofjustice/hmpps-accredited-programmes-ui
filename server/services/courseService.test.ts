@@ -14,12 +14,13 @@ import {
   courseParticipationFactory,
   coursePrerequisiteFactory,
   personFactory,
+  referralFactory,
   userFactory,
 } from '../testutils/factories'
 import { CourseParticipationUtils, StringUtils } from '../utils'
 import type { CourseCreateRequest, CourseOffering } from '@accredited-programmes/models'
 import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
-import type { CourseParticipationUpdate } from '@accredited-programmes-api'
+import type { CourseParticipationCreate, CourseParticipationUpdate } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../data/hmppsAuthClient')
@@ -97,21 +98,34 @@ describe('CourseService', () => {
   })
 
   describe('createParticipation', () => {
-    it('creates a course participation using the `courseName` value', async () => {
+    it('creates a course participation using with the provided `CourseParticipationCreate` values', async () => {
+      const courseName = 'COURSE-NAME'
       const person = personFactory.build()
-      const courseParticipation = courseParticipationFactory.build()
-      const { courseName } = courseParticipation
+      const referral = referralFactory.build()
+
+      const participationCreateRequest: CourseParticipationCreate = {
+        courseName,
+        isDraft: true,
+        prisonNumber: person.prisonNumber,
+        referralId: referral.id,
+      }
+
+      const courseParticipation = courseParticipationFactory.build({
+        courseName,
+        prisonNumber: person.prisonNumber,
+        referralId: referral.id,
+      })
 
       when(courseClient.createParticipation)
-        .calledWith(person.prisonNumber, courseName)
+        .calledWith(participationCreateRequest)
         .mockResolvedValue(courseParticipation)
 
-      const result = await service.createParticipation(username, person.prisonNumber, courseName)
+      const result = await service.createParticipation(username, participationCreateRequest)
 
       expect(result).toEqual(courseParticipation)
 
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(courseClient.createParticipation).toHaveBeenCalledWith(person.prisonNumber, courseName)
+      expect(courseClient.createParticipation).toHaveBeenCalledWith(participationCreateRequest)
     })
   })
 

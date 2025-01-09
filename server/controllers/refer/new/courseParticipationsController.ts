@@ -35,11 +35,12 @@ export default class NewReferralsCourseParticipationsController {
         return res.redirect(referPaths.new.programmeHistory.new({ referralId }))
       }
 
-      const courseParticipation = await this.courseService.createParticipation(
-        req.user.username,
-        referral.prisonNumber,
-        courseName as CourseParticipation['courseName'],
-      )
+      const courseParticipation = await this.courseService.createParticipation(req.user.username, {
+        courseName,
+        isDraft: true,
+        prisonNumber: referral.prisonNumber,
+        referralId,
+      })
 
       req.flash('successMessage', 'You have successfully added a programme.')
 

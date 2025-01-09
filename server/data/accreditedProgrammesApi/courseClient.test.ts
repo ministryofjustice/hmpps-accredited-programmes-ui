@@ -13,7 +13,12 @@ import {
   courseParticipationSettingFactory,
 } from '../../testutils/factories'
 import type { CourseCreateRequest, CourseOffering } from '@accredited-programmes/models'
-import type { CourseParticipation, CourseParticipationUpdate, CoursePrerequisite } from '@accredited-programmes-api'
+import type {
+  CourseParticipation,
+  CourseParticipationCreate,
+  CourseParticipationUpdate,
+  CoursePrerequisite,
+} from '@accredited-programmes-api'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -159,13 +164,21 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('createParticipation', () => {
     const courseParticipation = courseParticipationFactory.new().build()
+    const courseParticipationRequest = {
+      courseName: courseParticipation.courseName,
+      isDraft: true,
+      prisonNumber: courseParticipation.prisonNumber,
+      referralId: courseParticipation.referralId,
+    }
 
     const courseParticipationBody: InterfaceToTemplate<CourseParticipation> = {
       ...courseParticipation,
       outcome: { ...courseParticipationOutcomeFactory.build() },
       setting: { ...courseParticipationSettingFactory.build() },
     }
-    const { courseName, prisonNumber } = courseParticipation
+    const courseParticipationRequestBody: InterfaceToTemplate<CourseParticipationCreate> = {
+      ...courseParticipationRequest,
+    }
 
     beforeEach(() => {
       provider.addInteraction({
@@ -176,7 +189,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
           status: 201,
         },
         withRequest: {
-          body: courseName ? { courseName, prisonNumber } : { prisonNumber },
+          body: courseParticipationRequestBody,
           headers: {
             authorization: `Bearer ${systemToken}`,
           },
@@ -187,7 +200,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('creates a participation for the given person', async () => {
-      const result = await courseClient.createParticipation(prisonNumber, courseName)
+      const result = await courseClient.createParticipation(courseParticipationRequest)
 
       expect(result).toEqual(courseParticipationBody)
     })

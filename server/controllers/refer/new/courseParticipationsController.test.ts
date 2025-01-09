@@ -77,7 +77,12 @@ describe('NewReferralsCourseParticipationsController', () => {
           request.body.otherCourseName,
           request,
         )
-        expect(courseService.createParticipation).toHaveBeenCalledWith(username, draftReferral.prisonNumber, courseName)
+        expect(courseService.createParticipation).toHaveBeenCalledWith(username, {
+          courseName,
+          isDraft: true,
+          prisonNumber: person.prisonNumber,
+          referralId,
+        })
         expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully added a programme.')
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.new.programmeHistory.details.show({
@@ -112,11 +117,12 @@ describe('NewReferralsCourseParticipationsController', () => {
           request.body.otherCourseName,
           request,
         )
-        expect(courseService.createParticipation).toHaveBeenCalledWith(
-          username,
-          draftReferral.prisonNumber,
-          otherCourseName,
-        )
+        expect(courseService.createParticipation).toHaveBeenCalledWith(username, {
+          courseName: otherCourseName,
+          isDraft: true,
+          prisonNumber: person.prisonNumber,
+          referralId,
+        })
         expect(request.flash).toHaveBeenCalledWith('successMessage', 'You have successfully added a programme.')
         expect(response.redirect).toHaveBeenCalledWith(
           referPaths.new.programmeHistory.details.show({

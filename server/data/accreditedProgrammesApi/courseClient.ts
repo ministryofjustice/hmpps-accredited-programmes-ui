@@ -13,6 +13,7 @@ import type {
   BuildingChoicesSearchRequest,
   Course,
   CourseParticipation,
+  CourseParticipationCreate,
   CourseParticipationUpdate,
 } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
@@ -46,12 +47,9 @@ export default class CourseClient {
     })) as Course
   }
 
-  async createParticipation(
-    prisonNumber: CourseParticipation['prisonNumber'],
-    courseName: CourseParticipation['courseName'],
-  ): Promise<CourseParticipation> {
+  async createParticipation(participationCreateRequest: CourseParticipationCreate): Promise<CourseParticipation> {
     return (await this.restClient.post({
-      data: { courseName, prisonNumber },
+      data: { ...participationCreateRequest },
       path: apiPaths.participations.create({}),
     })) as CourseParticipation
   }
