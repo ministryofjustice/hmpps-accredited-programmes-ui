@@ -10,9 +10,10 @@ import {
   courseOfferingFactory,
   courseParticipationFactory,
   courseParticipationOutcomeFactory,
+  courseParticipationSettingFactory,
 } from '../../testutils/factories'
-import type { CourseCreateRequest, CourseOffering, CourseParticipationUpdate } from '@accredited-programmes/models'
-import type { CoursePrerequisite } from '@accredited-programmes-api'
+import type { CourseCreateRequest, CourseOffering } from '@accredited-programmes/models'
+import type { CourseParticipation, CourseParticipationUpdate, CoursePrerequisite } from '@accredited-programmes-api'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let courseClient: CourseClient
@@ -158,6 +159,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
   describe('createParticipation', () => {
     const courseParticipation = courseParticipationFactory.new().build()
+
+    const courseParticipationBody: InterfaceToTemplate<CourseParticipation> = {
+      ...courseParticipation,
+      outcome: { ...courseParticipationOutcomeFactory.build() },
+      setting: { ...courseParticipationSettingFactory.build() },
+    }
     const { courseName, prisonNumber } = courseParticipation
 
     beforeEach(() => {
@@ -165,11 +172,11 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         state: 'A participation can be created',
         uponReceiving: 'A request to create a participation',
         willRespondWith: {
-          body: Matchers.like(courseParticipation),
+          body: Matchers.like(courseParticipationBody),
           status: 201,
         },
         withRequest: {
-          body: { courseName, prisonNumber },
+          body: courseName ? { courseName, prisonNumber } : { prisonNumber },
           headers: {
             authorization: `Bearer ${systemToken}`,
           },
@@ -182,7 +189,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     it('creates a participation for the given person', async () => {
       const result = await courseClient.createParticipation(prisonNumber, courseName)
 
-      expect(result).toEqual(courseParticipation)
+      expect(result).toEqual(courseParticipationBody)
     })
   })
 
@@ -452,14 +459,21 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const courseParticipation = courseParticipationFactory.withAllOptionalFields().build({
       id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
       outcome: courseParticipationOutcomeFactory.incomplete(true).build(),
+      setting: courseParticipationSettingFactory.build(),
     })
+
+    const courseParticipationBody: InterfaceToTemplate<CourseParticipation> = {
+      ...courseParticipation,
+      outcome: { ...courseParticipation.outcome },
+      setting: { ...courseParticipation.setting },
+    }
 
     beforeEach(() => {
       provider.addInteraction({
         state: 'Participation 0cff5da9-1e90-4ee2-a5cb-94dc49c4b004 exists',
         uponReceiving: 'A request for participation 0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
         willRespondWith: {
-          body: Matchers.like(courseParticipation),
+          body: Matchers.like(courseParticipationBody),
           status: 200,
         },
         withRequest: {
@@ -493,13 +507,21 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       }),
     ]
 
+    const courseParticipationBody: InterfaceToTemplate<Array<CourseParticipation>> = courseParticipations.map(
+      courseParticipation => ({
+        ...courseParticipation,
+        outcome: { ...courseParticipation.outcome },
+        setting: { ...courseParticipation.setting },
+      }),
+    )
+
     beforeEach(() => {
       provider.addInteraction({
         state:
           'Person A1234AA has participations 0cff5da9-1e90-4ee2-a5cb-94dc49c4b004 and eb357e5d-5416-43bf-a8d2-0dc8fd92162e and no others',
         uponReceiving: "A request for person A1234AA's participations",
         willRespondWith: {
-          body: Matchers.like(courseParticipations),
+          body: Matchers.like(courseParticipationBody),
           status: 200,
         },
         withRequest: {
@@ -559,7 +581,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       outcome: courseParticipationOutcomeFactory.incomplete().build(),
     })
 
-    const courseParticipationUpdate: CourseParticipationUpdate = {
+    const courseParticipationUpdate = {
       courseName: 'learnings that are good',
       detail: 'nice',
       outcome: {
@@ -572,7 +594,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       },
       source: 'somewhere',
     }
-    const updatedCourseParticipation = { ...courseParticipation, ...courseParticipationUpdate }
+    const updatedCourseParticipation: InterfaceToTemplate<CourseParticipation> = {
+      ...courseParticipation,
+      ...courseParticipationUpdate,
+      outcome: courseParticipationUpdate.outcome,
+      setting: courseParticipationUpdate.setting,
+    }
 
     beforeEach(() => {
       provider.addInteraction({
@@ -596,7 +623,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     it('updates the given participation', async () => {
       const result = await courseClient.updateParticipation(
         'cc8eb19e-050a-4aa9-92e0-c654e5cfe281',
-        courseParticipationUpdate,
+        courseParticipationUpdate as CourseParticipationUpdate,
       )
 
       expect(result).toEqual(updatedCourseParticipation)

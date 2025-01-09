@@ -1,5 +1,11 @@
-import type { CourseParticipation, Organisation, Person, RiskLevel } from '@accredited-programmes/models'
-import type { Course, CourseOffering, Referral, ReferralStatusHistory } from '@accredited-programmes-api'
+import type { Organisation, Person, RiskLevel } from '@accredited-programmes/models'
+import type {
+  Course,
+  CourseOffering,
+  CourseParticipation,
+  Referral,
+  ReferralStatusHistory,
+} from '@accredited-programmes-api'
 import type {
   GovukFrontendButton,
   GovukFrontendPagination,

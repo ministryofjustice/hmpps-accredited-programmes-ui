@@ -2,7 +2,8 @@ import type { SuperAgentRequest } from 'superagent'
 
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
-import type { CourseParticipation, Person } from '@accredited-programmes/models'
+import type { Person } from '@accredited-programmes/models'
+import type { CourseParticipation } from '@accredited-programmes-api'
 
 export default {
   stubCreateParticipation: (courseParticipation: CourseParticipation): SuperAgentRequest =>

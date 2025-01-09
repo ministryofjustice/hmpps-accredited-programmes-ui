@@ -6,12 +6,12 @@ import type { Request } from 'express'
 import type { RequestWithCourseParticipationDetailsBody } from './courseParticipationUtils'
 import CourseParticipationUtils from './courseParticipationUtils'
 import { courseParticipationFactory } from '../testutils/factories'
+import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type {
   CourseParticipationOutcome,
   CourseParticipationSetting,
   CourseParticipationUpdate,
-} from '@accredited-programmes/models'
-import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+} from '@accredited-programmes-api'
 import type {
   GovukFrontendSummaryListRow,
   GovukFrontendSummaryListRowKey,

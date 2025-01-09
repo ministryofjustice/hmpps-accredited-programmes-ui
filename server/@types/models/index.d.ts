@@ -2,12 +2,6 @@ import type { AssessmentDateInfo } from './AssessmentDateInfo'
 import type { Audience, CourseAudience } from './CourseAudience'
 import type { CourseCreateRequest } from './CourseCreateRequest'
 import type { CourseOffering } from './CourseOffering'
-import type {
-  CourseParticipation,
-  CourseParticipationOutcome,
-  CourseParticipationSetting,
-  CourseParticipationUpdate,
-} from './CourseParticipation'
 import type { CoursePrerequisite } from './CoursePrerequisite'
 import type { DrugAlcoholDetail } from './DrugAlcoholDetail'
 import type { Health } from './Health'
@@ -40,10 +34,6 @@ export type {
   CourseAudience,
   CourseCreateRequest,
   CourseOffering,
-  CourseParticipation,
-  CourseParticipationOutcome,
-  CourseParticipationSetting,
-  CourseParticipationUpdate,
   CoursePrerequisite,
   DrugAlcoholDetail,
   Health,

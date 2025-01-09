@@ -6,12 +6,15 @@ import type {
   Audience,
   CourseCreateRequest,
   CourseOffering,
-  CourseParticipation,
-  CourseParticipationUpdate,
   CoursePrerequisite,
   Person,
 } from '@accredited-programmes/models'
-import type { BuildingChoicesSearchRequest, Course } from '@accredited-programmes-api'
+import type {
+  BuildingChoicesSearchRequest,
+  Course,
+  CourseParticipation,
+  CourseParticipationUpdate,
+} from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class CourseClient {
@@ -164,7 +167,7 @@ export default class CourseClient {
     courseParticipationUpdate: CourseParticipationUpdate,
   ): Promise<CourseParticipation> {
     return (await this.restClient.put({
-      data: courseParticipationUpdate,
+      data: { ...courseParticipationUpdate },
       path: apiPaths.participations.update({ courseParticipationId }),
     })) as CourseParticipation
   }
