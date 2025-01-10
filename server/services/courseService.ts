@@ -15,7 +15,13 @@ import type {
   BuildingChoicesSearchForm,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
-import type { Course, CourseParticipation, CourseParticipationUpdate, Referral } from '@accredited-programmes-api'
+import type {
+  Course,
+  CourseParticipation,
+  CourseParticipationCreate,
+  CourseParticipationUpdate,
+  Referral,
+} from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
 export default class CourseService {
@@ -47,14 +53,13 @@ export default class CourseService {
 
   async createParticipation(
     username: Express.User['username'],
-    prisonNumber: CourseParticipation['prisonNumber'],
-    courseName: CourseParticipation['courseName'],
+    participationCreateRequest: CourseParticipationCreate,
   ): Promise<CourseParticipation> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
-    return courseClient.createParticipation(prisonNumber, courseName)
+    return courseClient.createParticipation(participationCreateRequest)
   }
 
   async deleteOffering(
