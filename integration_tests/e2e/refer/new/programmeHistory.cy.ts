@@ -18,6 +18,7 @@ import {
   NewReferralProgrammeHistoryDetailsPage,
   NewReferralProgrammeHistoryPage,
   NewReferralSelectProgrammePage,
+  NewReferralShowProgrammeHistoryPage,
   NewReferralTaskListPage,
 } from '../../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
@@ -63,6 +64,10 @@ context('Programme history', () => {
   })
   const programmeHistoryPath = referPaths.new.programmeHistory.index({ referralId: referral.id })
   const newParticipationPath = referPaths.new.programmeHistory.new({ referralId: referral.id })
+  const showProgrammeHistoryPath = referPaths.new.programmeHistory.show({
+    courseParticipationId: courseParticipationWithKnownCourseName.id,
+    referralId: referral.id,
+  })
 
   beforeEach(() => {
     cy.task('reset')
@@ -702,6 +707,35 @@ context('Programme history', () => {
         referral,
       })
       programmeHistoryPage.shouldContainSuccessMessage('You have successfully removed a programme.')
+    })
+  })
+
+  describe('When viewing an individual programme history page', () => {
+    beforeEach(() => {
+      cy.task('stubParticipation', courseParticipationWithKnownCourseName)
+      cy.task('stubCourse', courses[0])
+
+      cy.visit(showProgrammeHistoryPath)
+    })
+
+    it('shows the details of that programme history record', () => {
+      const showProgrammeHistoryPage = Page.verifyOnPage(NewReferralShowProgrammeHistoryPage, {
+        participation: courseParticipationWithKnownCourseName,
+        person,
+        referral,
+      })
+
+      showProgrammeHistoryPage.shouldHavePersonDetails(person)
+      showProgrammeHistoryPage.shouldContainBackLink(programmeHistoryPath)
+      showProgrammeHistoryPage.shouldContainHomeLink()
+      showProgrammeHistoryPage.shouldContainHistorySummaryCards(
+        [courseParticipationWithKnownCourseNamePresenter],
+        referral.id,
+        {
+          change: false,
+          remove: false,
+        },
+      )
     })
   })
 })

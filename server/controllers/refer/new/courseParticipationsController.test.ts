@@ -464,6 +464,62 @@ describe('NewReferralsCourseParticipationsController', () => {
     })
   })
 
+  describe('show', () => {
+    it('renders the show template for a specific course participation', async () => {
+      const addedByUser = userFactory.build()
+      const course = courseFactory.build()
+      const courseParticipation = courseParticipationFactory.build({
+        addedBy: addedByUser.username,
+        courseName: course.name,
+        prisonNumber: person.prisonNumber,
+      })
+      const courseParticipationId = courseParticipation.id
+
+      request.params.courseParticipationId = courseParticipationId
+
+      personService.getPerson.mockResolvedValue(person)
+      referralService.getReferral.mockResolvedValue(draftReferral)
+      courseService.getCourse.mockResolvedValue(course)
+      courseService.getParticipation.mockResolvedValue(courseParticipation)
+
+      const requestHandler = controller.show()
+      await requestHandler(request, response, next)
+
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, request.params.referralId)
+      expect(courseService.getParticipation).toHaveBeenCalledWith(username, courseParticipationId)
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
+        userToken,
+        courseParticipation,
+        referralId,
+        undefined,
+        {
+          change: false,
+          remove: false,
+        },
+      )
+      expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
+      expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/show', {
+        hideTitleServiceName: true,
+        pageHeading: 'Programme history details',
+        person,
+        referralId,
+        summaryListOptions,
+      })
+    })
+
+    describe('when the referral has been submitted', () => {
+      it('redirects to the referral confirmation action', async () => {
+        referralService.getReferral.mockResolvedValue(submittedReferral)
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, request.params.referralId)
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
+      })
+    })
+  })
+
   describe('updateCourse', () => {
     describe.each([
       ['when the `courseName` is a non-empty string and not "Other"', false],

@@ -60,6 +60,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   )
   get(referPaths.new.programmeHistory.new.pattern, newReferralsCourseParticipationsController.new())
   post(referPaths.new.programmeHistory.create.pattern, newReferralsCourseParticipationsController.create())
+  get(referPaths.new.programmeHistory.show.pattern, newReferralsCourseParticipationsController.show())
   get(referPaths.new.programmeHistory.editProgramme.pattern, newReferralsCourseParticipationsController.editCourse())
   put(
     referPaths.new.programmeHistory.updateProgramme.pattern,

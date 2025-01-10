@@ -64,6 +64,7 @@ export default {
       editProgramme: newReferralProgrammeHistoryProgrammePath,
       index: newReferralProgrammeHistoryPath,
       new: newReferralProgrammeHistoryPath.path('new'),
+      show: newReferralProgrammeHistoryShowPath,
       updateProgramme: newReferralProgrammeHistoryProgrammePath,
       updateReviewedStatus: newReferralProgrammeHistoryPath,
     },
