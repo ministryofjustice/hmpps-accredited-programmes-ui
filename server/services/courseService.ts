@@ -238,6 +238,17 @@ export default class CourseService {
     return courseClient.findParticipationsByPerson(prisonNumber)
   }
 
+  async getParticipationsByReferral(
+    username: Express.User['username'],
+    referralId: Referral['id'],
+  ): Promise<Array<CourseParticipation>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    return courseClient.findParticipationsByReferral(referralId)
+  }
+
   async presentCourseParticipation(
     userToken: Express.User['token'],
     courseParticipation: CourseParticipation,

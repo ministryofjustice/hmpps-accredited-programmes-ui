@@ -131,6 +131,13 @@ export default class CourseClient {
   }
 
   /* istanbul ignore next */
+  async findParticipationsByReferral(referralId: string): Promise<Array<CourseParticipation>> {
+    return (await this.restClient.get({
+      path: apiPaths.participations.referral({ referralId }),
+    })) as Array<CourseParticipation>
+  }
+
+  /* istanbul ignore next */
   async updateCourse(courseId: Course['id'], courseUpdate: CourseCreateRequest): Promise<Course> {
     return (await this.restClient.put({
       data: { ...courseUpdate },
