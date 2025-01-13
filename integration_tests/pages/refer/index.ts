@@ -11,6 +11,7 @@ import NewReferralProgrammeHistoryPage from './new/programmeHistory'
 import NewReferralProgrammeHistoryDetailsPage from './new/programmeHistoryDetails'
 import NewReferralSelectProgrammePage from './new/selectProgramme'
 import NewReferralShowPersonPage from './new/showPerson'
+import NewReferralShowProgrammeHistoryPage from './new/showProgrammeHistory'
 import NewReferralStartPage from './new/start'
 import NewReferralTaskListPage from './new/taskList'
 
@@ -28,6 +29,7 @@ export {
   NewReferralProgrammeHistoryPage,
   NewReferralSelectProgrammePage,
   NewReferralShowPersonPage,
+  NewReferralShowProgrammeHistoryPage,
   NewReferralStartPage,
   NewReferralTaskListPage,
 }
