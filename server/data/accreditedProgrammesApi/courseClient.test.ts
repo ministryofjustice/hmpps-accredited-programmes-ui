@@ -24,6 +24,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   let courseClient: CourseClient
 
   const systemToken = 'token-1'
+  const referralId = '0c46ed09-170b-4c0f-aee8-a24eeaeeddab'
 
   beforeEach(() => {
     courseClient = new CourseClient(systemToken)
@@ -163,7 +164,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('createParticipation', () => {
-    const courseParticipation = courseParticipationFactory.new().build()
+    const courseParticipation = courseParticipationFactory.new().build({ referralId })
     const courseParticipationRequest = {
       courseName: courseParticipation.courseName,
       isDraft: true,
@@ -472,6 +473,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const courseParticipation = courseParticipationFactory.withAllOptionalFields().build({
       id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
       outcome: courseParticipationOutcomeFactory.incomplete(true).build(),
+      referralId,
       setting: courseParticipationSettingFactory.build(),
     })
 
@@ -512,11 +514,13 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         id: '0cff5da9-1e90-4ee2-a5cb-94dc49c4b004',
         outcome: courseParticipationOutcomeFactory.incomplete(true).build(),
         prisonNumber: 'A1234AA',
+        referralId,
       }),
       courseParticipationFactory.withAllOptionalFields().build({
         id: 'eb357e5d-5416-43bf-a8d2-0dc8fd92162e',
         outcome: courseParticipationOutcomeFactory.incomplete(true).build(),
         prisonNumber: 'A1234AA',
+        referralId,
       }),
     ]
 
@@ -592,6 +596,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const courseParticipation = courseParticipationFactory.build({
       id: 'cc8eb19e-050a-4aa9-92e0-c654e5cfe281',
       outcome: courseParticipationOutcomeFactory.incomplete().build(),
+      referralId,
     })
 
     const courseParticipationUpdate = {
