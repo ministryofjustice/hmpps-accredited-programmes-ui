@@ -470,6 +470,23 @@ describe('CourseService', () => {
     })
   })
 
+  describe('getParticipationsByReferral', () => {
+    const referral = referralFactory.build()
+
+    it('returns a list of participations for a given referral', async () => {
+      const courseParticipations = courseParticipationFactory.buildList(2, { referralId: referral.id })
+
+      when(courseClient.findParticipationsByReferral).calledWith(referral.id).mockResolvedValue(courseParticipations)
+
+      const result = await service.getParticipationsByReferral(username, referral.id)
+
+      expect(result).toEqual(courseParticipations)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.findParticipationsByReferral).toHaveBeenCalledWith(referral.id)
+    })
+  })
+
   describe('presentCourseParticipation', () => {
     const addedByUser = userFactory.build({ name: 'john smith' })
     const courseParticipation = courseParticipationFactory.build({ addedBy: addedByUser.username })

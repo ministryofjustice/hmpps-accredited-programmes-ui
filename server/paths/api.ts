@@ -81,6 +81,7 @@ export default {
   participations: {
     create: participationsPath,
     delete: participationPath,
+    referral: participationsPath.path('referral/:referralId'),
     show: participationPath,
     update: participationPath,
   },
