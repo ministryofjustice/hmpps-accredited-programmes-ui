@@ -174,8 +174,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
 
     const courseParticipationBody: InterfaceToTemplate<CourseParticipation> = {
       ...courseParticipation,
-      outcome: { ...courseParticipationOutcomeFactory.build() },
-      setting: { ...courseParticipationSettingFactory.build() },
+      outcome: null,
+      setting: null,
     }
     const courseParticipationRequestBody: InterfaceToTemplate<CourseParticipationCreate> = {
       ...courseParticipationRequest,
