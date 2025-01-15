@@ -1,24 +1,20 @@
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { Person } from '@accredited-programmes/models'
-import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type { Referral } from '@accredited-programmes-api'
 
 export default class NewReferralProgrammeHistoryPage extends Page {
-  participations: Array<CourseParticipationPresenter>
-
   person: Person
 
   referral: Referral
 
-  constructor(args: { participations: Array<CourseParticipationPresenter>; person: Person; referral: Referral }) {
+  constructor(args: { person: Person; referral: Referral }) {
     super('Accredited Programme history', {
       hideTitleServiceName: true,
       pageTitleOverride: "Person's Accredited Programme history",
     })
 
-    const { participations, person, referral } = args
-    this.participations = participations
+    const { person, referral } = args
     this.person = person
     this.referral = referral
   }
@@ -55,18 +51,8 @@ export default class NewReferralProgrammeHistoryPage extends Page {
   shouldContainPreHistoryParagraph() {
     cy.get('[data-testid="pre-history-paragraph"]').should(
       'have.text',
-      'Add a programme if you know they completed or started a programme not listed here. Return to the tasklist once you’ve added all known programme history.',
+      `This is a list of programmes ${this.person.name} has started or completed. You can add missing programme history.`,
     )
-  }
-
-  shouldContainPreHistoryText() {
-    cy.get('[data-testid="history-text"]').then(historyTextElement => {
-      const { actual, expected } = Helpers.parseHtml(
-        historyTextElement,
-        `The history shows ${this.person.name} has previously started or completed an Accredited Programme.`,
-      )
-      expect(actual).to.equal(expected)
-    })
   }
 
   shouldContainSuccessMessage(message: string) {

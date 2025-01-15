@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "moj/components/banner/macro.njk" import mojBanner %}
 
 {% extends "../../../partials/layout.njk" %}
@@ -33,32 +34,42 @@
         }) }}
       {% endif %}
 
-      {{ govukInsetText({
-        classes: "govuk-!-margin-top-0",
-        text: historyText,
-        attributes: {
-          "data-testid": "history-text"
-        }
-      }) }}
+      {% if historyText %}
+        {{ govukInsetText({
+          classes: "govuk-!-margin-top-0",
+          text: historyText,
+          attributes: {
+            "data-testid": "history-text"
+          }
+        }) }}
+      {% endif %}
 
-      {% if summaryListsOptions.length %}
-        <p class="govuk-body" data-testid="pre-history-paragraph">Add a programme if you know they completed or started a programme not listed here. Return to the tasklist once you’ve added all known programme history.</p>
+      {% if existingParticipationsTable.rows | length %}
+        <p class="govuk-body" data-testid="pre-history-paragraph">This is a list of programmes {{ person.name }} has started or completed. You can add missing programme history.</p>
       {% else %}
         <p class="govuk-body" data-testid="no-history-paragraph-1">The programme team may use information about a person's Accredited Programme history to assess whether they are suitable.</p>
 
         <p class="govuk-body" data-testid="no-history-paragraph-2">You can continue by adding a programme history or skip this section of the referral if the history is not known.</p>
       {% endif %}
+    </div>
+  </div>
 
-      {% for summaryListOptions in summaryListsOptions %}
-        {{ govukSummaryList(summaryListOptions) }}
-      {% endfor %}
+  <div>
+    {% if existingParticipationsTable.rows | length %}
+      {{ govukTable(existingParticipationsTable) }}
+    {% endif %}
 
-      <form action="{{ action }}" method="post">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-        <input type="hidden" name="hasReviewedProgrammeHistory" value="true"/>
+    {% if referralParticipationsTable.rows | length %}
+      <h2 class="govuk-heading-m">Programmes you've added</h2>
+      {{ govukTable(referralParticipationsTable) }}
+    {% endif %}
 
-        <div class="govuk-button-group">
-          {{ govukButton({
+    <form action="{{ action }}" method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+      <input type="hidden" name="hasReviewedProgrammeHistory" value="true"/>
+
+      <div class="govuk-button-group">
+        {{ govukButton({
             text: "Add a programme",
             href: referPaths.new.programmeHistory.new({ referralId: referralId }),
             attributes: {
@@ -66,12 +77,11 @@
             }
           }) }}
 
-          {{ govukButton({
+        {{ govukButton({
             text: "Return to tasklist",
             classes: "govuk-button--secondary"
           }) }}
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 {% endblock content %}

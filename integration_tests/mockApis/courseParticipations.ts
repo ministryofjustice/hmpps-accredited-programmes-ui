@@ -60,6 +60,22 @@ export default {
       },
     }),
 
+  stubParticipationsByReferral: (args: {
+    courseParticipations: Array<CourseParticipation>
+    referralId: CourseParticipation['referralId']
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.participations.referral({ referralId: args.referralId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.courseParticipations,
+        status: 200,
+      },
+    }),
+
   stubUpdateParticipation: (courseParticipation: CourseParticipation): SuperAgentRequest =>
     stubFor({
       request: {
