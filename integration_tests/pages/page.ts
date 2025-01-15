@@ -22,7 +22,7 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
-import type { Referral } from '@accredited-programmes-api'
+import type { CourseParticipation, Referral } from '@accredited-programmes-api'
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryListCardTitle,
@@ -203,6 +203,35 @@ export default abstract class Page {
             this.shouldContainSummaryCard(participation.courseName, actions, rows, summaryCardElement)
           })
       })
+  }
+
+  shouldContainHistoryTable(
+    participations: Array<CourseParticipation>,
+    referralId: Referral['id'],
+    testId: string,
+    editable = false,
+  ) {
+    const { rows } = CourseParticipationUtils.table(participations, referralId, testId, editable)
+
+    cy.get(`[data-testid="${testId}"] .govuk-table__body`).within(() => {
+      cy.get('.govuk-table__row').each((tableRowElement, tableRowElementIndex) => {
+        const row = rows[tableRowElementIndex]
+
+        cy.wrap(tableRowElement).within(() => {
+          row.forEach((cell, cellIndex) => {
+            cy.get('.govuk-table__cell')
+              .eq(cellIndex)
+              .then(cellElement => {
+                if ('text' in cell) {
+                  cy.wrap(cellElement).should('contain.text', cell.text)
+                } else {
+                  cy.wrap(cellElement).should('contain.html', cell.html)
+                }
+              })
+          })
+        })
+      })
+    })
   }
 
   shouldContainHomeLink(): void {

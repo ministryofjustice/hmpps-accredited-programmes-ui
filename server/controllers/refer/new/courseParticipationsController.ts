@@ -161,29 +161,38 @@ export default class NewReferralsCourseParticipationsController {
 
       const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
-      const summaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
-        req.user.username,
-        req.user.token,
-        person.prisonNumber,
-        referralId,
-      )
+      const [existingParticipations, referralParticipations] = await Promise.all([
+        this.courseService.getParticipationsByPerson(req.user.username, person.prisonNumber),
+        this.courseService.getParticipationsByReferral(req.user.username, referralId),
+      ])
 
       const successMessage = req.flash('successMessage')[0]
 
-      const historyText = summaryListsOptions.length
-        ? `The history shows ${person.name} has previously started or completed an Accredited Programme.`
-        : `There is no record of Accredited Programmes for ${person.name}.`
+      const historyText =
+        !existingParticipations.length && !referralParticipations.length
+          ? `There is no record of Accredited Programmes for ${person.name}.`
+          : undefined
 
       return res.render('referrals/new/courseParticipations/index', {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
+        existingParticipationsTable: CourseParticipationUtils.table(
+          existingParticipations,
+          referralId,
+          'existing-participations',
+        ),
         hideTitleServiceName: true,
         historyText,
         pageHeading: 'Accredited Programme history',
         pageTitleOverride: "Person's Accredited Programme history",
         person,
         referralId,
+        referralParticipationsTable: CourseParticipationUtils.table(
+          referralParticipations,
+          referralId,
+          'referral-participations',
+          true,
+        ),
         successMessage,
-        summaryListsOptions,
       })
     }
   }

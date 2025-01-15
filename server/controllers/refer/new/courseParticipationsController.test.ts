@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import { when } from 'jest-when'
 
 import NewReferralsCourseParticipationsController from './courseParticipationsController'
 import { referPaths } from '../../../paths'
@@ -16,6 +17,7 @@ import Helpers from '../../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../../utils'
 import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 import type { CourseParticipation } from '@accredited-programmes-api'
+import type { GovukFrontendTable } from '@govuk-frontend'
 
 jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/courseParticipationUtils')
@@ -33,6 +35,8 @@ describe('NewReferralsCourseParticipationsController', () => {
 
   let controller: NewReferralsCourseParticipationsController
 
+  const existingParticipations = courseParticipationFactory.buildList(2)
+  const referralParticipations = courseParticipationFactory.buildList(2, { isDraft: true })
   const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
   const person = personFactory.build()
   const referralId = 'a-referral-id'
@@ -46,6 +50,8 @@ describe('NewReferralsCourseParticipationsController', () => {
     controller = new NewReferralsCourseParticipationsController(courseService, personService, referralService)
     courseService.presentCourseParticipation.mockResolvedValue(summaryListOptions)
     courseService.getAndPresentParticipationsByPerson.mockResolvedValue([summaryListOptions, summaryListOptions])
+    courseService.getParticipationsByPerson.mockResolvedValue(existingParticipations)
+    courseService.getParticipationsByReferral.mockResolvedValue(referralParticipations)
   })
 
   afterEach(() => {
@@ -326,10 +332,27 @@ describe('NewReferralsCourseParticipationsController', () => {
   describe('index', () => {
     const course = courseFactory.build()
 
+    const existingParticipationsTable: GovukFrontendTable = {
+      head: [{ text: 'Existing participations table column header' }],
+      rows: [[{ text: 'Existing participations table value text' }]],
+    }
+
+    const referralParticipationsTable: GovukFrontendTable = {
+      head: [{ text: 'Referral participations table column header' }],
+      rows: [[{ text: 'Referral participations table value text' }]],
+    }
+
     beforeEach(() => {
       personService.getPerson.mockResolvedValue(person)
       courseService.getCourse.mockResolvedValue(course)
       ;(request.flash as jest.Mock).mockImplementation(() => [])
+
+      when(CourseParticipationUtils.table)
+        .calledWith(existingParticipations, referralId, 'existing-participations')
+        .mockReturnValue(existingParticipationsTable)
+      when(CourseParticipationUtils.table)
+        .calledWith(referralParticipations, referralId, 'referral-participations', true)
+        .mockReturnValue(referralParticipationsTable)
     })
 
     it("renders the index template for a person's programme history", async () => {
@@ -340,47 +363,41 @@ describe('NewReferralsCourseParticipationsController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
-      expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
-        username,
-        userToken,
-        person.prisonNumber,
-        referralId,
-      )
+      expect(courseService.getParticipationsByPerson).toHaveBeenCalledWith(username, person.prisonNumber)
+      expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/index', {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId })}?_method=PUT`,
+        existingParticipationsTable,
         hideTitleServiceName: true,
-        historyText: `The history shows ${person.name} has previously started or completed an Accredited Programme.`,
         pageHeading: 'Accredited Programme history',
         pageTitleOverride: "Person's Accredited Programme history",
         person,
         referralId,
+        referralParticipationsTable,
         successMessage: undefined,
-        summaryListsOptions: [summaryListOptions, summaryListOptions],
       })
     })
 
     describe('when there is no programme history for a person', () => {
-      it('renders the index template with the correct response locals for `historyText` and `summaryListsOptions`', async () => {
+      it('renders the index template with the correct response locals for `historyText, `existingParticipationsTable` and `referralParticipationsTable`', async () => {
         referralService.getReferral.mockResolvedValue(draftReferral)
-        courseService.getAndPresentParticipationsByPerson.mockResolvedValue([])
+        courseService.getParticipationsByPerson.mockResolvedValue([])
+        courseService.getParticipationsByReferral.mockResolvedValue([])
 
         const requestHandler = controller.index()
         await requestHandler(request, response, next)
 
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
-          username,
-          userToken,
-          person.prisonNumber,
-          referralId,
-        )
+        expect(courseService.getParticipationsByPerson).toHaveBeenCalledWith(username, person.prisonNumber)
+        expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
 
         expect(response.render).toHaveBeenCalledWith(
           'referrals/new/courseParticipations/index',
           expect.objectContaining({
+            existingParticipationsTable: undefined,
             historyText: `There is no record of Accredited Programmes for ${person.name}.`,
-            summaryListsOptions: [],
+            referralParticipationsTable: undefined,
           }),
         )
       })

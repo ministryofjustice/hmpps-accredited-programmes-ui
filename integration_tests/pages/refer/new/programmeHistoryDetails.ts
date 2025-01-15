@@ -161,8 +161,12 @@ export default class NewReferralProgrammeHistoryDetailsPage extends Page {
     cy.task('stubUpdateParticipation', this.courseParticipation)
     cy.task('stubCourse', this.course)
     cy.task('stubParticipationsByPerson', {
-      courseParticipations: [this.courseParticipation],
+      courseParticipations: [],
       prisonNumber: this.person.prisonNumber,
+    })
+    cy.task('stubParticipationsByReferral', {
+      courseParticipations: [this.courseParticipation],
+      referralId: this.courseParticipation.referralId,
     })
     this.shouldContainButton('Continue').click()
   }

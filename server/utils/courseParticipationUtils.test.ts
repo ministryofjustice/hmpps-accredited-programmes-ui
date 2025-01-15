@@ -5,7 +5,8 @@ import type { Request } from 'express'
 
 import type { RequestWithCourseParticipationDetailsBody } from './courseParticipationUtils'
 import CourseParticipationUtils from './courseParticipationUtils'
-import { courseParticipationFactory } from '../testutils/factories'
+import { referPaths } from '../paths'
+import { courseParticipationFactory, referralFactory } from '../testutils/factories'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type {
   CourseParticipationOutcome,
@@ -618,6 +619,118 @@ describe('CourseParticipationUtils', () => {
             const { rows } = CourseParticipationUtils.summaryListOptions(withoutSource, referralId)
             expect(getRowValueText(rows, 'Source of information')).toEqual('Not known')
           })
+        })
+      })
+    })
+  })
+
+  describe('table', () => {
+    const referral = referralFactory.build()
+    const courseParticipations = [
+      courseParticipationFactory.build({
+        courseName: 'Unfinished programme name',
+        detail: undefined,
+        id: 'unfinished-programme-id',
+        outcome: {
+          yearCompleted: undefined,
+          yearStarted: 2023,
+        },
+        setting: {
+          location: undefined,
+          type: 'community',
+        },
+      }),
+      courseParticipationFactory.build({
+        courseName: 'Finished programme name',
+        detail: 'Some more details',
+        id: 'finished-programme-id',
+        outcome: {
+          yearCompleted: 2024,
+          yearStarted: undefined,
+        },
+        setting: {
+          location: 'Whatton',
+          type: 'custody',
+        },
+      }),
+    ]
+
+    const expectedResponse = {
+      attributes: {
+        'data-module': 'moj-sortable-table',
+        'data-testid': 'existing-participations',
+      },
+      head: [
+        {
+          attributes: { 'aria-sort': 'ascending' },
+          text: 'Programme',
+        },
+        {
+          attributes: { 'aria-sort': 'none' },
+          text: 'Location',
+        },
+        {
+          attributes: { 'aria-sort': 'none' },
+          text: 'Outcome',
+        },
+        { text: 'Notes' },
+      ],
+      rows: [
+        [
+          {
+            attributes: {
+              'data-sort-value': 'Finished programme name',
+            },
+            html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: 'finished-programme-id', referralId: referral.id })}">Finished programme name</a>`,
+          },
+          { text: 'Whatton' },
+          { text: 'Completed 2024' },
+          { text: 'Some more details' },
+        ],
+        [
+          {
+            attributes: {
+              'data-sort-value': 'Unfinished programme name',
+            },
+            html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: 'unfinished-programme-id', referralId: referral.id })}">Unfinished programme name</a>`,
+          },
+          { text: 'Not known' },
+          { text: 'Deselected 2023' },
+          { text: undefined },
+        ],
+      ],
+    }
+
+    it('returns a GovukFrontendTable with the correct properties and data', () => {
+      expect(CourseParticipationUtils.table(courseParticipations, referral.id, 'existing-participations')).toEqual(
+        expectedResponse,
+      )
+    })
+
+    describe('when the participations can be edited', () => {
+      it('returns a GovukFrontendTable with the action column', () => {
+        expect(
+          CourseParticipationUtils.table(courseParticipations, referral.id, 'referral-participations', true),
+        ).toEqual({
+          ...expectedResponse,
+          attributes: {
+            ...expectedResponse.attributes,
+            'data-testid': 'referral-participations',
+          },
+          head: [...expectedResponse.head, { text: 'Action' }],
+          rows: expectedResponse.rows.map((row, index) => [
+            ...row,
+            {
+              html: `<ul class="govuk-summary-list__actions-list">
+                        <li class="govuk-summary-list__actions-list-item">
+                          <a class="govuk-link" href="${referPaths.new.programmeHistory.editProgramme({ courseParticipationId: courseParticipations[index].id, referralId: referral.id })}">Change<span class="govuk-visually-hidden"> programme (${courseParticipations[index].courseName})</span></a>
+                        </li>
+                        <li class="govuk-summary-list__actions-list-item">
+                          <a class="govuk-link" href="${referPaths.new.programmeHistory.delete({ courseParticipationId: courseParticipations[index].id, referralId: referral.id })}">Remove<span class="govuk-visually-hidden"> programme (${courseParticipations[index].courseName})</span></a>
+                        </li>
+                      </ul>`,
+            },
+          ]),
         })
       })
     })

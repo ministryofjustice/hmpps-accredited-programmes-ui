@@ -16,7 +16,12 @@ import type {
   CourseParticipationUpdate,
   Referral,
 } from '@accredited-programmes-api'
-import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
+import type {
+  GovukFrontendSummaryListRowKey,
+  GovukFrontendTable,
+  GovukFrontendTableHeadElement,
+  GovukFrontendTableRow,
+} from '@govuk-frontend'
 
 interface CourseParticipationDetailsBody {
   detail: string
@@ -151,6 +156,81 @@ export default class CourseParticipationUtils {
     }
   }
 
+  static table(
+    courseParticipations: Array<CourseParticipation>,
+    referralId: Referral['id'],
+    testId: string,
+    editable = false,
+  ): GovukFrontendTable {
+    const head: Array<GovukFrontendTableHeadElement> = [
+      {
+        attributes: { 'aria-sort': 'ascending' },
+        text: 'Programme',
+      },
+      {
+        attributes: { 'aria-sort': 'none' },
+        text: 'Location',
+      },
+      {
+        attributes: { 'aria-sort': 'none' },
+        text: 'Outcome',
+      },
+      { text: 'Notes' },
+      ...(editable ? [{ text: 'Action' }] : []),
+    ]
+
+    const rows: Array<GovukFrontendTableRow> = courseParticipations
+      .sort((a, b) => (a.courseName ?? '').localeCompare(b.courseName ?? ''))
+      .map(courseParticipation => {
+        return [
+          {
+            attributes: {
+              'data-sort-value': courseParticipation.courseName,
+            },
+            html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: courseParticipation.id, referralId })}">${courseParticipation.courseName}</a>`,
+          },
+          { text: this.textValue(courseParticipation.setting?.location) },
+          { text: this.textValue(this.outcomeString(courseParticipation.outcome)) },
+          { text: courseParticipation.detail },
+          ...(editable
+            ? [
+                {
+                  html: `<ul class="govuk-summary-list__actions-list">
+                        <li class="govuk-summary-list__actions-list-item">
+                          <a class="govuk-link" href="${referPaths.new.programmeHistory.editProgramme({ courseParticipationId: courseParticipation.id, referralId })}">Change<span class="govuk-visually-hidden"> programme (${courseParticipation.courseName})</span></a>
+                        </li>
+                        <li class="govuk-summary-list__actions-list-item">
+                          <a class="govuk-link" href="${referPaths.new.programmeHistory.delete({ courseParticipationId: courseParticipation.id, referralId })}">Remove<span class="govuk-visually-hidden"> programme (${courseParticipation.courseName})</span></a>
+                        </li>
+                      </ul>`,
+                },
+              ]
+            : []),
+        ]
+      })
+
+    return {
+      attributes: {
+        'data-module': 'moj-sortable-table',
+        'data-testid': testId,
+      },
+      head,
+      rows,
+    }
+  }
+
+  private static outcomeString(outcome?: CourseParticipationOutcome) {
+    if (outcome?.yearStarted) {
+      return `Deselected ${outcome.yearStarted}`
+    }
+
+    if (outcome?.yearCompleted) {
+      return `Completed ${outcome.yearCompleted}`
+    }
+
+    return undefined
+  }
+
   private static summaryListRows(
     courseParticipation: CourseParticipationPresenter,
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
@@ -176,7 +256,7 @@ export default class CourseParticipationUtils {
 
     return {
       key: { text: keyText },
-      value: { text: valueTextItemsWithoutBlanks.join(', ') || 'Not known' },
+      value: { text: this.textValue(valueTextItemsWithoutBlanks.join(', ')) },
     }
   }
 
@@ -214,6 +294,10 @@ export default class CourseParticipationUtils {
     }
 
     return this.summaryListRow('Setting', valueTextItems)
+  }
+
+  private static textValue(value?: string): string {
+    return value || 'Not known'
   }
 
   private static validateYear(

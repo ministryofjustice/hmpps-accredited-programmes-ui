@@ -23,6 +23,7 @@ export default class NewReferralDeleteProgrammeHistoryPage extends Page {
 
   confirm() {
     cy.task('stubParticipationsByPerson', { courseParticipations: [], prisonNumber: this.person.prisonNumber })
+    cy.task('stubParticipationsByReferral', { courseParticipations: [], referralId: this.referral.id })
     this.shouldContainButton('Confirm').click()
   }
 }
