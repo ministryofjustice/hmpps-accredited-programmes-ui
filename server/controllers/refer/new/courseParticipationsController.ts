@@ -177,6 +177,7 @@ export default class NewReferralsCourseParticipationsController {
         action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
         existingParticipationsTable: CourseParticipationUtils.table(
           existingParticipations,
+          req.path,
           referralId,
           'existing-participations',
         ),
@@ -188,6 +189,7 @@ export default class NewReferralsCourseParticipationsController {
         referralId,
         referralParticipationsTable: CourseParticipationUtils.table(
           referralParticipations,
+          req.path,
           referralId,
           'referral-participations',
           true,

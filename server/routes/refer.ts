@@ -14,6 +14,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_REFERRER] })
   const {
     categoryController,
+    programmeHistoryDetailController,
     referCaseListController,
     newReferralsAdditionalInformationController,
     newReferralsCourseParticipationDetailsController,
@@ -60,7 +61,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   )
   get(referPaths.new.programmeHistory.new.pattern, newReferralsCourseParticipationsController.new())
   post(referPaths.new.programmeHistory.create.pattern, newReferralsCourseParticipationsController.create())
-  get(referPaths.new.programmeHistory.show.pattern, newReferralsCourseParticipationsController.show())
+  get(referPaths.new.programmeHistory.show.pattern, programmeHistoryDetailController.show())
   get(referPaths.new.programmeHistory.editProgramme.pattern, newReferralsCourseParticipationsController.editCourse())
   put(
     referPaths.new.programmeHistory.updateProgramme.pattern,
@@ -82,6 +83,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(referPaths.show.offenceHistory.pattern, referralsController.offenceHistory())
   get(referPaths.show.personalDetails.pattern, referralsController.personalDetails())
   get(referPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
+  get(referPaths.show.programmeHistoryDetail.pattern, programmeHistoryDetailController.show())
   get(referPaths.show.releaseDates.pattern, referralsController.releaseDates())
   get(referPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
 

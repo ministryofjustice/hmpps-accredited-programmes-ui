@@ -12,6 +12,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     assessCaseListController,
     categoryController,
     pniController,
+    programmeHistoryDetailController,
     reasonController,
     referralsController,
     risksAndNeedsController,
@@ -32,6 +33,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.offenceHistory.pattern, referralsController.offenceHistory())
   get(assessPaths.show.personalDetails.pattern, referralsController.personalDetails())
   get(assessPaths.show.programmeHistory.pattern, referralsController.programmeHistory())
+  get(assessPaths.show.programmeHistoryDetail.pattern, programmeHistoryDetailController.show())
   get(assessPaths.show.releaseDates.pattern, referralsController.releaseDates())
   get(assessPaths.show.sentenceInformation.pattern, referralsController.sentenceInformation())
 

@@ -22,6 +22,7 @@ const newReferralAdditionalInformationPath = newReferralShowPath.path('additiona
 const referralShowPathBase = referralsPath.path(':referralId')
 
 const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
+const showProgrammeHistoryPath = referralShowPathBase.path('programme-history')
 
 const updateStatusPathBase = referralShowPathBase.path('update-status')
 const updateStatusSelectCategory = updateStatusPathBase.path('category')
@@ -79,7 +80,8 @@ export default {
     duplicate: referralShowPathBase.path('duplicate'),
     offenceHistory: referralShowPathBase.path('offence-history'),
     personalDetails: referralShowPathBase.path('personal-details'),
-    programmeHistory: referralShowPathBase.path('programme-history'),
+    programmeHistory: showProgrammeHistoryPath,
+    programmeHistoryDetail: showProgrammeHistoryPath.path(':courseParticipationId'),
     releaseDates: referralShowPathBase.path('release-dates'),
     risksAndNeeds: {
       alcoholMisuse: risksAndNeedsPathBase.path('alcohol-misuse'),

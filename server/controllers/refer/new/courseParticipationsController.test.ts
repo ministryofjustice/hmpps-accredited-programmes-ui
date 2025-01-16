@@ -348,10 +348,10 @@ describe('NewReferralsCourseParticipationsController', () => {
       ;(request.flash as jest.Mock).mockImplementation(() => [])
 
       when(CourseParticipationUtils.table)
-        .calledWith(existingParticipations, referralId, 'existing-participations')
+        .calledWith(existingParticipations, request.path, referralId, 'existing-participations')
         .mockReturnValue(existingParticipationsTable)
       when(CourseParticipationUtils.table)
-        .calledWith(referralParticipations, referralId, 'referral-participations', true)
+        .calledWith(referralParticipations, request.path, referralId, 'referral-participations', true)
         .mockReturnValue(referralParticipationsTable)
     })
 

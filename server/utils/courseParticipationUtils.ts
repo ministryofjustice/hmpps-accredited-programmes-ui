@@ -2,7 +2,7 @@ import type { Request } from 'express'
 
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
-import { referPaths } from '../paths'
+import { assessPathBase, assessPaths, referPaths } from '../paths'
 import type {
   CourseParticipationPresenter,
   GovukFrontendSummaryListCardActionsWithItems,
@@ -158,10 +158,15 @@ export default class CourseParticipationUtils {
 
   static table(
     courseParticipations: Array<CourseParticipation>,
+    requestPath: string,
     referralId: Referral['id'],
     testId: string,
     editable = false,
   ): GovukFrontendTable {
+    const isAssess = requestPath.startsWith(assessPathBase.pattern)
+    const isNewReferral = requestPath.startsWith(referPaths.new.create.pattern)
+    const paths = isAssess ? assessPaths : referPaths
+
     const head: Array<GovukFrontendTableHeadElement> = [
       {
         attributes: { 'aria-sort': 'ascending' },
@@ -182,16 +187,22 @@ export default class CourseParticipationUtils {
     const rows: Array<GovukFrontendTableRow> = courseParticipations
       .sort((a, b) => (a.courseName ?? '').localeCompare(b.courseName ?? ''))
       .map(courseParticipation => {
+        const params = { courseParticipationId: courseParticipation.id, referralId }
+        const href = isNewReferral
+          ? referPaths.new.programmeHistory.show(params)
+          : `${paths.show.programmeHistoryDetail(params)}#content`
+        const courseName = this.textValue(courseParticipation.courseName)
+
         return [
           {
             attributes: {
-              'data-sort-value': courseParticipation.courseName,
+              'data-sort-value': courseName,
             },
-            html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: courseParticipation.id, referralId })}">${courseParticipation.courseName}</a>`,
+            html: `<a href="${href}">${this.textValue(courseName)}</a>`,
           },
           { text: this.textValue(courseParticipation.setting?.location) },
           { text: this.textValue(this.outcomeString(courseParticipation.outcome)) },
-          { text: courseParticipation.detail },
+          { text: this.textValue(courseParticipation.detail, 'N/A') },
           ...(editable
             ? [
                 {
@@ -296,8 +307,8 @@ export default class CourseParticipationUtils {
     return this.summaryListRow('Setting', valueTextItems)
   }
 
-  private static textValue(value?: string): string {
-    return value || 'Not known'
+  private static textValue(value?: string, fallBackText = 'Not known'): string {
+    return value || fallBackText
   }
 
   private static validateYear(
