@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import CategoryController from './categoryController'
+import ProgrammeHistoryDetailController from './programmeHistoryDetailController'
 import ReasonController from './reasonController'
 import ReferralsController from './referralsController'
 import RisksAndNeedsController from './risksAndNeedsController'
@@ -9,6 +10,12 @@ import UpdateStatusSelectionController from './updateStatusSelectionController'
 import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
+  const programmeHistoryDetailController = new ProgrammeHistoryDetailController(
+    services.courseService,
+    services.personService,
+    services.referralService,
+  )
+
   const referralsController = new ReferralsController(
     services.courseService,
     services.organisationService,
@@ -50,6 +57,7 @@ const controllers = (services: Services) => {
 
   return {
     categoryController,
+    programmeHistoryDetailController,
     reasonController,
     referralsController,
     risksAndNeedsController,
