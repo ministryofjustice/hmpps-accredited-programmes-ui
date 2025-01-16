@@ -5,7 +5,7 @@ import type { Request } from 'express'
 
 import type { RequestWithCourseParticipationDetailsBody } from './courseParticipationUtils'
 import CourseParticipationUtils from './courseParticipationUtils'
-import { referPaths } from '../paths'
+import { assessPaths, referPaths } from '../paths'
 import { courseParticipationFactory, referralFactory } from '../testutils/factories'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type {
@@ -625,6 +625,7 @@ describe('CourseParticipationUtils', () => {
   })
 
   describe('table', () => {
+    let request: DeepMocked<Request>
     const referral = referralFactory.build()
     const courseParticipations = [
       courseParticipationFactory.build({
@@ -653,75 +654,115 @@ describe('CourseParticipationUtils', () => {
           type: 'custody',
         },
       }),
+      courseParticipationFactory.build({
+        courseName: undefined,
+        detail: undefined,
+        id: 'empty-programme-id',
+        outcome: {
+          yearCompleted: undefined,
+          yearStarted: undefined,
+        },
+        setting: {
+          location: undefined,
+          type: undefined,
+        },
+      }),
     ]
 
-    const expectedResponse = {
-      attributes: {
-        'data-module': 'moj-sortable-table',
-        'data-testid': 'existing-participations',
-      },
-      head: [
-        {
-          attributes: { 'aria-sort': 'ascending' },
-          text: 'Programme',
-        },
-        {
-          attributes: { 'aria-sort': 'none' },
-          text: 'Location',
-        },
-        {
-          attributes: { 'aria-sort': 'none' },
-          text: 'Outcome',
-        },
-        { text: 'Notes' },
-      ],
-      rows: [
-        [
-          {
-            attributes: {
-              'data-sort-value': 'Finished programme name',
-            },
-            html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: 'finished-programme-id', referralId: referral.id })}">Finished programme name</a>`,
-          },
-          { text: 'Whatton' },
-          { text: 'Completed 2024' },
-          { text: 'Some more details' },
-        ],
-        [
-          {
-            attributes: {
-              'data-sort-value': 'Unfinished programme name',
-            },
-            html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: 'unfinished-programme-id', referralId: referral.id })}">Unfinished programme name</a>`,
-          },
-          { text: 'Not known' },
-          { text: 'Deselected 2023' },
-          { text: undefined },
-        ],
-      ],
-    }
-
-    it('returns a GovukFrontendTable with the correct properties and data', () => {
-      expect(CourseParticipationUtils.table(courseParticipations, referral.id, 'existing-participations')).toEqual(
-        expectedResponse,
-      )
+    beforeEach(() => {
+      request = createMock<Request>({})
+      request.params.referralId = referral.id
     })
 
-    describe('when the participations can be edited', () => {
-      it('returns a GovukFrontendTable with the action column', () => {
-        expect(
-          CourseParticipationUtils.table(courseParticipations, referral.id, 'referral-participations', true),
-        ).toEqual({
-          ...expectedResponse,
-          attributes: {
-            ...expectedResponse.attributes,
-            'data-testid': 'referral-participations',
+    describe('when viewing a draft referral', () => {
+      const expectedResponse = {
+        attributes: {
+          'data-module': 'moj-sortable-table',
+          'data-testid': 'existing-participations',
+        },
+        head: [
+          {
+            attributes: { 'aria-sort': 'ascending' },
+            text: 'Programme',
           },
-          head: [...expectedResponse.head, { text: 'Action' }],
-          rows: expectedResponse.rows.map((row, index) => [
-            ...row,
+          {
+            attributes: { 'aria-sort': 'none' },
+            text: 'Location',
+          },
+          {
+            attributes: { 'aria-sort': 'none' },
+            text: 'Outcome',
+          },
+          { text: 'Notes' },
+        ],
+        rows: [
+          [
             {
-              html: `<ul class="govuk-summary-list__actions-list">
+              attributes: {
+                'data-sort-value': 'Not known',
+              },
+              html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: 'empty-programme-id', referralId: referral.id })}">Not known</a>`,
+            },
+            { text: 'Not known' },
+            { text: 'Not known' },
+            { text: 'N/A' },
+          ],
+          [
+            {
+              attributes: {
+                'data-sort-value': 'Finished programme name',
+              },
+              html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: 'finished-programme-id', referralId: referral.id })}">Finished programme name</a>`,
+            },
+            { text: 'Whatton' },
+            { text: 'Completed 2024' },
+            { text: 'Some more details' },
+          ],
+          [
+            {
+              attributes: {
+                'data-sort-value': 'Unfinished programme name',
+              },
+              html: `<a href="${referPaths.new.programmeHistory.show({ courseParticipationId: 'unfinished-programme-id', referralId: referral.id })}">Unfinished programme name</a>`,
+            },
+            { text: 'Not known' },
+            { text: 'Deselected 2023' },
+            { text: 'N/A' },
+          ],
+        ],
+      }
+
+      beforeEach(() => {
+        request.path = referPaths.new.programmeHistory.index({ referralId: referral.id })
+      })
+
+      it('returns a GovukFrontendTable with the correct properties and data', () => {
+        expect(
+          CourseParticipationUtils.table(courseParticipations, request.path, referral.id, 'existing-participations'),
+        ).toEqual(expectedResponse)
+      })
+
+      describe('and the participations can be edited', () => {
+        it('returns a GovukFrontendTable with the action column', () => {
+          expect(
+            CourseParticipationUtils.table(
+              courseParticipations,
+              request.path,
+              referral.id,
+              'referral-participations',
+              true,
+            ),
+          ).toEqual({
+            ...expectedResponse,
+            attributes: {
+              ...expectedResponse.attributes,
+              'data-testid': 'referral-participations',
+            },
+            head: [...expectedResponse.head, { text: 'Action' }],
+            rows: expectedResponse.rows.map((row, index) => [
+              ...row,
+              {
+                html: `<ul class="govuk-summary-list__actions-list">
                         <li class="govuk-summary-list__actions-list-item">
                           <a class="govuk-link" href="${referPaths.new.programmeHistory.editProgramme({ courseParticipationId: courseParticipations[index].id, referralId: referral.id })}">Change<span class="govuk-visually-hidden"> programme (${courseParticipations[index].courseName})</span></a>
                         </li>
@@ -729,8 +770,74 @@ describe('CourseParticipationUtils', () => {
                           <a class="govuk-link" href="${referPaths.new.programmeHistory.delete({ courseParticipationId: courseParticipations[index].id, referralId: referral.id })}">Remove<span class="govuk-visually-hidden"> programme (${courseParticipations[index].courseName})</span></a>
                         </li>
                       </ul>`,
+              },
+            ]),
+          })
+        })
+      })
+    })
+
+    describe('when viewing a submitted referral', () => {
+      it('returns a GovukFrontendTable with the correct properties and data', () => {
+        request.path = assessPaths.show.programmeHistory({ referralId: referral.id })
+
+        expect(
+          CourseParticipationUtils.table(courseParticipations, request.path, referral.id, 'existing-participations'),
+        ).toEqual({
+          attributes: {
+            'data-module': 'moj-sortable-table',
+            'data-testid': 'existing-participations',
+          },
+          head: [
+            {
+              attributes: { 'aria-sort': 'ascending' },
+              text: 'Programme',
             },
-          ]),
+            {
+              attributes: { 'aria-sort': 'none' },
+              text: 'Location',
+            },
+            {
+              attributes: { 'aria-sort': 'none' },
+              text: 'Outcome',
+            },
+            { text: 'Notes' },
+          ],
+          rows: [
+            [
+              {
+                attributes: {
+                  'data-sort-value': 'Not known',
+                },
+                html: `<a href="${assessPaths.show.programmeHistoryDetail({ courseParticipationId: 'empty-programme-id', referralId: referral.id })}#content">Not known</a>`,
+              },
+              { text: 'Not known' },
+              { text: 'Not known' },
+              { text: 'N/A' },
+            ],
+            [
+              {
+                attributes: {
+                  'data-sort-value': 'Finished programme name',
+                },
+                html: `<a href="${assessPaths.show.programmeHistoryDetail({ courseParticipationId: 'finished-programme-id', referralId: referral.id })}#content">Finished programme name</a>`,
+              },
+              { text: 'Whatton' },
+              { text: 'Completed 2024' },
+              { text: 'Some more details' },
+            ],
+            [
+              {
+                attributes: {
+                  'data-sort-value': 'Unfinished programme name',
+                },
+                html: `<a href="${assessPaths.show.programmeHistoryDetail({ courseParticipationId: 'unfinished-programme-id', referralId: referral.id })}#content">Unfinished programme name</a>`,
+              },
+              { text: 'Not known' },
+              { text: 'Deselected 2023' },
+              { text: 'N/A' },
+            ],
+          ],
         })
       })
     })

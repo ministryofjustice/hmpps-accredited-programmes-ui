@@ -207,11 +207,12 @@ export default abstract class Page {
 
   shouldContainHistoryTable(
     participations: Array<CourseParticipation>,
+    requestPath: string,
     referralId: Referral['id'],
     testId: string,
     editable = false,
   ) {
-    const { rows } = CourseParticipationUtils.table(participations, referralId, testId, editable)
+    const { rows } = CourseParticipationUtils.table(participations, requestPath, referralId, testId, editable)
 
     cy.get(`[data-testid="${testId}"] .govuk-table__body`).within(() => {
       cy.get('.govuk-table__row').each((tableRowElement, tableRowElementIndex) => {

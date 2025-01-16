@@ -118,9 +118,15 @@ context('Programme history', () => {
         programmeHistoryPage.shouldContainHomeLink()
         programmeHistoryPage.shouldNotContainSuccessMessage()
         programmeHistoryPage.shouldContainPreHistoryParagraph()
-        programmeHistoryPage.shouldContainHistoryTable(existingParticipations, referral.id, 'existing-participations')
+        programmeHistoryPage.shouldContainHistoryTable(
+          existingParticipations,
+          programmeHistoryPath,
+          referral.id,
+          'existing-participations',
+        )
         programmeHistoryPage.shouldContainHistoryTable(
           referralParticipations,
+          programmeHistoryPath,
           referral.id,
           'referral-participations',
           true,
