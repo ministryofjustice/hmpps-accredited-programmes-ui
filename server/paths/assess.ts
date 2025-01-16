@@ -6,6 +6,7 @@ const courseCaseListPath = assessPathBase.path('referrals/course/:courseId/case-
 const referralShowPathBase = assessPathBase.path('referrals/:referralId')
 
 const risksAndNeedsPathBase = referralShowPathBase.path('risks-and-needs')
+const showProgrammeHistoryPath = referralShowPathBase.path('programme-history')
 
 const updateStatusPathBase = referralShowPathBase.path('update-status')
 const updateStatusSelectDecision = updateStatusPathBase.path('decision')
@@ -24,7 +25,8 @@ export default {
     offenceHistory: referralShowPathBase.path('offence-history'),
     personalDetails: referralShowPathBase.path('personal-details'),
     pni: referralShowPathBase.path('pni'),
-    programmeHistory: referralShowPathBase.path('programme-history'),
+    programmeHistory: showProgrammeHistoryPath,
+    programmeHistoryDetail: showProgrammeHistoryPath.path(':courseParticipationId'),
     releaseDates: referralShowPathBase.path('release-dates'),
     risksAndNeeds: {
       alcoholMisuse: risksAndNeedsPathBase.path('alcohol-misuse'),
