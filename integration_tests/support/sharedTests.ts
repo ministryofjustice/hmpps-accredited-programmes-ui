@@ -27,7 +27,7 @@ import {
   sentenceDetailsFactory,
   userFactory,
 } from '../../server/testutils/factories'
-import { CourseUtils, OrganisationUtils, StringUtils } from '../../server/utils'
+import { CourseUtils, OrganisationUtils } from '../../server/utils'
 import { releaseDateFields } from '../../server/utils/personUtils'
 import auth from '../mockApis/auth'
 import BadRequestPage from '../pages/badRequest'
@@ -54,8 +54,8 @@ import {
 } from '../pages/shared'
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
-import type { CourseParticipationPresenter, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { Referral } from '@accredited-programmes-api'
+import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { CourseParticipation, Referral } from '@accredited-programmes-api'
 import type { User, UserEmail } from '@manage-users-api'
 import type { PrisonerWithBookingId } from '@prisoner-search'
 
@@ -108,8 +108,8 @@ const addedByUser1Email: UserEmail = {
   username: '',
   verified: true,
 }
-let courseParticipationPresenter1: CourseParticipationPresenter
-let courseParticipationPresenter2: CourseParticipationPresenter
+
+let courseParticipations: Array<CourseParticipation>
 let statusTransitions: Array<ReferralStatusRefData>
 
 const pathsByRole = (role: ApplicationRole): typeof assessPaths | typeof referPaths => {
@@ -131,22 +131,18 @@ const sharedTests = {
       })
       referringUser = userFactory.build({ name: 'Referring User', username: referral.referrerUsername })
       addedByUser1Email.username = referral.referrerUsername
-      courseParticipationPresenter1 = {
-        ...courseParticipationFactory.build({
+      courseParticipations = [
+        courseParticipationFactory.build({
           addedBy: user.username,
           courseName: course.name,
           prisonNumber: person.prisonNumber,
         }),
-        addedByDisplayName: StringUtils.convertToTitleCase(user.name),
-      }
-      courseParticipationPresenter2 = {
-        ...courseParticipationFactory.build({
+        courseParticipationFactory.build({
           addedBy: user.username,
           courseName: 'Another course name',
           prisonNumber: person.prisonNumber,
         }),
-        addedByDisplayName: StringUtils.convertToTitleCase(user.name),
-      }
+      ]
       statusTransitions = [
         referralStatusRefDataFactory.build({ hold: true }),
         referralStatusRefDataFactory.build({ code: 'WITHDRAWN', hold: false }),
@@ -380,7 +376,7 @@ const sharedTests = {
       sharedTests.referrals.beforeEach(role)
       cy.task('stubUserDetails', user)
       cy.task('stubParticipationsByPerson', {
-        courseParticipations: [courseParticipationPresenter1, courseParticipationPresenter2],
+        courseParticipations,
         prisonNumber: prisoner.prisonerNumber,
       })
 
@@ -391,11 +387,6 @@ const sharedTests = {
         course,
         person,
       })
-
-      const courseParticipationsPresenter: Array<CourseParticipationPresenter> = [
-        courseParticipationPresenter1,
-        courseParticipationPresenter2,
-      ]
 
       programmeHistoryPage.shouldHavePersonDetails(person)
       programmeHistoryPage.shouldContainHomeLink()
@@ -414,10 +405,7 @@ const sharedTests = {
         referral.primaryPrisonOffenderManager,
       )
       programmeHistoryPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
-      programmeHistoryPage.shouldContainHistorySummaryCards(courseParticipationsPresenter, referral.id, {
-        change: false,
-        remove: false,
-      })
+      programmeHistoryPage.shouldContainHistoryTable(courseParticipations, path, referral.id, 'participations-table')
     },
 
     showsReleaseDatesPageWithAllData: (role: ApplicationRole): void => {
