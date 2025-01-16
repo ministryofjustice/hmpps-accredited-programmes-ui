@@ -228,38 +228,6 @@ export default class NewReferralsCourseParticipationsController {
     }
   }
 
-  show(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      TypeUtils.assertHasUser(req)
-
-      const { courseParticipationId, referralId } = req.params
-
-      const referral = await this.referralService.getReferral(req.user.username, referralId)
-
-      if (referral.status !== 'referral_started') {
-        return res.redirect(referPaths.new.complete({ referralId }))
-      }
-
-      const courseParticipation = await this.courseService.getParticipation(req.user.username, courseParticipationId)
-      const summaryListOptions = await this.courseService.presentCourseParticipation(
-        req.user.token,
-        courseParticipation,
-        referralId,
-        undefined,
-        { change: false, remove: false },
-      )
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
-
-      return res.render('referrals/new/courseParticipations/show', {
-        hideTitleServiceName: true,
-        pageHeading: 'Programme history details',
-        person,
-        referralId,
-        summaryListOptions,
-      })
-    }
-  }
-
   updateCourse(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
