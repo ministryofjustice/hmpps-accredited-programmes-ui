@@ -246,7 +246,20 @@ export default class CourseService {
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
-    return courseClient.findParticipationsByReferral(referralId)
+    try {
+      const participations = await courseClient.findParticipationsByReferral(referralId)
+
+      return participations.sort((participationA, participationB) =>
+        participationA.createdAt.localeCompare(participationB.createdAt),
+      )
+    } catch (error) {
+      const knownError = error as ResponseError
+
+      throw createError(
+        knownError.status || 500,
+        `Error fetching course participations for referral with ID ${referralId}.`,
+      )
+    }
   }
 
   async presentCourseParticipation(

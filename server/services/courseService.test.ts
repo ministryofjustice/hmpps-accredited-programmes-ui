@@ -473,17 +473,31 @@ describe('CourseService', () => {
   describe('getParticipationsByReferral', () => {
     const referral = referralFactory.build()
 
-    it('returns a list of participations for a given referral', async () => {
+    it('returns a list of participationssorted by `createdAt` for a given referral', async () => {
       const courseParticipations = courseParticipationFactory.buildList(2, { referralId: referral.id })
 
       when(courseClient.findParticipationsByReferral).calledWith(referral.id).mockResolvedValue(courseParticipations)
 
       const result = await service.getParticipationsByReferral(username, referral.id)
 
-      expect(result).toEqual(courseParticipations)
+      expect(result).toEqual(courseParticipations.slice(0).sort((a, b) => a.createdAt.localeCompare(b.createdAt)))
 
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findParticipationsByReferral).toHaveBeenCalledWith(referral.id)
+    })
+
+    describe('when there is an error fetching the participations for a given referral', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+        courseClient.findParticipationsByReferral.mockRejectedValue(clientError)
+
+        await expect(() => service.getParticipationsByReferral(username, referral.id)).rejects.toThrow(
+          `Error fetching course participations for referral with ID ${referral.id}.`,
+        )
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(courseClient.findParticipationsByReferral).toHaveBeenCalledWith(referral.id)
+      })
     })
   })
 
