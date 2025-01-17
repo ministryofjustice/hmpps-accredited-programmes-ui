@@ -44,17 +44,19 @@ export default class NewReferralsController {
         this.userService.getEmailFromUsername(req.user.token, referral.referrerUsername),
       ])
 
-      const [organisation, participationSummaryListsOptions] = await Promise.all([
+      const [organisation, participationsForReferral] = await Promise.all([
         this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId),
-        this.courseService.getAndPresentParticipationsByPerson(
-          req.user.username,
-          req.user.token,
-          person.prisonNumber,
-          referralId,
-          { change: true, remove: false },
-          3,
-        ),
+        this.courseService.getParticipationsByReferral(req.user.username, referralId),
       ])
+
+      const participationSummaryListsOptions = await Promise.all(
+        participationsForReferral.map(participation =>
+          this.courseService.presentCourseParticipation(req.user.token, participation, referralId, undefined, {
+            change: true,
+            remove: false,
+          }),
+        ),
+      )
 
       const coursePresenter = CourseUtils.presentCourse(course)
 

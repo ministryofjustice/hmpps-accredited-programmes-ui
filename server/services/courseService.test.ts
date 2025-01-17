@@ -167,96 +167,6 @@ describe('CourseService', () => {
     })
   })
 
-  describe('getAndPresentCourseParticipationsByPrisonNumber', () => {
-    const person = personFactory.build()
-    const addedByUser = userFactory.build({ name: 'john smith' })
-
-    const earliestCourseParticipation = courseParticipationFactory.build({
-      addedBy: addedByUser.username,
-      createdAt: '2022-01-01T12:00:00.000Z',
-      prisonNumber: person.prisonNumber,
-    })
-    const latestCourseParticipation = courseParticipationFactory.build({
-      addedBy: addedByUser.username,
-      createdAt: '2023-01-01T12:00:00.000Z',
-      prisonNumber: person.prisonNumber,
-    })
-    const addedByDisplayName = StringUtils.convertToTitleCase(addedByUser.name)
-
-    beforeEach(() => {
-      courseClient.findParticipationsByPerson.mockResolvedValue([
-        latestCourseParticipation,
-        earliestCourseParticipation,
-      ])
-
-      userService.getFullNameFromUsername.mockResolvedValue(addedByDisplayName)
-    })
-
-    describe('when no actions are passed', () => {
-      it('fetches the creator, then formats the participation and creator in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', async () => {
-        when(CourseParticipationUtils.summaryListOptions as jest.Mock)
-          .calledWith({ ...earliestCourseParticipation, addedByDisplayName }, 'a-referral-id', undefined, {
-            change: true,
-            remove: true,
-          })
-          .mockReturnValue('course participation 1 options')
-        when(CourseParticipationUtils.summaryListOptions as jest.Mock)
-          .calledWith({ ...latestCourseParticipation, addedByDisplayName }, 'a-referral-id', undefined, {
-            change: true,
-            remove: true,
-          })
-          .mockReturnValue('course participation 2 options')
-
-        const result = await service.getAndPresentParticipationsByPerson(
-          username,
-          userToken,
-          person.prisonNumber,
-          'a-referral-id',
-        )
-
-        expect(result).toEqual(['course participation 1 options', 'course participation 2 options'])
-      })
-    })
-
-    describe('when actions and headingLevel are passed', () => {
-      it('uses the specified actions when creating options for the summary list Nunjucks macro', async () => {
-        await service.getAndPresentParticipationsByPerson(
-          username,
-          userToken,
-          person.prisonNumber,
-          'a-referral-id',
-          {
-            change: false,
-            remove: false,
-          },
-          3,
-        )
-
-        expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
-          1,
-          { ...earliestCourseParticipation, addedByDisplayName },
-          'a-referral-id',
-          3,
-          {
-            change: false,
-            remove: false,
-          },
-        )
-
-        expect(CourseParticipationUtils.summaryListOptions).toHaveBeenNthCalledWith(
-          2,
-          { ...latestCourseParticipation, addedByDisplayName },
-          'a-referral-id',
-          3,
-          {
-            change: false,
-            remove: false,
-          },
-        )
-      })
-    })
-  })
-
   describe('getBuildingChoicesVariants', () => {
     it('returns the courses associated with a given offering', async () => {
       const course = courseFactory.build()
@@ -473,17 +383,31 @@ describe('CourseService', () => {
   describe('getParticipationsByReferral', () => {
     const referral = referralFactory.build()
 
-    it('returns a list of participations for a given referral', async () => {
+    it('returns a list of participationssorted by `createdAt` for a given referral', async () => {
       const courseParticipations = courseParticipationFactory.buildList(2, { referralId: referral.id })
 
       when(courseClient.findParticipationsByReferral).calledWith(referral.id).mockResolvedValue(courseParticipations)
 
       const result = await service.getParticipationsByReferral(username, referral.id)
 
-      expect(result).toEqual(courseParticipations)
+      expect(result).toEqual(courseParticipations.slice(0).sort((a, b) => a.createdAt.localeCompare(b.createdAt)))
 
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findParticipationsByReferral).toHaveBeenCalledWith(referral.id)
+    })
+
+    describe('when there is an error fetching the participations for a given referral', () => {
+      it('throws an error', async () => {
+        const clientError = createError(500)
+        courseClient.findParticipationsByReferral.mockRejectedValue(clientError)
+
+        await expect(() => service.getParticipationsByReferral(username, referral.id)).rejects.toThrow(
+          `Error fetching course participations for referral with ID ${referral.id}.`,
+        )
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(courseClient.findParticipationsByReferral).toHaveBeenCalledWith(referral.id)
+      })
     })
   })
 

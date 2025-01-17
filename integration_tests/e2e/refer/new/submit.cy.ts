@@ -118,7 +118,7 @@ context('Submitting a referral', () => {
     })
 
     it('Shows the information the user has submitted in the referral form', () => {
-      cy.task('stubParticipationsByPerson', { courseParticipations, prisonNumber: prisoner.prisonerNumber })
+      cy.task('stubParticipationsByReferral', { courseParticipations, referralId: submittableReferral.id })
 
       cy.visit(path)
 
@@ -151,7 +151,7 @@ context('Submitting a referral', () => {
 
     describe('for a person with no programme history', () => {
       it('indicates that there is no programme history', () => {
-        cy.task('stubParticipationsByPerson', { courseParticipations: [], prisonNumber: prisoner.prisonerNumber })
+        cy.task('stubParticipationsByReferral', { courseParticipations: [], referralId: submittableReferral.id })
 
         cy.visit(path)
 
@@ -173,7 +173,7 @@ context('Submitting a referral', () => {
   describe('When submitting a referral', () => {
     beforeEach(() => {
       cy.task('stubCourse', course)
-      cy.task('stubParticipationsByPerson', { courseParticipations, prisonNumber: prisoner.prisonerNumber })
+      cy.task('stubParticipationsByReferral', { courseParticipations, referralId: submittableReferral.id })
     })
 
     it('redirects to the referral complete page when the user confirms the details', () => {
