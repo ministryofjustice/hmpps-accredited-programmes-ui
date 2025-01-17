@@ -11,6 +11,7 @@ import {
   courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   organisationFactory,
   personFactory,
   referralFactory,
@@ -380,7 +381,17 @@ describe('NewReferralsController', () => {
       audience: courseAudienceFactory.build(),
     })
     const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
-    const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
+    const participationsForReferral = courseParticipationFactory.buildList(2, { isDraft: true })
+    const summaryListOptions: Array<GovukFrontendSummaryListWithRowsWithKeysAndValues> = [
+      {
+        card: { title: { text: 'Participation 1' } },
+        rows: [{ key: { text: 'Setting' }, value: { text: 'Community' } }],
+      },
+      {
+        card: { title: { text: 'Participation 2' } },
+        rows: [{ key: { text: 'Setting' }, value: { text: 'Custody' } }],
+      },
+    ]
 
     beforeEach(() => {
       courseService.getCourseByOffering.mockResolvedValue(course)
@@ -401,7 +412,8 @@ describe('NewReferralsController', () => {
       courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
-      courseService.getAndPresentParticipationsByPerson.mockResolvedValue([summaryListOptions, summaryListOptions])
+      courseService.getParticipationsByReferral.mockResolvedValue(participationsForReferral)
+      courseService.getAndPresentParticipationsByPerson.mockResolvedValue(summaryListOptions)
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
@@ -410,6 +422,10 @@ describe('NewReferralsController', () => {
     })
 
     it('renders the referral check answers page and sets the `returnTo` value in the sesssion', async () => {
+      const actions = {
+        change: true,
+        remove: false,
+      }
       const requestHandler = controller.checkAnswers()
       await requestHandler(request, response, next)
 
@@ -417,13 +433,21 @@ describe('NewReferralsController', () => {
       expect(personService.getPerson).toHaveBeenCalledWith(username, submittableReferral.prisonNumber)
       expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
-      expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
-        username,
+      expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledTimes(2)
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
         userToken,
-        person.prisonNumber,
+        participationsForReferral[0],
         referralId,
-        { change: true, remove: false },
-        3,
+        undefined,
+        actions,
+      )
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
+        userToken,
+        participationsForReferral[1],
+        referralId,
+        undefined,
+        actions,
       )
       expect(request.session.returnTo).toBe('check-answers')
       expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
