@@ -413,7 +413,6 @@ describe('NewReferralsController', () => {
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       courseService.getParticipationsByReferral.mockResolvedValue(participationsForReferral)
-      courseService.getAndPresentParticipationsByPerson.mockResolvedValue(summaryListOptions)
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {

@@ -85,28 +85,6 @@ export default class CourseService {
     return courseClient.destroyParticipation(courseParticipationId)
   }
 
-  async getAndPresentParticipationsByPerson(
-    username: Express.User['username'],
-    userToken: Express.User['token'],
-    prisonNumber: Person['prisonNumber'],
-    referralId: Referral['id'],
-    withActions?: {
-      change: boolean
-      remove: boolean
-    },
-    headingLevel?: number,
-  ): Promise<Array<GovukFrontendSummaryListWithRowsWithKeysAndValues>> {
-    const sortedCourseParticipations = (await this.getParticipationsByPerson(username, prisonNumber)).sort(
-      (participationA, participationB) => participationA.createdAt.localeCompare(participationB.createdAt),
-    )
-
-    return Promise.all(
-      sortedCourseParticipations.map(participation =>
-        this.presentCourseParticipation(userToken, participation, referralId, headingLevel, withActions),
-      ),
-    )
-  }
-
   async getBuildingChoicesVariants(
     username: Express.User['username'],
     courseId: Course['id'],

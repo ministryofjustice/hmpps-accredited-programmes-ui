@@ -49,7 +49,6 @@ describe('NewReferralsCourseParticipationsController', () => {
 
     controller = new NewReferralsCourseParticipationsController(courseService, personService, referralService)
     courseService.presentCourseParticipation.mockResolvedValue(summaryListOptions)
-    courseService.getAndPresentParticipationsByPerson.mockResolvedValue([summaryListOptions, summaryListOptions])
     courseService.getParticipationsByPerson.mockResolvedValue(existingParticipations)
     courseService.getParticipationsByReferral.mockResolvedValue(referralParticipations)
   })
