@@ -4,6 +4,7 @@ import createError from 'http-errors'
 import { findPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
+  CourseParticipationUtils,
   CourseUtils,
   DateUtils,
   OffenceUtils,
@@ -120,17 +121,19 @@ export default class ReferralsController {
         throw createError(400, 'Referral has not been submitted.')
       }
 
-      const courseParticipationSummaryListsOptions = await this.courseService.getAndPresentParticipationsByPerson(
+      const courseParticipations = await this.courseService.getParticipationsByPerson(
         req.user.username,
-        req.user.token,
         sharedPageData.person.prisonNumber,
-        sharedPageData.referral.id,
-        { change: false, remove: false },
       )
 
       return res.render('referrals/show/programmeHistory', {
         ...sharedPageData,
-        courseParticipationSummaryListsOptions,
+        participationsTable: CourseParticipationUtils.table(
+          courseParticipations,
+          req.path,
+          referral.id,
+          'participations-table',
+        ),
       })
     }
   }

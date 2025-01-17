@@ -2,6 +2,7 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
+import { when } from 'jest-when'
 
 import SubmittedReferralsController from './referralsController'
 import { assessPaths, findPaths, referPathBase, referPaths } from '../../paths'
@@ -9,6 +10,7 @@ import type { CourseService, OrganisationService, PersonService, ReferralService
 import {
   courseFactory,
   courseOfferingFactory,
+  courseParticipationFactory,
   offenceDetailsFactory,
   organisationFactory,
   personFactory,
@@ -19,6 +21,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import {
+  CourseParticipationUtils,
   CourseUtils,
   DateUtils,
   OffenceUtils,
@@ -27,14 +30,12 @@ import {
   ShowReferralUtils,
 } from '../../utils'
 import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
-import type {
-  GovukFrontendSummaryListWithRowsWithKeysAndValues,
-  ReferralSharedPageData,
-} from '@accredited-programmes/ui'
+import type { ReferralSharedPageData } from '@accredited-programmes/ui'
 import type { Referral } from '@accredited-programmes-api'
-import type { GovukFrontendSummaryList } from '@govuk-frontend'
+import type { GovukFrontendSummaryList, GovukFrontendTable } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
+jest.mock('../../utils/courseParticipationUtils')
 jest.mock('../../utils/personUtils')
 jest.mock('../../utils/sentenceInformationUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
@@ -316,28 +317,28 @@ describe('ReferralsController', () => {
 
   describe('programmeHistory', () => {
     it('renders the programme history template with the correct response locals', async () => {
-      const courseParticipationSummaryListsOptions = [createMock<GovukFrontendSummaryListWithRowsWithKeysAndValues>()]
-
-      courseService.getAndPresentParticipationsByPerson.mockResolvedValue(courseParticipationSummaryListsOptions)
-
       request.path = referPaths.show.programmeHistory({ referralId: referral.id })
+
+      const participations = courseParticipationFactory.buildList(2)
+      const participationsTable: GovukFrontendTable = {
+        head: [{ text: 'Existing participations table column header' }],
+        rows: [[{ text: 'Existing participations table value text' }]],
+      }
+
+      courseService.getParticipationsByPerson.mockResolvedValue(participations)
+
+      when(CourseParticipationUtils.table)
+        .calledWith(participations, request.path, referral.id, 'participations-table')
+        .mockReturnValue(participationsTable)
 
       const requestHandler = controller.programmeHistory()
       await requestHandler(request, response, next)
 
       assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
-      expect(courseService.getAndPresentParticipationsByPerson).toHaveBeenCalledWith(
-        username,
-        userToken,
-        sharedPageData.person.prisonNumber,
-        sharedPageData.referral.id,
-        { change: false, remove: false },
-      )
-
       expect(response.render).toHaveBeenCalledWith('referrals/show/programmeHistory', {
         ...sharedPageData,
-        courseParticipationSummaryListsOptions,
+        participationsTable,
       })
     })
 
