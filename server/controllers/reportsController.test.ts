@@ -29,6 +29,7 @@ describe('ReportsController', () => {
     { code: 'LEI', description: 'Leeds' },
   ]
   const prisonLocationOptions = [
+    { text: '', value: '' },
     { text: 'Leeds', value: 'LEI' },
     { text: 'Moorland', value: 'MDI' },
   ]
@@ -50,7 +51,7 @@ describe('ReportsController', () => {
   let controller: ReportsController
 
   beforeEach(() => {
-    mockOrganisationUtils.organisationRadioItems.mockReturnValue(prisonLocationOptions)
+    mockOrganisationUtils.organisationSelectItemsForPrisonFilter.mockReturnValue(prisonLocationOptions)
     mockStatisticsReportUtils.reportContentDataBlock.mockReturnValue(reportDataBlock)
     mockStatisticsReportUtils.filterValuesToApiParams.mockReturnValue(lastMonth)
     mockStatisticsReportUtils.queryParams.mockReturnValue(queryParams)
