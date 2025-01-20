@@ -2,10 +2,16 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "./_reportDataBlock.njk" import reportDataBlock %}
 
 {% extends "../partials/layout.njk" %}
+
+{% block head %}
+  {{ super() }}
+  <link href="/assets/stylesheets/accessible-autocomplete.min.css" rel="stylesheet"/>
+{% endblock head %}
 
 {% block backLink %}
   {{ govukBackLink({
@@ -43,18 +49,22 @@
 {% endset %}
 
 {% set locationOptionsHtml %}
-{{ govukRadios({
+{{ govukSelect({
   name: "location",
-  classes: "govuk-radios--small",
+  id: "location",
+  label: {
+    text: "Find prison"
+  },
+  classes: "govuk-select--small, js-typeahead-select",
   errorMessage: errorMessages.location,
-  value: filterValues.location,
   fieldset: {
     legend: {
-      text: "Select a prison",
+      text: "Find a prison",
       classes: "govuk-fieldset__legend--s"
     }
   },
-  items: prisonLocationOptions
+  items: prisonLocationOptions,
+  value: filterValues.location
 }) }}
 {% endset %}
 
@@ -167,3 +177,11 @@
     </div>
   </div>
 {% endblock content %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/accessible-autocomplete.min.js" type="text/javascript"></script>
+  <script nonce={{ cspNonce }}>
+    accessibleAutocomplete.enhanceSelectElement({defaultValue: 'Find prison', placeHolder: 'Find prison', showAllValues: true, selectElement: document.querySelector('.js-typeahead-select')});
+  </script>
+{% endblock bodyEnd %}
