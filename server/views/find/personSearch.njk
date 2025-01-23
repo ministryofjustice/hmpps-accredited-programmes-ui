@@ -1,0 +1,49 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: "/"
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      <form method="post" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukInput({
+         id: "prisonNumber",
+          name: "prisonNumber",
+          label: {
+            text: "Enter a prison number to check what programmes are recommended based on the person's risks and needs."
+          },
+          hint: {
+            text: "For example, a prison number is A1234AA"
+          },
+          classes: "govuk-input--width-10",
+          errorMessage: errors.messages.prisonNumber
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}
