@@ -18,5 +18,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(findPaths.buildingChoices.form.show.pattern, buildingChoicesFormController.show())
   post(findPaths.buildingChoices.form.submit.pattern, buildingChoicesFormController.submit())
 
+  get(findPaths.pniFind.personSearch.pattern, controllers.personSearchController.show())
+  post(findPaths.pniFind.personSearch.pattern, controllers.personSearchController.submit())
+
   return router
 }
