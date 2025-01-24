@@ -14,6 +14,8 @@ const deleteCourseOfferingPath = coursePath.path('offerings/:courseOfferingId/de
 const courseOfferingPath = findPathBase.path('offerings/:courseOfferingId')
 const updateCourseOfferingPath = courseOfferingPath.path('update')
 
+const pniFindPath = path('/find-programmes')
+
 export default {
   buildingChoices: {
     form: {
@@ -44,6 +46,10 @@ export default {
       show: updateCourseOfferingPath,
       submit: updateCourseOfferingPath,
     },
+  },
+  pniFind: {
+    personSearch: pniFindPath,
+    recommendedPathway: pniFindPath.path('recommended-pathway'),
   },
   show: coursePath,
 }

@@ -567,6 +567,14 @@ export default abstract class Page {
     cy.get(`.govuk-textarea[id="${id}"]`).should('exist')
   }
 
+  shouldContainTextInput(id: string, label: string): void {
+    cy.get(`.govuk-label[for="${id}"]`).then(labelElement => {
+      const { actual, expected } = Helpers.parseHtml(labelElement, label)
+      expect(actual).to.equal(expected)
+    })
+    cy.get(`.govuk-input[id="${id}"]`).should('exist')
+  }
+
   shouldContainTimelineItems(items: Array<MojTimelineItem>, element: JQuery<HTMLElement>): void {
     // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
     const mojFilters = require('@ministryofjustice/frontend/moj/filters/all')()

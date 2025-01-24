@@ -3,7 +3,7 @@
 import type { Request as ConnectFlashRequest } from '@types/connect-flash'
 
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
-import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
+import type { BuildingChoicesSearchForm, PniFindAndReferData } from '@accredited-programmes/ui'
 import type { UserDetails } from '@accredited-programmes/users'
 
 declare module 'express-session' {
@@ -11,6 +11,7 @@ declare module 'express-session' {
   interface SessionData {
     buildingChoicesFormData: BuildingChoicesSearchForm
     nowInMinutes: number
+    pniFindAndReferData: PniFindAndReferData
     recentCaseListPath: string
     referralStatusUpdateData: ReferralStatusUpdateSessionData
     returnTo: string

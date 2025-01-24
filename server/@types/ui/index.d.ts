@@ -19,6 +19,7 @@ import type {
   GovukFrontendTag,
 } from '@govuk-frontend'
 import type { OffenceDto, OffenceHistoryDetail } from '@prison-api'
+import type { Prisoner } from '@prisoner-search'
 
 type GovukFrontendSummaryListCardActionsItemWithText = GovukFrontendSummaryListCardActionsItem & { text: string }
 
@@ -231,6 +232,10 @@ interface BuildingChoicesSearchForm {
   isInAWomensPrison: string
 }
 
+interface PniFindAndReferData {
+  prisonNumber: Prisoner['prisonerNumber']
+}
+
 export type {
   BuildingChoicesSearchForm,
   CaseListColumnHeader,
@@ -251,6 +256,7 @@ export type {
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
   OspBox,
+  PniFindAndReferData,
   QueryParam,
   ReferralSharedPageData,
   ReferralStatusHistoryPresenter,
