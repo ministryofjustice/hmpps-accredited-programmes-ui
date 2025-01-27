@@ -39,6 +39,8 @@
   }
 
   &__heading {
+    @extend %govuk-heading-s;
+
     margin-top: 0;
     margin-bottom: govuk-spacing(1);
     text-transform: uppercase;
