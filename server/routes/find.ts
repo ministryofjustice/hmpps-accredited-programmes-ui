@@ -21,5 +21,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(findPaths.pniFind.personSearch.pattern, controllers.personSearchController.show())
   post(findPaths.pniFind.personSearch.pattern, controllers.personSearchController.submit())
 
+  get(findPaths.pniFind.recommendedPathway.pattern, controllers.recommendedPathwayController.show())
+
   return router
 }

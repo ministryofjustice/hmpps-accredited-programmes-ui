@@ -233,7 +233,7 @@ interface BuildingChoicesSearchForm {
 }
 
 interface PniFindAndReferData {
-  prisonNumber: Prisoner['prisonerNumber']
+  prisonNumber?: Prisoner['prisonerNumber']
 }
 
 export type {

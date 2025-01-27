@@ -1,0 +1,118 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: hrefs.back
+  }) }}
+{% endblock backLink %}
+
+{% set detailsHtml %}
+<p>The recommended pathway is based on a combination of:</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>
+    <a href="{{ riskScoresHref }}">risk scores</a>{{ ' – check whether any relevant risk scores are missing' if missingInformation }}
+  </li>
+  <li>the programme needs identifier (PNI), which uses the following scores</li>
+</ul>
+
+{{ govukSummaryList({
+  card: {
+    title: {
+      text: "Sex"
+    }
+  },
+  rows: sexSummaryListRows,
+  attributes: {
+    "data-testid": "sex-summary-list"
+  }
+}) }}
+
+{{ govukSummaryList({
+  card: {
+    title: {
+      text: "Thinking"
+    }
+  },
+  rows: thinkingSummaryListRows,
+  attributes: {
+    "data-testid": "thinking-summary-list"
+  }
+}) }}
+
+{{ govukSummaryList({
+  card: {
+    title: {
+      text: "Relationships"
+    }
+  },
+  rows: relationshipsSummaryListRows,
+  attributes: {
+    "data-testid": "relationships-summary-list"
+  }
+}) }}
+
+{{ govukSummaryList({
+  card: {
+    title: {
+      text: "Self-management"
+    }
+  },
+  rows: selfManagementSummaryListRows,
+  attributes: {
+    "data-testid": "self-management-summary-list"
+  }
+}) }}
+{% endset %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      <p>This is the recommended Accredited Programme pathway. It is based on the person's risks and needs.</p>
+
+      <div class="govuk-!-margin-bottom-6">
+        {% include "../partials/pathway.njk" %}
+      </div>
+
+      {% if hasData %}
+        {{ govukDetails({
+          attributes: {
+            "data-testid": "pni-details"
+          },
+          summaryText: "What information is missing" if missingInformation else "How is this calculated?",
+          html: detailsHtml
+        }) }}
+      {% endif %}
+
+      {% if not hasData or notEligible %}
+        <h2 class="govuk-heading-m" data-testid="still-make-referral-heading">If you still want to make a referral</h2>
+
+        <p class="govuk-body" data-testid="still-make-referral-text">{{ "If you still think the person should be referred to an Accredited Programme" if notEligible else "If you need to make a referral before you can update the risk and need scores" }}, you can view the list of programmes and request an override. You will need to give a reason for this before you submit the referral.</p>
+      {% endif %}
+
+      <div class="govuk-button-group">
+        {% if hasData and not notEligible and not missingInformation %}
+          {{ govukButton({
+            text: "Select a programme",
+            href: hrefs.programmes
+          }) }}
+        {% else %}
+          {{ govukButton({
+            text: "See all programmes",
+            href: hrefs.programmes,
+            classes: "govuk-button--secondary"
+          }) }}
+
+          <a class="govuk-link" href="{{ hrefs.back }}">Cancel</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

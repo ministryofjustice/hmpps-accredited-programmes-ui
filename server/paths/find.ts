@@ -50,6 +50,7 @@ export default {
   pniFind: {
     personSearch: pniFindPath,
     recommendedPathway: pniFindPath.path('recommended-pathway'),
+    recommenedProgrammes: pniFindPath.path('recommended-programmes'),
   },
   show: coursePath,
 }
