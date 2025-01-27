@@ -11,7 +11,15 @@ import type {
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
-import type { Attitude, Behaviour, Lifestyle, Psychiatric, Referral, Relationships } from '@accredited-programmes-api'
+import type {
+  Attitude,
+  Behaviour,
+  Lifestyle,
+  PniScore,
+  Psychiatric,
+  Referral,
+  Relationships,
+} from '@accredited-programmes-api'
 
 export default {
   stubAssessmentDateInfo: (args: {
@@ -126,6 +134,19 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.offenceDetail,
+        status: 200,
+      },
+    }),
+
+  stubPni: (args: { pniScore: PniScore; prisonNumber: Referral['prisonNumber'] }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: apiPaths.pni.show({ prisonNumber: args.prisonNumber }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.pniScore,
         status: 200,
       },
     }),
