@@ -7,6 +7,7 @@ import BuildingChoicesFormController from './buildingChoicesFormController'
 import CourseOfferingsController from './courseOfferingsController'
 import CoursesController from './coursesController'
 import PersonSearchController from './personSearchController'
+import RecommendedPathwayController from './recommendedPathwayController'
 import UpdateCourseController from './updateCourseController'
 import UpdateCourseOfferingController from './updateCourseOfferingController'
 import type { Services } from '../../services'
@@ -22,6 +23,7 @@ const controllers = (services: Services) => {
   const coursesController = new CoursesController(services.courseService, services.organisationService)
   const courseOfferingsController = new CourseOfferingsController(services.courseService, services.organisationService)
   const personSearchController = new PersonSearchController(services.personService)
+  const recommendedPathwayController = new RecommendedPathwayController(services.personService, services.pniService)
   const updateCourseController = new UpdateCourseController(services.courseService)
   const updateCourseOfferingController = new UpdateCourseOfferingController(
     services.courseService,
@@ -36,6 +38,7 @@ const controllers = (services: Services) => {
     courseOfferingsController,
     coursesController,
     personSearchController,
+    recommendedPathwayController,
     updateCourseController,
     updateCourseOfferingController,
   }
