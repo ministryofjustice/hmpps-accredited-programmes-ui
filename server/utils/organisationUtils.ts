@@ -41,6 +41,21 @@ export default class OrganisationUtils {
     })
   }
 
+  static organisationSelectItemsForPrisonFilter(
+    organisations: Array<EnabledOrganisation>,
+  ): Array<GovukFrontendSelectItem> {
+    const filteredItems: Array<GovukFrontendSelectItem> = organisations
+      .filter(({ code, description }) => code && description)
+      .sort((a, b) => a.description!.localeCompare(b.description!))
+      .map(({ description, code }) => ({
+        text: description!,
+        value: code!,
+      }))
+
+    filteredItems.unshift({ text: '', value: '' })
+    return filteredItems
+  }
+
   static organisationTableRows(organisations: Array<OrganisationWithOfferingId>): Array<GovukFrontendTableRow> {
     return organisations.map(organisation => {
       const offeringPath = findPaths.offerings.show({

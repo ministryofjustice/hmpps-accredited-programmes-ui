@@ -61,6 +61,36 @@ describe('OrganisationUtils', () => {
     })
   })
 
+  describe('organisationSelectItemsForPrisonFilter', () => {
+    it('returns an array of `GovUkFrontendSelectItem` objects from an array of prisons, sorted by `prisonName`', () => {
+      const enabledOrganisations: Array<EnabledOrganisation> = [
+        { code: 'B', description: 'B Prison' },
+        { code: 'A', description: 'A Prison' },
+      ]
+
+      expect(OrganisationUtils.organisationSelectItemsForPrisonFilter(enabledOrganisations)).toEqual([
+        { text: '', value: '' },
+        { text: 'A Prison', value: 'A' },
+        { text: 'B Prison', value: 'B' },
+      ])
+    })
+
+    describe('when a organisation has an `undefined` code or description', () => {
+      it('filters out the organisation from the returned array', () => {
+        const enabledOrganisations: Array<EnabledOrganisation> = [
+          { code: 'B', description: 'B Prison' },
+          { code: undefined, description: 'A Prison' },
+          { code: 'A', description: undefined },
+        ]
+
+        expect(OrganisationUtils.organisationSelectItemsForPrisonFilter(enabledOrganisations)).toEqual([
+          { text: '', value: '' },
+          { text: 'B Prison', value: 'B' },
+        ])
+      })
+    })
+  })
+
   describe('organisationSelectItems', () => {
     it('returns an array of `GovukFrontendSelectItem` objects from an array of prisons', () => {
       const prisons = [

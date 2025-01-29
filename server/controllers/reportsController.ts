@@ -81,7 +81,7 @@ export default class ReportsController {
         filterFormAction: reportsPaths.filter({}),
         filterValues: { dateFrom, dateTo, location, period: periodQuery, region },
         pageHeading: 'Accredited Programmes data',
-        prisonLocationOptions: OrganisationUtils.organisationRadioItems(organisations),
+        prisonLocationOptions: OrganisationUtils.organisationSelectItemsForPrisonFilter(organisations),
         reportDataBlocks: reports.map(report => StatisticsReportUtils.reportContentDataBlock(report)),
         subHeading,
       })
