@@ -36,8 +36,13 @@ export default class CourseClient {
     })) as CourseOffering
   }
 
-  async all(): Promise<Array<Course>> {
-    return (await this.restClient.get({ path: apiPaths.courses.index({}) })) as Array<Course>
+  async all(query?: { intensity?: 'HIGH' | 'MODERATE' }): Promise<Array<Course>> {
+    return (await this.restClient.get({
+      path: apiPaths.courses.index({}),
+      query: {
+        ...(query?.intensity && { intensity: query.intensity }),
+      },
+    })) as Array<Course>
   }
 
   async createCourse(courseCreateRequest: CourseCreateRequest): Promise<Course> {

@@ -208,6 +208,20 @@ describe('CourseService', () => {
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.all).toHaveBeenCalled()
     })
+
+    describe('when there are query parameters', () => {
+      it('returns a list of courses filtered by the query parameters', async () => {
+        const courses = courseFactory.buildList(3)
+        courseClient.all.mockResolvedValue(courses)
+
+        const result = await service.getCourses(username, { intensity: 'HIGH' })
+
+        expect(result).toEqual(courses)
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(courseClient.all).toHaveBeenCalledWith({ intensity: 'HIGH' })
+      })
+    })
   })
 
   describe('getCourse', () => {
