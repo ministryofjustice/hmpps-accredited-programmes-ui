@@ -58,7 +58,7 @@ export default class RecommendedPathwayController {
       return res.render('find/recommendedPathway', {
         hrefs: {
           back: findPaths.pniFind.personSearch.pattern,
-          programmes: findPaths.pniFind.recommenedProgrammes.pattern,
+          programmes: findPaths.pniFind.recommendedProgrammes.pattern,
         },
         notEligible: pni?.programmePathway === notEligiblePathway,
         pageHeading: `Recommended programme pathway for ${person.name}`,

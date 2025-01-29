@@ -86,7 +86,7 @@ describe('RecommendedPathwayController', () => {
         hasData: true,
         hrefs: {
           back: findPaths.pniFind.personSearch.pattern,
-          programmes: findPaths.pniFind.recommenedProgrammes.pattern,
+          programmes: findPaths.pniFind.recommendedProgrammes.pattern,
         },
         missingInformation: false,
         notEligible: false,
@@ -114,7 +114,7 @@ describe('RecommendedPathwayController', () => {
           hasData: true,
           hrefs: {
             back: findPaths.pniFind.personSearch.pattern,
-            programmes: findPaths.pniFind.recommenedProgrammes.pattern,
+            programmes: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           missingInformation: false,
           notEligible: true,
@@ -143,7 +143,7 @@ describe('RecommendedPathwayController', () => {
           hasData: true,
           hrefs: {
             back: findPaths.pniFind.personSearch.pattern,
-            programmes: findPaths.pniFind.recommenedProgrammes.pattern,
+            programmes: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           missingInformation: true,
           notEligible: false,
@@ -168,7 +168,7 @@ describe('RecommendedPathwayController', () => {
           hasData: false,
           hrefs: {
             back: findPaths.pniFind.personSearch.pattern,
-            programmes: findPaths.pniFind.recommenedProgrammes.pattern,
+            programmes: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           notEligible: false,
           pageHeading: `Recommended programme pathway for ${person.name}`,
@@ -190,7 +190,7 @@ describe('RecommendedPathwayController', () => {
           hasData: false,
           hrefs: {
             back: findPaths.pniFind.personSearch.pattern,
-            programmes: findPaths.pniFind.recommenedProgrammes.pattern,
+            programmes: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           notEligible: false,
           pageHeading: `Recommended programme pathway for ${person.name}`,
