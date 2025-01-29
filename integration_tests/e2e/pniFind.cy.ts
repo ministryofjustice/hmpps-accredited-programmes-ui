@@ -86,7 +86,7 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainPniDetails('How is this calculated?')
         recommendedPathwayPage.shouldContainButtonLink(
           'Select a programme',
-          findPaths.pniFind.recommenedProgrammes.pattern,
+          findPaths.pniFind.recommendedProgrammes.pattern,
         )
       })
 
@@ -109,7 +109,7 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainPniDetails('How is this calculated?')
         recommendedPathwayPage.shouldContainButtonLink(
           'Select a programme',
-          findPaths.pniFind.recommenedProgrammes.pattern,
+          findPaths.pniFind.recommendedProgrammes.pattern,
         )
       })
 
@@ -134,7 +134,7 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainNotEligibleStillMakeReferralText()
         recommendedPathwayPage.shouldContainButtonLink(
           'See all programmes',
-          findPaths.pniFind.recommenedProgrammes.pattern,
+          findPaths.pniFind.recommendedProgrammes.pattern,
         )
         recommendedPathwayPage.shouldContainLink('Cancel', findPaths.pniFind.personSearch.pattern)
       })
@@ -158,7 +158,7 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainPniDetails('What information is missing')
         recommendedPathwayPage.shouldContainButtonLink(
           'See all programmes',
-          findPaths.pniFind.recommenedProgrammes.pattern,
+          findPaths.pniFind.recommendedProgrammes.pattern,
         )
         recommendedPathwayPage.shouldContainLink('Cancel', findPaths.pniFind.personSearch.pattern)
       })
@@ -179,7 +179,7 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainAllInformationMissingStillMakeReferralText()
         recommendedPathwayPage.shouldContainButtonLink(
           'See all programmes',
-          findPaths.pniFind.recommenedProgrammes.pattern,
+          findPaths.pniFind.recommendedProgrammes.pattern,
         )
         recommendedPathwayPage.shouldContainLink('Cancel', findPaths.pniFind.personSearch.pattern)
       })
