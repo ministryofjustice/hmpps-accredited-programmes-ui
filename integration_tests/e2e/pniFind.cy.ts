@@ -1,6 +1,6 @@
 import { findPaths } from '../../server/paths'
-import { pniScoreFactory, prisonerFactory } from '../../server/testutils/factories'
-import { PersonSearchPage, RecommendedPathwayPage } from '../pages/find'
+import { courseFactory, pniScoreFactory, prisonerFactory } from '../../server/testutils/factories'
+import { PersonSearchPage, RecommendedPathwayPage, RecommendedProgrammePage } from '../pages/find'
 import Page from '../pages/page'
 
 context('Find programmes based on PNI Pathway', () => {
@@ -63,13 +63,17 @@ context('Find programmes based on PNI Pathway', () => {
         prisonerNumber: prisonNumber,
       })
 
+      const courses = courseFactory.buildList(3)
+
       beforeEach(() => {
         cy.task('stubPrisoner', prisoner)
+        cy.task('stubCourses', courses)
       })
 
       it('shows the correct content for a `HIGH_INTENSITY_BC` pathway', () => {
+        const programmePathway = 'HIGH_INTENSITY_BC'
         const pniScore = pniScoreFactory.build({
-          programmePathway: 'HIGH_INTENSITY_BC',
+          programmePathway,
         })
 
         cy.task('stubPni', { pniScore, prisonNumber })
@@ -84,15 +88,18 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainIntroText()
         recommendedPathwayPage.shouldContainPathwayContent(pniScore.programmePathway)
         recommendedPathwayPage.shouldContainPniDetails('How is this calculated?')
-        recommendedPathwayPage.shouldContainButtonLink(
-          'Select a programme',
-          findPaths.pniFind.recommendedProgrammes.pattern,
-        )
+        recommendedPathwayPage
+          .shouldContainButtonLink('Select a programme', findPaths.pniFind.recommendedProgrammes.pattern)
+          .click()
+
+        const recommendedProgrammePage = Page.verifyOnPage(RecommendedProgrammePage, { prisoner, programmePathway })
+        recommendedProgrammePage.shouldContainHighIntensityContent()
       })
 
       it('shows the correct content for a `MODERATE_INTENSITY_BC` pathway', () => {
+        const programmePathway = 'MODERATE_INTENSITY_BC'
         const pniScore = pniScoreFactory.build({
-          programmePathway: 'MODERATE_INTENSITY_BC',
+          programmePathway,
         })
 
         cy.task('stubPni', { pniScore, prisonNumber })
@@ -107,15 +114,18 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainIntroText()
         recommendedPathwayPage.shouldContainPathwayContent(pniScore.programmePathway)
         recommendedPathwayPage.shouldContainPniDetails('How is this calculated?')
-        recommendedPathwayPage.shouldContainButtonLink(
-          'Select a programme',
-          findPaths.pniFind.recommendedProgrammes.pattern,
-        )
+        recommendedPathwayPage
+          .shouldContainButtonLink('Select a programme', findPaths.pniFind.recommendedProgrammes.pattern)
+          .click()
+
+        const recommendedProgrammePage = Page.verifyOnPage(RecommendedProgrammePage, { prisoner, programmePathway })
+        recommendedProgrammePage.shouldContainModerateIntensityContent()
       })
 
       it('shows the correct content for an "ALTERNATIVE_PATHWAY" pathway', () => {
+        const programmePathway = 'ALTERNATIVE_PATHWAY'
         const pniScore = pniScoreFactory.build({
-          programmePathway: 'ALTERNATIVE_PATHWAY',
+          programmePathway,
         })
 
         cy.task('stubPni', { pniScore, prisonNumber })
@@ -132,16 +142,19 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainPniDetails('How is this calculated?')
         recommendedPathwayPage.shouldContainStillMakeReferralHeading()
         recommendedPathwayPage.shouldContainNotEligibleStillMakeReferralText()
-        recommendedPathwayPage.shouldContainButtonLink(
-          'See all programmes',
-          findPaths.pniFind.recommendedProgrammes.pattern,
-        )
         recommendedPathwayPage.shouldContainLink('Cancel', findPaths.pniFind.personSearch.pattern)
+        recommendedPathwayPage
+          .shouldContainButtonLink('See all programmes', findPaths.pniFind.recommendedProgrammes.pattern)
+          .click()
+
+        const recommendedProgrammePage = Page.verifyOnPage(RecommendedProgrammePage, { prisoner, programmePathway })
+        recommendedProgrammePage.shouldContainAlternativePathwayContent()
       })
 
       it('shows the correct content for a "MISSING_INFORMATION" pathway', () => {
+        const programmePathway = 'MISSING_INFORMATION'
         const pniScore = pniScoreFactory.build({
-          programmePathway: 'MISSING_INFORMATION',
+          programmePathway,
         })
 
         cy.task('stubPni', { pniScore, prisonNumber })
@@ -156,11 +169,13 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainIntroText()
         recommendedPathwayPage.shouldContainPathwayContent(pniScore.programmePathway)
         recommendedPathwayPage.shouldContainPniDetails('What information is missing')
-        recommendedPathwayPage.shouldContainButtonLink(
-          'See all programmes',
-          findPaths.pniFind.recommendedProgrammes.pattern,
-        )
         recommendedPathwayPage.shouldContainLink('Cancel', findPaths.pniFind.personSearch.pattern)
+        recommendedPathwayPage
+          .shouldContainButtonLink('See all programmes', findPaths.pniFind.recommendedProgrammes.pattern)
+          .click()
+
+        const recommendedProgrammePage = Page.verifyOnPage(RecommendedProgrammePage, { prisoner, programmePathway })
+        recommendedProgrammePage.shouldContainMissingInformationContent()
       })
 
       it('shows the correct content when there is no programme pathway', () => {
@@ -177,11 +192,16 @@ context('Find programmes based on PNI Pathway', () => {
         recommendedPathwayPage.shouldContainPathwayContent('MISSING_INFORMATION')
         recommendedPathwayPage.shouldContainStillMakeReferralHeading()
         recommendedPathwayPage.shouldContainAllInformationMissingStillMakeReferralText()
-        recommendedPathwayPage.shouldContainButtonLink(
-          'See all programmes',
-          findPaths.pniFind.recommendedProgrammes.pattern,
-        )
         recommendedPathwayPage.shouldContainLink('Cancel', findPaths.pniFind.personSearch.pattern)
+        recommendedPathwayPage
+          .shouldContainButtonLink('See all programmes', findPaths.pniFind.recommendedProgrammes.pattern)
+          .click()
+
+        const recommendedProgrammePage = Page.verifyOnPage(RecommendedProgrammePage, {
+          prisoner,
+          programmePathway: 'UNKNOWN',
+        })
+        recommendedProgrammePage.shouldContainNoPniContent()
       })
     })
   })
