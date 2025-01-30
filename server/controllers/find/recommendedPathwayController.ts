@@ -55,6 +55,11 @@ export default class RecommendedPathwayController {
         }
       }
 
+      req.session.pniFindAndReferData = {
+        prisonNumber,
+        programmePathway: pni?.programmePathway || 'UNKNOWN',
+      }
+
       return res.render('find/recommendedPathway', {
         hrefs: {
           back: findPaths.pniFind.personSearch.pattern,
