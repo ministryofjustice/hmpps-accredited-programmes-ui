@@ -81,6 +81,10 @@ describe('RecommendedPathwayController', () => {
 
       await controller.show()(request, response, next)
 
+      expect(request.session.pniFindAndReferData).toEqual({
+        prisonNumber,
+        programmePathway: 'HIGH_INTENSITY_BC',
+      })
       expect(PniUtils.pathwayContent).toHaveBeenCalledWith(person.name, pni.programmePathway)
       expect(response.render).toHaveBeenCalledWith('find/recommendedPathway', {
         hasData: true,
@@ -109,6 +113,10 @@ describe('RecommendedPathwayController', () => {
 
         await controller.show()(request, response, next)
 
+        expect(request.session.pniFindAndReferData).toEqual({
+          prisonNumber,
+          programmePathway: 'ALTERNATIVE_PATHWAY',
+        })
         expect(PniUtils.pathwayContent).toHaveBeenCalledWith(person.name, pni.programmePathway)
         expect(response.render).toHaveBeenCalledWith('find/recommendedPathway', {
           hasData: true,
@@ -138,6 +146,10 @@ describe('RecommendedPathwayController', () => {
 
         await controller.show()(request, response, next)
 
+        expect(request.session.pniFindAndReferData).toEqual({
+          prisonNumber,
+          programmePathway: 'MISSING_INFORMATION',
+        })
         expect(PniUtils.pathwayContent).toHaveBeenCalledWith(person.name, 'MISSING_INFORMATION')
         expect(response.render).toHaveBeenCalledWith('find/recommendedPathway', {
           hasData: true,
@@ -163,6 +175,10 @@ describe('RecommendedPathwayController', () => {
 
         await controller.show()(request, response, next)
 
+        expect(request.session.pniFindAndReferData).toEqual({
+          prisonNumber,
+          programmePathway: 'UNKNOWN',
+        })
         expect(PniUtils.pathwayContent).toHaveBeenCalledWith(person.name, 'MISSING_INFORMATION')
         expect(response.render).toHaveBeenCalledWith('find/recommendedPathway', {
           hasData: false,
@@ -185,6 +201,10 @@ describe('RecommendedPathwayController', () => {
 
         await controller.show()(request, response, next)
 
+        expect(request.session.pniFindAndReferData).toEqual({
+          prisonNumber,
+          programmePathway: 'UNKNOWN',
+        })
         expect(PniUtils.pathwayContent).toHaveBeenCalledWith(person.name, undefined)
         expect(response.render).toHaveBeenCalledWith('find/recommendedPathway', {
           hasData: false,

@@ -3,6 +3,7 @@ import type {
   Course,
   CourseOffering,
   CourseParticipation,
+  PniScore,
   Referral,
   ReferralStatusHistory,
 } from '@accredited-programmes-api'
@@ -234,6 +235,7 @@ interface BuildingChoicesSearchForm {
 
 interface PniFindAndReferData {
   prisonNumber?: Prisoner['prisonerNumber']
+  programmePathway?: PniScore['programmePathway']
 }
 
 export type {

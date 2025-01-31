@@ -25,8 +25,7 @@ export default class RecommendedPathwayPage extends Page {
   }
 
   shouldContainIntroText() {
-    cy.get('.govuk-body').should(
-      'contain.text',
+    this.shouldContainText(
       "This is the recommended Accredited Programme pathway. It is based on the person's risks and needs.",
     )
   }
