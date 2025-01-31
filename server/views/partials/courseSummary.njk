@@ -1,0 +1,26 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% from "./audienceTag.njk" import audienceTag %}
+
+{% macro courseSummary(course, isLastInList) %}
+  <div role="listitem">
+    <h2 class="govuk-heading-m">
+      <a class="govuk-link" href="{{ course.href }}">{{ course.displayName }}</a>
+    </h2>
+
+    {% if "building choices" not in course.displayName | lower %}
+      {{ audienceTag(course.audienceTag) }}
+    {% endif %}
+
+    <p class="govuk-body">{{ course.description }}</p>
+
+    {{ govukSummaryList({
+      classes: 'govuk-summary-list--no-border',
+      rows: course.prerequisiteSummaryListRows
+    }) }}
+
+    {% if not isLastInList %}
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
+    {% endif %}
+  </div>
+{% endmacro %}

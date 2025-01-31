@@ -23,5 +23,7 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   get(findPaths.pniFind.recommendedPathway.pattern, controllers.recommendedPathwayController.show())
 
+  get(findPaths.pniFind.recommendedProgrammes.pattern, controllers.recommendedProgrammesController.show())
+
   return router
 }

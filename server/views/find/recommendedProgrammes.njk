@@ -1,0 +1,42 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% from "../partials/courseSummary.njk" import courseSummary %}
+
+{% extends "../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: hrefs.back
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-margin-bottom-6">
+        <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+        {% if warningText %}
+          {{ govukWarningText({
+            text: warningText,
+            iconFallbackText: "Warning"
+          }) }}
+        {% endif %}
+
+        {% for text in decisionText %}
+          <p class="govuk-body">{{ text }}</p>
+        {% endfor %}
+      </div>
+
+      <div role="list">
+        {% for course in courses %}
+          {% set isLastInList = loop.index >= courses.length %}
+          {{ courseSummary(course, isLastInList) }}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}
