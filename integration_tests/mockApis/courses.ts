@@ -50,7 +50,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.index({}),
+        urlPath: apiPaths.courses.index({}),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
