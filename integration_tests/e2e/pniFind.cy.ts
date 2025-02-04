@@ -1,6 +1,11 @@
 import { findPaths } from '../../server/paths'
 import { courseFactory, pniScoreFactory, prisonerFactory } from '../../server/testutils/factories'
-import { PersonSearchPage, RecommendedPathwayPage, RecommendedProgrammePage } from '../pages/find'
+import {
+  NotRecommendedProgrammePage,
+  PersonSearchPage,
+  RecommendedPathwayPage,
+  RecommendedProgrammePage,
+} from '../pages/find'
 import Page from '../pages/page'
 
 context('Find programmes based on PNI Pathway', () => {
@@ -94,6 +99,13 @@ context('Find programmes based on PNI Pathway', () => {
 
         const recommendedProgrammePage = Page.verifyOnPage(RecommendedProgrammePage, { prisoner, programmePathway })
         recommendedProgrammePage.shouldContainHighIntensityContent()
+        recommendedProgrammePage.shouldContainOverrideButton().click()
+
+        const notRecommendedProgrammePage = Page.verifyOnPage(NotRecommendedProgrammePage, {
+          prisoner,
+          programmePathway,
+        })
+        notRecommendedProgrammePage.shouldContainHighIntensityContent()
       })
 
       it('shows the correct content for a `MODERATE_INTENSITY_BC` pathway', () => {
@@ -120,6 +132,13 @@ context('Find programmes based on PNI Pathway', () => {
 
         const recommendedProgrammePage = Page.verifyOnPage(RecommendedProgrammePage, { prisoner, programmePathway })
         recommendedProgrammePage.shouldContainModerateIntensityContent()
+        recommendedProgrammePage.shouldContainOverrideButton().click()
+
+        const notRecommendedProgrammePage = Page.verifyOnPage(NotRecommendedProgrammePage, {
+          prisoner,
+          programmePathway,
+        })
+        notRecommendedProgrammePage.shouldContainModerateIntensityContent()
       })
 
       it('shows the correct content for an "ALTERNATIVE_PATHWAY" pathway', () => {
