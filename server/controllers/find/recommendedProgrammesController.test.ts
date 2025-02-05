@@ -68,38 +68,80 @@ describe('RecommendedProgrammesController', () => {
       jest.clearAllMocks()
     })
 
-    it('should render the recommendedProgrammes template with the correct response locals', async () => {
+    describe('when the `programmePathway` is `HIGH_INTENSITY_BC`', () => {
       const programmePathway = 'HIGH_INTENSITY_BC'
 
-      request.session.pniFindAndReferData = {
-        prisonNumber,
-        programmePathway,
-      }
+      it('should render the recommendedProgrammes template with the correct response locals', async () => {
+        request.session.pniFindAndReferData = {
+          prisonNumber,
+          programmePathway,
+        }
 
-      when(courseService.getCourses).calledWith(username, { intensity: 'HIGH' }).mockResolvedValue(courses)
+        when(courseService.getCourses).calledWith(username, { intensity: 'HIGH' }).mockResolvedValue(courses)
 
-      await controller.show()(request, response, next)
+        await controller.show()(request, response, next)
 
-      expect(request.session.pniFindAndReferData).toEqual({
-        prisonNumber,
-        programmePathway,
+        expect(request.session.pniFindAndReferData).toEqual({
+          prisonNumber,
+          programmePathway,
+        })
+        expect(mockCourseUtils.presentCourse).toHaveBeenCalledTimes(3)
+        expect(response.render).toHaveBeenCalledWith('find/recommendedProgrammes', {
+          canBeOverridden: true,
+          courses: sortedCourses.map(mockCourseUtils.presentCourse),
+          decisionText: ['These programmes are recommended for people with high or very high risks and needs.'],
+          hrefs: {
+            back: findPaths.pniFind.recommendedPathway.pattern,
+            self: findPaths.pniFind.recommendedProgrammes.pattern,
+          },
+          isOverride: false,
+          overrideButtonText: 'See moderate intensity programmes',
+          pageHeading: 'Recommended: high intensity Accredited Programmes',
+          programmePathway,
+        })
       })
-      expect(mockCourseUtils.presentCourse).toHaveBeenCalledTimes(3)
-      expect(response.render).toHaveBeenCalledWith('find/recommendedProgrammes', {
-        courses: sortedCourses.map(mockCourseUtils.presentCourse),
-        decisionText: ['These programmes are recommended for people with high or very high risks and needs.'],
-        hrefs: {
-          back: findPaths.pniFind.recommendedPathway.pattern,
-        },
-        pageHeading: 'Recommended: high intensity Accredited Programmes',
-        programmePathway,
+
+      describe('and `override` query param is `true`', () => {
+        it('should render the recommendedProgrammes template with the correct response locals', async () => {
+          request.session.pniFindAndReferData = {
+            prisonNumber,
+            programmePathway,
+          }
+          request.query.override = 'true'
+
+          when(courseService.getCourses).calledWith(username, { intensity: 'MODERATE' }).mockResolvedValue(courses)
+
+          await controller.show()(request, response, next)
+
+          expect(request.session.pniFindAndReferData).toEqual({
+            prisonNumber,
+            programmePathway,
+          })
+          expect(mockCourseUtils.presentCourse).toHaveBeenCalledTimes(3)
+          expect(response.render).toHaveBeenCalledWith('find/recommendedProgrammes', {
+            canBeOverridden: true,
+            courses: sortedCourses.map(mockCourseUtils.presentCourse),
+            decisionText: [
+              `These programmes are not recommended for people with high risks and needs, like ${person.name}`,
+              'You can make a referral anyway and the treatment manager will decide whether an override is appropriate. You will need to give a reason before you submit the referral.',
+            ],
+            hrefs: {
+              back: findPaths.pniFind.recommendedPathway.pattern,
+              self: findPaths.pniFind.recommendedProgrammes.pattern,
+            },
+            isOverride: true,
+            overrideButtonText: 'See moderate intensity programmes',
+            pageHeading: 'Not recommended: moderate intensity Accredited Programmes',
+            programmePathway,
+          })
+        })
       })
     })
 
     describe('when the `programmePathway` is `MODERATE_INTENSITY_BC`', () => {
-      it('should render the recommendedProgrammes template with the correct response locals', async () => {
-        const programmePathway = 'MODERATE_INTENSITY_BC'
+      const programmePathway = 'MODERATE_INTENSITY_BC'
 
+      it('should render the recommendedProgrammes template with the correct response locals', async () => {
         request.session.pniFindAndReferData = {
           prisonNumber,
           programmePathway,
@@ -115,13 +157,53 @@ describe('RecommendedProgrammesController', () => {
         })
         expect(mockCourseUtils.presentCourse).toHaveBeenCalledTimes(3)
         expect(response.render).toHaveBeenCalledWith('find/recommendedProgrammes', {
+          canBeOverridden: true,
           courses: sortedCourses.map(mockCourseUtils.presentCourse),
           decisionText: ['These programmes are recommended for people with medium risks and needs.'],
           hrefs: {
             back: findPaths.pniFind.recommendedPathway.pattern,
+            self: findPaths.pniFind.recommendedProgrammes.pattern,
           },
+          isOverride: false,
+          overrideButtonText: 'See high intensity programmes',
           pageHeading: 'Recommended: moderate intensity Accredited Programmes',
           programmePathway,
+        })
+      })
+
+      describe('and `override` query param is `true`', () => {
+        it('should render the recommendedProgrammes template with the correct response locals', async () => {
+          request.session.pniFindAndReferData = {
+            prisonNumber,
+            programmePathway,
+          }
+          request.query.override = 'true'
+
+          when(courseService.getCourses).calledWith(username, { intensity: 'HIGH' }).mockResolvedValue(courses)
+
+          await controller.show()(request, response, next)
+
+          expect(request.session.pniFindAndReferData).toEqual({
+            prisonNumber,
+            programmePathway,
+          })
+          expect(mockCourseUtils.presentCourse).toHaveBeenCalledTimes(3)
+          expect(response.render).toHaveBeenCalledWith('find/recommendedProgrammes', {
+            canBeOverridden: true,
+            courses: sortedCourses.map(mockCourseUtils.presentCourse),
+            decisionText: [
+              `These programmes are not recommended for people with medium risks and needs, like ${person.name}`,
+              'You can make a referral anyway and the treatment manager will decide whether an override is appropriate. You will need to give a reason before you submit the referral.',
+            ],
+            hrefs: {
+              back: findPaths.pniFind.recommendedPathway.pattern,
+              self: findPaths.pniFind.recommendedProgrammes.pattern,
+            },
+            isOverride: true,
+            overrideButtonText: 'See high intensity programmes',
+            pageHeading: 'Not recommended: high intensity Accredited Programmes',
+            programmePathway,
+          })
         })
       })
     })
@@ -152,6 +234,7 @@ describe('RecommendedProgrammesController', () => {
           ],
           hrefs: {
             back: findPaths.pniFind.recommendedPathway.pattern,
+            self: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           pageHeading: 'Accredited Programmes: not recommended',
           programmePathway,
@@ -185,6 +268,7 @@ describe('RecommendedProgrammesController', () => {
           ],
           hrefs: {
             back: findPaths.pniFind.recommendedPathway.pattern,
+            self: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           pageHeading: 'Accredited Programmes',
           programmePathway,
@@ -219,6 +303,7 @@ describe('RecommendedProgrammesController', () => {
           ],
           hrefs: {
             back: findPaths.pniFind.recommendedPathway.pattern,
+            self: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           pageHeading: 'Accredited Programmes',
           programmePathway,

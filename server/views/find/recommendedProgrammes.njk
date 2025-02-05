@@ -1,10 +1,24 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% from "../partials/courseSummary.njk" import courseSummary %}
 
 {% extends "../partials/layout.njk" %}
+
+{% set overrideDetailsHtml %}
+<p data-testid="override-text">If you think the person needs a programme not listed here, you can see non-recommended programmes and request an override. You will need to give a reason for this before you submit the referral.</p>
+
+{{ govukButton({
+  text: overrideButtonText,
+  href: '?override=true',
+  classes: "govuk-button--secondary",
+  attributes: {
+    "data-testid": "override-button"
+  }
+}) }}
+{% endset %}
 
 {% block backLink %}
   {{ govukBackLink({
@@ -29,6 +43,28 @@
         {% for text in decisionText %}
           <p class="govuk-body">{{ text }}</p>
         {% endfor %}
+
+        {% if canBeOverridden %}
+          {% if isOverride %}
+            {{ govukButton({
+              attributes: {
+                "data-testid": "recommended-programmes-button"
+              },
+              text: "See recommended programmes",
+              href: hrefs.self,
+              classes: "govuk-button--secondary govuk-!-margin-bottom-3"
+            }) }}
+          {% else %}
+            {{ govukDetails({
+              attributes: {
+                "data-testid": "override-details"
+              },
+              summaryText: "I need to refer to a different programme",
+              html: overrideDetailsHtml
+            }) }}
+          {% endif %}
+        {% endif %}
+
       </div>
 
       <div role="list">

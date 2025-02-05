@@ -5,6 +5,8 @@ import type { Prisoner } from '@prisoner-search'
 export default class RecommendedProgrammePage extends Page {
   personName: string
 
+  programmePathway: string
+
   constructor(args: { prisoner: Prisoner; programmePathway: PniScore['programmePathway'] }) {
     const { prisoner, programmePathway } = args
     const personName = `${prisoner.firstName} ${prisoner.lastName}`
@@ -20,6 +22,7 @@ export default class RecommendedProgrammePage extends Page {
     })
 
     this.personName = personName
+    this.programmePathway = programmePathway
   }
 
   shouldContainAlternativePathwayContent() {
@@ -29,10 +32,23 @@ export default class RecommendedProgrammePage extends Page {
     this.shouldContainText(
       'You can make a referral anyway and the treatment manager will decide whether an override is appropriate. You will need to give a reason before you submit the referral.',
     )
+    cy.get('[data-testid="override-details"]').should('not.exist')
   }
 
   shouldContainHighIntensityContent() {
     this.shouldContainText('These programmes are recommended for people with high or very high risks and needs.')
+    cy.get('[data-testid="override-details"]')
+      .should('contain.text', 'I need to refer to a different programme')
+      .click()
+    cy.get('[data-testid="override-text"]')
+      .should('be.visible')
+      .should(
+        'have.text',
+        'If you think the person needs a programme not listed here, you can see non-recommended programmes and request an override. You will need to give a reason for this before you submit the referral.',
+      )
+    cy.get('[data-testid="override-button"]')
+      .should('be.visible')
+      .should('contain.text', 'See moderate intensity programmes')
   }
 
   shouldContainMissingInformationContent() {
@@ -43,10 +59,21 @@ export default class RecommendedProgrammePage extends Page {
     this.shouldContainText(
       'You can make a referral anyway and the treatment manager will decide whether an override is appropriate. You will need to give a reason before you submit the referral.',
     )
+    cy.get('[data-testid="override-details"]').should('not.exist')
   }
 
   shouldContainModerateIntensityContent() {
     this.shouldContainText('These programmes are recommended for people with medium risks and needs.')
+    cy.get('[data-testid="override-details"]')
+      .should('contain.text', 'I need to refer to a different programme')
+      .click()
+    cy.get('[data-testid="override-text"]')
+      .should('be.visible')
+      .should(
+        'have.text',
+        'If you think the person needs a programme not listed here, you can see non-recommended programmes and request an override. You will need to give a reason for this before you submit the referral.',
+      )
+    this.shouldContainOverrideButton()
   }
 
   shouldContainNoPniContent() {
@@ -57,5 +84,18 @@ export default class RecommendedProgrammePage extends Page {
     this.shouldContainText(
       'You can make a referral anyway and the treatment manager will decide whether an override is appropriate. You will need to give a reason before you submit the referral.',
     )
+    cy.get('[data-testid="override-details"]').should('not.exist')
+  }
+
+  shouldContainOverrideButton(): Cypress.Chainable<JQuery<HTMLElement>> {
+    return cy
+      .get('[data-testid="override-button"]')
+      .should('be.visible')
+      .should(
+        'contain.text',
+        this.programmePathway === 'HIGH_INTENSITY_BC'
+          ? 'See moderate intensity programmes'
+          : 'See high intensity programmes',
+      )
   }
 }
