@@ -346,7 +346,7 @@ export default abstract class Page {
   shouldContainRisksAndNeedsOasysMessage(): void {
     cy.get('[data-testid="risks-and-needs-oasys-message"]').should(
       'have.text',
-      'Relevant sections from OASys to support the referral. The full Layer 3 assessment is available in OASys. Information is accurate at the time of the referral being submitted.',
+      'Relevant information to support the referral, taken from the latest approved assessment in OASys. The full risk and need assessment is available in OASys.',
     )
   }
 
