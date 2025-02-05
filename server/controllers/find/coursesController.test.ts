@@ -22,13 +22,21 @@ describe('CoursesController', () => {
   let controller: CoursesController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token: userToken } })
+    request = createMock<Request>({
+      session: {
+        pniFindAndReferData: {
+          prisonNumber: 'some-prison-number',
+          programmePathway: 'HIGH_INTENSITY_BC',
+        },
+      },
+      user: { token: userToken },
+    })
     response = createMock<Response>({})
     controller = new CoursesController(courseService, organisationService)
   })
 
   describe('index', () => {
-    it('renders the courses index template with alphabetically-sorted courses', async () => {
+    it('renders the courses index template with alphabetically-sorted courses and reset any pniFindAndReferData', async () => {
       const courseA = courseFactory.build({ name: 'Course A' })
       const courseB = courseFactory.build({ name: 'Course B' })
       const courseC = courseFactory.build({ name: 'Course C' })
@@ -37,9 +45,12 @@ describe('CoursesController', () => {
 
       const sortedCourses = [courseA, courseB, courseC]
 
+      expect(request.session.pniFindAndReferData).toBeDefined()
+
       const requestHandler = controller.index()
       await requestHandler(request, response, next)
 
+      expect(request.session.pniFindAndReferData).toBeUndefined()
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),
         courses: sortedCourses.map(course => CourseUtils.presentCourse(course)),
