@@ -118,10 +118,12 @@ describe('NewReferralsController', () => {
     const courseId = course.id
     const courseOfferingId = referableCourseOffering.id
 
-    it('renders the referral new template', async () => {
+    beforeEach(() => {
       request.params.courseId = courseId
       request.params.courseOfferingId = courseOfferingId
+    })
 
+    it('renders the referral new template', async () => {
       courseService.getCourseByOffering.mockResolvedValue(course)
 
       const emptyErrorsLocal = { list: [], messages: {} }
@@ -140,6 +142,18 @@ describe('NewReferralsController', () => {
       })
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['prisonNumber'])
+    })
+
+    describe('when there is a `prisonNumber` in `pnFindAndReferData`', () => {
+      it('should redirect to the new referral people show path', async () => {
+        const prisonNumber = 'A1234AA'
+        request.session.pniFindAndReferData = { prisonNumber }
+
+        const requestHandler = controller.new()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.people.show({ courseOfferingId, prisonNumber }))
+      })
     })
   })
 

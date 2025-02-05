@@ -149,10 +149,15 @@ export default class NewReferralsController {
       TypeUtils.assertHasUser(req)
 
       const { courseId, courseOfferingId } = req.params
+      const pniFindPrisonNumber = req.session.pniFindAndReferData?.prisonNumber
+
+      if (pniFindPrisonNumber) {
+        return res.redirect(referPaths.new.people.show({ courseOfferingId, prisonNumber: pniFindPrisonNumber }))
+      }
 
       FormUtils.setFieldErrors(req, res, ['prisonNumber'])
 
-      res.render('referrals/new/new', {
+      return res.render('referrals/new/new', {
         courseId,
         courseOfferingId,
         pageHeading: "Enter the person's identifier",

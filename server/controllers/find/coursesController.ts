@@ -15,6 +15,8 @@ export default class CoursesController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      delete req.session.pniFindAndReferData
+
       const courses = await this.courseService.getCourses(req.user.token)
       const coursesToDisplay = courses
         .filter(course => course.displayOnProgrammeDirectory)
