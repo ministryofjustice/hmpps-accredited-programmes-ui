@@ -3,6 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import CourseOfferingsController from './courseOfferingsController'
+import { findPaths, referPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
@@ -58,6 +59,13 @@ describe('CoursesOfferingsController', () => {
         courseOffering,
         deleteOfferingAction: `/find/programmes/${course.id}/offerings/${courseOffering.id}/delete?_method=DELETE`,
         hideTitleServiceName: true,
+        hrefs: {
+          back: findPaths.show({ courseId: course.id }),
+          makeReferral: referPaths.new.start({ courseOfferingId: courseOffering.id }),
+          updateOffering: findPaths.offerings.update.show({
+            courseOfferingId: courseOffering.id,
+          }),
+        },
         organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,
@@ -65,7 +73,6 @@ describe('CoursesOfferingsController', () => {
         ),
         pageHeading: coursePresenter.displayName,
         pageTitleOverride: `${coursePresenter.displayName} programme at ${organisation.name}`,
-        updateOfferingPath: `/find/offerings/${courseOffering.id}/update`,
       })
     })
   })

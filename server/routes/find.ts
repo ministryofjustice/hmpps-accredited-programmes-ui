@@ -1,6 +1,7 @@
 import type { Router } from 'express'
 
 import type { Controllers } from '../controllers'
+import { ApplicationRoles } from '../middleware'
 import { findPaths } from '../paths'
 import { RouteUtils } from '../utils'
 
@@ -9,7 +10,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   const { buildingChoicesController, buildingChoicesFormController, coursesController, courseOfferingsController } =
     controllers
 
-  get(findPaths.index.pattern, coursesController.index())
+  get(findPaths.index.pattern, coursesController.index(), { allowedRoles: [ApplicationRoles.ACP_EDITOR] })
+
   get(findPaths.show.pattern, coursesController.show())
   get(findPaths.offerings.show.pattern, courseOfferingsController.show())
 

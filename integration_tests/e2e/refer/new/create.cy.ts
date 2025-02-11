@@ -85,7 +85,7 @@ context('Searching for a person and creating a referral', () => {
       findPersonPage.searchForPerson(prisoner.prisonerNumber)
 
       const confirmPersonPage = Page.verifyOnPage(NewReferralConfirmPersonPage, { course, courseOffering, person })
-      confirmPersonPage.shouldContainBackLink(referPaths.new.new({ courseOfferingId: courseOffering.id }))
+      confirmPersonPage.shouldContainBackLink(referPaths.new.start({ courseOfferingId: courseOffering.id }))
       confirmPersonPage.shouldContainHomeLink()
       confirmPersonPage.shouldContainContinueButton()
       confirmPersonPage.shouldContainDifferentIdentifierLink()

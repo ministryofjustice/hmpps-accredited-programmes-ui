@@ -19,7 +19,7 @@ export default class BuildingChoicesController {
       const { courseId } = req.params
 
       if (!buildingChoicesFormData?.isConvictedOfSexualOffence || !buildingChoicesFormData?.isInAWomensPrison) {
-        return res.redirect(findPaths.index({}))
+        return res.redirect(findPaths.pniFind.personSearch({}))
       }
 
       const courseVariants = await this.courseService.getBuildingChoicesVariants(

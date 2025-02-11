@@ -4,7 +4,7 @@ import type { ResponseError } from 'superagent'
 
 import config from '../../../config'
 import { ApplicationRoles } from '../../../middleware'
-import { referPaths } from '../../../paths'
+import { findPaths, referPaths } from '../../../paths'
 import type { PersonService } from '../../../services'
 import { PersonUtils, TypeUtils } from '../../../utils'
 import type { Person } from '@accredited-programmes/models'
@@ -60,6 +60,10 @@ export default class NewReferralsPeopleController {
 
       return res.render('referrals/new/people/show', {
         courseOfferingId,
+        hrefs: {
+          back: referPaths.new.start({ courseOfferingId }),
+          restart: findPaths.pniFind.personSearch({}),
+        },
         pageHeading: `Confirm ${person.name}'s details`,
         pageTitleOverride: "Confirm person's details",
         personSummaryListRows: PersonUtils.summaryListRows(person),

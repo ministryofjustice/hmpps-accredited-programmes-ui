@@ -43,7 +43,7 @@ describe('BuildingChoicesFormController', () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(findPaths.index({}))
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch({}))
       })
     })
 
