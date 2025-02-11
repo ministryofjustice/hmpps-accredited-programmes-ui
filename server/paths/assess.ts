@@ -14,11 +14,19 @@ const updateStatusSelectCategory = updateStatusPathBase.path('category')
 const updateStatusSelectReason = updateStatusPathBase.path('reason')
 const updateStatusSelectionShowPath = updateStatusPathBase.path('selection')
 
+const moveToBuildingChoicesPathBase = referralShowPathBase.path('move-to-building-choices')
+const moveToBuildingChoicesReason = moveToBuildingChoicesPathBase.path('reason')
+
 export default {
   caseList: {
     filter: courseCaseListPath.path(':referralStatusGroup'),
     index: caseListIndex,
     show: courseCaseListPath.path(':referralStatusGroup'),
+  },
+  moveToBuildingChoices: {
+    reason: {
+      show: moveToBuildingChoicesReason,
+    },
   },
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),

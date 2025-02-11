@@ -210,10 +210,15 @@ export default class ReferralsController {
     const coursePresenter = CourseUtils.presentCourse(course)
 
     return {
+      buttonMenu: ShowReferralUtils.buttonMenu(course, referral, {
+        currentPath: req.path,
+        recentCaseListPath: req.session.recentCaseListPath,
+      }),
       buttons: ShowReferralUtils.buttons(
         { currentPath: req.path, recentCaseListPath: req.session.recentCaseListPath },
         referral,
         statusTransitions,
+        course,
       ),
       course,
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(

@@ -32,6 +32,16 @@ export interface ReferralUpdate {
   hasReviewedProgrammeHistory: boolean
   /** @example "null" */
   additionalInformation?: string
+  /**
+   * Reason for overriding the recommended course
+   * @example "The reason for going with the recommended course is..."
+   */
+  overrideReason?: string
+  /**
+   * Reason for transfer to building choices
+   * @example "The reason for transfer to building choices is..."
+   */
+  transferReason?: string
 }
 
 export type Unit = object
@@ -89,12 +99,21 @@ export interface Course {
   /** @example true */
   displayOnProgrammeDirectory?: boolean
   /**
+   * Intensity of the course
+   * @example "true"
+   */
+  intensity?: string
+  /**
    * List of offerings for the course
    * @example null
    */
   courseOfferings: CourseOffering[]
 }
 
+/**
+ * List of offerings for the course
+ * @example null
+ */
 export interface CourseOffering {
   /**
    * The unique identifier associated with the location hosting the offering. For prisons, this is the PrisonId, which is usually three capital letters.
@@ -201,6 +220,11 @@ export interface CourseParticipation {
    * @example false
    */
   isDraft?: boolean
+  /**
+   * The status of the associated referral.
+   * @example "null"
+   */
+  referralStatus?: string
 }
 
 /** @example null */
@@ -261,6 +285,7 @@ export interface CourseEntity {
   withdrawn: boolean
   listDisplayName?: string
   displayOnProgrammeDirectory?: boolean
+  intensity?: string
 }
 
 export interface OfferingEntity {
@@ -293,11 +318,15 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2024-12-18T05:59:57" */
+  /** @example "2025-02-17T10:48:32" */
   submittedOn?: object
   deleted: boolean
   primaryPomStaffId?: number
   secondaryPomStaffId?: number
+  overrideReason?: string
+  transferReason?: string
+  /** @format uuid */
+  originalReferralId?: string
 }
 
 export interface ReferrerUserEntity {
@@ -315,6 +344,12 @@ export interface ReferralCreate {
    * @example "A1234AA"
    */
   prisonNumber: string
+  /**
+   * Referral ID of the original referral from which transfer was initiated
+   * @format uuid
+   * @example "44e3cdab-c996-4234-afe5-a9d8ddb13be8"
+   */
+  originalReferralId?: string
 }
 
 export interface Referral {
@@ -363,6 +398,22 @@ export interface Referral {
   statusColour?: string
   /** @example "null" */
   submittedOn?: string
+  /**
+   * Reason for overriding the recommended course
+   * @example "The reason for going with the recommended course is..."
+   */
+  overrideReason?: string
+  /**
+   * Reason for transfer to building choices
+   * @example "The reason for transfer to building choices is..."
+   */
+  transferReason?: string
+  /**
+   * Referral ID of the original referral from which transfer was initiated
+   * @format uuid
+   * @example "44e3cdab-c996-4234-afe5-a9d8ddb13be8"
+   */
+  originalReferralId?: string
   primaryPrisonOffenderManager?: StaffDetail
 }
 
@@ -371,7 +422,7 @@ export interface StaffDetail {
   staffId?: number
   firstName: string
   lastName: string
-  primaryEmail: string
+  primaryEmail?: string
   username: string
   accountType: 'GENERAL' | 'ADMIN'
 }
@@ -383,7 +434,12 @@ export interface PeopleSearchResponse {
   prisonerNumber: string
   /** @format date */
   conditionalReleaseDate?: string
-  /** @example "null" */
+  /**
+   * ID of the prison
+   * @example "MDI"
+   */
+  prisonId?: string
+  /** @example "HMP Leeds" */
   prisonName?: string
   /** @format date */
   dateOfBirth?: string
@@ -515,6 +571,11 @@ export interface CourseCreateRequest {
    * @example true
    */
   displayOnProgrammeDirectory: boolean
+  /**
+   * Intensity of the course
+   * @example "HIGH MODERATE"
+   */
+  intensity?: string
 }
 
 export interface BuildingChoicesSearchRequest {
@@ -625,6 +686,13 @@ export interface ReportStatusCountProjection {
   count: number
   status: string
   orgId: string
+}
+
+export interface ReportStatusCount {
+  /** @format int64 */
+  count: number
+  status: string
+  organisationCode: string
 }
 
 export interface ReportTypes {
@@ -1000,6 +1068,11 @@ export interface Organisation {
   code?: string
   /** @example "Moorland HMP" */
   prisonName?: string
+  /**
+   * The gender of inmates that a prison will accept
+   * @example "MALE"
+   */
+  gender?: string
 }
 
 export interface EnabledOrganisation {
