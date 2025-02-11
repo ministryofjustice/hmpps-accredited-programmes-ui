@@ -6,7 +6,7 @@ import createError from 'http-errors'
 import NewReferralsPeopleController from './peopleController'
 import config from '../../../config'
 import { ApplicationRoles } from '../../../middleware'
-import { referPaths } from '../../../paths'
+import { findPaths, referPaths } from '../../../paths'
 import type PersonService from '../../../services/personService'
 import { personFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
@@ -91,6 +91,10 @@ describe('NewReferralsPeopleController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/people/show', {
         courseOfferingId,
+        hrefs: {
+          back: referPaths.new.start({ courseOfferingId }),
+          restart: findPaths.pniFind.personSearch({}),
+        },
         pageHeading: "Confirm Del Hatton's details",
         pageTitleOverride: "Confirm person's details",
         personSummaryListRows: mockPersonSummaryList,

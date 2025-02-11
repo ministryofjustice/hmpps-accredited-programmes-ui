@@ -8,7 +8,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: backLinkHref
+    href: hrefs.back
   }) }}
 {% endblock backLink %}
 
@@ -44,7 +44,7 @@
 
       {{ govukButton({
         text: "Return to programme list",
-        href: programmeListHref,
+        href: hrefs.programmes,
         attributes: {
           "data-testid": "programme-list-link"
         }

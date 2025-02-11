@@ -274,13 +274,13 @@ context('Submitting a referral', () => {
           referral: duplicateReferral,
         })
         duplicatePage.shouldContainBackLink(
-          referPaths.new.people.show({ courseOfferingId: course.id, prisonNumber: person.prisonNumber }),
+          referPaths.new.people.show({ courseOfferingId: courseOffering.id, prisonNumber: person.prisonNumber }),
         )
         duplicatePage.shouldContainReferralExistsText()
         duplicatePage.shouldContainCourseOfferingSummaryList()
         duplicatePage.shouldContainSubmissionSummaryList('Bobby Brown', 'referrer.user@email-test.co.uk')
         duplicatePage.shouldContainWarningText('You cannot create this referral while a duplicate referral is open.')
-        duplicatePage.shouldContainButtonLink('Return to programme list', findPaths.index({}))
+        duplicatePage.shouldContainButtonLink('Return to programme list', findPaths.pniFind.recommendedProgrammes({}))
       })
     })
   })

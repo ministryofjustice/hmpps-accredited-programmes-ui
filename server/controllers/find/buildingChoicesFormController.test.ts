@@ -38,7 +38,7 @@ describe('BuildingChoicesFormController', () => {
       ])
       expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
       expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/form/show', {
-        backLinkHref: findPaths.index({}),
+        backLinkHref: findPaths.pniFind.recommendedProgrammes({}),
         pageHeading: "About the person you're referring",
       })
     })

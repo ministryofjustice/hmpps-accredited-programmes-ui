@@ -18,21 +18,6 @@ context('Find', () => {
       cy.signIn()
     })
 
-    it('Shows a list of all courses sorted alphabetically', () => {
-      cy.task('stubCourses', courses)
-
-      const path = findPaths.index({})
-      cy.visit(path)
-
-      const coursesPage = Page.verifyOnPage(CoursesPage)
-      coursesPage.shouldContainHomeLink()
-
-      const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
-
-      coursesPage.shouldHaveCourses(sortedCourses)
-      coursesPage.shouldNotContainAddNewProgrammeLink()
-    })
-
     it('Shows a single course and its offerings', () => {
       cy.task('stubCourse', courses[0])
 
@@ -149,14 +134,18 @@ context('Find', () => {
     })
 
     describe('when viewing all programmes', () => {
-      it('shows the "Add a new programme" button', () => {
+      it('shows a list of all programmes along with an "Add a new programme" button', () => {
         cy.task('stubCourses', courses)
 
         const path = findPaths.index({})
         cy.visit(path)
 
+        const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+
         const coursesPage = Page.verifyOnPage(CoursesPage)
+        coursesPage.shouldContainHomeLink()
         coursesPage.shouldContainAddNewProgrammeLink()
+        coursesPage.shouldHaveCourses(sortedCourses)
       })
     })
 
