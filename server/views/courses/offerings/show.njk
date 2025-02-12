@@ -57,13 +57,13 @@
         rows: organisation.summaryListRows
       }) }}
 
-      {% if referEnabled and user.hasReferrerRole and courseOffering.referable and courseOffering.organisationEnabled %}
+      {% if canMakeReferral %}
         {{ govukButton({
-            text: "Make a referral",
-            href: hrefs.makeReferral,
-            attributes: {
-              "data-testid": "make-referral-link"
-            }
+          text: "Make a referral",
+          href: hrefs.makeReferral,
+          attributes: {
+            "data-testid": "make-referral-link"
+          }
         }) }}
       {% endif %}
     </div>

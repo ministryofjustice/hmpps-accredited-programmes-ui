@@ -1,3 +1,4 @@
+import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
 import { OrganisationUtils } from '../../server/utils'
@@ -7,7 +8,7 @@ import Page from '../pages/page'
 context('Find', () => {
   it("Doesn't show the 'Make a referral' button on an offering", () => {
     cy.task('reset')
-    cy.task('stubSignIn')
+    cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
     cy.task('stubAuthUser')
     cy.signIn()
 
