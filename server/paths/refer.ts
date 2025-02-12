@@ -49,7 +49,6 @@ export default {
     },
     create: newReferralsPath,
     delete: newReferralShowPath.path('delete'),
-    new: offeringReferralPathBase.path('new'),
     people: {
       find: newReferralPeoplePathBase.path('search'),
       show: newReferralPeoplePathBase.path(':prisonNumber'),

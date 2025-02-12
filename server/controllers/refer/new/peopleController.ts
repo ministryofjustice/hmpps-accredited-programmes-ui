@@ -12,22 +12,6 @@ import type { Person } from '@accredited-programmes/models'
 export default class NewReferralsPeopleController {
   constructor(private readonly personService: PersonService) {}
 
-  find(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      TypeUtils.assertHasUser(req)
-
-      const { courseOfferingId } = req.params
-      const { prisonNumber } = req.body
-
-      if (!prisonNumber) {
-        req.flash('prisonNumberError', 'Enter a prison number')
-        return res.redirect(referPaths.new.new({ courseOfferingId }))
-      }
-
-      return res.redirect(referPaths.new.people.show({ courseOfferingId, prisonNumber: prisonNumber.toUpperCase() }))
-    }
-  }
-
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -52,7 +36,7 @@ export default class NewReferralsPeopleController {
 
         if (knownError.status === 404) {
           req.flash('prisonNumberError', `No person with prison number '${req.params.prisonNumber}' found`)
-          return res.redirect(referPaths.new.new({ courseOfferingId }))
+          return res.redirect(findPaths.pniFind.personSearch({}))
         }
 
         throw createError(knownError)

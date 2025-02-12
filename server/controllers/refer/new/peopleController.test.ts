@@ -30,49 +30,6 @@ describe('NewReferralsPeopleController', () => {
     controller = new NewReferralsPeopleController(personService)
   })
 
-  describe('find', () => {
-    it('redirects to the show action with the prisonNumber as a param', async () => {
-      const prisonNumber = 'ANUMB5R'
-
-      request.params.courseOfferingId = courseOfferingId
-      request.body.prisonNumber = prisonNumber
-
-      const requestHandler = controller.find()
-      await requestHandler(request, response, next)
-
-      expect(response.redirect).toHaveBeenCalledWith(referPaths.new.people.show({ courseOfferingId, prisonNumber }))
-    })
-
-    describe('when the prison number is an empty string', () => {
-      it('redirects to the referrals new action with a flashed error message', async () => {
-        const prisonNumber = ''
-
-        request.params.courseOfferingId = courseOfferingId
-        request.body.prisonNumber = prisonNumber
-
-        const requestHandler = controller.find()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.new({ courseOfferingId }))
-        expect(request.flash).toHaveBeenCalledWith('prisonNumberError', 'Enter a prison number')
-      })
-    })
-
-    describe('when the provided prison number contains lowercase characters', () => {
-      it('redirects to the show action with the prisonNumber as an uppercase param', async () => {
-        request.params.courseOfferingId = courseOfferingId
-        request.body.prisonNumber = 'anumb5r'
-
-        const requestHandler = controller.find()
-        await requestHandler(request, response, next)
-
-        expect(response.redirect).toHaveBeenCalledWith(
-          referPaths.new.people.show({ courseOfferingId, prisonNumber: 'ANUMB5R' }),
-        )
-      })
-    })
-  })
-
   describe('show', () => {
     const person = personFactory.build({
       name: 'Del Hatton',
@@ -115,7 +72,7 @@ describe('NewReferralsPeopleController', () => {
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.new({ courseOfferingId }))
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch({}))
         expect(request.flash).toHaveBeenCalledWith(
           'prisonNumberError',
           `No person with prison number '${fakeId}' found`,

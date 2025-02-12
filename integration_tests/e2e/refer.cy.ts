@@ -13,19 +13,6 @@ context('General Refer functionality', () => {
     cy.task('stubDefaultCaseloads')
   })
 
-  describe('When the user does not have the `ROLE_ACP_REFERRER` role', () => {
-    it('shows the auth error page', () => {
-      cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
-      cy.signIn()
-
-      const path = referPaths.new.start({ courseOfferingId: 'an-ID' })
-      cy.visit(path, { failOnStatusCode: false })
-
-      const authErrorPage = Page.verifyOnPage(AuthErrorPage)
-      authErrorPage.shouldContainAuthErrorMessage()
-    })
-  })
-
   describe('When the referral has been submitted', () => {
     it('redirects pages related to that referral to the complete page', () => {
       cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })

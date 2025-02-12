@@ -1,5 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import config from '../../config'
 import { findPaths, referPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
@@ -42,6 +43,12 @@ export default class CourseOfferingsController {
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/offerings/show', {
+        canMakeReferral:
+          config.flags.referEnabled &&
+          courseOffering.referable &&
+          courseOffering.organisationEnabled &&
+          res.locals.user.hasReferrerRole &&
+          req.session.pniFindAndReferData !== undefined,
         course: coursePresenter,
         courseOffering,
         deleteOfferingAction: `${findPaths.offerings.delete({ courseId: course.id, courseOfferingId: courseOffering.id })}?_method=DELETE`,

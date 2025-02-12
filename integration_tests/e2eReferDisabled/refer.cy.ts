@@ -52,14 +52,6 @@ context('Refer', () => {
     notFoundPage.shouldContain404H2()
   })
 
-  it("Doesn't show the 'find person' page for a referral", () => {
-    const path = referPaths.new.new({ courseOfferingId: courseOffering.id })
-    cy.visit(path, { failOnStatusCode: false })
-
-    const notFoundPage = Page.verifyOnPage(NotFoundPage)
-    notFoundPage.shouldContain404H2()
-  })
-
   it("Doesn't show the 'confirm person' page for a new referral", () => {
     cy.task('stubPrisoner', prisoner)
 

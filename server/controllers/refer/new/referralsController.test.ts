@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
 import NewReferralsController from './referralsController'
-import { authPaths, referPaths } from '../../../paths'
+import { authPaths, findPaths, referPaths } from '../../../paths'
 import sanitiseError from '../../../sanitisedError'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
@@ -74,6 +74,12 @@ describe('NewReferralsController', () => {
   beforeEach(() => {
     request = createMock<Request>({
       flash: jest.fn().mockReturnValue([]),
+      session: {
+        pniFindAndReferData: {
+          prisonNumber: person.prisonNumber,
+          programmePathway: 'HIGH_INTENSITY_BC',
+        },
+      },
       user: { token: userToken, username },
     })
     response = Helpers.createMockResponseWithCaseloads()
@@ -107,52 +113,27 @@ describe('NewReferralsController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/new/start', {
         course: coursePresenter,
         courseOffering: referableCourseOffering,
+        hrefs: {
+          back: findPaths.offerings.show({ courseOfferingId: referableCourseOffering.id }),
+          start: referPaths.new.people.show({
+            courseOfferingId: referableCourseOffering.id,
+            prisonNumber: person.prisonNumber,
+          }),
+        },
         organisation,
         pageHeading: 'Make a referral',
         pageTitleOverride: 'Start referral',
       })
     })
-  })
 
-  describe('new', () => {
-    const courseId = course.id
-    const courseOfferingId = referableCourseOffering.id
+    describe('when there is no PNI find data in the session', () => {
+      it('redirects to the PNI find search action', async () => {
+        delete request.session.pniFindAndReferData
 
-    beforeEach(() => {
-      request.params.courseId = courseId
-      request.params.courseOfferingId = courseOfferingId
-    })
-
-    it('renders the referral new template', async () => {
-      courseService.getCourseByOffering.mockResolvedValue(course)
-
-      const emptyErrorsLocal = { list: [], messages: {} }
-      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
-        response.locals.errors = emptyErrorsLocal
-      })
-
-      const requestHandler = controller.new()
-      await requestHandler(request, response, next)
-
-      expect(response.render).toHaveBeenCalledWith('referrals/new/new', {
-        courseId,
-        courseOfferingId,
-        pageHeading: "Enter the person's identifier",
-        pageTitleOverride: "Enter person's details",
-      })
-
-      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['prisonNumber'])
-    })
-
-    describe('when there is a `prisonNumber` in `pnFindAndReferData`', () => {
-      it('should redirect to the new referral people show path', async () => {
-        const prisonNumber = 'A1234AA'
-        request.session.pniFindAndReferData = { prisonNumber }
-
-        const requestHandler = controller.new()
+        const requestHandler = controller.start()
         await requestHandler(request, response, next)
 
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.people.show({ courseOfferingId, prisonNumber }))
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch({}))
       })
     })
   })
