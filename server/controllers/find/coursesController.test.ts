@@ -101,15 +101,18 @@ describe('CoursesController', () => {
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           hideTitleServiceName: true,
+          hrefs: {
+            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+            back: findPaths.pniFind.recommendedProgrammes({}),
+            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+          },
           isBuildingChoices: false,
           noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           pageTitleOverride: `${coursePresenter.displayName} programme description`,
-          updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })
     })
@@ -146,16 +149,37 @@ describe('CoursesController', () => {
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           hideTitleServiceName: true,
+          hrefs: {
+            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+            back: findPaths.pniFind.recommendedProgrammes({}),
+            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+          },
           isBuildingChoices: false,
           noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           pageTitleOverride: `${coursePresenter.displayName} programme description`,
-          updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
+      })
+    })
+
+    describe('when there is no `pniFindAndReferData` in the session', () => {
+      it('should have the correct back link to the find directory index', async () => {
+        delete request.session.pniFindAndReferData
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'courses/show',
+          expect.objectContaining({
+            hrefs: expect.objectContaining({
+              back: findPaths.index({}),
+            }),
+          }),
+        )
       })
     })
   })

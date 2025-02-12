@@ -11,7 +11,7 @@ export default class BuildingChoicesFormController {
       FormUtils.setFormValues(req, res)
 
       res.render('courses/buildingChoices/form/show', {
-        backLinkHref: findPaths.index({}),
+        backLinkHref: findPaths.pniFind.recommendedProgrammes({}),
         pageHeading: "About the person you're referring",
       })
     }

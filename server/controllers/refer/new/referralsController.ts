@@ -1,7 +1,7 @@
 import { type Request, type Response, type TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
-import { authPaths, referPaths } from '../../../paths'
+import { authPaths, findPaths, referPaths } from '../../../paths'
 import { type SanitisedError, isErrorWithData } from '../../../sanitisedError'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
@@ -144,28 +144,6 @@ export default class NewReferralsController {
     }
   }
 
-  new(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      TypeUtils.assertHasUser(req)
-
-      const { courseId, courseOfferingId } = req.params
-      const pniFindPrisonNumber = req.session.pniFindAndReferData?.prisonNumber
-
-      if (pniFindPrisonNumber) {
-        return res.redirect(referPaths.new.people.show({ courseOfferingId, prisonNumber: pniFindPrisonNumber }))
-      }
-
-      FormUtils.setFieldErrors(req, res, ['prisonNumber'])
-
-      return res.render('referrals/new/new', {
-        courseId,
-        courseOfferingId,
-        pageHeading: "Enter the person's identifier",
-        pageTitleOverride: "Enter person's details",
-      })
-    }
-  }
-
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -238,14 +216,24 @@ export default class NewReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const pniFindPrisonNumber = req.session.pniFindAndReferData?.prisonNumber
+
+      if (!pniFindPrisonNumber) {
+        return res.redirect(findPaths.pniFind.personSearch({}))
+      }
+
       const course = await this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId)
       const courseOffering = await this.courseService.getOffering(req.user.token, req.params.courseOfferingId)
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
       const coursePresenter = CourseUtils.presentCourse(course)
 
-      res.render('referrals/new/start', {
+      return res.render('referrals/new/start', {
         course: coursePresenter,
         courseOffering,
+        hrefs: {
+          back: findPaths.offerings.show({ courseOfferingId: courseOffering.id }),
+          start: referPaths.new.people.show({ courseOfferingId: courseOffering.id, prisonNumber: pniFindPrisonNumber }),
+        },
         organisation,
         pageHeading: 'Make a referral',
         pageTitleOverride: 'Start referral',

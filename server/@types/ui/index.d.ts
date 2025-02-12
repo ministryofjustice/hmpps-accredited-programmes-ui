@@ -107,6 +107,7 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
 type ReferralSharedPageData = {
   buttons: Array<GovukFrontendButton>
   course: Course
+  courseOffering: CourseOffering
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
   hideTitleServiceName: boolean
   navigationItems: Array<MojFrontendNavigationItem>

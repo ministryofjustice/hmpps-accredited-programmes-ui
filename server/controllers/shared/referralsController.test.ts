@@ -85,6 +85,7 @@ describe('ReferralsController', () => {
     sharedPageData = {
       buttons,
       course,
+      courseOffering,
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
         person.name,
         coursePresenter,
@@ -191,13 +192,15 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/duplicate', {
         ...sharedPageData,
-        backLinkHref: referPaths.new.people.show({
-          courseOfferingId: sharedPageData.course.id,
-          prisonNumber: sharedPageData.person.prisonNumber,
-        }),
+        hrefs: {
+          back: referPaths.new.people.show({
+            courseOfferingId: sharedPageData.courseOffering.id as string,
+            prisonNumber: sharedPageData.person.prisonNumber,
+          }),
+          programmes: findPaths.pniFind.recommendedProgrammes({}),
+        },
         pageHeading: 'Duplicate referral found',
         pageTitleOverride: 'Duplicate referral found',
-        programmeListHref: findPaths.index({}),
         summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.name}.`,
       })
     })

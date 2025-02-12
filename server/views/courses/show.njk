@@ -9,7 +9,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: findPaths.index({})
+    href: hrefs.back
   }) }}
 {% endblock backLink %}
 
@@ -20,7 +20,7 @@
     {% if 'ROLE_ACP_EDITOR' in user.roles %}
       {{ govukButton({
         text: "Update programme",
-        href: updateProgrammePath,
+        href: hrefs.updateProgramme,
         classes: "govuk-button--secondary",
         attributes: {
           "data-testid": "update-programme-link"
@@ -50,7 +50,7 @@
         {% if 'ROLE_ACP_EDITOR' in user.roles %}
           {{ govukButton({
             text: "Add a new location",
-            href: addOfferingPath,
+            href: hrefs.addOffering,
             classes: "govuk-button--secondary",
             attributes: {
               "data-testid": "add-programme-offering-link"

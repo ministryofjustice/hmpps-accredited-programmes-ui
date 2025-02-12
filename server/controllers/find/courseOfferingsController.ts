@@ -1,6 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { findPaths } from '../../paths'
+import config from '../../config'
+import { findPaths, referPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
@@ -42,10 +43,23 @@ export default class CourseOfferingsController {
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/offerings/show', {
+        canMakeReferral:
+          config.flags.referEnabled &&
+          courseOffering.referable &&
+          courseOffering.organisationEnabled &&
+          res.locals.user.hasReferrerRole &&
+          req.session.pniFindAndReferData !== undefined,
         course: coursePresenter,
         courseOffering,
         deleteOfferingAction: `${findPaths.offerings.delete({ courseId: course.id, courseOfferingId: courseOffering.id })}?_method=DELETE`,
         hideTitleServiceName: true,
+        hrefs: {
+          back: findPaths.show({ courseId: course.id }),
+          makeReferral: referPaths.new.start({ courseOfferingId: courseOffering.id }),
+          updateOffering: findPaths.offerings.update.show({
+            courseOfferingId: courseOffering.id,
+          }),
+        },
         organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,
@@ -53,9 +67,6 @@ export default class CourseOfferingsController {
         ),
         pageHeading: coursePresenter.displayName,
         pageTitleOverride: `${coursePresenter.displayName} programme at ${organisation.name}`,
-        updateOfferingPath: findPaths.offerings.update.show({
-          courseOfferingId: courseOffering.id,
-        }),
       })
     }
   }

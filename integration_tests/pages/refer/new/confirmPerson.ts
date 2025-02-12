@@ -1,4 +1,4 @@
-import { referPaths } from '../../../../server/paths'
+import { findPaths } from '../../../../server/paths'
 import Page from '../../page'
 import type { CourseOffering, Person } from '@accredited-programmes/models'
 import type { Course } from '@accredited-programmes-api'
@@ -28,10 +28,7 @@ export default class NewReferralConfirmPersonPage extends Page {
   }
 
   shouldContainDifferentIdentifierLink() {
-    this.shouldContainLink(
-      'Enter a different identifier',
-      referPaths.new.new({ courseOfferingId: this.courseOffering.id }),
-    )
+    this.shouldContainLink('Enter a different identifier', findPaths.pniFind.personSearch({}))
   }
 
   shouldHavePersonInformation() {

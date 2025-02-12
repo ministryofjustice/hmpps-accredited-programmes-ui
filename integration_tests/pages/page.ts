@@ -1,9 +1,10 @@
 import type { AxeRules } from '@accredited-programmes/integration-tests'
 
-import { assessPathBase, referPaths } from '../../server/paths'
+import { assessPathBase, findPaths, referPaths } from '../../server/paths'
 import { referPathBase } from '../../server/paths/refer'
 import {
   CourseParticipationUtils,
+  CourseUtils,
   DateUtils,
   PersonUtils,
   ShowReferralUtils,
@@ -22,7 +23,7 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
-import type { CourseParticipation, Referral } from '@accredited-programmes-api'
+import type { Course, CourseParticipation, Referral } from '@accredited-programmes-api'
 import type {
   GovukFrontendRadiosItem,
   GovukFrontendSummaryListCardTitle,
@@ -609,6 +610,27 @@ export default abstract class Page {
     cy.get('.govuk-warning-text__text').then(warningElement => {
       const { actual, expected } = Helpers.parseHtml(warningElement, `Warning ${text}`)
       expect(actual).to.equal(expected)
+    })
+  }
+
+  shouldHaveCourses(courses: Array<Course>) {
+    cy.get('div[role=listitem]').each((courseElement, courseElementIndex) => {
+      cy.wrap(courseElement).within(() => {
+        const course = CourseUtils.presentCourse(courses[courseElementIndex])
+
+        cy.get('.govuk-link').should('have.attr', 'href', findPaths.show({ courseId: course.id }))
+        cy.get('.govuk-heading-m .govuk-link').should('have.text', course.displayName)
+
+        cy.get('.govuk-tag').then(tagElement => {
+          this.shouldContainTag(course.audienceTag, tagElement)
+        })
+
+        cy.get('p:nth-of-type(2)').should('have.text', course.description)
+
+        cy.get('.govuk-summary-list').then(summaryListElement => {
+          this.shouldContainSummaryListRows(course.prerequisiteSummaryListRows, summaryListElement)
+        })
+      })
     })
   }
 
