@@ -78,6 +78,30 @@ describe('CoursesOfferingsController', () => {
       })
     })
 
+    describe('when the building choices course id is present in the session', () => {
+      it('sets the back link to the building choices course page', async () => {
+        const buildingChoicesCourseId = 'bc-course-id'
+
+        request.session.buildingChoicesData = {
+          courseVariantId: buildingChoicesCourseId,
+          isConvictedOfSexualOffence: 'no',
+          isInAWomensPrison: 'yes',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'courses/offerings/show',
+          expect.objectContaining({
+            hrefs: expect.objectContaining({
+              back: findPaths.buildingChoices.show({ courseId: buildingChoicesCourseId }),
+            }),
+          }),
+        )
+      })
+    })
+
     describe('when all required conditions for making a referral are met', () => {
       it('sets canMakeReferral to true', async () => {
         config.flags.referEnabled = true

@@ -19,7 +19,7 @@ import {
 } from '../testutils/factories'
 import { CourseParticipationUtils, StringUtils } from '../utils'
 import type { CourseCreateRequest, CourseOffering } from '@accredited-programmes/models'
-import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
+import type { BuildingChoicesData } from '@accredited-programmes/ui'
 import type { CourseParticipationCreate, CourseParticipationUpdate } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
@@ -185,7 +185,7 @@ describe('CourseService', () => {
     describe('when either of the form request body values are not provided', () => {
       it('throws an error', async () => {
         const course = courseFactory.build()
-        const formRequestBody = { isConvictedOfSexualOffence: 'true' } as BuildingChoicesSearchForm
+        const formRequestBody = { isConvictedOfSexualOffence: 'true' } as BuildingChoicesData
 
         await expect(() =>
           service.getBuildingChoicesVariants(username, course.id, formRequestBody),

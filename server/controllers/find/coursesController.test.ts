@@ -24,6 +24,11 @@ describe('CoursesController', () => {
   beforeEach(() => {
     request = createMock<Request>({
       session: {
+        buildingChoicesData: {
+          courseVariantId: 'bc-course-id',
+          isConvictedOfSexualOffence: 'true',
+          isInAWomensPrison: 'false',
+        },
         pniFindAndReferData: {
           prisonNumber: 'some-prison-number',
           programmePathway: 'HIGH_INTENSITY_BC',
@@ -36,7 +41,7 @@ describe('CoursesController', () => {
   })
 
   describe('index', () => {
-    it('renders the courses index template with alphabetically-sorted courses and reset any pniFindAndReferData', async () => {
+    it('renders the courses index template with alphabetically-sorted courses and reset `pniFindAndReferData` and `buildingChoicesData`', async () => {
       const courseA = courseFactory.build({ name: 'Course A' })
       const courseB = courseFactory.build({ name: 'Course B' })
       const courseC = courseFactory.build({ name: 'Course C' })
@@ -45,11 +50,13 @@ describe('CoursesController', () => {
 
       const sortedCourses = [courseA, courseB, courseC]
 
+      expect(request.session.buildingChoicesData).toBeDefined()
       expect(request.session.pniFindAndReferData).toBeDefined()
 
       const requestHandler = controller.index()
       await requestHandler(request, response, next)
 
+      expect(request.session.buildingChoicesData).toBeUndefined()
       expect(request.session.pniFindAndReferData).toBeUndefined()
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),

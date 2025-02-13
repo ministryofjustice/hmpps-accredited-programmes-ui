@@ -3,13 +3,13 @@
 import type { Request as ConnectFlashRequest } from '@types/connect-flash'
 
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
-import type { BuildingChoicesSearchForm, PniFindAndReferData } from '@accredited-programmes/ui'
+import type { BuildingChoicesData, PniFindAndReferData } from '@accredited-programmes/ui'
 import type { UserDetails } from '@accredited-programmes/users'
 
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
-    buildingChoicesFormData: BuildingChoicesSearchForm
+    buildingChoicesData: BuildingChoicesData
     nowInMinutes: number
     pniFindAndReferData: PniFindAndReferData
     recentCaseListPath: string

@@ -14,18 +14,17 @@ export default class BuildingChoicesController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { buildingChoicesFormData } = req.session
-
+      const { buildingChoicesData } = req.session
       const { courseId } = req.params
 
-      if (!buildingChoicesFormData?.isConvictedOfSexualOffence || !buildingChoicesFormData?.isInAWomensPrison) {
+      if (!buildingChoicesData?.isConvictedOfSexualOffence || !buildingChoicesData?.isInAWomensPrison) {
         return res.redirect(findPaths.pniFind.personSearch({}))
       }
 
       const courseVariants = await this.courseService.getBuildingChoicesVariants(
         req.user?.username,
         courseId,
-        buildingChoicesFormData,
+        buildingChoicesData,
       )
 
       const course = courseVariants[0]
@@ -39,8 +38,7 @@ export default class BuildingChoicesController {
 
       return res.render('courses/buildingChoices/show', {
         backLinkHref: findPaths.buildingChoices.form.show({ courseId }),
-        buildingChoicesAnswersSummaryListRows:
-          CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesFormData),
+        buildingChoicesAnswersSummaryListRows: CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesData),
         course,
         organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
         pageHeading: course.displayName,

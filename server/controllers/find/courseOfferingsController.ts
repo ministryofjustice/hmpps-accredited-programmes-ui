@@ -28,6 +28,8 @@ export default class CourseOfferingsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const buildingChoicesCourseId = req.session.buildingChoicesData?.courseVariantId
+
       const [course, [courseOffering, organisation]] = await Promise.all([
         this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId),
         this.courseService.getOffering(req.user.token, req.params.courseOfferingId).then(async _courseOffering => {
@@ -54,7 +56,9 @@ export default class CourseOfferingsController {
         deleteOfferingAction: `${findPaths.offerings.delete({ courseId: course.id, courseOfferingId: courseOffering.id })}?_method=DELETE`,
         hideTitleServiceName: true,
         hrefs: {
-          back: findPaths.show({ courseId: course.id }),
+          back: buildingChoicesCourseId
+            ? findPaths.buildingChoices.show({ courseId: buildingChoicesCourseId })
+            : findPaths.show({ courseId: course.id }),
           makeReferral: referPaths.new.start({ courseOfferingId: courseOffering.id }),
           updateOffering: findPaths.offerings.update.show({
             courseOfferingId: courseOffering.id,

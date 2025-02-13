@@ -229,7 +229,8 @@ type ReferralStatusHistoryPresenter = ReferralStatusHistory & {
   byLineText: MojTimelineItem['byline']['text']
 }
 
-interface BuildingChoicesSearchForm {
+interface BuildingChoicesData {
+  courseVariantId: Course['id']
   isConvictedOfSexualOffence: string
   isInAWomensPrison: string
 }
@@ -240,7 +241,7 @@ interface PniFindAndReferData {
 }
 
 export type {
-  BuildingChoicesSearchForm,
+  BuildingChoicesData,
   CaseListColumnHeader,
   CourseParticipationPresenter,
   CoursePresenter,

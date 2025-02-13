@@ -8,7 +8,7 @@ import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
-import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
+import type { BuildingChoicesData } from '@accredited-programmes/ui'
 import type { GovukFrontendTableRow } from '@govuk-frontend'
 
 jest.mock('../../utils/courseUtils')
@@ -23,7 +23,7 @@ describe('BuildingChoicesFormController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
-  let buildingChoicesFormData: BuildingChoicesSearchForm
+  let buildingChoicesData: BuildingChoicesData
   const courseService = createMock<CourseService>({})
   const organisationService = createMock<OrganisationService>({})
   let controller: BuildingChoicesController
@@ -32,7 +32,11 @@ describe('BuildingChoicesFormController', () => {
   const courseId = 'A_COURSE_ID'
 
   beforeEach(() => {
-    request = createMock<Request>({ params: { courseId }, session: { buildingChoicesFormData }, user: { username } })
+    request = createMock<Request>({
+      params: { courseId },
+      session: { buildingChoicesData },
+      user: { username },
+    })
     response = createMock<Response>({})
     controller = new BuildingChoicesController(courseService, organisationService)
   })
@@ -76,8 +80,12 @@ describe('BuildingChoicesFormController', () => {
       ]
 
       beforeEach(() => {
-        buildingChoicesFormData = { isConvictedOfSexualOffence: 'no', isInAWomensPrison: 'yes' }
-        request.session.buildingChoicesFormData = buildingChoicesFormData
+        buildingChoicesData = {
+          courseVariantId: 'bc-course-id',
+          isConvictedOfSexualOffence: 'no',
+          isInAWomensPrison: 'yes',
+        }
+        request.session.buildingChoicesData = buildingChoicesData
 
         mockedCourse.buildingChoicesAnswersSummaryListRows.mockReturnValue(buildingChoicesAnswersSummaryListRows)
         mockedOrganisationUtils.organisationTableRows.mockReturnValue(organisationsTableData)
@@ -93,7 +101,7 @@ describe('BuildingChoicesFormController', () => {
         const returnedCourses = [courseFactory.build({ courseOfferings })]
 
         when(courseService.getBuildingChoicesVariants)
-          .calledWith(username, courseId, buildingChoicesFormData)
+          .calledWith(username, courseId, buildingChoicesData)
           .mockResolvedValue(returnedCourses)
 
         const requestHandler = controller.show()
@@ -101,7 +109,7 @@ describe('BuildingChoicesFormController', () => {
 
         const course = returnedCourses[0]
 
-        expect(CourseUtils.buildingChoicesAnswersSummaryListRows).toHaveBeenCalledWith(buildingChoicesFormData)
+        expect(CourseUtils.buildingChoicesAnswersSummaryListRows).toHaveBeenCalledWith(buildingChoicesData)
         expect(OrganisationUtils.organisationTableRows).toHaveBeenCalledWith(
           organisations.map((organisation, index) => ({
             ...organisation,
