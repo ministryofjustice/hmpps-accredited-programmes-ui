@@ -42,21 +42,46 @@ describe('BuildingChoicesFormController', () => {
         pageHeading: "About the person you're referring",
       })
     })
+
+    describe('when the user is coming from the PNI find page', () => {
+      it('should render the buildingChoices/show template with the back link to recommended programmes', async () => {
+        request.session.pniFindAndReferData = {
+          prisonNumber: 'ABC1234',
+          programmePathway: 'HIGH_INTENSITY_BC',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, [
+          'isConvictedOfSexualOffence',
+          'isInAWomensPrison',
+        ])
+        expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
+        expect(response.render).toHaveBeenCalledWith(
+          'courses/buildingChoices/form/show',
+          expect.objectContaining({
+            backLinkHref: findPaths.pniFind.recommendedProgrammes({}),
+          }),
+        )
+      })
+    })
   })
 
   describe('submit', () => {
     describe('when all options are selected', () => {
-      it('should set the `buildingChoicesFormData` session data and redirect to the building choices course page', async () => {
+      it('should set the `buildingChoicesData` session data and redirect to the building choices course page', async () => {
         const formValues = { isConvictedOfSexualOffence: 'no', isInAWomensPrison: 'yes' }
 
         request.body = formValues
 
-        expect(request.session.buildingChoicesFormData).toBeUndefined()
+        expect(request.session.buildingChoicesData).toBeUndefined()
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(request.session.buildingChoicesFormData).toEqual(formValues)
+        expect(request.flash).toHaveBeenCalledWith('formValues', [JSON.stringify(formValues)])
+        expect(request.session.buildingChoicesData).toEqual({ courseVariantId: courseId, ...formValues })
         expect(response.redirect).toHaveBeenCalledWith(findPaths.buildingChoices.show({ courseId }))
       })
     })

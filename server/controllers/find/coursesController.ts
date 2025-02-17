@@ -15,6 +15,7 @@ export default class CoursesController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      delete req.session.buildingChoicesData
       delete req.session.pniFindAndReferData
 
       const courses = await this.courseService.getCourses(req.user.token)
@@ -36,6 +37,8 @@ export default class CoursesController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const isPniFind = req.session.pniFindAndReferData !== undefined
+
       const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
       const offerings = await this.courseService.getOfferingsByCourse(req.user.token, course.id)
 
@@ -52,15 +55,18 @@ export default class CoursesController {
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/show', {
-        addOfferingPath: findPaths.offerings.add.create({ courseId: course.id }),
         course: coursePresenter,
         hideTitleServiceName: true,
+        hrefs: {
+          addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+          back: isPniFind ? findPaths.pniFind.recommendedProgrammes({}) : findPaths.index({}),
+          updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+        },
         isBuildingChoices: CourseUtils.isBuildingChoices(course.displayName),
         noOfferingsMessage: CourseUtils.noOfferingsMessage(course.name),
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
         pageTitleOverride: `${coursePresenter.displayName} programme description`,
-        updateProgrammePath: findPaths.course.update.show({ courseId: course.id }),
       })
     }
   }

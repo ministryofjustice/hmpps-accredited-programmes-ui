@@ -3,6 +3,8 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import CourseOfferingsController from './courseOfferingsController'
+import config from '../../config'
+import { findPaths, referPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
@@ -21,7 +23,7 @@ describe('CoursesOfferingsController', () => {
 
   beforeEach(() => {
     request = createMock<Request>({ user: { token: userToken } })
-    response = createMock<Response>({})
+    response = createMock<Response>({ locals: { user: { hasReferrerRole: false } } })
     controller = new CourseOfferingsController(courseService, organisationService)
   })
 
@@ -54,10 +56,18 @@ describe('CoursesOfferingsController', () => {
       const coursePresenter = CourseUtils.presentCourse(course)
 
       expect(response.render).toHaveBeenCalledWith('courses/offerings/show', {
+        canMakeReferral: false,
         course: coursePresenter,
         courseOffering,
         deleteOfferingAction: `/find/programmes/${course.id}/offerings/${courseOffering.id}/delete?_method=DELETE`,
         hideTitleServiceName: true,
+        hrefs: {
+          back: findPaths.show({ courseId: course.id }),
+          makeReferral: referPaths.new.start({ courseOfferingId: courseOffering.id }),
+          updateOffering: findPaths.offerings.update.show({
+            courseOfferingId: courseOffering.id,
+          }),
+        },
         organisation: OrganisationUtils.presentOrganisationWithOfferingEmails(
           organisation,
           courseOffering,
@@ -65,7 +75,51 @@ describe('CoursesOfferingsController', () => {
         ),
         pageHeading: coursePresenter.displayName,
         pageTitleOverride: `${coursePresenter.displayName} programme at ${organisation.name}`,
-        updateOfferingPath: `/find/offerings/${courseOffering.id}/update`,
+      })
+    })
+
+    describe('when the building choices course id is present in the session', () => {
+      it('sets the back link to the building choices course page', async () => {
+        const buildingChoicesCourseId = 'bc-course-id'
+
+        request.session.buildingChoicesData = {
+          courseVariantId: buildingChoicesCourseId,
+          isConvictedOfSexualOffence: 'no',
+          isInAWomensPrison: 'yes',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'courses/offerings/show',
+          expect.objectContaining({
+            hrefs: expect.objectContaining({
+              back: findPaths.buildingChoices.show({ courseId: buildingChoicesCourseId }),
+            }),
+          }),
+        )
+      })
+    })
+
+    describe('when all required conditions for making a referral are met', () => {
+      it('sets canMakeReferral to true', async () => {
+        config.flags.referEnabled = true
+        courseOffering.referable = true
+        courseOffering.organisationEnabled = true
+        response.locals.user.hasReferrerRole = true
+        request.session.pniFindAndReferData = {
+          prisonNumber: 'A1234AA',
+          programmePathway: 'HIGH_INTENSITY_BC',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'courses/offerings/show',
+          expect.objectContaining({ canMakeReferral: true }),
+        )
       })
     })
   })

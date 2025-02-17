@@ -1,7 +1,7 @@
 import { findPaths } from '../paths'
 import type { Audience, CoursePrerequisite } from '@accredited-programmes/models'
 import type {
-  BuildingChoicesSearchForm,
+  BuildingChoicesData,
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendTagWithText,
@@ -21,7 +21,7 @@ export default class CourseUtils {
   }
 
   static buildingChoicesAnswersSummaryListRows(
-    formData: BuildingChoicesSearchForm,
+    formData: Omit<BuildingChoicesData, 'courseVariantId'>,
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {

@@ -2,16 +2,18 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { findPaths } from '../../paths'
 import { FormUtils, TypeUtils } from '../../utils'
-import type { BuildingChoicesSearchForm } from '@accredited-programmes/ui'
+import type { BuildingChoicesData } from '@accredited-programmes/ui'
 
 export default class BuildingChoicesFormController {
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
+      const isPniFind = req.session.pniFindAndReferData !== undefined
+
       FormUtils.setFieldErrors(req, res, ['isConvictedOfSexualOffence', 'isInAWomensPrison'])
       FormUtils.setFormValues(req, res)
 
       res.render('courses/buildingChoices/form/show', {
-        backLinkHref: findPaths.index({}),
+        backLinkHref: isPniFind ? findPaths.pniFind.recommendedProgrammes({}) : findPaths.index({}),
         pageHeading: "About the person you're referring",
       })
     }
@@ -23,7 +25,7 @@ export default class BuildingChoicesFormController {
 
       let hasErrors = false
       const { courseId } = req.params
-      const { isConvictedOfSexualOffence, isInAWomensPrison } = req.body as BuildingChoicesSearchForm
+      const { isConvictedOfSexualOffence, isInAWomensPrison } = req.body as BuildingChoicesData
 
       if (!isConvictedOfSexualOffence) {
         req.flash('isConvictedOfSexualOffenceError', 'Select yes or no')
@@ -35,12 +37,13 @@ export default class BuildingChoicesFormController {
         hasErrors = true
       }
 
+      req.flash('formValues', [JSON.stringify({ isConvictedOfSexualOffence, isInAWomensPrison })])
+
       if (hasErrors) {
-        req.flash('formValues', [JSON.stringify({ isConvictedOfSexualOffence, isInAWomensPrison })])
         return res.redirect(findPaths.buildingChoices.form.show({ courseId }))
       }
 
-      req.session.buildingChoicesFormData = { isConvictedOfSexualOffence, isInAWomensPrison }
+      req.session.buildingChoicesData = { courseVariantId: courseId, isConvictedOfSexualOffence, isInAWomensPrison }
 
       return res.redirect(findPaths.buildingChoices.show({ courseId }))
     }

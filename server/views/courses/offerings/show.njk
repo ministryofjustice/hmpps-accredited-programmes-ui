@@ -10,9 +10,8 @@
 
 {% block backLink %}
   {{ govukBackLink({
-    classes: "js-back-link",
     text: "Back",
-    href: findPaths.show({ courseId: course.id })
+    href: hrefs.back
   }) }}
 {% endblock backLink %}
 
@@ -28,7 +27,7 @@
           {{ govukButton({
             type: "button",
             text: "Update",
-            href: updateOfferingPath,
+            href: hrefs.updateOffering,
             classes: "govuk-button--secondary",
             attributes: {
             "data-testid": "update-programme-offering-link"
@@ -58,13 +57,13 @@
         rows: organisation.summaryListRows
       }) }}
 
-      {% if referEnabled and user.hasReferrerRole and courseOffering.referable and courseOffering.organisationEnabled %}
+      {% if canMakeReferral %}
         {{ govukButton({
-            text: "Make a referral",
-            href: referPaths.new.start({ courseOfferingId: courseOffering.id }),
-            attributes: {
-              "data-testid": "make-referral-link"
-            }
+          text: "Make a referral",
+          href: hrefs.makeReferral,
+          attributes: {
+            "data-testid": "make-referral-link"
+          }
         }) }}
       {% endif %}
     </div>

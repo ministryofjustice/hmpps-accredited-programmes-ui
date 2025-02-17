@@ -12,19 +12,30 @@ export default class NewReferralStartPage extends Page {
 
   organisation: Organisation
 
-  constructor(args: { course: Course; courseOffering: CourseOffering; organisation: Organisation }) {
+  prisonNumber: string
+
+  constructor(args: {
+    course: Course
+    courseOffering: CourseOffering
+    organisation: Organisation
+    prisonNumber: string
+  }) {
     super('Make a referral', {
       pageTitleOverride: 'Start referral',
     })
 
-    const { course, courseOffering, organisation } = args
+    const { course, courseOffering, organisation, prisonNumber } = args
     this.course = CourseUtils.presentCourse(course)
     this.courseOffering = courseOffering
     this.organisation = organisation
+    this.prisonNumber = prisonNumber
   }
 
   shouldContainStartButtonLink() {
-    this.shouldContainButtonLink('Start now', referPaths.new.new({ courseOfferingId: this.courseOffering.id }))
+    return this.shouldContainButtonLink(
+      'Start now',
+      referPaths.new.people.show({ courseOfferingId: this.courseOffering.id, prisonNumber: this.prisonNumber }),
+    )
   }
 
   shouldHaveProcessInformation() {

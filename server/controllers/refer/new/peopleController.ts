@@ -4,29 +4,13 @@ import type { ResponseError } from 'superagent'
 
 import config from '../../../config'
 import { ApplicationRoles } from '../../../middleware'
-import { referPaths } from '../../../paths'
+import { findPaths, referPaths } from '../../../paths'
 import type { PersonService } from '../../../services'
 import { PersonUtils, TypeUtils } from '../../../utils'
 import type { Person } from '@accredited-programmes/models'
 
 export default class NewReferralsPeopleController {
   constructor(private readonly personService: PersonService) {}
-
-  find(): TypedRequestHandler<Request, Response> {
-    return async (req: Request, res: Response) => {
-      TypeUtils.assertHasUser(req)
-
-      const { courseOfferingId } = req.params
-      const { prisonNumber } = req.body
-
-      if (!prisonNumber) {
-        req.flash('prisonNumberError', 'Enter a prison number')
-        return res.redirect(referPaths.new.new({ courseOfferingId }))
-      }
-
-      return res.redirect(referPaths.new.people.show({ courseOfferingId, prisonNumber: prisonNumber.toUpperCase() }))
-    }
-  }
 
   show(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
@@ -52,7 +36,7 @@ export default class NewReferralsPeopleController {
 
         if (knownError.status === 404) {
           req.flash('prisonNumberError', `No person with prison number '${req.params.prisonNumber}' found`)
-          return res.redirect(referPaths.new.new({ courseOfferingId }))
+          return res.redirect(findPaths.pniFind.personSearch({}))
         }
 
         throw createError(knownError)
@@ -60,6 +44,10 @@ export default class NewReferralsPeopleController {
 
       return res.render('referrals/new/people/show', {
         courseOfferingId,
+        hrefs: {
+          back: referPaths.new.start({ courseOfferingId }),
+          restart: findPaths.pniFind.personSearch({}),
+        },
         pageHeading: `Confirm ${person.name}'s details`,
         pageTitleOverride: "Confirm person's details",
         personSummaryListRows: PersonUtils.summaryListRows(person),

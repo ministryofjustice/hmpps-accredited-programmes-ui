@@ -107,6 +107,7 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
 type ReferralSharedPageData = {
   buttons: Array<GovukFrontendButton>
   course: Course
+  courseOffering: CourseOffering
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
   hideTitleServiceName: boolean
   navigationItems: Array<MojFrontendNavigationItem>
@@ -228,7 +229,8 @@ type ReferralStatusHistoryPresenter = ReferralStatusHistory & {
   byLineText: MojTimelineItem['byline']['text']
 }
 
-interface BuildingChoicesSearchForm {
+interface BuildingChoicesData {
+  courseVariantId: Course['id']
   isConvictedOfSexualOffence: string
   isInAWomensPrison: string
 }
@@ -239,7 +241,7 @@ interface PniFindAndReferData {
 }
 
 export type {
-  BuildingChoicesSearchForm,
+  BuildingChoicesData,
   CaseListColumnHeader,
   CourseParticipationPresenter,
   CoursePresenter,

@@ -11,10 +11,7 @@ import type {
   CoursePrerequisite,
   Person,
 } from '@accredited-programmes/models'
-import type {
-  BuildingChoicesSearchForm,
-  GovukFrontendSummaryListWithRowsWithKeysAndValues,
-} from '@accredited-programmes/ui'
+import type { BuildingChoicesData, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 import type {
   Course,
   CourseParticipation,
@@ -88,7 +85,7 @@ export default class CourseService {
   async getBuildingChoicesVariants(
     username: Express.User['username'],
     courseId: Course['id'],
-    requestBody: BuildingChoicesSearchForm,
+    requestBody: Omit<BuildingChoicesData, 'courseVariantId'>,
   ): Promise<Array<Course>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)

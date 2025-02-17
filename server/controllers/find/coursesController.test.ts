@@ -24,6 +24,11 @@ describe('CoursesController', () => {
   beforeEach(() => {
     request = createMock<Request>({
       session: {
+        buildingChoicesData: {
+          courseVariantId: 'bc-course-id',
+          isConvictedOfSexualOffence: 'true',
+          isInAWomensPrison: 'false',
+        },
         pniFindAndReferData: {
           prisonNumber: 'some-prison-number',
           programmePathway: 'HIGH_INTENSITY_BC',
@@ -36,7 +41,7 @@ describe('CoursesController', () => {
   })
 
   describe('index', () => {
-    it('renders the courses index template with alphabetically-sorted courses and reset any pniFindAndReferData', async () => {
+    it('renders the courses index template with alphabetically-sorted courses and reset `pniFindAndReferData` and `buildingChoicesData`', async () => {
       const courseA = courseFactory.build({ name: 'Course A' })
       const courseB = courseFactory.build({ name: 'Course B' })
       const courseC = courseFactory.build({ name: 'Course C' })
@@ -45,11 +50,13 @@ describe('CoursesController', () => {
 
       const sortedCourses = [courseA, courseB, courseC]
 
+      expect(request.session.buildingChoicesData).toBeDefined()
       expect(request.session.pniFindAndReferData).toBeDefined()
 
       const requestHandler = controller.index()
       await requestHandler(request, response, next)
 
+      expect(request.session.buildingChoicesData).toBeUndefined()
       expect(request.session.pniFindAndReferData).toBeUndefined()
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),
@@ -101,15 +108,18 @@ describe('CoursesController', () => {
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           hideTitleServiceName: true,
+          hrefs: {
+            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+            back: findPaths.pniFind.recommendedProgrammes({}),
+            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+          },
           isBuildingChoices: false,
           noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           pageTitleOverride: `${coursePresenter.displayName} programme description`,
-          updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
       })
     })
@@ -146,16 +156,37 @@ describe('CoursesController', () => {
 
         const coursePresenter = CourseUtils.presentCourse(course)
         expect(response.render).toHaveBeenCalledWith('courses/show', {
-          addOfferingPath: `/find/programmes/${course.id}/offerings/add`,
           course: coursePresenter,
           hideTitleServiceName: true,
+          hrefs: {
+            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+            back: findPaths.pniFind.recommendedProgrammes({}),
+            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+          },
           isBuildingChoices: false,
           noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
           pageHeading: coursePresenter.displayName,
           pageTitleOverride: `${coursePresenter.displayName} programme description`,
-          updateProgrammePath: `/find/programmes/${course.id}/update`,
         })
+      })
+    })
+
+    describe('when there is no `pniFindAndReferData` in the session', () => {
+      it('should have the correct back link to the find directory index', async () => {
+        delete request.session.pniFindAndReferData
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'courses/show',
+          expect.objectContaining({
+            hrefs: expect.objectContaining({
+              back: findPaths.index({}),
+            }),
+          }),
+        )
       })
     })
   })

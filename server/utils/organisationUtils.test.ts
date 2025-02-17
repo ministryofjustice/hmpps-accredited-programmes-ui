@@ -128,7 +128,7 @@ describe('OrganisationUtils', () => {
               attributes: {
                 'data-sort-value': organisationsWithOfferingIds[0].name,
               },
-              html: `<a href="/find/offerings/${organisationsWithOfferingIds[0].courseOfferingId}">${organisationsWithOfferingIds[0].name}</a>`,
+              html: `<a class="govuk-link" href="/find/offerings/${organisationsWithOfferingIds[0].courseOfferingId}">${organisationsWithOfferingIds[0].name}</a>`,
             },
             { text: organisationsWithOfferingIds[0].category },
             { text: organisationsWithOfferingIds[0].address.county },
@@ -138,7 +138,7 @@ describe('OrganisationUtils', () => {
               attributes: {
                 'data-sort-value': organisationsWithOfferingIds[1].name,
               },
-              html: `<a href="/find/offerings/${organisationsWithOfferingIds[1].courseOfferingId}">${organisationsWithOfferingIds[1].name}</a>`,
+              html: `<a class="govuk-link" href="/find/offerings/${organisationsWithOfferingIds[1].courseOfferingId}">${organisationsWithOfferingIds[1].name}</a>`,
             },
             { text: organisationsWithOfferingIds[1].category },
             { text: organisationsWithOfferingIds[1].address.county },
@@ -148,7 +148,7 @@ describe('OrganisationUtils', () => {
               attributes: {
                 'data-sort-value': organisationsWithOfferingIds[2].name,
               },
-              html: `<a href="/find/offerings/${organisationsWithOfferingIds[2].courseOfferingId}">${organisationsWithOfferingIds[2].name}</a>`,
+              html: `<a class="govuk-link" href="/find/offerings/${organisationsWithOfferingIds[2].courseOfferingId}">${organisationsWithOfferingIds[2].name}</a>`,
             },
             { text: organisationsWithOfferingIds[2].category },
             { text: organisationsWithOfferingIds[2].address.county },
@@ -168,7 +168,7 @@ describe('OrganisationUtils', () => {
               attributes: {
                 'data-sort-value': organisationWithOfferingId.name,
               },
-              html: `<a href="/find/offerings/${organisationWithOfferingId.courseOfferingId}">${organisationWithOfferingId.name}</a>`,
+              html: `<a class="govuk-link" href="/find/offerings/${organisationWithOfferingId.courseOfferingId}">${organisationWithOfferingId.name}</a>`,
             },
             { text: organisationWithOfferingId.category },
             { text: 'Not found' },

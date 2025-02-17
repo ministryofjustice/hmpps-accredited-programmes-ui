@@ -51,7 +51,7 @@ context('App', () => {
       cy.visit('/')
 
       const indexPage = Page.verifyOnPage(IndexPage)
-      indexPage.shouldContainLink('Find a programme and make a referral', '/find/programmes')
+      indexPage.shouldContainLink('Find a programme and make a referral', '/find')
       indexPage.shouldContainLink('My referrals', '/refer/referrals/case-list')
       indexPage.shouldContainLink('Reporting data', '/reports')
     })
@@ -64,21 +64,23 @@ context('App', () => {
       cy.visit('/')
 
       const indexPage = Page.verifyOnPage(IndexPage)
-      indexPage.shouldContainLink('Find a programme and make a referral', '/find/programmes')
+      indexPage.shouldNotContainLink('/find')
       indexPage.shouldContainLink('Manage your programme team’s referrals', '/assess/referrals/case-list')
       indexPage.shouldContainLink('Reporting data', '/reports')
     })
   })
 
-  describe('When the user does not have either the `ACP_REFERRER` or `ACP_PROGRAMME_TEAM` role', () => {
-    it('does not show any case list links on the index page', () => {
+  describe('When the user has neither the `ACP_REFERRER` or `ACP_PROGRAMME_TEAM` role', () => {
+    it('should only show the reporting data link', () => {
       cy.task('stubSignIn')
       cy.signIn()
       cy.visit('/')
 
       const indexPage = Page.verifyOnPage(IndexPage)
+      indexPage.shouldNotContainLink('/find')
       indexPage.shouldNotContainLink('/refer/referrals/case-list')
       indexPage.shouldNotContainLink('/assess/referrals/case-list')
+      indexPage.shouldContainLink('Reporting data', '/reports')
     })
   })
 })

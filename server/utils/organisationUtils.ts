@@ -61,7 +61,7 @@ export default class OrganisationUtils {
       const offeringPath = findPaths.offerings.show({
         courseOfferingId: organisation.courseOfferingId as string,
       })
-      const contactOrganisationLink = `<a href="${offeringPath}">${organisation.name}</a>`
+      const contactOrganisationLink = `<a class="govuk-link" href="${offeringPath}">${organisation.name}</a>`
 
       return [
         {
