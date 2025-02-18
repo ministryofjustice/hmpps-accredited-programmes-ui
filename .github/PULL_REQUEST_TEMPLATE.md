@@ -20,7 +20,7 @@
 
 ## Release checklist
 
-[Release process documentation](../doc/how-to/perform-a-release.md)
+[Release process documentation](../blob/main/doc/how-to/perform-a-release.md)
 
 As part of our continuous deployment strategy we must ensure that this work is
 ready to be released once merged.
