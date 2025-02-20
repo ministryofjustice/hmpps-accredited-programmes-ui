@@ -4,6 +4,8 @@ import type { NextFunction, Request, Response } from 'express'
 
 import BuildingChoicesFormController from './buildingChoicesFormController'
 import { findPaths } from '../../paths'
+import type { OrganisationService, PersonService } from '../../services'
+import { organisationFactory, personFactory } from '../../testutils/factories'
 import { FormUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
@@ -13,6 +15,8 @@ describe('BuildingChoicesFormController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const organisationService = createMock<OrganisationService>({})
+  const personService = createMock<PersonService>({})
   let controller: BuildingChoicesFormController
 
   const username = 'SOME_USERNAME'
@@ -24,7 +28,11 @@ describe('BuildingChoicesFormController', () => {
       user: { username },
     })
     response = createMock<Response>({})
-    controller = new BuildingChoicesFormController()
+    controller = new BuildingChoicesFormController(organisationService, personService)
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
   })
 
   describe('show', () => {
@@ -39,16 +47,27 @@ describe('BuildingChoicesFormController', () => {
       expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
       expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/form/show', {
         backLinkHref: findPaths.index({}),
-        pageHeading: "About the person you're referring",
+        hideWomensPrisonQuestion: false,
+        pageHeading: "Has the person you're referring been convicted of a sexual offence?",
+        pageTitleOverride: "About the person you're referring",
       })
     })
 
     describe('when the user is coming from the PNI find page', () => {
-      it('should render the buildingChoices/show template with the back link to recommended programmes', async () => {
+      const prisonNumber = 'ABC1234'
+      const person = personFactory.build({ name: 'Del Hatton', prisonId: 'HEW', prisonNumber })
+      const organisation = organisationFactory.build({ id: 'HEW' })
+
+      beforeEach(() => {
         request.session.pniFindAndReferData = {
-          prisonNumber: 'ABC1234',
+          prisonNumber,
           programmePathway: 'HIGH_INTENSITY_BC',
         }
+        personService.getPerson.mockResolvedValue(person)
+      })
+
+      it('should render the buildingChoices/show template with correct response locals', async () => {
+        organisationService.getOrganisation.mockResolvedValue(organisation)
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -57,13 +76,42 @@ describe('BuildingChoicesFormController', () => {
           'isConvictedOfSexualOffence',
           'isInAWomensPrison',
         ])
-        expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
-        expect(response.render).toHaveBeenCalledWith(
-          'courses/buildingChoices/form/show',
-          expect.objectContaining({
+        expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, { isInAWomensPrison: 'false' })
+        expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/form/show', {
+          backLinkHref: findPaths.pniFind.recommendedProgrammes({}),
+          hideWomensPrisonQuestion: true,
+          pageHeading: 'Has Del Hatton been convicted of a sexual offence?',
+          pageTitleOverride: "About the person you're referring",
+        })
+      })
+
+      describe('when the organisation is a women’s prison', () => {
+        it('should set `isInAWomensPrison` default form value to `true`', async () => {
+          organisationService.getOrganisation.mockResolvedValue({ ...organisation, female: true })
+
+          const requestHandler = controller.show()
+          await requestHandler(request, response, next)
+
+          expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, { isInAWomensPrison: 'true' })
+        })
+      })
+
+      describe('when the person does not have a `prisonId`', () => {
+        it('should not call the organisation service and set the correct response locals', async () => {
+          personService.getPerson.mockResolvedValue({ ...person, prisonId: undefined })
+
+          const requestHandler = controller.show()
+          await requestHandler(request, response, next)
+
+          expect(organisationService.getOrganisation).not.toHaveBeenCalled()
+          expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, { isInAWomensPrison: '' })
+          expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/form/show', {
             backLinkHref: findPaths.pniFind.recommendedProgrammes({}),
-          }),
-        )
+            hideWomensPrisonQuestion: false,
+            pageHeading: 'Has Del Hatton been convicted of a sexual offence?',
+            pageTitleOverride: "About the person you're referring",
+          })
+        })
       })
     })
   })

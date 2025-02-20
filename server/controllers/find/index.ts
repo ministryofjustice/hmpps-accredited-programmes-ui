@@ -20,7 +20,10 @@ const controllers = (services: Services) => {
     services.organisationService,
   )
   const buildingChoicesController = new BuildingChoicesController(services.courseService, services.organisationService)
-  const buildingChoicesFormController = new BuildingChoicesFormController()
+  const buildingChoicesFormController = new BuildingChoicesFormController(
+    services.organisationService,
+    services.personService,
+  )
   const coursesController = new CoursesController(services.courseService, services.organisationService)
   const courseOfferingsController = new CourseOfferingsController(services.courseService, services.organisationService)
   const personSearchController = new PersonSearchController(services.personService)
