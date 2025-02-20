@@ -18,6 +18,7 @@ export default class OrganisationUtils {
       id: prison.prisonId, // eslint-disable-next-line sort-keys
       address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
       category: categories,
+      female: prison.female,
       name: prison.prisonName,
     }
   }

@@ -15,13 +15,14 @@ import type { Course, EnabledOrganisation } from '@accredited-programmes-api'
 describe('OrganisationUtils', () => {
   describe('organisationFromPrison', () => {
     it('returns an organisation given an ID and a prison, sorting and joining its categories into a string', () => {
-      const prison = prisonFactory.build({ categories: ['B', 'A'], prisonId: 'an-ID' })
+      const prison = prisonFactory.build({ categories: ['B', 'A'], female: false, prisonId: 'an-ID' })
       const { addressLine1, addressLine2, town, county, postcode, country } = prison.addresses[0]
 
       expect(OrganisationUtils.organisationFromPrison(prison)).toEqual({
         id: 'an-ID', // eslint-disable-next-line sort-keys
         address: { addressLine1, addressLine2, country, county, postalCode: postcode, town },
         category: 'A/B',
+        female: false,
         name: prison.prisonName,
       })
     })
