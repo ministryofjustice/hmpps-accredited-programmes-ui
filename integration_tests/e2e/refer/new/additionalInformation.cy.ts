@@ -3,9 +3,9 @@ import { referPaths } from '../../../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
+  peopleSearchResponseFactory,
   personFactory,
   prisonFactory,
-  prisonerFactory,
   referralFactory,
 } from '../../../../server/testutils/factories'
 import { OrganisationUtils } from '../../../../server/utils'
@@ -15,7 +15,7 @@ import { NewReferralAdditionalInformationPage, NewReferralTaskListPage } from '.
 
 context('Additional information', () => {
   const courseOffering = courseOfferingFactory.build()
-  const prisoner = prisonerFactory.build({
+  const prisoner = peopleSearchResponseFactory.build({
     firstName: 'Del',
     lastName: 'Hatton',
   })

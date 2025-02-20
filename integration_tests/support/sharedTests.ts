@@ -14,9 +14,9 @@ import {
   offenceDetailFactory,
   offenceDtoFactory,
   offenceHistoryDetailFactory,
+  peopleSearchResponseFactory,
   personFactory,
   prisonFactory,
-  prisonerFactory,
   psychiatricFactory,
   referralFactory,
   referralStatusHistoryFactory,
@@ -55,9 +55,8 @@ import {
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { CourseParticipation, Referral } from '@accredited-programmes-api'
+import type { CourseParticipation, PeopleSearchResponse, Referral } from '@accredited-programmes-api'
 import type { User, UserEmail } from '@manage-users-api'
-import type { PrisonerWithBookingId } from '@prisoner-search'
 
 type ApplicationRole = `${ApplicationRoles}`
 
@@ -65,8 +64,8 @@ const course = courseFactory.build()
 const coursePresenter = CourseUtils.presentCourse(course)
 const courseOffering = courseOfferingFactory.build()
 const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-let prisoner: PrisonerWithBookingId
-const defaultPrisoner = prisonerFactory.withBookingId().build({
+let prisoner: PeopleSearchResponse
+const defaultPrisoner = peopleSearchResponseFactory.build({
   bookingId: 'A-BOOKING-ID',
   conditionalReleaseDate: '2024-10-31',
   dateOfBirth: '1980-01-01',
@@ -78,7 +77,7 @@ const defaultPrisoner = prisonerFactory.withBookingId().build({
   sentenceExpiryDate: '2027-10-31',
   sentenceStartDate: '2010-10-31',
   tariffDate: '2028-10-31',
-}) as PrisonerWithBookingId
+})
 let person: Person
 const defaultPerson = personFactory.build({
   conditionalReleaseDate: '2024-10-31',
@@ -120,7 +119,7 @@ const sharedTests = {
   referrals: {
     beforeEach: (
       role: ApplicationRole,
-      data?: { person?: Person; prisoner?: PrisonerWithBookingId; referral?: Partial<Referral> },
+      data?: { person?: Person; prisoner?: PeopleSearchResponse; referral?: Partial<Referral> },
     ): void => {
       prisoner = data?.prisoner || defaultPrisoner
       person = data?.person || defaultPerson

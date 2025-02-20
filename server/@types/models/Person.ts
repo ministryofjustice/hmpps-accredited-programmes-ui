@@ -1,17 +1,17 @@
 interface Person {
   dateOfBirth: string
-  ethnicity: string
-  gender: string
   name: string
   prisonNumber: string
-  religionOrBelief: string
   setting: 'Custody'
   bookingId?: string
   conditionalReleaseDate?: string
   currentPrison?: string
+  ethnicity?: string
+  gender?: string
   homeDetentionCurfewEligibilityDate?: string
   indeterminateSentence?: boolean
   paroleEligibilityDate?: string
+  religionOrBelief?: string
   sentenceExpiryDate?: string
   sentenceStartDate?: string
   tariffDate?: string

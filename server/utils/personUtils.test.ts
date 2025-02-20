@@ -1,13 +1,13 @@
 import PersonUtils from './personUtils'
-import { keyDatesFactory, personFactory, prisonerFactory } from '../testutils/factories'
-import type { Prisoner } from '@prisoner-search'
+import { keyDatesFactory, peopleSearchResponseFactory, personFactory } from '../testutils/factories'
+import type { PeopleSearchResponse } from '@accredited-programmes-api'
 
 describe('PersonUtils', () => {
   describe('personFromPrisoner', () => {
-    let prisoner: Prisoner
+    let prisoner: PeopleSearchResponse
 
     beforeEach(() => {
-      prisoner = prisonerFactory.build({
+      prisoner = peopleSearchResponseFactory.build({
         bookingId: '1234567890',
         conditionalReleaseDate: '2024-10-31',
         dateOfBirth: '1971-07-05',

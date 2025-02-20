@@ -3,9 +3,9 @@ import { referPaths } from '../../../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
+  peopleSearchResponseFactory,
   personFactory,
   prisonFactory,
-  prisonerFactory,
   referralFactory,
 } from '../../../../server/testutils/factories'
 import { OrganisationUtils } from '../../../../server/utils'
@@ -15,7 +15,7 @@ import { NewReferralDeletePage, NewReferralTaskListPage } from '../../../pages/r
 
 context('Deleting a referral', () => {
   const courseOffering = courseOfferingFactory.build()
-  const prisoner = prisonerFactory.build({
+  const prisoner = peopleSearchResponseFactory.build({
     dateOfBirth: '1980-01-01',
     firstName: 'Del',
     lastName: 'Hatton',

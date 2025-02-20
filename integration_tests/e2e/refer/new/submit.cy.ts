@@ -4,9 +4,9 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  peopleSearchResponseFactory,
   personFactory,
   prisonFactory,
-  prisonerFactory,
   referralFactory,
   userFactory,
 } from '../../../../server/testutils/factories'
@@ -25,7 +25,7 @@ import type { UserEmail } from '@manage-users-api'
 context('Submitting a referral', () => {
   const course = courseFactory.build()
   const courseOffering = courseOfferingFactory.build()
-  const prisoner = prisonerFactory.build({
+  const prisoner = peopleSearchResponseFactory.build({
     dateOfBirth: '1980-01-01',
     firstName: 'Del',
     lastName: 'Hatton',

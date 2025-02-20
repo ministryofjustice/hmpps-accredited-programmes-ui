@@ -3,10 +3,10 @@ import { findPaths, referPaths } from '../../server/paths'
 import {
   courseFactory,
   courseOfferingFactory,
+  peopleSearchResponseFactory,
   personFactory,
   pniScoreFactory,
   prisonFactory,
-  prisonerFactory,
   referralFactory,
   userFactory,
 } from '../../server/testutils/factories'
@@ -81,7 +81,7 @@ context('Find programmes based on PNI Pathway', () => {
 
     describe('When submitting with a prison number that can be found', () => {
       const prisonNumber = 'A1234AA'
-      const prisoner = prisonerFactory.build({
+      const prisoner = peopleSearchResponseFactory.build({
         dateOfBirth: '1980-01-01',
         firstName: 'Del',
         lastName: 'Hatton',

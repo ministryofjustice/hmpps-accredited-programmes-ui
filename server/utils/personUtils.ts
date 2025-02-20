@@ -2,8 +2,8 @@ import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
 import type { KeyDates, Person } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { PeopleSearchResponse } from '@accredited-programmes-api'
 import type { GovukFrontendSummaryListRowKey } from '@govuk-frontend'
-import type { Prisoner } from '@prisoner-search'
 
 export const releaseDateFields = [
   'conditionalReleaseDate',
@@ -14,7 +14,7 @@ export const releaseDateFields = [
 ] as const
 
 export default class PersonUtils {
-  static personFromPrisoner(prisoner: Prisoner): Person {
+  static personFromPrisoner(prisoner: PeopleSearchResponse): Person {
     return {
       bookingId: prisoner.bookingId,
       conditionalReleaseDate: prisoner.conditionalReleaseDate,

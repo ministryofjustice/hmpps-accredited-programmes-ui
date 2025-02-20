@@ -24,11 +24,11 @@ import offenceHistoryDetailFactory from './offenceHistoryDetail'
 import offenderSentenceAndOffencesFactory from './offenderSentenceAndOffences'
 import organisationFactory from './organisation'
 import organisationAddressFactory from './organisationAddress'
+import peopleSearchResponseFactory from './peopleSearchResponse'
 import personFactory from './person'
 import pniScoreFactory from './pniScore'
 import prisonFactory from './prison'
 import prisonAddressFactory from './prisonAddress'
-import prisonerFactory from './prisoner'
 import psychiatricFactory from './psychiatric'
 import referralFactory from './referral'
 import referralStatusCategoryFactory from './referralStatusCategory'
@@ -71,11 +71,11 @@ export {
   offenderSentenceAndOffencesFactory,
   organisationAddressFactory,
   organisationFactory,
+  peopleSearchResponseFactory,
   personFactory,
   pniScoreFactory,
   prisonAddressFactory,
   prisonFactory,
-  prisonerFactory,
   psychiatricFactory,
   referralFactory,
   referralStatusCategoryFactory,

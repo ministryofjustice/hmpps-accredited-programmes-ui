@@ -2,9 +2,9 @@ import type { ApiConfig } from '../config'
 import RestClient from './restClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
+import type { PeopleSearchResponse } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 import type { Caseload, InmateDetail, OffenceDto, OffenderSentenceAndOffences, PageOffenceDto } from '@prison-api'
-import type { Prisoner, PrisonerWithBookingId } from '@prisoner-search'
 
 export default class PrisonApiClient {
   restClient: RestClient
@@ -25,7 +25,7 @@ export default class PrisonApiClient {
     })) as PageOffenceDto
   }
 
-  async findOffenderBookingByOffenderNo(offenderNo: Prisoner['prisonerNumber']): Promise<InmateDetail> {
+  async findOffenderBookingByOffenderNo(offenderNo: PeopleSearchResponse['prisonerNumber']): Promise<InmateDetail> {
     return (await this.restClient.get({
       path: prisonApiPaths.offenderBookingDetail({ offenderNo }),
       query: {
@@ -35,7 +35,7 @@ export default class PrisonApiClient {
   }
 
   async findSentenceAndOffenceDetails(
-    bookingId: PrisonerWithBookingId['bookingId'],
+    bookingId: PeopleSearchResponse['bookingId'],
   ): Promise<OffenderSentenceAndOffences> {
     return (await this.restClient.get({
       path: prisonApiPaths.offenderSentenceAndOffences({ bookingId }),

@@ -4,9 +4,9 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  peopleSearchResponseFactory,
   personFactory,
   prisonFactory,
-  prisonerFactory,
   referralFactory,
   userFactory,
 } from '../../../../server/testutils/factories'
@@ -25,7 +25,7 @@ import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type { CourseParticipation } from '@accredited-programmes-api'
 
 context('Programme history', () => {
-  const prisoner = prisonerFactory.build({
+  const prisoner = peopleSearchResponseFactory.build({
     firstName: 'Del',
     lastName: 'Hatton',
   })

@@ -1,13 +1,12 @@
 import Page from '../page'
-import type { PniScore } from '@accredited-programmes-api'
-import type { Prisoner } from '@prisoner-search'
+import type { PeopleSearchResponse, PniScore } from '@accredited-programmes-api'
 
 export default class RecommendedProgrammePage extends Page {
   personName: string
 
   programmePathway: string
 
-  constructor(args: { prisoner: Prisoner; programmePathway: PniScore['programmePathway'] }) {
+  constructor(args: { prisoner: PeopleSearchResponse; programmePathway: PniScore['programmePathway'] }) {
     const { prisoner, programmePathway } = args
     const personName = `${prisoner.firstName} ${prisoner.lastName}`
 
