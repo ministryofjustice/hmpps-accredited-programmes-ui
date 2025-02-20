@@ -1,12 +1,11 @@
 import { PniUtils } from '../../../server/utils'
 import Page from '../page'
-import type { PniScore } from '@accredited-programmes-api'
-import type { Prisoner } from '@prisoner-search'
+import type { PeopleSearchResponse, PniScore } from '@accredited-programmes-api'
 
 export default class RecommendedPathwayPage extends Page {
   personName: string
 
-  constructor(args: { prisoner: Prisoner }) {
+  constructor(args: { prisoner: PeopleSearchResponse }) {
     const { prisoner } = args
     const personName = `${prisoner.firstName} ${prisoner.lastName}`
 

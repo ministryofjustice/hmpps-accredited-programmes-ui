@@ -3,10 +3,10 @@ import type { SuperAgentRequest } from 'superagent'
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { SentenceDetails } from '@accredited-programmes/models'
-import type { Prisoner } from '@prisoner-search'
+import type { PeopleSearchResponse } from '@accredited-programmes-api'
 
 export default {
-  stubPrisoner: (prisoner: Prisoner | undefined): SuperAgentRequest =>
+  stubPrisoner: (prisoner: PeopleSearchResponse | undefined): SuperAgentRequest =>
     stubFor({
       request: {
         bodyPatterns: [

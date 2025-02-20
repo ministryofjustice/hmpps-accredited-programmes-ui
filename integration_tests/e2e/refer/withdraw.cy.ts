@@ -2,9 +2,9 @@ import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMidd
 import { referPaths } from '../../../server/paths'
 import {
   confirmationFieldsFactory,
+  peopleSearchResponseFactory,
   personFactory,
   prisonFactory,
-  prisonerFactory,
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusReasonFactory,
@@ -19,7 +19,7 @@ import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 context('Withdraw referral', () => {
   const anotherUser = userFactory.build({ name: 'Joshua Smith' })
   const prison = prisonFactory.build()
-  const prisoner = prisonerFactory.build({
+  const prisoner = peopleSearchResponseFactory.build({
     firstName: 'Del',
     lastName: 'Hatton',
   })

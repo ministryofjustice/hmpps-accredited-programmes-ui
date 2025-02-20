@@ -3,8 +3,7 @@ import nock from 'nock'
 import PersonClient from './personClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
-import { prisonerFactory, sentenceDetailsFactory } from '../../testutils/factories'
-import type { Prisoner } from '@prisoner-search'
+import { peopleSearchResponseFactory, sentenceDetailsFactory } from '../../testutils/factories'
 
 describe('PersonClient', () => {
   let fakeAccreditedProgrammesApi: nock.Scope
@@ -27,7 +26,7 @@ describe('PersonClient', () => {
   })
 
   describe('findPrisoner', () => {
-    const prisoner: Prisoner = prisonerFactory.build()
+    const prisoner = peopleSearchResponseFactory.build()
 
     it('searches for a prisoner by prison number and caseload IDs and returns the first match on the assumption that there will never be multiple matches', async () => {
       fakeAccreditedProgrammesApi

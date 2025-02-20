@@ -3,9 +3,9 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type { SentenceDetails } from '@accredited-programmes/models'
+import type { PeopleSearchResponse } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 import type { Caseload } from '@prison-api'
-import type { Prisoner } from '@prisoner-search'
 
 export default class PersonClient {
   restClient: RestClient
@@ -15,24 +15,25 @@ export default class PersonClient {
   }
 
   async findPrisoner(
-    prisonNumber: Prisoner['prisonerNumber'],
+    prisonNumber: PeopleSearchResponse['prisonerNumber'],
     caseloadIds?: Array<Caseload['caseLoadId']>,
-  ): Promise<Prisoner | null> {
-    const prisoners: Array<Prisoner> = (await this.restClient.post({
+  ): Promise<PeopleSearchResponse | null> {
+    const prisoners: Array<PeopleSearchResponse> = (await this.restClient.post({
       data: {
         prisonIds: caseloadIds,
         prisonerIdentifier: prisonNumber,
       },
       path: apiPaths.person.prisonerSearch({}),
-    })) as Array<Prisoner>
+    })) as Array<PeopleSearchResponse>
 
     if (!prisoners.length) {
       return null
     }
+
     return prisoners[0]
   }
 
-  async findSentenceDetails(prisonNumber: Prisoner['prisonerNumber']): Promise<SentenceDetails> {
+  async findSentenceDetails(prisonNumber: PeopleSearchResponse['prisonerNumber']): Promise<SentenceDetails> {
     return (await this.restClient.get({
       path: apiPaths.person.prisonerSentences({ prisonNumber }),
     })) as SentenceDetails

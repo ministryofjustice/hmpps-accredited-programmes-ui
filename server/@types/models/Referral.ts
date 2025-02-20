@@ -3,7 +3,6 @@ import type { Person } from './Person'
 import type { TagColour } from '@accredited-programmes/ui'
 import type { Course, Referral } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
-import type { Prisoner } from '@prisoner-search'
 
 const referralStatuses = [
   'assessed_suitable',
@@ -92,7 +91,7 @@ type ReferralView = {
   forename?: string
   listDisplayName?: string
   location?: string
-  nonDtoReleaseDateType?: Prisoner['nonDtoReleaseDateType']
+  nonDtoReleaseDateType?: string
   organisationId?: Organisation['id']
   organisationName?: Organisation['name']
   paroleEligibilityDate?: Person['paroleEligibilityDate']

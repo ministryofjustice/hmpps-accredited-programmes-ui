@@ -1,12 +1,12 @@
 import Page from '../page'
-import type { Prisoner } from '@prisoner-search'
+import type { PeopleSearchResponse } from '@accredited-programmes-api'
 
 export default class PersonSearchPage extends Page {
   constructor() {
     super('Find recommended programmes', { hideTitleServiceName: false })
   }
 
-  searchForPerson(prisonerNumber: Prisoner['prisonerNumber']) {
+  searchForPerson(prisonerNumber: PeopleSearchResponse['prisonerNumber']) {
     cy.get('input[id="prisonNumber"]').type(prisonerNumber)
 
     this.shouldContainButton('Continue').click()

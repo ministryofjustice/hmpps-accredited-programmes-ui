@@ -10,8 +10,8 @@ import {
   offenceDtoFactory,
   offenceHistoryDetailFactory,
   offenderSentenceAndOffencesFactory,
+  peopleSearchResponseFactory,
   personFactory,
-  prisonerFactory,
   sentenceDetailsFactory,
 } from '../testutils/factories'
 import { PersonUtils } from '../utils'
@@ -193,7 +193,7 @@ describe('PersonService', () => {
   })
 
   describe('getPerson', () => {
-    const prisoner = prisonerFactory.build()
+    const prisoner = peopleSearchResponseFactory.build()
 
     describe('when the prisoner client finds the corresponding prisoner', () => {
       it('converts the returned object to a Person', async () => {

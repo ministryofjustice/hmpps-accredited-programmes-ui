@@ -3,6 +3,7 @@ import type {
   Course,
   CourseOffering,
   CourseParticipation,
+  PeopleSearchResponse,
   PniScore,
   Referral,
   ReferralStatusHistory,
@@ -20,7 +21,6 @@ import type {
   GovukFrontendTag,
 } from '@govuk-frontend'
 import type { OffenceDto, OffenceHistoryDetail } from '@prison-api'
-import type { Prisoner } from '@prisoner-search'
 
 type GovukFrontendSummaryListCardActionsItemWithText = GovukFrontendSummaryListCardActionsItem & { text: string }
 
@@ -236,7 +236,7 @@ interface BuildingChoicesData {
 }
 
 interface PniFindAndReferData {
-  prisonNumber?: Prisoner['prisonerNumber']
+  prisonNumber?: PeopleSearchResponse['prisonerNumber']
   programmePathway?: PniScore['programmePathway']
 }
 

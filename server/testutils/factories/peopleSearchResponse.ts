@@ -3,20 +3,9 @@ import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
 import { StringUtils } from '../../utils'
-import type { Prisoner } from '@prisoner-search'
+import type { PeopleSearchResponse } from '@accredited-programmes-api'
 
-const generateBookingId = () => faker.string.numeric({ length: 10 })
-
-class PrisonerFactory extends Factory<Prisoner> {
-  // returns a `PrisonerWithBookingId`
-  withBookingId(bookingId?: Prisoner['bookingId']) {
-    return this.params({
-      bookingId: bookingId || generateBookingId(),
-    })
-  }
-}
-
-export default PrisonerFactory.define(({ params }) => {
+export default Factory.define<PeopleSearchResponse>(({ params }) => {
   const county = faker.location.county()
   const prisonName = params.prisonName || `${county} (HMP)`
 
@@ -26,7 +15,7 @@ export default PrisonerFactory.define(({ params }) => {
   const day = dateOfBirth.getDate()
 
   return {
-    bookingId: FactoryHelpers.optionalArrayElement(generateBookingId()),
+    bookingId: faker.string.numeric({ length: 10 }),
     conditionalReleaseDate: FactoryHelpers.optionalRandomFutureDateString(),
     dateOfBirth: [year, month, day].join('-'),
     ethnicity: StringUtils.properCase(faker.lorem.word()),
@@ -36,9 +25,9 @@ export default PrisonerFactory.define(({ params }) => {
     indeterminateSentence: FactoryHelpers.optionalArrayElement([faker.datatype.boolean()]),
     lastName: faker.person.lastName(),
     paroleEligibilityDate: FactoryHelpers.optionalRandomFutureDateString(),
+    prisonId: faker.string.alpha({ casing: 'upper', length: 3 }),
     prisonName,
     prisonerNumber: faker.string.alphanumeric({ casing: 'upper', length: 7 }),
-    raceCode: faker.helpers.arrayElement(['W1', 'W9', 'O9', 'B2', 'NS']),
     religion: StringUtils.properCase(faker.lorem.word()),
     sentenceExpiryDate: FactoryHelpers.optionalRandomFutureDateString(),
     sentenceStartDate: FactoryHelpers.optionalArrayElement([`${faker.date.past({ years: 20 })}`.substring(0, 10)]),
