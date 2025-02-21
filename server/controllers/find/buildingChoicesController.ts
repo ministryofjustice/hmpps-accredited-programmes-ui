@@ -40,8 +40,10 @@ export default class BuildingChoicesController {
         backLinkHref: findPaths.buildingChoices.form.show({ courseId }),
         buildingChoicesAnswersSummaryListRows: CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesData),
         course,
+        hideTitleServiceName: true,
         organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
         pageHeading: course.displayName,
+        pageTitleOverride: `${course.displayName} programme description`,
       })
     }
   }

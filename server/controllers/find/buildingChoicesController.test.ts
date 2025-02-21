@@ -120,8 +120,10 @@ describe('BuildingChoicesFormController', () => {
           backLinkHref: findPaths.buildingChoices.form.show({ courseId }),
           buildingChoicesAnswersSummaryListRows,
           course,
+          hideTitleServiceName: true,
           organisationsTableData,
           pageHeading: course.displayName,
+          pageTitleOverride: `${course.displayName} programme description`,
         })
       })
     })

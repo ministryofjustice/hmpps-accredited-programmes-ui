@@ -50,6 +50,9 @@
         <p>The list of suitable locations is based on what you told us about the person you're referring:</p>
 
         {{ govukSummaryList({
+          attributes: {
+            "data-testid": "form-selection-summary-list"
+          },
           classes: 'govuk-summary-list--no-border',
           rows: buildingChoicesAnswersSummaryListRows
         }) }}
