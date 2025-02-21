@@ -114,7 +114,7 @@ describe('PniUtils', () => {
 
       expect(pathwayContent).toEqual({
         bodyText:
-          'There is not enough information in the layer 3 assessment to calculate the recommended programme pathway.',
+          'There is not enough information in the risk and need assessment to calculate the recommended programme pathway.',
         class: 'pathway-content--missing',
         dataTestId: 'missing-informaton-pathway-content',
         headingText: 'Information missing',
