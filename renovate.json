@@ -4,6 +4,10 @@
     {
       "matchPackageNames": ["@golevelup/ts-jest"],
       "allowedVersions": "0.5.0"
+    },
+    {
+      "matchPackageNames": ["eslint-import-resolver-typescript"],
+      "allowedVersions": "3.7.0"
     }
   ]
 }
