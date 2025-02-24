@@ -105,6 +105,7 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
 }
 
 type ReferralSharedPageData = {
+  buttonMenu: MojButtonMenu
   buttons: Array<GovukFrontendButton>
   course: Course
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
@@ -154,6 +155,7 @@ type ReferralTaskListItem = {
 }
 
 type RisksAndNeedsSharedPageData = {
+  buttonMenu: MojButtonMenu
   buttons: Array<GovukFrontendButton>
   navigationItems: Array<MojFrontendNavigationItem>
   pageHeading: string
@@ -169,6 +171,16 @@ type RisksAndNeedsSharedPageData = {
 type ReferralTaskListSection = {
   heading: string
   items: Array<ReferralTaskListItem>
+}
+
+type MojButtonMenu = {
+  button: MojButtonMenuButton
+  items: Array<GovukFrontendButton>
+}
+
+type MojButtonMenuButton = {
+  text: string
+  classes?: string | null
 }
 
 type MojFrontendNavigationItem = {
@@ -251,6 +263,7 @@ export type {
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
+  MojButtonMenu,
   MojFrontendNavigationItem,
   MojTimelineItem,
   OffenceDetails,

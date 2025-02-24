@@ -185,6 +185,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/offenders/{offenderNo}/smoker": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update the prisoner's smoker status on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+        put: operations["updateSmokerStatus"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offenders/{offenderNo}/religion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update the prisoner's religion on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+        put: operations["updateReligion"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/offenders/{offenderNo}/release": {
         parameters: {
             query?: never;
@@ -229,6 +263,23 @@ export interface paths {
         get?: never;
         /** Update the prisoner's nationality on the current alias. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
         put: operations["updateNationality"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offenders/{offenderNo}/military-records/{militarySeq}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update the prisoner's military record. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+        put: operations["updateMilitaryRecord"];
         post?: never;
         delete?: never;
         options?: never;
@@ -786,7 +837,7 @@ export interface paths {
          *       <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash. When this API is invoked via the Nomis gateway this will already have been created by the gateway.</li>
          *       <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
          *     </ul>
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *
          */
         post: operations["createTransaction"];
@@ -819,7 +870,7 @@ export interface paths {
          *     </pre>
          *     <br/>The valid prison_id and type combinations are defined in the Nomis transaction_operations table which is maintained by the Maintain Transaction Operations screen (OCMTROPS), from the Financials Maintenance menu.
          *     Only those prisons (Caseloads) and Transaction types associated with the NOMISAPI module are valid.<br/>This will be setup by script intially as part of the deployment process as shown below<br/><br/>
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *
          */
         post: operations["storePayment"];
@@ -1107,6 +1158,27 @@ export interface paths {
         put?: never;
         /** Creates a prisoner and optional receives them into a prison by creating a new booking. BOOKING_CREATE role */
         post: operations["createPrisoner"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/offenders/{offenderNo}/military-records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Military Records
+         * @description Military Records
+         */
+        get: operations["getMilitaryRecords"];
+        put?: never;
+        /** Create the prisoner's military record. Requires the PRISON_API__PRISONER_PROFILE__RW role. */
+        post: operations["createMilitaryRecord"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1512,7 +1584,7 @@ export interface paths {
          *         <li>If the field X-Client-Name is present in the request header then the value is prepended to the client_unique_ref separated by a dash</li>
          *         <li>The client_unique_ref can have a maximum of 64 characters, only alphabetic, numeric, ‘-’ and ‘_’ characters are allowed</li>
          *       </ul>
-         *     <p>Requires role NOMIS_API_V1 or UNILINK</p>
+         *     <p>Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.</p>
          */
         post: operations["transferToSavings"];
         delete?: never;
@@ -1549,14 +1621,16 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Count of case notes
-         * @description Count of case notes. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
+         * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/usage
+         * @deprecated
+         * @description <p>This endpoint uses the REPLICA database.</p>
          */
         get: operations["getCaseNoteUsageSummary"];
         put?: never;
         /**
-         * Retrieves list of case notes grouped by type and offender
-         * @description Retrieves list of case notes grouped by type and offender. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
+         * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/usage
+         * @deprecated
+         * @description <p>This endpoint uses the REPLICA database.</p>
          */
         post: operations["getCaseNoteUsageSummaryByPost"];
         delete?: never;
@@ -1575,8 +1649,9 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Retrieves list of case notes grouped by types, bookings and from dates
-         * @description Retrieves list of case notes grouped by type/sub and offender. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
+         * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/usage
+         * @deprecated
+         * @description <p>This endpoint uses the REPLICA database.</p>
          */
         post: operations["getCaseNoteUsageSummaryByDates"];
         delete?: never;
@@ -1595,8 +1670,9 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Retrieves list of case notes grouped by type/sub-type and staff
-         * @description Retrieves list of case notes grouped by type/sub-type and staff. Requires role VIEW_CASE_NOTES<p>This endpoint uses the REPLICA database.</p>
+         * This endpoint has been replaced in the case notes service - see case-notes-service/case-notes/staff-usage
+         * @deprecated
+         * @description <p>This endpoint uses the REPLICA database.</p>
          */
         post: operations["getCaseNoteStaffUsageSummaryByPost"];
         delete?: never;
@@ -1723,27 +1799,6 @@ export interface paths {
          * @description Requires role VIEW_PRISONER_DATA or GLOBAL_SEARCH, or prisoners are in caseload<p>This endpoint uses the REPLICA database.</p>
          */
         post: operations["getBasicInmateDetailsForOffenders"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/bookings/offenderNo/{agencyId}/alerts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Deprecated - Please use the alerts api for access to alerts (eg https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
-         * @deprecated
-         * @description Replace with https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/prisoner-alerts-controller/retrievePrisonerAlerts_1<p>This endpoint uses the REPLICA database.</p>
-         */
-        post: operations["getAlertsByOffenderNosAtAgency"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2002,7 +2057,7 @@ export interface paths {
         /**
          * Retrieve a single financial transaction using client unique ref.
          * @description All transaction amounts are represented as pence values.<br/>
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *
          */
         get: operations["getTransactionByClientUniqueRef"];
@@ -2045,7 +2100,7 @@ export interface paths {
          * Retrieve an offender's financial account balances.
          * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
          *     All balance values are represented as pence values.<br/>
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *
          */
         get: operations["getAccountBalance"];
@@ -2068,7 +2123,7 @@ export interface paths {
          * Retrieve an offender's financial transaction history for cash, spends or savings.
          * @description Transactions are returned in NOMIS order (Descending date followed by id).<br/>
          *     All transaction amounts are represented as pence values.<br/>
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *
          */
         get: operations["getAccountTransactions"];
@@ -2092,7 +2147,7 @@ export interface paths {
          * @deprecated
          * @description Returns balances for the offender’s three sub accounts (spends, savings and cash) at the specified prison.<br/>
          *     All balance values are represented as pence values.<br/>
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *
          */
         get: operations["getAccountBalanceTrailingSlash"];
@@ -2113,7 +2168,7 @@ export interface paths {
         };
         /**
          * Fetching live roll.
-         * @description Requires NOMIS_API_V1 or UNILINK role.<p>This endpoint uses the REPLICA database.</p>
+         * @description Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.<p>This endpoint uses the REPLICA database.</p>
          */
         get: operations["getLiveRoll"];
         put?: never;
@@ -2219,7 +2274,7 @@ export interface paths {
          *       <li>The field 'offender_details_request' contains a JSON block of data containing the offender data.</li>
          *     </ul>
          *     The format of 'offender_details_request' is not specified here.<br/>
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *     <p>This endpoint uses the REPLICA database.</p>
          */
         get: operations["getOffenderPssDetail"];
@@ -2340,7 +2395,7 @@ export interface paths {
          *     request could specify data from 2022-05-18 with limit of 1000.  The next request could then look at the last
          *     event in the response and specify that as the from_datetime with limit of 1000 again etc. until all data is
          *     retrieved.
-         *     Requires NOMIS_API_V1 or UNILINK role.
+         *     Requires NOMIS_API_V1, UNILINK or PRISON_API__HMPPS_INTEGRATION_API role.
          *     <p>This endpoint uses the REPLICA database.</p>
          */
         get: operations["getOffenderEvents"];
@@ -2795,6 +2850,26 @@ export interface paths {
          * @description List of reference codes for reference domain ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p>
          */
         get: operations["getReferenceCodesByDomain_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reference-domains/domains/{domain}/all-codes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List of reference codes for reference domain.
+         * @description List of reference codes / profile codes for reference domain / profile type, ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p>
+         */
+        get: operations["getReferenceOrProfileCodesByDomain"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3337,26 +3412,6 @@ export interface paths {
         };
         /** Get all identifiers for the prisoner (with or without alias identifiers) */
         get: operations["getAllOffenderIdentifiers"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/offenders/{offenderNo}/military-records": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Military Records
-         * @description Military Records
-         */
-        get: operations["getMilitaryRecords"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4074,6 +4129,22 @@ export interface paths {
         };
         /** Get the date of the latest arrival into prison for the offender */
         get: operations["getLatestArrivalDate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/movements/offender/{offenderNo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMovementsByOffender"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5074,27 +5145,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/bookings/{bookingId}/alerts/v2": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Deprecated - Please use the alerts api for access to alerts (eg https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html)
-         * @deprecated
-         * @description Replace with https://alerts-api-dev.hmpps.service.justice.gov.uk/swagger-ui/index.html#/prisoner-alerts-controller/retrievePrisonerAlerts
-         */
-        get: operations["getOffenderAlertsV2"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/bookings/{bookingId}/activities": {
         parameters: {
             query?: never;
@@ -5338,27 +5388,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/agencies/{agencyId}/locations/type/{type}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List of active internal locations for agency by type.
-         * @deprecated
-         * @description List of active internal locations for agency by type.
-         */
-        get: operations["getAgencyLocationsByType"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/agencies/{agencyId}/locations/groups": {
         parameters: {
             query?: never;
@@ -5389,7 +5418,8 @@ export interface paths {
         };
         /**
          * List of locations for agency where events (appointments, visits, activities) could be held.
-         * @description List of locations for agency where events (appointments, visits, activities) could be held.
+         * @deprecated
+         * @description *** DEPRECATED *** List of locations for agency where events (appointments, visits, activities) could be held.
          */
         get: operations["getAgencyEventLocations"];
         put?: never;
@@ -5432,26 +5462,6 @@ export interface paths {
          * @description An agency can have one to many establishment types. For example a prison could be both a youth and adult establishment.
          */
         get: operations["getAgencyEstablishmentTypes"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/agencies/{agencyId}/cellsWithCapacity": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List of active cells with capacity for agency.
-         * @description List of active cells with capacity for agency.<p>This endpoint uses the REPLICA database.</p>
-         */
-        get: operations["getAgencyActiveCellsWithCapacity"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5840,25 +5850,40 @@ export interface components {
              */
             locality?: string;
             /**
-             * @description Town/City. Note: Reference domain is CITY
+             * @description Town/City description. Note: Reference domain is CITY
              * @example Liverpool
              */
             town?: string;
+            /**
+             * @description Town/City code. Note: Reference domain is CITY
+             * @example 17743
+             */
+            townCode?: string;
             /**
              * @description Postal Code
              * @example LI1 5TH
              */
             postalCode?: string;
             /**
-             * @description County. Note: Reference domain is COUNTY
-             * @example HEREFORD
+             * @description County description. Note: Reference domain is COUNTY
+             * @example Herefordshire
              */
             county?: string;
             /**
-             * @description Country. Note: Reference domain is COUNTRY
-             * @example ENG
+             * @description County code. Note: Reference domain is COUNTY
+             * @example HEREFORD
+             */
+            countyCode?: string;
+            /**
+             * @description Country description. Note: Reference domain is COUNTRY
+             * @example England
              */
             country?: string;
+            /**
+             * @description Country code. Note: Reference domain is COUNTRY
+             * @example ENG
+             */
+            countryCode?: string;
             /**
              * @description Comment
              * @example This is a comment text
@@ -5866,17 +5891,17 @@ export interface components {
             comment?: string;
             /**
              * @description Primary Address
-             * @example false
+             * @example Y
              */
             primary: boolean;
             /**
              * @description Mail Address
-             * @example false
+             * @example Y
              */
             mail: boolean;
             /**
              * @description No Fixed Address
-             * @example false
+             * @example N
              */
             noFixedAddress: boolean;
             /**
@@ -5951,14 +5976,14 @@ export interface components {
             /**
              * @description Court Type.  Reference domain is JURISDICTION
              * @example CC
-             * @enum {string|null}
+             * @enum {string}
              */
-            courtType?: "CACD" | "CB" | "CC" | "CO" | "DCM" | "GCM" | "IMM" | "MC" | "OTHER" | "YC" | null;
+            courtType?: "CACD" | "CB" | "CC" | "CO" | "DCM" | "GCM" | "IMM" | "MC" | "OTHER" | "YC";
             /**
              * @description Court Type description.  Reference domain is JURISDICTION. Not always present for all end points
              * @example Crown Court
              */
-            courtTypeDescription?: string | null;
+            courtTypeDescription?: string;
             /**
              * Format: date
              * @description Date agency became inactive
@@ -5971,7 +5996,9 @@ export interface components {
             phones?: components["schemas"]["Telephone"][];
             /** @description List of emails associated with agency */
             emails?: components["schemas"]["Email"][];
+            /** @description Area of this agency */
             area?: components["schemas"]["RefCodeAndDescription"];
+            /** @description Region of this agency */
             region?: components["schemas"]["RefCodeAndDescription"];
         };
         /** @description Alert */
@@ -6317,7 +6344,9 @@ export interface components {
             inactiveAlertCount?: number;
             /** @description List of alert details */
             alerts?: components["schemas"]["Alert"][];
+            /** @description Cell or location of the prisoner */
             assignedLivingUnit?: components["schemas"]["AssignedLivingUnit"];
+            /** @description A set of physical attributes */
             physicalAttributes?: components["schemas"]["PhysicalAttributes"];
             /** @description List of physical characteristics */
             physicalCharacteristics?: components["schemas"]["PhysicalCharacteristic"][];
@@ -6362,6 +6391,7 @@ export interface components {
             identifiers?: components["schemas"]["OffenderIdentifier"][];
             /** @description Personal Care Needs. Note: Only returned when requesting extra details */
             personalCareNeeds?: components["schemas"]["PersonalCareNeed"][];
+            /** @description Sentence Detail. Note: Only returned when requesting extra details */
             sentenceDetail?: components["schemas"]["SentenceCalcDates"];
             /** @description Offence History. Note: Only returned when requesting extra details */
             offenceHistory?: components["schemas"]["OffenceHistoryDetail"][];
@@ -6389,6 +6419,7 @@ export interface components {
              * @example CA
              */
             lastMovementReasonCode?: string;
+            /** @description Last Movement to location, such as a court or prison */
             lastMovementToAgency?: components["schemas"]["Agency"];
             /**
              * @description Last Movement comment
@@ -6416,6 +6447,11 @@ export interface components {
              * @example Serving Life Imprisonment
              */
             imprisonmentStatusDescription?: string;
+            /**
+             * @description The prisoner's convicted status. Note: Only returned when requesting extra details
+             * @example Convicted
+             */
+            convictedStatus?: string;
             /**
              * Format: date
              * @description Date prisoner was received into the prison.
@@ -7220,6 +7256,39 @@ export interface components {
              */
             dateTime: string;
         };
+        /** @description Update to prisoner's smoker status */
+        UpdateSmokerStatus: {
+            /**
+             * @description The smoker status code ('Y' for 'Yes', 'N' for 'No', 'V' for 'Vaper/NRT Only')
+             * @example Y
+             * @enum {string}
+             */
+            smokerStatus: "Y" | "N" | "V";
+        };
+        /** @description Update to prisoner religion */
+        UpdateReligion: {
+            /**
+             * @description The religion code
+             * @example ZORO
+             */
+            religion: string;
+            /**
+             * @description Reason for the religion change
+             * @example Some information
+             */
+            comment?: string;
+            /**
+             * Format: date
+             * @description The date the religious belief is valid from (in YYYY-MM-DD format)
+             */
+            effectiveFromDate?: string;
+            /**
+             * @description Has the religious belief been verified?
+             * @default false
+             * @example false
+             */
+            verified: boolean;
+        };
         /** @description Request release of prisoner */
         RequestToReleasePrisoner: {
             /**
@@ -7285,10 +7354,85 @@ export interface components {
         /** @description Update to prisoner nationality */
         UpdateNationality: {
             /**
-             * @description Nationality
-             * @example British
+             * @description The nationality code
+             * @example BRIT
              */
-            nationality: string | null;
+            nationality: string;
+            /**
+             * @description Other nationalities
+             * @example Irish
+             */
+            otherNationalities: string;
+        };
+        /** @description Military record request object. Used to create or update a military record. */
+        MilitaryRecordRequest: {
+            /**
+             * @description Code identifying the war zone where the service took place.
+             * @example AFG
+             */
+            warZoneCode?: string;
+            /**
+             * Format: date
+             * @description Start date of the military service.
+             * @example 2017-06-01
+             */
+            startDate: string;
+            /**
+             * Format: date
+             * @description End date of the military service, if applicable.
+             * @example 2019-12-01
+             */
+            endDate?: string;
+            /**
+             * @description Code indicating the discharge status from the UK military forces.
+             * @example HON
+             */
+            militaryDischargeCode?: string;
+            /**
+             * @description Code identifying the branch of the UK military in which the individual served.
+             * @example ARM
+             */
+            militaryBranchCode: string;
+            /**
+             * @description Additional notes or details about the military service.
+             * @example Deployed to Afghanistan in support of Operation Herrick.
+             */
+            description?: string;
+            /**
+             * @description Unit number in which the individual served.
+             * @example 2nd Battalion, The Royal Anglian Regiment
+             */
+            unitNumber?: string;
+            /**
+             * @description Location where the individual enlisted in the UK military.
+             * @example Windsor, Berkshire
+             */
+            enlistmentLocation?: string;
+            /**
+             * @description Location where the individual was discharged from the UK military.
+             * @example Colchester, Essex
+             */
+            dischargeLocation?: string;
+            /**
+             * @description Flag indicating if the individual was registered for UK selective military service (National Service).
+             * @example false
+             */
+            selectiveServicesFlag: boolean;
+            /**
+             * @description Code identifying the individual's military rank in the UK forces.
+             * @example CPL_ARM
+             */
+            militaryRankCode?: string;
+            /**
+             * @description Service number of the individual within the UK military.
+             * @example 2345678
+             */
+            serviceNumber?: string;
+            /**
+             * @description Code identifying any disciplinary actions taken against the individual during service.
+             * @example CM
+             */
+            disciplinaryActionCode?: string;
         };
         /** @description Cell move result */
         CellMoveResult: {
@@ -7408,7 +7552,7 @@ export interface components {
              * @description Birth place (city or town of birth)
              * @example SHEFFIELD
              */
-            birthPlace: string | null;
+            birthPlace: string;
         };
         /** @description Update to prisoner birth country */
         UpdateBirthCountry: {
@@ -7416,7 +7560,7 @@ export interface components {
              * @description Country code
              * @example GBR
              */
-            countryCode: string | null;
+            countryCode: string;
         };
         /** @description HDC Curfew Check */
         HdcChecks: {
@@ -7541,10 +7685,7 @@ export interface components {
             statuteCode: string;
             activationFlag: boolean;
         };
-        /**
-         * @description HO Code
-         * @example 825/99
-         */
+        /** @description HO Code */
         HOCodeDto: {
             /**
              * @description HO code
@@ -7577,7 +7718,15 @@ export interface components {
             code: string;
             /** @description Description of offence */
             description: string;
+            /**
+             * @description Statute code
+             * @example RR84
+             */
             statuteCode: components["schemas"]["StatuteDto"];
+            /**
+             * @description HO code
+             * @example 825/99
+             */
             hoCode?: components["schemas"]["HOCodeDto"];
             /**
              * @description Severity Ranking
@@ -7602,10 +7751,7 @@ export interface components {
              */
             expiryDate?: string;
         };
-        /**
-         * @description Statute
-         * @example RR84
-         */
+        /** @description Statute */
         StatuteDto: {
             /**
              * @description Statute code
@@ -7772,6 +7918,7 @@ export interface components {
              * @example 2021-07-05T10:35:17
              */
             dateTime?: string;
+            /** @description The location of the court for the hearing. */
             location?: components["schemas"]["Agency"];
         };
         /** @description Attendance details.  This is used to update the attendance details of an offender */
@@ -7794,7 +7941,6 @@ export interface components {
              */
             outcomeComment?: string;
         };
-        /** @description set of booking and activity ids */
         BookingActivity: {
             /** Format: int64 */
             bookingId?: number;
@@ -7912,12 +8058,12 @@ export interface components {
             comment?: string;
             /**
              * @description Primary Address
-             * @example false
+             * @example Y
              */
             primary: boolean;
             /**
              * @description No Fixed Address
-             * @example false
+             * @example N
              */
             noFixedAddress: boolean;
             /**
@@ -8022,7 +8168,9 @@ export interface components {
         };
         /** @description Transfer Response */
         Transfer: {
+            /** @description Transaction */
             transaction?: components["schemas"]["Transaction"];
+            /** @description Current Location */
             current_location?: components["schemas"]["CodeDescription"];
         };
         /** @description User Details */
@@ -8536,6 +8684,7 @@ export interface components {
             ethnicity?: "A9" | "B1" | "B2" | "B9" | "M1" | "M2" | "M3" | "M9" | "NS" | "O1" | "O2" | "O9" | "W1" | "W2" | "W3" | "W8" | "W9";
             /** @description The offender's CRO (Criminal Records Office) number. */
             croNumber?: string;
+            /** @description Optional prison booking data for the offender. */
             booking?: components["schemas"]["RequestForNewBooking"];
         };
         /** @description Represents an adjudication hearing at the offender level. */
@@ -8609,6 +8758,7 @@ export interface components {
              * @example true
              */
             mostRecentActiveBooking: boolean;
+            /** @description Offender Sentence Detail Information */
             sentenceDetail?: components["schemas"]["SentenceCalcDates"];
             /**
              * Format: date
@@ -8803,6 +8953,7 @@ export interface components {
             calculationDateTime?: string;
             /** @description DPS/NOMIS user who submitted the calculated dates. */
             submissionUser: string;
+            /** @description Key dates to be updated for the offender. */
             keyDates: components["schemas"]["OffenderKeyDates"];
             /** @description Comment to be associated with the sentence calculation, if not set a default comment is used */
             comment?: string;
@@ -9152,7 +9303,7 @@ export interface components {
              */
             objectId?: number;
         };
-        /** @description Transfer to Savings Transaction */
+        /** @description Saving Transfer Transaction Details */
         TransferTransaction: {
             /**
              * Format: int64
@@ -9175,6 +9326,18 @@ export interface components {
              * @example CLIENT121131-0_11
              */
             client_unique_ref: string;
+        };
+        /** @description Detail of result of transfer transaction */
+        TransferTransactionDetail: {
+            /** @description Debit Transaction */
+            debitTransaction?: components["schemas"]["Transaction"];
+            /** @description Credit Transaction */
+            creditTransaction?: components["schemas"]["Transaction"];
+            /**
+             * Format: int64
+             * @description Transaction Id
+             */
+            transactionId?: number;
         };
         /** @description Offender Education */
         Education: {
@@ -9448,7 +9611,15 @@ export interface components {
              * @example 2021-07-05T10:35:17
              */
             scheduledMoveDateTime?: string;
+            /**
+             * @description The location of the prison to move from.
+             * @example PVI
+             */
             fromPrisonLocation?: components["schemas"]["Agency"];
+            /**
+             * @description The location of the prison to move to.
+             * @example LEI
+             */
             toPrisonLocation?: components["schemas"]["Agency"];
         };
         /** @description The prison to court hearing to be scheduled for the offender booking. */
@@ -9750,12 +9921,13 @@ export interface components {
         };
         /** @description Details for creating appointments in bulk */
         AppointmentsToCreate: {
+            /** @description The default values to be applied to each new appointment. An individual appointment may change the startTime, add or change the endTime and provide text for that appointment's comment. */
             appointmentDefaults: components["schemas"]["AppointmentDefaults"];
             /** @description The details for creating each appointment.  A Missing value falls back to the default value if present. Mandatory, but an empty list is accepted. */
             appointments: components["schemas"]["AppointmentDetails"][];
+            /** @description If present specifies the number of times to repeat the appointments and the period of the repeat */
             repeat?: components["schemas"]["Repeat"];
         };
-        /** @description If present specifies the number of times to repeat the appointments and the period of the repeat */
         Repeat: {
             /**
              * @description The period at which the appointment should repeat.
@@ -9892,6 +10064,7 @@ export interface components {
              * @example 204564839-3
              */
             id: string;
+            /** @description The type of transaction */
             type: components["schemas"]["CodeDescription"];
             /**
              * @description Transaction description
@@ -10052,8 +10225,11 @@ export interface components {
              * @example 1970-01-01
              */
             date_of_birth?: string;
+            /** @description Gender */
             gender?: components["schemas"]["CodeDescription"];
+            /** @description Relationship Type */
             "relationship type"?: components["schemas"]["CodeDescription"];
+            /** @description Contact Type */
             "contact type"?: components["schemas"]["CodeDescription"];
             /** @description Approved Visitor */
             "approved visitor"?: boolean;
@@ -10064,6 +10240,7 @@ export interface components {
         };
         /** @description Visit Restriction */
         VisitRestriction: {
+            /** @description Type */
             type?: components["schemas"]["CodeDescription"];
             /**
              * Format: date
@@ -10087,6 +10264,7 @@ export interface components {
         };
         /** @description Language */
         Language: {
+            /** @description Spoken language */
             preferred_spoken?: components["schemas"]["CodeDescription"];
             /**
              * @description whether an interpreter is required
@@ -10126,12 +10304,17 @@ export interface components {
             date_of_birth?: string;
             /** @description List of offender’s aliases */
             aliases?: components["schemas"]["OffenderAlias"][];
+            /** @description Gender */
             gender?: components["schemas"]["CodeDescription"];
             /** @description Nationalities */
             nationalities?: string;
+            /** @description Religion */
             religion?: components["schemas"]["CodeDescription"];
+            /** @description Ethnicity */
             ethnicity?: components["schemas"]["CodeDescription"];
+            /** @description Language */
             language?: components["schemas"]["Language"];
+            /** @description Cell Sharing Risk Assessment */
             csra?: components["schemas"]["CodeDescription"];
             /**
              * @description indicates whether the offender has been convicted or is on remand
@@ -10148,9 +10331,13 @@ export interface components {
              * @example ADF567890
              */
             cro_number?: string;
+            /** @description Imprisonment Status */
             imprisonment_status?: components["schemas"]["CodeDescription"];
+            /** @description IEP Level */
             iep_level?: components["schemas"]["CodeDescription"];
+            /** @description Diet */
             diet?: components["schemas"]["CodeDescription"];
+            /** @description Security Categorisation */
             security_category?: components["schemas"]["CodeDescription"];
         };
         /** @description Offender Alias */
@@ -10255,6 +10442,7 @@ export interface components {
         };
         /** @description Offender Booking */
         Booking: {
+            /** @description Location of Offender */
             location?: components["schemas"]["Location"];
             /**
              * @description Bookings
@@ -10294,7 +10482,21 @@ export interface components {
         };
         /** @description Offender Charge */
         Charge: {
+            /**
+             * @description Statute
+             * @example {
+             *       "code": "PL96",
+             *       "desc": "Police Act 1996"
+             *     }
+             */
             statute?: components["schemas"]["CodeDescription"];
+            /**
+             * @description Offence
+             * @example {
+             *       "code": "PL96001",
+             *       "desc": "Assault a constable in the execution of his / her duty"
+             *     }
+             */
             offence?: components["schemas"]["CodeDescription"];
             /**
              * @description Most Serious Offence
@@ -10311,14 +10513,42 @@ export interface components {
              * @example 100
              */
             severity_ranking?: string;
+            /**
+             * @description Result
+             * @example {
+             *       "code": "1002",
+             *       "desc": "Imprisonment"
+             *     }
+             */
             result?: components["schemas"]["CodeDescription"];
+            /**
+             * @description Disposition
+             * @example {
+             *       "code": "F",
+             *       "desc": "Final"
+             *     }
+             */
             disposition?: components["schemas"]["CodeDescription"];
             /**
              * @description Convicted
              * @example true
              */
             convicted?: boolean;
+            /**
+             * @description Imprisonment Status
+             * @example {
+             *       "code": "UNK_SENT",
+             *       "desc": "Unknown Sentenced"
+             *     }
+             */
             imprisonment_status?: components["schemas"]["CodeDescription"];
+            /**
+             * @description Band
+             * @example {
+             *       "code": "1",
+             *       "desc": "Sent-Determinate NonFine"
+             *     }
+             */
             band?: components["schemas"]["CodeDescription"];
         };
         /** @description Legal Case */
@@ -10339,14 +10569,42 @@ export interface components {
              * @example 2019-01-17
              */
             case_started?: string;
+            /**
+             * @description Court
+             * @example {
+             *       "code": "ABDRCT",
+             *       "desc": "Aberdare County Court"
+             *     }
+             */
             court?: components["schemas"]["CodeDescription"];
+            /**
+             * @description Legal Case Type
+             * @example {
+             *       "code": "A",
+             *       "desc": "Adult"
+             *     }
+             */
             legal_case_type?: components["schemas"]["CodeDescription"];
             /** @description Charges */
             charges?: components["schemas"]["Charge"][];
         };
         /** @description Offender Alert */
         AlertV1: {
+            /**
+             * @description Code and description identifying the type of alert
+             * @example {
+             *       "code": "FX",
+             *       "desc": "Security"
+             *     }
+             */
             alert_type: components["schemas"]["CodeDescription"];
+            /**
+             * @description Code and description identifying the sub type of alert
+             * @example {
+             *       "code": "XEL",
+             *       "desc": "Escape List"
+             *     }
+             */
             alert_sub_type: components["schemas"]["CodeDescription"];
             /**
              * Format: date
@@ -10389,6 +10647,7 @@ export interface components {
              * @example true
              */
             found?: boolean;
+            /** @description offender */
             offender?: components["schemas"]["OffenderId"];
         };
         /** @description offender ID */
@@ -10779,9 +11038,9 @@ export interface components {
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
             /** Format: int32 */
             numberOfElements?: number;
+            pageable?: components["schemas"]["PageableObject"];
             empty?: boolean;
         };
         PageableObject: {
@@ -10789,10 +11048,10 @@ export interface components {
             offset?: number;
             sort?: components["schemas"]["SortObject"];
             /** Format: int32 */
-            pageNumber?: number;
-            /** Format: int32 */
             pageSize?: number;
             paged?: boolean;
+            /** Format: int32 */
+            pageNumber?: number;
             unpaged?: boolean;
         };
         SortObject: {
@@ -10842,9 +11101,11 @@ export interface components {
             agencyId?: string;
             /** @description List of alert details for the active booking */
             alerts?: components["schemas"]["Alert"][];
+            /** @description Cell or location of the prisoner */
             assignedLivingUnit?: components["schemas"]["AssignedLivingUnit"];
             /** @description Religion of the prisoner */
             religion?: string;
+            /** @description A set of physical attributes */
             physicalAttributes?: components["schemas"]["PhysicalAttributes"];
             /** @description List of physical characteristics */
             physicalCharacteristics?: components["schemas"]["PhysicalCharacteristic"][];
@@ -10865,6 +11126,7 @@ export interface components {
             identifiers?: components["schemas"]["OffenderIdentifier"][];
             /** @description Prisoner Identifiers including those from aliases */
             allIdentifiers?: components["schemas"]["OffenderIdentifier"][];
+            /** @description Sentence Detail */
             sentenceDetail?: components["schemas"]["SentenceCalcDates"];
             /** @description Most serious offence */
             mostSeriousOffence?: string;
@@ -10888,6 +11150,11 @@ export interface components {
              */
             lastMovementReasonCode?: string;
             /**
+             * @description Last Movement time
+             * @example 2021-07-05T10:35:17
+             */
+            lastMovementTime?: string;
+            /**
              * @description Legal Status
              * @example REMAND
              * @enum {string}
@@ -10908,6 +11175,11 @@ export interface components {
              * @example Serving Life Imprisonment
              */
             imprisonmentStatusDescription?: string;
+            /**
+             * @description The prisoner's convicted status
+             * @example Convicted
+             */
+            convictedStatus?: string;
             /**
              * Format: date
              * @description Date prisoner was received into the prison.
@@ -10939,7 +11211,7 @@ export interface components {
              * @description Adjustment type
              * @enum {string}
              */
-            type?: "SPECIAL_REMISSION" | "ADDITIONAL_DAYS_AWARDED" | "RESTORED_ADDITIONAL_DAYS_AWARDED" | "UNLAWFULLY_AT_LARGE" | "LAWFULLY_AT_LARGE" | "SPECIAL_REMISSION, ADDITIONAL_DAYS_AWARDED, RESTORED_ADDITIONAL_DAYS_AWARDED, UNLAWFULLY_AT_LARGE, LAWFULLY_AT_LARGE";
+            type?: "SPECIAL_REMISSION, ADDITIONAL_DAYS_AWARDED, RESTORED_ADDITIONAL_DAYS_AWARDED, UNLAWFULLY_AT_LARGE, LAWFULLY_AT_LARGE";
             /**
              * Format: int32
              * @description Number of days to adjust
@@ -10971,6 +11243,7 @@ export interface components {
         };
         /** @description The active sentence envelope is a combination of the person information, the active booking and calculable sentences at a particular establishment */
         CalculableSentenceEnvelope: {
+            /** @description The identifiers of a person necessary for a calculation */
             person: components["schemas"]["Person"];
             /**
              * Format: int64
@@ -10985,8 +11258,12 @@ export interface components {
             bookingAdjustments: components["schemas"]["BookingAdjustment"][];
             /** @description List of offender fine payments */
             offenderFinePayments: components["schemas"]["OffenderFinePaymentDto"][];
+            /** @description Fixed term recall details */
             fixedTermRecallDetails?: components["schemas"]["FixedTermRecallDetails"];
+            /** @description The current set of sentence dates determined by NOMIS or recorded via overrides */
             sentenceCalcDates?: components["schemas"]["SentenceCalcDates"];
+            /** @description The external movements for this calculation */
+            movements: components["schemas"]["Movement"][];
         };
         /** @description Details relating to the fixed term recall on a booking */
         FixedTermRecallDetails: {
@@ -11158,12 +11435,11 @@ export interface components {
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
             /** Format: int32 */
             numberOfElements?: number;
+            pageable?: components["schemas"]["PageableObject"];
             empty?: boolean;
         };
-        /** @description The identifiers of a person necessary for a calculation */
         Person: {
             /**
              * @description Prisoner Identifier
@@ -11188,7 +11464,7 @@ export interface components {
              * @description Adjustment type
              * @enum {string}
              */
-            type?: "RECALL_SENTENCE_REMAND" | "TAGGED_BAIL" | "RECALL_SENTENCE_TAGGED_BAIL" | "REMAND" | "UNUSED_REMAND";
+            type?: "RECALL_SENTENCE_REMAND" | "TAGGED_BAIL" | "RECALL_SENTENCE_TAGGED_BAIL" | "REMAND" | "UNUSED_REMAND" | "TIME_SPENT_IN_CUSTODY_ABROAD" | "TIME_SPENT_AS_AN_APPEAL_APPLICANT";
             /**
              * Format: int32
              * @description Number of days to adjust
@@ -11290,6 +11566,7 @@ export interface components {
              * @description No cell allocated
              */
             numNoCellAllocated: number;
+            /** @description Totals */
             totals: components["schemas"]["LocationRollCount"];
             /** @description Residential location roll count summary */
             locations: components["schemas"]["ResidentialLocation"][];
@@ -11326,9 +11603,10 @@ export interface components {
              * @example Wing A
              */
             localName?: string;
+            /** @description Summary of cell roll count for this level (aggregated) */
             rollCount: components["schemas"]["LocationRollCount"];
             /** @description List of residential locations for this summary, including wings and sub-locations such as landings and cells */
-            subLocations: components["schemas"]["ResidentialLocation"][];
+            subLocations: unknown;
             key: string;
         };
         /** @description Prison Roll Summary */
@@ -11371,6 +11649,7 @@ export interface components {
         };
         /** @description Summary movements in and out of a prison today */
         PrisonRollMovementInfo: {
+            /** @description In/Out count of movements today */
             inOutMovementsToday: components["schemas"]["MovementCount"];
             /**
              * Format: int32
@@ -11674,105 +11953,117 @@ export interface components {
             /** @description Offender restrictions */
             offenderRestrictions?: components["schemas"]["OffenderRestriction"][];
         };
-        /** @description Military Record */
+        /** @description Prisoner military record with details about service in the UK Armed Forces. */
         MilitaryRecord: {
             /**
-             * @description War zone code
+             * Format: int64
+             * @description Booking ID of the prisoner.
+             * @example 1234567
+             */
+            bookingId: number;
+            /**
+             * Format: int32
+             * @description Sequence number of the military record within the booking.
+             * @example 1
+             */
+            militarySeq: number;
+            /**
+             * @description Code identifying the war zone where the service took place.
              * @example AFG
              */
             warZoneCode?: string;
             /**
-             * @description War zone description
+             * @description Description of the war zone where the service took place.
              * @example Afghanistan
              */
             warZoneDescription?: string;
             /**
              * Format: date
-             * @description Start date
-             * @example 2000-01-01
+             * @description Start date of the military service.
+             * @example 2017-06-01
              */
             startDate: string;
             /**
              * Format: date
-             * @description End date
-             * @example 2020-10-17
+             * @description End date of the military service, if applicable.
+             * @example 2019-12-01
              */
             endDate?: string;
             /**
-             * @description Military discharge code
-             * @example DIS
+             * @description Code indicating the discharge status from the UK military forces.
+             * @example HON
              */
             militaryDischargeCode?: string;
             /**
-             * @description Military discharge description
-             * @example Dishonourable
+             * @description Description of the discharge status from the UK military forces.
+             * @example Honourable
              */
             militaryDischargeDescription?: string;
             /**
-             * @description Military branch code
+             * @description Code identifying the branch of the UK military in which the individual served.
              * @example ARM
              */
             militaryBranchCode: string;
             /**
-             * @description Military branch description
+             * @description Description of the military branch of the UK Armed Forces.
              * @example Army
              */
-            militaryBranchDescription: string;
+            militaryBranchDescription?: string;
             /**
-             * @description Description
-             * @example Some description
+             * @description Additional notes or details about the military service.
+             * @example Deployed to Afghanistan in support of Operation Herrick.
              */
             description?: string;
             /**
-             * @description The unit number
-             * @example 255 TACP Battery
+             * @description Unit number in which the individual served.
+             * @example 2nd Battalion, The Royal Anglian Regiment
              */
             unitNumber?: string;
             /**
-             * @description Enlistment location
-             * @example Sheffield
+             * @description Location where the individual enlisted in the UK military.
+             * @example Windsor, Berkshire
              */
             enlistmentLocation?: string;
             /**
-             * @description Discharge location
-             * @example Manchester
+             * @description Location where the individual was discharged from the UK military.
+             * @example Colchester, Essex
              */
             dischargeLocation?: string;
             /**
-             * @description Selective services flag
+             * @description Flag indicating if the individual was registered for UK selective military service (National Service).
              * @example false
              */
             selectiveServicesFlag: boolean;
             /**
-             * @description Military rank code
-             * @example LCPL_RMA
+             * @description Code identifying the individual's military rank in the UK forces.
+             * @example CPL_ARM
              */
             militaryRankCode?: string;
             /**
-             * @description Military rank description
-             * @example Lance Corporal  (Royal Marines)
+             * @description Description of the individual's military rank in the UK forces.
+             * @example Corporal
              */
             militaryRankDescription?: string;
             /**
-             * @description Service number
-             * @example 25232301
+             * @description Service number of the individual within the UK military.
+             * @example 2345678
              */
             serviceNumber?: string;
             /**
-             * @description Disciplinary action code
+             * @description Code identifying any disciplinary actions taken against the individual during service.
              * @example CM
              */
             disciplinaryActionCode?: string;
             /**
-             * @description Disciplinary action description
+             * @description Description of any disciplinary actions taken against the individual during service.
              * @example Court Martial
              */
             disciplinaryActionDescription?: string;
         };
-        /** @description Military Records */
+        /** @description Prisoner military records with details about service in the UK Armed Forces. */
         MilitaryRecords: {
-            /** @description Military Records */
-            militaryRecords?: components["schemas"]["MilitaryRecord"][];
+            /** @description List of military records. */
+            militaryRecords: components["schemas"]["MilitaryRecord"][];
         };
         /** @description Incident Case */
         IncidentCase: {
@@ -11950,7 +12241,6 @@ export interface components {
              */
             recordStaffId?: number;
         };
-        /** @description Previous permanent housing levels at the same prison without moving to a different prison inbetween */
         HousingLocation: {
             /**
              * Format: int32
@@ -12190,6 +12480,7 @@ export interface components {
              * @example 2019-12-01
              */
             beginDate?: string;
+            /** @description Court details */
             court?: components["schemas"]["Agency"];
             /**
              * @description The case type
@@ -12206,6 +12497,7 @@ export interface components {
             caseStatus?: "ACTIVE" | "CLOSED" | "INACTIVE";
             /** @description Court sentences associated with the court case */
             sentences?: components["schemas"]["SentencesOffencesTerms"][];
+            /** @description Issuing Court Details */
             issuingCourt?: components["schemas"]["Agency"];
             /**
              * Format: date
@@ -12465,6 +12757,18 @@ export interface components {
              * @example 12
              */
             unusedRemand?: number;
+            /**
+             * Format: int32
+             * @description Number of time spent in custody abroad days
+             * @example 12
+             */
+            timeSpentInCustodyAbroad?: number;
+            /**
+             * Format: int32
+             * @description Number of time spent as an appeal applicant days
+             * @example 12
+             */
+            timeSpentAsAnAppealApplicant?: number;
         };
         /** @description Sentence Summary */
         SentenceSummary: {
@@ -12473,6 +12777,7 @@ export interface components {
              * @example A1234AA
              */
             prisonerNumber: string;
+            /** @description Most recent term in prison */
             latestPrisonTerm?: components["schemas"]["PrisonTerm"];
         };
         /** @description Offender sentence and offence details */
@@ -12790,6 +13095,7 @@ export interface components {
              * @example true
              */
             mostRecentActiveBooking: boolean;
+            /** @description Offender Sentence Detail Information */
             sentenceDetail?: components["schemas"]["BaseSentenceCalcDates"];
         };
         /** @description Offender Calculated Key Dates */
@@ -13171,9 +13477,9 @@ export interface components {
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
             /** Format: int32 */
             numberOfElements?: number;
+            pageable?: components["schemas"]["PageableObject"];
             empty?: boolean;
         };
         /** @description Offender out today details */
@@ -13817,6 +14123,7 @@ export interface components {
             /**
              * Format: date
              * @description Date expired (not used)
+             * @example 2017-01-02T00:00:00
              */
             answerExpiryDate: string;
             /**
@@ -13954,6 +14261,7 @@ export interface components {
         };
         /** @description Summary of Gangs for a specified prisoner */
         GangMemberSummary: {
+            /** @description The details of the gang member */
             member?: components["schemas"]["GangMemberDetail"];
             /** @description Current gang involvement */
             currentGangs: components["schemas"]["GangSummary"][];
@@ -14017,9 +14325,9 @@ export interface components {
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
             /** Format: int32 */
             numberOfElements?: number;
+            pageable?: components["schemas"]["PageableObject"];
             empty?: boolean;
         };
         CourtEventDetails: {
@@ -14105,6 +14413,7 @@ export interface components {
             resultDescription?: string;
             /** @description The disposition code of the result of the court date */
             resultDispositionCode?: string;
+            /** @description The charge which is the subject of the court date */
             charge: components["schemas"]["CourtDateCharge"];
             /**
              * Format: int64
@@ -14334,9 +14643,9 @@ export interface components {
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
             /** Format: int32 */
             numberOfElements?: number;
+            pageable?: components["schemas"]["PageableObject"];
             empty?: boolean;
         };
         /** @description Visit details */
@@ -14412,6 +14721,7 @@ export interface components {
         VisitWithVisitors: {
             /** @description List of visitors on visit */
             visitors: components["schemas"]["Visitor"][];
+            /** @description Visit Information */
             visitDetails: components["schemas"]["VisitDetails"];
         };
         /** @description Visitor */
@@ -14518,6 +14828,7 @@ export interface components {
         };
         /** @description Offender property container details */
         PropertyContainer: {
+            /** @description The location id of the property container */
             location?: components["schemas"]["Location"];
             /**
              * @description The case sequence number for the offender
@@ -14554,6 +14865,7 @@ export interface components {
              * @example 2019-12-01
              */
             beginDate?: string;
+            /** @description Agency details */
             agency?: components["schemas"]["Agency"];
             /**
              * @description The case type
@@ -14704,9 +15016,9 @@ export interface components {
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
             /** Format: int32 */
             numberOfElements?: number;
+            pageable?: components["schemas"]["PageableObject"];
             empty?: boolean;
         };
         /** @description Case Note Count Detail */
@@ -14749,24 +15061,6 @@ export interface components {
             /** @description Currency of these balances. */
             currency: string;
         };
-        PageAlert: {
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
-            first?: boolean;
-            last?: boolean;
-            /** Format: int32 */
-            size?: number;
-            content?: components["schemas"]["Alert"][];
-            /** Format: int32 */
-            number?: number;
-            sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
-            /** Format: int32 */
-            numberOfElements?: number;
-            empty?: boolean;
-        };
         PagePrisonerBookingSummary: {
             /** Format: int64 */
             totalElements?: number;
@@ -14780,9 +15074,9 @@ export interface components {
             /** Format: int32 */
             number?: number;
             sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
             /** Format: int32 */
             numberOfElements?: number;
+            pageable?: components["schemas"]["PageableObject"];
             empty?: boolean;
         };
         /** @description Prisoner Booking Summary */
@@ -15074,7 +15368,7 @@ export interface components {
         };
         /** @description Adjustments associated at a booking level and a sentence level */
         BookingAndSentenceAdjustments: {
-            /** @description Adjustments associated at a sentence level (of type RECALL_SENTENCE_REMAND, TAGGED_BAIL, RECALL_SENTENCE_TAGGED_BAIL, REMAND or UNUSED_REMAND) */
+            /** @description Adjustments associated at a sentence level (of type RECALL_SENTENCE_REMAND, TAGGED_BAIL, RECALL_SENTENCE_TAGGED_BAIL, REMAND, UNUSED_REMAND, TIME_SPENT_IN_CUSTODY_ABROAD or TIME_SPENT_AS_AN_APPEAL_APPLICANT) */
             sentenceAdjustments?: components["schemas"]["SentenceAdjustmentValues"][];
             /** @description Adjustments associated at a booking level (of type SPECIAL_REMISSION, ADDITIONAL_DAYS_AWARDED, RESTORED_ADDITIONAL_DAYS_AWARDED, UNLAWFULLY_AT_LARGE, LAWFULLY_AT_LARGE) */
             bookingAdjustments?: components["schemas"]["BookingAdjustment"][];
@@ -15699,6 +15993,110 @@ export interface operations {
             };
         };
     };
+    updateSmokerStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The prisoner number */
+                offenderNo: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSmokerStatus"];
+            };
+        };
+        responses: {
+            /** @description The smoker status has been updated. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Requested resource not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unrecoverable error occurred whilst processing request. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateReligion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The prisoner number */
+                offenderNo: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReligion"];
+            };
+        };
+        responses: {
+            /** @description The religion has been updated. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Requested resource not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unrecoverable error occurred whilst processing request. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     releasePrisoner_1: {
         parameters: {
             query?: never;
@@ -15856,6 +16254,75 @@ export interface operations {
             };
             /** @description Invalid request. */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Requested resource not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unrecoverable error occurred whilst processing request. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateMilitaryRecord: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description Offender No
+                 * @example A1234AA
+                 */
+                offenderNo: string;
+                /**
+                 * @description Military record sequence number
+                 * @example 1
+                 */
+                militarySeq: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MilitaryRecordRequest"];
+            };
+        };
+        responses: {
+            /** @description The military record has been updated. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden - user not authorised to update military record for prisoner */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16501,7 +16968,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Indicates which categorisation statuses to set.<li>ACTIVE (default): set all active (i.e. approved) categorisations inactive,</li><li>PENDING: set all pending (i.e. awaiting approval) categorisations inactive,</li> */
-                status?: string;
+                status?: "ACTIVE" | "PENDING";
                 /**
                  * @description Whether to timeout if locked
                  * @example true
@@ -18742,7 +19209,10 @@ export interface operations {
     };
     createPrisoner: {
         parameters: {
-            query?: never;
+            query: {
+                /** @description When true do not reject new prisoners with same name as existing person */
+                allowNameDuplicate: boolean;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -18772,6 +19242,123 @@ export interface operations {
                 };
             };
             /** @description Forbidden - user not authorised to create a prisoner. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Requested resource not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unrecoverable error occurred whilst processing request. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getMilitaryRecords: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description Offender No
+                 * @example A1234AA
+                 */
+                offenderNo: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilitaryRecords"];
+                };
+            };
+            /** @description Invalid request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Requested resource not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unrecoverable error occurred whilst processing request. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    createMilitaryRecord: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description Offender No
+                 * @example A1234AA
+                 */
+                offenderNo: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MilitaryRecordRequest"];
+            };
+        };
+        responses: {
+            /** @description Military record created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden - user not authorised to create military record for prisoner */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -19775,12 +20362,12 @@ export interface operations {
         };
         responses: {
             /** @description Transaction Created */
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransferTransaction"];
+                    "application/json": components["schemas"]["TransferTransactionDetail"];
                 };
             };
             /** @description One of: <ul><li>Insufficient Funds - The prisoner has insufficient funds in the required account to cover the cost of the debit transaction</li><li>Offender not in specified prison - prisoner identified by {noms_id} is not in prison {prison_id}</li><li>Finance Exception - An unexpected error has occurred. Details will have been logged in the nomis_api_logs table on the Nomis database.</li></ul> */
@@ -20348,33 +20935,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getAlertsByOffenderNosAtAgency: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The prison where the offenders are booked */
-                agencyId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": string[];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Alert"][];
                 };
             };
         };
@@ -21251,7 +21811,7 @@ export interface operations {
                  * @description Account code
                  * @example spends
                  */
-                account_code: string;
+                account_code: "spends" | "cash" | "savings";
             };
             cookie?: never;
         };
@@ -23180,6 +23740,56 @@ export interface operations {
             };
         };
     };
+    getReferenceOrProfileCodesByDomain: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The domain or profile type identifier/name. */
+                domain: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferenceCode"][];
+                };
+            };
+            /** @description Invalid request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Requested resource not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unrecoverable error occurred whilst processing request. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getAlertTypes: {
         parameters: {
             query?: never;
@@ -23915,7 +24525,7 @@ export interface operations {
                  * @description Account code
                  * @example spends
                  */
-                account_code?: string;
+                account_code?: "spends" | "cash" | "savings";
                 /**
                  * @description Start date for transactions, format yyyy-MM-dd
                  * @example 2019-04-01
@@ -24224,59 +24834,6 @@ export interface operations {
             };
         };
     };
-    getMilitaryRecords: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /**
-                 * @description Offender No
-                 * @example A1234AA
-                 */
-                offenderNo: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MilitaryRecords"];
-                };
-            };
-            /** @description Invalid request. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Requested resource not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Unrecoverable error occurred whilst processing request. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
     getIncidentsByOffenderNo: {
         parameters: {
             query: {
@@ -24289,7 +24846,7 @@ export interface operations {
                  * @description participationRoles
                  * @example ASSIAL
                  */
-                participationRoles: string;
+                participationRoles: "ACTINV" | "ASSIAL" | "FIGHT" | "IMPED" | "PERP" | "SUSASS" | "SUSINV" | "VICT" | "AI" | "PAS" | "AO";
             };
             header?: never;
             path: {
@@ -24459,7 +25016,7 @@ export interface operations {
                  * @description Filter by obligation status. Leave blank to return all
                  * @example ACTIVE
                  */
-                status?: string;
+                status?: "INACT" | "PAID" | "ONH" | "ACTIVE" | "APPEAL";
             };
             header?: never;
             path: {
@@ -24569,7 +25126,7 @@ export interface operations {
                  */
                 alertCodes?: string;
                 /** @description Comma separated list of one or more Alert fields */
-                sort?: string;
+                sort?: "alertId" | "bookingId" | "alertType" | "alertCode" | "comment" | "dateCreated" | "dateExpires" | "active";
                 /**
                  * @description Sort order
                  * @example DESC
@@ -24728,7 +25285,7 @@ export interface operations {
                  */
                 alertCodes?: string;
                 /** @description Comma separated list of one or more Alert fields */
-                sort?: string;
+                sort?: "alertId" | "bookingId" | "alertType" | "alertCode" | "comment" | "dateCreated" | "dateExpires" | "active";
                 /**
                  * @description Sort order
                  * @example DESC
@@ -25392,7 +25949,7 @@ export interface operations {
                  */
                 toDate: string;
                 /** @description Only include attendences which have this outcome (default all) */
-                outcome?: string;
+                outcome?: "ABS" | "ACCAB" | "ATT" | "CANC" | "NREQ" | "SUS" | "UNACAB" | "REST";
                 /** @description Zero-based page index (0..N) */
                 page?: number;
                 /** @description The size of the page to be returned */
@@ -25962,6 +26519,36 @@ export interface operations {
             };
         };
     };
+    getMovementsByOffender: {
+        parameters: {
+            query?: {
+                /** @description movement type codes to filter by */
+                movementTypes?: string[];
+                /** @description Returns all movements for this offender list from all bookings if true */
+                allBookings?: boolean;
+                /** @description Filters movements that happened since this date */
+                movementsAfter?: string;
+            };
+            header?: never;
+            path: {
+                /** @description The required offender id (mandatory) */
+                offenderNo: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Movement"][];
+                };
+            };
+        };
+    };
     getOffendersCurrentlyOut: {
         parameters: {
             query?: never;
@@ -26098,7 +26685,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Match a location that is inactive? */
-                includeInactive?: string;
+                includeInactive?: "true" | "false";
             };
             header?: never;
             path: {
@@ -27317,7 +27904,7 @@ export interface operations {
                 /** @description Returned visits must be scheduled on or before this date (in YYYY-MM-DD format). */
                 toDate?: string;
                 /** @description Type of visit */
-                visitType?: string;
+                visitType?: "SCON" | "OFFI";
                 /** @example SCH */
                 "Status of visit. code from VIS_COMPLETE domain, e.g: CANC (Cancelled) or SCH (Scheduled)"?: string;
                 /** @example NSHOW */
@@ -28527,83 +29114,6 @@ export interface operations {
             };
         };
     };
-    getOffenderAlertsV2: {
-        parameters: {
-            query?: {
-                /**
-                 * @description start alert date to search from
-                 * @example 2021-02-03
-                 */
-                from?: string;
-                /**
-                 * @description end alert date to search up to (including this date)
-                 * @example 2021-02-04
-                 */
-                to?: string;
-                /**
-                 * @description Filter by alert type
-                 * @example X
-                 */
-                alertType?: string;
-                /**
-                 * @description Filter by alert active status
-                 * @example ACTIVE
-                 */
-                alertStatus?: string;
-                /** @description Zero-based page index (0..N) */
-                page?: number;
-                /** @description The size of the page to be returned */
-                size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
-            };
-            header?: never;
-            path: {
-                /** @description The booking id for the booking */
-                bookingId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PageAlert"];
-                };
-            };
-            /** @description Invalid request. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Requested resource not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Unrecoverable error occurred whilst processing request. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
     getBookingActivities: {
         parameters: {
             query?: {
@@ -29268,58 +29778,6 @@ export interface operations {
             };
         };
     };
-    getAgencyLocationsByType: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The prison */
-                agencyId: string;
-                /** @description Restricts list of locations returned to those of the passed type. */
-                type: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Location"][];
-                };
-            };
-            /** @description Invalid request. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Requested resource not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Unrecoverable error occurred whilst processing request. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
     getAvailableLocationGroups: {
         parameters: {
             query?: never;
@@ -29430,7 +29888,7 @@ export interface operations {
                 /** @description Filter list to only return locations which prisoners will be attending on this day */
                 bookedOnDay: string;
                 /** @description Only return locations which prisoners will be attending in this time slot (AM, PM or ED, and bookedOnDay must be specified) */
-                timeSlot?: string;
+                timeSlot?: "AM" | "PM" | "ED";
             };
             header?: never;
             path: {
@@ -29496,58 +29954,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AgencyEstablishmentTypes"];
-                };
-            };
-            /** @description Invalid request. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Requested resource not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Unrecoverable error occurred whilst processing request. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getAgencyActiveCellsWithCapacity: {
-        parameters: {
-            query?: {
-                /** @description Restricts list of cells returned to those that have a specified attribute. */
-                attribute?: string;
-            };
-            header?: never;
-            path: {
-                agencyId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OffenderCell"][];
                 };
             };
             /** @description Invalid request. */

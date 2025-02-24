@@ -541,6 +541,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/prisoner-location/scroll/{scroll-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the next page of prisoners.
+         * @description To be used in conjunction with /prisoner-location/all. Uses the scroll id to get the next page of
+         *           prisoners.  Calls should be repeated until a
+         *           `null` scroll id is then returned, indicating that no more data is available.  Each call will return the scroll id,
+         *           which should be used for the next call, rather than re-using the original scroll id.
+         *           Note that the OpenSearch scroll will expire after 5 minutes, so if no calls are made during that time then the
+         *           scroll id will be invalid.
+         *           Requires PRISONER_SEARCH__PRISONER_LOCATION__RO role.
+         */
+        get: operations["scroll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/prisoner-location/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all prisoners.  This will return the first page of results and a scroll id to retrieve the next page
+         * @description To be used in conjunction with /prisoner-location/scroll/{scroll-id}.
+         *           This endpoint will return the first page of results (10,000 per page) and also a scroll id.
+         *           This scroll id can then be used to make subsequent calls to return the data.
+         *           It is required that this call will then be followed by calls to the /scroll/{scroll-id} endpoint to retrieve all
+         *           the rest of the data, since it opens an OpenSearch scroll that will be cleared when no more data is available.
+         *           Requires PRISONER_SEARCH__PRISONER_LOCATION__RO role.
+         */
+        get: operations["findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/prison/{prisonId}/prisoners": {
         parameters: {
             query?: never;
@@ -649,11 +700,10 @@ export interface components {
              */
             supportingPrisonIds?: string[];
         };
-        /** @description Addresses. Note that no fixed addresses are only ever returned if they are also the primary address, otherwise they are filtered out. */
         Address: {
             /**
              * @description The full address on a single line.  No fixed address records will have the fullAddress set to 'No fixed address'.
-             * @example 1 Main Street, Crookes, Sheffield, South Yorkshire, S10 1BP, England
+             * @example 1
              */
             fullAddress: string;
             /**
@@ -680,7 +730,6 @@ export interface components {
             /** @description Phone numbers linked to the address. Note the phone number contains only numbers, no whitespace. Therefore searching on 'addresses.phoneNumbers.number' should not pass any non-numeric characters. */
             phoneNumbers?: components["schemas"]["PhoneNumber"][];
         };
-        /** @description List of parts of the body that have marks. This includes NOMIS physical details of type 'marks' and 'otherMarks'. If we find a comment with either 'tattoo' or 'scar' we also add to the list of tattoos or scars. From REFERENCE_CODES table where DOMAIN = BODY_PART. Allowable values extracted 08/02/2023. */
         BodyPartDetail: {
             /**
              * @description Part of the body that has the mark. From REFERENCE_CODES table where DOMAIN = BODY_PART. Allowable values extracted 08/02/2023.
@@ -694,12 +743,13 @@ export interface components {
              */
             comment?: string;
         };
-        /** @description Incentive level */
         CurrentIncentive: {
+            /** @description Incentive level */
             level: components["schemas"]["IncentiveLevel"];
             /**
+             * Format: date-time
              * @description Date time of the incentive
-             * @example 2021-07-05T10:35:17
+             * @example 2022-11-10T15:47:24
              */
             dateTime: string;
             /**
@@ -709,7 +759,6 @@ export interface components {
              */
             nextReviewDate: string;
         };
-        /** @description Email addresses */
         EmailAddress: {
             /**
              * @description The email address
@@ -717,7 +766,6 @@ export interface components {
              */
             email: string;
         };
-        /** @description All identifiers for the prisoner including those recorded against aliases. Currently supports only PNC, CRO, NINO and DL. */
         Identifier: {
             /**
              * @description The type of identifier
@@ -738,25 +786,24 @@ export interface components {
             /** @description Free text entered into NOMIS when the identifier was recorded. */
             issuedAuthorityText?: string;
             /**
+             * Format: date-time
              * @description The date/time the identifier was created in the system
-             * @example 2021-07-05T10:35:17
+             * @example 2020-07-17T12:34:56.833Z
              */
             createdDateTime: string;
         };
-        /** @description Incentive level */
         IncentiveLevel: {
             /**
              * @description code
              * @example STD
              */
-            code?: string;
+            code: string;
             /**
              * @description description
              * @example Standard
              */
             description: string;
         };
-        /** @description All historical convicted offences */
         Offence: {
             /**
              * @description The statue code
@@ -814,12 +861,11 @@ export interface components {
             sort?: components["schemas"]["SortObject"];
             /** Format: int32 */
             pageSize?: number;
+            unpaged?: boolean;
             /** Format: int32 */
             pageNumber?: number;
             paged?: boolean;
-            unpaged?: boolean;
         };
-        /** @description Telephone numbers. Note that the number will contain only numeric characters [0-9] (including no break between area code and number). Therefore if searching on 'phoneNumbers.number' you should not pass any non-numeric characters. */
         PhoneNumber: {
             /**
              * @description The type of the phone number
@@ -1001,6 +1047,12 @@ export interface components {
              */
             imprisonmentStatusDescription?: string;
             /**
+             * @description The prisoner's convicted status code.
+             * @example Convicted
+             * @enum {string}
+             */
+            convictedStatus?: "Convicted" | "Remand";
+            /**
              * @description Most serious offence for this sentence
              * @example Robbery
              */
@@ -1177,6 +1229,7 @@ export interface components {
              * @example Psychiatric Hospital Discharge to Hazelwood House
              */
             dischargeDetails?: string;
+            /** @description Incentive level */
             currentIncentive?: components["schemas"]["CurrentIncentive"];
             /**
              * Format: int32
@@ -1249,7 +1302,6 @@ export interface components {
             /** @description All historical convicted offences */
             allConvictedOffences?: components["schemas"]["Offence"][];
         };
-        /** @description Alerts */
         PrisonerAlert: {
             /**
              * @description Alert Type
@@ -1272,7 +1324,6 @@ export interface components {
              */
             expired: boolean;
         };
-        /** @description Aliases Names and Details */
         PrisonerAlias: {
             /**
              * @description Title
@@ -1452,7 +1503,6 @@ export interface components {
              */
             bookingIds: number[];
         };
-        /** @description Pagination options. Will default to the first page if omitted. */
         PaginationRequest: {
             /**
              * Format: int32
@@ -1495,7 +1545,7 @@ export interface components {
             croNumber?: string;
             /**
              * @description Fuzzy matching. Allow a one character difference in spelling in word lengths below five and two differences above.
-             * @example false
+             * @example Smith will match Smyth
              */
             fuzzyMatch?: boolean;
             /**
@@ -1515,6 +1565,7 @@ export interface components {
              * @example true
              */
             includeAliases: boolean;
+            /** @description Pagination options. Will default to the first page if omitted. */
             pagination: components["schemas"]["PaginationRequest"];
         };
         PrisonerDetailResponse: {
@@ -1564,7 +1615,6 @@ export interface components {
              */
             moreInfo?: string;
         };
-        /** @description List of body parts that have scars */
         BodyPart: {
             /**
              * @description Body part that has the physical mark, searching on the description in the type BODY_PART in the REFERENCE_CODES table. Allowable values extracted 08/02/2023.
@@ -1687,6 +1737,7 @@ export interface components {
              * @example false
              */
             lenient: boolean;
+            /** @description Pagination options. Will default to the first page if omitted. */
             pagination: components["schemas"]["PaginationRequest"];
         };
         PhysicalDetailResponse: {
@@ -1740,8 +1791,8 @@ export interface components {
              */
             nomsNumber?: string;
         };
-        /** @description List of prisoners that share the same possibility of being the match */
         PrisonerMatch: {
+            /** @description Details of the matching prisoner */
             prisoner: components["schemas"]["Prisoner"];
         };
         PrisonerMatches: {
@@ -1776,7 +1827,7 @@ export interface components {
             exactPhrase?: string;
             /**
              * @description Fuzzy matching. Allow a one character difference in spelling in word lengths below five and two differences above.
-             * @example false
+             * @example Smith will match Smyth
              */
             fuzzyMatch?: boolean;
             /**
@@ -1787,6 +1838,7 @@ export interface components {
              *     ]
              */
             prisonIds: string[];
+            /** @description Pagination options. Will default to the first page if omitted. */
             pagination: components["schemas"]["PaginationRequest"];
             /**
              * @description The type of search. When set to DEFAULT (which is the default when not provided) search order is by calculated relevance (AKA score). An ESTABLISHMENT type will order results by name and is designed for using this API for a single quick search field for prisoners within a specific prison
@@ -1856,7 +1908,7 @@ export interface components {
         /** @description A request to search for prisoners by attributes */
         AttributeSearchRequest: {
             /**
-             * @description The type of join to use when combining matchers or subQueries. Defaults to AND if not included in the request.
+             * @description The type of join to use when combining the matchers and subQueries
              * @default AND
              * @example AND
              * @enum {string}
@@ -2012,7 +2064,6 @@ export interface components {
              */
             type: string;
         });
-        /** @description Matchers that will be applied to this query */
         Matcher: {
             type: string;
         };
@@ -2039,7 +2090,7 @@ export interface components {
         /** @description A query to search for prisoners by attributes */
         Query: {
             /**
-             * @description The type of join to use when combining matchers or subQueries. Defaults to AND if not included in the request.
+             * @description The type of join to use when combining the matchers and subQueries
              * @default AND
              * @example AND
              * @enum {string}
@@ -2048,7 +2099,7 @@ export interface components {
             /** @description Matchers that will be applied to this query */
             matchers?: (components["schemas"]["BooleanMatcher"] | components["schemas"]["DateMatcher"] | components["schemas"]["DateTimeMatcher"] | components["schemas"]["IntMatcher"] | components["schemas"]["PncMatcher"] | components["schemas"]["StringMatcher"])[];
             /** @description A list of sub-queries of type Query that will be combined with the matchers in this query */
-            subQueries?: components["schemas"]["Query"][];
+            subQueries?: unknown;
         };
         /** @description A matcher for a string attribute from the prisoner record */
         StringMatcher: {
@@ -2060,22 +2111,7 @@ export interface components {
              */
             attribute: string;
             /**
-             * @description The condition to apply to the attribute value.
-             *
-             *       All String searches are case-insensitive.
-             *
-             *       IS and IS_NOT require an exact match (wildcards ? and * will not work).
-             *
-             *       For IS and CONTAINS some attributes support fuzzy matching e.g. they allow spelling mistakes. Call endpoint `/attribute-search/attributes` to see which attributes support fuzzy matching.
-             *
-             *       CONTAINS without wildcards (? and *) for a non-fuzzy attribute looks for the exact search term anywhere in the attribute value.
-             *
-             *       CONTAINS with wildcards ? (single character) and * (zero to many characters) perform a wildcard match which must match the entire attribute value.
-             *
-             *       STARTSWITH checks only the prefix of the attribute value and does not support fuzzy matching or wildcards.
-             *
-             *       IN checks a list of values for an exact match and does not support fuzzy matching, wildcards or case insensitive searching.
-             *
+             * @description The condition to apply to the attribute
              * @example IS
              * @enum {string}
              */
@@ -2097,6 +2133,44 @@ export interface components {
         };
         ReferenceDataResponse: {
             data: components["schemas"]["ReferenceData"][];
+        };
+        /** @description Prisoner location */
+        PrisonerLocation: {
+            /**
+             * @description Prisoner number
+             * @example A1234AA
+             */
+            prisonerNumber: string;
+            /**
+             * @description Prison id. Current prison or OUT if outside. Will not be returned if no bookings.
+             * @example MDI
+             */
+            prisonId?: string;
+            /**
+             * @description Last prison id. If prisonId is OUT then will contain last prison, otherwise will be the same as prisonId. Will not be returned if no bookings.
+             * @example MDI
+             */
+            lastPrisonId?: string;
+            /**
+             * @description First Name
+             * @example Robert
+             */
+            firstName: string;
+            /**
+             * @description Last name
+             * @example Larsen
+             */
+            lastName: string;
+        };
+        /** @description Prisoner location response */
+        PrisonerLocationResponse: {
+            /**
+             * @description Scroll id. To be kept and used in next request
+             * @example FGluY2x1ZGVfY29udGV4dF91dWlkDnF1ZXJ5VGhlbkZldG...
+             */
+            scrollId?: string;
+            /** @description List of prisoner locations */
+            locations?: components["schemas"]["PrisonerLocation"][];
         };
         /** @description An attribute that can be searched for in a query */
         Attribute: {
@@ -2744,6 +2818,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PagePrisoner"];
+                };
+            };
+        };
+    };
+    scroll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "scroll-id": string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrisonerLocationResponse"];
+                };
+            };
+        };
+    };
+    findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrisonerLocationResponse"];
                 };
             };
         };

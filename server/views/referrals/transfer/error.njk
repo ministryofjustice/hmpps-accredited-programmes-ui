@@ -1,0 +1,20 @@
+{% extends "./partials/layout.njk" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      {% for message in errorMessages %}
+        <p class="govuk-body">{{ message | safe }}</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <a href="{{ returnPath }}" class="govuk-button govuk-!-margin-top-4">Return to referral details</a>
+    </div>
+  </div>
+{% endblock content %}

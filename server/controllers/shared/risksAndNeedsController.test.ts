@@ -102,6 +102,13 @@ describe('RisksAndNeedsController', () => {
   const recentCompletedAssessmentDateString = '19 December 2023'
   const navigationItems = [{ active: true, href: 'nav-href', text: 'Nav Item' }]
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
+  const buttonMenu = {
+    button: {
+      classes: 'govuk-button--secondary',
+      text: 'Update referral',
+    },
+    items: [],
+  }
   const buttons = [{ href: 'button-href', text: 'Button' }]
   const recentCaseListPath = '/case-list-path'
   let person: Person
@@ -118,8 +125,10 @@ describe('RisksAndNeedsController', () => {
     mockShowRisksAndNeedsUtils.navigationItems.mockReturnValue(navigationItems)
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
+    mockShowReferralUtils.buttonMenu.mockReturnValue(buttonMenu)
 
     sharedPageData = {
+      buttonMenu,
       buttons,
       hideTitleServiceName: true,
       navigationItems,
@@ -962,6 +971,7 @@ describe('RisksAndNeedsController', () => {
       { currentPath: path, recentCaseListPath },
       referral,
       isRefer ? statusTransitions : undefined,
+      course,
     )
     expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'risksAndNeeds', referral.id)
 

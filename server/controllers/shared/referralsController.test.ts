@@ -64,6 +64,13 @@ describe('ReferralsController', () => {
   const navigationItems = [{ active: true, href: 'nav-href', text: 'Nav Item' }]
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
+  const buttonMenu = {
+    button: {
+      classes: 'govuk-button--secondary',
+      text: 'Update referral',
+    },
+    items: [],
+  }
   const referrerEmail = 'referrer.email@test-email.co.uk'
   const recentCaseListPath = '/case-list-path'
   let person: Person
@@ -81,8 +88,10 @@ describe('ReferralsController', () => {
     mockShowReferralUtils.viewReferralNavigationItems.mockReturnValue(navigationItems)
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
+    mockShowReferralUtils.buttonMenu.mockReturnValue(buttonMenu)
 
     sharedPageData = {
+      buttonMenu,
       buttons,
       course,
       courseOfferingSummaryListRows: ShowReferralUtils.courseOfferingSummaryListRows(
@@ -447,7 +456,12 @@ describe('ReferralsController', () => {
       { currentPath: path, recentCaseListPath },
       referral,
       isRefer ? statusTransitions : undefined,
+      course,
     )
+    expect(mockShowReferralUtils.buttonMenu).toHaveBeenCalledWith(course, referral, {
+      currentPath: path,
+      recentCaseListPath,
+    })
     expect(mockShowReferralUtils.viewReferralNavigationItems).toHaveBeenCalledWith(path, referral.id)
     expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'referral', referral.id)
 
