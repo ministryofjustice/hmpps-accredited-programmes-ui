@@ -5,7 +5,7 @@ import setUpCsrf from './setUpCsrf'
 import setUpCurrentUser from './setUpCurrentUser'
 import setUpEnvironmentName from './setUpEnvironmentName'
 import setUpHealthChecks from './setUpHealthChecks'
-import { setUpSentryErrorHandler, setUpSentryRequestHandler } from './setUpSentry'
+import setUpSentry from './setUpSentry'
 import setUpStaticResources from './setUpStaticResources'
 import setUpWebRequestParsing from './setUpWebRequestParsing'
 import setUpWebSecurity from './setUpWebSecurity'
@@ -19,8 +19,7 @@ export {
   setUpCurrentUser,
   setUpEnvironmentName,
   setUpHealthChecks,
-  setUpSentryErrorHandler,
-  setUpSentryRequestHandler,
+  setUpSentry,
   setUpStaticResources,
   setUpWebRequestParsing,
   setUpWebSecurity,
