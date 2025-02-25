@@ -48,13 +48,7 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.get(
-    '*',
-    dpsComponents.getPageComponents({
-      dpsUrl: config.dpsUrl,
-      includeMeta: true,
-    }),
-  )
+  app.get('*', dpsComponents.getPageComponents({ dpsUrl: config.dpsUrl }))
   app.use(routes(controllers))
 
   // The Sentry middleware must be before any other error middleware and after all controllers
