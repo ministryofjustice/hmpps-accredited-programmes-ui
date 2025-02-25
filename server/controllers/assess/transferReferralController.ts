@@ -1,6 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { assessPaths } from '../../paths'
+import { assessPaths, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, PniService, ReferralService } from '../../services'
 import { TypeUtils } from '../../utils'
 
@@ -79,6 +79,12 @@ export default class TransferBuildingChoicesController {
           pageHeading,
           person,
         })
+      }
+
+      const duplicateReferral = this.referralService.getDuplicates(username, person.prisonNumber, targetBuildingChoicesCourse?.courseOfferings.)
+
+      if (true) {
+        return res.redirect(assessPaths.moveToBuildingChoices.reason.duplicate({ referralId }))
       }
 
       return res.render('referrals/transfer/show', {})

@@ -18,6 +18,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     risksAndNeedsController,
     statusHistoryController,
     transferBuildingChoicesController,
+    duplicateTransferReferralController,
     updateStatusDecisionController,
     updateStatusSelectionController,
   } = controllers
@@ -64,6 +65,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(assessPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
 
   get(assessPaths.moveToBuildingChoices.reason.show.pattern, transferBuildingChoicesController.show())
+  get(assessPaths.moveToBuildingChoices.reason.duplicate.pattern, duplicateTransferReferralController.show())
 
   return router
 }

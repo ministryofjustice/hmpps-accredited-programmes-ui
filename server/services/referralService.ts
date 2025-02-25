@@ -3,8 +3,10 @@ import logger from '../../logger'
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
   ConfirmationFields,
+  CourseOffering,
   Organisation,
   Paginated,
+  Person,
   ReferralStatusGroup,
   ReferralStatusRefData,
   ReferralStatusUpdate,
@@ -13,7 +15,7 @@ import type {
   ReferralView,
 } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { Referral } from '@accredited-programmes-api'
+import type { OfferingEntity, Referral } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 
 export default class ReferralService {
@@ -57,6 +59,18 @@ export default class ReferralService {
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findConfirmationText(referralId, chosenStatusCode, query)
+  }
+
+  async getDuplicates(
+    username: Express.User['username'],
+    prisonNumber: Person['prisonNumber'],
+    offeringId: CourseOffering['id'],
+  ): Promise<Array<Referral>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.findDuplicates(prisonNumber, offeringId)
   }
 
   async getMyReferralViews(

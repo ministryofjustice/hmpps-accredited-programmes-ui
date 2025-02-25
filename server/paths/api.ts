@@ -35,6 +35,7 @@ const peoplePath = path('/people/:prisonNumber')
 const prisonerSearchPath = path('/prisoner-search')
 
 const referenceDataPath = path('/reference-data')
+const referralDuplicatesPath = referralsPath.path('/duplicates')
 const referralStatusesPath = referenceDataPath.path('referral-statuses')
 
 const referralStatusesCodeDataPath = referralStatusesPath.path(':referralStatusCode')
@@ -110,6 +111,7 @@ export default {
     create: referralsPath,
     dashboard: dashboardPath,
     delete: referralPath,
+    duplicates: referralDuplicatesPath,
     myDashboard: myDashboardPath,
     show: referralPath,
     statusHistory: statusHistoryPath,

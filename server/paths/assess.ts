@@ -16,6 +16,7 @@ const updateStatusSelectionShowPath = updateStatusPathBase.path('selection')
 
 const moveToBuildingChoicesPathBase = referralShowPathBase.path('move-to-building-choices')
 const moveToBuildingChoicesReason = moveToBuildingChoicesPathBase.path('reason')
+const moveToBuildingChoicesDuplicate = moveToBuildingChoicesPathBase.path('duplicate')
 
 export default {
   caseList: {
@@ -25,6 +26,7 @@ export default {
   },
   moveToBuildingChoices: {
     reason: {
+      duplicate: moveToBuildingChoicesDuplicate,
       show: moveToBuildingChoicesReason,
     },
   },

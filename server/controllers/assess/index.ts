@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import AssessCaseListController from './caseListController'
+import DuplicateTransferReferralController from './duplicateTransferReferralController'
 import PniController from './pniController'
 import TransferBuildingChoicesController from './transferReferralController'
 import UpdateStatusDecisionController from './updateStatusDecisionController'
@@ -33,8 +34,14 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
+  const duplicateTransferReferralController = new DuplicateTransferReferralController(
+    services.courseService,
+    services.referralService,
+  )
+
   return {
     assessCaseListController,
+    duplicateTransferReferralController,
     pniController,
     transferBuildingChoicesController,
     updateStatusDecisionController,

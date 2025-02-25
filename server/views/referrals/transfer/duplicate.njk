@@ -1,0 +1,64 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% extends "../../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkHref
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      <p data-testid="referral-exists-text">{{ summaryText }}</p>
+
+      <h2 class="govuk-heading-m">Duplicate referral summary</h2>
+
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border',
+        rows: courseOfferingSummaryListRows,
+        attributes: {
+          "data-testid": "course-offering-summary-list"
+        }
+      }) }}
+
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border govuk-!-margin-bottom-6',
+        rows: submissionSummaryListRows,
+        attributes: {
+          "data-testid": "submission-summary-list"
+        }
+      }) }}
+
+      {{ govukWarningText({
+        text: "You cannot create this referral while a duplicate referral is open.",
+        iconFallbackText: "Warning"
+      }) }}
+
+      {% if withdrawHref %}
+        {{ govukButton({
+        text: withdrawButtonText,
+        href: withdrawHref,
+        attributes: {
+          "data-testid": "withdraw-referral-link"
+        }
+      }) }}
+      {% endif %}
+
+      {{ govukButton({
+        text: "Return to programme list",
+        href: programmeListHref,
+        attributes: {
+          "data-testid": "programme-list-link"
+        }
+      }) }}
+    </div>
+  </div>
+{% endblock content %}

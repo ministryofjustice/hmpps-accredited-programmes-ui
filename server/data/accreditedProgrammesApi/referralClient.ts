@@ -6,7 +6,9 @@ import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
 import type {
   ConfirmationFields,
+  CourseOffering,
   Paginated,
+  Person,
   ReferralStatusGroup,
   ReferralStatusRefData,
   ReferralStatusUpdate,
@@ -14,7 +16,7 @@ import type {
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { Referral, ReferralStatusHistory } from '@accredited-programmes-api'
+import type { OfferingEntity, Referral, ReferralStatusHistory } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {
@@ -66,6 +68,19 @@ export default class ReferralClient {
         ...(query?.ptUser && { ptUser: 'true' }),
       },
     })) as ConfirmationFields
+  }
+
+  async findDuplicates(
+    offeringId: CourseOffering['id'],
+    prisonNumber: Person['prisonNumber'],
+  ): Promise<Array<Referral>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.duplicates({}),
+      query: {
+        offeringId,
+        prisonNumber,
+      },
+    })) as Array<Referral>
   }
 
   async findMyReferralViews(query?: {
