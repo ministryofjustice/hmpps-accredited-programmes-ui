@@ -4,13 +4,7 @@ import type express from 'express'
 import { gitRef } from '../applicationVersion'
 import config from '../config'
 
-function setUpSentryErrorHandler(app: express.Express): void {
-  if (config.sentry.dsn) {
-    app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler)
-  }
-}
-
-function setUpSentryRequestHandler(app: express.Express): void {
+export default function setUpSentry(app: express.Express): void {
   // Prevent usernames which are PII from being sent to Sentry
   // https://docs.sentry.io/platforms/python/guides/logging/data-management/sensitive-data/#examples
   const anonymousId = Math.random().toString()
@@ -28,19 +22,13 @@ function setUpSentryRequestHandler(app: express.Express): void {
       },
       dsn: config.sentry.dsn,
       environment: config.environment,
-      integrations: [
-        // enable HTTP calls tracing
-        new Sentry.Integrations.Http({ tracing: true }),
-        // enable Express.js middleware tracing
-        new Sentry.Integrations.Express({ app }),
-      ],
       release: gitRef,
       tracesSampler: samplingContext => {
-        const transactionName = samplingContext?.transactionContext?.name
+        const samplingContextName = samplingContext.name
         if (
-          transactionName?.includes('ping') ||
-          transactionName?.includes('health') ||
-          transactionName?.includes('assets')
+          samplingContextName?.includes('ping') ||
+          samplingContextName?.includes('health') ||
+          samplingContextName?.includes('assets')
         ) {
           return 0
         }
@@ -53,13 +41,6 @@ function setUpSentryRequestHandler(app: express.Express): void {
         return 0.05
       },
     })
-    app.use(
-      Sentry.Handlers.requestHandler({
-        ip: false,
-        user: false,
-      }) as express.RequestHandler,
-    )
+    Sentry.setupExpressErrorHandler(app)
   }
 }
-
-export { setUpSentryErrorHandler, setUpSentryRequestHandler }
