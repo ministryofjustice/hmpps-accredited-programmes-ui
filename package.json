@@ -95,7 +95,7 @@
   },
   "devDependencies": {
     "@golevelup/ts-jest": "^0.5.0",
-    "@pact-foundation/pact": "^13.1.5",
+    "@pact-foundation/pact": "^14.0.0",
     "@tsconfig/node22": "^22.0.0",
     "@types/bunyan": "^1.8.8",
     "@types/bunyan-format": "^0.2.5",
