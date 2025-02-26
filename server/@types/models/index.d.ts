@@ -5,7 +5,6 @@ import type { CourseOffering } from './CourseOffering'
 import type { CoursePrerequisite } from './CoursePrerequisite'
 import type { DrugAlcoholDetail } from './DrugAlcoholDetail'
 import type { Health } from './Health'
-import type { LearningNeeds } from './LearningNeeds'
 import type { OffenceDetail } from './OffenceDetail'
 import type { Organisation } from './Organisation'
 import type { OrganisationAddress } from './OrganisationAddress'
@@ -38,7 +37,6 @@ export type {
   DrugAlcoholDetail,
   Health,
   KeyDates,
-  LearningNeeds,
   OffenceDetail,
   Organisation,
   OrganisationAddress,

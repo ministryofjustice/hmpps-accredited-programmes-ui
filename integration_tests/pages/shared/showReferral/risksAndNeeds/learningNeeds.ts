@@ -1,7 +1,6 @@
 import { CourseUtils, LearningNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
-import type { LearningNeeds } from '@accredited-programmes/models'
-import type { Course } from '@accredited-programmes-api'
+import type { Course, LearningNeeds } from '@accredited-programmes-api'
 
 export default class LearningNeedsPage extends Page {
   learningNeeds: LearningNeeds

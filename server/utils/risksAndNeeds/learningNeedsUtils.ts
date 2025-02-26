@@ -1,6 +1,6 @@
 import ShowRisksAndNeedsUtils from '../referrals/showRisksAndNeedsUtils'
-import type { LearningNeeds } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'
+import type { LearningNeeds } from '@accredited-programmes-api'
 
 export default class LearningNeedsUtils {
   static informationSummaryListRows(learningNeeds: LearningNeeds): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
