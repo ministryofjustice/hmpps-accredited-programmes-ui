@@ -42,7 +42,7 @@
         iconFallbackText: "Warning"
       }) }}
 
-      {% if withdrawHref %}
+      <div class="govuk-button-group">
         {{ govukButton({
         text: withdrawButtonText,
         href: withdrawHref,
@@ -50,15 +50,15 @@
           "data-testid": "withdraw-referral-link"
         }
       }) }}
-      {% endif %}
 
-      {{ govukButton({
-        text: "Return to programme list",
-        href: programmeListHref,
+        {{ govukButton({
+        text: "Cancel",
+        href: cancelHref,
         attributes: {
-          "data-testid": "programme-list-link"
+          "data-testid": "referral-programme-history-link"
         }
       }) }}
+      </div>
     </div>
   </div>
 {% endblock content %}
