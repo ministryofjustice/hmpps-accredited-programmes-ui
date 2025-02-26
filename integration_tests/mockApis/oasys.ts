@@ -6,7 +6,6 @@ import type {
   AssessmentDateInfo,
   DrugAlcoholDetail,
   Health,
-  LearningNeeds,
   OffenceDetail,
   RisksAndAlerts,
   RoshAnalysis,
@@ -14,6 +13,7 @@ import type {
 import type {
   Attitude,
   Behaviour,
+  LearningNeeds,
   Lifestyle,
   PniScore,
   Psychiatric,

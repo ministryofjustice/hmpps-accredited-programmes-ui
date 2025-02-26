@@ -1,5 +1,5 @@
 import LearningNeedsUtils from './learningNeedsUtils'
-import type { LearningNeeds } from '@accredited-programmes/models'
+import type { LearningNeeds } from '@accredited-programmes-api'
 
 describe('LearningNeedsUtils', () => {
   const learningNeeds: LearningNeeds = {

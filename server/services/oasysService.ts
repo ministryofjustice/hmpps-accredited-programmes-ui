@@ -6,12 +6,19 @@ import type {
   AssessmentDateInfo,
   DrugAlcoholDetail,
   Health,
-  LearningNeeds,
   OffenceDetail,
   RisksAndAlerts,
   RoshAnalysis,
 } from '@accredited-programmes/models'
-import type { Attitude, Behaviour, Lifestyle, Psychiatric, Referral, Relationships } from '@accredited-programmes-api'
+import type {
+  Attitude,
+  Behaviour,
+  LearningNeeds,
+  Lifestyle,
+  Psychiatric,
+  Referral,
+  Relationships,
+} from '@accredited-programmes-api'
 
 export default class OasysService {
   constructor(

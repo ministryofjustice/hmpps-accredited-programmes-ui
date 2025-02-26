@@ -2,8 +2,9 @@ import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import type { LearningNeeds } from '@accredited-programmes/models'
+import type { LearningNeeds } from '@accredited-programmes-api'
 
+const problemAreaOptions = ['Numeracy', 'Reading', 'Writing']
 class LearningNeedsFactory extends Factory<LearningNeeds> {
   withAllOptionalFields() {
     return this.params({
@@ -11,6 +12,7 @@ class LearningNeedsFactory extends Factory<LearningNeeds> {
       basicSkillsScoreDescription: faker.lorem.sentence(),
       learningDifficulties: faker.lorem.sentence(),
       noFixedAbodeOrTransient: faker.datatype.boolean(),
+      problemAreas: faker.helpers.arrayElements(problemAreaOptions),
       problemsReadWriteNum: faker.lorem.sentence(),
       qualifications: faker.lorem.sentence(),
       workRelatedSkills: faker.lorem.sentence(),
@@ -24,6 +26,7 @@ export default LearningNeedsFactory.define(
     basicSkillsScoreDescription: FactoryHelpers.optionalArrayElement(faker.lorem.sentence()),
     learningDifficulties: FactoryHelpers.optionalArrayElement(faker.lorem.sentence()),
     noFixedAbodeOrTransient: FactoryHelpers.optionalArrayElement(faker.datatype.boolean()),
+    problemAreas: faker.helpers.arrayElements(problemAreaOptions),
     problemsReadWriteNum: FactoryHelpers.optionalArrayElement(faker.lorem.sentence()),
     qualifications: FactoryHelpers.optionalArrayElement(faker.lorem.sentence()),
     workRelatedSkills: FactoryHelpers.optionalArrayElement(faker.lorem.sentence()),
