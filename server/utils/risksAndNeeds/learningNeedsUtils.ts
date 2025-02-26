@@ -4,6 +4,8 @@ import type { LearningNeeds } from '@accredited-programmes-api'
 
 export default class LearningNeedsUtils {
   static informationSummaryListRows(learningNeeds: LearningNeeds): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    const { problemAreas } = learningNeeds
+
     return [
       {
         key: { text: '3.3 - Currently of no fixed abode or in transient accommodation' },
@@ -14,9 +16,20 @@ export default class LearningNeedsUtils {
         value: { text: ShowRisksAndNeedsUtils.textValue(learningNeeds.workRelatedSkills) },
       },
       {
+        classes: problemAreas?.length ? 'no-border' : undefined,
         key: { text: '4.7 - Has problems with reading, writing or numeracy' },
         value: { text: ShowRisksAndNeedsUtils.textValue(learningNeeds.problemsReadWriteNum) },
       },
+      ...(problemAreas?.length
+        ? [
+            {
+              key: { text: 'Selected problem areas' },
+              value: {
+                html: `<ul class="govuk-list">${problemAreas.map(area => `<li>${area}</li>`).join('')}</ul>`,
+              },
+            },
+          ]
+        : []),
       {
         key: { text: '4.8 - Has learning difficulties (optional)' },
         value: { text: ShowRisksAndNeedsUtils.textValue(learningNeeds.learningDifficulties) },
