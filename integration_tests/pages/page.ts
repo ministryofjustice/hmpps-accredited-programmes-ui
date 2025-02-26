@@ -618,14 +618,20 @@ export default abstract class Page {
       cy.wrap(courseElement).within(() => {
         const course = CourseUtils.presentCourse(courses[courseElementIndex])
 
-        cy.get('.govuk-link').should('have.attr', 'href', findPaths.show({ courseId: course.id }))
+        const isBuildingChoicesCourse = course.name.startsWith('Building Choices')
+        const courseLinkPath = isBuildingChoicesCourse ? findPaths.buildingChoices.form.show : findPaths.show
+
+        cy.get('.govuk-link').should('have.attr', 'href', courseLinkPath({ courseId: course.id }))
         cy.get('.govuk-heading-m .govuk-link').should('have.text', course.displayName)
 
-        cy.get('.govuk-tag').then(tagElement => {
-          this.shouldContainTag(course.audienceTag, tagElement)
-        })
-
-        cy.get('p:nth-of-type(2)').should('have.text', course.description)
+        if (!isBuildingChoicesCourse) {
+          cy.get('.govuk-tag').then(tagElement => {
+            this.shouldContainTag(course.audienceTag, tagElement)
+          })
+          cy.get('p:nth-of-type(2)').should('have.text', course.description)
+        } else {
+          cy.get('p:nth-of-type(1)').should('have.text', course.description)
+        }
 
         cy.get('.govuk-summary-list').then(summaryListElement => {
           this.shouldContainSummaryListRows(course.prerequisiteSummaryListRows, summaryListElement)

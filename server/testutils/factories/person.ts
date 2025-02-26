@@ -24,6 +24,7 @@ export default Factory.define<Person>(({ params }) => {
     indeterminateSentence: faker.datatype.boolean(),
     name: `${faker.person.firstName()} ${faker.person.lastName()}`,
     paroleEligibilityDate,
+    prisonId: faker.string.alpha({ casing: 'upper', length: 3 }),
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
     religionOrBelief: faker.lorem.word(),
     sentenceExpiryDate: FactoryHelpers.optionalRandomFutureDateString(),

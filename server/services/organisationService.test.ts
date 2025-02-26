@@ -70,6 +70,7 @@ describe('OrganisationService', () => {
               town: prisonAddress.town,
             },
             category: 'A',
+            female: prison.female,
             name: prison.prisonName,
           })
 

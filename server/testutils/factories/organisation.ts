@@ -8,5 +8,6 @@ export default Factory.define<Organisation>(() => ({
   id: faker.string.alpha({ casing: 'upper', length: 3 }), // eslint-disable-next-line sort-keys
   address: organisationAddressFactory.build(),
   category: 'Not sure',
+  female: false,
   name: `${faker.location.county()} (HMP)`,
 }))

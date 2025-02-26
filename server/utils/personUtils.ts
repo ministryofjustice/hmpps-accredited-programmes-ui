@@ -26,6 +26,7 @@ export default class PersonUtils {
       indeterminateSentence: prisoner.indeterminateSentence,
       name: StringUtils.convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
       paroleEligibilityDate: prisoner.paroleEligibilityDate,
+      prisonId: prisoner.prisonId,
       prisonNumber: prisoner.prisonerNumber,
       religionOrBelief: prisoner.religion,
       sentenceExpiryDate: prisoner.sentenceExpiryDate,

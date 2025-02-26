@@ -11,6 +11,7 @@ interface Person {
   homeDetentionCurfewEligibilityDate?: string
   indeterminateSentence?: boolean
   paroleEligibilityDate?: string
+  prisonId?: string
   religionOrBelief?: string
   sentenceExpiryDate?: string
   sentenceStartDate?: string

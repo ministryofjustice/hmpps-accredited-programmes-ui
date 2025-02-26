@@ -7,6 +7,19 @@ import type { Course } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
 export default {
+  stubBuildingChoicesCourseVariant: (course: Course): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'POST',
+        url: apiPaths.courses.buildingChoices({ courseId: course.id }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: course ? [course] : [],
+        status: 200,
+      },
+    }),
+
   stubCourse: (course: Course): SuperAgentRequest =>
     stubFor({
       request: {
