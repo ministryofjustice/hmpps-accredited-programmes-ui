@@ -86,6 +86,7 @@ export default ReferralFactory.define(({ params }) => {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     additionalInformation: faker.lorem.paragraph({ max: 5, min: 0 }),
     closed: closedStatuses.includes(status),
+    hasLdcBeenOverriddenByProgrammeTeam: faker.datatype.boolean(),
     hasReviewedProgrammeHistory: faker.datatype.boolean(),
     oasysConfirmed: faker.datatype.boolean(),
     offeringId: faker.string.uuid(),
