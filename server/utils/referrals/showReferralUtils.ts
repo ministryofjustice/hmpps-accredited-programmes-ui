@@ -45,7 +45,7 @@ export default class ShowReferralUtils {
             },
             {
               classes: 'govuk-button--secondary',
-              href: assessPaths.moveToBuildingChoices.reason.show({ referralId: referral.id }),
+              href: assessPaths.transferToBuildingChoices.check.show({ referralId: referral.id }),
               text: 'Move to Building Choices',
             },
           ]

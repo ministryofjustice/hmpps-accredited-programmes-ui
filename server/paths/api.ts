@@ -45,6 +45,7 @@ export default {
   courses: {
     audiences: coursesPath.path('audiences'),
     buildingChoices: coursesPath.path('building-choices/:courseId'),
+    buildingChoicesByReferral: coursesPath.path('building-choices/referral/:referralId'),
     create: coursesPath,
     index: coursesPath,
     names: courseNamesPath,
