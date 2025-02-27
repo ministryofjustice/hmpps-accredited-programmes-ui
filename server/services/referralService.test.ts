@@ -8,6 +8,8 @@ import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
 import {
   confirmationFieldsFactory,
+  courseOfferingFactory,
+  personFactory,
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusRefDataFactory,
@@ -154,6 +156,27 @@ describe('ReferralService', () => {
         expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(referralClient.findMyReferralViews).toHaveBeenCalledWith(query)
       })
+    })
+  })
+
+  describe('getDuplicateReferrals', () => {
+    it('returns an array of referrals', async () => {
+      const referral = referralFactory.build()
+      const { prisonNumber } = personFactory.build()
+      const { id } = courseOfferingFactory.build()
+
+      when(referralClient.findDuplicateReferrals)
+        .calledWith({ offeringId: id, prisonNumber })
+        .mockResolvedValue([referral])
+
+      const result = await service.getDuplicateReferrals(username, prisonNumber, id)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findDuplicateReferrals).toHaveBeenCalledWith({ offeringId: id, prisonNumber })
+      expect(result).toStrictEqual([referral])
     })
   })
 

@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import createError from 'http-errors'
 
 import TransferReferralController from './transferReferralController'
 import { assessPaths } from '../../paths'
@@ -42,6 +43,7 @@ describe('TransferReferralController', () => {
   let buildingChoicesCourse: Course
   let offering: CourseOffering
   let pniResult: PniScore
+  let buildingChoicesReferral: Referral
 
   let controller: TransferReferralController
 
@@ -51,8 +53,9 @@ describe('TransferReferralController', () => {
     org = organisationFactory.build()
     course = courseFactory.build()
     buildingChoicesCourse = courseFactory.build()
-    offering = courseOfferingFactory.build()
+    offering = courseOfferingFactory.build({ organisationId: org.id })
     pniResult = pniScoreFactory.build()
+    buildingChoicesReferral = referralFactory.build()
 
     personService.getPerson.mockResolvedValue(person)
     referralService.getReferral.mockResolvedValue(referral)
@@ -159,14 +162,36 @@ describe('TransferReferralController', () => {
         person,
       })
     })
+    it('Redirects to the duplicate referral page when matching BC referral already exists', async () => {
+      pniService.getPni.mockResolvedValue(pniScoreFactory.build({ programmePathway: 'HIGH_INTENSITY' }))
+      referralService.getDuplicateReferrals.mockResolvedValue([buildingChoicesReferral])
+      const requestHandler = controller.show()
+      await requestHandler(request, response, next)
+
+      expect(referralService.getDuplicateReferrals).toHaveBeenCalledTimes(1)
+      expect(response.redirect).toHaveBeenCalledWith(
+        assessPaths.transferToBuildingChoices.reason.duplicate({ referralId: buildingChoicesReferral.id }),
+      )
+    })
     it('Redirects to the enter reason page when referral is elligible for transfer', async () => {
       pniService.getPni.mockResolvedValue(pniScoreFactory.build({ programmePathway: 'HIGH_INTENSITY' }))
+      courseService.getOfferingsByCourse.mockResolvedValue([offering])
+      referralService.getDuplicateReferrals.mockResolvedValue([])
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
       expect(response.redirect).toHaveBeenCalledWith(
         assessPaths.transferToBuildingChoices.reason.show({ referralId: referral.id }),
       )
+    })
+    it('throws a 404 error if no course offerings are found for the target BC course', async () => {
+      pniService.getPni.mockResolvedValue(pniScoreFactory.build({ programmePathway: 'HIGH_INTENSITY' }))
+      courseService.getBuildingChoicesCourseByReferral.mockResolvedValue(buildingChoicesCourse)
+      courseService.getOfferingsByCourse.mockResolvedValue([])
+      const requestHandler = controller.show()
+      const expectedError = createError(404, `Error retriving offerings for Course Id ${buildingChoicesCourse.id} `)
+
+      expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
     })
   })
 })

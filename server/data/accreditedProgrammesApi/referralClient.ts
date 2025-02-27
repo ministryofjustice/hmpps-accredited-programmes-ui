@@ -16,7 +16,7 @@ import type {
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { OfferingEntity, Referral, ReferralStatusHistory } from '@accredited-programmes-api'
+import type { Referral, ReferralStatusHistory } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {

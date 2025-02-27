@@ -1,6 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
+import createError from 'http-errors'
 
-import { assessPaths, referPaths } from '../../paths'
+import { assessPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, PniService, ReferralService } from '../../services'
 import { TypeUtils } from '../../utils'
 
@@ -39,15 +40,17 @@ export default class TransferBuildingChoicesController {
           `You can see which scores are missing in the <a href="${assessPaths.show.pni({ referralId })}">programme needs identifier</a>.`,
           'Update the missing information in OASys to move the referral, or withdraw this referral and submit a new one.',
         ]
+        return res.render('referrals/transfer/error', {
+          errorMessages: errorText,
+          pageHeading,
+          person,
+        })
       }
 
       if (pni?.programmePathway === 'ALTERNATIVE_PATHWAY') {
         errorText = [
           `This referral cannot be moved because the risk and need scores suggest that ${person.name} is not eligible for Building Choices. You can see these scores in the programme needs identifier.`,
         ]
-      }
-
-      if (errorText) {
         return res.render('referrals/transfer/error', {
           errorMessages: errorText,
           pageHeading,
@@ -60,9 +63,11 @@ export default class TransferBuildingChoicesController {
         this.courseService.getOffering(username, referral.offeringId),
       ])
 
-      const targetBuildingChoicesCourse = pni?.programmePathway
-        ? await this.courseService.getBuildingChoicesCourseByReferral(username, referralId, pni.programmePathway)
-        : null
+      const targetBuildingChoicesCourse = await this.courseService.getBuildingChoicesCourseByReferral(
+        username,
+        referralId,
+        pni.programmePathway,
+      )
 
       const organisation = await this.organisationService.getOrganisation(userToken, courseOffering.organisationId)
 
@@ -71,9 +76,6 @@ export default class TransferBuildingChoicesController {
           `This referral cannot be moved because ${organisation.name} does not offer Building Choices: ${course.intensity?.toLocaleLowerCase()} intensity.`,
           'Close this referral and submit a new one to a different location.',
         ]
-      }
-
-      if (errorText) {
         return res.render('referrals/transfer/error', {
           errorMessages: errorText,
           pageHeading,
@@ -81,9 +83,13 @@ export default class TransferBuildingChoicesController {
         })
       }
 
-      const offerings = await this.courseService.getOfferingsByCourse(username, targetBuildingChoicesCourse?.id || '')
+      const offerings = await this.courseService.getOfferingsByCourse(username, targetBuildingChoicesCourse?.id)
 
-      const targetOfferingId = offerings.find(offering => offering.organisationId === organisation.id)?.id || ''
+      const targetOfferingId = offerings.find(offering => offering.organisationId === organisation.id)?.id
+
+      if (!targetOfferingId) {
+        throw createError(404, `Error retriving offerings for Course Id ${targetBuildingChoicesCourse.id} `)
+      }
 
       const duplicateReferrals = await this.referralService.getDuplicateReferrals(
         username,
@@ -91,14 +97,14 @@ export default class TransferBuildingChoicesController {
         targetOfferingId,
       )
 
-      if (duplicateReferrals.length) {
+      if (duplicateReferrals.length > 0) {
         const duplicateReferral = duplicateReferrals[0]
         return res.redirect(
           assessPaths.transferToBuildingChoices.reason.duplicate({ referralId: duplicateReferral.id }),
         )
       }
 
-      return res.render('referrals/transfer/show', {})
+      return res.redirect(assessPaths.transferToBuildingChoices.reason.show({ referralId }))
     }
   }
 }

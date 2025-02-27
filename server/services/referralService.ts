@@ -15,7 +15,7 @@ import type {
   ReferralView,
 } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { OfferingEntity, Referral } from '@accredited-programmes-api'
+import type { Referral } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 
 export default class ReferralService {
