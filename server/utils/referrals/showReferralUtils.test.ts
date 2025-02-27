@@ -53,7 +53,7 @@ describe('ShowReferralUtils', () => {
             },
             {
               classes: 'govuk-button--secondary',
-              href: assessPaths.moveToBuildingChoices.reason.show({ referralId: submittedReferral.id }),
+              href: assessPaths.transferToBuildingChoices.reason.show({ referralId: submittedReferral.id }),
               text: 'Move to Building Choices',
             },
           ],

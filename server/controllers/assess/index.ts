@@ -37,6 +37,9 @@ const controllers = (services: Services) => {
   const duplicateTransferReferralController = new DuplicateTransferReferralController(
     services.courseService,
     services.referralService,
+    services.organisationService,
+    services.personService,
+    services.userService,
   )
 
   return {

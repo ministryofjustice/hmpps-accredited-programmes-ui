@@ -24,12 +24,6 @@ export default {
     index: caseListIndex,
     show: courseCaseListPath.path(':referralStatusGroup'),
   },
-  moveToBuildingChoices: {
-    reason: {
-      duplicate: moveToBuildingChoicesDuplicate,
-      show: moveToBuildingChoicesReason,
-    },
-  },
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),
     offenceHistory: referralShowPathBase.path('offence-history'),
@@ -54,6 +48,12 @@ export default {
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
     statusHistory: referralShowPathBase.path('status-history'),
+  },
+  transferToBuildingChoices: {
+    reason: {
+      duplicate: moveToBuildingChoicesDuplicate,
+      show: moveToBuildingChoicesReason,
+    },
   },
   updateStatus: {
     category: {

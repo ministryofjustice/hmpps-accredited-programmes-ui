@@ -2,7 +2,7 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import TransferBuildingChoicesController from './transferReferralController'
+import TransferReferralController from './transferReferralController'
 import { assessPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, PniService, ReferralService } from '../../services'
 import {
@@ -21,7 +21,7 @@ jest.mock('../../utils/formUtils')
 jest.mock('../../utils/referrals/referralUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
 
-describe('TransferBuildingChoicesController', () => {
+describe('TransferReferralController', () => {
   const userToken = 'SOME_TOKEN'
   const username = 'USERNAME'
 
@@ -43,7 +43,7 @@ describe('TransferBuildingChoicesController', () => {
   let offering: CourseOffering
   let pniResult: PniScore
 
-  let controller: TransferBuildingChoicesController
+  let controller: TransferReferralController
 
   beforeEach(() => {
     person = personFactory.build()
@@ -62,13 +62,7 @@ describe('TransferBuildingChoicesController', () => {
     courseService.getBuildingChoicesCourseByReferral.mockResolvedValue(buildingChoicesCourse)
     pniService.getPni.mockResolvedValue(pniResult)
 
-    controller = new TransferBuildingChoicesController(
-      courseService,
-      orgService,
-      personService,
-      pniService,
-      referralService,
-    )
+    controller = new TransferReferralController(courseService, orgService, personService, pniService, referralService)
 
     request = createMock<Request>({
       params: { referralId: referral.id },
@@ -140,6 +134,7 @@ describe('TransferBuildingChoicesController', () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
+      expect(courseService.getBuildingChoicesCourseByReferral).toHaveBeenCalledTimes(0)
       expect(response.render).toHaveBeenCalledWith('referrals/transfer/error', {
         errorMessages,
         pageHeading,
@@ -169,7 +164,9 @@ describe('TransferBuildingChoicesController', () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
-      expect(response.render).toHaveBeenCalledWith('referrals/transfer/show', {})
+      expect(response.redirect).toHaveBeenCalledWith(
+        assessPaths.transferToBuildingChoices.reason.show({ referralId: referral.id }),
+      )
     })
   })
 })

@@ -43,17 +43,18 @@
       }) }}
 
       <div class="govuk-button-group">
-        {{ govukButton({
-        text: withdrawButtonText,
-        href: withdrawHref,
-        attributes: {
-          "data-testid": "withdraw-referral-link"
-        }
-      }) }}
+        <form method="post">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+          <input type="hidden" name="statusDecision" value="WITHDRAWN"/>
+          {{ govukButton({
+          text: withdrawButtonText
+         }) }}
+        </form>
 
         {{ govukButton({
-        text: "Cancel",
+        text: "Return to referral",
         href: cancelHref,
+        classes: "govuk-button--secondary",
         attributes: {
           "data-testid": "referral-programme-history-link"
         }

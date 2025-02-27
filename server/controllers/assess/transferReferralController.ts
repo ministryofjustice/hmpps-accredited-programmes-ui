@@ -81,20 +81,21 @@ export default class TransferBuildingChoicesController {
         })
       }
 
-      const targetOffering = targetBuildingChoicesCourse?.courseOfferings.find(
-        offering => offering.organisationId === organisation.id,
-      )
+      const offerings = await this.courseService.getOfferingsByCourse(username, targetBuildingChoicesCourse?.id || '')
 
-      const duplicateReferrals = await this.referralService.getDuplicates(
+      const targetOfferingId = offerings.find(offering => offering.organisationId === organisation.id)?.id || ''
+
+      const duplicateReferrals = await this.referralService.getDuplicateReferrals(
         username,
         person.prisonNumber,
-        targetOffering?.id || '',
+        targetOfferingId,
       )
 
-      const duplicateReferral = duplicateReferrals.at(0)
-
-      if (duplicateReferral) {
-        return res.redirect(assessPaths.moveToBuildingChoices.reason.duplicate({ referralId: duplicateReferral.id }))
+      if (duplicateReferrals.length) {
+        const duplicateReferral = duplicateReferrals[0]
+        return res.redirect(
+          assessPaths.transferToBuildingChoices.reason.duplicate({ referralId: duplicateReferral.id }),
+        )
       }
 
       return res.render('referrals/transfer/show', {})

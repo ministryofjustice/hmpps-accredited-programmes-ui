@@ -70,15 +70,15 @@ export default class ReferralClient {
     })) as ConfirmationFields
   }
 
-  async findDuplicates(
-    offeringId: CourseOffering['id'],
-    prisonNumber: Person['prisonNumber'],
-  ): Promise<Array<Referral>> {
+  async findDuplicateReferrals(query?: {
+    offeringId?: CourseOffering['id']
+    prisonNumber?: Person['prisonNumber']
+  }): Promise<Array<Referral>> {
     return (await this.restClient.get({
       path: apiPaths.referrals.duplicates({}),
       query: {
-        offeringId,
-        prisonNumber,
+        ...(query?.offeringId && { offeringId: query.offeringId }),
+        ...(query?.prisonNumber && { prisonNumber: query.prisonNumber }),
       },
     })) as Array<Referral>
   }
