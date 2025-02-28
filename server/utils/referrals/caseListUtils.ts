@@ -8,7 +8,7 @@ import PathUtils from '../pathUtils'
 import StringUtils from '../stringUtils'
 import type { ReferralStatusGroup, ReferralStatusRefData, ReferralView } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, MojFrontendNavigationItem, QueryParam } from '@accredited-programmes/ui'
-import type { Course, Referral } from '@accredited-programmes-api'
+import type { Audience, Course, Referral } from '@accredited-programmes-api'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
 
 export default class CaseListUtils {
@@ -30,16 +30,9 @@ export default class CaseListUtils {
     })
   }
 
-  static audienceSelectItems(selectedValue?: string): Array<GovukFrontendSelectItem> {
+  static audienceSelectItems(audiences: Array<Audience>, selectedValue?: string): Array<GovukFrontendSelectItem> {
     return this.selectItems(
-      [
-        'Extremism offence',
-        'Gang offence',
-        'General offence',
-        'General violence offence',
-        'Intimate partner violence offence',
-        'Sexual offence',
-      ],
+      audiences.map(audience => audience.name).filter(audience => audience !== undefined),
       selectedValue,
     )
   }

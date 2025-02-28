@@ -1,6 +1,11 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
-import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../../server/testutils/factories'
+import {
+  audienceFactory,
+  courseFactory,
+  referralStatusRefDataFactory,
+  referralViewFactory,
+} from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
 import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
@@ -8,8 +13,11 @@ import { CaseListPage } from '../../pages/shared'
 import type { CaseListColumnHeader } from '@accredited-programmes/ui'
 
 context('Referral case lists', () => {
+  const generalOffenceAudience = audienceFactory.build({ name: 'General offence' })
   const limeCourse = courseFactory.build({ name: 'Lime Course' })
+  const limeCourseAudiences = [generalOffenceAudience, audienceFactory.build({ name: 'Sexual offence' })]
   const blueCourse = courseFactory.build({ name: 'Blue Course' })
+  const blueCourseAudiences = [generalOffenceAudience, audienceFactory.build({ name: 'General violence offence' })]
   const courses = [limeCourse, blueCourse]
   const closedReferralStatuses = [
     referralStatusRefDataFactory.build({ closed: true, code: 'WITHDRAWN', draft: false }),
@@ -39,6 +47,7 @@ context('Referral case lists', () => {
     cy.task('stubAuthUser')
     cy.task('stubDefaultCaseloads')
     cy.task('stubCoursesForOrganisation', { courses, organisationId: 'MRI' })
+    cy.task('stubCourseAudiences', { audiences: limeCourseAudiences, courseId: limeCourse.id })
     cy.task('stubReferralStatuses', referralStatuses)
     cy.signIn()
   })
@@ -330,6 +339,10 @@ context('Referral case lists', () => {
     })
 
     describe('when visiting the index, without specifying a course', () => {
+      beforeEach(() => {
+        cy.task('stubCourseAudiences', { audiences: blueCourseAudiences, courseId: blueCourse.id })
+      })
+
       it('redirects to the correct course case list page', () => {
         cy.task('stubFindReferralViews', {
           organisationId: 'MRI',

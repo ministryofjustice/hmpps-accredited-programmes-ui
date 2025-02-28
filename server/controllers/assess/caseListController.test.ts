@@ -7,7 +7,12 @@ import { when } from 'jest-when'
 import AssessCaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
-import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../testutils/factories'
+import {
+  audienceFactory,
+  courseFactory,
+  referralStatusRefDataFactory,
+  referralViewFactory,
+} from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
@@ -45,6 +50,7 @@ describe('AssessCaseListController', () => {
 
   const orangeCourse = courseFactory.build({ name: 'Orange Course' })
   const limeCourse = courseFactory.build({ audience: 'Gang offence', name: 'Lime Course' })
+  const limeCourseAudiences = audienceFactory.buildList(2)
   const courses = [orangeCourse, limeCourse]
 
   beforeEach(() => {
@@ -158,6 +164,9 @@ describe('AssessCaseListController', () => {
       request.params = { courseId: limeCourse.id, referralStatusGroup }
 
       when(courseService.getCoursesByOrganisation).calledWith(username, activeCaseLoadId).mockResolvedValue(courses)
+      when(courseService.getCourseAudiences)
+        .calledWith(username, { courseId: limeCourse.id })
+        .mockResolvedValue(limeCourseAudiences)
 
       const openReferralViews = referralViewFactory.buildList(3, { status: 'referral_submitted' })
       const closedReferralViews = referralViewFactory.buildList(1, { status: 'programme_complete' })
@@ -257,7 +266,7 @@ describe('AssessCaseListController', () => {
           assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
           queryParamsExcludingSort,
         )
-        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
+        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, undefined)
         expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
@@ -311,7 +320,7 @@ describe('AssessCaseListController', () => {
 
           expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
             action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
-            audienceSelectItems: CaseListUtils.audienceSelectItems('general offence'),
+            audienceSelectItems: CaseListUtils.audienceSelectItems(limeCourseAudiences, 'general offence'),
             nameOrId: uiNameOrIdQueryParam,
             pageHeading: 'Lime Course',
             pageTitleOverride: 'Manage open programme team referrals: Lime Course',
@@ -354,7 +363,7 @@ describe('AssessCaseListController', () => {
             assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
             queryParamsExcludingSort,
           )
-          expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(uiAudienceQueryParam)
+          expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, uiAudienceQueryParam)
           expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
           expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
             pathWithQuery,
@@ -444,7 +453,7 @@ describe('AssessCaseListController', () => {
           assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'closed' }),
           queryParamsExcludingSort,
         )
-        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(undefined)
+        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, undefined)
         expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
