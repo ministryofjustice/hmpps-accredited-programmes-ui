@@ -250,6 +250,21 @@ describe('CourseService', () => {
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findCourseAudiences).toHaveBeenCalled()
     })
+
+    describe('when there are query parameters', () => {
+      it('calls the client method with those query parameters', async () => {
+        const courseId = 'course-id'
+        const audiences = audienceFactory.buildList(3)
+        when(courseClient.findCourseAudiences).mockResolvedValue(audiences)
+
+        const result = await service.getCourseAudiences(username, { courseId })
+
+        expect(result).toEqual(audiences)
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+        expect(courseClient.findCourseAudiences).toHaveBeenCalledWith({ courseId })
+      })
+    })
   })
 
   describe('getCourseByOffering', () => {

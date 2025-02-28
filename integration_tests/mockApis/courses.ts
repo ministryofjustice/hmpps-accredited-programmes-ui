@@ -3,7 +3,7 @@ import type { SuperAgentRequest } from 'superagent'
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { CourseOffering } from '@accredited-programmes/models'
-import type { Course } from '@accredited-programmes-api'
+import type { Audience, Course } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
 export default {
@@ -29,6 +29,22 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: course,
+        status: 200,
+      },
+    }),
+
+  stubCourseAudiences: (args: { audiences: Array<Audience>; courseId: Course['id'] }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        queryParameters: {
+          courseId: { equalTo: args.courseId },
+        },
+        urlPath: apiPaths.courses.audiences({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.audiences,
         status: 200,
       },
     }),

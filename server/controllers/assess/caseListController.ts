@@ -79,7 +79,10 @@ export default class AssessCaseListController {
 
       const { activeCaseLoadId, username } = res.locals.user
 
-      const courses = await this.courseService.getCoursesByOrganisation(username, activeCaseLoadId)
+      const [courses, courseAudiences] = await Promise.all([
+        this.courseService.getCoursesByOrganisation(username, activeCaseLoadId),
+        this.courseService.getCourseAudiences(username, { courseId }),
+      ])
 
       const selectedCourse = courses.find(course => course.id === courseId)
 
@@ -143,7 +146,7 @@ export default class AssessCaseListController {
 
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
-        audienceSelectItems: CaseListUtils.audienceSelectItems(audience),
+        audienceSelectItems: CaseListUtils.audienceSelectItems(courseAudiences, audience),
         nameOrId,
         pageHeading: selectedCourse.name,
         pageTitleOverride: `Manage ${referralStatusGroup} programme team referrals: ${selectedCourse.name}`,

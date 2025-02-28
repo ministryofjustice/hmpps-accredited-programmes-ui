@@ -4,6 +4,7 @@ import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from
 import FormUtils from '../formUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
+import type { Audience } from '@accredited-programmes-api'
 
 jest.mock('../formUtils')
 
@@ -59,6 +60,16 @@ describe('CaseListUtils', () => {
   })
 
   describe('audienceSelectItems', () => {
+    const courseAudiences: Array<Audience> = [
+      { id: '1', name: 'General offence' },
+      { id: '2', name: 'Extremism offence' },
+      { id: '3', name: 'Gang offence' },
+      { id: '4', name: undefined },
+      { id: '5', name: 'General violence offence' },
+      { id: '6', name: 'Intimate partner violence offence' },
+      { id: '7', name: 'Sexual offence' },
+    ]
+
     const expectedItems = {
       'extremism offence': 'Extremism offence',
       'gang offence': 'Gang offence',
@@ -69,14 +80,14 @@ describe('CaseListUtils', () => {
     }
 
     it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
-      CaseListUtils.audienceSelectItems()
+      CaseListUtils.audienceSelectItems(courseAudiences)
 
       expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
     })
 
     describe('when a selected value is provided', () => {
       it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        CaseListUtils.audienceSelectItems('general offence')
+        CaseListUtils.audienceSelectItems(courseAudiences, 'general offence')
 
         expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'general offence')
       })

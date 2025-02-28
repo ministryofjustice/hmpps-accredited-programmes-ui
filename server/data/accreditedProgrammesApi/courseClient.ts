@@ -82,9 +82,12 @@ export default class CourseClient {
     })) as Array<Course>
   }
 
-  async findCourseAudiences(): Promise<Array<Audience>> {
+  async findCourseAudiences(query?: { courseId: Course['id'] }): Promise<Array<Audience>> {
     return (await this.restClient.get({
       path: apiPaths.courses.audiences({}),
+      query: {
+        ...(query?.courseId && { courseId: query.courseId }),
+      },
     })) as Array<Audience>
   }
 
