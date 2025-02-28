@@ -5,7 +5,6 @@ import behaviourFactory from './behaviour'
 import caseloadFactory from './caseload'
 import confirmationFieldsFactory from './confirmationFields'
 import courseFactory from './course'
-import courseAudienceFactory from './courseAudience'
 import courseOfferingFactory from './courseOffering'
 import courseParticipationFactory from './courseParticipation'
 import courseParticipationOutcomeFactory from './courseParticipationOutcome'
@@ -51,7 +50,6 @@ export {
   behaviourFactory,
   caseloadFactory,
   confirmationFieldsFactory,
-  courseAudienceFactory,
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,

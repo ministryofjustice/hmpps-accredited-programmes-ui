@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
-import courseAudienceFactory from './courseAudience'
+import audienceFactory from './audience'
 import FactoryHelpers from './factoryHelpers'
 import { randomStatus, statusDescriptionAndColour } from './referral'
 import { StringUtils } from '../../utils'
@@ -22,11 +22,11 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
   const { availableStatuses, requireOptionalFields } = transientParams
   const status = params.status || randomStatus(availableStatuses)
   const courseName = params.courseName || `${StringUtils.convertToTitleCase(faker.color.human())} Course`
-  const audience = params.audience || courseAudienceFactory.build()
+  const audienceName = params.audience || audienceFactory.build().name
 
   const referralViewWithAllFields: ReferralView = {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
-    audience,
+    audience: audienceName,
     conditionalReleaseDate: FactoryHelpers.randomFutureDateString(),
     courseName,
     earliestReleaseDate: FactoryHelpers.randomFutureDateString(),
@@ -36,7 +36,7 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
       'Conditional Release Date',
     ]),
     forename: faker.person.firstName(),
-    listDisplayName: `${courseName}: ${audience}`,
+    listDisplayName: `${courseName}: ${audienceName}`,
     location: `${faker.location.county()} (HMP)`,
     nonDtoReleaseDateType: faker.helpers.arrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
     organisationId: faker.string.alpha({ casing: 'upper', length: 3 }),

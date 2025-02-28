@@ -4,15 +4,10 @@ import type { ResponseError } from 'superagent'
 import type UserService from './userService'
 import type { CourseClient, HmppsAuthClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import { CourseParticipationUtils } from '../utils'
-import type {
-  Audience,
-  CourseCreateRequest,
-  CourseOffering,
-  CoursePrerequisite,
-  Person,
-} from '@accredited-programmes/models'
+import type { CourseCreateRequest, CourseOffering, CoursePrerequisite, Person } from '@accredited-programmes/models'
 import type { BuildingChoicesData, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 import type {
+  Audience,
   Course,
   CourseParticipation,
   CourseParticipationCreate,

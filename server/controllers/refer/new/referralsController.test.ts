@@ -8,7 +8,7 @@ import { authPaths, findPaths, referPaths } from '../../../paths'
 import sanitiseError from '../../../sanitisedError'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
-  courseAudienceFactory,
+  audienceFactory,
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
@@ -373,7 +373,7 @@ describe('NewReferralsController', () => {
     const referrerName = 'Bobby Brown'
     const referrerEmail = 'referrer.email@test-email.co.uk'
     const coursePresenter = createMock<CoursePresenter>({
-      audience: courseAudienceFactory.build(),
+      audience: audienceFactory.build().name,
     })
     const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
     const participationsForReferral = courseParticipationFactory.buildList(2, { isDraft: true })
