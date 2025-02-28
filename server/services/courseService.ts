@@ -106,12 +106,15 @@ export default class CourseService {
     return courseClient.find(courseId)
   }
 
-  async getCourseAudiences(username: Express.User['username']): Promise<Array<Audience>> {
+  async getCourseAudiences(
+    username: Express.User['username'],
+    query?: { courseId: Course['id'] },
+  ): Promise<Array<Audience>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
-    return courseClient.findCourseAudiences()
+    return courseClient.findCourseAudiences(query)
   }
 
   async getCourseByOffering(username: Express.User['username'], courseOfferingId: CourseOffering['id']) {
