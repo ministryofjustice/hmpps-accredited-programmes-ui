@@ -2,14 +2,9 @@ import type { ApiConfig } from '../../config'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import RestClient from '../restClient'
+import type { CourseCreateRequest, CourseOffering, CoursePrerequisite, Person } from '@accredited-programmes/models'
 import type {
   Audience,
-  CourseCreateRequest,
-  CourseOffering,
-  CoursePrerequisite,
-  Person,
-} from '@accredited-programmes/models'
-import type {
   BuildingChoicesSearchRequest,
   Course,
   CourseParticipation,

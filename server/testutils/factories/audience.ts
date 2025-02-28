@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
-import courseAudienceFactory from './courseAudience'
-import type { Audience } from '@accredited-programmes/models'
+import type { Audience } from '@accredited-programmes-api'
 
 export default Factory.define<Audience>(() => ({
   id: faker.string.uuid(), // eslint-disable-next-line sort-keys
@@ -18,5 +17,13 @@ export default Factory.define<Audience>(() => ({
     'turquoise',
     'yellow',
   ]),
-  name: courseAudienceFactory.build(),
+  name: faker.helpers.arrayElement([
+    'All offences',
+    'Extremism offence',
+    'Gang offence',
+    'General offence',
+    'General violence offence',
+    'Intimate partner violence offence',
+    'Sexual offence',
+  ]),
 }))

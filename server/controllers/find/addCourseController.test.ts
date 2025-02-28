@@ -63,7 +63,7 @@ describe('AddCourseController', () => {
     const audience = audienceFactory.build()
     const newCourseBody: Record<string, string> = {
       alternateName: 'TC+1',
-      audienceId: audience.id,
+      audienceId: audience.id!,
       description: 'Test course description',
       name: 'Test Course',
       withdrawn: 'false',

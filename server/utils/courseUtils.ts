@@ -1,5 +1,5 @@
 import { findPaths } from '../paths'
-import type { Audience, CoursePrerequisite } from '@accredited-programmes/models'
+import type { CoursePrerequisite } from '@accredited-programmes/models'
 import type {
   BuildingChoicesData,
   CoursePresenter,
@@ -7,7 +7,7 @@ import type {
   GovukFrontendTagWithText,
   HasHtmlString,
 } from '@accredited-programmes/ui'
-import type { Course } from '@accredited-programmes-api'
+import type { Audience, Course } from '@accredited-programmes-api'
 import type { GovukFrontendSelectItem } from '@govuk-frontend'
 
 export default class CourseUtils {

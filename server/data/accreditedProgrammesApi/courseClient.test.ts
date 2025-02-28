@@ -14,6 +14,7 @@ import {
 } from '../../testutils/factories'
 import type { CourseCreateRequest, CourseOffering } from '@accredited-programmes/models'
 import type {
+  Audience,
   CourseParticipation,
   CourseParticipationCreate,
   CourseParticipationUpdate,
@@ -263,7 +264,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   })
 
   describe('findCourseAudiences', () => {
-    const audiences = [
+    const audiences: Array<InterfaceToTemplate<Audience>> = [
       audienceFactory.build({ id: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2' }),
       audienceFactory.build({ id: 'e9f9a8d8-2f7d-4a88-8f39-5d3b9071e75b' }),
       audienceFactory.build({ id: '7e2db7fc-18c5-4bda-bb0d-ec39bfa20414' }),
