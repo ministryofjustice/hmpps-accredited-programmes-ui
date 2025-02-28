@@ -42,6 +42,11 @@ export interface ReferralUpdate {
    * @example "The reason for transfer to building choices is..."
    */
   transferReason?: string
+    /**
+   * Flag to indicate if the ldc field was overriden by the programme team
+   * @example true
+   */
+    hasLdcBeenOverriddenByProgrammeTeam?: boolean
 }
 
 export type Unit = object
