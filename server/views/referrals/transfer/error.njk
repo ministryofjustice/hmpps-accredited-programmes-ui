@@ -1,0 +1,25 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% extends "./partials/layout.njk" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      {% for message in errorMessages %}
+        <p class="govuk-body">{{ message | safe }}</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukButton({
+        text: "Return to referral details",
+        href: returnLinkHref
+      }) }}
+    </div>
+  </div>
+{% endblock content %}

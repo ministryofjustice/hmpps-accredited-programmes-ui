@@ -32,57 +32,63 @@ describe('ShowReferralUtils', () => {
 
   describe('Menu buttons', () => {
     describe('when in the assess journey', () => {
-      it('when the course is not building choices, the referral is not closed or on programme, shows the update and move to building choices buttons in the menu', () => {
-        expect(
-          ShowReferralUtils.buttonMenu(course, submittedReferral, {
-            currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
-          }),
-        ).toEqual({
-          button: {
-            classes: 'govuk-button--secondary',
-            text: 'Update referral',
-          },
-          items: [
-            {
-              attributes: {
-                'aria-disabled': false,
+      describe('when the course is not building choices, the referral is not closed or on programme', () => {
+        it('shows the update and move to building choices buttons in the menu', () => {
+          expect(
+            ShowReferralUtils.buttonMenu(course, submittedReferral, {
+              currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+            }),
+          ).toEqual({
+            button: {
+              classes: 'govuk-button--secondary',
+              text: 'Update referral',
+            },
+            items: [
+              {
+                attributes: {
+                  'aria-disabled': false,
+                },
+                classes: 'govuk-button--secondary',
+                href: assessPaths.updateStatus.decision.show({ referralId: submittedReferral.id }),
+                text: 'Update status',
               },
-              classes: 'govuk-button--secondary',
-              href: assessPaths.updateStatus.decision.show({ referralId: submittedReferral.id }),
-              text: 'Update status',
-            },
-            {
-              classes: 'govuk-button--secondary',
-              href: assessPaths.moveToBuildingChoices.reason.show({ referralId: submittedReferral.id }),
-              text: 'Move to Building Choices',
-            },
-          ],
+              {
+                classes: 'govuk-button--secondary',
+                href: assessPaths.transferToBuildingChoices.check.show({ referralId: submittedReferral.id }),
+                text: 'Move to Building Choices',
+              },
+            ],
+          })
         })
-      })
-      it('when the course is building choices, returns an empty menu', () => {
-        expect(
-          ShowReferralUtils.buttonMenu(buildingChoicesCourse, submittedReferral, {
-            currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
-          }),
-        ).toEqual({
-          button: {
-            classes: 'govuk-button--secondary',
-            text: 'Update referral',
-          },
-          items: [],
+        describe('when the course is building choices', () => {
+          it('returns an empty menu', () => {
+            expect(
+              ShowReferralUtils.buttonMenu(buildingChoicesCourse, submittedReferral, {
+                currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+              }),
+            ).toEqual({
+              button: {
+                classes: 'govuk-button--secondary',
+                text: 'Update referral',
+              },
+              items: [],
+            })
+          })
         })
-      })
-      it('when the referral status is on programme, returns an empty menu', () => {
-        expect(
-          ShowReferralUtils.buttonMenu(course, onProgrammeReferral, {
-            currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
-          }),
-        ).toEqual({
-          button: {
-            classes: 'govuk-button--secondary',
-            text: 'Update referral',
-          },
-          items: [],
+        describe('when the referral status is on programme', () => {
+          it('returns an empty menu', () => {
+            expect(
+              ShowReferralUtils.buttonMenu(course, onProgrammeReferral, {
+                currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+              }),
+            ).toEqual({
+              button: {
+                classes: 'govuk-button--secondary',
+                text: 'Update referral',
+              },
+              items: [],
+            })
+          })
         })
       })
     })
