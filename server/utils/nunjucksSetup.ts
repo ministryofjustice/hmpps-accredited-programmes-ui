@@ -57,8 +57,8 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addGlobal('findPaths', findPaths)
   njkEnv.addGlobal('referPaths', referPaths)
 
-  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-  const mojFilters = require('@ministryofjustice/frontend/moj/filters/all')()
+  // eslint-disable-next-line
+  const mojFilters = require('@ministryofjustice/frontend/moj/filters/all.js')()
 
   Object.keys(mojFilters).forEach(filterName => {
     njkEnv.addFilter(filterName, mojFilters[filterName])

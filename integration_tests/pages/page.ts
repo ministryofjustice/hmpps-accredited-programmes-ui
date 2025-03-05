@@ -577,8 +577,8 @@ export default abstract class Page {
   }
 
   shouldContainTimelineItems(items: Array<MojTimelineItem>, element: JQuery<HTMLElement>): void {
-    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-    const mojFilters = require('@ministryofjustice/frontend/moj/filters/all')()
+    // eslint-disable-next-line
+    const mojFilters = require('@ministryofjustice/frontend/moj/filters/all.js')()
 
     cy.wrap(element).within(() => {
       items.forEach((item, itemIndex) => {
