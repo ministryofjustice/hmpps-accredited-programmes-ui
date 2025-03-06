@@ -3,6 +3,7 @@ import type { ResponseError } from 'superagent'
 
 import type UserService from './userService'
 import type { CourseClient, HmppsAuthClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
+import type { SanitisedError } from '../sanitisedError'
 import { CourseParticipationUtils } from '../utils'
 import type { CourseCreateRequest, CourseOffering, CoursePrerequisite, Person } from '@accredited-programmes/models'
 import type { BuildingChoicesData, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
@@ -12,6 +13,7 @@ import type {
   CourseParticipation,
   CourseParticipationCreate,
   CourseParticipationUpdate,
+  PniScore,
   Referral,
 } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
@@ -75,6 +77,31 @@ export default class CourseService {
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.destroyParticipation(courseParticipationId)
+  }
+
+  async getBuildingChoicesCourseByReferral(
+    username: Express.User['username'],
+    referralId: Referral['id'],
+    programmePathway: PniScore['programmePathway'],
+  ): Promise<Course | null> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const courseClient = this.courseClientBuilder(systemToken)
+
+    try {
+      return await courseClient.findBuildingChoicesCourseByReferral(referralId, programmePathway)
+    } catch (error) {
+      const sanitisedError = error as SanitisedError
+
+      if (sanitisedError.status === 404) {
+        return null
+      }
+
+      throw createError(
+        sanitisedError.status || 500,
+        `Error fetching building choices course data for referral ${referralId} and pathway ${programmePathway}.`,
+      )
+    }
   }
 
   async getBuildingChoicesVariants(

@@ -152,6 +152,56 @@ describe('CourseService', () => {
     })
   })
 
+  describe('getBuildingChoicesCourseByReferral', () => {
+    const referralId = 'REFERRAL-ID'
+    const pathway = 'MODERATE_INTENSITY_BC'
+    it('returns the course associated with a given referral', async () => {
+      const course = courseFactory.build()
+
+      when(courseClient.findBuildingChoicesCourseByReferral).calledWith(referralId, pathway).mockResolvedValue(course)
+
+      const result = await service.getBuildingChoicesCourseByReferral(username, referralId, pathway)
+
+      expect(result).toEqual(course)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+    })
+
+    describe('when the course client throws a 404 error', () => {
+      it('returns `null`', async () => {
+        const clientError = createError(404)
+
+        when(courseClient.findBuildingChoicesCourseByReferral)
+          .calledWith(referralId, pathway)
+          .mockRejectedValue(clientError)
+
+        const result = await service.getBuildingChoicesCourseByReferral(username, referralId, pathway)
+
+        expect(result).toBeNull()
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      })
+    })
+
+    describe('when the course client throws any other error', () => {
+      it('throws a generic error message', async () => {
+        const clientError = createError(500)
+
+        when(courseClient.findBuildingChoicesCourseByReferral)
+          .calledWith(referralId, pathway)
+          .mockRejectedValue(clientError)
+
+        await expect(() =>
+          service.getBuildingChoicesCourseByReferral(username, referralId, pathway),
+        ).rejects.toThrowError(
+          `Error fetching building choices course data for referral ${referralId} and pathway ${pathway}.`,
+        )
+
+        expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      })
+    })
+  })
+
   describe('getCourseNames', () => {
     it('returns a list of all course names', async () => {
       const courses = courseFactory.buildList(3)
