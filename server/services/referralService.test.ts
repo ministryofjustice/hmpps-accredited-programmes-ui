@@ -115,6 +115,28 @@ describe('ReferralService', () => {
     })
   })
 
+  describe('getDuplicateReferrals', () => {
+    it('calls the `referralClient.findDuplicateReferrals` method to return a list of duplicate referrals', async () => {
+      const offeringId = 'course-offering-id'
+      const prisonNumber = 'ABC1234'
+      const duplicateReferrals = referralFactory.buildList(2)
+
+      when(referralClient.findDuplicateReferrals)
+        .calledWith(offeringId, prisonNumber)
+        .mockResolvedValue(duplicateReferrals)
+
+      const result = await service.getDuplicateReferrals(username, offeringId, prisonNumber)
+
+      expect(result).toEqual(duplicateReferrals)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findDuplicateReferrals).toHaveBeenCalledWith(offeringId, prisonNumber)
+    })
+  })
+
   describe('getMyReferralViews', () => {
     it('returns a list of referral views for the logged in user', async () => {
       const referralViews = referralViewFactory.buildList(3)

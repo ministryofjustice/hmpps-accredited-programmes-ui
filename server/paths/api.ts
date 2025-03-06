@@ -109,6 +109,7 @@ export default {
     create: referralsPath,
     dashboard: dashboardPath,
     delete: referralPath,
+    duplicates: referralsPath.path('duplicates'),
     myDashboard: myDashboardPath,
     show: referralPath,
     statusHistory: statusHistoryPath,

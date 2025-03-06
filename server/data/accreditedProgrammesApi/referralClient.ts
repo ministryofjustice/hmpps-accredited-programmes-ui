@@ -68,6 +68,16 @@ export default class ReferralClient {
     })) as ConfirmationFields
   }
 
+  async findDuplicateReferrals(offeringId: string, prisonNumber: Referral['prisonNumber']): Promise<Array<Referral>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.duplicates({}),
+      query: {
+        offeringId,
+        prisonNumber,
+      },
+    })) as Array<Referral>
+  }
+
   async findMyReferralViews(query?: {
     nameOrId?: string
     page?: string

@@ -59,6 +59,18 @@ export default class ReferralService {
     return referralClient.findConfirmationText(referralId, chosenStatusCode, query)
   }
 
+  async getDuplicateReferrals(
+    username: Express.User['username'],
+    offeringId: string,
+    prisonNumber: Referral['prisonNumber'],
+  ): Promise<Array<Referral>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.findDuplicateReferrals(offeringId, prisonNumber)
+  }
+
   async getMyReferralViews(
     username: Express.User['username'],
     query?: {
