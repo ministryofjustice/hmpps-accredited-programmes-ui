@@ -10,6 +10,8 @@ import type {
   CourseParticipation,
   CourseParticipationCreate,
   CourseParticipationUpdate,
+  PniScore,
+  Referral,
 } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
@@ -69,6 +71,19 @@ export default class CourseClient {
 
   async find(courseId: Course['id']): Promise<Course> {
     return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
+  }
+
+  /* istanbul ignore next */
+  async findBuildingChoicesCourseByReferral(
+    referralId: Referral['id'],
+    programmePathway?: PniScore['programmePathway'],
+  ): Promise<Course> {
+    return (await this.restClient.get({
+      path: apiPaths.courses.buildingChoicesByReferral({ referralId }),
+      query: {
+        ...(programmePathway && { programmePathway }),
+      },
+    })) as Course
   }
 
   /* istanbul ignore next */

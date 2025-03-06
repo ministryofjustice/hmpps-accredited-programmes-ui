@@ -5,6 +5,8 @@ const courseNamesPath = coursesPath.path('course-names')
 const coursePath = coursesPath.path(':courseId')
 const offeringsByCoursePath = coursePath.path('offerings')
 
+const buildingChoicesBasePath = coursesPath.path('building-choices')
+
 const offeringPath = path('/offerings/:courseOfferingId')
 const courseByOfferingPath = offeringPath.path('course')
 
@@ -44,7 +46,8 @@ const referralStatusCodeReasonsPath = referralStatusCodeCategoriesPath.path(':ca
 export default {
   courses: {
     audiences: coursesPath.path('audiences'),
-    buildingChoices: coursesPath.path('building-choices/:courseId'),
+    buildingChoices: buildingChoicesBasePath.path(':courseId'),
+    buildingChoicesByReferral: buildingChoicesBasePath.path('referral/:referralId'),
     create: coursesPath,
     index: coursesPath,
     names: courseNamesPath,
