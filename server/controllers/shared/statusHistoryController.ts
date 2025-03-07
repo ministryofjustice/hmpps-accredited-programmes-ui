@@ -1,8 +1,9 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { referPathBase } from '../../paths'
+import { assessPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { CourseUtils, ShowReferralUtils, TypeUtils } from '../../utils'
+import type { Referral } from '@accredited-programmes-api'
 
 export default class StatusHistoryController {
   constructor(
@@ -23,6 +24,8 @@ export default class StatusHistoryController {
       const isRefer = req.path.startsWith(referPathBase.pattern)
 
       const referral = await this.referralService.getReferral(username, referralId, { updatePerson })
+
+      const originalReferralData = await this.getOriginalReferralData(username, referral.originalReferralId, isRefer)
 
       const [course, statusHistory, person, statusTransitions] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
@@ -46,8 +49,32 @@ export default class StatusHistoryController {
         person,
         referral,
         subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'statusHistory', referral.id),
-        timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory),
+        timelineItems: ShowReferralUtils.statusHistoryTimelineItems(
+          statusHistory,
+          originalReferralData?.href,
+          originalReferralData?.course.name,
+        ),
       })
+    }
+  }
+
+  private async getOriginalReferralData(
+    username: Express.User['username'],
+    originalReferralId: Referral['id'] | undefined,
+    isRefer: boolean,
+  ) {
+    if (!originalReferralId) {
+      return undefined
+    }
+
+    const paths = isRefer ? referPaths : assessPaths
+    const originalReferral = await this.referralService.getReferral(username, originalReferralId)
+    const course = await this.courseService.getCourseByOffering(username, originalReferral.offeringId)
+
+    return {
+      course,
+      data: originalReferral,
+      href: paths.show.statusHistory({ referralId: originalReferralId }),
     }
   }
 }
