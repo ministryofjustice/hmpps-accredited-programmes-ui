@@ -240,6 +240,12 @@ interface PniFindAndReferData {
   programmePathway?: PniScore['programmePathway']
 }
 
+interface TransferErrorData {
+  errorMessage: string
+  originalOfferingId: string
+  prisonNumber: string
+}
+
 export type {
   BuildingChoicesData,
   CaseListColumnHeader,
@@ -273,4 +279,5 @@ export type {
   RisksAndNeedsSharedPageData,
   SortableCaseListColumnKey,
   TagColour,
+  TransferErrorData,
 }

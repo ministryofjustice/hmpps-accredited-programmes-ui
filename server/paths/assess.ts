@@ -14,6 +14,8 @@ const updateStatusSelectCategory = updateStatusPathBase.path('category')
 const updateStatusSelectReason = updateStatusPathBase.path('reason')
 const updateStatusSelectionShowPath = updateStatusPathBase.path('selection')
 
+const transferPathBase = referralShowPathBase.path('transfer')
+
 export default {
   caseList: {
     filter: courseCaseListPath.path(':referralStatusGroup'),
@@ -44,6 +46,13 @@ export default {
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
     statusHistory: referralShowPathBase.path('status-history'),
+  },
+  transfer: {
+    error: {
+      show: transferPathBase.path('error'),
+    },
+    show: transferPathBase,
+    submit: transferPathBase,
   },
   updateStatus: {
     category: {

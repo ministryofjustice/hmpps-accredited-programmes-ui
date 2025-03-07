@@ -1,0 +1,46 @@
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% extends "../partials/changeStatusLayout.njk" %}
+
+{% block statusContent %}
+  <p>{{ confirmationText.primaryDescription }}</p>
+{% endblock statusContent %}
+
+{% block statusAction %}
+  <form action="{{ action }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+    <h2 class="govuk-heading-m">{{ confirmationText.secondaryHeading }}</h2>
+
+    <p>{{ confirmationText.secondaryDescription }}</p>
+
+    {{ govukCharacterCount({
+      id: "reason",
+      name: "reason",
+      maxlength: maxReasonLength,
+      label: {
+        text: "Add reason",
+        classes: 'govuk-fieldset__legend--s'
+      },
+      rows: 10,
+      value: formValues.reason,
+      errorMessage: errors.messages.reason
+    }) }}
+
+    {% if confirmationText.warningText %}
+      {{ govukWarningText({
+        text: confirmationText.warningText,
+        iconFallbackText: "Warning"
+      }) }}
+    {% endif %}
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Submit"
+      }) }}
+
+      <a class="govuk-link" href={{ backLinkHref }}>Cancel</a>
+    </div>
+  </form>
+{% endblock statusAction %}

@@ -2,6 +2,7 @@
 
 import AssessCaseListController from './caseListController'
 import PniController from './pniController'
+import TransferReferralController from './transferReferralController'
 import UpdateStatusDecisionController from './updateStatusDecisionController'
 import type { Services } from '../../services'
 
@@ -24,9 +25,17 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
+  const transferReferralController = new TransferReferralController(
+    services.courseService,
+    services.personService,
+    services.pniService,
+    services.referralService,
+  )
+
   return {
     assessCaseListController,
     pniController,
+    transferReferralController,
     updateStatusDecisionController,
   }
 }
