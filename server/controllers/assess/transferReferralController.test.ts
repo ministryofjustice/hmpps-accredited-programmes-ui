@@ -250,9 +250,7 @@ describe('TransferReferralController', () => {
           originalOfferingId: referral.offeringId,
           prisonNumber: person.prisonNumber,
         })
-        expect(response.redirect).toHaveBeenCalledWith(
-          `${assessPaths.transfer.show({ referralId: referral.id })}/error`,
-        )
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.transfer.error.show({ referralId: referral.id }))
       })
     })
   })

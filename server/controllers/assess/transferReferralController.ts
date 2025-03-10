@@ -67,7 +67,7 @@ export default class TransferReferralController {
           prisonNumber: person.prisonNumber,
         }
 
-        return res.redirect(`${assessPaths.transfer.show({ referralId: referral.id })}/error`)
+        return res.redirect(assessPaths.transfer.error.show({ referralId: referral.id }))
       }
     }
   }
