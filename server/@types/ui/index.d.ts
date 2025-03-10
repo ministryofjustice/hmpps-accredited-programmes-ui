@@ -244,6 +244,8 @@ interface TransferErrorData {
   errorMessage: string
   originalOfferingId: string
   prisonNumber: string
+  duplicateReferralId?: string
+  originalReferralId?: string
 }
 
 export type {

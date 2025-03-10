@@ -1,7 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 import createError from 'http-errors'
 
-import { findPaths, referPathBase, referPaths } from '../../paths'
+import { assessPaths, findPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
   CourseParticipationUtils,
@@ -46,15 +46,20 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const originalReferralId = req.session.transferErrorData?.originalReferralId
       const sharedPageData = await this.sharedPageData(req, res)
+
+      delete req.session.transferErrorData
 
       return res.render('referrals/show/duplicate', {
         ...sharedPageData,
         hrefs: {
-          back: referPaths.new.people.show({
-            courseOfferingId: sharedPageData.courseOffering.id as string,
-            prisonNumber: sharedPageData.person.prisonNumber,
-          }),
+          back: originalReferralId
+            ? assessPaths.show.personalDetails({ referralId: originalReferralId })
+            : referPaths.new.people.show({
+                courseOfferingId: sharedPageData.courseOffering.id as string,
+                prisonNumber: sharedPageData.person.prisonNumber,
+              }),
           programmes: findPaths.pniFind.recommendedProgrammes({}),
         },
         pageHeading: 'Duplicate referral found',

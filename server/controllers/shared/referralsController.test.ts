@@ -182,9 +182,11 @@ describe('ReferralsController', () => {
   })
 
   describe('duplicate', () => {
-    it('renders the duplicate template with the correct response locals', async () => {
+    beforeEach(() => {
       request.path = referPaths.show.duplicate({ referralId: referral.id })
+    })
 
+    it('renders the duplicate template with the correct response locals', async () => {
       const requestHandler = controller.duplicate()
       await requestHandler(request, response, next)
 
@@ -202,6 +204,35 @@ describe('ReferralsController', () => {
         pageHeading: 'Duplicate referral found',
         pageTitleOverride: 'Duplicate referral found',
         summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.name}.`,
+      })
+    })
+
+    describe('when there is `transferErrorData` in the session', () => {
+      it('renders the duplicate template with the correct `back.href` local and clears `transferErrorData` from the session', async () => {
+        request.session.transferErrorData = {
+          duplicateReferralId: referral.id,
+          errorMessage: 'DUPLICATE',
+          originalOfferingId: 'original-offering-id',
+          originalReferralId: 'original-referral-id',
+          prisonNumber: person.prisonNumber,
+        }
+
+        const requestHandler = controller.duplicate()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+        expect(request.session.transferErrorData).toBeUndefined()
+
+        expect(response.render).toHaveBeenCalledWith(
+          'referrals/show/duplicate',
+          expect.objectContaining({
+            hrefs: {
+              back: assessPaths.show.personalDetails({ referralId: 'original-referral-id' }),
+              programmes: findPaths.pniFind.recommendedProgrammes({}),
+            },
+          }),
+        )
       })
     })
   })
