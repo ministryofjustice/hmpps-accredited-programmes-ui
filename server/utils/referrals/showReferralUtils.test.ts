@@ -277,6 +277,8 @@ describe('ShowReferralUtils', () => {
 
   describe('statusHistoryTimelineItems', () => {
     const statusTagHtml = '<strong>Status tag</strong>'
+    const statusTagHtmlWithPreviousReferralLink =
+      '<strong>Status tag</strong><hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">This referral was transferred from Becoming New Me Plus. See <a href="/dummy-link">previous referral details</a>'
 
     beforeEach(() => {
       mockCaseListUtils.statusTagHtml.mockReturnValue('<strong>Status tag</strong>')
@@ -326,6 +328,42 @@ describe('ShowReferralUtils', () => {
           },
           html: statusTagHtml,
           label: { text: 'Status update' },
+        },
+      ])
+    })
+    it('returns referral status history in the appropriate format with the previous referral link when present', () => {
+      const submittedReferralStatusHistory = referralStatusHistoryFactory
+        .submitted()
+        .build({ notes: undefined, reasonDescription: undefined, statusStartDate: '2017-03-22T10:25:30.000Z' })
+      const updatedReferralStatusHistory = referralStatusHistoryFactory
+        .updated()
+        .build({ notes: 'Updated notes', reasonDescription: 'A reason', statusStartDate: '2017-03-23T10:25:30.000Z' })
+
+      const statusHistoryPresenter: Array<ReferralStatusHistoryPresenter> = [
+        { ...updatedReferralStatusHistory, byLineText: 'You' },
+        { ...submittedReferralStatusHistory, byLineText: 'Test User' },
+      ]
+
+      expect(
+        ShowReferralUtils.statusHistoryTimelineItems(statusHistoryPresenter, '/dummy-link', 'Becoming New Me Plus'),
+      ).toStrictEqual([
+        {
+          byline: { text: 'You' },
+          datetime: {
+            timestamp: updatedReferralStatusHistory.statusStartDate,
+            type: 'datetime',
+          },
+          html: expect.stringMatching(/^(?=.*A reason)(?=.*Updated notes).*$/im),
+          label: { text: 'Status update' },
+        },
+        {
+          byline: { text: 'Test User' },
+          datetime: {
+            timestamp: submittedReferralStatusHistory.statusStartDate,
+            type: 'datetime',
+          },
+          html: statusTagHtmlWithPreviousReferralLink,
+          label: { text: 'Referral submitted' },
         },
       ])
     })

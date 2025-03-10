@@ -114,8 +114,10 @@ export default class ShowReferralUtils {
 
   static statusHistoryTimelineItems(
     statusHistoryPresenter: Array<ReferralStatusHistoryPresenter>,
+    originalReferralHref?: string,
+    originalCourseName?: string,
   ): Array<MojTimelineItem> {
-    return statusHistoryPresenter.map(status => {
+    return statusHistoryPresenter.map((status, index) => {
       let html = CaseListUtils.statusTagHtml(status.statusColour, status.statusDescription)
 
       const additionalTextItems = [
@@ -128,6 +130,12 @@ export default class ShowReferralUtils {
           `<dl class="govuk-!-margin-top-4 govuk-!-margin-bottom-0">
           ${additionalTextItems.map(item => `<div><dt class="govuk-!-display-inline govuk-!-font-weight-bold">${item.label}:</dt><dd class="govuk-!-display-inline govuk-!-margin-left-1">${item.value}</dd></div>`).join('')}
           </dl>`,
+        )
+      }
+
+      if (originalReferralHref && index === statusHistoryPresenter.length - 1) {
+        html = html.concat(
+          `<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">This referral was transferred from ${originalCourseName}. See <a href="${originalReferralHref}">previous referral details</a>`,
         )
       }
 
