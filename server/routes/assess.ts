@@ -63,6 +63,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.updateStatus.selection.show.pattern, updateStatusSelectionController.show())
   post(assessPaths.updateStatus.selection.reason.submit.pattern, updateStatusSelectionController.submitReason())
 
+  get(assessPaths.show.duplicate.pattern, referralsController.duplicate())
+
   get(assessPaths.transfer.show.pattern, transferReferralController.show())
 
   return router
