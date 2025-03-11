@@ -1,6 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { referPaths } from '../../paths'
+import { assessPaths, referPaths } from '../../paths'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 export default class UpdateStatusActionsController {
@@ -22,6 +22,7 @@ export default class UpdateStatusActionsController {
     return (req: Request, res: Response) => {
       const { referralId } = req.params
       const withdrawStatus = 'WITHDRAWN'
+      const paths = req.path.startsWith('/refer') ? referPaths : assessPaths
 
       req.session.referralStatusUpdateData = {
         decisionForCategoryAndReason: withdrawStatus,
@@ -30,7 +31,7 @@ export default class UpdateStatusActionsController {
         referralId,
       }
 
-      return res.redirect(referPaths.updateStatus.reason.show({ referralId }))
+      return res.redirect(paths.updateStatus.reason.show({ referralId }))
     }
   }
 }

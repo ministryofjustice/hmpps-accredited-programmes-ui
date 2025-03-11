@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
 import UpdateStatusActionsController from './updateStatusActionsController'
-import { referPaths } from '../../paths'
+import { assessPaths, referPaths } from '../../paths'
 
 describe('UpdateStatusActionsController', () => {
   const referralId = 'REFERRAL-ID'
@@ -19,6 +19,7 @@ describe('UpdateStatusActionsController', () => {
 
     request = createMock<Request>({
       params: { referralId },
+      path: referPaths.withdraw({ referralId }),
       session: {},
     })
     response = createMock<Response>({})
@@ -49,6 +50,16 @@ describe('UpdateStatusActionsController', () => {
         referralId,
       })
       expect(response.redirect).toHaveBeenCalledWith(referPaths.updateStatus.reason.show({ referralId }))
+    })
+
+    describe('when the path does not start with `/refer`', () => {
+      it('should redirect to the assess paths', async () => {
+        request.path = assessPaths.withdraw({ referralId })
+
+        controller.withdraw()(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.updateStatus.reason.show({ referralId }))
+      })
     })
   })
 })
