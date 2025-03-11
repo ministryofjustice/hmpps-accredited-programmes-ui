@@ -8,6 +8,7 @@ import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import {
   courseFactory,
+  courseOfferingFactory,
   personFactory,
   pniScoreFactory,
   referralFactory,
@@ -38,7 +39,11 @@ describe('TransferReferralController', () => {
 
   const person = personFactory.build()
   const originalReferralCourse = courseFactory.build()
-  const buildingChoicesCourse = courseFactory.build({ name: 'Building Choices: moderate intensity' })
+  const buildingChoicesCourseOffering = courseOfferingFactory.build()
+  const buildingChoicesCourse = courseFactory.build({
+    courseOfferings: [buildingChoicesCourseOffering],
+    name: 'Building Choices: moderate intensity',
+  })
   const timelineItems: Array<MojTimelineItem> = [
     {
       byline: { text: 'Test User' },
@@ -82,6 +87,9 @@ describe('TransferReferralController', () => {
     when(referralService.getReferralStatusHistory)
       .calledWith(userToken, username, referral.id)
       .mockResolvedValue(referralStatusHistory)
+    when(referralService.getDuplicateReferrals)
+      .calledWith(username, buildingChoicesCourseOffering.id, referral.prisonNumber)
+      .mockResolvedValue([])
 
     controller = new TransferReferralController(courseService, personService, pniService, referralService)
 
@@ -163,6 +171,7 @@ describe('TransferReferralController', () => {
         expect(request.session.transferErrorData).toEqual({
           errorMessage: 'MISSING_INFORMATION',
           originalOfferingId: referral.offeringId,
+          originalReferralId: referral.id,
           prisonNumber: person.prisonNumber,
         })
         expect(response.redirect).toHaveBeenCalledWith(
@@ -187,6 +196,7 @@ describe('TransferReferralController', () => {
           expect(request.session.transferErrorData).toEqual({
             errorMessage: programmePathway,
             originalOfferingId: referral.offeringId,
+            originalReferralId: referral.id,
             prisonNumber: person.prisonNumber,
           })
           expect(response.redirect).toHaveBeenCalledWith(
@@ -208,6 +218,7 @@ describe('TransferReferralController', () => {
         expect(request.session.transferErrorData).toEqual({
           errorMessage: 'NO_COURSE',
           originalOfferingId: referral.offeringId,
+          originalReferralId: referral.id,
           prisonNumber: person.prisonNumber,
         })
         expect(response.redirect).toHaveBeenCalledWith(
@@ -228,6 +239,7 @@ describe('TransferReferralController', () => {
         expect(request.session.transferErrorData).toEqual({
           errorMessage: error.message,
           originalOfferingId: referral.offeringId,
+          originalReferralId: referral.id,
           prisonNumber: person.prisonNumber,
         })
         expect(response.redirect).toHaveBeenCalledWith(
@@ -248,6 +260,31 @@ describe('TransferReferralController', () => {
         expect(request.session.transferErrorData).toEqual({
           errorMessage: error.message,
           originalOfferingId: referral.offeringId,
+          originalReferralId: referral.id,
+          prisonNumber: person.prisonNumber,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(
+          `${assessPaths.transfer.show({ referralId: referral.id })}/error`,
+        )
+      })
+    })
+
+    describe('when there is a duplicate referral', () => {
+      it('should set `transferErrorData` in the session with the error and redirect to the transfer error page', async () => {
+        const duplicateReferral = referralFactory.build()
+
+        when(referralService.getDuplicateReferrals)
+          .calledWith(username, buildingChoicesCourseOffering.id, referral.prisonNumber)
+          .mockResolvedValue([duplicateReferral])
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(request.session.transferErrorData).toEqual({
+          duplicateReferralId: duplicateReferral.id,
+          errorMessage: 'DUPLICATE',
+          originalOfferingId: referral.offeringId,
+          originalReferralId: referral.id,
           prisonNumber: person.prisonNumber,
         })
         expect(response.redirect).toHaveBeenCalledWith(assessPaths.transfer.error.show({ referralId: referral.id }))

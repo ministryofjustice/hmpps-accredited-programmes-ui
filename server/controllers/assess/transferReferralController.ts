@@ -37,7 +37,7 @@ export default class TransferReferralController {
         const pniScore = await this.pniService.getPni(username, referral.prisonNumber, { gender: person.gender })
 
         const [targetCourse, originalCourse, statusHistory] = await Promise.all([
-          this.checkForTargetCourse(pniScore, username, referralId),
+          this.checkForTargetCourse(pniScore, username, referral),
           this.courseService.getCourseByOffering(username, referral.offeringId),
           this.referralService.getReferralStatusHistory(token, username, referralId),
         ])
@@ -59,11 +59,13 @@ export default class TransferReferralController {
           timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
         })
       } catch (error) {
-        const sanitisedError = error as SanitisedError
+        const { message: errorMessage, cause } = error as SanitisedError
 
         req.session.transferErrorData = {
-          errorMessage: sanitisedError.message,
+          duplicateReferralId: errorMessage === 'DUPLICATE' && typeof cause === 'string' ? cause : undefined,
+          errorMessage,
           originalOfferingId: referral.offeringId,
+          originalReferralId: referral.id,
           prisonNumber: person.prisonNumber,
         }
 
@@ -72,11 +74,7 @@ export default class TransferReferralController {
     }
   }
 
-  private async checkForTargetCourse(
-    pniScore: PniScore | null,
-    username: string,
-    referralId: Referral['id'],
-  ): Promise<Course> {
+  private async checkForTargetCourse(pniScore: PniScore | null, username: string, referral: Referral): Promise<Course> {
     if (!pniScore) {
       throw new Error('MISSING_INFORMATION')
     }
@@ -89,12 +87,26 @@ export default class TransferReferralController {
 
     const targetCourse = await this.courseService.getBuildingChoicesCourseByReferral(
       username,
-      referralId,
+      referral.id,
       programmePathway,
     )
 
     if (!targetCourse) {
       throw new Error('NO_COURSE')
+    }
+
+    const targetCourseOfferingId = targetCourse.courseOfferings[0].id
+
+    if (targetCourseOfferingId) {
+      const duplicates = await this.referralService.getDuplicateReferrals(
+        username,
+        targetCourseOfferingId,
+        referral.prisonNumber,
+      )
+
+      if (duplicates.length) {
+        throw new Error('DUPLICATE', { cause: duplicates[0].id })
+      }
     }
 
     return targetCourse
