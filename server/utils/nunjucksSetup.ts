@@ -1,4 +1,7 @@
 /* eslint-disable no-param-reassign */
+
+// eslint-disable-next-line import/extensions
+import mojFrontendFilters from '@ministryofjustice/frontend/moj/filters/all.js'
 import type express from 'express'
 import nunjucks from 'nunjucks'
 import type * as pathModule from 'path'
@@ -57,10 +60,5 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addGlobal('findPaths', findPaths)
   njkEnv.addGlobal('referPaths', referPaths)
 
-  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-  const mojFilters = require('@ministryofjustice/frontend/moj/filters/all')()
-
-  Object.keys(mojFilters).forEach(filterName => {
-    njkEnv.addFilter(filterName, mojFilters[filterName])
-  })
+  njkEnv.addFilter('mojDate', mojFrontendFilters().mojDate)
 }
