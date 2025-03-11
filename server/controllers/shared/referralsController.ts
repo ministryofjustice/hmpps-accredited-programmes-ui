@@ -46,10 +46,19 @@ export default class ReferralsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      let withdrawButtonText: string | undefined
       const originalReferralId = req.session.transferErrorData?.originalReferralId
       const sharedPageData = await this.sharedPageData(req, res)
 
-      delete req.session.transferErrorData
+      if (originalReferralId) {
+        const originalReferral = await this.referralService.getReferral(req.user.username, originalReferralId)
+        const originalCourse = await this.courseService.getCourseByOffering(
+          req.user.username,
+          originalReferral.offeringId,
+        )
+
+        withdrawButtonText = `Withdraw original referral to ${originalCourse.name}`
+      }
 
       return res.render('referrals/show/duplicate', {
         ...sharedPageData,
@@ -61,10 +70,12 @@ export default class ReferralsController {
                 prisonNumber: sharedPageData.person.prisonNumber,
               }),
           programmes: findPaths.pniFind.recommendedProgrammes({}),
+          withdraw: originalReferralId ? assessPaths.withdraw({ referralId: originalReferralId }) : undefined,
         },
         pageHeading: 'Duplicate referral found',
         pageTitleOverride: 'Duplicate referral found',
         summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.name}.`,
+        withdrawButtonText,
       })
     }
   }

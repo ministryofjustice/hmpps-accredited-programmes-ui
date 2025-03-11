@@ -42,13 +42,34 @@
         iconFallbackText: "Warning"
       }) }}
 
-      {{ govukButton({
-        text: "Return to programme list",
-        href: hrefs.programmes,
-        attributes: {
-          "data-testid": "programme-list-link"
-        }
-      }) }}
+      {% if hrefs.withdraw and withdrawButtonText %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: withdrawButtonText,
+            href: hrefs.withdraw,
+            attributes: {
+              "data-testid": "withdraw-original-referral-link"
+            }
+          }) }}
+
+          {{ govukButton({
+            text: "Cancel",
+            href: hrefs.back,
+            classes: "govuk-button--secondary",
+            attributes: {
+              "data-testid": "cancel-link"
+            }
+          }) }}
+        </div>
+      {% else %}
+        {{ govukButton({
+          text: "Return to programme list",
+          href: hrefs.programmes,
+          attributes: {
+            "data-testid": "programme-list-link"
+          }
+        }) }}
+      {% endif %}
     </div>
   </div>
 {% endblock content %}

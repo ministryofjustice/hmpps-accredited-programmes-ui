@@ -133,6 +133,7 @@ export default class NewReferralsController {
         const sanitisedError = error as SanitisedError
 
         if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.status === 409) {
+          delete req.session.transferErrorData
           return res.redirect(referPaths.show.duplicate({ referralId: sanitisedError.data.id }))
         }
 
@@ -275,6 +276,7 @@ export default class NewReferralsController {
         const sanitisedError = error as SanitisedError
 
         if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.status === 409) {
+          delete req.session.transferErrorData
           return res.redirect(referPaths.show.duplicate({ referralId: sanitisedError.data.id }))
         }
 
