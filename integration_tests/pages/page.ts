@@ -1,4 +1,6 @@
 import type { AxeRules } from '@accredited-programmes/integration-tests'
+// eslint-disable-next-line import/extensions
+import mojFrontendFilters from '@ministryofjustice/frontend/moj/filters/all.js'
 
 import { assessPathBase, findPaths, referPaths } from '../../server/paths'
 import { referPathBase } from '../../server/paths/refer'
@@ -577,9 +579,6 @@ export default abstract class Page {
   }
 
   shouldContainTimelineItems(items: Array<MojTimelineItem>, element: JQuery<HTMLElement>): void {
-    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-    const mojFilters = require('@ministryofjustice/frontend/moj/filters/all')()
-
     cy.wrap(element).within(() => {
       items.forEach((item, itemIndex) => {
         cy.get('.moj-timeline__item')
@@ -592,7 +591,7 @@ export default abstract class Page {
               cy.get('.moj-timeline__byline').should('have.text', `by ${item.byline.text}`)
               cy.get('.moj-timeline__date').should(
                 'contain.text',
-                mojFilters.mojDate(item.datetime.timestamp, item.datetime.type),
+                mojFrontendFilters().mojDate(item.datetime.timestamp, item.datetime.type),
               )
               cy.get('.moj-timeline__description').then(htmlElement => {
                 if ('html' in item) {
