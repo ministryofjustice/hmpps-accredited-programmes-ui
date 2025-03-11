@@ -208,12 +208,24 @@ describe('ReferralsController', () => {
     })
 
     describe('when there is `transferErrorData` in the session', () => {
-      it('renders the duplicate template with the correct `back.href` local and clears `transferErrorData` from the session', async () => {
+      it('renders the duplicate template with the correct response locals', async () => {
+        const originalOffering = courseOfferingFactory.build()
+        const originalCourse = courseFactory.build({
+          courseOfferings: [originalOffering],
+          name: 'Becoming New Me Plus',
+        })
+        const originalReferral = referralFactory.submitted().build({ offeringId: originalOffering.id })
+
+        when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
+        when(courseService.getCourseByOffering)
+          .calledWith(username, originalOffering.id)
+          .mockResolvedValue(originalCourse)
+
         request.session.transferErrorData = {
           duplicateReferralId: referral.id,
           errorMessage: 'DUPLICATE',
-          originalOfferingId: 'original-offering-id',
-          originalReferralId: 'original-referral-id',
+          originalOfferingId: originalOffering.id,
+          originalReferralId: originalReferral.id,
           prisonNumber: person.prisonNumber,
         }
 
@@ -222,15 +234,15 @@ describe('ReferralsController', () => {
 
         assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
 
-        expect(request.session.transferErrorData).toBeUndefined()
-
         expect(response.render).toHaveBeenCalledWith(
           'referrals/show/duplicate',
           expect.objectContaining({
             hrefs: {
-              back: assessPaths.show.personalDetails({ referralId: 'original-referral-id' }),
+              back: assessPaths.show.personalDetails({ referralId: originalReferral.id }),
               programmes: findPaths.pniFind.recommendedProgrammes({}),
+              withdraw: assessPaths.withdraw({ referralId: originalReferral.id }),
             },
+            withdrawButtonText: 'Withdraw original referral to Becoming New Me Plus',
           }),
         )
       })
