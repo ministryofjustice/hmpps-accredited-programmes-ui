@@ -14,6 +14,7 @@ import {
   TypeUtils,
 } from '../../utils'
 import type { ReferralSharedPageData } from '@accredited-programmes/ui'
+import type { Referral } from '@accredited-programmes-api'
 
 export default class ReferralsController {
   constructor(
@@ -204,6 +205,22 @@ export default class ReferralsController {
     }
   }
 
+  private async getTransferredReferralAdditionalInfo(
+    username: Express.User['username'],
+    isRefer: boolean,
+    referral: Referral,
+  ) {
+    if (isRefer || !referral.originalReferralId) {
+      return undefined
+    }
+
+    const originalReferral = await this.referralService.getReferral(username, referral.originalReferralId)
+    const originalCourse = await this.courseService.getCourseByOffering(username, originalReferral.offeringId)
+
+    return `There is no additional information for this referral because it was transferred from a previous referral to ${originalCourse.name}. </br></br>
+    You can see <a href="${assessPaths.show.additionalInformation({ referralId: originalReferral.id })}">notes from the previous referral.</a>`
+  }
+
   private async sharedPageData(req: Request, res: Response): Promise<ReferralSharedPageData> {
     TypeUtils.assertHasUser(req)
 
@@ -213,6 +230,11 @@ export default class ReferralsController {
     const isRefer = req.path.startsWith(referPathBase.pattern)
 
     const referral = await this.referralService.getReferral(username, referralId, { updatePerson })
+
+    const additionalInformation = referral.additionalInformation
+      ? referral.additionalInformation
+      : await this.getTransferredReferralAdditionalInfo(username, isRefer, referral)
+
     const [course, courseOffering, person, referrerUserFullName, referrerEmailAddress, statusTransitions] =
       await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
@@ -228,6 +250,7 @@ export default class ReferralsController {
     const coursePresenter = CourseUtils.presentCourse(course)
 
     return {
+      additionalInformation,
       buttons: ShowReferralUtils.buttons(
         { currentPath: req.path, recentCaseListPath: req.session.recentCaseListPath },
         referral,

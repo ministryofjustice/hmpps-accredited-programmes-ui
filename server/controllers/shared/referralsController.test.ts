@@ -67,6 +67,7 @@ describe('ReferralsController', () => {
   const referrerEmail = 'referrer.email@test-email.co.uk'
   const recentCaseListPath = '/case-list-path'
   let person: Person
+  let originalReferral: Referral
   let referral: Referral
   let referringUser: User
   let sharedPageData: ReferralSharedPageData
@@ -77,12 +78,16 @@ describe('ReferralsController', () => {
   beforeEach(() => {
     person = personFactory.build()
     referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    originalReferral = referralFactory
+      .closed()
+      .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
     referringUser = userFactory.build({ name: 'Referring user', username: referral.referrerUsername })
     mockShowReferralUtils.viewReferralNavigationItems.mockReturnValue(navigationItems)
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
 
     sharedPageData = {
+      additionalInformation: referral.additionalInformation,
       buttons,
       course,
       courseOffering,
@@ -113,7 +118,8 @@ describe('ReferralsController', () => {
     courseService.getOffering.mockResolvedValue(courseOffering)
     organisationService.getOrganisation.mockResolvedValue(organisation)
     personService.getPerson.mockResolvedValue(person)
-    referralService.getReferral.mockResolvedValue(referral)
+    when(referralService.getReferral).calledWith(username, referral.id, expect.any(Object)).mockResolvedValue(referral)
+    when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
     referralService.getStatusTransitions.mockResolvedValue(statusTransitions)
     userService.getFullNameFromUsername.mockResolvedValue(referringUser.name)
 
@@ -178,6 +184,25 @@ describe('ReferralsController', () => {
           submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
         })
       })
+      describe('and the referral has been transferred', () => {
+        it('renders the additional information template with the correct response locals', async () => {
+          referral.originalReferralId = originalReferral.id
+          referral.additionalInformation = undefined
+          request.path = assessPaths.show.additionalInformation({ referralId: referral.id })
+          sharedPageData.additionalInformation = `There is no additional information for this referral because it was transferred from a previous referral to ${course.name}. </br></br>
+    You can see <a href="${assessPaths.show.additionalInformation({ referralId: originalReferral.id })}">notes from the previous referral.</a>`
+
+          const requestHandler = controller.additionalInformation()
+          await requestHandler(request, response, next)
+
+          assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+          expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
+            ...sharedPageData,
+            submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+          })
+        })
+      })
     })
   })
 
@@ -214,7 +239,8 @@ describe('ReferralsController', () => {
           courseOfferings: [originalOffering],
           name: 'Becoming New Me Plus',
         })
-        const originalReferral = referralFactory.submitted().build({ offeringId: originalOffering.id })
+
+        originalReferral = referralFactory.submitted().build({ offeringId: originalOffering.id })
 
         when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
         when(courseService.getCourseByOffering)
@@ -501,6 +527,13 @@ describe('ReferralsController', () => {
       expect(referralService.getStatusTransitions).toHaveBeenCalledWith(username, referral.id)
     } else {
       expect(referralService.getStatusTransitions).not.toHaveBeenCalled()
+    }
+
+    if (referral.originalReferralId && !isRefer) {
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.originalReferralId)
+      expect(referralService.getReferral).toHaveBeenCalledTimes(2)
+      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, originalReferral.offeringId)
+      expect(courseService.getCourseByOffering).toHaveBeenCalledTimes(2)
     }
   }
 })

@@ -105,6 +105,7 @@ type OrganisationWithOfferingEmailsPresenter = Organisation & {
 }
 
 type ReferralSharedPageData = {
+  additionalInformation: string | undefined
   buttons: Array<GovukFrontendButton>
   course: Course
   courseOffering: CourseOffering
