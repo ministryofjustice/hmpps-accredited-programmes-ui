@@ -6,6 +6,7 @@ import ReasonController from './reasonController'
 import ReferralsController from './referralsController'
 import RisksAndNeedsController from './risksAndNeedsController'
 import StatusHistoryController from './statusHistoryController'
+import UpdateStatusActionsController from './updateStatusActionsController'
 import UpdateStatusSelectionController from './updateStatusSelectionController'
 import type { Services } from '../../services'
 
@@ -49,6 +50,8 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
+  const updateStatusActionController = new UpdateStatusActionsController()
+
   const updateStatusSelectionController = new UpdateStatusSelectionController(
     services.personService,
     services.referenceDataService,
@@ -62,6 +65,7 @@ const controllers = (services: Services) => {
     referralsController,
     risksAndNeedsController,
     statusHistoryController,
+    updateStatusActionController,
     updateStatusSelectionController,
   }
 }

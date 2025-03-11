@@ -78,6 +78,7 @@ export default {
       show: updateStatusSelectionShowPath,
     },
   },
+  withdraw: referralShowPathBase.path('withdraw'),
 }
 
 export { assessPathBase }
