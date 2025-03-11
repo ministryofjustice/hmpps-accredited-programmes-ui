@@ -79,6 +79,11 @@ describe('NewReferralsController', () => {
           prisonNumber: person.prisonNumber,
           programmePathway: 'HIGH_INTENSITY_BC',
         },
+        transferErrorData: {
+          errorMessage: 'DUPLICATE',
+          originalReferralId: 'original-referral-id',
+          prisonNumber: person.prisonNumber,
+        },
       },
       user: { token: userToken, username },
     })
@@ -197,6 +202,7 @@ describe('NewReferralsController', () => {
         const requestHandler = controller.create()
         await requestHandler(request, response, next)
 
+        expect(request.session.transferErrorData).toBeUndefined()
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show.duplicate({ referralId: duplicateReferral.id }))
       })
     })
@@ -626,6 +632,7 @@ describe('NewReferralsController', () => {
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
+        expect(request.session.transferErrorData).toBeUndefined()
         expect(response.redirect).toHaveBeenCalledWith(referPaths.show.duplicate({ referralId: duplicateReferral.id }))
       })
     })
