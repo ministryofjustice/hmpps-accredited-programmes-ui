@@ -146,6 +146,7 @@ export default class AssessCaseListController {
 
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
+        /** INFO: This is more recently presented as 'Strands' in UI mock ups */
         audienceSelectItems: CaseListUtils.audienceSelectItems(courseAudiences, audience),
         nameOrId,
         pageHeading: selectedCourse.name,
