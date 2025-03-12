@@ -268,7 +268,7 @@ describe('AssessCaseListController', () => {
           assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
           queryParamsExcludingSort,
         )
-        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, undefined)
+        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, false, undefined)
         expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
@@ -322,7 +322,7 @@ describe('AssessCaseListController', () => {
 
           expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
             action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
-            audienceSelectItems: CaseListUtils.audienceSelectItems(limeCourseAudiences, 'general offence'),
+            audienceSelectItems: CaseListUtils.audienceSelectItems(limeCourseAudiences, false, 'general offence'),
             nameOrId: uiNameOrIdQueryParam,
             pageHeading: 'Lime Course',
             pageTitleOverride: 'Manage open programme team referrals: Lime Course',
@@ -365,7 +365,11 @@ describe('AssessCaseListController', () => {
             assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup }),
             queryParamsExcludingSort,
           )
-          expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, uiAudienceQueryParam)
+          expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(
+            limeCourseAudiences,
+            false,
+            uiAudienceQueryParam,
+          )
           expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
           expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
             pathWithQuery,
@@ -455,7 +459,7 @@ describe('AssessCaseListController', () => {
           assessPaths.caseList.show({ courseId: limeCourse.id, referralStatusGroup: 'closed' }),
           queryParamsExcludingSort,
         )
-        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, undefined)
+        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, false, undefined)
         expect(CaseListUtils.primaryNavigationItems).toHaveBeenCalledWith(request.path, courses)
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,

@@ -31,29 +31,28 @@ export default class CaseListUtils {
   }
 
   static audienceSelectItems(
-    audiences: Array<Audience>, 
+    audiences: Array<Audience>,
     addLdcStrandsForEachAudience: boolean,
     selectedValue?: string,
   ): Array<GovukFrontendSelectItem> {
     const values = audiences
-        .map(audience => audience.name)
-        .filter(name => name !== undefined)
-        .reduce((acc, audienceName) => {
-          const audienceNameLowerCase = audienceName.toLowerCase();
-          
+      .map(audience => audience.name)
+      .filter(name => name !== undefined)
+      .reduce(
+        (acc, audienceName) => {
+          const audienceNameLowerCase = audienceName.toLowerCase()
+
           if (addLdcStrandsForEachAudience) {
             acc[`${audienceNameLowerCase}::ldc`] = `${audienceName}: LDC Only`
           }
 
           acc[audienceNameLowerCase] = audienceName
-          return acc;
-        }, {} as Record<string, string>)
+          return acc
+        },
+        {} as Record<string, string>,
+      )
 
-    return FormUtils.getSelectItems(
-      values,
-      selectedValue?.toLowerCase(),
-      false,
-    )
+    return FormUtils.getSelectItems(values, selectedValue?.toLowerCase(), false)
   }
 
   static primaryNavigationItems(
@@ -174,8 +173,9 @@ export default class CaseListUtils {
 
       return {
         attributes: { 'aria-sort': ariaSortDirection },
-        html: `<a class="govuk-link--no-visited-state" href="${hrefPrefix}sortColumn=${key}&sortDirection=${ariaSortDirection === 'ascending' ? 'descending' : 'ascending'
-          }">${value}</a>`,
+        html: `<a class="govuk-link--no-visited-state" href="${hrefPrefix}sortColumn=${key}&sortDirection=${
+          ariaSortDirection === 'ascending' ? 'descending' : 'ascending'
+        }">${value}</a>`,
       }
     })
   }
@@ -329,7 +329,6 @@ export default class CaseListUtils {
 
     return nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd
   }
-
 
   private static sentenceTypeHtml(referralView: ReferralView): string {
     const { sentenceType } = referralView

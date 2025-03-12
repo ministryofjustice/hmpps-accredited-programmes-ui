@@ -66,11 +66,11 @@ describe('CourseUtils', () => {
   })
 
   describe('isBuildingChoices', () => {
-    it(`should ignore case`, () => {
+    it('should ignore case', () => {
       expect(CourseUtils.isBuildingChoices('BUILDING CHOICES: moderate intensity')).toBe(true)
       expect(CourseUtils.isBuildingChoices('buIlDiNg ChOiCeS: high intensity')).toBe(true)
     })
-    
+
     it('returns true when the course displayName starts with "Building Choices:"', () => {
       expect(CourseUtils.isBuildingChoices('Building Choices: moderate intensity')).toBe(true)
     })
