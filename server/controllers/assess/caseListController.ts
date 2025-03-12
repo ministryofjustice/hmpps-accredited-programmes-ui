@@ -60,13 +60,14 @@ export default class AssessCaseListController {
       const { courseId } = req.params
       const {
         nameOrId,
+        hasLdc,
         page,
         status,
         strand: audience,
         sortColumn,
         sortDirection,
       } = req.query as Record<string, string>
-      const referralsFiltered = !!status || !!audience || !!nameOrId
+      const referralsFiltered = !!status || !!audience || !!nameOrId || !!hasLdc
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
       const statusGroups: Array<ReferralStatusGroup> = ['open', 'closed']
