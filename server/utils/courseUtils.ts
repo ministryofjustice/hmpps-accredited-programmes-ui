@@ -50,8 +50,8 @@ export default class CourseUtils {
     })
   }
 
-  static isBuildingChoices(displayName?: string): boolean {
-    return displayName?.startsWith('Building Choices:') ?? false
+  static isBuildingChoices(courseDisplayName?: string): boolean {
+    return courseDisplayName?.toLowerCase()?.startsWith('building choices:') ?? false
   }
 
   static noOfferingsMessage(courseName: Course['name']): string {
