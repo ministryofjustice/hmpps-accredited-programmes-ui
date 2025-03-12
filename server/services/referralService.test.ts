@@ -361,6 +361,7 @@ describe('ReferralService', () => {
         const query: {
           audience: string
           courseName: string
+          hasLdc: boolean
           nameOrId: string
           page: string
           sortColumn: string
@@ -370,6 +371,7 @@ describe('ReferralService', () => {
         } = {
           audience: 'General offence',
           courseName: 'Lime Course',
+          hasLdc: true,
           nameOrId: 'Hatton',
           page: '1',
           sortColumn: 'surname',
