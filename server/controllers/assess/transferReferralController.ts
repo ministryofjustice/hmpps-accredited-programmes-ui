@@ -49,7 +49,7 @@ export default class TransferReferralController {
           backLinkHref: assessPaths.show.personalDetails({ referralId }),
           confirmationText: {
             primaryDescription: `This will transfer the referral from ${originalCourse.name} to ${targetCourse.name}.`,
-            secondaryDescription: `You must give a reason for transferring this referral to ${targetCourse.name}`,
+            secondaryDescription: `You must give a reason for transferring this referral to ${targetCourse.name}.`,
             secondaryHeading: 'Move referral',
             warningText: `The ${originalCourse.name} referral will close. A new referral to ${targetCourse.name} will be created.`,
           },
