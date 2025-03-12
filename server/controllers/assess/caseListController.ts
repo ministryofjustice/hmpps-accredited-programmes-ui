@@ -19,7 +19,7 @@ export default class AssessCaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseId, referralStatusGroup } = req.params
-      const { audience, nameOrId, status } = req.body
+      const { audience, nameOrId, status, isLdc } = req.body
 
       if (!audience && !status && !nameOrId) {
         req.flash('audienceError', 'Choose a filter')
@@ -30,7 +30,7 @@ export default class AssessCaseListController {
       return res.redirect(
         PathUtils.pathWithQuery(
           assessPaths.caseList.show({ courseId, referralStatusGroup }),
-          CaseListUtils.queryParamsExcludingPage(audience, status, undefined, undefined, nameOrId),
+          CaseListUtils.queryParamsExcludingPage(audience, status, undefined, undefined, nameOrId, isLdc),
         ),
       )
     }

@@ -95,7 +95,7 @@ describe('AssessCaseListController', () => {
     const status = 'ASSESSMENT_STARTED'
 
     beforeEach(() => {
-      ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
+      (PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
       mockCaseListUtils.queryParamsExcludingPage.mockReturnValue(queryParamsExcludingPage)
 
       request.params = { courseId: limeCourse.id, referralStatusGroup }
@@ -105,6 +105,7 @@ describe('AssessCaseListController', () => {
       request.body.audience = audience
       request.body.nameOrId = nameOrId
       request.body.status = status
+      request.body.isLdc = true
 
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
@@ -115,6 +116,7 @@ describe('AssessCaseListController', () => {
         undefined,
         undefined,
         nameOrId,
+        true,
       )
       expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, queryParamsExcludingPage)
       expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
