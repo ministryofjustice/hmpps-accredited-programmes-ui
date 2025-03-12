@@ -30,10 +30,29 @@ export default class CaseListUtils {
     })
   }
 
-  static audienceSelectItems(audiences: Array<Audience>, selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return this.selectItems(
-      audiences.map(audience => audience.name).filter(audience => audience !== undefined),
-      selectedValue,
+  static audienceSelectItems(
+    audiences: Array<Audience>, 
+    addLdcStrandsForEachAudience: boolean,
+    selectedValue?: string,
+  ): Array<GovukFrontendSelectItem> {
+    const values = audiences
+        .map(audience => audience.name)
+        .filter(name => name !== undefined)
+        .reduce((acc, audienceName) => {
+          const audienceNameLowerCase = audienceName.toLowerCase();
+          
+          if (addLdcStrandsForEachAudience) {
+            acc[`${audienceNameLowerCase}::ldc`] = `${audienceName}: LDC Only`
+          }
+
+          acc[audienceNameLowerCase] = audienceName
+          return acc;
+        }, {} as Record<string, string>)
+
+    return FormUtils.getSelectItems(
+      values,
+      selectedValue?.toLowerCase(),
+      false,
     )
   }
 
@@ -155,9 +174,8 @@ export default class CaseListUtils {
 
       return {
         attributes: { 'aria-sort': ariaSortDirection },
-        html: `<a class="govuk-link--no-visited-state" href="${hrefPrefix}sortColumn=${key}&sortDirection=${
-          ariaSortDirection === 'ascending' ? 'descending' : 'ascending'
-        }">${value}</a>`,
+        html: `<a class="govuk-link--no-visited-state" href="${hrefPrefix}sortColumn=${key}&sortDirection=${ariaSortDirection === 'ascending' ? 'descending' : 'ascending'
+          }">${value}</a>`,
       }
     })
   }
@@ -312,12 +330,6 @@ export default class CaseListUtils {
     return nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd
   }
 
-  private static selectItems(values: Array<string>, selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return FormUtils.getSelectItems(
-      Object.fromEntries(values.map(value => [value.toLowerCase(), value])),
-      selectedValue,
-    )
-  }
 
   private static sentenceTypeHtml(referralView: ReferralView): string {
     const { sentenceType } = referralView
