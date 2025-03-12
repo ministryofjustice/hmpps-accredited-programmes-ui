@@ -105,7 +105,7 @@ describe('AssessCaseListController', () => {
       request.body.audience = audience
       request.body.nameOrId = nameOrId
       request.body.status = status
-      request.body.isLdc = true
+      request.body.hasLdc = true
 
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
