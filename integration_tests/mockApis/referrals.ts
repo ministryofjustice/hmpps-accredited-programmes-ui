@@ -9,7 +9,13 @@ import type {
   ReferralStatusRefData,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { Referral, ReferralStatusHistory } from '@accredited-programmes-api'
+import type {
+  CourseOffering,
+  PeopleSearchResponse,
+  Referral,
+  ReferralStatusHistory,
+  TransferReferralRequest,
+} from '@accredited-programmes-api'
 
 interface ReferralAndScenarioOptions {
   referral: Referral
@@ -82,6 +88,27 @@ export default {
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         status: 204,
+      },
+    }),
+
+  stubFindDuplicates: (args: {
+    offeringId: CourseOffering['id']
+    prisonNumber: PeopleSearchResponse['prisonerNumber']
+    referrals: Array<Referral>
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        queryParameters: {
+          offeringId: { equalTo: args.offeringId },
+          prisonNumber: { equalTo: args.prisonNumber },
+        },
+        urlPath: apiPaths.referrals.duplicates({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.referrals,
+        status: 200,
       },
     }),
 
@@ -231,6 +258,20 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.body,
         status: args.status || 200,
+      },
+    }),
+
+  stubTransferReferral: (args: { newReferral: Referral; requestBody: TransferReferralRequest }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        bodyPatterns: [{ equalToJson: args.requestBody }],
+        method: 'POST',
+        url: apiPaths.referrals.transfer({}),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.newReferral,
+        status: 200,
       },
     }),
 

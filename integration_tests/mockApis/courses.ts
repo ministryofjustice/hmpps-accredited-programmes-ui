@@ -3,10 +3,30 @@ import type { SuperAgentRequest } from 'superagent'
 import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type { CourseOffering } from '@accredited-programmes/models'
-import type { Audience, Course } from '@accredited-programmes-api'
+import type { Audience, Course, PniScore, Referral } from '@accredited-programmes-api'
 import type { Prison } from '@prison-register-api'
 
 export default {
+  stubBuildingChoicesCourseByReferral: (args: {
+    programmePathway: PniScore['programmePathway']
+    referralId: Referral['id']
+    course?: Course
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        queryParameters: {
+          programmePathway: { equalTo: args.programmePathway },
+        },
+        urlPath: apiPaths.courses.buildingChoicesByReferral({ referralId: args.referralId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.course,
+        status: args.course ? 200 : 404,
+      },
+    }),
+
   stubBuildingChoicesCourseVariant: (course: Course): SuperAgentRequest =>
     stubFor({
       request: {
