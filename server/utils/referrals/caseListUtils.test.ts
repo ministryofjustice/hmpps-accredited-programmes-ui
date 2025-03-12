@@ -129,6 +129,7 @@ describe('CaseListUtils', () => {
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
     const sortColumnQueryParam = { key: 'sortColumn', value: 'conditionalReleaseDate' }
     const sortDirectionQueryParam = { key: 'sortDirection', value: 'ascending' }
+    const isLdcQueryParam = { key: 'isLdc', value: true } 
 
     describe('when all possible params are provided', () => {
       it('returns an array with one `QueryParam` for each, converting audience to "strand"', async () => {
@@ -139,6 +140,7 @@ describe('CaseListUtils', () => {
             sortColumnQueryParam.value,
             sortDirectionQueryParam.value,
             nameOrIdQueryParam.value,
+            isLdcQueryParam.value
           ),
         ).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
@@ -146,6 +148,7 @@ describe('CaseListUtils', () => {
           { key: 'status', value: statusQueryParam.value },
           { key: 'sortColumn', value: sortColumnQueryParam.value },
           { key: 'sortDirection', value: sortDirectionQueryParam.value },
+          { key: 'isLdc', value: 'true' },
         ])
       })
     })

@@ -87,6 +87,10 @@ export default class CaseListUtils {
       queryParams.push({ key: 'sortDirection', value: sortDirection })
     }
 
+    if(isLdc) {
+      queryParams.push({ key: 'isLdc', value: isLdc.toString() })
+    }
+
     return queryParams
   }
 
