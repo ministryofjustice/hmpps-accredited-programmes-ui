@@ -66,6 +66,7 @@ export default class CaseListUtils {
     sortColumn?: string,
     sortDirection?: string,
     nameOrId?: string,
+    hasLdc?: boolean,
   ): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
@@ -84,6 +85,10 @@ export default class CaseListUtils {
     if (sortColumn && sortDirection) {
       queryParams.push({ key: 'sortColumn', value: sortColumn })
       queryParams.push({ key: 'sortDirection', value: sortDirection })
+    }
+
+    if (hasLdc) {
+      queryParams.push({ key: 'hasLdc', value: hasLdc.toString() })
     }
 
     return queryParams
