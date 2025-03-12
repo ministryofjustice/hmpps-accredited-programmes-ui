@@ -95,7 +95,7 @@ describe('AssessCaseListController', () => {
     const status = 'ASSESSMENT_STARTED'
 
     beforeEach(() => {
-      (PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
+      ;(PathUtils.pathWithQuery as jest.Mock).mockReturnValue(pathWithQuery)
       mockCaseListUtils.queryParamsExcludingPage.mockReturnValue(queryParamsExcludingPage)
 
       request.params = { courseId: limeCourse.id, referralStatusGroup }
