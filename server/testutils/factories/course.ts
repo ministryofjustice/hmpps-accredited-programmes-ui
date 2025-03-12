@@ -34,6 +34,7 @@ export default Factory.define<Course>(({ params }) => {
     description: faker.lorem.sentences(),
     displayName,
     displayOnProgrammeDirectory: true,
+    intensity: faker.helpers.arrayElement(['HIGH', 'MODERATE']),
     name,
   }
 })
