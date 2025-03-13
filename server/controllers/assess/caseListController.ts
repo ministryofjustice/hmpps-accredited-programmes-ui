@@ -149,13 +149,11 @@ export default class AssessCaseListController {
 
       req.session.recentCaseListPath = req.originalUrl
 
-      const audienceSelectItems =CaseListUtils.audienceSelectItems(
+      const audienceSelectItems = CaseListUtils.audienceSelectItems(
         courseAudiences,
         CourseUtils.isBuildingChoices(selectedCourse.displayName),
         audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdc) : undefined,
       )
-
-      console.log({audienceSelectItems, courseAudiences, audience, hasLdc})
 
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
