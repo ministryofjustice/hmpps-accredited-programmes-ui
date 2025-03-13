@@ -844,23 +844,23 @@ describe('CaseListUtils::audienceSelectItems', () => {
           { selected: true, text: 'Select', value: '' },
           {
             selected: false,
-            text: 'General offence: LDC Only',
-            value: 'general offence::ldc',
-          },
-          {
-            selected: false,
             text: 'General offence',
             value: 'general offence',
           },
           {
             selected: false,
-            text: 'Sexual offence: LDC Only',
-            value: 'sexual offence::ldc',
+            text: 'General offence: LDC Only',
+            value: 'general offence::hasLdc',
           },
           {
             selected: false,
             text: 'Sexual offence',
             value: 'sexual offence',
+          },
+          {
+            selected: false,
+            text: 'Sexual offence: LDC Only',
+            value: 'sexual offence::hasLdc',
           },
         ])
       })
