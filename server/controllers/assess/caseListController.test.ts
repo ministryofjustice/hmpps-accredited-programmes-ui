@@ -13,7 +13,7 @@ import {
   referralStatusRefDataFactory,
   referralViewFactory,
 } from '../../testutils/factories'
-import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
+import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
   CaseListColumnHeader,
@@ -22,6 +22,7 @@ import type {
   QueryParam,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
+import { has } from 'lodash'
 
 jest.mock('../../utils/paginationUtils')
 jest.mock('../../utils/pathUtils')
@@ -102,10 +103,9 @@ describe('AssessCaseListController', () => {
     })
 
     it('uses utils to generate a path to the show action with the request body converted to query params, then redirects there', async () => {
-      request.body.audience = audience
+      request.body.audience = 'General violence offence::hasLdc'
       request.body.nameOrId = nameOrId
       request.body.status = status
-      request.body.hasLdc = true
 
       const requestHandler = controller.filter()
       await requestHandler(request, response, next)
@@ -140,7 +140,6 @@ describe('AssessCaseListController', () => {
   describe('show', () => {
     let openPaginatedReferralViews: Paginated<ReferralView>
     let closedPaginatedReferralViews: Paginated<ReferralView>
-    const audienceSelectItems = 'aaa' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const referralStatusSelectItems = 'bbb' as unknown as jest.Mocked<Array<GovukFrontendSelectItem>>
     const tableRows = 'ccc' as unknown as jest.Mocked<Array<GovukFrontendTableRow>>
     const primaryNavigationItems = 'ddd' as unknown as jest.Mocked<Array<MojFrontendNavigationItem>>
@@ -200,7 +199,6 @@ describe('AssessCaseListController', () => {
         ...openReferralStatuses,
       ])
       mockCaseListUtils.assessSubNavigationItems.mockReturnValue(subNavigationItems)
-      mockCaseListUtils.audienceSelectItems.mockReturnValue(audienceSelectItems)
       mockCaseListUtils.primaryNavigationItems.mockReturnValue(primaryNavigationItems)
       mockCaseListUtils.queryParamsExcludingPage.mockReturnValue(queryParamsExcludingPage)
       mockCaseListUtils.queryParamsExcludingSort.mockReturnValue(queryParamsExcludingSort)
@@ -229,7 +227,7 @@ describe('AssessCaseListController', () => {
         expect(request.session.recentCaseListPath).toBe(originalUrl)
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
-          audienceSelectItems,
+          audienceSelectItems: [],
           pageHeading: 'Lime Course',
           pageTitleOverride: 'Manage open programme team referrals: Lime Course',
           pagination,
@@ -421,6 +419,7 @@ describe('AssessCaseListController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup: 'closed' }),
           audienceSelectItems,
+          hasLdc: false,
           pageHeading: 'Lime Course',
           pageTitleOverride: 'Manage closed programme team referrals: Lime Course',
           pagination,

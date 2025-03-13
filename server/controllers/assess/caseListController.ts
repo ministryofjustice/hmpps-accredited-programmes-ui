@@ -149,14 +149,18 @@ export default class AssessCaseListController {
 
       req.session.recentCaseListPath = req.originalUrl
 
+      const audienceSelectItems =CaseListUtils.audienceSelectItems(
+        courseAudiences,
+        CourseUtils.isBuildingChoices(selectedCourse.displayName),
+        audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdc) : undefined,
+      )
+
+      console.log({audienceSelectItems, courseAudiences, audience, hasLdc})
+
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         /** INFO: This is more recently presented as 'Strands' in UI mock ups */
-        audienceSelectItems: CaseListUtils.audienceSelectItems(
-          courseAudiences,
-          CourseUtils.isBuildingChoices(selectedCourse.displayName),
-          audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdc) : undefined,
-        ),
+        audienceSelectItems,
         nameOrId,
         pageHeading: selectedCourse.name,
         pageTitleOverride: `Manage ${referralStatusGroup} programme team referrals: ${selectedCourse.name}`,
