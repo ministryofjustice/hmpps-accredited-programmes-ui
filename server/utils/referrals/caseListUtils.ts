@@ -58,6 +58,12 @@ export default class CaseListUtils {
     return FormUtils.getSelectItems(values, selectedValue, false)
   }
 
+  static hasLdcTagHtml(referral: ReferralView): string {
+    return referral.hasLdc && CourseUtils.isBuildingChoices(referral.courseName)
+      ? '</br><span class="moj-badge moj-badge--bright-purple">LDC</span>'
+      : ''
+  }
+
   static primaryNavigationItems(
     currentPath: Request['path'],
     courses: Array<Course>,
@@ -220,7 +226,7 @@ export default class CaseListUtils {
       case 'Programme name':
         return referralView.listDisplayName || 'N/A'
       case 'Programme strand':
-        return referralView.audience || 'N/A'
+        return referralView.audience ? referralView.audience + CaseListUtils.hasLdcTagHtml(referralView) : 'N/A'
       case 'Progress':
         return `${referralView.tasksCompleted || 0} out of 4 tasks complete`
       case 'Referral status':
@@ -271,7 +277,7 @@ export default class CaseListUtils {
             row.push({ text: CaseListUtils.tableRowContent(view, 'Programme name') })
             break
           case 'Programme strand':
-            row.push({ text: CaseListUtils.tableRowContent(view, 'Programme strand') })
+            row.push({ html: CaseListUtils.tableRowContent(view, 'Programme strand') })
             break
           case 'Progress':
             row.push({ text: CaseListUtils.tableRowContent(view, 'Progress') })

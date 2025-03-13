@@ -23,6 +23,7 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
   const status = params.status || randomStatus(availableStatuses)
   const courseName = params.courseName || `${StringUtils.convertToTitleCase(faker.color.human())} Course`
   const audienceName = params.audience || audienceFactory.build().name
+  const hasLdc = params.hasLdc || false
 
   const referralViewWithAllFields: ReferralView = {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
@@ -36,6 +37,7 @@ export default ReferralViewFactory.define(({ params, transientParams }) => {
       'Conditional Release Date',
     ]),
     forename: faker.person.firstName(),
+    hasLdc,
     listDisplayName: `${courseName}: ${audienceName}`,
     location: `${faker.location.county()} (HMP)`,
     nonDtoReleaseDateType: faker.helpers.arrayElement(['ARD', 'CRD', 'NPD', 'PRRD']),
