@@ -98,6 +98,7 @@ export default class AssessCaseListController {
               const referralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
                 audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
                 courseName: selectedCourse.name,
+                hasLdc: hasLdc === 'true',
                 nameOrId,
                 page: page ? (Number(page) - 1).toString() : undefined,
                 sortColumn,
