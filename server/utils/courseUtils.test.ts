@@ -206,4 +206,35 @@ describe('CourseUtils', () => {
       })
     })
   })
+
+  describe('audience and hasLdc encoding/decoding', () => {
+    describe('encodeAudienceAndHasLdc', () => {
+      it('should give just the audience name when does not have LDC', () => {
+        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', false)).toBe('General violence')
+      })
+
+      it('should append hasLdc when it does have LDC', () => {
+        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', true)).toBe('General violence::hasLdc')
+      })
+    })
+    describe('decodeAudienceAndHasLdc', () => {
+      it('should identify when an audience name does not have LDC', () => {
+        // When
+        const { audienceName, hasLdc } = CourseUtils.decodeAudienceAndHasLdc('General violence')
+
+        // Then
+        expect(audienceName).toBe('General violence')
+        expect(hasLdc).toBe(false)
+      })
+
+      it('should identify when an audience does have LDC', () => {
+        // When
+        const { audienceName, hasLdc } = CourseUtils.decodeAudienceAndHasLdc('General violence::hasLdc')
+
+        // Then
+        expect(audienceName).toBe('General violence')
+        expect(hasLdc).toBe(true)
+      })
+    })
+  })
 })

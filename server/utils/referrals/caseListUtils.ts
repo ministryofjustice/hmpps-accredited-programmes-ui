@@ -2,6 +2,7 @@ import type { Request } from 'express'
 
 import { referralStatusGroups } from '../../@types/models/Referral'
 import { assessPaths, referPaths } from '../../paths'
+import CourseUtils from '../courseUtils'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import PathUtils from '../pathUtils'
@@ -42,17 +43,19 @@ export default class CaseListUtils {
         (acc, audienceName) => {
           const audienceNameLowerCase = audienceName.toLowerCase()
 
+          acc[audienceNameLowerCase] = audienceName
+
           if (addLdcStrandsForEachAudience) {
-            acc[`${audienceNameLowerCase}::ldc`] = `${audienceName}: LDC Only`
+            const encodedName = CourseUtils.encodeAudienceAndHasLdc(audienceNameLowerCase, true)
+            acc[encodedName] = `${audienceName}: LDC Only`
           }
 
-          acc[audienceNameLowerCase] = audienceName
           return acc
         },
         {} as Record<string, string>,
       )
 
-    return FormUtils.getSelectItems(values, selectedValue?.toLowerCase(), false)
+    return FormUtils.getSelectItems(values, selectedValue, false)
   }
 
   static primaryNavigationItems(

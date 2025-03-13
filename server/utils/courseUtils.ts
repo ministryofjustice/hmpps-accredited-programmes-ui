@@ -84,6 +84,35 @@ export default class CourseUtils {
     }
   }
 
+  /**
+   * Combine the audience and hasLdc params into a single string, used in the CaseList page and caseListController
+   * to combine LDC and Strands (i.e. audience) into a single item a select.
+   * @param audienceName e.g. 'General violence'
+   * @param hasLdc
+   */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  static encodeAudienceAndHasLdc(audienceName: string, hasLdc: boolean): string {
+    if (!hasLdc) {
+      return audienceName
+    }
+
+    return `${audienceName}::hasLdc`
+  }
+
+  /**
+   * The sibling to `encodeAudienceAndHasLdc`
+   * @param encodedAudienceName e.g. 'General violence::hasLdc'
+   */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  static decodeAudienceAndHasLdc(encodedAudienceName: string): { audienceName: string; hasLdc: boolean } {
+    const [audienceNameFromSplit, hasLdcString] = encodedAudienceName.split('::')
+
+    return {
+      audienceName: audienceNameFromSplit,
+      hasLdc: hasLdcString === 'hasLdc',
+    }
+  }
+
   private static audienceTag(course: Course): GovukFrontendTagWithText {
     return {
       attributes: { 'data-testid': 'audience-tag' },

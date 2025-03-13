@@ -19,7 +19,9 @@ export default class AssessCaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseId, referralStatusGroup } = req.params
-      const { audience, nameOrId, status, hasLdc } = req.body
+      const { nameOrId, status, audience: audiencePossiblyWithLdcSuffix } = req.body
+
+      const { audienceName: audience, hasLdc } = CourseUtils.decodeAudienceAndHasLdc(audiencePossiblyWithLdcSuffix)
 
       if (!audience && !status && !nameOrId) {
         req.flash('audienceError', 'Choose a filter')
@@ -60,13 +62,14 @@ export default class AssessCaseListController {
       const { courseId } = req.params
       const {
         nameOrId,
-        hasLdc,
+        hasLdc: hasLdcString,
         page,
         status,
         strand: audience,
         sortColumn,
         sortDirection,
       } = req.query as Record<string, string>
+      const hasLdc = hasLdcString === 'true'
       const referralsFiltered = !!status || !!audience || !!nameOrId || !!hasLdc
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
@@ -98,7 +101,7 @@ export default class AssessCaseListController {
               const referralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
                 audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
                 courseName: selectedCourse.name,
-                hasLdc: hasLdc === 'true',
+                hasLdc,
                 nameOrId,
                 page: page ? (Number(page) - 1).toString() : undefined,
                 sortColumn,
@@ -152,7 +155,7 @@ export default class AssessCaseListController {
         audienceSelectItems: CaseListUtils.audienceSelectItems(
           courseAudiences,
           CourseUtils.isBuildingChoices(selectedCourse.displayName),
-          audience,
+          audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdc) : undefined,
         ),
         nameOrId,
         pageHeading: selectedCourse.name,

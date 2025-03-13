@@ -15,7 +15,7 @@ export default class FormUtils {
     return [
       ...(!hidePlaceholder ? [{ selected: Boolean(!selectedValue), text: 'Select', value: '' }] : []),
       ...Object.entries(items).map(([value, text]) => ({
-        selected: value === selectedValue,
+        selected: selectedValue ? value.toLowerCase() === selectedValue.toLowerCase() : false,
         text,
         value,
       })),
