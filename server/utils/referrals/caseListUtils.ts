@@ -2,6 +2,7 @@ import type { Request } from 'express'
 
 import { referralStatusGroups } from '../../@types/models/Referral'
 import { assessPaths, referPaths } from '../../paths'
+import CourseUtils from '../courseUtils'
 import DateUtils from '../dateUtils'
 import FormUtils from '../formUtils'
 import PathUtils from '../pathUtils'
@@ -30,11 +31,37 @@ export default class CaseListUtils {
     })
   }
 
-  static audienceSelectItems(audiences: Array<Audience>, selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return this.selectItems(
-      audiences.map(audience => audience.name).filter(audience => audience !== undefined),
-      selectedValue,
-    )
+  static audienceSelectItems(
+    audiences: Array<Audience>,
+    addLdcStrandsForEachAudience: boolean,
+    selectedValue?: string,
+  ): Array<GovukFrontendSelectItem> {
+    const values = audiences
+      .map(audience => audience.name)
+      .filter(name => name !== undefined)
+      .reduce(
+        (acc, audienceName) => {
+          const audienceNameLowerCase = audienceName.toLowerCase()
+
+          acc[audienceNameLowerCase] = audienceName
+
+          if (addLdcStrandsForEachAudience) {
+            const encodedName = CourseUtils.encodeAudienceAndHasLdc(audienceNameLowerCase, true)
+            acc[encodedName] = `${audienceName}: LDC Only`
+          }
+
+          return acc
+        },
+        {} as Record<string, string>,
+      )
+
+    return FormUtils.getSelectItems(values, selectedValue, false)
+  }
+
+  static hasLdcTagHtml(referral: ReferralView): string {
+    return referral.hasLdc && CourseUtils.isBuildingChoices(referral.courseName)
+      ? '</br><span class="moj-badge moj-badge--bright-purple">LDC</span>'
+      : ''
   }
 
   static primaryNavigationItems(
@@ -199,7 +226,7 @@ export default class CaseListUtils {
       case 'Programme name':
         return referralView.listDisplayName || 'N/A'
       case 'Programme strand':
-        return referralView.audience || 'N/A'
+        return referralView.audience ? referralView.audience + CaseListUtils.hasLdcTagHtml(referralView) : 'N/A'
       case 'Progress':
         return `${referralView.tasksCompleted || 0} out of 4 tasks complete`
       case 'Referral status':
@@ -250,7 +277,7 @@ export default class CaseListUtils {
             row.push({ text: CaseListUtils.tableRowContent(view, 'Programme name') })
             break
           case 'Programme strand':
-            row.push({ text: CaseListUtils.tableRowContent(view, 'Programme strand') })
+            row.push({ html: CaseListUtils.tableRowContent(view, 'Programme strand') })
             break
           case 'Progress':
             row.push({ text: CaseListUtils.tableRowContent(view, 'Progress') })
@@ -310,13 +337,6 @@ export default class CaseListUtils {
       : `${referralView.prisonNumber}</a>`
 
     return nameAndPrisonNumberHtmlStart + nameAndPrisonNumberHtmlEnd
-  }
-
-  private static selectItems(values: Array<string>, selectedValue?: string): Array<GovukFrontendSelectItem> {
-    return FormUtils.getSelectItems(
-      Object.fromEntries(values.map(value => [value.toLowerCase(), value])),
-      selectedValue,
-    )
   }
 
   private static sentenceTypeHtml(referralView: ReferralView): string {

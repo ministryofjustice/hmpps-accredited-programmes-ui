@@ -50,8 +50,8 @@ export default class CourseUtils {
     })
   }
 
-  static isBuildingChoices(displayName?: string): boolean {
-    return displayName?.startsWith('Building Choices:') ?? false
+  static isBuildingChoices(courseDisplayName?: string): boolean {
+    return courseDisplayName?.toLowerCase()?.startsWith('building choices:') ?? false
   }
 
   static noOfferingsMessage(courseName: Course['name']): string {
@@ -81,6 +81,35 @@ export default class CourseUtils {
         ? findPaths.buildingChoices.form.show({ courseId: course.id })
         : findPaths.show({ courseId: course.id }),
       prerequisiteSummaryListRows: this.prerequisiteSummaryListRows(course.coursePrerequisites),
+    }
+  }
+
+  /**
+   * Combine the audience and hasLdc params into a single string, used in the CaseList page and caseListController
+   * to combine LDC and Strands (i.e. audience) into a single item a select.
+   * @param audienceName e.g. 'General violence'
+   * @param hasLdc
+   */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  static encodeAudienceAndHasLdc(audienceName: string, hasLdc: boolean): string {
+    if (!hasLdc) {
+      return audienceName
+    }
+
+    return `${audienceName}::hasLdc`
+  }
+
+  /**
+   * The sibling to `encodeAudienceAndHasLdc`
+   * @param encodedAudienceName e.g. 'General violence::hasLdc'
+   */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  static decodeAudienceAndHasLdc(encodedAudienceName: string): { audienceName: string; hasLdc: boolean } {
+    const [audienceNameFromSplit, hasLdcString] = encodedAudienceName.split('::')
+
+    return {
+      audienceName: audienceNameFromSplit,
+      hasLdc: hasLdcString === 'hasLdc',
     }
   }
 

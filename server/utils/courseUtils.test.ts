@@ -66,6 +66,11 @@ describe('CourseUtils', () => {
   })
 
   describe('isBuildingChoices', () => {
+    it('should ignore case', () => {
+      expect(CourseUtils.isBuildingChoices('BUILDING CHOICES: moderate intensity')).toBe(true)
+      expect(CourseUtils.isBuildingChoices('buIlDiNg ChOiCeS: high intensity')).toBe(true)
+    })
+
     it('returns true when the course displayName starts with "Building Choices:"', () => {
       expect(CourseUtils.isBuildingChoices('Building Choices: moderate intensity')).toBe(true)
     })
@@ -198,6 +203,37 @@ describe('CourseUtils', () => {
         const coursePresenter = CourseUtils.presentCourse(course)
 
         expect(coursePresenter.href).toBe(`/find/building-choices/${course.id}`)
+      })
+    })
+  })
+
+  describe('audience and hasLdc encoding/decoding', () => {
+    describe('encodeAudienceAndHasLdc', () => {
+      it('should give just the audience name when does not have LDC', () => {
+        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', false)).toBe('General violence')
+      })
+
+      it('should append hasLdc when it does have LDC', () => {
+        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', true)).toBe('General violence::hasLdc')
+      })
+    })
+    describe('decodeAudienceAndHasLdc', () => {
+      it('should identify when an audience name does not have LDC', () => {
+        // When
+        const { audienceName, hasLdc } = CourseUtils.decodeAudienceAndHasLdc('General violence')
+
+        // Then
+        expect(audienceName).toBe('General violence')
+        expect(hasLdc).toBe(false)
+      })
+
+      it('should identify when an audience does have LDC', () => {
+        // When
+        const { audienceName, hasLdc } = CourseUtils.decodeAudienceAndHasLdc('General violence::hasLdc')
+
+        // Then
+        expect(audienceName).toBe('General violence')
+        expect(hasLdc).toBe(true)
       })
     })
   })

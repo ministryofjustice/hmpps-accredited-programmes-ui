@@ -3,7 +3,7 @@ import createError from 'http-errors'
 
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
-import { CaseListUtils, FormUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
+import { CaseListUtils, CourseUtils, FormUtils, PaginationUtils, PathUtils, TypeUtils } from '../../utils'
 import type { Paginated, ReferralStatusGroup, ReferralView } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 
@@ -19,7 +19,9 @@ export default class AssessCaseListController {
       TypeUtils.assertHasUser(req)
 
       const { courseId, referralStatusGroup } = req.params
-      const { audience, nameOrId, status, hasLdc } = req.body
+      const { nameOrId, status, audience: audiencePossiblyWithLdcSuffix } = req.body
+
+      const { audienceName: audience, hasLdc } = CourseUtils.decodeAudienceAndHasLdc(audiencePossiblyWithLdcSuffix)
 
       if (!audience && !status && !nameOrId) {
         req.flash('audienceError', 'Choose a filter')
@@ -60,13 +62,15 @@ export default class AssessCaseListController {
       const { courseId } = req.params
       const {
         nameOrId,
+        hasLdc: hasLdcString,
         page,
         status,
         strand: audience,
         sortColumn,
         sortDirection,
       } = req.query as Record<string, string>
-      const referralsFiltered = !!status || !!audience || !!nameOrId
+      const hasLdc = hasLdcString === 'true'
+      const referralsFiltered = !!status || !!audience || !!nameOrId || !!hasLdc
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
       const statusGroups: Array<ReferralStatusGroup> = ['open', 'closed']
@@ -97,6 +101,7 @@ export default class AssessCaseListController {
               const referralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
                 audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
                 courseName: selectedCourse.name,
+                hasLdc,
                 nameOrId,
                 page: page ? (Number(page) - 1).toString() : undefined,
                 sortColumn,
@@ -144,9 +149,16 @@ export default class AssessCaseListController {
 
       req.session.recentCaseListPath = req.originalUrl
 
+      const audienceSelectItems = CaseListUtils.audienceSelectItems(
+        courseAudiences,
+        CourseUtils.isBuildingChoices(selectedCourse.displayName),
+        audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdc) : undefined,
+      )
+
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
-        audienceSelectItems: CaseListUtils.audienceSelectItems(courseAudiences, audience),
+        /** INFO: This is more recently presented as 'Strands' in UI mock ups */
+        audienceSelectItems,
         nameOrId,
         pageHeading: selectedCourse.name,
         pageTitleOverride: `Manage ${referralStatusGroup} programme team referrals: ${selectedCourse.name}`,

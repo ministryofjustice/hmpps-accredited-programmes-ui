@@ -152,6 +152,7 @@ export default class ReferralService {
     query?: {
       audience?: string
       courseName?: string
+      hasLdc?: boolean
       nameOrId?: string
       page?: string
       sortColumn?: string
