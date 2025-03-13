@@ -14,6 +14,7 @@
     "lint:ci": "npm run lint:css && npm run lint:js",
     "lint:css": "npx stylelint \"assets/scss/components/*.scss\"",
     "lint:js": "eslint . --cache --max-warnings 0",
+    "lint:js:fix": "eslint . --fix",
     "lint:njk": "djlint .",
     "lint": "npm run lint:css && npm run lint:js && npm run lint:njk",
     "record-build-info": "node ./bin/record-build-info",
