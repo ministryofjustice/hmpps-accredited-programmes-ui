@@ -13,7 +13,7 @@ import {
   referralStatusRefDataFactory,
   referralViewFactory,
 } from '../../testutils/factories'
-import { CaseListUtils, CourseUtils, PaginationUtils, PathUtils } from '../../utils'
+import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
 import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
   CaseListColumnHeader,
@@ -22,7 +22,6 @@ import type {
   QueryParam,
 } from '@accredited-programmes/ui'
 import type { GovukFrontendSelectItem, GovukFrontendTableHeadElement, GovukFrontendTableRow } from '@govuk-frontend'
-import { has } from 'lodash'
 
 jest.mock('../../utils/paginationUtils')
 jest.mock('../../utils/pathUtils')
@@ -160,6 +159,39 @@ describe('AssessCaseListController', () => {
     const closedReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: true, draft: false })
     const draftReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: false, draft: true })
     const openReferralStatuses = referralStatusRefDataFactory.buildList(2, { closed: false, draft: false })
+    const audienceSelectItems = [
+      {
+        selected: false,
+        text: 'All offences',
+        value: 'all offences',
+      },
+      {
+        selected: false,
+        text: 'Extremism offence',
+        value: 'extremism offence',
+      },
+      {
+        selected: false,
+        text: 'General offence',
+        value: 'general offence',
+      },
+      { selected: false, text: 'Gang offence', value: 'gang offence' },
+      {
+        selected: false,
+        text: 'General violence offence',
+        value: 'general violence offence',
+      },
+      {
+        selected: false,
+        text: 'Intimate partner violence offence',
+        value: 'intimate partner violence offence',
+      },
+      {
+        selected: false,
+        text: 'Sexual offence',
+        value: 'sexual offence',
+      },
+    ]
 
     beforeEach(() => {
       request.params = { courseId: limeCourse.id, referralStatusGroup }
@@ -168,7 +200,6 @@ describe('AssessCaseListController', () => {
       when(courseService.getCourseAudiences)
         .calledWith(username, { courseId: limeCourse.id })
         .mockResolvedValue(limeCourseAudiences)
-
       const openReferralViews = referralViewFactory.buildList(3, { status: 'referral_submitted' })
       const closedReferralViews = referralViewFactory.buildList(1, { status: 'programme_complete' })
 
@@ -198,6 +229,7 @@ describe('AssessCaseListController', () => {
         ...draftReferralStatuses,
         ...openReferralStatuses,
       ])
+      mockCaseListUtils.audienceSelectItems.mockReturnValue(audienceSelectItems)
       mockCaseListUtils.assessSubNavigationItems.mockReturnValue(subNavigationItems)
       mockCaseListUtils.primaryNavigationItems.mockReturnValue(primaryNavigationItems)
       mockCaseListUtils.queryParamsExcludingPage.mockReturnValue(queryParamsExcludingPage)
@@ -227,7 +259,7 @@ describe('AssessCaseListController', () => {
         expect(request.session.recentCaseListPath).toBe(originalUrl)
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
-          audienceSelectItems: [],
+          audienceSelectItems,
           pageHeading: 'Lime Course',
           pageTitleOverride: 'Manage open programme team referrals: Lime Course',
           pagination,
@@ -246,6 +278,7 @@ describe('AssessCaseListController', () => {
         expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: undefined,
           courseName: 'Lime Course',
+          hasLdc: false,
           status: undefined,
           statusGroup: referralStatusGroup,
         })
@@ -340,6 +373,7 @@ describe('AssessCaseListController', () => {
           expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
             audience: apiAudienceQueryParam,
             courseName: 'Lime Course',
+            hasLdc: false,
             nameOrId: uiNameOrIdQueryParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
@@ -419,7 +453,6 @@ describe('AssessCaseListController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup: 'closed' }),
           audienceSelectItems,
-          hasLdc: false,
           pageHeading: 'Lime Course',
           pageTitleOverride: 'Manage closed programme team referrals: Lime Course',
           pagination,
@@ -438,6 +471,7 @@ describe('AssessCaseListController', () => {
         expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: undefined,
           courseName: 'Lime Course',
+          hasLdc: false,
           status: undefined,
           statusGroup: 'closed',
         })
