@@ -14,6 +14,7 @@ import {
   referralViewFactory,
 } from '../testutils/factories'
 import type { ReferralStatusGroup, ReferralStatusUpdate, ReferralUpdate } from '@accredited-programmes/models'
+import type { TransferReferralRequest } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
@@ -432,6 +433,24 @@ describe('ReferralService', () => {
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.submit).toHaveBeenCalledWith(referral.id)
+    })
+  })
+
+  describe('transferReferralToBuildingChoices', () => {
+    it('asks the client to transfer a referral to Building Choices', async () => {
+      const transferRequest: TransferReferralRequest = {
+        offeringId: 'offering-id',
+        referralId: 'referral-id',
+        transferReason: 'Because I want to.',
+      }
+
+      await service.transferReferralToBuildingChoices(username, transferRequest)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.transferToBuildingChoices).toHaveBeenCalledWith(transferRequest)
     })
   })
 

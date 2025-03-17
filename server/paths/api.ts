@@ -118,6 +118,7 @@ export default {
     statusHistory: statusHistoryPath,
     statusTransitions: statusTransitionsPath,
     submit: submitPath,
+    transfer: referralsPath.path('transfer-to-building-choices'),
     update: referralPath,
     updateStatus: updateStatusPath,
   },
