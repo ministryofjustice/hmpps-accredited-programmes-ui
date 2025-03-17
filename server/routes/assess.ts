@@ -70,6 +70,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.show.duplicate.pattern, referralsController.duplicate())
 
   get(assessPaths.transfer.show.pattern, transferReferralController.show())
+  post(assessPaths.transfer.submit.pattern, transferReferralController.submit())
 
   get(assessPaths.transfer.error.show.pattern, transferReferralErrorController.show())
 
