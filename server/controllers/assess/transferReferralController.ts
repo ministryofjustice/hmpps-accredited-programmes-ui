@@ -42,8 +42,8 @@ export default class TransferReferralController {
           this.referralService.getReferralStatusHistory(token, username, referralId),
         ])
 
-        FormUtils.setFieldErrors(req, res, ['reason'])
-        FormUtils.setFormValues(req, res)
+        FormUtils.setFieldErrors(req, res, ['transferReason'])
+        FormUtils.setFormValues(req, res, { targetOfferingId: targetCourse.courseOfferings[0].id })
 
         return res.render('referrals/transfer/show', {
           backLinkHref: assessPaths.show.personalDetails({ referralId }),

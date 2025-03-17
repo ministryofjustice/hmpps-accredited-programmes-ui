@@ -119,8 +119,10 @@ describe('TransferReferralController', () => {
 
       expect(request.session.transferErrorData).toBeUndefined()
 
-      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reason'])
-      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['transferReason'])
+      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+        targetOfferingId: buildingChoicesCourseOffering.id,
+      })
 
       expect(response.render).toHaveBeenCalledWith('referrals/transfer/show', {
         backLinkHref: assessPaths.show.personalDetails({ referralId: referral.id }),
