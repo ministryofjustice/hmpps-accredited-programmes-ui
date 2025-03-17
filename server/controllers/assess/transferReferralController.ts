@@ -74,6 +74,28 @@ export default class TransferReferralController {
     }
   }
 
+  submit(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { referralId } = req.params
+      const { targetOfferingId, transferReason } = req.body
+
+      if (!transferReason) {
+        req.flash('transferReasonError', 'Enter a reason for transferring this referral')
+        return res.redirect(assessPaths.transfer.show({ referralId }))
+      }
+
+      await this.referralService.transferReferralToBuildingChoices(req.user.username, {
+        offeringId: targetOfferingId,
+        referralId,
+        transferReason,
+      })
+
+      return res.redirect(assessPaths.show.statusHistory({ referralId }))
+    }
+  }
+
   private async checkForTargetCourse(pniScore: PniScore | null, username: string, referral: Referral): Promise<Course> {
     if (!pniScore) {
       throw new Error('MISSING_INFORMATION')
