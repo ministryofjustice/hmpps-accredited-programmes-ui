@@ -13,7 +13,7 @@ import type {
   ReferralView,
 } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { Referral } from '@accredited-programmes-api'
+import type { Referral, TransferReferralRequest } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 
 export default class ReferralService {
@@ -188,6 +188,17 @@ export default class ReferralService {
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.submit(referralId)
+  }
+
+  async transferReferralToBuildingChoices(
+    username: Express.User['username'],
+    transferRequest: TransferReferralRequest,
+  ): Promise<Referral> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.transferToBuildingChoices(transferRequest)
   }
 
   async updateReferral(

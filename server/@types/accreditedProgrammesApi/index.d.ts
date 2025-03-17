@@ -15,22 +15,25 @@ export interface ErrorResponse {
    * @example 404
    */
   status: number
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   errorCode?: number
   /** @example "Not found" */
   userMessage?: string
-  /** @example "null" */
+  /** @example null */
   developerMessage?: string
-  /** @example "null" */
+  /** @example null */
   moreInfo?: string
 }
 
 export interface ReferralUpdate {
-  /** @example false */
+  /** @example null */
   oasysConfirmed: boolean
-  /** @example false */
+  /** @example null */
   hasReviewedProgrammeHistory: boolean
-  /** @example "null" */
+  /** @example null */
   additionalInformation?: string
   /**
    * Reason for overriding the recommended course
@@ -38,18 +41,11 @@ export interface ReferralUpdate {
    */
   overrideReason?: string
   /**
-   * Reason for transfer to building choices
-   * @example "The reason for transfer to building choices is..."
-   */
-  transferReason?: string
-    /**
    * Flag to indicate if the ldc field was overriden by the programme team
    * @example true
    */
-    hasLdcBeenOverriddenByProgrammeTeam?: boolean
+  hasLdcBeenOverriddenByProgrammeTeam?: boolean
 }
-
-export type Unit = object
 
 export interface ReferralStatusUpdate {
   /** @example "ON_HOLD_REFERRAL_SUBMITTED" */
@@ -78,7 +74,10 @@ export interface PurgeQueueResult {
 }
 
 export interface Course {
-  /** @format uuid */
+  /**
+   * @format uuid
+   * @example null
+   */
   id: string
   /** @example "Thinking skills programme" */
   name: string
@@ -105,7 +104,7 @@ export interface Course {
   displayOnProgrammeDirectory?: boolean
   /**
    * Intensity of the course
-   * @example "true"
+   * @example true
    */
   intensity?: string
   /**
@@ -115,10 +114,6 @@ export interface Course {
   courseOfferings: CourseOffering[]
 }
 
-/**
- * List of offerings for the course
- * @example null
- */
 export interface CourseOffering {
   /**
    * The unique identifier associated with the location hosting the offering. For prisons, this is the PrisonId, which is usually three capital letters.
@@ -130,13 +125,16 @@ export interface CourseOffering {
    * @example "ap-admin@digital.justice.gov.uk"
    */
   contactEmail: string
-  /** @example false */
+  /** @example null */
   referable: boolean
-  /** @format uuid */
+  /**
+   * @format uuid
+   * @example null
+   */
   id?: string
   /**
    * Describes if a referral can be created with an organisation
-   * @example false
+   * @example null
    */
   organisationEnabled?: boolean
   /**
@@ -144,7 +142,7 @@ export interface CourseOffering {
    * @example "ap-admin-2@digital.justice.gov.uk"
    */
   secondaryContactEmail?: string
-  /** @example false */
+  /** @example null */
   withdrawn?: boolean
   /**
    * Gender for which course is offered
@@ -153,11 +151,10 @@ export interface CourseOffering {
   gender?: 'MALE' | 'FEMALE'
 }
 
-/** @example null */
 export interface CoursePrerequisite {
-  /** @example "null" */
+  /** @example null */
   name: string
-  /** @example "null" */
+  /** @example null */
   description: string
 }
 
@@ -192,75 +189,85 @@ export interface CourseParticipation {
   /**
    * A unique identifier for this record of participation in a course.
    * @format uuid
+   * @example null
    */
   id: string
   /**
    * The unique identifier for the associated referral.
    * @format uuid
+   * @example null
    */
   referralId: string
   /**
    * The identity of the person who added this CourseParticipation
-   * @example "null"
+   * @example null
    */
   addedBy: string
   /**
    * The date and time at which this CourseParticipation was created. ISO 8601 date-time format.
-   * @example "null"
+   * @example null
    */
   createdAt: string
   /**
    * The name of the course taken by the participant.
-   * @example "null"
+   * @example null
    */
   courseName?: string
+  /** @example null */
   setting?: CourseParticipationSetting
+  /** @example null */
   outcome?: CourseParticipationOutcome
-  /** @example "null" */
+  /** @example null */
   detail?: string
-  /** @example "null" */
+  /** @example null */
   source?: string
   /**
    * Whether this is a draft record or not.
-   * @example false
+   * @example null
    */
   isDraft?: boolean
   /**
    * The status of the associated referral.
-   * @example "null"
+   * @example null
    */
   referralStatus?: string
 }
 
-/** @example null */
 export interface CourseParticipationOutcome {
-  /** @example "null" */
+  /** @example null */
   status: 'incomplete' | 'complete'
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   yearStarted?: number
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   yearCompleted?: number
 }
 
-/** @example null */
 export interface CourseParticipationSetting {
-  /** @example "null" */
+  /** @example null */
   type: 'custody' | 'community'
-  /** @example "null" */
+  /** @example null */
   location?: string
 }
 
 export interface CourseParticipationUpdate {
   /**
    * The name of the course taken by the participant.
-   * @example "null"
+   * @example null
    */
   courseName?: string
+  /** @example null */
   setting?: CourseParticipationSetting
+  /** @example null */
   outcome?: CourseParticipationOutcome
-  /** @example "null" */
+  /** @example null */
   detail?: string
-  /** @example "null" */
+  /** @example null */
   source?: string
 }
 
@@ -268,6 +275,7 @@ export interface ReferralCreated {
   /**
    * The unique id (UUID) of the new referral.
    * @format uuid
+   * @example null
    */
   referralId: string
 }
@@ -323,8 +331,8 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2025-02-20T04:05:18" */
-  submittedOn?: object
+  /** @example "2025-03-17T09:12:19" */
+  submittedOn?: any
   deleted: boolean
   primaryPomStaffId?: number
   secondaryPomStaffId?: number
@@ -332,6 +340,8 @@ export interface ReferralEntity {
   transferReason?: string
   /** @format uuid */
   originalReferralId?: string
+  hasLdc?: boolean
+  hasLdcBeenOverriddenByProgrammeTeam: boolean
 }
 
 export interface ReferrerUserEntity {
@@ -342,6 +352,7 @@ export interface ReferralCreate {
   /**
    * The id (UUID) of an active offering
    * @format uuid
+   * @example null
    */
   offeringId: string
   /**
@@ -361,6 +372,7 @@ export interface Referral {
   /**
    * The id (UUID) of an active offering
    * @format uuid
+   * @example null
    */
   offeringId: string
   /**
@@ -368,40 +380,41 @@ export interface Referral {
    * @example "A1234AA"
    */
   prisonNumber: string
-  /** @example false */
+  /** @example null */
   oasysConfirmed: boolean
-  /** @example false */
+  /** @example null */
   hasReviewedProgrammeHistory: boolean
   /**
    * The unique id (UUID) of this referral.
    * @format uuid
+   * @example null
    */
   id: string
   /**
    * The status code of the referral.
-   * @example "null"
+   * @example null
    */
   status: string
-  /** @example "null" */
+  /** @example null */
   referrerUsername: string
-  /** @example "null" */
+  /** @example null */
   additionalInformation?: string
   /**
    * Is the status of the referral a closed one.
-   * @example false
+   * @example null
    */
   closed?: boolean
   /**
    * The status description.
-   * @example "null"
+   * @example null
    */
   statusDescription?: string
   /**
    * The colour to display status description.
-   * @example "null"
+   * @example null
    */
   statusColour?: string
-  /** @example "null" */
+  /** @example null */
   submittedOn?: string
   /**
    * Reason for overriding the recommended course
@@ -419,10 +432,20 @@ export interface Referral {
    * @example "44e3cdab-c996-4234-afe5-a9d8ddb13be8"
    */
   originalReferralId?: string
+  /**
+   * Flag to indicate learning difficulties and challenges
+   * @example true
+   */
+  hasLdc?: boolean
+  /**
+   * Flag to indicate if the ldc field was overridden by the programme team
+   * @example true
+   */
+  hasLdcBeenOverriddenByProgrammeTeam: boolean
+  /** @example null */
   primaryPrisonOffenderManager?: StaffDetail
 }
 
-/** @example null */
 export interface StaffDetail {
   staffId?: number
   firstName: string
@@ -432,12 +455,36 @@ export interface StaffDetail {
   accountType: 'GENERAL' | 'ADMIN'
 }
 
+/** Details needed to transfer a referral to Building Choices */
+export interface TransferReferralRequest {
+  /**
+   * Referral ID of the referral from which transfer was initiated
+   * @format uuid
+   * @example "44e3cdab-c996-4234-afe5-a9d8ddb13be8"
+   */
+  referralId: string
+  /**
+   * The id (UUID) of an active offering
+   * @format uuid
+   * @example "44e3cdab-c996-4234-afe5-a9d8ddb13be9"
+   */
+  offeringId: string
+  /**
+   * Reason for transfer of referral to building choices
+   * @example "The reason for tranferring the referal is"
+   */
+  transferReason: string
+}
+
 export interface PeopleSearchResponse {
-  /** @example "null" */
+  /** @example null */
   bookingId: string
-  /** @example "null" */
+  /** @example null */
   prisonerNumber: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   conditionalReleaseDate?: string
   /**
    * ID of the prison
@@ -446,29 +493,47 @@ export interface PeopleSearchResponse {
   prisonId?: string
   /** @example "HMP Leeds" */
   prisonName?: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   dateOfBirth?: string
-  /** @example "null" */
+  /** @example null */
   ethnicity?: string
-  /** @example "null" */
+  /** @example null */
   gender?: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   homeDetentionCurfewEligibilityDate?: string
-  /** @example false */
+  /** @example null */
   indeterminateSentence?: boolean
-  /** @example "null" */
+  /** @example null */
   firstName?: string
-  /** @example "null" */
+  /** @example null */
   lastName?: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   paroleEligibilityDate?: string
-  /** @example "null" */
+  /** @example null */
   religion?: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   sentenceExpiryDate?: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   sentenceStartDate?: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   tariffDate?: string
 }
 
@@ -485,7 +550,6 @@ export interface PeopleSearchRequest {
   prisonIds?: string[]
 }
 
-/** @example null */
 export interface Address {
   /** @example "Higher Lane" */
   addressLine1: string
@@ -495,36 +559,34 @@ export interface Address {
   postcode: string
   /** @example "England" */
   country: string
-  /** @example "null" */
+  /** @example null */
   addressLine2?: string
   /** @example "Merseyside" */
   county?: string
 }
 
-/** @example null */
 export interface Category {
   /** @example "E" */
   category: string
 }
 
-/** @example null */
 export interface PrisonOperator {
   /** @example "PSP, G4S" */
   name: string
 }
 
 export interface PrisonSearchResponse {
-  /** @example "null" */
+  /** @example null */
   prisonId?: string
-  /** @example "null" */
+  /** @example null */
   prisonName?: string
-  /** @example false */
+  /** @example null */
   active?: boolean
-  /** @example false */
+  /** @example null */
   male?: boolean
-  /** @example false */
+  /** @example null */
   female?: boolean
-  /** @example false */
+  /** @example null */
   contracted?: boolean
   /** @example null */
   types?: PrisonType[]
@@ -536,7 +598,6 @@ export interface PrisonSearchResponse {
   operators?: PrisonOperator[]
 }
 
-/** @example null */
 export interface PrisonType {
   /** @example "YOI" */
   code: string
@@ -604,51 +665,62 @@ export interface CourseParticipationCreate {
   prisonNumber: string
   /**
    * The name of the course taken by the participant.
-   * @example "null"
+   * @example null
    */
   courseName?: string
+  /** @example null */
   setting?: CourseParticipationSetting
+  /** @example null */
   outcome?: CourseParticipationOutcome
-  /** @example "null" */
+  /** @example null */
   detail?: string
-  /** @example "null" */
+  /** @example null */
   source?: string
   /**
    * The unique id (UUID) of the associated referral.
    * @format uuid
+   * @example null
    */
   referralId?: string
   /**
    * Whether this is a draft record or not.
-   * @example false
+   * @example null
    */
   isDraft?: boolean
+}
+
+export interface PrisonNumberRequest {
+  /**
+   * List of prison numbers for which comparison needs to be checked
+   * @example null
+   */
+  prisonNumbers: string[]
 }
 
 export interface CaseLoad {
   /**
    * The unique identifier of the caseload.
-   * @example "null"
+   * @example null
    */
   caseLoadId?: string
   /**
    * The description of the caseload.
-   * @example "null"
+   * @example null
    */
   description?: string
   /**
    * The type of the caseload.
-   * @example "null"
+   * @example null
    */
   type?: string
   /**
    * The function of the caseload.
-   * @example "null"
+   * @example null
    */
   caseloadFunction?: string
   /**
    * Indicates whether the caseload is currently active or not.
-   * @example false
+   * @example null
    */
   currentlyActive?: boolean
 }
@@ -664,7 +736,6 @@ export interface Content {
   courseCounts?: CourseCount[]
 }
 
-/** A list of counts will be returned when the query has more than one count returned */
 export interface CourseCount {
   name: string
   audience: string
@@ -678,6 +749,8 @@ export interface Parameters {
   /** @format date */
   endDate?: string
   locationCodes?: string[]
+  /** @format uuid */
+  courseId?: string
 }
 
 export interface ReportContent {
@@ -687,14 +760,21 @@ export interface ReportContent {
   content: Content
 }
 
-export interface ReportStatusCountProjection {
-  count: number
-  status: string
-  orgId: string
+export interface ReferralStatistics {
+  submittedReferralCount: number
+  draftReferralCount: number
+  averageDuration: string
 }
 
-export interface ReportStatusCount {
-  /** @format int64 */
+export interface ReportStatusCountProjection {
+  orgId: string
+  count: number
+  status: string
+}
+
+export interface StatusCountByProgramme {
+  courseName: string
+  audience: string
   count: number
   status: string
   organisationCode: string
@@ -741,47 +821,48 @@ export interface ReferralStatusRefData {
   confirmationText?: string
   /**
    * flag to show this status has notes text box
-   * @example false
+   * @example null
    */
   hasNotes?: boolean
   /**
    * flag to show this status has confirmation box
-   * @example false
+   * @example null
    */
   hasConfirmation?: boolean
   /**
    * flag to show this is a closed status
-   * @example false
+   * @example null
    */
   closed?: boolean
   /**
    * flag to show this is a draft status
-   * @example false
+   * @example null
    */
   draft?: boolean
   /**
    * flag to show this is a hold status
-   * @example false
+   * @example null
    */
   hold?: boolean
   /**
    * flag to show this is a release status
-   * @example false
+   * @example null
    */
   release?: boolean
   /**
    * flag to show this a bespoke status of deslected and keep open
-   * @example false
+   * @example null
    */
   deselectAndKeepOpen?: boolean
   /**
    * sort order for statuses
    * @format int32
+   * @example null
    */
   defaultOrder?: number
   /**
    * flag to show whether the notes are optional
-   * @example false
+   * @example null
    */
   notesOptional?: boolean
 }
@@ -790,66 +871,69 @@ export interface ReferralStatusHistory {
   /**
    * The id (UUID) of the status history record.
    * @format uuid
+   * @example null
    */
   id?: string
   /**
    * The unique id (UUID) of the referral.
    * @format uuid
+   * @example null
    */
   referralId?: string
   /**
    * The status of the referral.
-   * @example "null"
+   * @example null
    */
   status?: string
   /**
    * The status description.
-   * @example "null"
+   * @example null
    */
   statusDescription?: string
   /**
    * The colour to display status description.
-   * @example "null"
+   * @example null
    */
   statusColour?: string
   /**
    * The previous status of the referral.
-   * @example "null"
+   * @example null
    */
   previousStatus?: string
   /**
    * The previous status description.
-   * @example "null"
+   * @example null
    */
   previousStatusDescription?: string
   /**
    * The previous colour to display status description.
-   * @example "null"
+   * @example null
    */
   previousStatusColour?: string
   /**
    * The notes associated with the status change.
-   * @example "null"
+   * @example null
    */
   notes?: string
   /**
    * Date referral was changed to this status.
    * @format date-time
+   * @example null
    */
   statusStartDate?: string
   /**
    * Username of the person who changed to this status
-   * @example "null"
+   * @example null
    */
   username?: string
   /**
    * The description of the category - if appropriate.
-   * @example "null"
+   * @example null
    */
   categoryDescription?: string
   /**
    * The description of the reason - if appropriate.
-   * @example "null"
+   * @example null
    */
   reasonDescription?: string
 }
@@ -865,127 +949,149 @@ export interface ConfirmationFields {
   secondaryDescription?: string
   /** @example "Submitting this will pause the referral" */
   warningText?: string
-  /** @example false */
+  /** @example null */
   hasConfirmation?: boolean
-  /** @example false */
+  /** @example null */
   notesOptional?: boolean
 }
 
 export interface PaginatedReferralView {
   /** @example null */
   content?: ReferralView[]
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   totalPages?: number
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   totalElements?: number
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   pageSize?: number
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   pageNumber?: number
-  /** @example false */
+  /** @example null */
   pageIsEmpty?: boolean
 }
 
-/** @example null */
 export interface ReferralView {
   /**
    * The unique id (UUID) of the new referral.
    * @format uuid
+   * @example null
    */
   id?: string
   /**
    * The unique HMPPS username of the user who created this referral.
-   * @example "null"
+   * @example null
    */
   referrerUsername?: string
-  /** @example "null" */
+  /** @example null */
   courseName?: string
   /** @example "Gang offence" */
   audience?: string
-  /** @example "null" */
+  /** @example null */
   status?: string
   /**
    * The status description.
-   * @example "null"
+   * @example null
    */
   statusDescription?: string
   /**
    * The colour to display status description.
-   * @example "null"
+   * @example null
    */
   statusColour?: string
   /**
    * Date referral was submitted.
    * @format date-time
+   * @example null
    */
   submittedOn?: string
-  /** @example "null" */
+  /** @example null */
   prisonNumber?: string
   /**
    * Name of the organisation
-   * @example "null"
+   * @example null
    */
   organisationName?: string
   /**
    * ID of the organisation
-   * @example "null"
+   * @example null
    */
   organisationId?: string
   /**
    * Conditional release date.
    * @format date
+   * @example null
    */
   conditionalReleaseDate?: string
   /**
    * Parole eligibility date.
    * @format date
+   * @example null
    */
   paroleEligibilityDate?: string
   /**
    * Tariff expiry date.
    * @format date
+   * @example null
    */
   tariffExpiryDate?: string
   /**
    * Earliest release date, if applicable, to this individual. Derived from Sentence information.
    * @format date
+   * @example null
    */
   earliestReleaseDate?: string
   /**
    * Earliest release date type used
-   * @example "null"
+   * @example null
    */
   earliestReleaseDateType?: string
   /**
    * Release date type
-   * @example "null"
+   * @example null
    */
   nonDtoReleaseDateType?: string
   /**
    * forename of the person
-   * @example "null"
+   * @example null
    */
   forename?: string
   /**
    * surname of the person
-   * @example "null"
+   * @example null
    */
   surname?: string
   /**
    * Sentence type description or 'Multiple sentences' if there are more than one
-   * @example "null"
+   * @example null
    */
   sentenceType?: string
   /**
    * The course display name when it is in a list.
-   * @example "null"
+   * @example null
    */
   listDisplayName?: string
   /**
    * location of person
-   * @example "null"
+   * @example null
    */
   location?: string
+  /**
+   * Flag to indicate learning difficulties and challenges
+   * @example true
+   */
+  hasLdc?: boolean
 }
 
 export interface ReferralStatusReason {
@@ -1019,7 +1125,6 @@ export interface GetDlqResult {
   messages: DlqMessage[]
 }
 
-/** @example null */
 export interface KeyDate {
   /** @example "earliestReleaseDate" */
   type: string
@@ -1027,19 +1132,27 @@ export interface KeyDate {
   code: string
   /** @example "Earliest Release Date" */
   description?: string
-  /** @example false */
+  /** @example null */
   earliestReleaseDate?: boolean
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   date?: string
-  /** @format int32 */
+  /**
+   * @format int32
+   * @example null
+   */
   order?: number
 }
 
-/** @example null */
 export interface Sentence {
   /** @example "CJA03 Standard Determinate Sentence" */
   description?: string
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   sentenceStartDate?: string
 }
 
@@ -1053,17 +1166,18 @@ export interface SentenceDetails {
 export interface Offence {
   /**
    * Description of the offence along with the code.
-   * @example "null"
+   * @example null
    */
   offence?: string
   /**
    * Legislation.
-   * @example "null"
+   * @example null
    */
   category?: string
   /**
    * Offence start date.
    * @format date
+   * @example null
    */
   offenceDate?: string
 }
@@ -1092,7 +1206,7 @@ export interface RoshAnalysis {
   offenceDetails?: string
   /** @example "at home" */
   whereAndWhen?: string
-  /** @example "false accounting" */
+  /** @example false */
   howDone?: string
   /** @example "hmrc" */
   whoVictims?: string
@@ -1104,7 +1218,6 @@ export interface RoshAnalysis {
   sources?: string
 }
 
-/** @example null */
 export interface Alert {
   /** @example "risk to children" */
   description?: string
@@ -1113,6 +1226,7 @@ export interface Alert {
   /**
    * Date alert was created.
    * @format date
+   * @example null
    */
   dateCreated?: string
 }
@@ -1167,15 +1281,15 @@ export interface Risks {
 }
 
 export interface Relationships {
-  /** @example false */
+  /** @example null */
   dvEvidence?: boolean
-  /** @example false */
+  /** @example null */
   victimFormerPartner?: boolean
-  /** @example false */
+  /** @example null */
   victimFamilyMember?: boolean
-  /** @example false */
+  /** @example null */
   victimOfPartnerFamily?: boolean
-  /** @example false */
+  /** @example null */
   perpOfPartnerOrFamily?: boolean
   /** @example "This person has a history of domestic violence" */
   relIssuesDetails?: string
@@ -1196,34 +1310,34 @@ export interface Relationships {
 export interface Psychiatric {
   /** @example "0-No problems" */
   description?: string
-  /** @example "null" */
+  /** @example null */
   difficultiesCoping?: string
-  /** @example "null" */
+  /** @example null */
   currPsychologicalProblems?: string
-  /** @example "null" */
+  /** @example null */
   selfHarmSuicidal?: string
 }
 
 export interface OffenceDetail {
   /** @example "Armed robbery" */
   offenceDetails?: string
-  /** @example false */
+  /** @example null */
   contactTargeting?: boolean
-  /** @example false */
+  /** @example null */
   raciallyMotivated?: boolean
-  /** @example false */
+  /** @example null */
   revenge?: boolean
-  /** @example false */
+  /** @example null */
   domesticViolence?: boolean
-  /** @example false */
+  /** @example null */
   repeatVictimisation?: boolean
-  /** @example false */
+  /** @example null */
   victimWasStranger?: boolean
-  /** @example false */
+  /** @example null */
   stalking?: boolean
-  /** @example false */
+  /** @example null */
   recognisesImpact?: boolean
-  /** @example "null" */
+  /** @example null */
   numberOfOthersInvolved?: string
   /** @example "There were two others involved who absconded at the scene" */
   othersInvolvedDetail?: string
@@ -1231,7 +1345,7 @@ export interface OffenceDetail {
   peerGroupInfluences?: string
   /** @example "Drug misuse fuels this persons motivation" */
   motivationAndTriggers?: string
-  /** @example false */
+  /** @example null */
   acceptsResponsibility?: boolean
   /** @example "This person fully accepts their actions" */
   acceptsResponsibilityDetail?: string
@@ -1249,7 +1363,7 @@ export interface Lifestyle {
 }
 
 export interface LearningNeeds {
-  /** @example false */
+  /** @example null */
   noFixedAbodeOrTransient?: boolean
   /** @example "0-No problems" */
   workRelatedSkills?: string
@@ -1261,41 +1375,41 @@ export interface LearningNeeds {
   problemAreas?: string[]
   /** @example "0-Any qualifications" */
   qualifications?: string
-  /** @example "6" */
+  /** @example 6 */
   basicSkillsScore?: string
   /** @example "free text about this persons learning needs" */
   basicSkillsScoreDescription?: string
 }
 
 export interface Health {
-  /** @example false */
+  /** @example null */
   anyHealthConditions?: boolean
   /** @example "Blind in one eye" */
   description?: string
 }
 
 export interface DrugAlcoholDetail {
+  /** @example null */
   drug?: OasysDrugDetail
+  /** @example null */
   alcohol?: OasysAlcoholDetail
 }
 
-/** @example null */
 export interface OasysAlcoholDetail {
-  /** @example "null" */
+  /** @example null */
   alcoholLinkedToHarm?: string
-  /** @example "null" */
+  /** @example null */
   alcoholIssuesDetails?: string
-  /** @example "null" */
+  /** @example null */
   frequencyAndLevel?: string
-  /** @example "null" */
+  /** @example null */
   bingeDrinking?: string
 }
 
-/** @example null */
 export interface OasysDrugDetail {
-  /** @example "null" */
+  /** @example null */
   levelOfUseOfMainDrug?: string
-  /** @example "null" */
+  /** @example null */
   drugsMajorActivity?: string
 }
 
@@ -1332,9 +1446,12 @@ export interface Attitude {
 }
 
 export interface OasysAssessmentDateInfo {
-  /** @format date */
+  /**
+   * @format date
+   * @example null
+   */
   recentCompletedAssessmentDate?: string
-  /** @example false */
+  /** @example null */
   hasOpenAssessment?: boolean
 }
 
@@ -1350,11 +1467,14 @@ export interface Audience {
   colour?: string
 }
 
-/** @example 5 */
 export interface DomainScore {
+  /** @example 1 */
   SexDomainScore: SexDomainScore
+  /** @example 2 */
   ThinkingDomainScore: ThinkingDomainScore
+  /** @example 1 */
   RelationshipDomainScore: RelationshipDomainScore
+  /** @example 1 */
   SelfManagementDomainScore: SelfManagementDomainScore
 }
 
@@ -1394,15 +1514,24 @@ export interface IndividualRelationshipScores {
   aggressiveControllingBehaviour?: number
 }
 
-/** @example 2 */
 export interface IndividualRiskScores {
   /** @example 1 */
   ogrs3?: number
+  /**
+   * The OGRS risk level
+   * @example "Medium"
+   */
+  ogrs3Risk?: string
+  /**
+   * The OVP Risk level
+   * @example "High"
+   */
+  ovpRisk?: string
   /** @example 2 */
   ovp?: number
-  /** @example "0" */
+  /** @example 0 */
   ospDc?: string
-  /** @example "1" */
+  /** @example 1 */
   ospIic?: string
   /** @example 5 */
   rsr?: number
@@ -1448,49 +1577,6 @@ export interface IndividualSexScores {
   emotionalCongruence?: number
 }
 
-/**
- * @example "{
- *   "needsScore": {
- *     "overallNeedsScore": 6,
- *     "domainScore": {
- *       "sexDomainScore": {
- *         "overAllSexDomainScore": 2,
- *         "individualSexScores": {
- *           "sexualPreOccupation": 2,
- *           "offenceRelatedSexualInterests": 2,
- *           "emotionalCongruence": 0
- *         }
- *       },
- *       "thinkingDomainScore": {
- *         "overallThinkingDomainScore": 1,
- *         "individualThinkingScores": {
- *           "proCriminalAttitudes": 1,
- *           "hostileOrientation": 1
- *         }
- *       },
- *       "relationshipDomainScore": {
- *         "overallRelationshipDomainScore": 1,
- *         "individualRelationshipScores": {
- *           "curRelCloseFamily": 0,
- *           "prevExpCloseRel": 2,
- *           "easilyInfluenced": 1,
- *           "aggressiveControllingBehaviour": 1
- *         }
- *       },
- *       "selfManagementDomainScore": {
- *         "overallSelfManagementDomainScore": 2,
- *         "individualSelfManagementScores": {
- *           "impulsivity": 1,
- *           "temperControl": 4,
- *           "problemSolvingSkills": 2,
- *           "difficultiesCoping": null
- *         }
- *       }
- *     }
- *   },
- * }
- * "
- */
 export interface NeedsScore {
   /**
    * @format int32
@@ -1504,6 +1590,7 @@ export interface NeedsScore {
   basicSkillsScore?: number
   /** @example "High Intensity BC" */
   classification: string
+  /** @example 5 */
   DomainScore: DomainScore
 }
 
@@ -1519,37 +1606,69 @@ export interface PniScore {
   assessmentId: number
   /** @example "HIGH_INTENSITY_BC" */
   programmePathway: string
+  /**
+   * @example "{
+   *   "needsScore": {
+   *     "overallNeedsScore": 6,
+   *     "domainScore": {
+   *       "sexDomainScore": {
+   *         "overAllSexDomainScore": 2,
+   *         "individualSexScores": {
+   *           "sexualPreOccupation": 2,
+   *           "offenceRelatedSexualInterests": 2,
+   *           "emotionalCongruence": 0
+   *         }
+   *       },
+   *       "thinkingDomainScore": {
+   *         "overallThinkingDomainScore": 1,
+   *         "individualThinkingScores": {
+   *           "proCriminalAttitudes": 1,
+   *           "hostileOrientation": 1
+   *         }
+   *       },
+   *       "relationshipDomainScore": {
+   *         "overallRelationshipDomainScore": 1,
+   *         "individualRelationshipScores": {
+   *           "curRelCloseFamily": 0,
+   *           "prevExpCloseRel": 2,
+   *           "easilyInfluenced": 1,
+   *           "aggressiveControllingBehaviour": 1
+   *         }
+   *       },
+   *       "selfManagementDomainScore": {
+   *         "overallSelfManagementDomainScore": 2,
+   *         "individualSelfManagementScores": {
+   *           "impulsivity": 1,
+   *           "temperControl": 4,
+   *           "problemSolvingSkills": 2,
+   *           "difficultiesCoping": null
+   *         }
+   *       }
+   *     }
+   *   },
+   * }
+   * "
+   */
   NeedsScore: NeedsScore
+  /** @example "riskScores" */
   RiskScore: RiskScore
   /** @example "['impulsivity is missing ']" */
   validationErrors: string[]
 }
 
-/** @example 1 */
 export interface RelationshipDomainScore {
   /** @format int32 */
   overallRelationshipDomainScore?: number
   individualRelationshipScores: IndividualRelationshipScores
 }
 
-/**
- * @example "  "riskScores": {
- *     "ogrs3": 15.0,
- *     "ovp": 15.0,
- *     "ospDc": 1.07,
- *     "ospIic": 0.11,
- *     "rsr": 1.46,
- *     "sara": "High"
- *   }
- * "
- */
 export interface RiskScore {
   /** @example "High Risk" */
   classification: string
+  /** @example 2 */
   IndividualRiskScores: IndividualRiskScores
 }
 
-/** SARA related risk score */
 export interface Sara {
   /**
    * The overall SARA risk score
@@ -1574,14 +1693,12 @@ export interface Sara {
   saraAssessmentId?: number
 }
 
-/** @example 1 */
 export interface SelfManagementDomainScore {
   /** @format int32 */
   overallSelfManagementDomainScore?: number
   individualSelfManagementScores: IndividualSelfManagementScores
 }
 
-/** @example 1 */
 export interface SexDomainScore {
   /**
    * @format int32
@@ -1591,7 +1708,6 @@ export interface SexDomainScore {
   individualSexScores: IndividualSexScores
 }
 
-/** @example 2 */
 export interface ThinkingDomainScore {
   /** @format int32 */
   overallThinkingDomainScore?: number

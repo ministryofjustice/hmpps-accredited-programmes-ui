@@ -14,7 +14,7 @@ import type {
   ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { Referral, ReferralStatusHistory } from '@accredited-programmes-api'
+import type { Referral, ReferralStatusHistory, TransferReferralRequest } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {
@@ -155,6 +155,13 @@ export default class ReferralClient {
     await this.restClient.post({
       path: apiPaths.referrals.submit({ referralId }),
     })
+  }
+
+  async transferToBuildingChoices(transferRequest: TransferReferralRequest): Promise<Referral> {
+    return (await this.restClient.post({
+      data: { ...transferRequest },
+      path: apiPaths.referrals.transfer({}),
+    })) as Referral
   }
 
   async update(referralId: Referral['id'], referralUpdate: ReferralUpdate): Promise<void> {
