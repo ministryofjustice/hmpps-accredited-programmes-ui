@@ -42,8 +42,8 @@ export default class TransferReferralController {
           this.referralService.getReferralStatusHistory(token, username, referralId),
         ])
 
-        FormUtils.setFieldErrors(req, res, ['reason'])
-        FormUtils.setFormValues(req, res)
+        FormUtils.setFieldErrors(req, res, ['transferReason'])
+        FormUtils.setFormValues(req, res, { targetOfferingId: targetCourse.courseOfferings[0].id })
 
         return res.render('referrals/transfer/show', {
           backLinkHref: assessPaths.show.personalDetails({ referralId }),
@@ -71,6 +71,28 @@ export default class TransferReferralController {
 
         return res.redirect(assessPaths.transfer.error.show({ referralId: referral.id }))
       }
+    }
+  }
+
+  submit(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { referralId } = req.params
+      const { targetOfferingId, transferReason } = req.body
+
+      if (!transferReason) {
+        req.flash('transferReasonError', 'Enter a reason for transferring this referral')
+        return res.redirect(assessPaths.transfer.show({ referralId }))
+      }
+
+      await this.referralService.transferReferralToBuildingChoices(req.user.username, {
+        offeringId: targetOfferingId,
+        referralId,
+        transferReason,
+      })
+
+      return res.redirect(assessPaths.show.statusHistory({ referralId }))
     }
   }
 

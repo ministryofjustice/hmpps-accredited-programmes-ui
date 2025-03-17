@@ -8,24 +8,25 @@
 {% endblock statusContent %}
 
 {% block statusAction %}
-  <form action="{{ action }}" method="post">
+  <form method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+    <input type="hidden" name="targetOfferingId" value="{{ formValues.targetOfferingId }}"/>
 
     <h2 class="govuk-heading-m">{{ confirmationText.secondaryHeading }}</h2>
 
     <p>{{ confirmationText.secondaryDescription }}</p>
 
     {{ govukCharacterCount({
-      id: "reason",
-      name: "reason",
+      id: "transferReason",
+      name: "transferReason",
       maxlength: maxReasonLength,
       label: {
         text: "Add reason",
         classes: 'govuk-fieldset__legend--s'
       },
       rows: 10,
-      value: formValues.reason,
-      errorMessage: errors.messages.reason
+      value: formValues.transferReason,
+      errorMessage: errors.messages.transferReason
     }) }}
 
     {% if confirmationText.warningText %}

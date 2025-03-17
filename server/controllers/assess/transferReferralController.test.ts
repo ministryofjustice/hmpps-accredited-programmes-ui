@@ -119,8 +119,10 @@ describe('TransferReferralController', () => {
 
       expect(request.session.transferErrorData).toBeUndefined()
 
-      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reason'])
-      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['transferReason'])
+      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response, {
+        targetOfferingId: buildingChoicesCourseOffering.id,
+      })
 
       expect(response.render).toHaveBeenCalledWith('referrals/transfer/show', {
         backLinkHref: assessPaths.show.personalDetails({ referralId: referral.id }),
@@ -288,6 +290,41 @@ describe('TransferReferralController', () => {
           prisonNumber: person.prisonNumber,
         })
         expect(response.redirect).toHaveBeenCalledWith(assessPaths.transfer.error.show({ referralId: referral.id }))
+      })
+    })
+  })
+
+  describe('submit', () => {
+    it('should redirect to the status history page of the original referral', async () => {
+      request.body = {
+        targetOfferingId: buildingChoicesCourseOffering.id,
+        transferReason: 'A good enough reason.',
+      }
+
+      const requestHandler = controller.submit()
+      await requestHandler(request, response, next)
+
+      expect(referralService.transferReferralToBuildingChoices).toHaveBeenCalledWith(username, {
+        offeringId: buildingChoicesCourseOffering.id,
+        referralId: referral.id,
+        transferReason: 'A good enough reason.',
+      })
+
+      expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: referral.id }))
+    })
+
+    describe('when the transfer reason is not provided', () => {
+      it('should set a flash message and redirect back to the transfer form page', async () => {
+        request.body.transferReason = ''
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(request.flash).toHaveBeenCalledWith(
+          'transferReasonError',
+          'Enter a reason for transferring this referral',
+        )
+        expect(response.redirect).toHaveBeenCalledWith(assessPaths.transfer.show({ referralId: referral.id }))
       })
     })
   })
