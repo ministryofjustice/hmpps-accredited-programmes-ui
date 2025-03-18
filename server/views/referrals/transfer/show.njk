@@ -4,7 +4,7 @@
 {% extends "../partials/changeStatusLayout.njk" %}
 
 {% block statusContent %}
-  <p>{{ confirmationText.primaryDescription }}</p>
+  <p data-testid="transfer-description-text">{{ confirmationText.primaryDescription }}</p>
 {% endblock statusContent %}
 
 {% block statusAction %}
@@ -14,7 +14,7 @@
 
     <h2 class="govuk-heading-m">{{ confirmationText.secondaryHeading }}</h2>
 
-    <p>{{ confirmationText.secondaryDescription }}</p>
+    <p data-testid="transfer-description-reason-text">{{ confirmationText.secondaryDescription }}</p>
 
     {{ govukCharacterCount({
       id: "transferReason",

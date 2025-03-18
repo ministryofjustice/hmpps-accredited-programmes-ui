@@ -37,7 +37,7 @@ export default class TransferReferralErrorController {
       if (errorMessage === 'MISSING_INFORMATION') {
         errorText = [
           `This referral cannot be moved. Risk and need scores are missing for ${person.name}, so the recommended programme intensity (high or moderate) cannot be calculated.`,
-          `You can see which scores are missing in the <a href="${assessPaths.show.pni({ referralId })}">programme needs identifier</a>.`,
+          `You can see which scores are missing in the <a class="govuk-link" href="${assessPaths.show.pni({ referralId })}">programme needs identifier</a>.`,
           'Update the missing information in OASys to move the referral, or withdraw this referral and submit a new one.',
         ]
       } else if (errorMessage === 'ALTERNATIVE_PATHWAY') {

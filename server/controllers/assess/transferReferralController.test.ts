@@ -128,7 +128,7 @@ describe('TransferReferralController', () => {
         backLinkHref: assessPaths.show.personalDetails({ referralId: referral.id }),
         confirmationText: {
           primaryDescription: `This will transfer the referral from ${originalReferralCourse.name} to ${buildingChoicesCourse.name}.`,
-          secondaryDescription: `You must give a reason for transferring this referral to ${buildingChoicesCourse.name}`,
+          secondaryDescription: `You must give a reason for transferring this referral to ${buildingChoicesCourse.name}.`,
           secondaryHeading: 'Move referral',
           warningText: `The ${originalReferralCourse.name} referral will close. A new referral to ${buildingChoicesCourse.name} will be created.`,
         },
