@@ -86,13 +86,13 @@ export default class TransferReferralController {
         return res.redirect(assessPaths.transfer.show({ referralId }))
       }
 
-      await this.referralService.transferReferralToBuildingChoices(req.user.username, {
+      const newReferral = await this.referralService.transferReferralToBuildingChoices(req.user.username, {
         offeringId: targetOfferingId,
         referralId,
         transferReason,
       })
 
-      return res.redirect(assessPaths.show.statusHistory({ referralId }))
+      return res.redirect(assessPaths.show.statusHistory({ referralId: newReferral.id }))
     }
   }
 

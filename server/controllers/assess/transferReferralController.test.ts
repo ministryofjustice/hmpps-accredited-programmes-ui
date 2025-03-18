@@ -295,7 +295,17 @@ describe('TransferReferralController', () => {
   })
 
   describe('submit', () => {
-    it('should redirect to the status history page of the original referral', async () => {
+    it('should redirect to the status history page of the newly transferred referral', async () => {
+      const newReferral = referralFactory.submitted().build()
+
+      when(referralService.transferReferralToBuildingChoices)
+        .calledWith(username, {
+          offeringId: buildingChoicesCourseOffering.id,
+          referralId: referral.id,
+          transferReason: 'A good enough reason.',
+        })
+        .mockResolvedValue(newReferral)
+
       request.body = {
         targetOfferingId: buildingChoicesCourseOffering.id,
         transferReason: 'A good enough reason.',
@@ -310,7 +320,7 @@ describe('TransferReferralController', () => {
         transferReason: 'A good enough reason.',
       })
 
-      expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: referral.id }))
+      expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.statusHistory({ referralId: newReferral.id }))
     })
 
     describe('when the transfer reason is not provided', () => {
