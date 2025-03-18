@@ -89,6 +89,7 @@ type ReferralView = {
   earliestReleaseDate?: string
   earliestReleaseDateType?: string
   forename?: string
+  hasLdc: boolean
   listDisplayName?: string
   location?: string
   nonDtoReleaseDateType?: string

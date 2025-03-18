@@ -6,9 +6,15 @@ import type { ReferralStatus } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 import type { Audience } from '@accredited-programmes-api'
 
-jest.mock('../formUtils')
-
 describe('CaseListUtils', () => {
+  beforeAll(() => {
+    jest.spyOn(FormUtils, 'getSelectItems').mockImplementation(() => [])
+  })
+
+  afterAll(() => {
+    jest.restoreAllMocks()
+  })
+
   beforeEach(() => {
     jest.resetAllMocks()
   })
@@ -55,41 +61,6 @@ describe('CaseListUtils', () => {
             { key: 'status', value: 'referral_started' },
           ]),
         ).toEqual(expectedItems)
-      })
-    })
-  })
-
-  describe('audienceSelectItems', () => {
-    const courseAudiences: Array<Audience> = [
-      { id: '1', name: 'General offence' },
-      { id: '2', name: 'Extremism offence' },
-      { id: '3', name: 'Gang offence' },
-      { id: '4', name: undefined },
-      { id: '5', name: 'General violence offence' },
-      { id: '6', name: 'Intimate partner violence offence' },
-      { id: '7', name: 'Sexual offence' },
-    ]
-
-    const expectedItems = {
-      'extremism offence': 'Extremism offence',
-      'gang offence': 'Gang offence',
-      'general offence': 'General offence',
-      'general violence offence': 'General violence offence',
-      'intimate partner violence offence': 'Intimate partner violence offence',
-      'sexual offence': 'Sexual offence',
-    }
-
-    it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
-      CaseListUtils.audienceSelectItems(courseAudiences)
-
-      expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, undefined)
-    })
-
-    describe('when a selected value is provided', () => {
-      it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        CaseListUtils.audienceSelectItems(courseAudiences, 'general offence')
-
-        expect(FormUtils.getSelectItems).toHaveBeenCalledWith(expectedItems, 'general offence')
       })
     })
   })
@@ -731,7 +702,7 @@ describe('CaseListUtils', () => {
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Name and prison number') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme name') },
-          { text: CaseListUtils.tableRowContent(referralViews[0], 'Programme strand') },
+          { html: CaseListUtils.tableRowContent(referralViews[0], 'Programme strand') },
           { text: CaseListUtils.tableRowContent(referralViews[0], 'Progress') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Referral status') },
           { html: CaseListUtils.tableRowContent(referralViews[0], 'Sentence type') },
@@ -743,7 +714,7 @@ describe('CaseListUtils', () => {
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Name and prison number') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme location') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme name') },
-          { text: CaseListUtils.tableRowContent(referralViews[1], 'Programme strand') },
+          { html: CaseListUtils.tableRowContent(referralViews[1], 'Programme strand') },
           { text: CaseListUtils.tableRowContent(referralViews[1], 'Progress') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Referral status') },
           { html: CaseListUtils.tableRowContent(referralViews[1], 'Sentence type') },
@@ -790,6 +761,120 @@ describe('CaseListUtils', () => {
     describe('when the param is falsey', () => {
       it('returns `undefined`', () => {
         expect(CaseListUtils.uiToApiAudienceQueryParam(undefined)).toEqual(undefined)
+      })
+    })
+  })
+})
+
+describe('CaseListUtils::audienceSelectItems', () => {
+  beforeAll(() => {
+    jest.clearAllMocks()
+  })
+
+  describe('When the course is not building choices', () => {
+    const courseAudiences: Array<Audience> = [
+      { id: '1', name: 'General offence' },
+      { id: '2', name: 'Extremism offence' },
+      { id: '3', name: 'Gang offence' },
+      { id: '4', name: undefined },
+      { id: '5', name: 'General violence offence' },
+      { id: '6', name: 'Intimate partner violence offence' },
+      { id: '7', name: 'Sexual offence' },
+    ]
+
+    describe('no selected value', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
+        const items = CaseListUtils.audienceSelectItems(courseAudiences, false)
+
+        expect(items).toStrictEqual([
+          { selected: true, text: 'Select', value: '' },
+          {
+            selected: false,
+            text: 'General offence',
+            value: 'general offence',
+          },
+          {
+            selected: false,
+            text: 'Extremism offence',
+            value: 'extremism offence',
+          },
+          { selected: false, text: 'Gang offence', value: 'gang offence' },
+          {
+            selected: false,
+            text: 'General violence offence',
+            value: 'general violence offence',
+          },
+          {
+            selected: false,
+            text: 'Intimate partner violence offence',
+            value: 'intimate partner violence offence',
+          },
+          {
+            selected: false,
+            text: 'Sexual offence',
+            value: 'sexual offence',
+          },
+        ])
+      })
+    })
+
+    describe('with selected value', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
+        const selectItems = CaseListUtils.audienceSelectItems(courseAudiences, false, 'general offence')
+
+        expect(selectItems).toContainEqual({
+          selected: true,
+          text: 'General offence',
+          value: 'general offence',
+        })
+      })
+    })
+  })
+
+  describe('When the course is building choices', () => {
+    const buildingChoicesAudiences: Array<Audience> = [
+      { id: '1', name: 'General offence' },
+      { id: '2', name: 'Sexual offence' },
+    ]
+
+    describe('when no selected value is provided', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with an `undefined` `selectedValue` parameter', () => {
+        const items = CaseListUtils.audienceSelectItems(buildingChoicesAudiences, true)
+        expect(items).toStrictEqual([
+          { selected: true, text: 'Select', value: '' },
+          {
+            selected: false,
+            text: 'General offence',
+            value: 'general offence',
+          },
+          {
+            selected: false,
+            text: 'General offence: LDC Only',
+            value: 'general offence::hasLdc',
+          },
+          {
+            selected: false,
+            text: 'Sexual offence',
+            value: 'sexual offence',
+          },
+          {
+            selected: false,
+            text: 'Sexual offence: LDC Only',
+            value: 'sexual offence::hasLdc',
+          },
+        ])
+      })
+    })
+
+    describe('when a selected value is provided', () => {
+      it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
+        const items = CaseListUtils.audienceSelectItems(buildingChoicesAudiences, true, 'general offence')
+        expect(items).toHaveLength(5)
+        expect(items).toContainEqual({
+          selected: true,
+          text: 'General offence',
+          value: 'general offence',
+        })
       })
     })
   })
