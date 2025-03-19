@@ -31,7 +31,7 @@ context('App', () => {
         expect(actual).to.equal(expected)
 
         cy.wrap(phaseBannerTextElement).within(() => {
-          cy.get('a').should('have.attr', 'href', 'https://eu.surveymonkey.com/r/P76THLY')
+          cy.get('a').should('have.attr', 'href', 'https://www.smartsurvey.co.uk/s/UWK3UY/')
         })
       })
     })
