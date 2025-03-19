@@ -19,7 +19,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Accredited Programmes'
   app.locals.dpsUrl = config.dpsUrl
-  app.locals.feedbackUrl = 'https://eu.surveymonkey.com/r/P76THLY'
+  app.locals.feedbackUrl = 'https://www.smartsurvey.co.uk/s/UWK3UY/'
   app.locals.enableApplicationInsights = config.enableApplicationInsights
   app.locals.applicationInsightsConnectionString = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || ''
 
