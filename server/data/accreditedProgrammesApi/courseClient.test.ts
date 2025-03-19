@@ -12,9 +12,10 @@ import {
   courseParticipationOutcomeFactory,
   courseParticipationSettingFactory,
 } from '../../testutils/factories'
-import type { CourseCreateRequest, CourseOffering } from '@accredited-programmes/models'
+import type { CourseOffering } from '@accredited-programmes/models'
 import type {
   Audience,
+  CourseCreateRequest,
   CourseParticipation,
   CourseParticipationCreate,
   CourseParticipationUpdate,
@@ -125,8 +126,9 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     const name = 'Things'
     const alternateName = 'Things Course'
     const description = 'A course about things'
+    const intensity = 'HIGH'
     const course = {
-      ...courseFactory.build({ alternateName, description, name }),
+      ...courseFactory.build({ alternateName, description, intensity, name }),
       courseOfferings: [],
       coursePrerequisites: [],
     }
@@ -134,6 +136,8 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       alternateName,
       audienceId: 'e4d1a44a-9c3b-4a7c-b79c-4d8a76488eb2',
       description,
+      displayOnProgrammeDirectory: true,
+      intensity,
       name,
       withdrawn: false,
     }
