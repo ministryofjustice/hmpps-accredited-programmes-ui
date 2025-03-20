@@ -2,21 +2,60 @@ import type { Request } from 'express'
 
 import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
+import CourseUtils from '../courseUtils'
 import DateUtils from '../dateUtils'
 import StringUtils from '../stringUtils'
 import type { CourseOffering, Organisation, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
+  MojButtonMenu,
   MojFrontendNavigationItem,
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
-import type { Referral } from '@accredited-programmes-api'
+import type { Course, Referral } from '@accredited-programmes-api'
 import type { GovukFrontendButton } from '@govuk-frontend'
 import type { User, UserEmail } from '@manage-users-api'
 
 export default class ShowReferralUtils {
+  static buttonMenu(
+    course: Course,
+    referral: Referral,
+    referencePaths: {
+      currentPath: Request['path']
+      recentCaseListPath?: string
+    },
+  ): MojButtonMenu {
+    const isAssess = referencePaths.currentPath.startsWith(assessPathBase.pattern)
+    const isBuildingChoices = course ? CourseUtils.isBuildingChoices(course?.name) : false
+    const { closed, status } = referral
+
+    const menuButtons: Array<GovukFrontendButton> =
+      !isAssess || isBuildingChoices || status === 'on_programme' || closed
+        ? []
+        : [
+            {
+              attributes: {
+                'aria-disabled': closed,
+              },
+              classes: 'govuk-button--secondary',
+              href: closed ? undefined : assessPaths.updateStatus.decision.show({ referralId: referral.id }),
+              text: 'Update status',
+            },
+            {
+              classes: 'govuk-button--secondary',
+              href: assessPaths.transfer.show({ referralId: referral.id }),
+              text: 'Move to Building Choices',
+            },
+          ]
+
+    return {
+      button: { classes: 'govuk-button--secondary', text: 'Update referral' },
+      items: menuButtons,
+    }
+  }
+
   static buttons(
     referencePaths: {
       currentPath: Request['path']
@@ -24,10 +63,12 @@ export default class ShowReferralUtils {
     },
     referral: Referral,
     statusTransitions?: Array<ReferralStatusRefData>,
+    course?: Course,
   ): Array<GovukFrontendButton> {
     const isAssess = referencePaths.currentPath.startsWith(assessPathBase.pattern)
     const paths = isAssess ? assessPaths : referPaths
-    const { closed } = referral
+    const { closed, status } = referral
+    const isBuildingChoices = course ? CourseUtils.isBuildingChoices(course?.name) : false
 
     const buttons: Array<GovukFrontendButton> = [
       {
@@ -36,7 +77,7 @@ export default class ShowReferralUtils {
       },
     ]
 
-    if (isAssess) {
+    if (isAssess && (isBuildingChoices || status === 'on_programme')) {
       buttons.push({
         attributes: {
           'aria-disabled': closed,
@@ -45,7 +86,7 @@ export default class ShowReferralUtils {
         href: closed ? undefined : assessPaths.updateStatus.decision.show({ referralId: referral.id }),
         text: 'Update status',
       })
-    } else {
+    } else if (!isAssess) {
       const holdStatusCode = statusTransitions?.find(transition => transition.hold)?.code
       const releaseStatusCode = statusTransitions?.find(transition => transition.release)?.code
       const nextHoldOrReleaseStatus = holdStatusCode || releaseStatusCode
