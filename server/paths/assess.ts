@@ -14,15 +14,19 @@ const updateStatusSelectCategory = updateStatusPathBase.path('category')
 const updateStatusSelectReason = updateStatusPathBase.path('reason')
 const updateStatusSelectionShowPath = updateStatusPathBase.path('selection')
 
-const transferToBuildingChoicesPathBase = referralShowPathBase.path('transfer-to-building-choices')
-const transferToBuildingChoicesCheck = transferToBuildingChoicesPathBase.path('check')
-const transferToBuildingChoicesReason = transferToBuildingChoicesPathBase.path('reason')
+const moveToBuildingChoicesPathBase = referralShowPathBase.path('move-to-building-choices')
+const moveToBuildingChoicesReason = moveToBuildingChoicesPathBase.path('reason')
 
 export default {
   caseList: {
     filter: courseCaseListPath.path(':referralStatusGroup'),
     index: caseListIndex,
     show: courseCaseListPath.path(':referralStatusGroup'),
+  },
+  moveToBuildingChoices: {
+    reason: {
+      show: moveToBuildingChoicesReason,
+    },
   },
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),
@@ -48,14 +52,6 @@ export default {
     },
     sentenceInformation: referralShowPathBase.path('sentence-information'),
     statusHistory: referralShowPathBase.path('status-history'),
-  },
-  transferToBuildingChoices: {
-    check: {
-      show: transferToBuildingChoicesCheck,
-    },
-    reason: {
-      show: transferToBuildingChoicesReason,
-    },
   },
   updateStatus: {
     category: {

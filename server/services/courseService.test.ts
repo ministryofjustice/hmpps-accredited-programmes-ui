@@ -14,7 +14,6 @@ import {
   courseParticipationFactory,
   coursePrerequisiteFactory,
   personFactory,
-  pniScoreFactory,
   referralFactory,
   userFactory,
 } from '../testutils/factories'
@@ -165,57 +164,6 @@ describe('CourseService', () => {
 
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(courseClient.findCourseNames).toHaveBeenCalled()
-    })
-  })
-
-  describe('getBuildingChoicesCourseByReferral', () => {
-    it('returns the building choices course for transfer for the provided referral', async () => {
-      const course = courseFactory.build()
-      const referral = referralFactory.build()
-      const pni = pniScoreFactory.build()
-
-      when(courseClient.findBuildingChoicesCourseByReferral)
-        .calledWith(referral.id, pni.programmePathway)
-        .mockResolvedValue(course)
-
-      const result = await service.getBuildingChoicesCourseByReferral(username, referral.id, pni.programmePathway)
-
-      expect(result).toEqual(course)
-      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
-    })
-    it('returns null when no building choices course is found for the referral', async () => {
-      const clientError = createError(404)
-      const referral = referralFactory.build()
-      const pni = pniScoreFactory.build()
-
-      when(courseClient.findBuildingChoicesCourseByReferral)
-        .calledWith(referral.id, pni.programmePathway)
-        .mockRejectedValue(clientError)
-
-      const result = await service.getBuildingChoicesCourseByReferral(username, referral.id, pni.programmePathway)
-
-      expect(result).toBeNull()
-      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
-    })
-    it('rethrows the error when error status is not 404', async () => {
-      const clientError = createError(500)
-      const referral = referralFactory.build()
-      const pni = pniScoreFactory.build()
-
-      const expectedError = createError(
-        500,
-        `Error fetching building choices course data for referral ${referral.id} and pathway ${pni.programmePathway}.`,
-      )
-
-      when(courseClient.findBuildingChoicesCourseByReferral)
-        .calledWith(referral.id, pni.programmePathway)
-        .mockRejectedValue(clientError)
-
-      await expect(
-        service.getBuildingChoicesCourseByReferral(username, referral.id, pni.programmePathway),
-      ).rejects.toThrow(expectedError)
-
-      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
     })
   })
 
