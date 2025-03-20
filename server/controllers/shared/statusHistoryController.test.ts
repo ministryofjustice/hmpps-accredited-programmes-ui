@@ -40,6 +40,13 @@ describe('StatusHistoryController', () => {
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
+  const buttonMenu = {
+    button: {
+      classes: 'govuk-button--secondary',
+      text: 'Update referral',
+    },
+    items: [],
+  }
   const timelineItems: Array<MojTimelineItem> = [
     {
       byline: { text: 'Test User' },
@@ -74,6 +81,7 @@ describe('StatusHistoryController', () => {
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
+    mockShowReferralUtils.buttonMenu.mockReturnValue(buttonMenu)
 
     when(referralService.getReferral).calledWith(username, referral.id, expect.any(Object)).mockResolvedValue(referral)
     when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
@@ -109,6 +117,7 @@ describe('StatusHistoryController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/statusHistory/show', {
+        buttonMenu,
         buttons,
         hideTitleServiceName: true,
         pageHeading: `Referral to ${coursePresenter.displayName}`,
@@ -134,6 +143,7 @@ describe('StatusHistoryController', () => {
         { currentPath: request.path, recentCaseListPath },
         referral,
         statusTransitions,
+        course,
       )
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(
         referralStatusHistory,
@@ -194,6 +204,7 @@ describe('StatusHistoryController', () => {
           { currentPath: request.path, recentCaseListPath },
           referral,
           undefined,
+          course,
         )
       })
     })
