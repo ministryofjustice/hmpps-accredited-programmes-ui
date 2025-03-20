@@ -60,6 +60,10 @@ export default class PniController {
       }
 
       return res.render('referrals/show/pni/show', {
+        buttonMenu: ShowReferralUtils.buttonMenu(course, referral, {
+          currentPath: req.path,
+          recentCaseListPath: req.session.recentCaseListPath,
+        }),
         buttons: ShowReferralUtils.buttons(
           { currentPath: req.path, recentCaseListPath: req.session.recentCaseListPath },
           referral,

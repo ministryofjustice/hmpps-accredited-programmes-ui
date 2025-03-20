@@ -39,6 +39,13 @@ describe('StatusHistoryController', () => {
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
+  const buttonMenu = {
+    button: {
+      classes: 'govuk-button--secondary',
+      text: 'Update referral',
+    },
+    items: [],
+  }
   const buttons = [{ href: 'button-href', text: 'Button' }]
   const timelineItems: Array<MojTimelineItem> = [
     {
@@ -74,6 +81,13 @@ describe('StatusHistoryController', () => {
     mockShowReferralUtils.subNavigationItems.mockReturnValue(subNavigationItems)
     mockShowReferralUtils.statusHistoryTimelineItems.mockReturnValue(timelineItems)
     mockShowReferralUtils.buttons.mockReturnValue(buttons)
+    mockShowReferralUtils.buttonMenu.mockReturnValue(buttonMenu)
+
+    when(referralService.getReferral).calledWith(username, referral.id, expect.any(Object)).mockResolvedValue(referral)
+    when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
+    when(referralService.getReferral)
+      .calledWith(username, transferredReferral.id, expect.any(Object))
+      .mockResolvedValue(transferredReferral)
 
     when(referralService.getReferral).calledWith(username, referral.id, expect.any(Object)).mockResolvedValue(referral)
     when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
@@ -109,6 +123,7 @@ describe('StatusHistoryController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/statusHistory/show', {
+        buttonMenu,
         buttons,
         hideTitleServiceName: true,
         pageHeading: `Referral to ${coursePresenter.displayName}`,
@@ -134,6 +149,31 @@ describe('StatusHistoryController', () => {
         { currentPath: request.path, recentCaseListPath },
         referral,
         statusTransitions,
+        course,
+      )
+      expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(
+        referralStatusHistory,
+        undefined,
+        undefined,
+      )
+    })
+    it('should render the show template with the previous referral link when the referral has a previous referral Id', async () => {
+      request.params = { referralId: transferredReferral.id }
+      request.path = assessPaths.show.statusHistory({ referralId: transferredReferral.id })
+      const requestHandler = controller.show()
+      await requestHandler(request, response, next)
+
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, originalReferral.id)
+      expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, originalReferral.offeringId)
+      expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(
+        `/assess/referrals/${transferredReferral.id}/status-history`,
+        'statusHistory',
+        transferredReferral.id,
+      )
+      expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(
+        referralStatusHistory,
+        assessPaths.show.statusHistory({ referralId: transferredReferral.originalReferralId! }),
+        course.name,
       )
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(
         referralStatusHistory,
@@ -194,6 +234,7 @@ describe('StatusHistoryController', () => {
           { currentPath: request.path, recentCaseListPath },
           referral,
           undefined,
+          course,
         )
       })
     })

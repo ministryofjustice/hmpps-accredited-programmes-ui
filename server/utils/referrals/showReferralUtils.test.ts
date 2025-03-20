@@ -18,53 +18,92 @@ const mockCaseListUtils = CaseListUtils as jest.Mocked<typeof CaseListUtils>
 
 describe('ShowReferralUtils', () => {
   const submittedReferral = referralFactory.submitted().build()
+  const onProgrammeReferral = referralFactory.build({ status: 'on_programme' })
+  const course = courseFactory.build({
+    alternateName: 'TC+',
+    audience: 'General offence',
+    name: 'Test Course',
+  })
+  const buildingChoicesCourse = courseFactory.build({
+    alternateName: 'BC',
+    audience: 'General offence',
+    name: 'Building Choices: High Intensity',
+  })
+
+  describe('Menu buttons', () => {
+    describe('when in the assess journey', () => {
+      it('when the course is not building choices, the referral is not closed or on programme, shows the update and move to building choices buttons in the menu', () => {
+        expect(
+          ShowReferralUtils.buttonMenu(course, submittedReferral, {
+            currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+          }),
+        ).toEqual({
+          button: {
+            classes: 'govuk-button--secondary',
+            text: 'Update referral',
+          },
+          items: [
+            {
+              attributes: {
+                'aria-disabled': false,
+              },
+              classes: 'govuk-button--secondary',
+              href: assessPaths.updateStatus.decision.show({ referralId: submittedReferral.id }),
+              text: 'Update status',
+            },
+            {
+              classes: 'govuk-button--secondary',
+              href: assessPaths.transfer.show({ referralId: submittedReferral.id }),
+              text: 'Move to Building Choices',
+            },
+          ],
+        })
+      })
+      it('when the course is building choices, returns an empty menu', () => {
+        expect(
+          ShowReferralUtils.buttonMenu(buildingChoicesCourse, submittedReferral, {
+            currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+          }),
+        ).toEqual({
+          button: {
+            classes: 'govuk-button--secondary',
+            text: 'Update referral',
+          },
+          items: [],
+        })
+      })
+      it('when the referral status is on programme, returns an empty menu', () => {
+        expect(
+          ShowReferralUtils.buttonMenu(course, onProgrammeReferral, {
+            currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+          }),
+        ).toEqual({
+          button: {
+            classes: 'govuk-button--secondary',
+            text: 'Update referral',
+          },
+          items: [],
+        })
+      })
+    })
+  })
 
   describe('buttons', () => {
     describe('when on the assess journey', () => {
-      it('contains the "Back to referrals" and "Update status" buttons with the corect hrefs', () => {
+      it('contains the "Back to referrals" button with the correct hrefs', () => {
         expect(
           ShowReferralUtils.buttons(
             { currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }) },
             submittedReferral,
+            undefined,
+            course,
           ),
         ).toEqual([
           {
             href: '/assess/referrals/case-list',
             text: 'Back to referrals',
           },
-          {
-            attributes: {
-              'aria-disabled': false,
-            },
-            classes: 'govuk-button--secondary',
-            href: `/assess/referrals/${submittedReferral.id}/update-status/decision`,
-            text: 'Update status',
-          },
         ])
-      })
-
-      describe('and the referral is closed', () => {
-        it('disables the "Update status" button', () => {
-          const closedReferral = referralFactory.closed().build()
-
-          expect(
-            ShowReferralUtils.buttons(
-              { currentPath: assessPaths.show.statusHistory({ referralId: closedReferral.id }) },
-              closedReferral,
-            ),
-          ).toEqual(
-            expect.arrayContaining([
-              {
-                attributes: {
-                  'aria-disabled': true,
-                },
-                classes: 'govuk-button--secondary',
-                href: undefined,
-                text: 'Update status',
-              },
-            ]),
-          )
-        })
       })
 
       describe('and there is a `recentCaseListPath` value', () => {
@@ -78,6 +117,8 @@ describe('ShowReferralUtils', () => {
                 recentCaseListPath,
               },
               submittedReferral,
+              undefined,
+              course,
             ),
           ).toEqual(
             expect.arrayContaining([
@@ -97,6 +138,8 @@ describe('ShowReferralUtils', () => {
           ShowReferralUtils.buttons(
             { currentPath: referPaths.show.statusHistory({ referralId: submittedReferral.id }) },
             submittedReferral,
+            undefined,
+            course,
           ),
         ).toEqual([
           {
@@ -128,6 +171,8 @@ describe('ShowReferralUtils', () => {
             ShowReferralUtils.buttons(
               { currentPath: referPaths.show.statusHistory({ referralId: closedReferral.id }) },
               closedReferral,
+              undefined,
+              course,
             ),
           ).toEqual(
             expect.arrayContaining([
@@ -239,11 +284,6 @@ describe('ShowReferralUtils', () => {
 
   describe('courseOfferingSummaryListRows', () => {
     it('formats course offering information in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
-      const course = courseFactory.build({
-        alternateName: 'TC+',
-        audience: 'General offence',
-        name: 'Test Course',
-      })
       const coursePresenter = CourseUtils.presentCourse(course)
       const organisation = organisationFactory.build({ name: 'HMP Hewell' })
       const contactEmail = 'bob.smith@test-email.co.uk'

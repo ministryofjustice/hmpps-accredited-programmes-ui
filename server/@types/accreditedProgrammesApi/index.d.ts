@@ -114,6 +114,10 @@ export interface Course {
   courseOfferings: CourseOffering[]
 }
 
+/**
+ * List of offerings for the course
+ * @example null
+ */
 export interface CourseOffering {
   /**
    * The unique identifier associated with the location hosting the offering. For prisons, this is the PrisonId, which is usually three capital letters.
@@ -770,6 +774,13 @@ export interface ReportStatusCountProjection {
   orgId: string
   count: number
   status: string
+}
+
+export interface ReportStatusCount {
+  /** @format int64 */
+  count: number
+  status: string
+  organisationCode: string
 }
 
 export interface StatusCountByProgramme {
