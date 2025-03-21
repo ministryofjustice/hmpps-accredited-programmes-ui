@@ -48,6 +48,8 @@ describe('ReportsController', () => {
     value: '123',
   }
 
+  const dataDisclaimer = 'Data collected through the Accredited Programmes service on DPS, which launched in May 2024.'
+
   let controller: ReportsController
 
   beforeEach(() => {
@@ -125,6 +127,7 @@ describe('ReportsController', () => {
       )
 
       expect(response.render).toHaveBeenCalledWith('reports/show', {
+        dataDisclaimer,
         errorMessages,
         filterFormAction: '/reports',
         filterValues: {},
@@ -160,6 +163,7 @@ describe('ReportsController', () => {
         expect(StatisticsReportUtils.reportContentDataBlock).toHaveBeenCalledWith(reportContent)
 
         expect(response.render).toHaveBeenCalledWith('reports/show', {
+          dataDisclaimer,
           errorMessages,
           filterFormAction: '/reports',
           filterValues: { location: 'MDI', period: 'lastSixMonths' },
