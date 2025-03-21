@@ -1,0 +1,73 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% extends "../show/partials/rootLayout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: backLinkHref
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      <p class="govuk-body">
+        {{ person.name | makePossessive }} current LDC status: 
+        <strong class="govuk-!-display-block govuk-!-margin-top-3">{{ 'May' if hasLdc else 'Does not' }} need an LDC-adapted programme</strong>
+      </p>
+
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+      <h2 class="govuk-heading-m" data-testid="target-status-heading">
+        Update status: {{ 'Does not' if hasLdc else 'May' }} need an LDC-adapted programme
+      </h2>
+
+      <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukCheckboxes({
+        name: "ldcReason",
+        fieldset: {
+          attributes: {
+            "data-testid": "ldc-reason-fieldset"
+          },
+          legend: {
+            classes: "govuk-!-margin-bottom-6",
+            text: ["You must give a reason why", person.name, "does not" if hasLdc else "may", "need an LDC-adapted programme."] | join(" ")
+          }
+        },
+        hint: {
+          text: "Select all that apply"
+        },
+        items: [
+          {
+            value: "afcrSuggestion",
+            text: ["The Adaptive Functioning Checklist (AFCR) suggested that they are", "not" if hasLdc, "suitable for LDC programmes."] | join(" ")
+          },
+          {
+            value: "scoresChanged",
+            text: "Their learning screening tool scores have changed."
+          },
+          {
+            value: "whatWorksForMe",
+            text: ["The What works for me meeting found that they", "didn't need an LDC programme." if hasLdc else "were suitable for LDC programmes." ] | join(" ")
+          }
+        ]
+      }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Submit"
+          }) }}
+
+          <a class="govuk-link" href="{{ backLinkHref }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}
