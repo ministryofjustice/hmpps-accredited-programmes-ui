@@ -56,6 +56,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   njkEnv.addFilter('initialiseName', StringUtils.initialiseName)
   njkEnv.addFilter('objectMerge', NunjucksUtils.objectMerge)
+  njkEnv.addFilter('makePossessive', StringUtils.makePossessive)
 
   njkEnv.addGlobal('findPaths', findPaths)
   njkEnv.addGlobal('referPaths', referPaths)

@@ -27,6 +27,7 @@ import type {
 } from '@accredited-programmes/ui'
 import type { Course, CourseParticipation, Referral } from '@accredited-programmes-api'
 import type {
+  GovukFrontendCheckboxesItem,
   GovukFrontendRadiosItem,
   GovukFrontendSummaryListCardTitle,
   GovukFrontendWarningText,
@@ -129,6 +130,20 @@ export default abstract class Page {
     cy.get(`.govuk-checkboxes__label[for="${name}"]`).then(labelElement => {
       const { actual, expected } = Helpers.parseHtml(labelElement, label)
       expect(actual).to.equal(expected)
+    })
+  }
+
+  shouldContainCheckboxItems(options: Array<GovukFrontendCheckboxesItem>): void {
+    options.forEach((option, optionIndex) => {
+      cy.get('.govuk-checkboxes__item')
+        .eq(optionIndex)
+        .within(() => {
+          cy.get('.govuk-checkboxes__label').then(checkboxLabelElement => {
+            const { actual, expected } = Helpers.parseHtml(checkboxLabelElement, option.text as string)
+            expect(actual).to.equal(expected)
+          })
+          cy.get('.govuk-checkboxes__input').should('have.attr', 'value', option.value)
+        })
     })
   }
 

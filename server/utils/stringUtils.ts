@@ -20,6 +20,10 @@ export default class StringUtils {
       .join('')
   }
 
+  static makePossessive(word: string): string {
+    return word.endsWith('s') ? `${word}'` : `${word}'s`
+  }
+
   static pluralise(word: string, count: number): string {
     return count === 1 ? word : `${word}s`
   }
