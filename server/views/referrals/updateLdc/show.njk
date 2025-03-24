@@ -1,5 +1,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% extends "../show/partials/rootLayout.njk" %}
 
@@ -13,6 +14,12 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
 
       <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
@@ -31,34 +38,35 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukCheckboxes({
-        name: "ldcReason",
-        fieldset: {
-          attributes: {
-            "data-testid": "ldc-reason-fieldset"
+          name: "ldcReason",
+          errorMessage: errors.messages.ldcReason,
+          fieldset: {
+            attributes: {
+              "data-testid": "ldc-reason-fieldset"
+            },
+            legend: {
+              classes: "govuk-!-margin-bottom-6",
+              text: ["You must give a reason why", person.name, "does not" if hasLdc else "may", "need an LDC-adapted programme."] | join(" ")
+            }
           },
-          legend: {
-            classes: "govuk-!-margin-bottom-6",
-            text: ["You must give a reason why", person.name, "does not" if hasLdc else "may", "need an LDC-adapted programme."] | join(" ")
-          }
-        },
-        hint: {
-          text: "Select all that apply"
-        },
-        items: [
-          {
-            value: "afcrSuggestion",
-            text: ["The Adaptive Functioning Checklist (AFCR) suggested that they are", "not" if hasLdc, "suitable for LDC programmes."] | join(" ")
+          hint: {
+            text: "Select all that apply"
           },
-          {
-            value: "scoresChanged",
-            text: "Their learning screening tool scores have changed."
-          },
-          {
-            value: "whatWorksForMe",
-            text: ["The What works for me meeting found that they", "didn't need an LDC programme." if hasLdc else "were suitable for LDC programmes." ] | join(" ")
-          }
-        ]
-      }) }}
+          items: [
+            {
+              value: "afcrSuggestion",
+              text: ["The Adaptive Functioning Checklist (AFCR) suggested that they are", "not" if hasLdc, "suitable for LDC programmes."] | join(" ")
+            },
+            {
+              value: "scoresChanged",
+              text: "Their learning screening tool scores have changed."
+            },
+            {
+              value: "whatWorksForMe",
+              text: ["The What works for me meeting found that they", "didn't need an LDC programme." if hasLdc else "were suitable for LDC programmes." ] | join(" ")
+            }
+          ]
+        }) }}
 
         <div class="govuk-button-group">
           {{ govukButton({
