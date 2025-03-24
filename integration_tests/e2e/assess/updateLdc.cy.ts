@@ -25,25 +25,47 @@ context('Updating a persons LDC status for a referral', () => {
   })
 
   describe('when referral.hasLdc is true', () => {
-    it('should show the correct content', () => {
-      const referralWithLdc = referralFactory.submitted().build({
-        hasLdc: true,
-        prisonNumber: person.prisonNumber,
-      })
-      const referralDetailsPath = assessPaths.show.personalDetails({ referralId: referralWithLdc.id })
+    const referralWithLdc = referralFactory.submitted().build({
+      hasLdc: true,
+      prisonNumber: person.prisonNumber,
+    })
+    const referralDetailsPath = assessPaths.show.personalDetails({ referralId: referralWithLdc.id })
 
+    beforeEach(() => {
       cy.task('stubReferral', referralWithLdc)
 
       cy.visit(assessPaths.updateLdc.show({ referralId: referralWithLdc.id }))
+    })
 
+    it('should show the correct content and allow the form to be submitted', () => {
       const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
         person,
       })
       updateLdcPage.shouldHavePersonDetails(person)
       updateLdcPage.shouldContainBackLink(referralDetailsPath)
       updateLdcPage.shouldContainHasLdcContent()
-      updateLdcPage.shouldContainButton('Submit')
       updateLdcPage.shouldContainLink('Cancel', referralDetailsPath)
+
+      updateLdcPage.selectCheckbox('ldcReason')
+      cy.task('stubUpdateReferral', referralWithLdc.id)
+      updateLdcPage.shouldContainButton('Submit').click()
+
+      cy.location('pathname').should('equal', assessPaths.show.personalDetails({ referralId: referralWithLdc.id }))
+    })
+
+    describe('when submitting without selecting a reason', () => {
+      it('should show an error message', () => {
+        const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
+          person,
+        })
+        updateLdcPage.shouldContainButton('Submit').click()
+        updateLdcPage.shouldHaveErrors([
+          {
+            field: 'ldcReason',
+            message: 'Select a reason for updating the learning disabilities and challenges status',
+          },
+        ])
+      })
     })
   })
 
