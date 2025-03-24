@@ -13,8 +13,8 @@ import {
   referralStatusRefDataFactory,
   referralViewFactory,
 } from '../testutils/factories'
-import type { ReferralStatusGroup, ReferralStatusUpdate, ReferralUpdate } from '@accredited-programmes/models'
-import type { TransferReferralRequest } from '@accredited-programmes-api'
+import type { ReferralStatusGroup, ReferralStatusUpdate } from '@accredited-programmes/models'
+import type { ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')

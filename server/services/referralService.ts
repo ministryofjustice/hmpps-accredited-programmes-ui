@@ -9,11 +9,10 @@ import type {
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
-  ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { Referral, TransferReferralRequest } from '@accredited-programmes-api'
+import type { Referral, ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 
 export default class ReferralService {

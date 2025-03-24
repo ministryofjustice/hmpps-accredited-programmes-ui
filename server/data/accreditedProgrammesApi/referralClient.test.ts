@@ -7,8 +7,8 @@ import config from '../../config'
 import { apiPaths } from '../../paths'
 import { referralFactory, referralViewFactory } from '../../testutils/factories'
 import FactoryHelpers from '../../testutils/factories/factoryHelpers'
-import type { Paginated, ReferralUpdate, ReferralView } from '@accredited-programmes/models'
-import type { Referral } from '@accredited-programmes-api'
+import type { Paginated, ReferralView } from '@accredited-programmes/models'
+import type { Referral, ReferralUpdate } from '@accredited-programmes-api'
 
 pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programmes API' }, provider => {
   let referralClient: ReferralClient

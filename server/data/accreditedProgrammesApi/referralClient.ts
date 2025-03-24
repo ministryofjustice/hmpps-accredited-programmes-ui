@@ -11,10 +11,14 @@ import type {
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
-  ReferralUpdate,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { Referral, ReferralStatusHistory, TransferReferralRequest } from '@accredited-programmes-api'
+import type {
+  Referral,
+  ReferralStatusHistory,
+  ReferralUpdate,
+  TransferReferralRequest,
+} from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferralClient {
@@ -168,7 +172,7 @@ export default class ReferralClient {
 
   async update(referralId: Referral['id'], referralUpdate: ReferralUpdate): Promise<void> {
     await this.restClient.put({
-      data: referralUpdate,
+      data: { ...referralUpdate },
       path: apiPaths.referrals.update({ referralId }),
     })
   }
