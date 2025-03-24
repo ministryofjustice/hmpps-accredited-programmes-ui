@@ -33,12 +33,6 @@ interface ConfirmationFields {
   warningText: string
 }
 
-type ReferralUpdate = {
-  hasReviewedProgrammeHistory: Referral['hasReviewedProgrammeHistory']
-  oasysConfirmed: Referral['oasysConfirmed']
-  additionalInformation?: Referral['additionalInformation']
-}
-
 type ReferralStatus = (typeof referralStatuses)[number]
 
 type ReferralStatusUppercase = Uppercase<ReferralStatus>
@@ -119,6 +113,5 @@ export type {
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
-  ReferralUpdate,
   ReferralView,
 }
