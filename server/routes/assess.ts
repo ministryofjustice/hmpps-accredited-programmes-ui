@@ -76,6 +76,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(assessPaths.transfer.error.show.pattern, transferReferralErrorController.show())
 
   get(assessPaths.updateLdc.show.pattern, updateLdcController.show())
+  post(assessPaths.updateLdc.submit.pattern, updateLdcController.submit())
 
   return router
 }
