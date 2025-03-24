@@ -15,6 +15,7 @@ const updateStatusSelectReason = updateStatusPathBase.path('reason')
 const updateStatusSelectionShowPath = updateStatusPathBase.path('selection')
 
 const transferPathBase = referralShowPathBase.path('transfer')
+const updateLdcPath = referralShowPathBase.path('update-ldc')
 
 export default {
   caseList: {
@@ -54,6 +55,10 @@ export default {
     },
     show: transferPathBase,
     submit: transferPathBase,
+  },
+  updateLdc: {
+    show: updateLdcPath,
+    submit: updateLdcPath,
   },
   updateStatus: {
     category: {

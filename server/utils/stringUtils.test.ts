@@ -44,6 +44,15 @@ describe('StringUtils', () => {
     })
   })
 
+  describe('makePossessive', () => {
+    it.each([
+      ['a word ending in s', 'James', "James'"],
+      ['a word not ending in s', 'Jameson', "Jameson's"],
+    ])('handles %s: %s -> %s', (_inputType: string, input: string, expectedOutput: string) => {
+      expect(StringUtils.makePossessive(input)).toEqual(expectedOutput)
+    })
+  })
+
   describe('pluralise', () => {
     it.each([
       ['one item', 'item', 1, 'item'],
