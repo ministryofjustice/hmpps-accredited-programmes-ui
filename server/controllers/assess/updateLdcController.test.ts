@@ -5,8 +5,8 @@ import { when } from 'jest-when'
 
 import UpdateLdcController from './updateLdcController'
 import { assessPaths } from '../../paths'
-import type { PersonService, ReferralService } from '../../services'
-import { personFactory, referralFactory } from '../../testutils/factories'
+import type { CourseService, PersonService, ReferralService } from '../../services'
+import { courseFactory, courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils } from '../../utils'
 import type { Referral } from '@accredited-programmes-api'
@@ -20,6 +20,7 @@ describe('UpdateLdcController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
+  const courseService = createMock<CourseService>({})
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
@@ -32,7 +33,7 @@ describe('UpdateLdcController', () => {
   beforeEach(() => {
     referral = referralFactory.submitted().build({ hasLdc: true, prisonNumber: person.prisonNumber })
 
-    controller = new UpdateLdcController(personService, referralService)
+    controller = new UpdateLdcController(courseService, personService, referralService)
 
     request = createMock<Request>({
       params: { referralId: referral.id },
@@ -65,9 +66,13 @@ describe('UpdateLdcController', () => {
   })
 
   describe('submit', () => {
-    it('should update the referral with hasLdcBeenOverriddenByProgrammeTeam and redirect to the personal details page', async () => {
+    it('should update the referral with hasLdcBeenOverriddenByProgrammeTeam and redirect to the case list for the referrals course', async () => {
+      const courseOffering = courseOfferingFactory.build({ id: referral.offeringId })
+      const course = courseFactory.build({ courseOfferings: [courseOffering] })
+
       request.body.ldcReason = ['afcrSuggestion', 'scoresChanged']
 
+      when(courseService.getCourseByOffering).calledWith(username, referral.offeringId).mockResolvedValue(course)
       when(referralService.getReferral).calledWith(username, referral.id).mockResolvedValue(referral)
 
       const requestHandler = controller.submit()
@@ -78,7 +83,9 @@ describe('UpdateLdcController', () => {
         hasLdcBeenOverriddenByProgrammeTeam: true,
       })
 
-      expect(response.redirect).toHaveBeenCalledWith(assessPaths.show.personalDetails({ referralId: referral.id }))
+      expect(response.redirect).toHaveBeenCalledWith(
+        assessPaths.caseList.show({ courseId: course.id, referralStatusGroup: 'open' }),
+      )
     })
 
     describe('when the ldcReason is not provided', () => {

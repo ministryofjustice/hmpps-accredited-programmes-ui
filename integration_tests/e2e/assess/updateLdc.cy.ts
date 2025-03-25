@@ -1,6 +1,12 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
-import { peopleSearchResponseFactory, personFactory, referralFactory } from '../../../server/testutils/factories'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  peopleSearchResponseFactory,
+  personFactory,
+  referralFactory,
+} from '../../../server/testutils/factories'
 import UpdateLdcPage from '../../pages/assess/updateLdc'
 import Page from '../../pages/page'
 
@@ -38,6 +44,10 @@ context('Updating a persons LDC status for a referral', () => {
     })
 
     it('should show the correct content and allow the form to be submitted', () => {
+      const course = courseFactory.build({
+        courseOfferings: [courseOfferingFactory.build({ id: referralWithLdc.offeringId })],
+      })
+
       const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
         person,
       })
@@ -47,10 +57,14 @@ context('Updating a persons LDC status for a referral', () => {
       updateLdcPage.shouldContainLink('Cancel', referralDetailsPath)
 
       updateLdcPage.selectCheckbox('ldcReason')
+      cy.task('stubCourseByOffering', { course, courseOfferingId: referralWithLdc.offeringId })
       cy.task('stubUpdateReferral', referralWithLdc.id)
       updateLdcPage.shouldContainButton('Submit').click()
 
-      cy.location('pathname').should('equal', assessPaths.show.personalDetails({ referralId: referralWithLdc.id }))
+      cy.location('pathname').should(
+        'equal',
+        assessPaths.caseList.show({ courseId: course.id, referralStatusGroup: 'open' }),
+      )
     })
 
     describe('when submitting without selecting a reason', () => {

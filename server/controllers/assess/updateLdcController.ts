@@ -1,11 +1,12 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPaths } from '../../paths'
-import type { PersonService, ReferralService } from '../../services'
+import type { CourseService, PersonService, ReferralService } from '../../services'
 import { FormUtils, TypeUtils } from '../../utils'
 
 export default class UpdateLdcController {
   constructor(
+    private readonly courseService: CourseService,
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
   ) {}
@@ -45,12 +46,15 @@ export default class UpdateLdcController {
 
       const referral = await this.referralService.getReferral(username, referralId)
 
-      await this.referralService.updateReferral(username, referralId, {
-        ...referral,
-        hasLdcBeenOverriddenByProgrammeTeam: true,
-      })
+      const [referralCourse] = await Promise.all([
+        this.courseService.getCourseByOffering(username, referral.offeringId),
+        this.referralService.updateReferral(username, referralId, {
+          ...referral,
+          hasLdcBeenOverriddenByProgrammeTeam: true,
+        }),
+      ])
 
-      return res.redirect(assessPaths.show.personalDetails({ referralId }))
+      return res.redirect(assessPaths.caseList.show({ courseId: referralCourse.id, referralStatusGroup: 'open' }))
     }
   }
 }
