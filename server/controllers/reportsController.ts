@@ -76,7 +76,11 @@ export default class ReportsController {
         .filter(Boolean)
         .join(' ')
 
+      const dataDisclaimer =
+        'Data collected through the Accredited Programmes service on DPS, which launched in May 2024.'
+
       res.render('reports/show', {
+        dataDisclaimer,
         errorMessages,
         filterFormAction: reportsPaths.filter({}),
         filterValues: { dateFrom, dateTo, location, period: periodQuery, region },
