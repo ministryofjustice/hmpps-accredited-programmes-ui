@@ -1,6 +1,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
@@ -29,6 +30,20 @@
       {% endif %}
     </div>
   </div>
+
+  {% if ldcStatusChangedMessage %}
+    {% set html %}
+    <h3 class="govuk-notification-banner__heading">LDC status changed</h3>
+    <p class="govuk-body">{{ ldcStatusChangedMessage }}</p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      attributes: { "data-testid": "ldc-status-changed-message" },
+      html: html,
+      titleText: "Success",
+      type: "success"
+    }) }}
+  {% endif %}
 
   <span class="govuk-caption-l">Referrals</span>
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>

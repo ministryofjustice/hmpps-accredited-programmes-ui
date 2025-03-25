@@ -40,7 +40,11 @@ const controllers = (services: Services) => {
     services.personService,
   )
 
-  const updateLdcController = new UpdateLdcController(services.personService, services.referralService)
+  const updateLdcController = new UpdateLdcController(
+    services.courseService,
+    services.personService,
+    services.referralService,
+  )
 
   return {
     assessCaseListController,

@@ -159,6 +159,7 @@ export default class AssessCaseListController {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         /** INFO: This is more recently presented as 'Strands' in UI mock ups */
         audienceSelectItems,
+        ldcStatusChangedMessage: req.flash('ldcStatusChangedMessage')[0],
         nameOrId,
         pageHeading: selectedCourse.name,
         pageTitleOverride: `Manage ${referralStatusGroup} programme team referrals: ${selectedCourse.name}`,

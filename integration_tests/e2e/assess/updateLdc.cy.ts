@@ -19,6 +19,7 @@ context('Updating a persons LDC status for a referral', () => {
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
     cy.signIn()
 
     cy.task('stubPrisoner', prisoner)
@@ -37,9 +38,10 @@ context('Updating a persons LDC status for a referral', () => {
       cy.visit(assessPaths.updateLdc.show({ referralId: referralWithLdc.id }))
     })
 
-    it('should show the correct content and allow the form to be submitted', () => {
+    it('should show the correct content, allow the form to be submitted and show success message', () => {
       const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
         person,
+        referral: referralWithLdc,
       })
       updateLdcPage.shouldHavePersonDetails(person)
       updateLdcPage.shouldContainBackLink(referralDetailsPath)
@@ -47,16 +49,14 @@ context('Updating a persons LDC status for a referral', () => {
       updateLdcPage.shouldContainLink('Cancel', referralDetailsPath)
 
       updateLdcPage.selectCheckbox('ldcReason')
-      cy.task('stubUpdateReferral', referralWithLdc.id)
-      updateLdcPage.shouldContainButton('Submit').click()
-
-      cy.location('pathname').should('equal', assessPaths.show.personalDetails({ referralId: referralWithLdc.id }))
+      updateLdcPage.shouldUpdateLdcSuccessfully()
     })
 
     describe('when submitting without selecting a reason', () => {
       it('should show an error message', () => {
         const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
           person,
+          referral: referralWithLdc,
         })
         updateLdcPage.shouldContainButton('Submit').click()
         updateLdcPage.shouldHaveErrors([
@@ -83,6 +83,7 @@ context('Updating a persons LDC status for a referral', () => {
 
       const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
         person,
+        referral: referralWithoutLdc,
       })
       updateLdcPage.shouldHavePersonDetails(person)
       updateLdcPage.shouldContainBackLink(referralDetailsPath)

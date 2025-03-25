@@ -56,7 +56,7 @@ describe('AssessCaseListController', () => {
   beforeEach(() => {
     controller = new AssessCaseListController(courseService, referralService, referenceDataService)
 
-    request = createMock<Request>({ originalUrl, user: { username } })
+    request = createMock<Request>({ flash: jest.fn().mockReturnValue([]), originalUrl, user: { username } })
     response = createMock<Response>({ locals: { user: { activeCaseLoadId, username } } })
   })
 
@@ -328,14 +328,16 @@ describe('AssessCaseListController', () => {
         expect(CaseListUtils.tableRows).toHaveBeenCalledWith(openPaginatedReferralViews.content, columnsToInclude)
       })
 
-      describe('when there are query parameters', () => {
+      describe('when there are query parameters and flash messages', () => {
         it('renders the show template with the correct response locals', async () => {
+          const ldcStatusChangedMessage = 'LDC updated message'
           const uiAudienceQueryParam = 'general offence'
           const uiNameOrIdQueryParam = 'Hatton'
           const uiSortColumnQueryParam = 'surname'
           const uiSortDirectionQueryParam = 'ascending'
           const uiStatusQueryParam = 'REFERRAL_SUBMITTED'
 
+          request.flash = jest.fn().mockReturnValue([ldcStatusChangedMessage])
           request.query = {
             nameOrId: uiNameOrIdQueryParam,
             sortColumn: uiSortColumnQueryParam,
@@ -354,6 +356,7 @@ describe('AssessCaseListController', () => {
           expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
             action: assessPaths.caseList.filter({ courseId: limeCourse.id, referralStatusGroup }),
             audienceSelectItems: CaseListUtils.audienceSelectItems(limeCourseAudiences, false, 'general offence'),
+            ldcStatusChangedMessage,
             nameOrId: uiNameOrIdQueryParam,
             pageHeading: 'Lime Course',
             pageTitleOverride: 'Manage open programme team referrals: Lime Course',
