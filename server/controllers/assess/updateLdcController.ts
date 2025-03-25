@@ -46,13 +46,19 @@ export default class UpdateLdcController {
 
       const referral = await this.referralService.getReferral(username, referralId)
 
-      const [referralCourse] = await Promise.all([
+      const [referralCourse, person] = await Promise.all([
         this.courseService.getCourseByOffering(username, referral.offeringId),
+        this.personService.getPerson(username, referral.prisonNumber),
         this.referralService.updateReferral(username, referralId, {
           ...referral,
           hasLdcBeenOverriddenByProgrammeTeam: true,
         }),
       ])
+
+      req.flash(
+        'ldcStatusChangedMessage',
+        `Update: ${person.name} may ${referral.hasLdc ? 'not ' : ''}need an LDC-adapted programme`,
+      )
 
       return res.redirect(assessPaths.caseList.show({ courseId: referralCourse.id, referralStatusGroup: 'open' }))
     }

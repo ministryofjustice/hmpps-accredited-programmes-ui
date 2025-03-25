@@ -9,7 +9,6 @@ import type { CourseService, PersonService, ReferralService } from '../../servic
 import { courseFactory, courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils } from '../../utils'
-import type { Referral } from '@accredited-programmes-api'
 
 jest.mock('../../utils/formUtils')
 
@@ -25,13 +24,18 @@ describe('UpdateLdcController', () => {
   const referralService = createMock<ReferralService>({})
 
   const person = personFactory.build()
-
-  let referral: Referral
+  const courseOffering = courseOfferingFactory.build({})
+  const course = courseFactory.build({ courseOfferings: [courseOffering] })
+  const referral = referralFactory
+    .submitted()
+    .build({ hasLdc: true, offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
 
   let controller: UpdateLdcController
 
   beforeEach(() => {
-    referral = referralFactory.submitted().build({ hasLdc: true, prisonNumber: person.prisonNumber })
+    when(courseService.getCourseByOffering).calledWith(username, referral.offeringId).mockResolvedValue(course)
+    when(personService.getPerson).calledWith(username, referral.prisonNumber).mockResolvedValue(person)
+    when(referralService.getReferral).calledWith(username, referral.id).mockResolvedValue(referral)
 
     controller = new UpdateLdcController(courseService, personService, referralService)
 
@@ -49,9 +53,6 @@ describe('UpdateLdcController', () => {
 
   describe('show', () => {
     it('should render the show page with the correct response locals', async () => {
-      when(personService.getPerson).calledWith(username, referral.prisonNumber).mockResolvedValue(person)
-      when(referralService.getReferral).calledWith(username, referral.id).mockResolvedValue(referral)
-
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
@@ -66,26 +67,43 @@ describe('UpdateLdcController', () => {
   })
 
   describe('submit', () => {
-    it('should update the referral with hasLdcBeenOverriddenByProgrammeTeam and redirect to the case list for the referrals course', async () => {
-      const courseOffering = courseOfferingFactory.build({ id: referral.offeringId })
-      const course = courseFactory.build({ courseOfferings: [courseOffering] })
-
-      request.body.ldcReason = ['afcrSuggestion', 'scoresChanged']
-
-      when(courseService.getCourseByOffering).calledWith(username, referral.offeringId).mockResolvedValue(course)
-      when(referralService.getReferral).calledWith(username, referral.id).mockResolvedValue(referral)
-
-      const requestHandler = controller.submit()
-      await requestHandler(request, response, next)
-
-      expect(referralService.updateReferral).toHaveBeenCalledWith(username, referral.id, {
-        ...referral,
-        hasLdcBeenOverriddenByProgrammeTeam: true,
+    describe('when the ldcReason is provided', () => {
+      beforeEach(() => {
+        request.body.ldcReason = ['afcrSuggestion', 'scoresChanged']
       })
 
-      expect(response.redirect).toHaveBeenCalledWith(
-        assessPaths.caseList.show({ courseId: course.id, referralStatusGroup: 'open' }),
-      )
+      it('should update the referral with hasLdcBeenOverriddenByProgrammeTeam and redirect to the case list for the referrals course', async () => {
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(referralService.updateReferral).toHaveBeenCalledWith(username, referral.id, {
+          ...referral,
+          hasLdcBeenOverriddenByProgrammeTeam: true,
+        })
+        expect(request.flash).toHaveBeenCalledWith(
+          'ldcStatusChangedMessage',
+          `Update: ${person.name} may not need an LDC-adapted programme`,
+        )
+        expect(response.redirect).toHaveBeenCalledWith(
+          assessPaths.caseList.show({ courseId: course.id, referralStatusGroup: 'open' }),
+        )
+      })
+
+      describe('when the referral hasLdc set to false', () => {
+        it('should set the ldcStatusChangedMessage correctly', async () => {
+          referral.hasLdc = false
+
+          when(referralService.getReferral).calledWith(username, referral.id).mockResolvedValue(referral)
+
+          const requestHandler = controller.submit()
+          await requestHandler(request, response, next)
+
+          expect(request.flash).toHaveBeenCalledWith(
+            'ldcStatusChangedMessage',
+            `Update: ${person.name} may need an LDC-adapted programme`,
+          )
+        })
+      })
     })
 
     describe('when the ldcReason is not provided', () => {

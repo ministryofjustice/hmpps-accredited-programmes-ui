@@ -1,12 +1,6 @@
 import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
-import {
-  courseFactory,
-  courseOfferingFactory,
-  peopleSearchResponseFactory,
-  personFactory,
-  referralFactory,
-} from '../../../server/testutils/factories'
+import { peopleSearchResponseFactory, personFactory, referralFactory } from '../../../server/testutils/factories'
 import UpdateLdcPage from '../../pages/assess/updateLdc'
 import Page from '../../pages/page'
 
@@ -25,6 +19,7 @@ context('Updating a persons LDC status for a referral', () => {
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
     cy.signIn()
 
     cy.task('stubPrisoner', prisoner)
@@ -43,13 +38,10 @@ context('Updating a persons LDC status for a referral', () => {
       cy.visit(assessPaths.updateLdc.show({ referralId: referralWithLdc.id }))
     })
 
-    it('should show the correct content and allow the form to be submitted', () => {
-      const course = courseFactory.build({
-        courseOfferings: [courseOfferingFactory.build({ id: referralWithLdc.offeringId })],
-      })
-
+    it('should show the correct content, allow the form to be submitted and show success message', () => {
       const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
         person,
+        referral: referralWithLdc,
       })
       updateLdcPage.shouldHavePersonDetails(person)
       updateLdcPage.shouldContainBackLink(referralDetailsPath)
@@ -57,20 +49,14 @@ context('Updating a persons LDC status for a referral', () => {
       updateLdcPage.shouldContainLink('Cancel', referralDetailsPath)
 
       updateLdcPage.selectCheckbox('ldcReason')
-      cy.task('stubCourseByOffering', { course, courseOfferingId: referralWithLdc.offeringId })
-      cy.task('stubUpdateReferral', referralWithLdc.id)
-      updateLdcPage.shouldContainButton('Submit').click()
-
-      cy.location('pathname').should(
-        'equal',
-        assessPaths.caseList.show({ courseId: course.id, referralStatusGroup: 'open' }),
-      )
+      updateLdcPage.shouldUpdateLdcSuccessfully()
     })
 
     describe('when submitting without selecting a reason', () => {
       it('should show an error message', () => {
         const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
           person,
+          referral: referralWithLdc,
         })
         updateLdcPage.shouldContainButton('Submit').click()
         updateLdcPage.shouldHaveErrors([
@@ -97,6 +83,7 @@ context('Updating a persons LDC status for a referral', () => {
 
       const updateLdcPage = Page.verifyOnPage(UpdateLdcPage, {
         person,
+        referral: referralWithoutLdc,
       })
       updateLdcPage.shouldHavePersonDetails(person)
       updateLdcPage.shouldContainBackLink(referralDetailsPath)
