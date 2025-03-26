@@ -41,6 +41,11 @@ export interface ReferralUpdate {
    */
   overrideReason?: string
   /**
+   * Flag to indicate if the person has a Learning Difficulty Challenges
+   * @example true
+   */
+  hasLdc?: boolean
+  /**
    * Flag to indicate if the ldc field was overriden by the programme team
    * @example true
    */
@@ -331,13 +336,12 @@ export interface ReferralEntity {
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
   status: string
-  /** @example "2025-03-17T09:12:19" */
+  /** @example "2025-03-26T13:53:14" */
   submittedOn?: any
   deleted: boolean
   primaryPomStaffId?: number
   secondaryPomStaffId?: number
   overrideReason?: string
-  transferReason?: string
   /** @format uuid */
   originalReferralId?: string
   hasLdc?: boolean
@@ -421,11 +425,6 @@ export interface Referral {
    * @example "The reason for going with the recommended course is..."
    */
   overrideReason?: string
-  /**
-   * Reason for transfer to building choices
-   * @example "The reason for transfer to building choices is..."
-   */
-  transferReason?: string
   /**
    * Referral ID of the original referral from which transfer was initiated
    * @format uuid

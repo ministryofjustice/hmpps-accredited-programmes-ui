@@ -51,6 +51,7 @@ export default class UpdateLdcController {
         this.personService.getPerson(username, referral.prisonNumber),
         this.referralService.updateReferral(username, referralId, {
           ...referral,
+          hasLdc: !referral.hasLdc,
           hasLdcBeenOverriddenByProgrammeTeam: true,
         }),
       ])

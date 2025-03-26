@@ -72,12 +72,13 @@ describe('UpdateLdcController', () => {
         request.body.ldcReason = ['afcrSuggestion', 'scoresChanged']
       })
 
-      it('should update the referral with hasLdcBeenOverriddenByProgrammeTeam and redirect to the case list for the referrals course', async () => {
+      it('should update the referral with the correct values and then redirect to the case list for the correct course', async () => {
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
         expect(referralService.updateReferral).toHaveBeenCalledWith(username, referral.id, {
           ...referral,
+          hasLdc: false,
           hasLdcBeenOverriddenByProgrammeTeam: true,
         })
         expect(request.flash).toHaveBeenCalledWith(
@@ -90,7 +91,7 @@ describe('UpdateLdcController', () => {
       })
 
       describe('when the referral hasLdc set to false', () => {
-        it('should set the ldcStatusChangedMessage correctly', async () => {
+        it('should update the referral with the correct values', async () => {
           referral.hasLdc = false
 
           when(referralService.getReferral).calledWith(username, referral.id).mockResolvedValue(referral)
@@ -98,6 +99,11 @@ describe('UpdateLdcController', () => {
           const requestHandler = controller.submit()
           await requestHandler(request, response, next)
 
+          expect(referralService.updateReferral).toHaveBeenCalledWith(username, referral.id, {
+            ...referral,
+            hasLdc: true,
+            hasLdcBeenOverriddenByProgrammeTeam: true,
+          })
           expect(request.flash).toHaveBeenCalledWith(
             'ldcStatusChangedMessage',
             `Update: ${person.name} may need an LDC-adapted programme`,
