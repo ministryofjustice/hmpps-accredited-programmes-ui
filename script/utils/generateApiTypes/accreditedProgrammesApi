@@ -3,4 +3,4 @@
 # script/generateApiTypes/accreditedProgrammesApi: Generate types for the Accredited Programmes API.
 #  
 
-npx swagger-typescript-api@13.0.23 -p https://accredited-programmes-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/accreditedProgrammesApi -n index.d.ts --no-client
+npx swagger-typescript-api generate -p https://accredited-programmes-api-dev.hmpps.service.justice.gov.uk/v3/api-docs -o server/@types/accreditedProgrammesApi -n index.d.ts --no-client
