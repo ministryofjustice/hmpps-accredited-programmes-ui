@@ -100,7 +100,7 @@ describe('CaseListUtils', () => {
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
     const sortColumnQueryParam = { key: 'sortColumn', value: 'conditionalReleaseDate' }
     const sortDirectionQueryParam = { key: 'sortDirection', value: 'ascending' }
-    const hasLdcQueryParams = { key: 'hasLdc', value: true }
+    const hasLdcQueryParams = { key: 'hasLdc', value: 'true' }
 
     describe('when all possible params are provided', () => {
       it('returns an array with one `QueryParam` for each, converting audience to "strand"', async () => {

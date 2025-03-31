@@ -32,7 +32,7 @@ export default class AssessCaseListController {
       return res.redirect(
         PathUtils.pathWithQuery(
           assessPaths.caseList.show({ courseId, referralStatusGroup }),
-          CaseListUtils.queryParamsExcludingPage(audience, status, undefined, undefined, nameOrId, hasLdc),
+          CaseListUtils.queryParamsExcludingPage(audience, status, undefined, undefined, nameOrId, hasLdc.toString()),
         ),
       )
     }
@@ -69,8 +69,7 @@ export default class AssessCaseListController {
         sortColumn,
         sortDirection,
       } = req.query as Record<string, string>
-      const hasLdc = hasLdcString === 'true'
-      const referralsFiltered = !!status || !!audience || !!nameOrId || !!hasLdc
+      const referralsFiltered = !!status || !!audience || !!nameOrId || !!hasLdcString
       const { referralStatusGroup } = req.params as { referralStatusGroup: ReferralStatusGroup }
 
       const statusGroups: Array<ReferralStatusGroup> = ['open', 'closed']
@@ -101,7 +100,7 @@ export default class AssessCaseListController {
               const referralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
                 audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
                 courseName: selectedCourse.name,
-                hasLdc,
+                hasLdcString,
                 nameOrId,
                 page: page ? (Number(page) - 1).toString() : undefined,
                 sortColumn,
@@ -152,7 +151,7 @@ export default class AssessCaseListController {
       const audienceSelectItems = CaseListUtils.audienceSelectItems(
         courseAudiences,
         CourseUtils.isBuildingChoices(selectedCourse.displayName),
-        audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdc) : undefined,
+        audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdcString === 'true') : undefined,
       )
 
       return res.render('referrals/caseList/assess/show', {

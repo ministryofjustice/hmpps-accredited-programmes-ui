@@ -272,7 +272,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         const result = await referralClient.findReferralViews('BWM', {
           audience: 'General offence',
           courseName: 'Super Course',
-          hasLdc: true,
+          hasLdcString: 'true',
           page: '1',
           status: 'REFERRAL_SUBMITTED',
         })

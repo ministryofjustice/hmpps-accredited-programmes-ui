@@ -115,7 +115,7 @@ describe('AssessCaseListController', () => {
         undefined,
         undefined,
         nameOrId,
-        true,
+        'true',
       )
       expect(PathUtils.pathWithQuery).toHaveBeenLastCalledWith(redirectPathBase, queryParamsExcludingPage)
       expect(response.redirect).toHaveBeenCalledWith(pathWithQuery)
@@ -278,7 +278,7 @@ describe('AssessCaseListController', () => {
         expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: undefined,
           courseName: 'Lime Course',
-          hasLdc: false,
+          hasLdcString: undefined,
           status: undefined,
           statusGroup: referralStatusGroup,
         })
@@ -336,9 +336,11 @@ describe('AssessCaseListController', () => {
           const uiSortColumnQueryParam = 'surname'
           const uiSortDirectionQueryParam = 'ascending'
           const uiStatusQueryParam = 'REFERRAL_SUBMITTED'
+          const uiHasLdcQueryParam = 'true'
 
           request.flash = jest.fn().mockReturnValue([ldcStatusChangedMessage])
           request.query = {
+            hasLdc: uiHasLdcQueryParam,
             nameOrId: uiNameOrIdQueryParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
@@ -376,7 +378,7 @@ describe('AssessCaseListController', () => {
           expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
             audience: apiAudienceQueryParam,
             courseName: 'Lime Course',
-            hasLdc: false,
+            hasLdcString: uiHasLdcQueryParam,
             nameOrId: uiNameOrIdQueryParam,
             sortColumn: uiSortColumnQueryParam,
             sortDirection: uiSortDirectionQueryParam,
@@ -474,7 +476,7 @@ describe('AssessCaseListController', () => {
         expect(referralService.getReferralViews).toHaveBeenCalledWith(username, activeCaseLoadId, {
           audience: undefined,
           courseName: 'Lime Course',
-          hasLdc: false,
+          hasLdcString: undefined,
           status: undefined,
           statusGroup: 'closed',
         })
