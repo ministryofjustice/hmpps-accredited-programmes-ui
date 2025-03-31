@@ -115,7 +115,7 @@ export default class ReferralClient {
     query?: {
       audience?: string
       courseName?: string
-      hasLdc?: boolean
+      hasLdcString?: string
       nameOrId?: string
       page?: string
       sortColumn?: string
@@ -135,7 +135,7 @@ export default class ReferralClient {
         ...(query?.sortDirection && { sortDirection: query.sortDirection }),
         ...(query?.status && { status: query.status }),
         ...(query?.statusGroup && { statusGroup: query.statusGroup }),
-        ...(query?.hasLdc && { hasLdc: 'true' }),
+        ...(query?.hasLdcString && { hasLdc: query.hasLdcString }),
         size: '15',
       },
     })) as Paginated<ReferralView>
