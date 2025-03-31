@@ -288,6 +288,7 @@ describe('AssessCaseListController', () => {
           undefined,
           undefined,
           undefined,
+          undefined,
         )
         expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
           request.path,
@@ -391,6 +392,7 @@ describe('AssessCaseListController', () => {
             uiSortColumnQueryParam,
             uiSortDirectionQueryParam,
             uiNameOrIdQueryParam,
+            uiHasLdcQueryParam,
           )
           expect(PaginationUtils.pagination).toHaveBeenLastCalledWith(
             request.path,
@@ -481,6 +483,7 @@ describe('AssessCaseListController', () => {
           statusGroup: 'closed',
         })
         expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
+          undefined,
           undefined,
           undefined,
           undefined,

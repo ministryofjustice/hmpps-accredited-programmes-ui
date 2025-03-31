@@ -192,6 +192,7 @@ describe('CaseListUtils', () => {
     const nameOrIdQueryParam = { key: 'nameOrId', value: 'hatton' }
     const statusQueryParam = { key: 'status', value: 'referral started' as ReferralStatus }
     const pageQueryParam = { key: 'page', value: '2' }
+    const hasLdcQueryParam = { key: 'hasLdc', value: 'true' }
 
     describe('when all possible params are provided', () => {
       it('returns an array with one `QueryParam` for each, converting audience to "strand"', async () => {
@@ -201,19 +202,21 @@ describe('CaseListUtils', () => {
             statusQueryParam.value,
             pageQueryParam.value,
             nameOrIdQueryParam.value,
+            hasLdcQueryParam.value,
           ),
         ).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
           { key: 'nameOrId', value: nameOrIdQueryParam.value },
           { key: 'status', value: statusQueryParam.value },
           { key: 'page', value: pageQueryParam.value },
+          { key: 'hasLdc', value: hasLdcQueryParam.value },
         ])
       })
     })
 
     describe('when only status is provided', () => {
       it('returns an array with a status `QueryParam`', async () => {
-        expect(CaseListUtils.queryParamsExcludingSort(undefined, statusQueryParam.value, undefined)).toEqual([
+        expect(CaseListUtils.queryParamsExcludingSort(undefined, statusQueryParam.value)).toEqual([
           { key: 'status', value: statusQueryParam.value },
         ])
       })
@@ -221,7 +224,7 @@ describe('CaseListUtils', () => {
 
     describe('when only strand is provided', () => {
       it('returns an array with a strand `QueryParam`, converted from "audience"', async () => {
-        expect(CaseListUtils.queryParamsExcludingSort(audienceQueryParam.value, undefined, undefined)).toEqual([
+        expect(CaseListUtils.queryParamsExcludingSort(audienceQueryParam.value)).toEqual([
           { key: 'strand', value: audienceQueryParam.value },
         ])
       })
@@ -235,9 +238,17 @@ describe('CaseListUtils', () => {
       })
     })
 
+    describe('when only hasLdc is provided', () => {
+      it('returns an array with a hasLdc `QueryParam`', async () => {
+        expect(
+          CaseListUtils.queryParamsExcludingSort(undefined, undefined, undefined, undefined, hasLdcQueryParam.value),
+        ).toEqual([{ key: 'hasLdc', value: hasLdcQueryParam.value }])
+      })
+    })
+
     describe('when all params are undefined', () => {
       it('returns an empty array', async () => {
-        expect(CaseListUtils.queryParamsExcludingSort(undefined, undefined, undefined)).toEqual([])
+        expect(CaseListUtils.queryParamsExcludingSort()).toEqual([])
       })
     })
   })

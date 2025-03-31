@@ -126,6 +126,7 @@ export default class CaseListUtils {
     status?: string,
     page?: string,
     nameOrId?: string,
+    hasLdcString?: string,
   ): Array<QueryParam> {
     const queryParams: Array<QueryParam> = []
 
@@ -143,6 +144,10 @@ export default class CaseListUtils {
 
     if (page) {
       queryParams.push({ key: 'page', value: page })
+    }
+
+    if (hasLdcString) {
+      queryParams.push({ key: 'hasLdc', value: hasLdcString })
     }
 
     return queryParams

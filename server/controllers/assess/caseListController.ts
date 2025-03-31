@@ -125,14 +125,14 @@ export default class AssessCaseListController {
 
       const pagination = PaginationUtils.pagination(
         req.path,
-        CaseListUtils.queryParamsExcludingPage(audience, status, sortColumn, sortDirection, nameOrId),
+        CaseListUtils.queryParamsExcludingPage(audience, status, sortColumn, sortDirection, nameOrId, hasLdcString),
         selectedReferralViews.pageNumber,
         selectedReferralViews.totalPages,
       )
 
       const basePathExcludingSort = PathUtils.pathWithQuery(
         assessPaths.caseList.show({ courseId, referralStatusGroup }),
-        CaseListUtils.queryParamsExcludingSort(audience, status, page, nameOrId),
+        CaseListUtils.queryParamsExcludingSort(audience, status, page, nameOrId, hasLdcString),
       )
 
       /* eslint-disable sort-keys */
@@ -177,7 +177,7 @@ export default class AssessCaseListController {
             closed: allReferralViews.closed.totalElements,
             open: allReferralViews.open.totalElements,
           },
-          CaseListUtils.queryParamsExcludingPage(audience, status, sortColumn, sortDirection, nameOrId),
+          CaseListUtils.queryParamsExcludingPage(audience, status, sortColumn, sortDirection, nameOrId, hasLdcString),
         ),
         tableHeadings: CaseListUtils.sortableTableHeadings(
           basePathExcludingSort,
