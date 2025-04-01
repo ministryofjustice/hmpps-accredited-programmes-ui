@@ -421,7 +421,6 @@ export default class RisksAndNeedsController {
         { currentPath: req.path, recentCaseListPath: req.session.recentCaseListPath },
         referral,
         statusTransitions,
-        course,
       ),
       hideTitleServiceName: true,
       navigationItems: ShowRisksAndNeedsUtils.navigationItems(req.path, referral.id),

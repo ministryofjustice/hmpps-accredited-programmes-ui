@@ -45,7 +45,6 @@ export default class StatusHistoryController {
           { currentPath: req.path, recentCaseListPath: req.session.recentCaseListPath },
           referral,
           statusTransitions,
-          course,
         ),
         hideTitleServiceName: true,
         pageHeading: `Referral to ${coursePresenter.displayName}`,

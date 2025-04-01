@@ -259,7 +259,6 @@ export default class ReferralsController {
         { currentPath: req.path, recentCaseListPath: req.session.recentCaseListPath },
         referral,
         statusTransitions,
-        course,
       ),
       course,
       courseOffering,

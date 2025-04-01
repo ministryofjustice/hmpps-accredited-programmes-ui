@@ -143,7 +143,6 @@ describe('StatusHistoryController', () => {
         { currentPath: request.path, recentCaseListPath },
         referral,
         statusTransitions,
-        course,
       )
       expect(mockShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(
         referralStatusHistory,
@@ -204,7 +203,6 @@ describe('StatusHistoryController', () => {
           { currentPath: request.path, recentCaseListPath },
           referral,
           undefined,
-          course,
         )
       })
     })

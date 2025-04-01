@@ -971,7 +971,6 @@ describe('RisksAndNeedsController', () => {
       { currentPath: path, recentCaseListPath },
       referral,
       isRefer ? statusTransitions : undefined,
-      course,
     )
     expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'risksAndNeeds', referral.id)
 

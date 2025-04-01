@@ -68,7 +68,6 @@ export default class PniController {
           { currentPath: req.path, recentCaseListPath: req.session.recentCaseListPath },
           referral,
           undefined,
-          course,
         ),
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Programme needs identifier',
