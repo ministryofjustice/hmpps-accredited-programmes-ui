@@ -528,7 +528,6 @@ describe('ReferralsController', () => {
       { currentPath: path, recentCaseListPath },
       referral,
       isRefer ? statusTransitions : undefined,
-      course,
     )
     expect(mockShowReferralUtils.viewReferralNavigationItems).toHaveBeenCalledWith(path, referral.id)
     expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'referral', referral.id)

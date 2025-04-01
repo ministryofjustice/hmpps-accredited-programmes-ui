@@ -60,8 +60,18 @@
 }
 
 .header-with-actions {
+  .govuk-button-group {
+    align-items: flex-start;
+    margin-bottom: govuk-spacing(3);
+
+    .moj-button-menu__toggle-button {
+      margin-bottom: 0;
+    }
+  }
+
   @include govuk-media-query($from: 1024px) {
     display: flex;
+    gap: govuk-spacing(3);
 
     .header-with-actions__title {
       flex: 1;
