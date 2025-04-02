@@ -85,31 +85,33 @@ export default class CourseUtils {
   }
 
   /**
-   * Combine the audience and hasLdc params into a single string, used in the CaseList page and caseListController
-   * to combine LDC and Strands (i.e. audience) into a single item a select.
+   * Combine the audience and hasLdc params, along with their value into a single string,
+   * used in the CaseList page and caseListControlle to combine LDC and Strands
+   * (i.e. audience) into a single item a select.
    * @param audienceName e.g. 'General violence'
    * @param hasLdc
    */
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  static encodeAudienceAndHasLdc(audienceName: string, hasLdc: boolean): string {
-    if (!hasLdc) {
+  static encodeAudienceAndHasLdc(audienceName: string, hasLdcString: string): string {
+    if (!hasLdcString) {
       return audienceName
     }
 
-    return `${audienceName}::hasLdc`
+    return `${audienceName}::hasLdc=${hasLdcString}`
   }
 
   /**
    * The sibling to `encodeAudienceAndHasLdc`
-   * @param encodedAudienceName e.g. 'General violence::hasLdc'
+   * @param encodedAudienceName e.g. 'General violence::hasLdc=true'
    */
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  static decodeAudienceAndHasLdc(encodedAudienceName: string): { audienceName: string; hasLdc: boolean } {
-    const [audienceNameFromSplit, hasLdcString] = encodedAudienceName.split('::')
+  static decodeAudienceAndHasLdc(encodedAudienceName: string): { audienceName: string; hasLdcString: string } {
+    const [audienceNameFromSplit, hasLdcValue] = encodedAudienceName.split('::')
+    const hasLdcString = hasLdcValue?.split('=')[1]
 
     return {
       audienceName: audienceNameFromSplit,
-      hasLdc: hasLdcString === 'hasLdc',
+      hasLdcString,
     }
   }
 

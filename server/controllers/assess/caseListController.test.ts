@@ -102,7 +102,7 @@ describe('AssessCaseListController', () => {
     })
 
     it('uses utils to generate a path to the show action with the request body converted to query params, then redirects there', async () => {
-      request.body.audience = 'General violence offence::hasLdc'
+      request.body.audience = 'General violence offence::hasLdc=true'
       request.body.nameOrId = nameOrId
       request.body.status = status
 

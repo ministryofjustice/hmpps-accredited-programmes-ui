@@ -237,7 +237,6 @@ context('Referral case lists', () => {
           [
             { key: 'strand', value: 'general offence' },
             { key: 'status', value: 'ASSESSMENT_STARTED' },
-            { key: 'hasLdc', value: 'false' },
           ],
         )
         filteredCaseListPage.shouldContainTableOfReferralViews(assessPaths)
