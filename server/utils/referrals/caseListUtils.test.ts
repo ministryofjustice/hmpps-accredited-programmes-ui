@@ -856,22 +856,22 @@ describe('CaseListUtils::audienceSelectItems', () => {
           {
             selected: false,
             text: 'General offence',
-            value: 'general offence',
+            value: 'general offence::hasLdc=false',
           },
           {
             selected: false,
             text: 'General offence: LDC Only',
-            value: 'general offence::hasLdc',
+            value: 'general offence::hasLdc=true',
           },
           {
             selected: false,
             text: 'Sexual offence',
-            value: 'sexual offence',
+            value: 'sexual offence::hasLdc=false',
           },
           {
             selected: false,
             text: 'Sexual offence: LDC Only',
-            value: 'sexual offence::hasLdc',
+            value: 'sexual offence::hasLdc=true',
           },
         ])
       })
@@ -879,12 +879,12 @@ describe('CaseListUtils::audienceSelectItems', () => {
 
     describe('when a selected value is provided', () => {
       it('makes a call to the `FormUtils.getSelectItems` method with the correct `selectedValue` parameter', () => {
-        const items = CaseListUtils.audienceSelectItems(buildingChoicesAudiences, true, 'general offence')
+        const items = CaseListUtils.audienceSelectItems(buildingChoicesAudiences, true, 'general offence::hasLdc=false')
         expect(items).toHaveLength(5)
         expect(items).toContainEqual({
           selected: true,
           text: 'General offence',
-          value: 'general offence',
+          value: 'general offence::hasLdc=false',
         })
       })
     })

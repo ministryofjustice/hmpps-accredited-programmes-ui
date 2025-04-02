@@ -43,11 +43,14 @@ export default class CaseListUtils {
         (acc, audienceName) => {
           const audienceNameLowerCase = audienceName.toLowerCase()
 
-          acc[audienceNameLowerCase] = audienceName
-
           if (addLdcStrandsForEachAudience) {
-            const encodedName = CourseUtils.encodeAudienceAndHasLdc(audienceNameLowerCase, true)
-            acc[encodedName] = `${audienceName}: LDC Only`
+            const withoutLdcEncodedName = CourseUtils.encodeAudienceAndHasLdc(audienceNameLowerCase, 'false')
+            const withLdcEncodedName = CourseUtils.encodeAudienceAndHasLdc(audienceNameLowerCase, 'true')
+
+            acc[withoutLdcEncodedName] = audienceName
+            acc[withLdcEncodedName] = `${audienceName}: LDC Only`
+          } else {
+            acc[audienceNameLowerCase] = audienceName
           }
 
           return acc

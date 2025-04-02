@@ -21,7 +21,8 @@ export default class AssessCaseListController {
       const { courseId, referralStatusGroup } = req.params
       const { nameOrId, status, audience: audiencePossiblyWithLdcSuffix } = req.body
 
-      const { audienceName: audience, hasLdc } = CourseUtils.decodeAudienceAndHasLdc(audiencePossiblyWithLdcSuffix)
+      const { audienceName: audience, hasLdcString } =
+        CourseUtils.decodeAudienceAndHasLdc(audiencePossiblyWithLdcSuffix)
 
       if (!audience && !status && !nameOrId) {
         req.flash('audienceError', 'Choose a filter')
@@ -32,7 +33,7 @@ export default class AssessCaseListController {
       return res.redirect(
         PathUtils.pathWithQuery(
           assessPaths.caseList.show({ courseId, referralStatusGroup }),
-          CaseListUtils.queryParamsExcludingPage(audience, status, undefined, undefined, nameOrId, hasLdc.toString()),
+          CaseListUtils.queryParamsExcludingPage(audience, status, undefined, undefined, nameOrId, hasLdcString),
         ),
       )
     }
@@ -151,7 +152,7 @@ export default class AssessCaseListController {
       const audienceSelectItems = CaseListUtils.audienceSelectItems(
         courseAudiences,
         CourseUtils.isBuildingChoices(selectedCourse.displayName),
-        audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdcString === 'true') : undefined,
+        audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdcString) : undefined,
       )
 
       return res.render('referrals/caseList/assess/show', {

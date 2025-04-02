@@ -210,30 +210,31 @@ describe('CourseUtils', () => {
   describe('audience and hasLdc encoding/decoding', () => {
     describe('encodeAudienceAndHasLdc', () => {
       it('should give just the audience name when does not have LDC', () => {
-        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', false)).toBe('General violence')
+        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', 'false')).toBe('General violence::hasLdc=false')
       })
 
       it('should append hasLdc when it does have LDC', () => {
-        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', true)).toBe('General violence::hasLdc')
+        expect(CourseUtils.encodeAudienceAndHasLdc('General violence', 'true')).toBe('General violence::hasLdc=true')
       })
     })
+
     describe('decodeAudienceAndHasLdc', () => {
       it('should identify when an audience name does not have LDC', () => {
         // When
-        const { audienceName, hasLdc } = CourseUtils.decodeAudienceAndHasLdc('General violence')
+        const { audienceName, hasLdcString } = CourseUtils.decodeAudienceAndHasLdc('General violence::hasLdc=false')
 
         // Then
         expect(audienceName).toBe('General violence')
-        expect(hasLdc).toBe(false)
+        expect(hasLdcString).toBe('false')
       })
 
       it('should identify when an audience does have LDC', () => {
         // When
-        const { audienceName, hasLdc } = CourseUtils.decodeAudienceAndHasLdc('General violence::hasLdc')
+        const { audienceName, hasLdcString } = CourseUtils.decodeAudienceAndHasLdc('General violence::hasLdc=true')
 
         // Then
         expect(audienceName).toBe('General violence')
-        expect(hasLdc).toBe(true)
+        expect(hasLdcString).toBe('true')
       })
     })
   })
