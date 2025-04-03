@@ -64,7 +64,7 @@ context('App', () => {
       cy.visit('/')
 
       const indexPage = Page.verifyOnPage(IndexPage)
-      indexPage.shouldNotContainLink('/find')
+      indexPage.shouldContainLink('Find a programme and make a referral', '/find')
       indexPage.shouldContainLink('Manage your programme team’s referrals', '/assess/referrals/case-list')
       indexPage.shouldContainLink('Reporting data', '/reports')
     })
@@ -77,7 +77,7 @@ context('App', () => {
       cy.visit('/')
 
       const indexPage = Page.verifyOnPage(IndexPage)
-      indexPage.shouldNotContainLink('/find')
+      indexPage.shouldContainLink('Find a programme and make a referral', '/find')
       indexPage.shouldNotContainLink('/refer/referrals/case-list')
       indexPage.shouldNotContainLink('/assess/referrals/case-list')
       indexPage.shouldContainLink('Reporting data', '/reports')
