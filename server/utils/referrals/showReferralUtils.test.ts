@@ -67,7 +67,7 @@ describe('ShowReferralUtils', () => {
         })
 
         describe('when the course is Building Choices', () => {
-          it.skip('should show the Update status and Change LDC status buttons in the menu', () => {
+          it('should show the Update status and Change LDC status buttons in the menu', () => {
             expect(
               ShowReferralUtils.buttonMenu(buildingChoicesCourse, submittedReferral, {
                 currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
