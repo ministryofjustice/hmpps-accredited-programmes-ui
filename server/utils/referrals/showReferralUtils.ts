@@ -44,7 +44,13 @@ export default class ShowReferralUtils {
       })
 
       if (status !== 'on_programme' && !closed) {
-        if (!isBuildingChoices) {
+        if (isBuildingChoices) {
+          menuButtons.push({
+            classes: 'govuk-button--secondary',
+            href: assessPaths.updateLdc.show({ referralId: referral.id }),
+            text: 'Change LDC status',
+          })
+        } else {
           menuButtons.push({
             classes: 'govuk-button--secondary',
             href: assessPaths.transfer.show({ referralId: referral.id }),
