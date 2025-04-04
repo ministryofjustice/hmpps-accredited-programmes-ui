@@ -14,6 +14,10 @@ export default class PersonSearchController {
       FormUtils.setFieldErrors(req, res, ['prisonNumber'])
 
       res.render('find/personSearch', {
+        hrefs: {
+          back: '/',
+          programmes: findPaths.index({}),
+        },
         pageHeading: 'Find recommended programmes',
       })
     }

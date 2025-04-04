@@ -2,36 +2,64 @@ import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddlew
 import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
 import { OrganisationUtils } from '../../server/utils'
-import AuthErrorPage from '../pages/authError'
-import { CourseOfferingPage, CoursePage, CoursesPage } from '../pages/find'
+import { CourseOfferingPage, CoursePage, CoursesPage, PersonSearchPage } from '../pages/find'
 import Page from '../pages/page'
 import type { CourseOffering } from '@accredited-programmes/models'
 
 context('Find', () => {
   const courses = courseFactory.buildList(4)
+  const targetCourse = courses[0]
+  const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
 
-  describe('When the user has neither the `ROLE_ACP_EDITOR` or `ROLE_ACP_REFERRER` roles', () => {
+  const prison = prisonFactory.build()
+  const organisation = OrganisationUtils.organisationFromPrison(prison)
+
+  const referableCourseOffering = courseOfferingFactory.build({
+    organisationEnabled: true,
+    organisationId: organisation.id,
+    referable: true,
+  })
+
+  describe('For a user without any roles used by our service', () => {
     beforeEach(() => {
       cy.task('reset')
       cy.task('stubSignIn', { authorities: [] })
       cy.task('stubAuthUser')
+      cy.task('stubDefaultCaseloads')
       cy.signIn()
+
+      cy.task('stubCourses', courses)
+      cy.task('stubCourse', targetCourse)
+      cy.task('stubOfferingsByCourse', { courseId: targetCourse.id, courseOfferings: [referableCourseOffering] })
+      cy.task('stubOffering', { courseOffering: referableCourseOffering })
+      cy.task('stubCourseByOffering', { course: targetCourse, courseOfferingId: referableCourseOffering.id })
+      cy.task('stubPrison', prison)
     })
 
-    it('shows the auth error page for a course', () => {
-      const path = findPaths.show({ courseId: courses[0].id })
-      cy.visit(path, { failOnStatusCode: false })
+    it('should allow the user to view all courses, individual courses and course offerings but not make a referral', () => {
+      cy.visit(findPaths.pniFind.personSearch({}))
 
-      const authErrorPage = Page.verifyOnPage(AuthErrorPage)
-      authErrorPage.shouldContainAuthErrorMessage()
-    })
+      const personSearchPage = Page.verifyOnPage(PersonSearchPage)
+      personSearchPage.shouldContainLink('See a list of all programmes', findPaths.index({})).click()
 
-    it('shows the auth error page for an offering', () => {
-      const path = findPaths.offerings.show({ courseOfferingId: 'course-offering-id' })
-      cy.visit(path, { failOnStatusCode: false })
+      const coursesPage = Page.verifyOnPage(CoursesPage)
+      coursesPage.shouldHaveCourses(sortedCourses)
+      personSearchPage.shouldContainLink(targetCourse.name, findPaths.show({ courseId: targetCourse.id })).click()
 
-      const authErrorPage = Page.verifyOnPage(AuthErrorPage)
-      authErrorPage.shouldContainAuthErrorMessage()
+      const coursePage = Page.verifyOnPage(CoursePage, targetCourse)
+      coursePage
+        .shouldContainLink(
+          prison.prisonName,
+          findPaths.offerings.show({ courseOfferingId: referableCourseOffering.id }),
+        )
+        .click()
+
+      const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
+        course: targetCourse,
+        courseOffering: referableCourseOffering,
+        organisation,
+      })
+      courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
     })
   })
 
@@ -42,16 +70,13 @@ context('Find', () => {
       cy.task('stubAuthUser')
       cy.task('stubDefaultCaseloads')
       cy.signIn()
+
+      cy.task('stubCourses', courses)
     })
 
     describe('when viewing all programmes', () => {
       it('shows a list of all programmes along with an "Add a new programme" button', () => {
-        cy.task('stubCourses', courses)
-
-        const path = findPaths.index({})
-        cy.visit(path)
-
-        const sortedCourses = [...courses].sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
+        cy.visit(findPaths.index({}))
 
         const coursesPage = Page.verifyOnPage(CoursesPage)
         coursesPage.shouldContainHomeLink()
@@ -61,31 +86,29 @@ context('Find', () => {
     })
 
     describe('when viewing an individual programme', () => {
-      it('shows the "Add a new location" and "Update programme" links', () => {
-        cy.task('stubCourse', courses[0])
+      beforeEach(() => {
+        cy.task('stubCourse', targetCourse)
+      })
 
+      it('shows the "Add a new location" and "Update programme" links', () => {
         const courseOfferings: Array<CourseOffering> = []
 
-        cy.task('stubOfferingsByCourse', { courseId: courses[0].id, courseOfferings })
+        cy.task('stubOfferingsByCourse', { courseId: targetCourse.id, courseOfferings })
 
-        const path = findPaths.show({ courseId: courses[0].id })
-        cy.visit(path)
+        cy.visit(findPaths.show({ courseId: targetCourse.id }))
 
-        const coursePage = Page.verifyOnPage(CoursePage, courses[0])
+        const coursePage = Page.verifyOnPage(CoursePage, targetCourse)
         coursePage.shouldContainUpdateProgrammeLink()
         coursePage.shouldContainAddCourseOfferingLink()
       })
 
       describe('when there are no offerings', () => {
         it('shows a message that there are no offerings', () => {
-          cy.task('stubCourse', courses[0])
+          cy.task('stubOfferingsByCourse', { courseId: targetCourse.id, courseOfferings: [] })
 
-          cy.task('stubOfferingsByCourse', { courseId: courses[0].id, courseOfferings: [] })
+          cy.visit(findPaths.show({ courseId: targetCourse.id }))
 
-          const path = findPaths.show({ courseId: courses[0].id })
-          cy.visit(path)
-
-          const coursePage = Page.verifyOnPage(CoursePage, courses[0])
+          const coursePage = Page.verifyOnPage(CoursePage, targetCourse)
           coursePage.shouldContainBackLink(findPaths.index({}))
           coursePage.shouldContainHomeLink()
           coursePage.shouldHaveCourse()
@@ -96,20 +119,15 @@ context('Find', () => {
 
     describe('when viewing an individual offering', () => {
       it('shows contain update and delete buttons ', () => {
-        const courseOffering = courseOfferingFactory.build({ referable: true })
-        cy.task('stubOffering', { courseOffering })
-        cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
-
-        const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-        const organisation = OrganisationUtils.organisationFromPrison(prison)
+        cy.task('stubOffering', { courseOffering: referableCourseOffering })
+        cy.task('stubCourseByOffering', { course: targetCourse, courseOfferingId: referableCourseOffering.id })
         cy.task('stubPrison', prison)
 
-        const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
-        cy.visit(path)
+        cy.visit(findPaths.offerings.show({ courseOfferingId: referableCourseOffering.id }))
 
         const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-          course: courses[0],
-          courseOffering,
+          course: targetCourse,
+          courseOffering: referableCourseOffering,
           organisation,
         })
         courseOfferingPage.shouldContainUpdateCourseOfferingLink()
@@ -117,25 +135,23 @@ context('Find', () => {
       })
 
       it('shows a single offering with no secondary email address', () => {
-        const courseOffering = courseOfferingFactory.build({
+        const courseOffering = {
+          ...referableCourseOffering,
           secondaryContactEmail: undefined,
-        })
-        cy.task('stubOffering', { courseOffering })
-        cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
+        }
 
-        const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-        const organisation = OrganisationUtils.organisationFromPrison(prison)
+        cy.task('stubOffering', { courseOffering })
+        cy.task('stubCourseByOffering', { course: targetCourse, courseOfferingId: courseOffering.id })
         cy.task('stubPrison', prison)
 
-        const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
-        cy.visit(path)
+        cy.visit(findPaths.offerings.show({ courseOfferingId: courseOffering.id }))
 
         const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-          course: courses[0],
+          course: targetCourse,
           courseOffering,
           organisation,
         })
-        courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
+        courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: targetCourse.id }))
         courseOfferingPage.shouldContainHomeLink()
         courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)
         courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
@@ -144,25 +160,23 @@ context('Find', () => {
       })
 
       it('shows a single offering with a secondary email address', () => {
-        const courseOffering = courseOfferingFactory.build({
+        const courseOffering = {
+          ...referableCourseOffering,
           secondaryContactEmail: 'secondary-contact@nowhere.com',
-        })
-        cy.task('stubOffering', { courseOffering })
-        cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
+        }
 
-        const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-        const organisation = OrganisationUtils.organisationFromPrison(prison)
+        cy.task('stubOffering', { courseOffering })
+        cy.task('stubCourseByOffering', { course: targetCourse, courseOfferingId: courseOffering.id })
         cy.task('stubPrison', prison)
 
-        const path = findPaths.offerings.show({ courseOfferingId: courseOffering.id })
-        cy.visit(path)
+        cy.visit(findPaths.offerings.show({ courseOfferingId: courseOffering.id }))
 
         const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-          course: courses[0],
+          course: targetCourse,
           courseOffering,
           organisation,
         })
-        courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: courses[0].id }))
+        courseOfferingPage.shouldContainBackLink(findPaths.show({ courseId: targetCourse.id }))
         courseOfferingPage.shouldContainHomeLink()
         courseOfferingPage.shouldContainAudienceTag(courseOfferingPage.course.audienceTag)
         courseOfferingPage.shouldHaveOrganisationWithOfferingEmails()
@@ -172,12 +186,7 @@ context('Find', () => {
   })
 
   describe('For a user with the `ROLE_ACP_REFERRER` role but not within the PNI Find journey', () => {
-    const courseOfferingId = '00a718c8-6c3d-40b4-a6f0-728ff3bb71de'
-    const organisationId = 'MMM'
-    const course = courseFactory.build()
-    const prison = prisonFactory.build({ prisonId: organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison(prison)
-    const path = findPaths.offerings.show({ courseOfferingId })
+    const path = findPaths.offerings.show({ courseOfferingId: referableCourseOffering.id })
 
     beforeEach(() => {
       cy.task('reset')
@@ -187,25 +196,19 @@ context('Find', () => {
       cy.signIn()
 
       cy.task('stubPrison', prison)
-      cy.task('stubCourseByOffering', { course, courseOfferingId })
+      cy.task('stubCourseByOffering', { course: targetCourse, courseOfferingId: referableCourseOffering.id })
     })
 
     describe('and a referable course offering', () => {
       describe('and in an organisation where refer IS enabled', () => {
         it('does not show the "Make a referral" button on an offering', () => {
-          const courseOffering = courseOfferingFactory.build({
-            id: courseOfferingId,
-            organisationEnabled: true,
-            organisationId,
-            referable: true,
-          })
-          cy.task('stubOffering', { courseOffering })
+          cy.task('stubOffering', { courseOffering: referableCourseOffering })
 
           cy.visit(path)
 
           const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-            course,
-            courseOffering,
+            course: targetCourse,
+            courseOffering: referableCourseOffering,
             organisation,
           })
           courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
@@ -216,18 +219,17 @@ context('Find', () => {
 
       describe('and in an organisation where refer IS NOT enabled', () => {
         it('does not show the "Make a referral" button on an offering', () => {
-          const courseOffering = courseOfferingFactory.build({
-            id: courseOfferingId,
+          const courseOffering = {
+            ...referableCourseOffering,
             organisationEnabled: false,
-            organisationId,
-            referable: true,
-          })
+          }
+
           cy.task('stubOffering', { courseOffering })
 
           cy.visit(path)
 
           const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-            course,
+            course: targetCourse,
             courseOffering,
             organisation,
           })
@@ -240,18 +242,18 @@ context('Find', () => {
 
     describe('and a non-referable course offering', () => {
       it('does not show the "Make a referral" button on an offering', () => {
-        const nonReferableCourseOffering = courseOfferingFactory.build({
-          id: courseOfferingId,
-          organisationId,
+        const courseOffering = {
+          ...referableCourseOffering,
           referable: false,
-        })
-        cy.task('stubOffering', { courseOffering: nonReferableCourseOffering })
+        }
+
+        cy.task('stubOffering', { courseOffering })
 
         cy.visit(path)
 
         const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-          course,
-          courseOffering: nonReferableCourseOffering,
+          course: targetCourse,
+          courseOffering,
           organisation,
         })
         courseOfferingPage.shouldNotContainMakeAReferralButtonLink()

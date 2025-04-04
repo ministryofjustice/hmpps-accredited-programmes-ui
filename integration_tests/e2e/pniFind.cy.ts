@@ -46,6 +46,7 @@ context('Find programmes based on PNI Pathway', () => {
       const personSearchPage = Page.verifyOnPage(PersonSearchPage)
       personSearchPage.shouldContainPersonSearchInput()
       personSearchPage.shouldContainButton('Continue')
+      personSearchPage.shouldContainLink('See a list of all programmes', findPaths.index({}))
     })
 
     describe('When submitting without a prison number', () => {

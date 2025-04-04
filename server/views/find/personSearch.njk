@@ -8,7 +8,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: "/"
+    href: hrefs.back
   }) }}
 {% endblock backLink %}
 
@@ -44,6 +44,8 @@
           text: "Continue"
         }) }}
       </form>
+
+      <a class="govuk-link" href="{{ hrefs.programmes }}">See a list of all programmes</a>
     </div>
   </div>
 {% endblock content %}
