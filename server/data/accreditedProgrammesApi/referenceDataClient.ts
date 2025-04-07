@@ -5,11 +5,10 @@ import RestClient from '../restClient'
 import type {
   ReferralStatus,
   ReferralStatusCategory,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUppercase,
 } from '@accredited-programmes/models'
-import type { EnabledOrganisation } from '@accredited-programmes-api'
+import type { EnabledOrganisation, ReferralStatusReason } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferenceDataClient {

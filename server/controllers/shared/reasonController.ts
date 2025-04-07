@@ -113,7 +113,7 @@ export default class ReasonController {
         decisionForCategoryAndReason as 'DESELECTED' | 'WITHDRAWN',
       )
 
-      let categoryCode = reasons.find(reason => reason.code === reasonCode)?.referralCategoryCode
+      let categoryCode = reasons.find(reason => reason.code === reasonCode)?.referralCategoryCode as Uppercase<string>
 
       if (reasonCode === 'OTHER') {
         categoryCode = decisionForCategoryAndReason === 'DESELECTED' ? 'D_OTHER' : 'W_OTHER'
