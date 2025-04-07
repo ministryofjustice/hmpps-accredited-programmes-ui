@@ -45,12 +45,6 @@ type ReferralStatusCategory = {
 
 type ReferralStatusGroup = (typeof referralStatusGroups)[number]
 
-type ReferralStatusReason = {
-  code: Uppercase<string>
-  description: string
-  referralCategoryCode: Uppercase<string>
-}
-
 type ReferralStatusUpdate = {
   status: ReferralStatus | ReferralStatusUppercase
   category?: Uppercase<string>
@@ -109,7 +103,6 @@ export type {
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,

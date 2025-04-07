@@ -2,11 +2,10 @@ import type { HmppsAuthClient, ReferenceDataClient, RestClientBuilder, RestClien
 import type {
   ReferralStatus,
   ReferralStatusCategory,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUppercase,
 } from '@accredited-programmes/models'
-import type { EnabledOrganisation } from '@accredited-programmes-api'
+import type { EnabledOrganisation, ReferralStatusReason } from '@accredited-programmes-api'
 
 export default class ReferenceDataService {
   constructor(
