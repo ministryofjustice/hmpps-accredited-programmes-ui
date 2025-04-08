@@ -27,14 +27,12 @@ describe('NewReferralsAdditionalInformationController', () => {
   const referralId = 'A-REFERRAL-ID'
   const draftReferral = referralFactory.started().build({
     id: referralId, // eslint-disable-next-line sort-keys
-    additionalInformation: undefined,
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
     referrerUsername: username,
   })
   const submittedReferral = referralFactory.submitted().build({
     id: referralId, // eslint-disable-next-line sort-keys
-    additionalInformation: undefined,
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
     referrerUsername: username,
@@ -103,94 +101,97 @@ describe('NewReferralsAdditionalInformationController', () => {
         expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
       })
     })
-  })
 
-  describe('update', () => {
-    describe('when there is value for `additionalInformation`', () => {
-      beforeEach(() => {
-        referralService.getReferral.mockResolvedValue(draftReferral)
-        request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
-      })
-
-      it('ask the service to update the referral and redirects to the referral show action', async () => {
-        const requestHandler = controller.update()
-        await requestHandler(request, response, next)
-
-        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
-          additionalInformation: 'Some additional information\nAnother paragraph',
-          hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
-          oasysConfirmed: draftReferral.oasysConfirmed,
+    describe('skip', () => {
+      describe('when the skip this step is called', () => {
+        beforeEach(() => {
+          referralService.getReferral.mockResolvedValue(draftReferral)
         })
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
-      })
-
-      describe('when `req.session.returnTo` is `check-answers`', () => {
-        it('redirects to the check answers page with #additionalInformation', async () => {
-          request.session.returnTo = 'check-answers'
-
+        it('redirects to the referral show action', async () => {
+          delete draftReferral.additionalInformation
+          referralService.getReferral.mockResolvedValue(draftReferral)
+          request.body.skip = 'true'
           const requestHandler = controller.update()
           await requestHandler(request, response, next)
 
-          expect(response.redirect).toHaveBeenCalledWith(
-            `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
-          )
+          expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+          expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+            additionalInformation: undefined,
+            hasReviewedAdditionalInformation: true,
+            hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+            oasysConfirmed: draftReferral.oasysConfirmed,
+          })
+          expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
         })
       })
     })
 
-    describe('when the referral has been submitted', () => {
-      it('redirects to the referral confirmation action', async () => {
-        referralService.getReferral.mockResolvedValue(submittedReferral)
+    describe('update', () => {
+      describe('when a value is provided for `additionalInformation`', () => {
+        beforeEach(() => {
+          referralService.getReferral.mockResolvedValue(draftReferral)
+          request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
+        })
 
-        const requestHandler = controller.update()
-        await requestHandler(request, response, next)
+        it('ask the service to update the referral and redirects to the referral show action', async () => {
+          const requestHandler = controller.update()
+          await requestHandler(request, response, next)
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.complete({ referralId }))
+          expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+          expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+            additionalInformation: 'Some additional information\nAnother paragraph',
+            hasReviewedAdditionalInformation: true,
+            hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+            oasysConfirmed: draftReferral.oasysConfirmed,
+          })
+          expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+        })
+
+        describe('when `req.session.returnTo` is `check-answers`', () => {
+          it('redirects to the check answers page with #additionalInformation', async () => {
+            request.session.returnTo = 'check-answers'
+
+            const requestHandler = controller.update()
+            await requestHandler(request, response, next)
+
+            expect(response.redirect).toHaveBeenCalledWith(
+              `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
+            )
+          })
+        })
       })
-    })
 
-    describe('when the logged in user is not the referrer', () => {
-      it('redirects to the auth error page', async () => {
-        TypeUtils.assertHasUser(request)
+      describe('when a value is not provided for `additionalInformation`', () => {
+        beforeEach(() => {
+          referralService.getReferral.mockResolvedValue(draftReferral)
+        })
 
-        request.user.username = otherUsername
+        it('ask the service to update the referral and redirects to the referral show action', async () => {
+          const requestHandler = controller.update()
+          await requestHandler(request, response, next)
 
-        referralService.getReferral.mockResolvedValue(draftReferral)
+          expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+          expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+            additionalInformation: null,
+            hasReviewedAdditionalInformation: false,
+            hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+            oasysConfirmed: draftReferral.oasysConfirmed,
+          })
+          expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+        })
 
-        const requestHandler = controller.update()
-        await requestHandler(request, response, next)
+        describe('when `req.session.returnTo` is `check-answers`', () => {
+          it('redirects to the check answers page with #additionalInformation', async () => {
+            request.session.returnTo = 'check-answers'
 
-        expect(referralService.getReferral).toHaveBeenCalledWith(otherUsername, referralId)
-        expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
-      })
-    })
+            const requestHandler = controller.update()
+            await requestHandler(request, response, next)
 
-    describe('when additional information is not provided', () => {
-      it('redirects to the additional information show action with an error', async () => {
-        referralService.getReferral.mockResolvedValue(draftReferral)
-
-        const requestHandler = controller.update()
-        await requestHandler(request, response, next)
-
-        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
-        expect(request.flash).toHaveBeenCalledWith('additionalInformationError', 'Enter additional information')
-      })
-    })
-
-    describe('when the provided additional information is just spaces and new lines', () => {
-      it('redirects to the additional information show action with an error', async () => {
-        referralService.getReferral.mockResolvedValue(draftReferral)
-        request.body.additionalInformation = ' \n \n '
-
-        const requestHandler = controller.update()
-        await requestHandler(request, response, next)
-
-        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
-        expect(request.flash).toHaveBeenCalledWith('additionalInformationError', 'Enter additional information')
+            expect(response.redirect).toHaveBeenCalledWith(
+              `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
+            )
+          })
+        })
       })
     })
 

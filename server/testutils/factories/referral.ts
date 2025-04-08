@@ -13,7 +13,7 @@ class ReferralFactory extends Factory<Referral> {
 
   started() {
     return this.params({
-      additionalInformation: undefined,
+      hasReviewedAdditionalInformation: false,
       hasReviewedProgrammeHistory: false,
       oasysConfirmed: false,
       status: 'referral_started',
@@ -24,6 +24,7 @@ class ReferralFactory extends Factory<Referral> {
   submittable() {
     return this.params({
       additionalInformation: faker.lorem.paragraph({ max: 5, min: 1 }),
+      hasReviewedAdditionalInformation: true,
       hasReviewedProgrammeHistory: true,
       oasysConfirmed: true,
       status: 'referral_started',
@@ -87,6 +88,7 @@ export default ReferralFactory.define(({ params }) => {
     additionalInformation: faker.lorem.paragraph({ max: 5, min: 0 }),
     closed: closedStatuses.includes(status),
     hasLdcBeenOverriddenByProgrammeTeam: faker.datatype.boolean(),
+    hasReviewedAdditionalInformation: faker.datatype.boolean(),
     hasReviewedProgrammeHistory: faker.datatype.boolean(),
     oasysConfirmed: faker.datatype.boolean(),
     offeringId: faker.string.uuid(),
