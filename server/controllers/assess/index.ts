@@ -25,6 +25,8 @@ const controllers = (services: Services) => {
   const updateStatusDecisionController = new UpdateStatusDecisionController(
     services.personService,
     services.referralService,
+    services.pniService,
+    services.courseService,
   )
 
   const transferReferralController = new TransferReferralController(

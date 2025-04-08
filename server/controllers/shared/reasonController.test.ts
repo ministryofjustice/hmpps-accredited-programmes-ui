@@ -128,6 +128,7 @@ describe('ReasonController', () => {
         pageHeading: 'Deselection reason',
         person,
         reasonsFieldsets,
+        showOther: true,
         timelineItems: timelineItems.slice(0, 1),
       })
 
@@ -175,6 +176,7 @@ describe('ReasonController', () => {
           pageHeading: 'Withdrawal reason',
           person,
           reasonsFieldsets,
+          showOther: true,
           timelineItems: timelineItems.slice(0, 1),
         })
 
@@ -208,12 +210,48 @@ describe('ReasonController', () => {
           pageHeading: 'Deselection reason',
           person,
           reasonsFieldsets,
+          showOther: true,
           timelineItems: timelineItems.slice(0, 1),
         })
 
         expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
           username,
           'DESELECTED',
+        )
+        expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
+
+        expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['reasonCode'])
+        expect(ReferralUtils.groupReasonsByCategory).toHaveBeenCalledWith(referralStatusCodeReasons)
+        expect(ReferralUtils.createReasonsFieldset).toHaveBeenCalledWith(groupedReasons, undefined)
+        expect(ShowReferralUtils.statusHistoryTimelineItems).toHaveBeenCalledWith(referralStatusHistory)
+      })
+    })
+
+    describe('when the status decision is `ASSESSED_SUITABLE`', () => {
+      it('should render the show template with the correct response locals', async () => {
+        request.session.referralStatusUpdateData = {
+          ...referralStatusUpdateData,
+          decisionForCategoryAndReason: 'ASSESSED_SUITABLE',
+          initialStatusDecision: 'ASSESSED_SUITABLE',
+        }
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/updateStatus/reason/show', {
+          backLinkHref: referPaths.show.statusHistory({ referralId: referral.id }),
+          pageDescription:
+            'This referral does not match the recommended programme pathway based on the risk and programme needs identifier (PNI) scores.',
+          pageHeading: 'Reason why the referral does not match the PNI',
+          person,
+          reasonsFieldsets,
+          showOther: false,
+          timelineItems: timelineItems.slice(0, 1),
+        })
+
+        expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
+          username,
+          'ASSESSED_SUITABLE',
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 

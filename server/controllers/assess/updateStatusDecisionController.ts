@@ -1,14 +1,17 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPaths } from '../../paths'
-import type { PersonService, ReferralService } from '../../services'
+import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
+import type { Referral } from '@accredited-programmes-api'
 
 export default class UpdateStatusDecisionController {
   constructor(
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
+    private readonly pniService: PniService,
+    private readonly courseService: CourseService,
   ) {}
 
   show(): TypedRequestHandler<Request, Response> {
@@ -79,9 +82,12 @@ export default class UpdateStatusDecisionController {
 
   submit(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
       const { referralId } = req.params
       const { statusDecision } = req.body as { statusDecision: Uppercase<string> }
       const { referralStatusUpdateData } = req.session
+      const isDeselectAndKeepOpen = this.isDeselectAndKeepOpen(req)
 
       if (!statusDecision) {
         req.flash('statusDecisionError', 'Select a status decision')
@@ -91,21 +97,43 @@ export default class UpdateStatusDecisionController {
 
       const splitStatusDecision = statusDecision.split('|')
       const statusDecisionValue = splitStatusDecision[0] as ReferralStatusUppercase
+      let needsReason = ['DESELECTED', 'WITHDRAWN'].includes(statusDecisionValue)
 
       req.session.referralStatusUpdateData = {
         decisionForCategoryAndReason: statusDecisionValue,
         initialStatusDecision: statusDecision,
-        ...(this.isDeselectAndKeepOpen(req) ? referralStatusUpdateData : {}),
+        ...(isDeselectAndKeepOpen ? referralStatusUpdateData : {}),
         finalStatusDecision: statusDecisionValue,
         referralId,
       }
 
-      if (statusDecisionValue === 'DESELECTED' || statusDecisionValue === 'WITHDRAWN') {
+      if (statusDecisionValue === 'ASSESSED_SUITABLE' && !isDeselectAndKeepOpen) {
+        needsReason = await this.checkIfOverride(req.user.username, referralId)
+      }
+
+      if (needsReason) {
         return res.redirect(assessPaths.updateStatus.reason.show({ referralId }))
       }
 
       return res.redirect(assessPaths.updateStatus.selection.show({ referralId }))
     }
+  }
+
+  // Can eventually be abstracted to be re-used in APG-655
+  private async checkIfOverride(username: Express.User['username'], referralId: Referral['id']) {
+    const referral = await this.referralService.getReferral(username, referralId)
+    const [pniScore, course] = await Promise.all([
+      this.pniService.getPni(username, referral.prisonNumber),
+      this.courseService.getCourseByOffering(username, referral.offeringId),
+    ])
+
+    if (!course?.intensity || !pniScore?.programmePathway) {
+      return true
+    }
+
+    // course.intensity could be 'HIGH', 'MODERATE' or 'HIGH_MODERATE'
+    // pniScore.programmePathway could be 'HIGH_INTENSITY_BC', 'MODERATE_INTENSITY_BC, 'ALTERNATIVE_PATHWAY' or 'MISSING_INFORMATION'
+    return !course.intensity.split('_').includes(pniScore.programmePathway.split('_')[0])
   }
 
   private isDeselectAndKeepOpen(req: Request) {

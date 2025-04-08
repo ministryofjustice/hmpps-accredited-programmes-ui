@@ -3,6 +3,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
+import type { ReferralStatusWithReasons } from '@accredited-programmes/models'
 
 type SelectReasonPageContent = Record<
   Uppercase<string>,
@@ -13,6 +14,11 @@ type SelectReasonPageContent = Record<
 >
 
 const content: Partial<SelectReasonPageContent> = {
+  ASSESSED_SUITABLE: {
+    pageDescription:
+      'This referral does not match the recommended programme pathway based on the risk and programme needs identifier (PNI) scores.',
+    pageHeading: 'Reason why the referral does not match the PNI',
+  },
   DESELECTED: {
     pageDescription: 'Deselecting someone means they cannot continue the programme. The referral will be closed.',
     pageHeading: 'Deselection reason',
@@ -43,7 +49,6 @@ export default class ReasonController {
       const { referralId } = req.params
       const { token: userToken, username } = req.user
       const { referralStatusUpdateData } = req.session
-
       if (
         referralStatusUpdateData?.referralId !== referralId ||
         !referralStatusUpdateData.decisionForCategoryAndReason ||
@@ -60,7 +65,7 @@ export default class ReasonController {
         this.referralService.getReferralStatusHistory(userToken, username, referralId),
         this.referenceDataService.getReferralStatusCodeReasonsWithCategory(
           username,
-          decisionForCategoryAndReason as 'DESELECTED' | 'WITHDRAWN',
+          decisionForCategoryAndReason as ReferralStatusWithReasons,
         ),
       ])
 
@@ -78,6 +83,7 @@ export default class ReasonController {
         backLinkHref: paths.show.statusHistory({ referralId }),
         person,
         reasonsFieldsets,
+        showOther: referralStatusUpdateData.initialStatusDecision !== 'ASSESSED_SUITABLE',
         timelineItems: ShowReferralUtils.statusHistoryTimelineItems(statusHistory).slice(0, 1),
         ...content[initialStatusDecision],
       })
@@ -110,7 +116,7 @@ export default class ReasonController {
 
       const reasons = await this.referenceDataService.getReferralStatusCodeReasonsWithCategory(
         req.user.username,
-        decisionForCategoryAndReason as 'DESELECTED' | 'WITHDRAWN',
+        decisionForCategoryAndReason as ReferralStatusWithReasons,
       )
 
       let categoryCode = reasons.find(reason => reason.code === reasonCode)?.referralCategoryCode as Uppercase<string>

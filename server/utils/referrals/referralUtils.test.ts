@@ -6,20 +6,98 @@ describe('ReferralUtils', () => {
   describe('createReasonsFieldset', () => {
     it('creates an array of fieldsets with a legend and radios property', () => {
       const groupedOptions = {
-        W_ADMIN: [
-          { code: 'A', description: 'Category A', referralCategoryCode: 'W_ADMIN' },
-          { code: 'B', description: 'Category B', referralCategoryCode: 'W_ADMIN' },
-        ],
+        AS_INCOMPLETE: [{ code: 'A', description: 'Category A', referralCategoryCode: 'AS_INCOMPLETE' }],
+        AS_MOTIVATION: [{ code: 'B', description: 'Category B', referralCategoryCode: 'AS_MOTIVATION' }],
+        AS_OPERATIONAL: [{ code: 'C', description: 'Category C', referralCategoryCode: 'AS_OPERATIONAL' }],
+        AS_PERSONAL: [{ code: 'D', description: 'Category D', referralCategoryCode: 'AS_PERSONAL' }],
+        AS_RISK: [{ code: 'E', description: 'Category E', referralCategoryCode: 'AS_RISK' }],
+        AS_SENTENCE: [{ code: 'F', description: 'Category F', referralCategoryCode: 'AS_SENTENCE' }],
+        W_ADMIN: [{ code: 'G', description: 'Category G', referralCategoryCode: 'W_ADMIN' }],
       }
       expect(ReferralUtils.createReasonsFieldset(groupedOptions)).toEqual([
         {
           legend: {
-            text: 'Administrative error',
+            text: 'Incomplete assessment',
           },
           radios: [
-            { checked: false, text: 'Category A', value: 'A' },
-            { checked: false, text: 'Category B', value: 'B' },
+            {
+              checked: false,
+              text: 'Category A',
+              value: 'A',
+            },
           ],
+          testId: 'AS_INCOMPLETE-reason-options',
+        },
+        {
+          legend: {
+            text: 'Motivation and behaviour',
+          },
+          radios: [
+            {
+              checked: false,
+              text: 'Category B',
+              value: 'B',
+            },
+          ],
+          testId: 'AS_MOTIVATION-reason-options',
+        },
+        {
+          legend: {
+            text: 'Operational',
+          },
+          radios: [
+            {
+              checked: false,
+              text: 'Category C',
+              value: 'C',
+            },
+          ],
+          testId: 'AS_OPERATIONAL-reason-options',
+        },
+        {
+          legend: {
+            text: 'Personal and health',
+          },
+          radios: [
+            {
+              checked: false,
+              text: 'Category D',
+              value: 'D',
+            },
+          ],
+          testId: 'AS_PERSONAL-reason-options',
+        },
+        {
+          legend: {
+            text: 'Risk and need',
+          },
+          radios: [
+            {
+              checked: false,
+              text: 'Category E',
+              value: 'E',
+            },
+          ],
+          testId: 'AS_RISK-reason-options',
+        },
+        {
+          legend: {
+            text: 'Sentence type',
+          },
+          radios: [
+            {
+              checked: false,
+              text: 'Category F',
+              value: 'F',
+            },
+          ],
+          testId: 'AS_SENTENCE-reason-options',
+        },
+        {
+          legend: {
+            text: 'Administrative error',
+          },
+          radios: [{ checked: false, text: 'Category G', value: 'G' }],
           testId: 'W_ADMIN-reason-options',
         },
       ])
