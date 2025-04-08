@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -37,9 +38,9 @@ export interface ReferralUpdate {
   additionalInformation?: string
   /**
    * Reason for overriding the recommended course
-   * @example "The reason for going with the recommended course is..."
+   * @example "The reason for NOT going with the recommended course is..."
    */
-  overrideReason?: string
+  referrerOverrideReason?: string
   /**
    * Flag to indicate if the person has a Learning Difficulty Challenges
    * @example true
@@ -50,6 +51,11 @@ export interface ReferralUpdate {
    * @example true
    */
   hasLdcBeenOverriddenByProgrammeTeam?: boolean
+  /**
+   * Flag to indicate if the user has reviewed the additional information
+   * @example true
+   */
+  hasReviewedAdditionalInformation?: boolean
 }
 
 export interface ReferralStatusUpdate {
@@ -288,8 +294,6 @@ export interface ReferralCreated {
 export interface CourseEntity {
   /** @format uuid */
   id?: string
-  /** @format int64 */
-  version: number
   name: string
   identifier: string
   description?: string
@@ -309,8 +313,6 @@ export interface CourseEntity {
 export interface OfferingEntity {
   /** @format uuid */
   id?: string
-  /** @format int64 */
-  version: number
   organisationId: string
   contactEmail: string
   secondaryContactEmail?: string
@@ -335,13 +337,14 @@ export interface ReferralEntity {
   additionalInformation?: string
   oasysConfirmed: boolean
   hasReviewedProgrammeHistory: boolean
+  hasReviewedAdditionalInformation?: boolean
   status: string
-  /** @example "2025-03-26T13:53:14" */
+  /** @example "2025-04-08T14:12:27" */
   submittedOn?: any
   deleted: boolean
   primaryPomStaffId?: number
   secondaryPomStaffId?: number
-  overrideReason?: string
+  referrerOverrideReason?: string
   /** @format uuid */
   originalReferralId?: string
   hasLdc?: boolean
@@ -421,10 +424,10 @@ export interface Referral {
   /** @example null */
   submittedOn?: string
   /**
-   * Reason for overriding the recommended course
-   * @example "The reason for going with the recommended course is..."
+   * Reason for overriding the recommended course by the referrer
+   * @example "The reason for NOT going with the recommended programme is..."
    */
-  overrideReason?: string
+  referrerOverrideReason?: string
   /**
    * Referral ID of the original referral from which transfer was initiated
    * @format uuid
@@ -443,6 +446,11 @@ export interface Referral {
   hasLdcBeenOverriddenByProgrammeTeam: boolean
   /** @example null */
   primaryPrisonOffenderManager?: StaffDetail
+  /**
+   * Flag to indicate if the user had reviewed the additional information
+   * @example true
+   */
+  hasReviewedAdditionalInformation?: boolean
 }
 
 export interface StaffDetail {
@@ -766,8 +774,8 @@ export interface ReferralStatistics {
 }
 
 export interface ReportStatusCountProjection {
-  orgId: string
   count: number
+  orgId: string
   status: string
 }
 
@@ -1100,6 +1108,8 @@ export interface ReferralStatusReason {
   description: string
   /** @example "ADMIN" */
   referralCategoryCode: string
+  /** @example "Risk and need" */
+  categoryDescription: string
 }
 
 export interface ReferralStatusCategory {

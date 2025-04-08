@@ -14,10 +14,10 @@ import type {
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
   ReferralView,
 } from './Referral'
 import type { Alert, RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
@@ -41,10 +41,10 @@ export type {
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
   ReferralView,
   RiskLevel,
   RisksAndAlerts,

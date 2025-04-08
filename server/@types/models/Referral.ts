@@ -45,12 +45,6 @@ type ReferralStatusCategory = {
 
 type ReferralStatusGroup = (typeof referralStatusGroups)[number]
 
-type ReferralStatusReason = {
-  code: Uppercase<string>
-  description: string
-  referralCategoryCode: Uppercase<string>
-}
-
 type ReferralStatusUpdate = {
   status: ReferralStatus | ReferralStatusUppercase
   category?: Uppercase<string>
@@ -102,6 +96,8 @@ type ReferralView = {
   tasksCompleted?: number
 }
 
+type ReferralStatusWithReasons = Extract<ReferralStatusUppercase, 'ASSESSED_SUITABLE' | 'DESELECTED' | 'WITHDRAWN'>
+
 export { referralStatusGroups, referralStatuses }
 
 export type {
@@ -109,9 +105,9 @@ export type {
   ReferralStatus,
   ReferralStatusCategory,
   ReferralStatusGroup,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
   ReferralView,
 }

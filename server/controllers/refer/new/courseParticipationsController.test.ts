@@ -600,6 +600,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
         additionalInformation: draftReferral.additionalInformation,
+        hasReviewedAdditionalInformation: draftReferral.hasReviewedAdditionalInformation,
         hasReviewedProgrammeHistory,
         oasysConfirmed: draftReferral.oasysConfirmed,
       })

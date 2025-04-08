@@ -150,6 +150,7 @@ describe('NewReferralsOasysConfirmationController', () => {
       expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
       expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
         additionalInformation: draftReferral.additionalInformation,
+        hasReviewedAdditionalInformation: draftReferral.hasReviewedAdditionalInformation,
         hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
         oasysConfirmed: true,
       })

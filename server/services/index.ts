@@ -30,10 +30,16 @@ const services = () => {
   const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, personClientBuilder)
   const userService = new UserService(hmppsManageUsersClientBuilder, prisonApiClientBuilder)
   const referenceDataService = new ReferenceDataService(hmppsAuthClientBuilder, referenceDataClientBuilder)
-  const referralService = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder, userService)
   const courseService = new CourseService(courseClientBuilder, hmppsAuthClientBuilder, userService)
   const pniService = new PniService(hmppsAuthClientBuilder, pniClientBuilder)
   const statisticsService = new StatisticsService(hmppsAuthClientBuilder, statisticsClientBuilder)
+  const referralService = new ReferralService(
+    hmppsAuthClientBuilder,
+    referralClientBuilder,
+    userService,
+    courseService,
+    pniService,
+  )
 
   return {
     courseService,

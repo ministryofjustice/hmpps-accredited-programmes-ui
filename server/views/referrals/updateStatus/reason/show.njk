@@ -26,27 +26,29 @@
       }) }}
     {% endfor %}
 
-    <div class="govuk-radios__divider govuk-!-margin-bottom-6">or</div>
+    {% if showOther %}
+      <div class="govuk-radios__divider govuk-!-margin-bottom-6">or</div>
 
-    {{ govukRadios({
-      name: "reasonCode",
-      fieldset: {
-        legend: {
-          text: "Other reason",
-          classes: "govuk-fieldset__legend--m"
+      {{ govukRadios({
+        name: "reasonCode",
+        fieldset: {
+          legend: {
+            text: "Other reason",
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        items: [
+          {
+            value: "OTHER",
+            text: "Other"
+          }
+        ],
+        errorMessage: errors.messages.reasonCode,
+        attributes: {
+          "data-testid": "reason-options"
         }
-      },
-      items: [
-        {
-          value: "OTHER",
-          text: "Other"
-        }
-      ],
-      errorMessage: errors.messages.reasonCode,
-      attributes: {
-        "data-testid": "reason-options"
-      }
-    }) }}
+      }) }}
+    {% endif %}
 
     <div class="govuk-button-group">
       {{ govukButton({

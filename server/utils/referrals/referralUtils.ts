@@ -57,10 +57,17 @@ export default class ReferralUtils {
     }, [])
   }
 
+  // This will get replaced by APG-829
   private static categoryCodeToText(code: string): string {
     switch (code.split('_')[1]) {
       case 'ADMIN':
         return 'Administrative error'
+      case 'INCOMPLETE':
+        return 'Incomplete assessment'
+      case 'RISK':
+        return 'Risk and need'
+      case 'SENTENCE':
+        return 'Sentence type'
       case 'MOTIVATION':
         return 'Motivation and behaviour'
       case 'OPERATIONAL':

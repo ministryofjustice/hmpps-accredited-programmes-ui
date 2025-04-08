@@ -19,16 +19,16 @@
 
   <div class="dashboard__cards-wrapper">
     <div class="govuk-grid-row dashboard__cards">
-      {% if 'ROLE_ACP_REFERRER' in user.roles %}
-        <div class="govuk-grid-column-one-third dashboard__card-wrapper">
-          <div class="dashboard__card">
-            <h2 class="govuk-heading-m dashboard__card-heading">
-              <a class="govuk-link dashboard__card-link" href="{{ findPath }}">Find a programme and make a referral</a>
-            </h2>
-            <p class="govuk-body dashboard__card-description">Search for Accredited Programmes, find out where they’re running and start a referral.</p>
-          </div>
+      <div class="govuk-grid-column-one-third dashboard__card-wrapper">
+        <div class="dashboard__card">
+          <h2 class="govuk-heading-m dashboard__card-heading">
+            <a class="govuk-link dashboard__card-link" href="{{ findPath }}">Find a programme and make a referral</a>
+          </h2>
+          <p class="govuk-body dashboard__card-description">Search for Accredited Programmes, find out where they’re running and start a referral.</p>
         </div>
+      </div>
 
+      {% if 'ROLE_ACP_REFERRER' in user.roles %}
         <div class="govuk-grid-column-one-third dashboard__card-wrapper">
           <div class="dashboard__card">
             <h2 class="govuk-heading-m dashboard__card-heading">

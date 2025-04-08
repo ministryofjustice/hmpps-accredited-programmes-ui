@@ -5,11 +5,11 @@ import RestClient from '../restClient'
 import type {
   ReferralStatus,
   ReferralStatusCategory,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
 } from '@accredited-programmes/models'
-import type { EnabledOrganisation } from '@accredited-programmes-api'
+import type { EnabledOrganisation, ReferralStatusReason } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferenceDataClient {
@@ -61,7 +61,7 @@ export default class ReferenceDataClient {
   }
 
   async findReferralStatusCodeReasonsWithCategory(
-    referralStatusCode: Extract<ReferralStatusUppercase, 'DESELECTED' | 'WITHDRAWN'>,
+    referralStatusCode: Extract<ReferralStatusUppercase, ReferralStatusWithReasons>,
   ): Promise<Array<ReferralStatusReason>> {
     return (await this.restClient.get({
       path: apiPaths.referenceData.referralStatuses.statusCodeReasonsWithCategories({ referralStatusCode }),

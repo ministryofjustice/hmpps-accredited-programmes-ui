@@ -4,10 +4,10 @@ import { apiPaths } from '../../server/paths'
 import { stubFor } from '../../wiremock'
 import type {
   ReferralStatusCategory,
-  ReferralStatusReason,
   ReferralStatusRefData,
   ReferralStatusUppercase,
 } from '@accredited-programmes/models'
+import type { ReferralStatusReason } from '@accredited-programmes-api'
 
 export default {
   stubReferalStatusCodeCategories: (args: {

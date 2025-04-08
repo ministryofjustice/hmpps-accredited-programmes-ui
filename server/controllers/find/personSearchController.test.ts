@@ -45,6 +45,10 @@ describe('PersonSearchController', () => {
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['prisonNumber'])
       expect(response.render).toHaveBeenCalledWith('find/personSearch', {
+        hrefs: {
+          back: '/',
+          programmes: findPaths.index({}),
+        },
         pageHeading: 'Find recommended programmes',
       })
     })
