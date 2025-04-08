@@ -4,6 +4,7 @@ import type {
   ReferralStatusCategory,
   ReferralStatusRefData,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
 } from '@accredited-programmes/models'
 import type { EnabledOrganisation, ReferralStatusReason } from '@accredited-programmes-api'
 
@@ -60,7 +61,7 @@ export default class ReferenceDataService {
 
   async getReferralStatusCodeReasonsWithCategory(
     username: Express.User['username'],
-    referralStatusCode: Extract<ReferralStatusUppercase, 'DESELECTED' | 'WITHDRAWN'>,
+    referralStatusCode: ReferralStatusWithReasons,
   ): Promise<Array<ReferralStatusReason>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
