@@ -17,6 +17,7 @@ import type {
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
   ReferralView,
 } from './Referral'
 import type { Alert, RiskLevel, RisksAndAlerts } from './RisksAndAlerts'
@@ -43,6 +44,7 @@ export type {
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
   ReferralView,
   RiskLevel,
   RisksAndAlerts,

@@ -96,6 +96,8 @@ type ReferralView = {
   tasksCompleted?: number
 }
 
+type ReferralStatusWithReasons = Extract<ReferralStatusUppercase, 'ASSESSED_SUITABLE' | 'DESELECTED' | 'WITHDRAWN'>
+
 export { referralStatusGroups, referralStatuses }
 
 export type {
@@ -106,5 +108,6 @@ export type {
   ReferralStatusRefData,
   ReferralStatusUpdate,
   ReferralStatusUppercase,
+  ReferralStatusWithReasons,
   ReferralView,
 }
