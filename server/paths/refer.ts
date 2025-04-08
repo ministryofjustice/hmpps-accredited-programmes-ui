@@ -39,6 +39,7 @@ export default {
   new: {
     additionalInformation: {
       show: newReferralAdditionalInformationPath,
+      skip: newReferralAdditionalInformationPath.path('skip'),
       update: newReferralAdditionalInformationPath,
     },
     checkAnswers: newReferralShowPath.path('check-answers'),

@@ -50,6 +50,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   put(referPaths.new.confirmOasys.update.pattern, newReferralsOasysConfirmationController.update())
 
   get(referPaths.new.additionalInformation.show.pattern, newReferralsAdditionalInformationController.show())
+  get(referPaths.new.additionalInformation.skip.pattern, newReferralsAdditionalInformationController.skip())
   put(referPaths.new.additionalInformation.update.pattern, newReferralsAdditionalInformationController.update())
 
   get(referPaths.new.programmeHistory.index.pattern, newReferralsCourseParticipationsController.index())

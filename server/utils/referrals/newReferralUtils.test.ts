@@ -70,10 +70,10 @@ describe('NewReferralUtils', () => {
       expect(NewReferralUtils.isReadyForSubmission(referral)).toEqual(false)
     })
 
-    it('returns false when additional information not provided', () => {
-      const referral = referralFactory.submittable().build({ additionalInformation: '' })
+    it('returns true when additional information not provided but is marked as reviewed', () => {
+      const referral = referralFactory.submittable().build()
 
-      expect(NewReferralUtils.isReadyForSubmission(referral)).toEqual(false)
+      expect(NewReferralUtils.isReadyForSubmission(referral)).toEqual(true)
     })
 
     it('returns true when programme history reviewed, OASys confirmed, and additional information provided', () => {

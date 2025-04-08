@@ -42,7 +42,9 @@ export default class NewReferralUtils {
   }
 
   static isReadyForSubmission(referral: Referral): boolean {
-    return referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.additionalInformation
+    return (
+      referral.hasReviewedProgrammeHistory && referral.oasysConfirmed && !!referral.hasReviewedAdditionalInformation
+    )
   }
 
   static referrerSummaryListRows(
@@ -100,7 +102,7 @@ export default class NewReferralUtils {
           },
           {
             statusTag: NewReferralUtils.taskListStatusTag(
-              referral.additionalInformation ? 'Completed' : 'Not started',
+              referral.hasReviewedAdditionalInformation ? 'Completed' : 'Not started',
               'additional-information-tag',
             ),
             text: 'Add additional information',
