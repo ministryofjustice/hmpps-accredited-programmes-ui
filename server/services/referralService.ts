@@ -1,3 +1,5 @@
+import type CourseService from './courseService'
+import type PniService from './pniService'
 import type UserService from './userService'
 import logger from '../../logger'
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
@@ -12,7 +14,7 @@ import type {
   ReferralView,
 } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { Referral, ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
+import type { Course, PniScore, Referral, ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 
 export default class ReferralService {
@@ -20,6 +22,8 @@ export default class ReferralService {
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly referralClientBuilder: RestClientBuilder<ReferralClient>,
     private readonly userService: UserService,
+    private readonly courseService: CourseService,
+    private readonly pniService: PniService,
   ) {}
 
   async createReferral(
@@ -99,6 +103,40 @@ export default class ReferralService {
     const referral = await this.getReferral(username, referralId)
 
     return referralProgressIndicatorKeys.filter(item => referral[item]).length
+  }
+
+  async getPathways(
+    username: Express.User['username'],
+    referralId: Referral['id'],
+  ): Promise<{
+    isOverride: boolean
+    recommended: PniScore['programmePathway']
+    requested: Course['intensity']
+  }> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    const unknownString = 'Unknown'
+    const referral = await referralClient.find(referralId)
+    const [pniScore, course] = await Promise.all([
+      this.pniService.getPni(username, referral.prisonNumber),
+      this.courseService.getCourseByOffering(username, referral.offeringId),
+    ])
+
+    let isOverride
+
+    if (!course?.intensity || !pniScore?.programmePathway) {
+      isOverride = true
+    } else {
+      isOverride = !course.intensity.split('_').includes(pniScore.programmePathway.split('_')[0])
+    }
+
+    return {
+      isOverride,
+      recommended: pniScore?.programmePathway || unknownString,
+      requested: course.intensity || unknownString,
+    }
   }
 
   async getReferral(

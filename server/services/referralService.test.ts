@@ -1,6 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
 import { when } from 'jest-when'
 
+import type CourseService from './courseService'
+import type PniService from './pniService'
 import ReferralService from './referralService'
 import type UserService from './userService'
 import logger from '../../logger'
@@ -8,6 +10,9 @@ import type { RedisClient } from '../data'
 import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
 import {
   confirmationFieldsFactory,
+  courseFactory,
+  courseOfferingFactory,
+  pniScoreFactory,
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusRefDataFactory,
@@ -34,7 +39,15 @@ describe('ReferralService', () => {
   const hmppsAuthClientBuilder = jest.fn()
 
   const userService = createMock<UserService>()
-  const service = new ReferralService(hmppsAuthClientBuilder, referralClientBuilder, userService)
+  const courseService = createMock<CourseService>()
+  const pniService = createMock<PniService>()
+  const service = new ReferralService(
+    hmppsAuthClientBuilder,
+    referralClientBuilder,
+    userService,
+    courseService,
+    pniService,
+  )
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -210,6 +223,115 @@ describe('ReferralService', () => {
         expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(referralClient.find).toHaveBeenCalledWith(referral.id, query)
         expect(result).toEqual(referral)
+      })
+    })
+  })
+
+  describe('getPathways', () => {
+    const prisonNumber = 'ABC1234'
+    const courseOffering = courseOfferingFactory.build()
+    const referral = referralFactory.build({
+      offeringId: courseOffering.id,
+      prisonNumber,
+    })
+
+    beforeEach(() => {
+      when(referralClient.find).calledWith(referral.id).mockResolvedValue(referral)
+    })
+
+    describe('and the PNI matches a `HIGH_MODERATE` course intensity', () => {
+      it('should return that there IS NOT a mismatch, along with the provided pathway and intensity values', async () => {
+        const highModerateIntensityCourse = courseFactory.build({
+          courseOfferings: [courseOffering],
+          intensity: 'HIGH_MODERATE',
+        })
+        const highPniPathway = pniScoreFactory.build({
+          prisonNumber,
+          programmePathway: 'HIGH_INTENSITY_BC',
+        })
+
+        pniService.getPni.mockResolvedValue(highPniPathway)
+        courseService.getCourseByOffering.mockResolvedValue(highModerateIntensityCourse)
+
+        const result = await service.getPathways(userToken, referral.id)
+
+        expect(result).toEqual({
+          isOverride: false,
+          recommended: 'HIGH_INTENSITY_BC',
+          requested: 'HIGH_MODERATE',
+        })
+      })
+    })
+
+    describe('and the PNI matches a `MODERATE` course intensity', () => {
+      it('should return that there IS NOT a mismatch, along with the provided pathway and intensity values', async () => {
+        const moderateIntensityCourse = courseFactory.build({
+          courseOfferings: [courseOffering],
+          intensity: 'MODERATE',
+        })
+        const moderatePniPathway = pniScoreFactory.build({
+          prisonNumber,
+          programmePathway: 'MODERATE_INTENSITY_BC',
+        })
+
+        pniService.getPni.mockResolvedValue(moderatePniPathway)
+        courseService.getCourseByOffering.mockResolvedValue(moderateIntensityCourse)
+
+        const result = await service.getPathways(userToken, referral.id)
+
+        expect(result).toEqual({
+          isOverride: false,
+          recommended: 'MODERATE_INTENSITY_BC',
+          requested: 'MODERATE',
+        })
+      })
+    })
+
+    describe('and the PNI does not match the course intensity', () => {
+      it('should return that there IS a mismatch, along with the provided pathway and intensity values', async () => {
+        const moderateIntensityCourse = courseFactory.build({
+          courseOfferings: [courseOffering],
+          intensity: 'MODERATE',
+        })
+        const highPniPathway = pniScoreFactory.build({
+          prisonNumber,
+          programmePathway: 'HIGH_INTENSITY_BC',
+        })
+
+        pniService.getPni.mockResolvedValue(highPniPathway)
+        courseService.getCourseByOffering.mockResolvedValue(moderateIntensityCourse)
+
+        const result = await service.getPathways(userToken, referral.id)
+
+        expect(result).toEqual({
+          isOverride: true,
+          recommended: 'HIGH_INTENSITY_BC',
+          requested: 'MODERATE',
+        })
+      })
+    })
+
+    describe('and the course intensity and programme pathway values are not set', () => {
+      it('should return that there IS a mismatch, along with "Unknown" values', async () => {
+        const unknownCourse = courseFactory.build({
+          courseOfferings: [courseOffering],
+          intensity: undefined,
+        })
+        const highPniPathway = pniScoreFactory.build({
+          prisonNumber,
+          programmePathway: undefined,
+        })
+
+        pniService.getPni.mockResolvedValue(highPniPathway)
+        courseService.getCourseByOffering.mockResolvedValue(unknownCourse)
+
+        const result = await service.getPathways(userToken, referral.id)
+
+        expect(result).toEqual({
+          isOverride: true,
+          recommended: 'Unknown',
+          requested: 'Unknown',
+        })
       })
     })
   })
