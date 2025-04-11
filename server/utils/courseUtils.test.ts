@@ -65,6 +65,18 @@ describe('CourseUtils', () => {
     })
   })
 
+  describe('formatIntensityValue', () => {
+    it.each([
+      ['HIGH', 'High intensity'],
+      ['HIGH_MODERATE', 'High or moderate intensity'],
+      ['MODERATE', 'Moderate intensity'],
+      ['UNKNOWN', 'Unknown'],
+      [undefined, 'Unknown'],
+    ])('returns the correct intensity text for %s', (intensity, expectedText) => {
+      expect(CourseUtils.formatIntensityValue(intensity)).toBe(expectedText)
+    })
+  })
+
   describe('isBuildingChoices', () => {
     it('should ignore case', () => {
       expect(CourseUtils.isBuildingChoices('BUILDING CHOICES: moderate intensity')).toBe(true)

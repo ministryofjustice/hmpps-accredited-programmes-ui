@@ -9,6 +9,17 @@ import type {
 } from '@accredited-programmes-api'
 
 export default class PniUtils {
+  static formatPathwayValue(programmePathway?: PniScore['programmePathway']): string {
+    const pathwayMap: Record<PniScore['programmePathway'], string> = {
+      ALTERNATIVE_PATHWAY: 'Not eligible',
+      HIGH_INTENSITY_BC: 'High intensity',
+      MISSING_INFORMATION: 'Information missing',
+      MODERATE_INTENSITY_BC: 'Moderate intensity',
+    }
+
+    return programmePathway && pathwayMap[programmePathway] ? pathwayMap[programmePathway] : 'Unknown'
+  }
+
   static needScoreToString(needScore?: number | null): string {
     switch (needScore) {
       case 0:
@@ -39,21 +50,21 @@ export default class PniUtils {
           bodyText: `${bodyTextPrefix} be eligible for the high intensity Accredited Programmes pathway.`,
           class: 'pathway-content--high',
           dataTestId: 'high-intensity-pathway-content',
-          headingText: 'High Intensity',
+          headingText: this.formatPathwayValue(programmePathway),
         }
       case 'MODERATE_INTENSITY_BC':
         return {
           bodyText: `${bodyTextPrefix} be eligible for the moderate intensity Accredited Programmes pathway.`,
           class: 'pathway-content--moderate',
           dataTestId: 'moderate-intensity-pathway-content',
-          headingText: 'Moderate Intensity',
+          headingText: this.formatPathwayValue(programmePathway),
         }
       case 'ALTERNATIVE_PATHWAY':
         return {
           bodyText: `${bodyTextPrefix} not be eligible for either the moderate or high intensity Accredited Programmes pathway. Speak to the Offender Management team about other options.`,
           class: 'pathway-content--alternative',
           dataTestId: 'alternative-pathway-content',
-          headingText: 'Not eligible',
+          headingText: this.formatPathwayValue(programmePathway),
         }
       case 'MISSING_INFORMATION':
         return {
@@ -61,7 +72,7 @@ export default class PniUtils {
             'There is not enough information in the risk and need assessment to calculate the recommended programme pathway.',
           class: 'pathway-content--missing',
           dataTestId: 'missing-informaton-pathway-content',
-          headingText: 'Information missing',
+          headingText: this.formatPathwayValue(programmePathway),
         }
       default:
         return {
