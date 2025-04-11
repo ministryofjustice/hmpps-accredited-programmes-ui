@@ -43,6 +43,35 @@ export default class NewReferralsAdditionalInformationController {
     }
   }
 
+  skip(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const { referralId } = req.params
+
+      const referral = await this.referralService.getReferral(req.user.username, referralId)
+
+      if (referral.status !== 'referral_started') {
+        return res.redirect(referPaths.new.complete({ referralId }))
+      }
+
+      if (referral.referrerUsername !== req.user.username) {
+        return res.redirect(authPaths.error({}))
+      }
+
+      const referralUpdate: ReferralUpdate = {
+        additionalInformation: null,
+        hasReviewedAdditionalInformation: true,
+        hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
+        oasysConfirmed: referral.oasysConfirmed,
+      }
+
+      await this.referralService.updateReferral(req.user.username, referralId, referralUpdate)
+
+      return res.redirect(referPaths.new.show({ referralId }))
+    }
+  }
+
   update(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -59,13 +88,8 @@ export default class NewReferralsAdditionalInformationController {
       if (referral.referrerUsername !== req.user.username) {
         return res.redirect(authPaths.error({}))
       }
-
-      const formattedAdditionalInformation = req.body.additionalInformation?.trim()
-
-      if (!formattedAdditionalInformation) {
-        req.flash('additionalInformationError', 'Enter additional information')
-        hasErrors = true
-      }
+      const hasAdditonalInfo = req.body.additionalInformation?.length > 0
+      const formattedAdditionalInformation = hasAdditonalInfo ? req.body.additionalInformation.trim() : null
 
       if (formattedAdditionalInformation?.length > maxLength) {
         req.flash('additionalInformationError', `Additional information must be ${maxLength} characters or fewer`)
@@ -79,6 +103,7 @@ export default class NewReferralsAdditionalInformationController {
 
       const referralUpdate: ReferralUpdate = {
         additionalInformation: formattedAdditionalInformation,
+        hasReviewedAdditionalInformation: hasAdditonalInfo,
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: referral.oasysConfirmed,
       }

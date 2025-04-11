@@ -293,10 +293,11 @@ export default class NewReferralsCourseParticipationsController {
       }
 
       const hasReviewedProgrammeHistory = req.body.hasReviewedProgrammeHistory === 'true'
-      const { oasysConfirmed, additionalInformation } = referral
+      const { oasysConfirmed, additionalInformation, hasReviewedAdditionalInformation } = referral
 
       const referralUpdate: ReferralUpdate = {
         additionalInformation,
+        hasReviewedAdditionalInformation,
         hasReviewedProgrammeHistory,
         oasysConfirmed,
       }

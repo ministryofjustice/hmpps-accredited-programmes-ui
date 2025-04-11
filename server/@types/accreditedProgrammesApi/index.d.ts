@@ -35,7 +35,7 @@ export interface ReferralUpdate {
   /** @example null */
   hasReviewedProgrammeHistory: boolean
   /** @example null */
-  additionalInformation?: string
+  additionalInformation?: string | null
   /**
    * Reason for overriding the recommended course
    * @example "The reason for NOT going with the recommended course is..."
