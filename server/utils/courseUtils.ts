@@ -50,6 +50,16 @@ export default class CourseUtils {
     })
   }
 
+  static formatIntensityValue(intensity: Course['intensity']): string {
+    const intensityMap: Record<string, string> = {
+      HIGH: 'High',
+      HIGH_MODERATE: 'High or moderate',
+      MODERATE: 'Moderate',
+    }
+
+    return intensity && intensityMap[intensity] ? `${intensityMap[intensity]} intensity` : 'Unknown'
+  }
+
   static isBuildingChoices(courseDisplayName?: string): boolean {
     return courseDisplayName?.toLowerCase()?.startsWith('building choices:') ?? false
   }

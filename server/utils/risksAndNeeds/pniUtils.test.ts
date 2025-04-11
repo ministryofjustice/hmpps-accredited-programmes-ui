@@ -81,7 +81,7 @@ describe('PniUtils', () => {
           'Based on the risk and need scores, Del Hatton may be eligible for the high intensity Accredited Programmes pathway.',
         class: 'pathway-content--high',
         dataTestId: 'high-intensity-pathway-content',
-        headingText: 'High Intensity',
+        headingText: 'High intensity',
       })
     })
 
@@ -93,7 +93,7 @@ describe('PniUtils', () => {
           'Based on the risk and need scores, Del Hatton may be eligible for the moderate intensity Accredited Programmes pathway.',
         class: 'pathway-content--moderate',
         dataTestId: 'moderate-intensity-pathway-content',
-        headingText: 'Moderate Intensity',
+        headingText: 'Moderate intensity',
       })
     })
 
@@ -130,6 +130,19 @@ describe('PniUtils', () => {
         dataTestId: 'error-pathway-content',
         headingText: 'Error',
       })
+    })
+  })
+
+  describe('formatPathwayValue', () => {
+    it.each([
+      ['HIGH_INTENSITY_BC', 'High intensity'],
+      ['MODERATE_INTENSITY_BC', 'Moderate intensity'],
+      ['ALTERNATIVE_PATHWAY', 'Not eligible'],
+      ['MISSING_INFORMATION', 'Information missing'],
+      ['UNKNOWN', 'Unknown'],
+      [undefined, 'Unknown'],
+    ])('returns the correct pathway text for %s', (pathway, expectedText) => {
+      expect(PniUtils.formatPathwayValue(pathway)).toBe(expectedText)
     })
   })
 

@@ -4,6 +4,7 @@ import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import CourseUtils from '../courseUtils'
 import DateUtils from '../dateUtils'
+import PniUtils from '../risksAndNeeds/pniUtils'
 import StringUtils from '../stringUtils'
 import type { CourseOffering, Organisation, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
@@ -14,7 +15,7 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
-import type { Course, Referral } from '@accredited-programmes-api'
+import type { Course, PniScore, Referral } from '@accredited-programmes-api'
 import type { GovukFrontendButton } from '@govuk-frontend'
 import type { User, UserEmail } from '@manage-users-api'
 
@@ -148,6 +149,27 @@ export default class ShowReferralUtils {
       {
         key: { text: 'Programme team email address' },
         value: { html: `<a href="mailto:${contactEmail}">${contactEmail}</a>` },
+      },
+    ]
+  }
+
+  static pniMismatchSummaryListRows(
+    recommendedPathway: PniScore['programmePathway'],
+    requestedPathway: Course['intensity'],
+    referrerOverrideReason: Referral['referrerOverrideReason'],
+  ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
+    return [
+      {
+        key: { text: 'Recommended pathway' },
+        value: { text: PniUtils.formatPathwayValue(recommendedPathway) },
+      },
+      {
+        key: { text: 'Requested pathway' },
+        value: { text: CourseUtils.formatIntensityValue(requestedPathway) },
+      },
+      {
+        key: { text: 'Reason given by referrer' },
+        value: { text: referrerOverrideReason || 'Not specified' },
       },
     ]
   }
