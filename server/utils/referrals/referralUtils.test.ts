@@ -1,18 +1,58 @@
 import ReferralUtils from './referralUtils'
 import { referralStatusRefDataFactory } from '../../testutils/factories'
 import type { ReferralStatusCategory } from '@accredited-programmes/models'
+import type { ReferralStatusReason } from '@accredited-programmes-api'
 
 describe('ReferralUtils', () => {
   describe('createReasonsFieldset', () => {
     it('creates an array of fieldsets with a legend and radios property', () => {
-      const groupedOptions = {
-        AS_INCOMPLETE: [{ code: 'A', description: 'Category A', referralCategoryCode: 'AS_INCOMPLETE' }],
-        AS_MOTIVATION: [{ code: 'B', description: 'Category B', referralCategoryCode: 'AS_MOTIVATION' }],
-        AS_OPERATIONAL: [{ code: 'C', description: 'Category C', referralCategoryCode: 'AS_OPERATIONAL' }],
-        AS_PERSONAL: [{ code: 'D', description: 'Category D', referralCategoryCode: 'AS_PERSONAL' }],
-        AS_RISK: [{ code: 'E', description: 'Category E', referralCategoryCode: 'AS_RISK' }],
-        AS_SENTENCE: [{ code: 'F', description: 'Category F', referralCategoryCode: 'AS_SENTENCE' }],
-        W_ADMIN: [{ code: 'G', description: 'Category G', referralCategoryCode: 'W_ADMIN' }],
+      const groupedOptions: Record<string, Array<ReferralStatusReason>> = {
+        AS_INCOMPLETE: [
+          {
+            categoryDescription: 'Incomplete',
+            code: 'A',
+            description: 'Category A',
+            referralCategoryCode: 'AS_INCOMPLETE',
+          },
+        ],
+        AS_MOTIVATION: [
+          {
+            categoryDescription: 'Motivational',
+            code: 'B',
+            description: 'Category B',
+            referralCategoryCode: 'AS_MOTIVATION',
+          },
+        ],
+        AS_OPERATIONAL: [
+          {
+            categoryDescription: 'Operational',
+            code: 'C',
+            description: 'Category C',
+            referralCategoryCode: 'AS_OPERATIONAL',
+          },
+        ],
+        AS_PERSONAL: [
+          {
+            categoryDescription: 'Personal',
+            code: 'D',
+            description: 'Category D',
+            referralCategoryCode: 'AS_PERSONAL',
+          },
+        ],
+        AS_RISK: [
+          { categoryDescription: 'Risk', code: 'E', description: 'Category E', referralCategoryCode: 'AS_RISK' },
+        ],
+        AS_SENTENCE: [
+          {
+            categoryDescription: 'Sentence',
+            code: 'F',
+            description: 'Category F',
+            referralCategoryCode: 'AS_SENTENCE',
+          },
+        ],
+        W_ADMIN: [
+          { categoryDescription: 'Admin', code: 'G', description: 'Category G', referralCategoryCode: 'W_ADMIN' },
+        ],
       }
       expect(ReferralUtils.createReasonsFieldset(groupedOptions)).toEqual([
         {
@@ -105,10 +145,10 @@ describe('ReferralUtils', () => {
 
     describe('when a selected item is provided', () => {
       it('should mark the corresponding radio item as checked', () => {
-        const groupedOptions = {
+        const groupedOptions: Record<string, Array<ReferralStatusReason>> = {
           W_ADMIN: [
-            { code: 'A', description: 'Category A', referralCategoryCode: 'W_ADMIN' },
-            { code: 'B', description: 'Category B', referralCategoryCode: 'W_ADMIN' },
+            { categoryDescription: 'Admin', code: 'A', description: 'Category A', referralCategoryCode: 'W_ADMIN' },
+            { categoryDescription: 'Admin', code: 'B', description: 'Category B', referralCategoryCode: 'W_ADMIN' },
           ],
         }
         expect(ReferralUtils.createReasonsFieldset(groupedOptions, 'B')).toEqual([

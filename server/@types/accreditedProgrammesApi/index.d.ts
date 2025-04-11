@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -338,7 +339,7 @@ export interface ReferralEntity {
   hasReviewedProgrammeHistory: boolean
   hasReviewedAdditionalInformation?: boolean
   status: string
-  /** @example "2025-04-02T11:40:43" */
+  /** @example "2025-04-08T14:12:27" */
   submittedOn?: any
   deleted: boolean
   primaryPomStaffId?: number
@@ -773,8 +774,8 @@ export interface ReferralStatistics {
 }
 
 export interface ReportStatusCountProjection {
-  orgId: string
   count: number
+  orgId: string
   status: string
 }
 
@@ -1107,6 +1108,8 @@ export interface ReferralStatusReason {
   description: string
   /** @example "ADMIN" */
   referralCategoryCode: string
+  /** @example "Risk and need" */
+  categoryDescription: string
 }
 
 export interface ReferralStatusCategory {

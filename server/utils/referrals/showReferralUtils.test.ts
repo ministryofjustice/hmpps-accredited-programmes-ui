@@ -10,6 +10,7 @@ import {
   staffDetailFactory,
 } from '../../testutils/factories'
 import CourseUtils from '../courseUtils'
+import PniUtils from '../risksAndNeeds/pniUtils'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 jest.mock('./caseListUtils')
@@ -399,6 +400,30 @@ describe('ShowReferralUtils', () => {
         {
           key: { text: 'Programme team email address' },
           value: { html: `<a href="mailto:${contactEmail}">${contactEmail}</a>` },
+        },
+      ])
+    })
+  })
+
+  describe('pniMismatchSummaryListRows', () => {
+    it('formats the provided pathways and override reason in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
+      jest.spyOn(PniUtils, 'formatPathwayValue').mockReturnValue('High intensity')
+      jest.spyOn(CourseUtils, 'formatIntensityValue').mockReturnValue('Moderate intensity')
+
+      expect(
+        ShowReferralUtils.pniMismatchSummaryListRows('HIGH_INTENSITY_BC', 'MODERATE', 'The reason for the override.'),
+      ).toEqual([
+        {
+          key: { text: 'Recommended pathway' },
+          value: { text: 'High intensity' },
+        },
+        {
+          key: { text: 'Requested pathway' },
+          value: { text: 'Moderate intensity' },
+        },
+        {
+          key: { text: 'Reason given by referrer' },
+          value: { text: 'The reason for the override.' },
         },
       ])
     })
