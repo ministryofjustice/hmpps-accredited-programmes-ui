@@ -30,7 +30,7 @@ import {
   ShowReferralUtils,
 } from '../../utils'
 import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
-import type { ReferralSharedPageData } from '@accredited-programmes/ui'
+import type { GovukFrontendSummaryListRowWithKeyAndValue, ReferralSharedPageData } from '@accredited-programmes/ui'
 import type { Referral } from '@accredited-programmes-api'
 import type { GovukFrontendSummaryList, GovukFrontendTable } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
@@ -130,6 +130,11 @@ describe('ReferralsController', () => {
     when(referralService.getReferral).calledWith(username, referral.id, expect.any(Object)).mockResolvedValue(referral)
     when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
     referralService.getStatusTransitions.mockResolvedValue(statusTransitions)
+    referralService.getPathways.mockResolvedValue({
+      isOverride: false,
+      recommended: 'MODERATE_INTENSITY_BC',
+      requested: 'MODERATE',
+    })
     userService.getFullNameFromUsername.mockResolvedValue(referringUser.name)
 
     controller = new SubmittedReferralsController(
@@ -153,9 +158,11 @@ describe('ReferralsController', () => {
   })
 
   describe('additionalInformation', () => {
-    it('renders the additional information template with the correct response locals', async () => {
+    beforeEach(() => {
       request.path = referPaths.show.additionalInformation({ referralId: referral.id })
+    })
 
+    it('renders the additional information template with the correct response locals', async () => {
       const requestHandler = controller.additionalInformation()
       await requestHandler(request, response, next)
 
@@ -163,6 +170,8 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
+        pniMismatchSummaryListRows: [],
+        showOverrideReason: false,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     })
@@ -170,7 +179,6 @@ describe('ReferralsController', () => {
     describe('when the referral has not been submitted', () => {
       it('responds with a 400', async () => {
         referral.status = 'referral_started'
-        request.path = referPaths.show.additionalInformation({ referralId: referral.id })
 
         const requestHandler = controller.additionalInformation()
         const expectedError = createError(400, 'Referral has not been submitted.')
@@ -180,9 +188,11 @@ describe('ReferralsController', () => {
     })
 
     describe('when on the assess path', () => {
-      it('renders the additional information template with the correct response locals', async () => {
+      beforeEach(() => {
         request.path = assessPaths.show.additionalInformation({ referralId: referral.id })
+      })
 
+      it('renders the additional information template with the correct response locals', async () => {
         const requestHandler = controller.additionalInformation()
         await requestHandler(request, response, next)
 
@@ -190,14 +200,16 @@ describe('ReferralsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
           ...sharedPageData,
+          pniMismatchSummaryListRows: [],
+          showOverrideReason: false,
           submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
         })
       })
+
       describe('and the referral has been transferred', () => {
         it('renders the additional information template with the correct response locals', async () => {
           referral.originalReferralId = originalReferral.id
           referral.additionalInformation = undefined
-          request.path = assessPaths.show.additionalInformation({ referralId: referral.id })
           sharedPageData.additionalInformation = `There is no additional information for this referral because it was transferred from a previous referral to ${course.name}. </br></br>
     You can see <a href="${assessPaths.show.additionalInformation({ referralId: originalReferral.id })}">notes from the previous referral.</a>`
 
@@ -208,7 +220,64 @@ describe('ReferralsController', () => {
 
           expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
             ...sharedPageData,
+            pniMismatchSummaryListRows: [],
+            showOverrideReason: false,
             submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+          })
+        })
+      })
+    })
+
+    describe('overrides', () => {
+      const pniMismatchSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
+        {
+          key: { text: 'Fake summary list key' },
+          value: { text: 'Fake summary list value' },
+        },
+      ]
+
+      beforeEach(() => {
+        mockShowReferralUtils.pniMismatchSummaryListRows.mockReturnValue(pniMismatchSummaryListRows)
+      })
+
+      describe('when the referral is currently an override', () => {
+        beforeEach(() => {
+          referralService.getPathways.mockResolvedValue({
+            isOverride: true,
+            recommended: 'MODERATE_INTENSITY_BC',
+            requested: 'HIGH',
+          })
+        })
+
+        describe('and has an override reason', () => {
+          it('renders the additional information template with the correct response locals', async () => {
+            referral.referrerOverrideReason = 'Override reason'
+
+            const requestHandler = controller.additionalInformation()
+            await requestHandler(request, response, next)
+
+            expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
+              ...sharedPageData,
+              pniMismatchSummaryListRows,
+              showOverrideReason: true,
+              submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+            })
+          })
+        })
+
+        describe('and does not have an override reason', () => {
+          it('renders the additional information template with the correct response locals', async () => {
+            referral.referrerOverrideReason = undefined
+
+            const requestHandler = controller.additionalInformation()
+            await requestHandler(request, response, next)
+
+            expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
+              ...sharedPageData,
+              pniMismatchSummaryListRows: [],
+              showOverrideReason: false,
+              submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+            })
           })
         })
       })

@@ -14,5 +14,28 @@
     }
   }) }}
 
+  {% if showOverrideReason %}
+    <div class="govuk-summary-card" data-testid="pni-override-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title" data-testid="pni-override-summary-card-title">
+          Reason why the referral does not match the PNI
+        </h2>
+      </div>
+
+      <div class="govuk-summary-card__content">
+        <p class="govuk-body">
+          This referral does not match the recommendation based on the risk and programme needs identifier (PNI) scores.
+        </p>
+
+        {{ govukSummaryList({
+          attributes: {
+            "data-testid": "pni-override-summary-list"
+          },
+          rows: pniMismatchSummaryListRows
+        }) }}
+      </div>
+    </div>
+  {% endif %}
+
   {{ keylessSummaryCard("Additional information", bodyHtml=additionalInformation, testId="additional-information-summary-card") }}
 {% endblock primaryContent %}

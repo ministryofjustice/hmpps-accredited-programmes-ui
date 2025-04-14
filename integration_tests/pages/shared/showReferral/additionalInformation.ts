@@ -1,9 +1,11 @@
-import { CourseUtils, DateUtils } from '../../../../server/utils'
+import { CourseUtils, DateUtils, ShowReferralUtils } from '../../../../server/utils'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
-import type { Course, Referral } from '@accredited-programmes-api'
+import type { Course, PniScore, Referral } from '@accredited-programmes-api'
 
 export default class AdditionalInformationPage extends Page {
+  course: Course
+
   referral: Referral
 
   constructor(args: { course: Course; referral: Referral }) {
@@ -16,6 +18,7 @@ export default class AdditionalInformationPage extends Page {
       pageTitleOverride: `Referral details for referral to ${coursePresenter.displayName}`,
     })
 
+    this.course = course
     this.referral = referral
   }
 
@@ -29,6 +32,30 @@ export default class AdditionalInformationPage extends Page {
     })
   }
 
+  shouldContainPniOverrideSummaryCard(recommendedPathway: PniScore['programmePathway']) {
+    cy.get('[data-testid="pni-override-summary-card"]').within(() => {
+      cy.get('[data-testid="pni-override-summary-card-title"]').should(
+        'contain.text',
+        'Reason why the referral does not match the PNI',
+      )
+
+      this.shouldContainText(
+        'This referral does not match the recommendation based on the risk and programme needs identifier (PNI) scores.',
+      )
+
+      cy.get('[data-testid="pni-override-summary-list"]').then(summaryListElement => {
+        this.shouldContainSummaryListRows(
+          ShowReferralUtils.pniMismatchSummaryListRows(
+            recommendedPathway,
+            this.course.intensity,
+            this.referral.referrerOverrideReason,
+          ),
+          summaryListElement,
+        )
+      })
+    })
+  }
+
   shouldContainSubmittedText() {
     cy.get('[data-testid="submitted-text"]').then(submittedTextElement => {
       const { actual, expected } = Helpers.parseHtml(
@@ -37,5 +64,9 @@ export default class AdditionalInformationPage extends Page {
       )
       expect(actual).to.equal(expected)
     })
+  }
+
+  shouldNotContainPniOverrideSummaryCard() {
+    cy.get('[data-testid="pni-override-summary-card"]').should('not.exist')
   }
 }
