@@ -62,8 +62,16 @@ context('Viewing a submitted referral', () => {
     })
 
     describe('When reviewing additional information', () => {
-      it('shows the correct information', () => {
-        sharedTests.referrals.showsAdditionalInformationPage(ApplicationRoles.ACP_PROGRAMME_TEAM)
+      describe('and the referral is an override', () => {
+        it('should display the the reason for the override and the additional information cards', () => {
+          sharedTests.referrals.showsAdditionalInformationPageWithOverride(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
+      })
+
+      describe('and the referral is not an override', () => {
+        it('should display only the additional information card', () => {
+          sharedTests.referrals.showsAdditionalInformationPageWithoutOverride(ApplicationRoles.ACP_PROGRAMME_TEAM)
+        })
       })
 
       describe('When the referral is not submitted', () => {

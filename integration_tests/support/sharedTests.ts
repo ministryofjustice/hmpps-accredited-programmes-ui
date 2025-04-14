@@ -16,6 +16,7 @@ import {
   offenceHistoryDetailFactory,
   peopleSearchResponseFactory,
   personFactory,
+  pniScoreFactory,
   prisonFactory,
   psychiatricFactory,
   referralFactory,
@@ -60,7 +61,7 @@ import type { User, UserEmail } from '@manage-users-api'
 
 type ApplicationRole = `${ApplicationRoles}`
 
-const course = courseFactory.build()
+const course = courseFactory.build({ intensity: 'MODERATE' })
 const coursePresenter = CourseUtils.presentCourse(course)
 const courseOffering = courseOfferingFactory.build()
 const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
@@ -166,8 +167,19 @@ const sharedTests = {
       })
     },
 
-    showsAdditionalInformationPage: (role: ApplicationRole): void => {
+    showsAdditionalInformationPageWithOverride: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
+
+      const pniScore = pniScoreFactory.build({
+        programmePathway: 'HIGH_INTENSITY_BC',
+      })
+
+      cy.task('stubPni', {
+        pniScore,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      referral.referrerOverrideReason = 'Referrer override reason'
 
       const path = pathsByRole(role).show.additionalInformation({ referralId: referral.id })
       cy.visit(path)
@@ -193,8 +205,32 @@ const sharedTests = {
         referral.primaryPrisonOffenderManager,
       )
       additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
+      additionalInformationPage.shouldContainPniOverrideSummaryCard(pniScore.programmePathway)
       additionalInformationPage.shouldContainAdditionalInformationSummaryCard()
       additionalInformationPage.shouldContainSubmittedText()
+    },
+
+    showsAdditionalInformationPageWithoutOverride: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      cy.task('stubPni', {
+        pniScore: pniScoreFactory.build({
+          programmePathway: 'MODERATE_INTENSITY_BC',
+        }),
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      delete referral.referrerOverrideReason
+
+      const path = pathsByRole(role).show.additionalInformation({ referralId: referral.id })
+      cy.visit(path)
+
+      const additionalInformationPage = Page.verifyOnPage(AdditionalInformationPage, {
+        course,
+        referral,
+      })
+
+      additionalInformationPage.shouldNotContainPniOverrideSummaryCard()
     },
 
     showsEmptyOffenceHistoryPage: (role: ApplicationRole): void => {
