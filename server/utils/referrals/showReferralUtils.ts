@@ -169,7 +169,7 @@ export default class ShowReferralUtils {
       },
       {
         key: { text: 'Reason given by referrer' },
-        value: { text: referrerOverrideReason || 'Not specified' },
+        value: { text: referrerOverrideReason || '' },
       },
     ]
   }
