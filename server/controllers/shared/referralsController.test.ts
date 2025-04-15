@@ -170,8 +170,8 @@ describe('ReferralsController', () => {
 
       expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
         ...sharedPageData,
+        isOverride: false,
         pniMismatchSummaryListRows: [],
-        showOverrideReason: false,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     })
@@ -200,8 +200,8 @@ describe('ReferralsController', () => {
 
         expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
           ...sharedPageData,
+          isOverride: false,
           pniMismatchSummaryListRows: [],
-          showOverrideReason: false,
           submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
         })
       })
@@ -220,15 +220,15 @@ describe('ReferralsController', () => {
 
           expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
             ...sharedPageData,
+            isOverride: false,
             pniMismatchSummaryListRows: [],
-            showOverrideReason: false,
             submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
           })
         })
       })
     })
 
-    describe('overrides', () => {
+    describe('and the referral is an override', () => {
       const pniMismatchSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue> = [
         {
           key: { text: 'Fake summary list key' },
@@ -237,48 +237,24 @@ describe('ReferralsController', () => {
       ]
 
       beforeEach(() => {
+        referralService.getPathways.mockResolvedValue({
+          isOverride: true,
+          recommended: 'MODERATE_INTENSITY_BC',
+          requested: 'HIGH',
+        })
+
         mockShowReferralUtils.pniMismatchSummaryListRows.mockReturnValue(pniMismatchSummaryListRows)
       })
 
-      describe('when the referral is currently an override', () => {
-        beforeEach(() => {
-          referralService.getPathways.mockResolvedValue({
-            isOverride: true,
-            recommended: 'MODERATE_INTENSITY_BC',
-            requested: 'HIGH',
-          })
-        })
+      it('renders the additional information template with the correct response locals', async () => {
+        const requestHandler = controller.additionalInformation()
+        await requestHandler(request, response, next)
 
-        describe('and has an override reason', () => {
-          it('renders the additional information template with the correct response locals', async () => {
-            referral.referrerOverrideReason = 'Override reason'
-
-            const requestHandler = controller.additionalInformation()
-            await requestHandler(request, response, next)
-
-            expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
-              ...sharedPageData,
-              pniMismatchSummaryListRows,
-              showOverrideReason: true,
-              submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
-            })
-          })
-        })
-
-        describe('and does not have an override reason', () => {
-          it('renders the additional information template with the correct response locals', async () => {
-            referral.referrerOverrideReason = undefined
-
-            const requestHandler = controller.additionalInformation()
-            await requestHandler(request, response, next)
-
-            expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
-              ...sharedPageData,
-              pniMismatchSummaryListRows: [],
-              showOverrideReason: false,
-              submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
-            })
-          })
+        expect(response.render).toHaveBeenCalledWith('referrals/show/additionalInformation', {
+          ...sharedPageData,
+          isOverride: true,
+          pniMismatchSummaryListRows,
+          submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
         })
       })
     })

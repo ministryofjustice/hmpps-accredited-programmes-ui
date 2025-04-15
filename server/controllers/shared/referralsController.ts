@@ -37,18 +37,18 @@ export default class ReferralsController {
       }
 
       const pathways = await this.referralService.getPathways(req.user.username, referral.id)
-      const showOverrideReason = Boolean(pathways.isOverride && referral.referrerOverrideReason)
+      const { isOverride } = pathways
 
       return res.render('referrals/show/additionalInformation', {
         ...sharedPageData,
-        pniMismatchSummaryListRows: showOverrideReason
+        isOverride,
+        pniMismatchSummaryListRows: isOverride
           ? ShowReferralUtils.pniMismatchSummaryListRows(
               pathways.recommended,
               pathways.requested,
               referral.referrerOverrideReason,
             )
           : [],
-        showOverrideReason,
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     }
