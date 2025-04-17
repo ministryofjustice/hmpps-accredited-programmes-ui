@@ -60,25 +60,25 @@ export default class NewReferralsAdditionalInformationController {
         return res.redirect(authPaths.error({}))
       }
 
-      const formattedAdditionalInformation = req.body.additionalInformation?.trim()
+      const isSkip = req.body.skip === 'true'
+      const hasAdditonalInfo = req.body.additionalInformation?.length > 0
+      const formattedAdditionalInformation = hasAdditonalInfo ? req.body.additionalInformation.trim() : null
 
-      if (!formattedAdditionalInformation) {
-        req.flash('additionalInformationError', 'Enter additional information')
-        hasErrors = true
-      }
+      if (!isSkip) {
+        if (formattedAdditionalInformation?.length > maxLength) {
+          req.flash('additionalInformationError', `Additional information must be ${maxLength} characters or fewer`)
+          req.flash('formValues', [JSON.stringify({ formattedAdditionalInformation })])
+          hasErrors = true
+        }
 
-      if (formattedAdditionalInformation?.length > maxLength) {
-        req.flash('additionalInformationError', `Additional information must be ${maxLength} characters or fewer`)
-        req.flash('formValues', [JSON.stringify({ formattedAdditionalInformation })])
-        hasErrors = true
-      }
-
-      if (hasErrors) {
-        return res.redirect(referPaths.new.additionalInformation.show({ referralId }))
+        if (hasErrors) {
+          return res.redirect(referPaths.new.additionalInformation.show({ referralId }))
+        }
       }
 
       const referralUpdate: ReferralUpdate = {
-        additionalInformation: formattedAdditionalInformation,
+        additionalInformation: isSkip ? referral.additionalInformation : formattedAdditionalInformation,
+        hasReviewedAdditionalInformation: isSkip ? true : hasAdditonalInfo,
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: referral.oasysConfirmed,
       }
