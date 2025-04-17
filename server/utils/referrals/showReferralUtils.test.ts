@@ -406,10 +406,12 @@ describe('ShowReferralUtils', () => {
   })
 
   describe('pniMismatchSummaryListRows', () => {
-    it('formats the provided pathways and override reason in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
+    beforeEach(() => {
       jest.spyOn(PniUtils, 'formatPathwayValue').mockReturnValue('High intensity')
       jest.spyOn(CourseUtils, 'formatIntensityValue').mockReturnValue('Moderate intensity')
+    })
 
+    it('formats the provided pathways and override reason in the appropriate format for passing to a GOV.UK summary list Nunjucks macro', () => {
       expect(
         ShowReferralUtils.pniMismatchSummaryListRows('HIGH_INTENSITY_BC', 'MODERATE', 'The reason for the override.'),
       ).toEqual([
@@ -426,6 +428,25 @@ describe('ShowReferralUtils', () => {
           value: { text: 'The reason for the override.' },
         },
       ])
+    })
+
+    describe('when the referral has no override reason', () => {
+      it('returns the summary list with the reason not set', () => {
+        expect(ShowReferralUtils.pniMismatchSummaryListRows('HIGH_INTENSITY_BC', 'MODERATE', undefined)).toEqual([
+          {
+            key: { text: 'Recommended pathway' },
+            value: { text: 'High intensity' },
+          },
+          {
+            key: { text: 'Requested pathway' },
+            value: { text: 'Moderate intensity' },
+          },
+          {
+            key: { text: 'Reason given by referrer' },
+            value: { text: '' },
+          },
+        ])
+      })
     })
   })
 

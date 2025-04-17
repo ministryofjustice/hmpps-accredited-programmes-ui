@@ -36,8 +36,19 @@ export default class ReferralsController {
         throw createError(400, 'Referral has not been submitted.')
       }
 
+      const pathways = await this.referralService.getPathways(req.user.username, referral.id)
+      const { isOverride } = pathways
+
       return res.render('referrals/show/additionalInformation', {
         ...sharedPageData,
+        isOverride,
+        pniMismatchSummaryListRows: isOverride
+          ? ShowReferralUtils.pniMismatchSummaryListRows(
+              pathways.recommended,
+              pathways.requested,
+              referral.referrerOverrideReason,
+            )
+          : [],
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
       })
     }
