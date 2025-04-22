@@ -4,6 +4,21 @@ import type { ReferralStatusCategory } from '@accredited-programmes/models'
 import type { ReferralStatusReason } from '@accredited-programmes-api'
 
 describe('ReferralUtils', () => {
+  describe('checkIfOverride', () => {
+    it('returns true if the requested intensity is not in the recommended pathway', () => {
+      expect(ReferralUtils.checkIfOverride('HIGH_INTENSITY_BC', 'MODERATE')).toEqual(true)
+    })
+
+    it('returns false if the requested intensity is in the recommended pathway', () => {
+      expect(ReferralUtils.checkIfOverride('HIGH_INTENSITY_BC', 'HIGH_MODERATE')).toEqual(false)
+    })
+
+    it('returns true if either parameter is missing', () => {
+      expect(ReferralUtils.checkIfOverride(undefined, 'HIGH_INTENSITY')).toEqual(true)
+      expect(ReferralUtils.checkIfOverride('LOW_INTENSITY', undefined)).toEqual(true)
+    })
+  })
+
   describe('createReasonsFieldset', () => {
     it('creates an array of fieldsets with a legend and radios property', () => {
       const groupedOptions: Record<string, Array<ReferralStatusReason>> = {
