@@ -50,6 +50,9 @@ export default class ReferralsController {
             )
           : [],
         submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+        treatmentManagerDecisionText: ['not_eligible', 'not_suitable'].includes(sharedPageData.referral.status)
+          ? `The person has been assessed as ${sharedPageData.referral.statusDescription?.toLowerCase()} by the Treatment Manager.`
+          : undefined,
       })
     }
   }

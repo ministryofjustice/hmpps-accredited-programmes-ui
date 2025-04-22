@@ -167,6 +167,62 @@ const sharedTests = {
       })
     },
 
+    showsAdditionalInformationPageWithNotEligibleOverride: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      const pniScore = pniScoreFactory.build({
+        programmePathway: 'HIGH_INTENSITY_BC',
+      })
+
+      cy.task('stubPni', {
+        pniScore,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      referral.referrerOverrideReason = 'Referrer override reason'
+      referral.status = 'not_eligible'
+      referral.statusDescription = 'Not eligible'
+
+      const path = pathsByRole(role).show.additionalInformation({ referralId: referral.id })
+      cy.visit(path)
+
+      const additionalInformationPage = Page.verifyOnPage(AdditionalInformationPage, {
+        course,
+        referral,
+      })
+
+      additionalInformationPage.shouldContainPniOverrideSummaryCard(pniScore.programmePathway)
+      additionalInformationPage.shouldContainTreatmentManagerDecision()
+    },
+
+    showsAdditionalInformationPageWithNotSuitableOverride: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      const pniScore = pniScoreFactory.build({
+        programmePathway: 'HIGH_INTENSITY_BC',
+      })
+
+      cy.task('stubPni', {
+        pniScore,
+        prisonNumber: prisoner.prisonerNumber,
+      })
+
+      referral.referrerOverrideReason = 'Referrer override reason'
+      referral.status = 'not_suitable'
+      referral.statusDescription = 'Not suitable'
+
+      const path = pathsByRole(role).show.additionalInformation({ referralId: referral.id })
+      cy.visit(path)
+
+      const additionalInformationPage = Page.verifyOnPage(AdditionalInformationPage, {
+        course,
+        referral,
+      })
+
+      additionalInformationPage.shouldContainPniOverrideSummaryCard(pniScore.programmePathway)
+      additionalInformationPage.shouldContainTreatmentManagerDecision()
+    },
+
     showsAdditionalInformationPageWithOverride: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
 
@@ -206,6 +262,7 @@ const sharedTests = {
       )
       additionalInformationPage.shouldContainSubmittedReferralSideNavigation(path, referral.id)
       additionalInformationPage.shouldContainPniOverrideSummaryCard(pniScore.programmePathway)
+      additionalInformationPage.shouldNotContainTreatmentManagerDecision()
       additionalInformationPage.shouldContainAdditionalInformationSummaryCard()
       additionalInformationPage.shouldContainSubmittedText()
     },
