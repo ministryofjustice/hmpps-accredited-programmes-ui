@@ -36,7 +36,7 @@ describe('PniController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
 
-  const course = courseFactory.build()
+  const course = courseFactory.build({ intensity: 'HIGH_MODERATE' })
   const coursePresenter = CourseUtils.presentCourse(course)
   const organisation = organisationFactory.build()
   const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
@@ -72,6 +72,7 @@ describe('PniController', () => {
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
     personService.getPerson.mockResolvedValue(person)
+    pniService.getPni.mockResolvedValue(pniScoreFactory.build({ programmePathway: 'HIGH_INTENSITY_BC' }))
     referralService.getReferral.mockResolvedValue(referral)
 
     controller = new PniController(courseService, pniService, personService, referralService)
@@ -108,6 +109,7 @@ describe('PniController', () => {
       riskScoresHref: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }),
       selfManagementSummaryListRows,
       sexSummaryListRows,
+      showOverrideText: false,
       subNavigationItems,
       thinkingSummaryListRows,
     })
@@ -120,9 +122,11 @@ describe('PniController', () => {
   })
 
   describe('when the pni service returns `MISSING_INFORMATION`', () => {
-    it('renders the show pni page with the correct response locals', async () => {
+    beforeEach(() => {
       pniService.getPni.mockResolvedValue(pniScoreFactory.build({ programmePathway: 'MISSING_INFORMATION' }))
+    })
 
+    it('renders the show pni page with the correct response locals', async () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
@@ -131,7 +135,27 @@ describe('PniController', () => {
         expect.objectContaining({
           hasData: true,
           missingInformation: true,
+          showOverrideText: true,
         }),
+      )
+    })
+
+    describe('when the referral is On programme or beyond', () => {
+      it.each(['on_programme', 'programme_complete'])(
+        'should set `showOverrideText` to `false` for the status: %s',
+        async status => {
+          referral.status = status
+
+          const requestHandler = controller.show()
+          await requestHandler(request, response, next)
+
+          expect(response.render).toHaveBeenCalledWith(
+            'referrals/show/pni/show',
+            expect.objectContaining({
+              showOverrideText: false,
+            }),
+          )
+        },
       )
     })
   })
@@ -153,6 +177,7 @@ describe('PniController', () => {
         person,
         referral,
         riskScoresHref: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }),
+        showOverrideText: true,
         subNavigationItems,
       })
     })
