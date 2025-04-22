@@ -33,6 +33,14 @@
           },
           rows: pniMismatchSummaryListRows
         }) }}
+
+        {% if treatmentManagerDecisionText %}
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+          <p data-testid="treatment-manager-decision-text">
+            {{ treatmentManagerDecisionText }}
+          </p>
+        {% endif %}
       </div>
     </div>
   {% endif %}

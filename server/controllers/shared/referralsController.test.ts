@@ -176,6 +176,35 @@ describe('ReferralsController', () => {
       })
     })
 
+    describe('when the referral has been marked as not eligible or not suitable', () => {
+      it.each([
+        {
+          status: 'not_eligible',
+          statusDescription: 'Not eligible',
+        },
+        {
+          status: 'not_suitable',
+          statusDescription: 'Not suitable',
+        },
+      ])(
+        'renders the additional information template with the correct response locals for status: $status',
+        async ({ status, statusDescription }) => {
+          referral.status = status
+          referral.statusDescription = statusDescription
+
+          const requestHandler = controller.additionalInformation()
+          await requestHandler(request, response, next)
+
+          expect(response.render).toHaveBeenCalledWith(
+            'referrals/show/additionalInformation',
+            expect.objectContaining({
+              treatmentManagerDecisionText: `The person has been assessed as ${statusDescription.toLowerCase()} by the Treatment Manager.`,
+            }),
+          )
+        },
+      )
+    })
+
     describe('when the referral has not been submitted', () => {
       it('responds with a 400', async () => {
         referral.status = 'referral_started'

@@ -66,6 +66,22 @@ context('Viewing a submitted referral', () => {
         it('should display the the reason for the override and the additional information cards', () => {
           sharedTests.referrals.showsAdditionalInformationPageWithOverride(ApplicationRoles.ACP_PROGRAMME_TEAM)
         })
+
+        describe('and the referral has been marked as not eligible', () => {
+          it('should display the the reason for the override and the treatment manager decision', () => {
+            sharedTests.referrals.showsAdditionalInformationPageWithNotEligibleOverride(
+              ApplicationRoles.ACP_PROGRAMME_TEAM,
+            )
+          })
+        })
+
+        describe('and the referral has been marked as not suitable', () => {
+          it('should display the the reason for the override and the treatment manager decision', () => {
+            sharedTests.referrals.showsAdditionalInformationPageWithNotSuitableOverride(
+              ApplicationRoles.ACP_PROGRAMME_TEAM,
+            )
+          })
+        })
       })
 
       describe('and the referral is not an override', () => {

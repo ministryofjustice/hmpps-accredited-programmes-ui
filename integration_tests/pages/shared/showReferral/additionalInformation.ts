@@ -66,7 +66,18 @@ export default class AdditionalInformationPage extends Page {
     })
   }
 
+  shouldContainTreatmentManagerDecision() {
+    cy.get('[data-testid="treatment-manager-decision-text"]').should(
+      'contain.text',
+      `The person has been assessed as ${this.referral.statusDescription!.toLowerCase()} by the Treatment Manager.`,
+    )
+  }
+
   shouldNotContainPniOverrideSummaryCard() {
     cy.get('[data-testid="pni-override-summary-card"]').should('not.exist')
+  }
+
+  shouldNotContainTreatmentManagerDecision() {
+    cy.get('[data-testid="treatment-manager-decision-text"]').should('not.exist')
   }
 }
