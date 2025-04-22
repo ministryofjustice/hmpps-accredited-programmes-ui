@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
-import { CourseUtils, PniUtils, ShowReferralUtils, TypeUtils } from '../../utils'
+import { CourseUtils, PniUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 
 const missingInformationPathway = 'MISSING_INFORMATION'
 
@@ -76,6 +76,9 @@ export default class PniController {
         person,
         referral,
         riskScoresHref: assessPaths.show.risksAndNeeds.risksAndAlerts({ referralId }),
+        showOverrideText:
+          !['on_programme', 'programme_complete'].includes(referral.status) &&
+          ReferralUtils.checkIfOverride(pni?.programmePathway, course.intensity),
         subNavigationItems: ShowReferralUtils.subNavigationItems(req.path, 'pni', referral.id),
         ...templateLocals,
       })

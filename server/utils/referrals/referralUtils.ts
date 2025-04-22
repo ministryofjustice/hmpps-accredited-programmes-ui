@@ -1,7 +1,15 @@
-import type { ReferralStatusCategory, ReferralStatusReason } from '@accredited-programmes-api'
+import type { Course, PniScore, ReferralStatusCategory, ReferralStatusReason } from '@accredited-programmes-api'
 import type { GovukFrontendFieldsetLegend, GovukFrontendRadiosItem } from '@govuk-frontend'
 
 export default class ReferralUtils {
+  static checkIfOverride(recommended?: PniScore['programmePathway'], requested?: Course['intensity']): boolean {
+    if (!requested || !recommended) {
+      return true
+    }
+
+    return !requested.split('_').includes(recommended.split('_')[0])
+  }
+
   static createReasonsFieldset(
     groupedOptions: Record<ReferralStatusCategory['referralStatusCode'], Array<ReferralStatusReason>>,
     selectedItemCode?: string,

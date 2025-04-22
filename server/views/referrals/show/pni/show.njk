@@ -1,7 +1,25 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "moj/components/timeline/macro.njk" import mojTimeline %}
 
 {% extends "../partials/rootLayout.njk" %}
+
+{% block beforeSupportingContent %}
+  {% if showOverrideText %}
+    {% set html %}
+    <h2 class="govuk-heading-m">Referral does not match PNI</h2>
+    <p class="govuk-body">This referral does not match the recommendation based on the risk and programme needs identifier (PNI) scores.</p>
+    {% endset %}
+
+    {{ govukInsetText({
+      classes: "govuk-!-margin-top-0",
+      html: html,
+      attributes: {
+        "data-testid": "override-inset-text"
+      }
+    }) }}
+  {% endif %}
+{% endblock beforeSupportingContent %}
 
 {% block supportingContent %}
   <p data-testid="programme-needs-identifier-message">This is the recommended Accredited Programmes pathway. It is based on the person's risks and needs.</p>
