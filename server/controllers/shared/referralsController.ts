@@ -4,6 +4,7 @@ import createError from 'http-errors'
 import { assessPaths, findPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
+  CaseListUtils,
   CourseParticipationUtils,
   CourseUtils,
   DateUtils,
@@ -121,6 +122,33 @@ export default class ReferralsController {
         hasOffenceHistory: Boolean(indexOffence) || additionalOffences.length > 0,
         importedFromText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
         indexOffenceSummaryListRows: indexOffence ? OffenceUtils.summaryListRows(indexOffence) : null,
+      })
+    }
+  }
+
+  otherReferrals(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+      const { referral } = sharedPageData
+      const otherReferrals = await this.referralService.getOtherReferrals(req.user, referral.id)
+
+      return res.render('referrals/show/otherReferrals', {
+        ...sharedPageData,
+        tableRows: otherReferrals.map(({ referral: otherReferral, course, organisation, user, status }) => [
+          { text: course.name },
+          { text: course.audience },
+          { text: organisation.name },
+          { text: user.name },
+          {
+            attributes: {
+              'data-sort-value': otherReferral.submittedOn,
+            },
+            text: DateUtils.govukFormattedFullDateString(otherReferral.submittedOn),
+          },
+          { html: CaseListUtils.statusTagHtml(status.colour, status.description) },
+        ]),
       })
     }
   }

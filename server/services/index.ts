@@ -39,6 +39,8 @@ const services = () => {
     userService,
     courseService,
     pniService,
+    organisationService,
+    referenceDataService,
   )
 
   return {
