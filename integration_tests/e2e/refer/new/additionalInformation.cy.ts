@@ -25,6 +25,7 @@ context('Additional information', () => {
     prisonNumber: prisoner.prisonerNumber,
   })
   const referral = referralFactory.started().build({
+    additionalInformation: undefined,
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
     referrerUsername: auth.mockedUser.username,
@@ -58,6 +59,55 @@ context('Additional information', () => {
   })
 
   describe('When updating the additional information', () => {
+    it('displays an error when too much information is provided', () => {
+      const path = referPaths.new.additionalInformation.show({ referralId: referral.id })
+      cy.visit(path)
+
+      const tooMuchInformation = 'a'.repeat(4001)
+
+      const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
+      additionalInformationPage.submitAdditionalInformation(tooMuchInformation)
+      additionalInformationPage.shouldContainButton('Continue').click()
+
+      const additionalInformationPageWithError = Page.verifyOnPage(NewReferralAdditionalInformationPage, {
+        person,
+        referral,
+      })
+      additionalInformationPageWithError.shouldHaveErrors([
+        {
+          field: 'additionalInformation',
+          message: 'Additional information must be 4000 characters or fewer',
+        },
+      ])
+      additionalInformationPageWithError.shouldContainEnteredAdditionalInformation(tooMuchInformation)
+    })
+
+    it('when skip is selected, updates the referral and redirects to the task list', () => {
+      cy.task('stubUpdateReferral', referral.id)
+
+      const course = courseFactory.build()
+      cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
+      cy.task('stubOffering', { courseId: course.id, courseOffering })
+
+      const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+      const organisation = OrganisationUtils.organisationFromPrison(prison)
+      cy.task('stubPrison', prison)
+
+      const path = referPaths.new.additionalInformation.show({ referralId: referral.id })
+      cy.visit(path)
+
+      const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
+      additionalInformationPage.skipAdditionalInformation()
+
+      const taskListPage = Page.verifyOnPage(NewReferralTaskListPage, {
+        course,
+        courseOffering,
+        organisation,
+        referral,
+      })
+      taskListPage.shouldHaveAdditionalInformation()
+    })
+
     it('updates the referral and redirects to the task list', () => {
       cy.task('stubUpdateReferral', referral.id)
 
@@ -82,48 +132,6 @@ context('Additional information', () => {
         referral,
       })
       taskListPage.shouldHaveAdditionalInformation()
-    })
-
-    it('displays an error when additional information is not provided', () => {
-      const path = referPaths.new.additionalInformation.show({ referralId: referral.id })
-      cy.visit(path)
-
-      const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
-      additionalInformationPage.shouldContainButton('Continue').click()
-
-      const additionalInformationPageWithError = Page.verifyOnPage(NewReferralAdditionalInformationPage, {
-        person,
-        referral,
-      })
-      additionalInformationPageWithError.shouldHaveErrors([
-        {
-          field: 'additionalInformation',
-          message: 'Enter additional information',
-        },
-      ])
-    })
-
-    it('displays an error when too much information is provided', () => {
-      const path = referPaths.new.additionalInformation.show({ referralId: referral.id })
-      cy.visit(path)
-
-      const tooMuchInformation = 'a'.repeat(4001)
-
-      const additionalInformationPage = Page.verifyOnPage(NewReferralAdditionalInformationPage, { person, referral })
-      additionalInformationPage.submitAdditionalInformation(tooMuchInformation)
-      additionalInformationPage.shouldContainButton('Continue').click()
-
-      const additionalInformationPageWithError = Page.verifyOnPage(NewReferralAdditionalInformationPage, {
-        person,
-        referral,
-      })
-      additionalInformationPageWithError.shouldHaveErrors([
-        {
-          field: 'additionalInformation',
-          message: 'Additional information must be 4000 characters or fewer',
-        },
-      ])
-      additionalInformationPageWithError.shouldContainEnteredAdditionalInformation(tooMuchInformation)
     })
   })
 })

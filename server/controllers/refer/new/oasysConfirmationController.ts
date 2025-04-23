@@ -74,6 +74,7 @@ export default class NewReferralsOasysConfirmationController {
 
       const referralUpdate: ReferralUpdate = {
         additionalInformation: referral.additionalInformation,
+        hasReviewedAdditionalInformation: referral.hasReviewedAdditionalInformation,
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed,
       }

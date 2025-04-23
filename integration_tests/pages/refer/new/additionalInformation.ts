@@ -17,7 +17,7 @@ export default class NewReferralAdditionalInformationPage extends Page {
   }
 
   shouldContainAdditionalInformationTextArea() {
-    this.shouldContainTextArea('additionalInformation', 'Provide additional information')
+    this.shouldContainTextArea('additionalInformation', 'Provide additional information (optional)')
   }
 
   shouldContainContinueButton() {
@@ -31,7 +31,7 @@ export default class NewReferralAdditionalInformationPage extends Page {
   shouldContainInstructions() {
     cy.get('[data-testid="instructions-paragraph"]').should(
       'have.text',
-      'You must provide additional information you feel will help the programme team in their assessment. This might include:',
+      'You may provide additional information you feel will help the programme team in their assessment. This might include:',
     )
 
     const expectedListText = [
@@ -45,9 +45,16 @@ export default class NewReferralAdditionalInformationPage extends Page {
     })
   }
 
+  skipAdditionalInformation() {
+    this.referral = { ...this.referral, hasReviewedAdditionalInformation: true }
+    // We're stubbing the referral here to make sure the updated referral is available on the task list page
+    cy.task('stubReferral', this.referral)
+    this.shouldContainButton('Skip this section').click()
+  }
+
   submitAdditionalInformation(additionalInformation = 'Wheat gluten makes great fake chicken') {
     cy.get('[data-testid="additional-information-text-area"]').type(additionalInformation, { delay: 0 })
-    this.referral = { ...this.referral, additionalInformation }
+    this.referral = { ...this.referral, additionalInformation, hasReviewedAdditionalInformation: true }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)
     this.shouldContainButton('Continue').click()

@@ -34,7 +34,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <p class="govuk-body" data-testid="instructions-paragraph">You must provide additional information you feel will help the programme team in their assessment. This might include:</p>
+      <p class="govuk-body" data-testid="instructions-paragraph">You may provide additional information you feel will help the programme team in their assessment. This might include:</p>
 
       <ul class="govuk-list govuk-list--bullet">
         <li>the reason for the referral</li>
@@ -49,13 +49,12 @@
 
       <form action="{{ referPaths.new.additionalInformation.update({ referralId: referral.id }) }}?_method=PUT" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-
         {{ govukCharacterCount({
           id: "additionalInformation",
           name: "additionalInformation",
           maxlength: maxLength,
           label: {
-            text: "Provide additional information",
+            text: "Provide additional information (optional)",
             classes: "govuk-fieldset__legend--s"
           },
           attributes: {
@@ -64,14 +63,24 @@
           value: formValues.formattedAdditionalInformation or referral.additionalInformation,
           errorMessage: errors.messages.additionalInformation
         }) }}
-
-        {{ govukButton({
+        <div class="govuk-button-group">
+          {{ govukButton({
           attributes: {
             'data-testid': 'additional-information-submit-button'
           },
           text: "Continue"
         }) }}
-      </form>
+          {{ govukButton({
+          attributes: {
+            'data-testid': 'additional-information-skip-button'
+          },
+          classes: "govuk-button--secondary",
+          text: "Skip this section",
+          name: "skip",
+          value: "true"
+        }) }}
+        </form>
+      </div>
     </div>
   </div>
 {% endblock content %}
