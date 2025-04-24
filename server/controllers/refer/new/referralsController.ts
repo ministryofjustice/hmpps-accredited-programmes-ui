@@ -38,8 +38,8 @@ export default class NewReferralsController {
 
       const [person, courseOffering, course, referrerName, referrerEmail] = await Promise.all([
         this.personService.getPerson(req.user.username, referral.prisonNumber),
-        this.courseService.getOffering(req.user.token, referral.offeringId),
-        this.courseService.getCourseByOffering(req.user.token, referral.offeringId),
+        this.courseService.getOffering(req.user.username, referral.offeringId),
+        this.courseService.getCourseByOffering(req.user.username, referral.offeringId),
         this.userService.getFullNameFromUsername(req.user.token, referral.referrerUsername),
         this.userService.getEmailFromUsername(req.user.token, referral.referrerUsername),
       ])
@@ -162,10 +162,12 @@ export default class NewReferralsController {
         return res.redirect(authPaths.error({}))
       }
 
-      const course = await this.courseService.getCourseByOffering(req.user.token, referral.offeringId)
-      const courseOffering = await this.courseService.getOffering(req.user.token, referral.offeringId)
+      const [course, courseOffering, person] = await Promise.all([
+        this.courseService.getCourseByOffering(req.user.username, referral.offeringId),
+        this.courseService.getOffering(req.user.username, referral.offeringId),
+        this.personService.getPerson(req.user.username, referral.prisonNumber),
+      ])
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
-      const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
       const coursePresenter = CourseUtils.presentCourse(course)
 
       delete req.session.returnTo
@@ -223,8 +225,10 @@ export default class NewReferralsController {
         return res.redirect(findPaths.pniFind.personSearch({}))
       }
 
-      const course = await this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId)
-      const courseOffering = await this.courseService.getOffering(req.user.token, req.params.courseOfferingId)
+      const [course, courseOffering] = await Promise.all([
+        this.courseService.getCourseByOffering(req.user.username, req.params.courseOfferingId),
+        this.courseService.getOffering(req.user.username, req.params.courseOfferingId),
+      ])
       const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
       const coursePresenter = CourseUtils.presentCourse(course)
 
