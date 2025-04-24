@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import { when } from 'jest-when'
 
 import CourseOfferingsController from './courseOfferingsController'
 import config from '../../config'
@@ -11,6 +12,7 @@ import { CourseUtils, OrganisationUtils } from '../../utils'
 
 describe('CoursesOfferingsController', () => {
   const userToken = 'SOME_TOKEN'
+  const username = 'SOME_USER'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
@@ -22,29 +24,29 @@ describe('CoursesOfferingsController', () => {
   let controller: CourseOfferingsController
 
   beforeEach(() => {
-    request = createMock<Request>({ user: { token: userToken } })
+    request = createMock<Request>({
+      params: { courseId: course.id, courseOfferingId: courseOffering.id },
+      user: { token: userToken, username },
+    })
     response = createMock<Response>({ locals: { user: { hasReferrerRole: false } } })
     controller = new CourseOfferingsController(courseService, organisationService)
   })
 
   describe('delete', () => {
     it('deletes the course offering and redirects to the course show page', async () => {
-      const courseId = 'COURSE-ID'
-      const courseOfferingId = 'COURSE-OFFERING-ID'
-
-      request.params = { courseId, courseOfferingId }
-
       const requestHandler = controller.delete()
       await requestHandler(request, response, next)
 
-      expect(courseService.deleteOffering).toHaveBeenCalledWith(userToken, courseId, courseOfferingId)
-      expect(response.redirect).toHaveBeenCalledWith(`/find/programmes/${courseId}`)
+      expect(courseService.deleteOffering).toHaveBeenCalledWith(username, course.id, courseOffering.id)
+      expect(response.redirect).toHaveBeenCalledWith(`/find/programmes/${course.id}`)
     })
   })
 
   describe('show', () => {
-    courseService.getCourseByOffering.mockResolvedValue(course)
-    courseService.getOffering.mockResolvedValue(courseOffering)
+    beforeEach(() => {
+      when(courseService.getCourseByOffering).calledWith(username, courseOffering.id).mockResolvedValue(course)
+      when(courseService.getOffering).calledWith(username, courseOffering.id).mockResolvedValue(courseOffering)
+    })
 
     it('renders the course offering show template', async () => {
       const organisation = organisationFactory.build({ id: courseOffering.organisationId })

@@ -18,7 +18,7 @@ export default class CourseOfferingsController {
 
       const { courseId, courseOfferingId } = req.params
 
-      await this.courseService.deleteOffering(req.user.token, courseId, courseOfferingId)
+      await this.courseService.deleteOffering(req.user.username, courseId, courseOfferingId)
 
       res.redirect(findPaths.show({ courseId }))
     }
@@ -31,8 +31,8 @@ export default class CourseOfferingsController {
       const buildingChoicesCourseId = req.session.buildingChoicesData?.courseVariantId
 
       const [course, [courseOffering, organisation]] = await Promise.all([
-        this.courseService.getCourseByOffering(req.user.token, req.params.courseOfferingId),
-        this.courseService.getOffering(req.user.token, req.params.courseOfferingId).then(async _courseOffering => {
+        this.courseService.getCourseByOffering(req.user.username, req.params.courseOfferingId),
+        this.courseService.getOffering(req.user.username, req.params.courseOfferingId).then(async _courseOffering => {
           // eslint-disable-next-line
           const _organisation = await this.organisationService.getOrganisation(
             req.user.token,
