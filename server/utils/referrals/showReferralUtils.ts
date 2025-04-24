@@ -154,9 +154,9 @@ export default class ShowReferralUtils {
   }
 
   static pniMismatchSummaryListRows(
-    recommendedPathway: PniScore['programmePathway'],
-    requestedPathway: Course['intensity'],
-    referrerOverrideReason: Referral['referrerOverrideReason'],
+    recommendedPathway?: PniScore['programmePathway'],
+    requestedPathway?: Course['intensity'],
+    referrerOverrideReason?: Referral['referrerOverrideReason'],
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {

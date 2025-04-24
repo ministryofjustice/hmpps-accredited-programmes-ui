@@ -8,10 +8,7 @@ import type { ReferralStatusUpdateSessionData } from '../../@types/express'
 import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import {
-  courseFactory,
-  courseOfferingFactory,
   personFactory,
-  pniScoreFactory,
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusRefDataFactory,
@@ -355,19 +352,9 @@ describe('UpdateStatusDecisionController', () => {
         request.body = { statusDecision: 'ASSESSED_SUITABLE' }
       })
 
-      describe('and the PNI matches a `HIGH_MODERATE` course intensity', () => {
+      describe('and the referral IS NOT an override', () => {
         it('should set the correct `referralStatusUpdateData` values and redirect to the selection show page', async () => {
-          const highModerateIntensityCourse = courseFactory.build({
-            courseOfferings: [courseOfferingFactory.build({ id: referral.offeringId })],
-            intensity: 'HIGH_MODERATE',
-          })
-          const highPniPathway = pniScoreFactory.build({
-            prisonNumber: referral.prisonNumber,
-            programmePathway: 'HIGH_INTENSITY_BC',
-          })
-
-          pniService.getPni.mockResolvedValue(highPniPathway)
-          courseService.getCourseByOffering.mockResolvedValue(highModerateIntensityCourse)
+          mockReferralUtils.checkIfOverride.mockReturnValue(false)
 
           const requestHandler = controller.submit()
           await requestHandler(request, response, next)
@@ -378,54 +365,16 @@ describe('UpdateStatusDecisionController', () => {
             initialStatusDecision: 'ASSESSED_SUITABLE',
             referralId: referral.id,
           })
+          expect(referralService.getPathways).toHaveBeenCalledWith(username, referral.id)
           expect(response.redirect).toHaveBeenCalledWith(
             assessPaths.updateStatus.selection.show({ referralId: referral.id }),
           )
         })
       })
 
-      describe('and the PNI matches a `MODERATE` course intensity', () => {
-        it('should set the correct `referralStatusUpdateData` values and redirect to the selection show page', async () => {
-          const highModerateIntensityCourse = courseFactory.build({
-            courseOfferings: [courseOfferingFactory.build({ id: referral.offeringId })],
-            intensity: 'MODERATE',
-          })
-          const lowPniPathway = pniScoreFactory.build({
-            prisonNumber: referral.prisonNumber,
-            programmePathway: 'MODERATE_INTENSITY_BC',
-          })
-
-          pniService.getPni.mockResolvedValue(lowPniPathway)
-          courseService.getCourseByOffering.mockResolvedValue(highModerateIntensityCourse)
-
-          const requestHandler = controller.submit()
-          await requestHandler(request, response, next)
-
-          expect(request.session.referralStatusUpdateData).toEqual({
-            decisionForCategoryAndReason: 'ASSESSED_SUITABLE',
-            finalStatusDecision: 'ASSESSED_SUITABLE',
-            initialStatusDecision: 'ASSESSED_SUITABLE',
-            referralId: referral.id,
-          })
-          expect(response.redirect).toHaveBeenCalledWith(
-            assessPaths.updateStatus.selection.show({ referralId: referral.id }),
-          )
-        })
-      })
-
-      describe('and the PNI does not match a `HIGH` course intensity', () => {
+      describe('and the referral IS an override', () => {
         it('should set the correct `referralStatusUpdateData` values and redirect to the reason show page', async () => {
-          const highIntensityCourse = courseFactory.build({
-            courseOfferings: [courseOfferingFactory.build({ id: referral.offeringId })],
-            intensity: 'HIGH',
-          })
-          const moderatePniPathway = pniScoreFactory.build({
-            prisonNumber: referral.prisonNumber,
-            programmePathway: 'MODERATE_INTENSITY_BC',
-          })
-
-          pniService.getPni.mockResolvedValue(moderatePniPathway)
-          courseService.getCourseByOffering.mockResolvedValue(highIntensityCourse)
+          mockReferralUtils.checkIfOverride.mockReturnValue(true)
 
           const requestHandler = controller.submit()
           await requestHandler(request, response, next)
@@ -436,65 +385,7 @@ describe('UpdateStatusDecisionController', () => {
             initialStatusDecision: 'ASSESSED_SUITABLE',
             referralId: referral.id,
           })
-          expect(response.redirect).toHaveBeenCalledWith(
-            assessPaths.updateStatus.reason.show({ referralId: referral.id }),
-          )
-        })
-      })
-
-      describe('and the programme pathway is not present', () => {
-        it('should set the correct `referralStatusUpdateData` values and redirect to the reason show page', async () => {
-          const highIntensityCourse = courseFactory.build({
-            courseOfferings: [courseOfferingFactory.build({ id: referral.offeringId })],
-            intensity: 'HIGH',
-          })
-          const missingPniPathway = pniScoreFactory.build({
-            prisonNumber: referral.prisonNumber,
-            programmePathway: undefined,
-          })
-
-          pniService.getPni.mockResolvedValue(missingPniPathway)
-          courseService.getCourseByOffering.mockResolvedValue(highIntensityCourse)
-
-          const requestHandler = controller.submit()
-          await requestHandler(request, response, next)
-
-          expect(request.session.referralStatusUpdateData).toEqual({
-            decisionForCategoryAndReason: 'ASSESSED_SUITABLE',
-            finalStatusDecision: 'ASSESSED_SUITABLE',
-            initialStatusDecision: 'ASSESSED_SUITABLE',
-            referralId: referral.id,
-          })
-
-          expect(response.redirect).toHaveBeenCalledWith(
-            assessPaths.updateStatus.reason.show({ referralId: referral.id }),
-          )
-        })
-      })
-
-      describe('and the course intensity is not present', () => {
-        it('should set the correct `referralStatusUpdateData` values and redirect to the reason show page', async () => {
-          const highIntensityCourse = courseFactory.build({
-            courseOfferings: [courseOfferingFactory.build({ id: referral.offeringId })],
-            intensity: undefined,
-          })
-          const highPniPathway = pniScoreFactory.build({
-            prisonNumber: referral.prisonNumber,
-            programmePathway: 'HIGH_INTENSITY_BC',
-          })
-
-          pniService.getPni.mockResolvedValue(highPniPathway)
-          courseService.getCourseByOffering.mockResolvedValue(highIntensityCourse)
-
-          const requestHandler = controller.submit()
-          await requestHandler(request, response, next)
-
-          expect(request.session.referralStatusUpdateData).toEqual({
-            decisionForCategoryAndReason: 'ASSESSED_SUITABLE',
-            finalStatusDecision: 'ASSESSED_SUITABLE',
-            initialStatusDecision: 'ASSESSED_SUITABLE',
-            referralId: referral.id,
-          })
+          expect(referralService.getPathways).toHaveBeenCalledWith(username, referral.id)
           expect(response.redirect).toHaveBeenCalledWith(
             assessPaths.updateStatus.reason.show({ referralId: referral.id }),
           )

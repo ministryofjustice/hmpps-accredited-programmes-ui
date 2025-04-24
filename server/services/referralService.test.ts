@@ -239,99 +239,44 @@ describe('ReferralService', () => {
       when(referralClient.find).calledWith(referral.id).mockResolvedValue(referral)
     })
 
-    describe('and the PNI matches a `HIGH_MODERATE` course intensity', () => {
-      it('should return that there IS NOT a mismatch, along with the provided pathway and intensity values', async () => {
-        const highModerateIntensityCourse = courseFactory.build({
-          courseOfferings: [courseOffering],
-          intensity: 'HIGH_MODERATE',
-        })
-        const highPniPathway = pniScoreFactory.build({
-          prisonNumber,
-          programmePathway: 'HIGH_INTENSITY_BC',
-        })
-
-        pniService.getPni.mockResolvedValue(highPniPathway)
-        courseService.getCourseByOffering.mockResolvedValue(highModerateIntensityCourse)
-
-        const result = await service.getPathways(userToken, referral.id)
-
-        expect(result).toEqual({
-          isOverride: false,
-          recommended: 'HIGH_INTENSITY_BC',
-          requested: 'HIGH_MODERATE',
-        })
+    it('should return the pathway and intensity values', async () => {
+      const course = courseFactory.build({
+        courseOfferings: [courseOffering],
+        intensity: 'HIGH_MODERATE',
       })
-    })
-
-    describe('and the PNI matches a `MODERATE` course intensity', () => {
-      it('should return that there IS NOT a mismatch, along with the provided pathway and intensity values', async () => {
-        const moderateIntensityCourse = courseFactory.build({
-          courseOfferings: [courseOffering],
-          intensity: 'MODERATE',
-        })
-        const moderatePniPathway = pniScoreFactory.build({
-          prisonNumber,
-          programmePathway: 'MODERATE_INTENSITY_BC',
-        })
-
-        pniService.getPni.mockResolvedValue(moderatePniPathway)
-        courseService.getCourseByOffering.mockResolvedValue(moderateIntensityCourse)
-
-        const result = await service.getPathways(userToken, referral.id)
-
-        expect(result).toEqual({
-          isOverride: false,
-          recommended: 'MODERATE_INTENSITY_BC',
-          requested: 'MODERATE',
-        })
+      const pniScore = pniScoreFactory.build({
+        prisonNumber,
+        programmePathway: 'HIGH_INTENSITY_BC',
       })
-    })
 
-    describe('and the PNI does not match the course intensity', () => {
-      it('should return that there IS a mismatch, along with the provided pathway and intensity values', async () => {
-        const moderateIntensityCourse = courseFactory.build({
-          courseOfferings: [courseOffering],
-          intensity: 'MODERATE',
-        })
-        const highPniPathway = pniScoreFactory.build({
-          prisonNumber,
-          programmePathway: 'HIGH_INTENSITY_BC',
-        })
+      pniService.getPni.mockResolvedValue(pniScore)
+      courseService.getCourseByOffering.mockResolvedValue(course)
 
-        pniService.getPni.mockResolvedValue(highPniPathway)
-        courseService.getCourseByOffering.mockResolvedValue(moderateIntensityCourse)
+      const result = await service.getPathways(userToken, referral.id)
 
-        const result = await service.getPathways(userToken, referral.id)
-
-        expect(result).toEqual({
-          isOverride: true,
-          recommended: 'HIGH_INTENSITY_BC',
-          requested: 'MODERATE',
-        })
+      expect(result).toEqual({
+        recommended: 'HIGH_INTENSITY_BC',
+        requested: 'HIGH_MODERATE',
       })
     })
 
     describe('and the course intensity and programme pathway values are not set', () => {
-      it('should return that there IS a mismatch, along with "Unknown" values', async () => {
+      it('should return an empty object', async () => {
         const unknownCourse = courseFactory.build({
           courseOfferings: [courseOffering],
           intensity: undefined,
         })
-        const highPniPathway = pniScoreFactory.build({
+        const unknownPniScore = pniScoreFactory.build({
           prisonNumber,
           programmePathway: undefined,
         })
 
-        pniService.getPni.mockResolvedValue(highPniPathway)
+        pniService.getPni.mockResolvedValue(unknownPniScore)
         courseService.getCourseByOffering.mockResolvedValue(unknownCourse)
 
         const result = await service.getPathways(userToken, referral.id)
 
-        expect(result).toEqual({
-          isOverride: true,
-          recommended: 'Unknown',
-          requested: 'Unknown',
-        })
+        expect(result).toEqual({})
       })
     })
   })
