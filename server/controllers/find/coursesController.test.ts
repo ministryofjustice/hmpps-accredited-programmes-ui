@@ -1,6 +1,7 @@
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import { when } from 'jest-when'
 
 import CoursesController from './coursesController'
 import { findPaths } from '../../paths'
@@ -9,10 +10,10 @@ import { courseFactory, courseOfferingFactory, organisationFactory } from '../..
 import { CourseUtils, OrganisationUtils } from '../../utils'
 import type { CourseOffering } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
-import type { Course } from '@accredited-programmes-api'
 
 describe('CoursesController', () => {
   const userToken = 'SOME_TOKEN'
+  const username = 'SOME_USER'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
@@ -34,7 +35,7 @@ describe('CoursesController', () => {
           programmePathway: 'HIGH_INTENSITY_BC',
         },
       },
-      user: { token: userToken },
+      user: { token: userToken, username },
     })
     response = createMock<Response>({})
     controller = new CoursesController(courseService, organisationService)
@@ -42,13 +43,13 @@ describe('CoursesController', () => {
 
   describe('index', () => {
     it('renders the courses index template with alphabetically-sorted courses and reset `pniFindAndReferData` and `buildingChoicesData`', async () => {
-      const courseA = courseFactory.build({ name: 'Course A' })
-      const courseB = courseFactory.build({ name: 'Course B' })
-      const courseC = courseFactory.build({ name: 'Course C' })
-      const courseD = courseFactory.build({ displayOnProgrammeDirectory: false, name: 'Course D' })
-      courseService.getCourses.mockResolvedValue([courseD, courseC, courseB, courseA])
-
-      const sortedCourses = [courseA, courseB, courseC]
+      const courses = [
+        courseFactory.build({ name: 'Course A' }),
+        courseFactory.build({ name: 'Course B' }),
+        courseFactory.build({ name: 'Course C' }),
+        courseFactory.build({ displayOnProgrammeDirectory: false, name: 'Course D' }),
+      ]
+      when(courseService.getCourses).calledWith(username).mockResolvedValue(courses)
 
       expect(request.session.buildingChoicesData).toBeDefined()
       expect(request.session.pniFindAndReferData).toBeDefined()
@@ -60,22 +61,38 @@ describe('CoursesController', () => {
       expect(request.session.pniFindAndReferData).toBeUndefined()
       expect(response.render).toHaveBeenCalledWith('courses/index', {
         addProgrammePath: findPaths.course.add.show({}),
-        courses: sortedCourses.map(course => CourseUtils.presentCourse(course)),
+        courses: courses
+          .filter(course => course.displayOnProgrammeDirectory)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(course => CourseUtils.presentCourse(course)),
         hideTitleServiceName: true,
         pageHeading: 'Find an Accredited Programme',
       })
 
-      expect(courseService.getCourses).toHaveBeenCalledWith(userToken)
+      expect(courseService.getCourses).toHaveBeenCalledWith(username)
     })
   })
 
   describe('show', () => {
-    let course: Course
+    const course = courseFactory.build()
     const noOfferingsMessage = 'No offerings found for this course.'
+    const organisations = organisationFactory.buildList(3)
+    organisationService.getOrganisations.mockResolvedValue(organisations)
+
+    const courseOfferings: Array<CourseOffering> = []
+    const organisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
+
+    organisations.forEach(organisation => {
+      const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
+      courseOfferings.push(courseOffering)
+      organisationsWithOfferingIds.push({ ...organisation, courseOfferingId: courseOffering.id })
+    })
 
     beforeEach(() => {
-      course = courseFactory.build()
-      courseService.getCourse.mockResolvedValue(course)
+      request.params.courseId = course.id
+
+      when(courseService.getCourse).calledWith(username, course.id).mockResolvedValue(course)
+      when(courseService.getOfferingsByCourse).calledWith(username, course.id).mockResolvedValue(courseOfferings)
 
       jest.spyOn(CourseUtils, 'noOfferingsMessage').mockReturnValue(noOfferingsMessage)
     })
@@ -84,91 +101,27 @@ describe('CoursesController', () => {
       jest.restoreAllMocks()
     })
 
-    describe('when all organisations are returned by the organisation service', () => {
-      it('renders the course show template with all organisations', async () => {
-        const organisations = organisationFactory.buildList(3)
-        organisationService.getOrganisations.mockResolvedValue(organisations)
+    it('renders the course show template with all organisations', async () => {
+      const requestHandler = controller.show()
+      await requestHandler(request, response, next)
 
-        const courseOfferings: Array<CourseOffering> = []
-        const organisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
+      const organisationIds = organisations.map(organisation => organisation.id)
+      expect(organisationService.getOrganisations).toHaveBeenCalledWith(userToken, organisationIds)
 
-        organisations.forEach(organisation => {
-          const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
-          courseOfferings.push(courseOffering)
-          organisationsWithOfferingIds.push({ ...organisation, courseOfferingId: courseOffering.id })
-        })
-
-        courseService.getOfferingsByCourse.mockResolvedValue(courseOfferings)
-
-        const requestHandler = controller.show()
-        await requestHandler(request, response, next)
-
-        const organisationIds = organisations.map(organisation => organisation.id)
-        expect(organisationService.getOrganisations).toHaveBeenCalledWith(userToken, organisationIds)
-
-        const coursePresenter = CourseUtils.presentCourse(course)
-        expect(response.render).toHaveBeenCalledWith('courses/show', {
-          course: coursePresenter,
-          hideTitleServiceName: true,
-          hrefs: {
-            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
-            back: findPaths.pniFind.recommendedProgrammes({}),
-            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
-          },
-          isBuildingChoices: false,
-          noOfferingsMessage,
-          organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
-          pageHeading: coursePresenter.displayName,
-          pageTitleOverride: `${coursePresenter.displayName} programme description`,
-        })
-      })
-    })
-
-    describe('when some but not all organisations are returned by the organisation service', () => {
-      it('renders the course show template with the returned organisations', async () => {
-        const existingOrganisations = organisationFactory.buildList(2)
-        organisationService.getOrganisations.mockResolvedValue(existingOrganisations)
-
-        const nonexistentOrganisation = organisationFactory.build({ id: 'NOTFOUND' })
-        const allOrganisations = [...existingOrganisations, nonexistentOrganisation]
-
-        const courseOfferingsForExistingOrganisations: Array<CourseOffering> = []
-        const existingOrganisationsWithOfferingIds: Array<OrganisationWithOfferingId> = []
-
-        existingOrganisations.forEach(organisation => {
-          const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
-          courseOfferingsForExistingOrganisations.push(courseOffering)
-          existingOrganisationsWithOfferingIds.push({ ...organisation, courseOfferingId: courseOffering.id })
-        })
-
-        const courseOfferingsForAllOrganisations = [
-          ...courseOfferingsForExistingOrganisations,
-          courseOfferingFactory.build({ organisationId: nonexistentOrganisation.id }),
-        ]
-
-        courseService.getOfferingsByCourse.mockResolvedValue(courseOfferingsForAllOrganisations)
-
-        const requestHandler = controller.show()
-        await requestHandler(request, response, next)
-
-        const allOrganisationIds = allOrganisations.map(organisation => organisation.id)
-        expect(organisationService.getOrganisations).toHaveBeenCalledWith(userToken, allOrganisationIds)
-
-        const coursePresenter = CourseUtils.presentCourse(course)
-        expect(response.render).toHaveBeenCalledWith('courses/show', {
-          course: coursePresenter,
-          hideTitleServiceName: true,
-          hrefs: {
-            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
-            back: findPaths.pniFind.recommendedProgrammes({}),
-            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
-          },
-          isBuildingChoices: false,
-          noOfferingsMessage,
-          organisationsTableData: OrganisationUtils.organisationTableRows(existingOrganisationsWithOfferingIds),
-          pageHeading: coursePresenter.displayName,
-          pageTitleOverride: `${coursePresenter.displayName} programme description`,
-        })
+      const coursePresenter = CourseUtils.presentCourse(course)
+      expect(response.render).toHaveBeenCalledWith('courses/show', {
+        course: coursePresenter,
+        hideTitleServiceName: true,
+        hrefs: {
+          addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+          back: findPaths.pniFind.recommendedProgrammes({}),
+          updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+        },
+        isBuildingChoices: false,
+        noOfferingsMessage,
+        organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
+        pageHeading: coursePresenter.displayName,
+        pageTitleOverride: `${coursePresenter.displayName} programme description`,
       })
     })
 

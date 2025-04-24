@@ -1,5 +1,6 @@
 import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
+import { when } from 'jest-when'
 
 import type { ReferenceDataService, StatisticsService } from '../services'
 import ReportsController from './reportsController'
@@ -60,7 +61,7 @@ describe('ReportsController', () => {
     mockStatisticsReportUtils.validateFilterValues.mockReturnValue(errorMessages)
     mockPathUtils.pathWithQuery.mockReturnValue(pathWithQuery)
 
-    referenceDataService.getEnabledOrganisations.mockResolvedValue(enabledOrganisations)
+    when(referenceDataService.getEnabledOrganisations).calledWith(username).mockResolvedValue(enabledOrganisations)
 
     controller = new ReportsController(referenceDataService, statisticsService)
 

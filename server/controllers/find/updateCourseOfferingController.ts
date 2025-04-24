@@ -17,7 +17,7 @@ export default class UpdateCourseOfferingController {
       const { courseOfferingId } = req.params
 
       const [offering, organisations] = await Promise.all([
-        this.courseService.getOffering(req.user.token, courseOfferingId),
+        this.courseService.getOffering(req.user.username, courseOfferingId),
         this.organisationService.getAllOrganisations(req.user.token),
       ])
 
@@ -43,7 +43,7 @@ export default class UpdateCourseOfferingController {
         string
       >
 
-      const course = await this.courseService.getCourseByOffering(req.user.token, courseOfferingId)
+      const course = await this.courseService.getCourseByOffering(req.user.username, courseOfferingId)
 
       await this.courseService.updateCourseOffering(req.user.username, course.id, {
         contactEmail,

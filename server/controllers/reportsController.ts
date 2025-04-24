@@ -60,7 +60,7 @@ export default class ReportsController {
             }),
           ),
         ),
-        this.referenceDataService.getEnabledOrganisations(req.user.token),
+        this.referenceDataService.getEnabledOrganisations(req.user.username),
       ])
 
       const selectedPrison = organisations.find(org => org.code === location)?.description

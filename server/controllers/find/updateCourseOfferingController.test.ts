@@ -44,7 +44,7 @@ describe('UpdateCourseOfferingController', () => {
 
     beforeEach(() => {
       mockOrganisationUtils.organisationSelectItems.mockReturnValue(organisationSelectItems)
-      when(courseService.getOffering).calledWith(userToken, courseOffering.id).mockResolvedValue(courseOffering)
+      when(courseService.getOffering).calledWith(username, courseOffering.id).mockResolvedValue(courseOffering)
     })
 
     it('renders the update course offering form template with organisation select items', async () => {
@@ -71,7 +71,7 @@ describe('UpdateCourseOfferingController', () => {
     const course = courseFactory.build({})
 
     beforeEach(() => {
-      when(courseService.getCourseByOffering).calledWith(userToken, courseOffering.id).mockResolvedValue(course)
+      when(courseService.getCourseByOffering).calledWith(username, courseOffering.id).mockResolvedValue(course)
     })
 
     it('updates a course offering and redirects back to the offering page', async () => {

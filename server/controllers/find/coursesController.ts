@@ -18,7 +18,7 @@ export default class CoursesController {
       delete req.session.buildingChoicesData
       delete req.session.pniFindAndReferData
 
-      const courses = await this.courseService.getCourses(req.user.token)
+      const courses = await this.courseService.getCourses(req.user.username)
       const coursesToDisplay = courses
         .filter(course => course.displayOnProgrammeDirectory)
         .sort((courseA, courseB) => courseA.name.localeCompare(courseB.name))
@@ -39,8 +39,8 @@ export default class CoursesController {
 
       const isPniFind = req.session.pniFindAndReferData !== undefined
 
-      const course = await this.courseService.getCourse(req.user.token, req.params.courseId)
-      const offerings = await this.courseService.getOfferingsByCourse(req.user.token, course.id)
+      const course = await this.courseService.getCourse(req.user.username, req.params.courseId)
+      const offerings = await this.courseService.getOfferingsByCourse(req.user.username, course.id)
 
       const organisationIds = offerings.map((offering: CourseOffering) => offering.organisationId)
       const organisations = await this.organisationService.getOrganisations(req.user.token, organisationIds)

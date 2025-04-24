@@ -15,7 +15,7 @@ export default class UpdateCourseController {
       const { courseId } = req.params
 
       const [audiences, course] = await Promise.all([
-        this.courseService.getCourseAudiences(req.user.token),
+        this.courseService.getCourseAudiences(req.user.username),
         this.courseService.getCourse(req.user.username, courseId),
       ])
 

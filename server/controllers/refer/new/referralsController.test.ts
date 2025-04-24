@@ -2,6 +2,7 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
+import { when } from 'jest-when'
 
 import NewReferralsController from './referralsController'
 import { authPaths, findPaths, referPaths } from '../../../paths'
@@ -95,7 +96,11 @@ describe('NewReferralsController', () => {
       referralService,
       userService,
     )
-    courseService.getOffering.mockResolvedValue(referableCourseOffering)
+
+    when(courseService.getOffering)
+      .calledWith(username, referableCourseOffering.id)
+      .mockResolvedValue(referableCourseOffering)
+    when(courseService.getCourseByOffering).calledWith(username, referableCourseOffering.id).mockResolvedValue(course)
   })
 
   afterEach(() => {
@@ -103,9 +108,11 @@ describe('NewReferralsController', () => {
   })
 
   describe('start', () => {
-    it('renders the referral start template', async () => {
-      courseService.getCourseByOffering.mockResolvedValue(course)
+    beforeEach(() => {
+      request.params.courseOfferingId = referableCourseOffering.id
+    })
 
+    it('renders the referral start template', async () => {
       const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
@@ -238,8 +245,6 @@ describe('NewReferralsController', () => {
     })
 
     it('renders the referral task list page', async () => {
-      courseService.getCourseByOffering.mockResolvedValue(course)
-
       organisationService.getOrganisation.mockResolvedValue(organisation)
 
       personService.getPerson.mockResolvedValue(person)
@@ -270,8 +275,6 @@ describe('NewReferralsController', () => {
 
     describe('when the referral has been requested with an `updatePerson` query', () => {
       it('calls `referralService.getReferral` with the same value', async () => {
-        courseService.getCourseByOffering.mockResolvedValue(course)
-
         organisationService.getOrganisation.mockResolvedValue(organisation)
 
         personService.getPerson.mockResolvedValue(person)
@@ -316,7 +319,6 @@ describe('NewReferralsController', () => {
 
   describe('showPerson', () => {
     it("renders the page for viewing a person's details", async () => {
-      courseService.getCourseByOffering.mockResolvedValue(course)
       personService.getPerson.mockResolvedValue(person)
 
       referralService.getReferral.mockResolvedValue(draftReferral)
@@ -395,7 +397,6 @@ describe('NewReferralsController', () => {
     ]
 
     beforeEach(() => {
-      courseService.getCourseByOffering.mockResolvedValue(course)
       personService.getPerson.mockResolvedValue(person)
       userService.getFullNameFromUsername.mockResolvedValue(referrerName)
       userService.getEmailFromUsername.mockResolvedValue(referrerEmail)
