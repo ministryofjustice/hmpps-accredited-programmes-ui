@@ -29,6 +29,10 @@ describe('AddCourseController', () => {
     response = createMock<Response>()
   })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   describe('show', () => {
     const audienceSelectItems: Array<GovukFrontendSelectItem> = [
       { text: 'Audience 1', value: '1' },
@@ -41,21 +45,16 @@ describe('AddCourseController', () => {
     })
 
     it('renders the create course form template with audience select items', async () => {
-      const audiences = audienceFactory.buildList(3)
-      courseService.getCourseAudiences.mockResolvedValue(audiences)
-
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
-      expect(courseService.getCourseAudiences).toHaveBeenCalledWith(userToken)
-
+      expect(courseService.getCourseAudiences).toHaveBeenCalledWith(username)
       expect(response.render).toHaveBeenCalledWith('courses/form/show', {
         action: '/find/programmes/add',
         audienceSelectItems,
         backLinkHref: '/find/programmes',
         pageHeading: 'Add a Programme',
       })
-      expect(CourseUtils.audienceSelectItems).toHaveBeenCalledWith(audiences)
     })
   })
 

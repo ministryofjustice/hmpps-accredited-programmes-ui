@@ -27,7 +27,7 @@ export default class AddCourseController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const audiences = await this.courseService.getCourseAudiences(req.user.token)
+      const audiences = await this.courseService.getCourseAudiences(req.user.username)
 
       res.render('courses/form/show', {
         action: findPaths.course.add.create({}),
