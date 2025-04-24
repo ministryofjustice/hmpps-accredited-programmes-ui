@@ -32,29 +32,24 @@ describe('UpdateCourseController', () => {
   })
 
   describe('show', () => {
-    const audienceSelectItems: Array<GovukFrontendSelectItem> = [
-      { text: 'Audience 1', value: '1' },
-      { text: 'Audience 2', value: '2' },
-      { text: 'Audience 3', value: '3' },
-    ]
-
-    beforeEach(() => {
-      mockCourseUtils.audienceSelectItems.mockReturnValue(audienceSelectItems)
-      when(courseService.getCourse).calledWith(username, course.id).mockResolvedValue(course)
-    })
-
     it('renders the update course form template with course values audience select items', async () => {
+      const audienceSelectItems: Array<GovukFrontendSelectItem> = [
+        { text: 'Audience 1', value: '1' },
+        { text: 'Audience 2', value: '2' },
+        { text: 'Audience 3', value: '3' },
+      ]
       const audiences = [
         audienceFactory.build({ id: 'audience-id-1', name: 'All offences' }),
         audienceFactory.build({ id: 'audience-id-2', name: 'Extremism offence' }),
         audienceFactory.build({ id: 'audience-id-3', name: 'General offence' }),
       ]
-      courseService.getCourseAudiences.mockResolvedValue(audiences)
+
+      mockCourseUtils.audienceSelectItems.mockReturnValue(audienceSelectItems)
+      when(courseService.getCourse).calledWith(username, course.id).mockResolvedValue(course)
+      when(courseService.getCourseAudiences).calledWith(username).mockResolvedValue(audiences)
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
-
-      expect(courseService.getCourseAudiences).toHaveBeenCalledWith(userToken)
 
       expect(response.render).toHaveBeenCalledWith('courses/form/show', {
         action: `/find/programmes/${course.id}/update?_method=PUT`,
