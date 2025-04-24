@@ -109,33 +109,22 @@ export default class ReferralService {
     username: Express.User['username'],
     referralId: Referral['id'],
   ): Promise<{
-    isOverride: boolean
-    recommended: PniScore['programmePathway']
-    requested: Course['intensity']
+    recommended?: PniScore['programmePathway']
+    requested?: Course['intensity']
   }> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
-    const unknownString = 'Unknown'
     const referral = await referralClient.find(referralId)
     const [pniScore, course] = await Promise.all([
       this.pniService.getPni(username, referral.prisonNumber),
       this.courseService.getCourseByOffering(username, referral.offeringId),
     ])
 
-    let isOverride
-
-    if (!course?.intensity || !pniScore?.programmePathway) {
-      isOverride = true
-    } else {
-      isOverride = !course.intensity.split('_').includes(pniScore.programmePathway.split('_')[0])
-    }
-
     return {
-      isOverride,
-      recommended: pniScore?.programmePathway || unknownString,
-      requested: course.intensity || unknownString,
+      recommended: pniScore?.programmePathway,
+      requested: course.intensity,
     }
   }
 

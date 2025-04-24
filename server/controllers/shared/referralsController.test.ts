@@ -131,7 +131,6 @@ describe('ReferralsController', () => {
     when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
     referralService.getStatusTransitions.mockResolvedValue(statusTransitions)
     referralService.getPathways.mockResolvedValue({
-      isOverride: false,
       recommended: 'MODERATE_INTENSITY_BC',
       requested: 'MODERATE',
     })
@@ -267,7 +266,6 @@ describe('ReferralsController', () => {
 
       beforeEach(() => {
         referralService.getPathways.mockResolvedValue({
-          isOverride: true,
           recommended: 'MODERATE_INTENSITY_BC',
           requested: 'HIGH',
         })

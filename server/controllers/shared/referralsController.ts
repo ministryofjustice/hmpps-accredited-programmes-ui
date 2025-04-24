@@ -9,6 +9,7 @@ import {
   DateUtils,
   OffenceUtils,
   PersonUtils,
+  ReferralUtils,
   SentenceInformationUtils,
   ShowReferralUtils,
   TypeUtils,
@@ -37,7 +38,7 @@ export default class ReferralsController {
       }
 
       const pathways = await this.referralService.getPathways(req.user.username, referral.id)
-      const { isOverride } = pathways
+      const isOverride = ReferralUtils.checkIfOverride(pathways.recommended, pathways.requested)
 
       return res.render('referrals/show/additionalInformation', {
         ...sharedPageData,
