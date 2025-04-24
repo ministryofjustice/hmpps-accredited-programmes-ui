@@ -4,7 +4,6 @@ import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import { FormUtils, ReferralUtils, ShowReferralUtils, TypeUtils } from '../../utils'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
-import type { Referral } from '@accredited-programmes-api'
 
 export default class UpdateStatusDecisionController {
   constructor(
@@ -108,7 +107,8 @@ export default class UpdateStatusDecisionController {
       }
 
       if (statusDecisionValue === 'ASSESSED_SUITABLE' && !isDeselectAndKeepOpen) {
-        needsReason = await this.checkIfOverride(req.user.username, referralId)
+        const pathways = await this.referralService.getPathways(req.user.username, referralId)
+        needsReason = ReferralUtils.checkIfOverride(pathways.recommended, pathways.requested)
       }
 
       if (needsReason) {
@@ -117,23 +117,6 @@ export default class UpdateStatusDecisionController {
 
       return res.redirect(assessPaths.updateStatus.selection.show({ referralId }))
     }
-  }
-
-  // Can eventually be abstracted to be re-used in APG-655
-  private async checkIfOverride(username: Express.User['username'], referralId: Referral['id']) {
-    const referral = await this.referralService.getReferral(username, referralId)
-    const [pniScore, course] = await Promise.all([
-      this.pniService.getPni(username, referral.prisonNumber),
-      this.courseService.getCourseByOffering(username, referral.offeringId),
-    ])
-
-    if (!course?.intensity || !pniScore?.programmePathway) {
-      return true
-    }
-
-    // course.intensity could be 'HIGH', 'MODERATE' or 'HIGH_MODERATE'
-    // pniScore.programmePathway could be 'HIGH_INTENSITY_BC', 'MODERATE_INTENSITY_BC, 'ALTERNATIVE_PATHWAY' or 'MISSING_INFORMATION'
-    return !course.intensity.split('_').includes(pniScore.programmePathway.split('_')[0])
   }
 
   private isDeselectAndKeepOpen(req: Request) {
