@@ -53,6 +53,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
   describe('find', () => {
     const referral: InterfaceToTemplate<Referral> = {
       ...referralFactory.started().build({
+        hasReviewedAdditionalInformation: undefined,
         id: '0c46ed09-170b-4c0f-aee8-a24eeaeeddaa',
       }),
       primaryPrisonOffenderManager: undefined,
