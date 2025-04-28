@@ -32,44 +32,67 @@
 
   <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <p class="govuk-body" data-testid="instructions-paragraph">You may provide additional information you feel will help the programme team in their assessment. This might include:</p>
+  <p>Add extra information to help the programme team assess this referral.</p>
+</br>
 
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form action="{{ referPaths.new.additionalInformation.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+      {% if isOverride %}
+        <h2 class="govuk-heading-m">Reason why the referral is not to a recommended programme</h2>
+
+        <p class="govuk-body" data-testid="override-instructions-paragraph-one">This referral does not match the recommendation based on the risk and programme needs identifier (PNI) scores.</p>
+        <p class="govuk-body" data-testid="override-instructions-paragraph-two">You can make a referral anyway and the treatment manager will decide whether an override is appropriate. You must give a reason.</p>
+
+        {{ govukCharacterCount({
+          id: "referrerOverrideReason",
+          name: "referrerOverrideReason",
+          maxlength: maxLength,
+          attributes: {
+            "data-testid": "referrer-override-reason-text-area"
+          },
+          label: {
+            text: "Reason for override",
+            classes: "govuk-visually-hidden"
+          },
+          value: formValues.formattedReferralOverrideReason or referral.referrerOverrideReason,
+          errorMessage: errors.messages.referrerOverrideReason
+        }) }}
+      {% endif %}
+
+      <h2 class="govuk-heading-m">Additional information</h2>
+
+      <p class="govuk-body" data-testid="add-info-instructions-paragraph-one">Relevant scores and information from OASys will automatically be pulled through to the referral.</p>
+      <p class="govuk-body" data-testid="add-info-instructions-paragraph-two">Give any other information relevant to the referral, such as:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>the reason for the referral</li>
         <li>the person's motivation to complete a programme</li>
-        <li>information to support an override</li>
       </ul>
 
-      {{ govukWarningText({
-        text: "This service will provide the relevant sections from OASys that the programme team needs to assess this referral. The programme team may also need to access the full OASys Layer 3.",
-        iconFallbackText: "Warning"
-      }) }}
-
-      <form action="{{ referPaths.new.additionalInformation.update({ referralId: referral.id }) }}?_method=PUT" method="post">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-        {{ govukCharacterCount({
+      {{ govukCharacterCount({
           id: "additionalInformation",
           name: "additionalInformation",
           maxlength: maxLength,
-          label: {
-            text: "Provide additional information (optional)",
-            classes: "govuk-fieldset__legend--s"
-          },
           attributes: {
             "data-testid": "additional-information-text-area"
+          },
+          label: {
+            text: "Additional Information",
+            classes: "govuk-visually-hidden"
           },
           value: formValues.formattedAdditionalInformation or referral.additionalInformation,
           errorMessage: errors.messages.additionalInformation
         }) }}
-        <div class="govuk-button-group">
-          {{ govukButton({
+      <div class="govuk-button-group">
+        {{ govukButton({
           attributes: {
             'data-testid': 'additional-information-submit-button'
           },
           text: "Continue"
         }) }}
+        {% if isOverride === false %}
           {{ govukButton({
           attributes: {
             'data-testid': 'additional-information-skip-button'
@@ -79,8 +102,9 @@
           name: "skip",
           value: "true"
         }) }}
-        </form>
-      </div>
+        {% endif %}
+      </form>
     </div>
   </div>
+</div>
 {% endblock content %}

@@ -2,7 +2,7 @@ import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { authPaths, referPaths } from '../../../paths'
 import type { PersonService, ReferralService } from '../../../services'
-import { FormUtils, TypeUtils } from '../../../utils'
+import { FormUtils, ReferralUtils, TypeUtils } from '../../../utils'
 import type { ReferralUpdate } from '@accredited-programmes-api'
 
 const maxLength = 4000
@@ -30,11 +30,16 @@ export default class NewReferralsAdditionalInformationController {
       }
 
       const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
+      const pathways = await this.referralService.getPathways(req.user.username, referral.id)
+      const isOverride = ReferralUtils.checkIfOverride(pathways.recommended, pathways.requested)
 
-      FormUtils.setFieldErrors(req, res, ['additionalInformation'])
+      const currentFields = isOverride ? ['additionalInformation', 'referrerOverrideReason'] : ['additionalInformation']
+
+      FormUtils.setFieldErrors(req, res, currentFields)
       FormUtils.setFormValues(req, res)
 
       return res.render('referrals/new/additionalInformation/show', {
+        isOverride,
         maxLength,
         pageHeading: 'Add additional information',
         person,
@@ -60,9 +65,12 @@ export default class NewReferralsAdditionalInformationController {
         return res.redirect(authPaths.error({}))
       }
 
+      const pathways = await this.referralService.getPathways(req.user.username, referral.id)
+      const isOverride = ReferralUtils.checkIfOverride(pathways.recommended, pathways.requested)
       const isSkip = req.body.skip === 'true'
       const hasAdditonalInfo = req.body.additionalInformation?.length > 0
       const formattedAdditionalInformation = hasAdditonalInfo ? req.body.additionalInformation.trim() : null
+      const formattedOverrideReason = isOverride ? req.body.referrerOverrideReason?.trim() : null
 
       if (!isSkip) {
         if (formattedAdditionalInformation?.length > maxLength) {
@@ -70,17 +78,32 @@ export default class NewReferralsAdditionalInformationController {
           req.flash('formValues', [JSON.stringify({ formattedAdditionalInformation })])
           hasErrors = true
         }
+      }
 
-        if (hasErrors) {
-          return res.redirect(referPaths.new.additionalInformation.show({ referralId }))
+      if (isOverride) {
+        if (formattedOverrideReason.length <= 0) {
+          req.flash('referrerOverrideReasonError', 'Override reason is required')
+          req.flash('formValues', [JSON.stringify({ formattedOverrideReason })])
+          hasErrors = true
         }
+
+        if (formattedOverrideReason > maxLength) {
+          req.flash('referrerOverrideReasonError', `Override reason must be ${maxLength} characters or fewer`)
+          req.flash('formValues', [JSON.stringify({ formattedOverrideReason })])
+          hasErrors = true
+        }
+      }
+
+      if (hasErrors) {
+        return res.redirect(referPaths.new.additionalInformation.show({ referralId }))
       }
 
       const referralUpdate: ReferralUpdate = {
         additionalInformation: isSkip ? referral.additionalInformation : formattedAdditionalInformation,
-        hasReviewedAdditionalInformation: isSkip ? true : hasAdditonalInfo,
+        hasReviewedAdditionalInformation: isSkip || isOverride ? true : hasAdditonalInfo,
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: referral.oasysConfirmed,
+        referrerOverrideReason: isOverride ? formattedOverrideReason : null,
       }
 
       await this.referralService.updateReferral(req.user.username, referralId, referralUpdate)

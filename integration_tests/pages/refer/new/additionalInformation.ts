@@ -17,7 +17,7 @@ export default class NewReferralAdditionalInformationPage extends Page {
   }
 
   shouldContainAdditionalInformationTextArea() {
-    this.shouldContainTextArea('additionalInformation', 'Provide additional information (optional)')
+    this.shouldContainTextArea('additionalInformation', 'Additional Information')
   }
 
   shouldContainContinueButton() {
@@ -29,20 +29,29 @@ export default class NewReferralAdditionalInformationPage extends Page {
   }
 
   shouldContainInstructions() {
-    cy.get('[data-testid="instructions-paragraph"]').should(
+    cy.get('[data-testid="add-info-instructions-paragraph-one"]').should(
       'have.text',
-      'You may provide additional information you feel will help the programme team in their assessment. This might include:',
+      'Relevant scores and information from OASys will automatically be pulled through to the referral.',
     )
 
-    const expectedListText = [
-      'the reason for the referral',
-      "the person's motivation to complete a programme",
-      'information to support an override',
-    ]
+    cy.get('[data-testid="add-info-instructions-paragraph-two"]').should(
+      'have.text',
+      'Give any other information relevant to the referral, such as:',
+    )
+
+    const expectedListText = ['the reason for the referral', "the person's motivation to complete a programme"]
 
     cy.get('.govuk-list li').each((listItemElement, listItemElementIndex) => {
       cy.wrap(listItemElement).should('have.text', expectedListText[listItemElementIndex])
     })
+  }
+
+  shouldContainOverrideReasonTextArea() {
+    this.shouldContainTextArea('referrerOverrideReason', 'Reason for override')
+  }
+
+  shouldContainReferrerOverrideReason(referrerOverrideReason: string) {
+    cy.get('[data-testid="additional-information-text-area""]').should('have.text', referrerOverrideReason)
   }
 
   skipAdditionalInformation() {
@@ -53,8 +62,21 @@ export default class NewReferralAdditionalInformationPage extends Page {
   }
 
   submitAdditionalInformation(additionalInformation = 'Wheat gluten makes great fake chicken') {
-    cy.get('[data-testid="additional-information-text-area"]').type(additionalInformation, { delay: 0 })
+    cy.get('[data-testid="additional-information-text-area"]').eq(0).type(additionalInformation, { delay: 0 })
     this.referral = { ...this.referral, additionalInformation, hasReviewedAdditionalInformation: true }
+    // We're stubbing the referral here to make sure the updated referral is available on the task list page
+    cy.task('stubReferral', this.referral)
+    this.shouldContainButton('Continue').click()
+  }
+
+  submitOverrideReason(overrideReason = 'An Override reason') {
+    cy.get('[data-testid="referrer-override-reason-text-area"]').eq(0).type(overrideReason, { delay: 100 })
+
+    this.referral = {
+      ...this.referral,
+      hasReviewedAdditionalInformation: true,
+      referrerOverrideReason: overrideReason,
+    }
     // We're stubbing the referral here to make sure the updated referral is available on the task list page
     cy.task('stubReferral', this.referral)
     this.shouldContainButton('Continue').click()

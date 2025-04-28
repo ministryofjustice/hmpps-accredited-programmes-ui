@@ -582,6 +582,7 @@ export default abstract class Page {
       const { actual, expected } = Helpers.parseHtml(labelElement, label)
       expect(actual).to.equal(expected)
     })
+
     cy.get(`.govuk-textarea[id="${id}"]`).should('exist')
   }
 

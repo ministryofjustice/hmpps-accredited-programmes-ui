@@ -37,10 +37,20 @@ describe('NewReferralsAdditionalInformationController', () => {
     prisonNumber: person.prisonNumber,
     referrerUsername: username,
   })
+  const nonOverridePathways = {
+    recommended: 'HIGH_INTENSITY',
+    requested: 'HIGH_INTENSITY',
+  }
+  const isOverridePathways = {
+    recommended: 'MEDIUM_INTENSITY',
+    requested: 'HIGH_INTENSITY',
+  }
 
   let controller: NewReferralsAdditionalInformationController
 
   beforeEach(() => {
+    referralService.getPathways.mockResolvedValue(nonOverridePathways)
+    referralService.getReferral.mockResolvedValue(draftReferral)
     request = createMock<Request>({ params: { referralId }, user: { username } })
     response = Helpers.createMockResponseWithCaseloads()
     controller = new NewReferralsAdditionalInformationController(personService, referralService)
@@ -65,6 +75,7 @@ describe('NewReferralsAdditionalInformationController', () => {
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(response.render).toHaveBeenCalledWith('referrals/new/additionalInformation/show', {
+        isOverride: false,
         maxLength: 4000,
         pageHeading: 'Add additional information',
         person,
@@ -101,118 +112,157 @@ describe('NewReferralsAdditionalInformationController', () => {
         expect(response.redirect).toHaveBeenCalledWith(authPaths.error({}))
       })
     })
+  })
 
-    describe('skip', () => {
-      describe('when the skip this step is called', () => {
-        beforeEach(() => {
-          referralService.getReferral.mockResolvedValue(draftReferral)
-        })
-        it('redirects to the referral show action', async () => {
-          delete draftReferral.additionalInformation
-          referralService.getReferral.mockResolvedValue(draftReferral)
-          request.body.skip = 'true'
-          const requestHandler = controller.update()
-          await requestHandler(request, response, next)
-
-          expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-          expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
-            additionalInformation: undefined,
-            hasReviewedAdditionalInformation: true,
-            hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
-            oasysConfirmed: draftReferral.oasysConfirmed,
-          })
-          expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
-        })
-      })
-    })
-
-    describe('update', () => {
-      describe('when a value is provided for `additionalInformation`', () => {
-        beforeEach(() => {
-          referralService.getReferral.mockResolvedValue(draftReferral)
-          request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
-        })
-
-        it('ask the service to update the referral and redirects to the referral show action', async () => {
-          const requestHandler = controller.update()
-          await requestHandler(request, response, next)
-
-          expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-          expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
-            additionalInformation: 'Some additional information\nAnother paragraph',
-            hasReviewedAdditionalInformation: true,
-            hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
-            oasysConfirmed: draftReferral.oasysConfirmed,
-          })
-          expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
-        })
-
-        describe('when `req.session.returnTo` is `check-answers`', () => {
-          it('redirects to the check answers page with #additionalInformation', async () => {
-            request.session.returnTo = 'check-answers'
-
-            const requestHandler = controller.update()
-            await requestHandler(request, response, next)
-
-            expect(response.redirect).toHaveBeenCalledWith(
-              `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
-            )
-          })
-        })
-      })
-
-      describe('when a value is not provided for `additionalInformation`', () => {
-        beforeEach(() => {
-          referralService.getReferral.mockResolvedValue(draftReferral)
-        })
-
-        it('ask the service to update the referral and redirects to the referral show action', async () => {
-          const requestHandler = controller.update()
-          await requestHandler(request, response, next)
-
-          expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-          expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
-            additionalInformation: null,
-            hasReviewedAdditionalInformation: false,
-            hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
-            oasysConfirmed: draftReferral.oasysConfirmed,
-          })
-          expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
-        })
-
-        describe('when `req.session.returnTo` is `check-answers`', () => {
-          it('redirects to the check answers page with #additionalInformation', async () => {
-            request.session.returnTo = 'check-answers'
-
-            const requestHandler = controller.update()
-            await requestHandler(request, response, next)
-
-            expect(response.redirect).toHaveBeenCalledWith(
-              `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
-            )
-          })
-        })
-      })
-    })
-
-    describe('when `additionalInformation` is too long', () => {
-      it('redirects to the additional information show action with an error', async () => {
-        const longAdditionalInformation = 'a'.repeat(4001)
-
+  describe('skip', () => {
+    describe('when the skip this step is called', () => {
+      beforeEach(() => {
         referralService.getReferral.mockResolvedValue(draftReferral)
-        request.body = { additionalInformation: longAdditionalInformation }
-
+      })
+      it('redirects to the referral show action', async () => {
+        delete draftReferral.additionalInformation
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        request.body.skip = 'true'
         const requestHandler = controller.update()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith(
-          'additionalInformationError',
-          'Additional information must be 4000 characters or fewer',
-        )
-        expect(request.flash).toHaveBeenCalledWith('formValues', [
-          JSON.stringify({ formattedAdditionalInformation: longAdditionalInformation }),
-        ])
-        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+          additionalInformation: undefined,
+          hasReviewedAdditionalInformation: true,
+          hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+          oasysConfirmed: draftReferral.oasysConfirmed,
+          referrerOverrideReason: null,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+      })
+    })
+  })
+
+  describe('update', () => {
+    describe('when a value is provided for `additionalInformation`', () => {
+      beforeEach(() => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+        request.body.additionalInformation = ' Some additional information\nAnother paragraph\n '
+      })
+
+      it('ask the service to update the referral and redirects to the referral show action', async () => {
+        const requestHandler = controller.update()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+          additionalInformation: 'Some additional information\nAnother paragraph',
+          hasReviewedAdditionalInformation: true,
+          hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+          oasysConfirmed: draftReferral.oasysConfirmed,
+          referrerOverrideReason: null,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+      })
+
+      describe('when `req.session.returnTo` is `check-answers`', () => {
+        it('redirects to the check answers page with #additionalInformation', async () => {
+          request.session.returnTo = 'check-answers'
+
+          const requestHandler = controller.update()
+          await requestHandler(request, response, next)
+
+          expect(response.redirect).toHaveBeenCalledWith(
+            `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
+          )
+        })
+      })
+    })
+
+    describe('when a value is not provided for `additionalInformation`', () => {
+      beforeEach(() => {
+        referralService.getReferral.mockResolvedValue(draftReferral)
+      })
+
+      it('ask the service to update the referral and redirects to the referral show action', async () => {
+        const requestHandler = controller.update()
+        await requestHandler(request, response, next)
+
+        expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+        expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+          additionalInformation: null,
+          hasReviewedAdditionalInformation: false,
+          hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+          oasysConfirmed: draftReferral.oasysConfirmed,
+          referrerOverrideReason: null,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+      })
+
+      describe('when `req.session.returnTo` is `check-answers`', () => {
+        it('redirects to the check answers page with #additionalInformation', async () => {
+          request.session.returnTo = 'check-answers'
+
+          const requestHandler = controller.update()
+          await requestHandler(request, response, next)
+
+          expect(response.redirect).toHaveBeenCalledWith(
+            `${referPaths.new.checkAnswers({ referralId })}#additionalInformation`,
+          )
+        })
+      })
+
+      describe('when the referral is an override', () => {
+        describe('and the override reason provided', () => {
+          it('asks the service to update the referral and redirects to the referral show action', async () => {
+            request.body.referrerOverrideReason = 'Some override reason'
+            referralService.getPathways.mockResolvedValue(isOverridePathways)
+            const requestHandler = controller.update()
+            await requestHandler(request, response, next)
+
+            expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+            expect(referralService.updateReferral).toHaveBeenCalledWith(username, referralId, {
+              additionalInformation: null,
+              hasReviewedAdditionalInformation: true,
+              hasReviewedProgrammeHistory: draftReferral.hasReviewedProgrammeHistory,
+              oasysConfirmed: draftReferral.oasysConfirmed,
+              referrerOverrideReason: 'Some override reason',
+            })
+            expect(response.redirect).toHaveBeenCalledWith(referPaths.new.show({ referralId }))
+          })
+        })
+
+        describe('and the override reason is not provided', () => {
+          it('redirects to the additional information show action with an error', async () => {
+            referralService.getReferral.mockResolvedValue(draftReferral)
+            referralService.getPathways.mockResolvedValue(isOverridePathways)
+            request.body.referrerOverrideReason = ''
+
+            const requestHandler = controller.update()
+            await requestHandler(request, response, next)
+
+            expect(request.flash).toHaveBeenCalledWith('referrerOverrideReasonError', 'Override reason is required')
+            expect(request.flash).toHaveBeenCalledWith('formValues', [JSON.stringify({ formattedOverrideReason: '' })])
+            expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
+          })
+        })
+      })
+
+      describe('when `additionalInformation` is too long', () => {
+        it('redirects to the additional information show action with an error', async () => {
+          const longAdditionalInformation = 'a'.repeat(4001)
+
+          referralService.getReferral.mockResolvedValue(draftReferral)
+          request.body = { additionalInformation: longAdditionalInformation }
+
+          const requestHandler = controller.update()
+          await requestHandler(request, response, next)
+
+          expect(request.flash).toHaveBeenCalledWith(
+            'additionalInformationError',
+            'Additional information must be 4000 characters or fewer',
+          )
+          expect(request.flash).toHaveBeenCalledWith('formValues', [
+            JSON.stringify({ formattedAdditionalInformation: longAdditionalInformation }),
+          ])
+          expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
+        })
       })
     })
   })
