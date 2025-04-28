@@ -42,15 +42,13 @@ export default class OrganisationUtils {
     })
   }
 
-  static organisationSelectItemsForPrisonFilter(
-    organisations: Array<EnabledOrganisation>,
-  ): Array<GovukFrontendSelectItem> {
+  static organisationSelectItemsForPrisonFilter(organisations: Array<Prison>): Array<GovukFrontendSelectItem> {
     const filteredItems: Array<GovukFrontendSelectItem> = organisations
-      .filter(({ code, description }) => code && description)
-      .sort((a, b) => a.description!.localeCompare(b.description!))
-      .map(({ description, code }) => ({
-        text: description!,
-        value: code!,
+      .filter(({ prisonId, prisonName }) => prisonId && prisonName)
+      .sort((a, b) => a.prisonName!.localeCompare(b.prisonName!))
+      .map(({ prisonId, prisonName }) => ({
+        text: prisonName,
+        value: prisonId,
       }))
 
     filteredItems.unshift({ text: '', value: '' })

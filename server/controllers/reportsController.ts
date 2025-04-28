@@ -1,12 +1,12 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { reportsPaths } from '../paths'
-import type { ReferenceDataService, StatisticsService } from '../services'
+import type { OrganisationService, StatisticsService } from '../services'
 import { DateUtils, OrganisationUtils, PathUtils, StatisticsReportUtils, TypeUtils } from '../utils'
 
 export default class ReportsController {
   constructor(
-    private readonly referenceDataService: ReferenceDataService,
+    private readonly organisationService: OrganisationService,
     private readonly statisticsService: StatisticsService,
   ) {}
 
@@ -60,10 +60,10 @@ export default class ReportsController {
             }),
           ),
         ),
-        this.referenceDataService.getEnabledOrganisations(req.user.username),
+        this.organisationService.getAllOrganisations(req.user.token),
       ])
 
-      const selectedPrison = organisations.find(org => org.code === location)?.description
+      const selectedPrison = organisations.find(org => org.prisonId === location)?.prisonName
 
       const subHeading = [
         selectedPrison ? 'Showing data' : 'Showing national data',

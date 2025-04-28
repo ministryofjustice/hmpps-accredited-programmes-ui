@@ -11,6 +11,7 @@ import {
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 import type { Course, EnabledOrganisation } from '@accredited-programmes-api'
+import type { Prison } from '@prison-register-api'
 
 describe('OrganisationUtils', () => {
   describe('organisationFromPrison', () => {
@@ -64,9 +65,9 @@ describe('OrganisationUtils', () => {
 
   describe('organisationSelectItemsForPrisonFilter', () => {
     it('returns an array of `GovUkFrontendSelectItem` objects from an array of prisons, sorted by `prisonName`', () => {
-      const enabledOrganisations: Array<EnabledOrganisation> = [
-        { code: 'B', description: 'B Prison' },
-        { code: 'A', description: 'A Prison' },
+      const enabledOrganisations: Array<Prison> = [
+        prisonFactory.build({ prisonId: 'B', prisonName: 'B Prison' }),
+        prisonFactory.build({ prisonId: 'A', prisonName: 'A Prison' }),
       ]
 
       expect(OrganisationUtils.organisationSelectItemsForPrisonFilter(enabledOrganisations)).toEqual([
@@ -76,12 +77,12 @@ describe('OrganisationUtils', () => {
       ])
     })
 
-    describe('when a organisation has an `undefined` code or description', () => {
+    describe('when a organisation has an `undefined` prisonId or prisonName', () => {
       it('filters out the organisation from the returned array', () => {
-        const enabledOrganisations: Array<EnabledOrganisation> = [
-          { code: 'B', description: 'B Prison' },
-          { code: undefined, description: 'A Prison' },
-          { code: 'A', description: undefined },
+        const enabledOrganisations: Array<Prison> = [
+          prisonFactory.build({ prisonId: 'B', prisonName: 'B Prison' }),
+          prisonFactory.build({ prisonId: undefined, prisonName: 'A Prison' }),
+          prisonFactory.build({ prisonId: 'C', prisonName: undefined }),
         ]
 
         expect(OrganisationUtils.organisationSelectItemsForPrisonFilter(enabledOrganisations)).toEqual([

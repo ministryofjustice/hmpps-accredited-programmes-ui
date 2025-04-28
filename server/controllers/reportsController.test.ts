@@ -2,11 +2,11 @@ import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import type { ReferenceDataService, StatisticsService } from '../services'
+import type { OrganisationService, StatisticsService } from '../services'
 import ReportsController from './reportsController'
-import { reportContentFactory } from '../testutils/factories'
+import { prisonFactory, reportContentFactory } from '../testutils/factories'
 import { OrganisationUtils, PathUtils, StatisticsReportUtils } from '../utils'
-import type { EnabledOrganisation } from '@accredited-programmes-api'
+import type { Prison } from '@prison-register-api'
 
 jest.mock('../utils/organisationUtils')
 jest.mock('../utils/statisticsReportUtils')
@@ -18,6 +18,7 @@ const mockPathUtils = PathUtils as jest.Mocked<typeof PathUtils>
 
 describe('ReportsController', () => {
   const username = 'USERNAME'
+  const userToken = 'USER_TOKEN'
   const mockTodaysDate = new Date('2024-02-14')
   const lastMonth = {
     endDate: '2024-01-31',
@@ -25,9 +26,9 @@ describe('ReportsController', () => {
   }
   const queryParams = [{ key: 'period', value: 'lastSixMonths' }]
   const pathWithQuery = '/reports?period=lastSixMonths'
-  const enabledOrganisations: Array<EnabledOrganisation> = [
-    { code: 'MDI', description: 'Moorland' },
-    { code: 'LEI', description: 'Leeds' },
+  const allOrganisations: Array<Prison> = [
+    prisonFactory.build({ prisonId: 'MDI', prisonName: 'Moorland' }),
+    prisonFactory.build({ prisonId: 'LEI', prisonName: 'Leeds' }),
   ]
   const prisonLocationOptions = [
     { text: '', value: '' },
@@ -40,7 +41,7 @@ describe('ReportsController', () => {
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
 
-  const referenceDataService = createMock<ReferenceDataService>({})
+  const organisationService = createMock<OrganisationService>({})
   const statisticsService = createMock<StatisticsService>({})
 
   const reportDataBlock = {
@@ -61,12 +62,12 @@ describe('ReportsController', () => {
     mockStatisticsReportUtils.validateFilterValues.mockReturnValue(errorMessages)
     mockPathUtils.pathWithQuery.mockReturnValue(pathWithQuery)
 
-    when(referenceDataService.getEnabledOrganisations).calledWith(username).mockResolvedValue(enabledOrganisations)
+    when(organisationService.getAllOrganisations).calledWith(userToken).mockResolvedValue(allOrganisations)
 
-    controller = new ReportsController(referenceDataService, statisticsService)
+    controller = new ReportsController(organisationService, statisticsService)
 
     request = createMock<Request>({
-      user: { username },
+      user: { token: userToken, username },
     })
     response = createMock<Response>()
 
