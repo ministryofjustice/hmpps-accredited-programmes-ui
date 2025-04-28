@@ -9,7 +9,7 @@ import type {
   ReferralStatusUppercase,
   ReferralStatusWithReasons,
 } from '@accredited-programmes/models'
-import type { EnabledOrganisation, ReferralStatusReason } from '@accredited-programmes-api'
+import type { ReferralStatusReason } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferenceDataClient {
@@ -21,12 +21,6 @@ export default class ReferenceDataClient {
       config.apis.accreditedProgrammesApi as ApiConfig,
       systemToken,
     )
-  }
-
-  async findEnabledOrganisations(): Promise<Array<EnabledOrganisation>> {
-    return (await this.restClient.get({
-      path: apiPaths.organisations.enabled({}),
-    })) as Array<EnabledOrganisation>
   }
 
   async findReferralStatusCodeCategories(

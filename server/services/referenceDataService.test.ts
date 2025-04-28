@@ -10,7 +10,6 @@ import {
   referralStatusRefDataFactory,
 } from '../testutils/factories'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
-import type { EnabledOrganisation } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/referenceDataClient')
 jest.mock('../data/hmppsAuthClient')
@@ -36,21 +35,6 @@ describe('ReferenceDataService', () => {
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     referenceDataClientBuilder.mockReturnValue(referenceDataClient)
     hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
-  })
-
-  describe('getEnabledOrganisations', () => {
-    it('should return enabled organisations', async () => {
-      const enabledOrganisations: Array<EnabledOrganisation> = [
-        { code: 'ORG1', description: 'Organisation 1' },
-        { code: 'ORG2', description: 'Organisation 2' },
-      ]
-
-      when(referenceDataClient.findEnabledOrganisations).mockResolvedValue(enabledOrganisations)
-
-      const result = await service.getEnabledOrganisations(username)
-
-      expect(result).toEqual(enabledOrganisations)
-    })
   })
 
   describe('getReferralStatusCodeCategories', () => {

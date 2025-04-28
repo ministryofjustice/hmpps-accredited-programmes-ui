@@ -6,21 +6,13 @@ import type {
   ReferralStatusUppercase,
   ReferralStatusWithReasons,
 } from '@accredited-programmes/models'
-import type { EnabledOrganisation, ReferralStatusReason } from '@accredited-programmes-api'
+import type { ReferralStatusReason } from '@accredited-programmes-api'
 
 export default class ReferenceDataService {
   constructor(
     private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
     private readonly referenceDataClient: RestClientBuilder<ReferenceDataClient>,
   ) {}
-
-  async getEnabledOrganisations(username: Express.User['username']): Promise<Array<EnabledOrganisation>> {
-    const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
-    const referenceDataClient = this.referenceDataClient(systemToken)
-
-    return referenceDataClient.findEnabledOrganisations()
-  }
 
   async getReferralStatusCodeCategories(
     username: Express.User['username'],

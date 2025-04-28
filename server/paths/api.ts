@@ -79,7 +79,6 @@ export default {
   },
   organisations: {
     courses: coursesByOrganisationPath,
-    enabled: organisationsPath.path('enabled'),
   },
   participations: {
     create: participationsPath,
