@@ -5,8 +5,8 @@ import type {
   OrganisationWithOfferingEmailsPresenter,
   OrganisationWithOfferingId,
 } from '@accredited-programmes/ui'
-import type { Course, EnabledOrganisation } from '@accredited-programmes-api'
-import type { GovukFrontendRadiosItem, GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
+import type { Course } from '@accredited-programmes-api'
+import type { GovukFrontendSelectItem, GovukFrontendTableRow } from '@govuk-frontend'
 import type { Prison } from '@prison-register-api'
 
 export default class OrganisationUtils {
@@ -21,16 +21,6 @@ export default class OrganisationUtils {
       female: prison.female,
       name: prison.prisonName,
     }
-  }
-
-  static organisationRadioItems(organisations: Array<EnabledOrganisation>): Array<GovukFrontendRadiosItem> {
-    return organisations
-      .filter(({ code, description }) => code && description)
-      .sort((a, b) => a.description!.localeCompare(b.description!))
-      .map(({ description, code }) => ({
-        text: description!,
-        value: code!,
-      }))
   }
 
   static organisationSelectItems(organisations: Array<Prison>): Array<GovukFrontendSelectItem> {
