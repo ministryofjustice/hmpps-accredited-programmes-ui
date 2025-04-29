@@ -120,6 +120,19 @@
         headingLevel=3
       ) }}
 
+      {% if referrerOverrideReason | length %}
+        {{ keylessSummaryCard(
+        "Reason for override",
+        actionItems=[{
+          html: 'Change<span class="govuk-visually-hidden"> reason for override</span>',
+          href: referPaths.new.additionalInformation.show({ referralId: referralId })
+        }],
+        bodyText=referrerOverrideReason,
+        testId="override-reason-summary-card",
+        headingLevel=3
+      ) }}
+      {% endif %}
+
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
       <form action="{{ referPaths.new.submit({ referralId: referralId }) }}" method="post">

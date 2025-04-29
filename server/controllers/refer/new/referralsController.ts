@@ -79,6 +79,7 @@ export default class NewReferralsController {
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
+        referrerOverrideReason: referral.referrerOverrideReason,
         referrerSummaryListRows: NewReferralUtils.referrerSummaryListRows(referrerName, referrerEmail),
         successMessage,
       })
