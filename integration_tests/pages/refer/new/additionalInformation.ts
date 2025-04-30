@@ -17,7 +17,7 @@ export default class NewReferralAdditionalInformationPage extends Page {
   }
 
   shouldContainAdditionalInformationTextArea() {
-    this.shouldContainTextArea('additionalInformation', 'Additional Information')
+    this.shouldContainTextArea('additionalInformation', 'Provide additional information')
   }
 
   shouldContainContinueButton() {
