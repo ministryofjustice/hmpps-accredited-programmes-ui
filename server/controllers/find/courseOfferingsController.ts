@@ -48,7 +48,6 @@ export default class CourseOfferingsController {
         canMakeReferral:
           config.flags.referEnabled &&
           courseOffering.referable &&
-          courseOffering.organisationEnabled &&
           res.locals.user.hasReferrerRole &&
           req.session.pniFindAndReferData !== undefined,
         course: coursePresenter,

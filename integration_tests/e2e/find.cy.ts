@@ -15,7 +15,6 @@ context('Find', () => {
   const organisation = OrganisationUtils.organisationFromPrison(prison)
 
   const referableCourseOffering = courseOfferingFactory.build({
-    organisationEnabled: true,
     organisationId: organisation.id,
     referable: true,
   })
@@ -209,28 +208,6 @@ context('Find', () => {
           const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
             course: targetCourse,
             courseOffering: referableCourseOffering,
-            organisation,
-          })
-          courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
-          courseOfferingPage.shouldNotContainUpdateCourseOfferingLink()
-          courseOfferingPage.shouldNotContainDeleteOfferingButton()
-        })
-      })
-
-      describe('and in an organisation where refer IS NOT enabled', () => {
-        it('does not show the "Make a referral" button on an offering', () => {
-          const courseOffering = {
-            ...referableCourseOffering,
-            organisationEnabled: false,
-          }
-
-          cy.task('stubOffering', { courseOffering })
-
-          cy.visit(path)
-
-          const courseOfferingPage = Page.verifyOnPage(CourseOfferingPage, {
-            course: targetCourse,
-            courseOffering,
             organisation,
           })
           courseOfferingPage.shouldNotContainMakeAReferralButtonLink()
