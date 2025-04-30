@@ -23,10 +23,7 @@ export default class CourseClient {
   }
 
   /* istanbul ignore next */
-  async addCourseOffering(
-    courseId: Course['id'],
-    courseOffering: Omit<CourseOffering, 'id' | 'organisationEnabled'>,
-  ): Promise<CourseOffering> {
+  async addCourseOffering(courseId: Course['id'], courseOffering: Omit<CourseOffering, 'id'>): Promise<CourseOffering> {
     return (await this.restClient.post({
       data: courseOffering,
       path: apiPaths.offerings.create({ courseId }),
@@ -164,10 +161,7 @@ export default class CourseClient {
   }
 
   /* istanbul ignore next */
-  async updateCourseOffering(
-    courseId: Course['id'],
-    courseOffering: Omit<CourseOffering, 'organisationEnabled'>,
-  ): Promise<CourseOffering> {
+  async updateCourseOffering(courseId: Course['id'], courseOffering: CourseOffering): Promise<CourseOffering> {
     return (await this.restClient.put({
       data: courseOffering,
       path: apiPaths.offerings.update({ courseId }),

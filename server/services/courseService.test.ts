@@ -55,7 +55,7 @@ describe('CourseService', () => {
     it('adds a course offering using the `courseOfferingRequest` values', async () => {
       const courseId = courseFactory.build().id
       const courseOffering = courseOfferingFactory.build({})
-      const courseOfferingRequest: Omit<CourseOffering, 'id' | 'organisationEnabled'> = {
+      const courseOfferingRequest: Omit<CourseOffering, 'id'> = {
         contactEmail: courseOffering.contactEmail,
         organisationId: courseOffering.organisationId,
         referable: courseOffering.referable,
@@ -540,7 +540,7 @@ describe('CourseService', () => {
     it('updates a course offering using the `courseOfferingRequest` values', async () => {
       const course = courseFactory.build()
       const courseOffering = courseOfferingFactory.build()
-      const courseOfferingRequest: Omit<CourseOffering, 'organisationEnabled'> = {
+      const courseOfferingRequest: CourseOffering = {
         contactEmail: 'contact-email-1@test.com',
         id: courseOffering.id,
         organisationId: 'MDI',
