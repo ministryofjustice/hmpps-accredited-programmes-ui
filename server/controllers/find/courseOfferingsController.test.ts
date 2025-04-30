@@ -108,7 +108,6 @@ describe('CoursesOfferingsController', () => {
       it('sets canMakeReferral to true', async () => {
         config.flags.referEnabled = true
         courseOffering.referable = true
-        courseOffering.organisationEnabled = true
         response.locals.user.hasReferrerRole = true
         request.session.pniFindAndReferData = {
           prisonNumber: 'A1234AA',

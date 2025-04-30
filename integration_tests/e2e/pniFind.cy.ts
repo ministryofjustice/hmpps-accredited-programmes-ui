@@ -281,7 +281,6 @@ context('Find programmes based on PNI Pathway', () => {
         })
 
         const referableOffering = courseOfferingFactory.build({
-          organisationEnabled: true,
           organisationId: 'MDI',
           referable: true,
         })
