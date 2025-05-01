@@ -52,7 +52,7 @@ export default class TransferReferralErrorController {
         const organisation = await this.organisationService.getOrganisation(token, originalOffering.organisationId)
 
         errorText = [
-          `This referral cannot be moved because ${organisation.name} does not offer Building Choices: ${originalCourse.intensity?.toLowerCase()} intensity.`,
+          `This referral cannot be moved because ${organisation.name} does not offer the general offence strand of Building Choices: ${originalCourse.intensity?.toLowerCase()} intensity.`,
           'Close this referral and submit a new one to a different location.',
         ]
       } else {

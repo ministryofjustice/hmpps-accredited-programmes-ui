@@ -42,7 +42,7 @@ export default class TransferErrorPage extends Page {
 
   shouldContainNoCourseText() {
     this.shouldContainText(
-      `This referral cannot be moved because ${this.organisation.name} does not offer Building Choices: ${this.originalCourse.intensity?.toLowerCase()} intensity.`,
+      `This referral cannot be moved because ${this.organisation.name} does not offer the general offence strand of Building Choices: ${this.originalCourse.intensity?.toLowerCase()} intensity.`,
     )
     this.shouldContainText('Close this referral and submit a new one to a different location.')
   }
