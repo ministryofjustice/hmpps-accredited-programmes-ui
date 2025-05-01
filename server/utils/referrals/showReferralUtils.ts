@@ -336,6 +336,10 @@ export default class ShowReferralUtils {
         href: paths.show.additionalInformation({ referralId }),
         text: 'Additional information',
       },
+      {
+        href: paths.show.otherReferrals({ referralId }),
+        text: 'Other referrals',
+      },
     ]
 
     return navigationItems.map(item => ({

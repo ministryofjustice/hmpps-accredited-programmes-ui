@@ -78,6 +78,7 @@ export default {
     additionalInformation: referralShowPathBase.path('additional-information'),
     duplicate: referralShowPathBase.path('duplicate'),
     offenceHistory: referralShowPathBase.path('offence-history'),
+    otherReferrals: referralShowPathBase.path('other-referrals'),
     personalDetails: referralShowPathBase.path('personal-details'),
     programmeHistory: showProgrammeHistoryPath,
     programmeHistoryDetail: showProgrammeHistoryPath.path(':courseParticipationId'),

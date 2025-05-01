@@ -202,7 +202,7 @@ export interface GovukFrontendBreadcrumbsItem {
 // The button component is described at https://design-system.service.gov.uk/components/button.
 export interface GovukFrontendButton {
   /*
-    HTML element for the button component – `input`, `button` or `a`. In most cases you will not need to set this as it will be configured automatically if `href` is provided. This parameter will be removed in the next major version.
+    HTML element for the button component – `input`, `button` or `a`. In most cases you will not need to set this as it will be configured automatically if `href` is provided.
   */
   element?: string | null
 
@@ -270,9 +270,9 @@ export interface GovukFrontendButton {
 // The character count component is described at https://design-system.service.gov.uk/components/character-count.
 export interface GovukFrontendCharacterCount {
   /*
-    The ID of the textarea.
+    The ID of the textarea. Defaults to the value of `name`.
   */
-  id: string
+  id?: string | null
 
   /*
     The name of the textarea, which is submitted with the form data.
@@ -350,7 +350,7 @@ export interface GovukFrontendCharacterCount {
   textareaDescriptionText?: string | null
 
   /*
-    Message displayed when the number of characters is under the configured maximum, `maxlength`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of remaining characters. This is a [pluralised list of messages](https://frontend.design-system.service.gov.uk/localise-govuk-frontend).
+    Message displayed when the number of characters is under the configured maximum, `maxlength`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of remaining characters. [Our pluralisation rules apply to this macro option](https://frontend.design-system.service.gov.uk/localise-govuk-frontend/#understanding-pluralisation-rules).
   */
   charactersUnderLimitText?: Record<string, unknown> | null
 
@@ -360,12 +360,12 @@ export interface GovukFrontendCharacterCount {
   charactersAtLimitText?: string | null
 
   /*
-    Message displayed when the number of characters is over the configured maximum, `maxlength`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of characters above the maximum. This is a [pluralised list of messages](https://frontend.design-system.service.gov.uk/localise-govuk-frontend).
+    Message displayed when the number of characters is over the configured maximum, `maxlength`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of characters above the maximum.[Our pluralisation rules apply to this macro option](https://frontend.design-system.service.gov.uk/localise-govuk-frontend/#understanding-pluralisation-rules).
   */
   charactersOverLimitText?: Record<string, unknown> | null
 
   /*
-    Message displayed when the number of words is under the configured maximum, `maxwords`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of remaining words. This is a [pluralised list of messages](https://frontend.design-system.service.gov.uk/localise-govuk-frontend).
+    Message displayed when the number of words is under the configured maximum, `maxwords`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of remaining words. [Our pluralisation rules apply to this macro option](https://frontend.design-system.service.gov.uk/localise-govuk-frontend/#understanding-pluralisation-rules).
   */
   wordsUnderLimitText?: Record<string, unknown> | null
 
@@ -375,7 +375,7 @@ export interface GovukFrontendCharacterCount {
   wordsAtLimitText?: string | null
 
   /*
-    Message displayed when the number of words is over the configured maximum, `maxwords`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of characters above the maximum. This is a [pluralised list of messages](https://frontend.design-system.service.gov.uk/localise-govuk-frontend).
+    Message displayed when the number of words is over the configured maximum, `maxwords`. This message is displayed visually and through assistive technologies. The component will replace the `%{count}` placeholder with the number of characters above the maximum. [Our pluralisation rules apply to this macro option](https://frontend.design-system.service.gov.uk/localise-govuk-frontend/#understanding-pluralisation-rules).
   */
   wordsOverLimitText?: Record<string, unknown> | null
 }
@@ -781,12 +781,12 @@ export interface GovukFrontendDateInputItem {
   value?: string | null
 
   /*
-    Attribute to [identify input purpose](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html), for instance `"bday-day"`. See [autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) for full list of attributes that can be used.
+    Attribute to meet [WCAG success criterion 1.3.5: Identify input purpose](https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html), for instance `"bday-day"`. See the [Autofill section in the HTML standard](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) section in the HTML standard for full list of attributes that can be used.
   */
   autocomplete?: string | null
 
   /*
-    Attribute to [provide a regular expression pattern](https://html.spec.whatwg.org/multipage/sec-forms.html#the-pattern-attribute), used to match allowed character combinations for the input value.
+    Attribute to [provide a regular expression pattern](https://html.spec.whatwg.org/multipage/input.html#the-pattern-attribute), used to match allowed character combinations for the input value.
   */
   pattern?: string | null
 
@@ -1119,12 +1119,12 @@ export interface GovukFrontendFileUpload {
   name: string
 
   /*
-    The ID of the input.
+    The ID of the input. Defaults to the value of `name`.
   */
-  id: string
+  id?: string | null
 
   /*
-    Deprecated. Optional initial value of the input.
+    Optional initial value of the input.
   */
   value?: string | null
 
@@ -1132,6 +1132,11 @@ export interface GovukFrontendFileUpload {
     If `true`, file input will be disabled.
   */
   disabled?: boolean | null
+
+  /*
+    If `true`, a user may select multiple files at the same time. The exact mechanism to do this differs depending on operating system.
+  */
+  multiple?: boolean | null
 
   /*
     One or more element IDs to add to the `aria-describedby` attribute, used to provide additional descriptive information for screenreader users.
@@ -1157,6 +1162,41 @@ export interface GovukFrontendFileUpload {
     Additional options for the form group containing the file upload component.
   */
   formGroup?: GovukFrontendFileUploadFormGroup | null
+
+  /*
+    Can be used to enable JavaScript enhancements for the component.
+  */
+  javascript?: boolean | null
+
+  /*
+    The text of the button that opens the file picker. Default is `"Choose file"`. If `javascript` is not provided, this option will be ignored.
+  */
+  chooseFilesButtonText?: string | null
+
+  /*
+    The text informing users they can drop files. Default is `"or drop file"`. If `javascript` is not provided, this option will be ignored.
+  */
+  dropInstructionText?: string | null
+
+  /*
+    The text displayed when multiple files have been chosen by the user. The component will replace the `%{count}` placeholder with the number of files selected. [Our pluralisation rules apply to this macro option](https://frontend.design-system.service.gov.uk/localise-govuk-frontend/#understanding-pluralisation-rules). If `javascript` is not provided, this option will be ignored.
+  */
+  multipleFilesChosenText?: Record<string, unknown> | null
+
+  /*
+    The text displayed when no file has been chosen by the user. Default is `"No file chosen"`. If `javascript` is not provided, this option will be ignored.
+  */
+  noFileChosenText?: string | null
+
+  /*
+    The text announced by assistive technology when user drags files and enters the drop zone. Default is `"Entered drop zone"`. If `javascript` is not provided, this option will be ignored.
+  */
+  enteredDropZoneText?: string | null
+
+  /*
+    The text announced by assistive technology when user drags files and leaves the drop zone without dropping. Default is `"Left drop zone"`. If `javascript` is not provided, this option will be ignored.
+  */
+  leftDropZoneText?: string | null
 
   /*
     Classes to add to the file upload component.
@@ -1418,7 +1458,7 @@ export interface GovukFrontendHeader {
   attributes?: Record<string, unknown> | null
 
   /*
-    Deprecated. If `true`, uses the Tudor crown from King Charles III's royal cypher. Otherwise, uses the St. Edward's crown. Default is `true`.
+    If `true`, uses the Tudor crown from King Charles III's royal cypher. Otherwise, uses the St. Edward's crown. Default is `true`.
   */
   useTudorCrown?: boolean | null
 }
@@ -1481,9 +1521,9 @@ export interface GovukFrontendHint {
 // The input component is described at https://design-system.service.gov.uk/components/input.
 export interface GovukFrontendInput {
   /*
-    The ID of the input.
+    The ID of the input. Defaults to the value of `name`.
   */
-  id: string
+  id?: string | null
 
   /*
     The name of the input, which is submitted with the form data.
@@ -1496,7 +1536,7 @@ export interface GovukFrontendInput {
   type?: string | null
 
   /*
-    Optional value for [inputmode](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode).
+    Optional value for [the inputmode attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode).
   */
   inputmode?: string | null
 
@@ -1551,12 +1591,12 @@ export interface GovukFrontendInput {
   classes?: string | null
 
   /*
-    Attribute to [identify input purpose](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html), for instance "postal-code" or "username". See [autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) for full list of attributes that can be used.
+    Attribute to meet [WCAG success criterion 1.3.5: Identify input purpose](https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html), for instance `"bday-day"`. See the [Autofill section in the HTML standard](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) section in the HTML standard for full list of attributes that can be used.
   */
   autocomplete?: string | null
 
   /*
-    Attribute to [provide a regular expression pattern](https://html.spec.whatwg.org/multipage/sec-forms.html#the-pattern-attribute), used to match allowed character combinations for the input value.
+    Attribute to [provide a regular expression pattern](https://html.spec.whatwg.org/multipage/input.html#the-pattern-attribute), used to match allowed character combinations for the input value.
   */
   pattern?: string | null
 
@@ -1566,7 +1606,7 @@ export interface GovukFrontendInput {
   spellcheck?: boolean | null
 
   /*
-    Optional field to enable or disable autocapitalisation of user input. See [autocapitalization](https://html.spec.whatwg.org/multipage/interaction.html#autocapitalization) for a full list of values that can be used.
+    Optional field to enable or disable autocapitalisation of user input. [See the Autocapitalization section in the HTML spec](https://html.spec.whatwg.org/multipage/interaction.html#autocapitalization) for a full list of values that can be used.
   */
   autocapitalize?: string | null
 
@@ -1981,9 +2021,9 @@ export interface GovukFrontendPanel {
 // The password input component is described at https://design-system.service.gov.uk/components/password-input.
 export interface GovukFrontendPasswordInput {
   /*
-    The ID of the input.
+    The ID of the input. Defaults to the value of `name`.
   */
-  id: string
+  id?: string | null
 
   /*
     The name of the input, which is submitted with the form data.
@@ -2031,7 +2071,7 @@ export interface GovukFrontendPasswordInput {
   classes?: string | null
 
   /*
-    Attribute to [identify input purpose](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html). See [autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) for full list of values that can be used. Default is `"current-password"`.
+    Attribute to meet [WCAG success criterion 1.3.5: Identify input purpose](https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html). See the [Autofill section in the HTML standard](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) for full list of attributes that can be used. Default is `"current-password"`.
   */
   autocomplete?: string | null
 
@@ -2311,9 +2351,9 @@ export interface GovukFrontendRadiosItem {
 // The select component is described at https://design-system.service.gov.uk/components/select.
 export interface GovukFrontendSelect {
   /*
-    ID for each select box.
+    ID for the select box. Defaults to the value of `name`.
   */
-  id: string
+  id?: string | null
 
   /*
     Name property for the select.
@@ -3113,9 +3153,9 @@ export interface GovukFrontendTaskListItemStatus {
 // The textarea component is described at https://design-system.service.gov.uk/components/textarea.
 export interface GovukFrontendTextarea {
   /*
-    The ID of the textarea.
+    The ID of the textarea. Defaults to the value of `name`.
   */
-  id: string
+  id?: string | null
 
   /*
     The name of the textarea, which is submitted with the form data.
@@ -3173,7 +3213,7 @@ export interface GovukFrontendTextarea {
   classes?: string | null
 
   /*
-    Attribute to [identify input purpose](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html), for example `"street-address"`. See [autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) for full list of attributes that can be used.
+    Attribute to meet [WCAG success criterion 1.3.5: Identify input purpose](https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html), for instance `"bday-day"`. See the [Autofill section in the HTML standard](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill) section in the HTML standard for full list of attributes that can be used.
   */
   autocomplete?: string | null
 

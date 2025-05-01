@@ -824,6 +824,11 @@ describe('ShowReferralUtils', () => {
             href: `${referPaths.show.additionalInformation({ referralId: mockReferralId })}#content`,
             text: 'Additional information',
           },
+          {
+            active: false,
+            href: `${referPaths.show.otherReferrals({ referralId: mockReferralId })}#content`,
+            text: 'Other referrals',
+          },
         ])
       })
     })
@@ -862,6 +867,11 @@ describe('ShowReferralUtils', () => {
             active: false,
             href: `${assessPaths.show.additionalInformation({ referralId: mockReferralId })}#content`,
             text: 'Additional information',
+          },
+          {
+            active: false,
+            href: `${assessPaths.show.otherReferrals({ referralId: mockReferralId })}#content`,
+            text: 'Other referrals',
           },
         ])
       })

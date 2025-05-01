@@ -104,6 +104,12 @@ export default class ReferralClient {
     })) as Paginated<ReferralView>
   }
 
+  async findOtherReferrals(referralId: Referral['id']): Promise<Array<Referral>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.otherReferrals({ referralId }),
+    })) as Array<Referral>
+  }
+
   async findReferralStatusHistory(referralId: Referral['id']): Promise<Array<ReferralStatusHistory>> {
     return (await this.restClient.get({
       path: apiPaths.referrals.statusHistory({ referralId }),

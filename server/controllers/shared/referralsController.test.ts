@@ -84,7 +84,9 @@ describe('ReferralsController', () => {
 
   beforeEach(() => {
     person = personFactory.build()
-    referral = referralFactory.submitted().build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
+    referral = referralFactory
+      .submitted()
+      .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber, submittedOn: '2025-04-01' })
     originalReferral = referralFactory
       .closed()
       .build({ offeringId: courseOffering.id, prisonNumber: person.prisonNumber })
@@ -283,6 +285,45 @@ describe('ReferralsController', () => {
           pniMismatchSummaryListRows,
           submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
         })
+      })
+    })
+  })
+
+  describe('otherReferrals', () => {
+    beforeEach(() => {
+      request.path = referPaths.show.otherReferrals({ referralId: referral.id })
+    })
+
+    it('renders the other referrals template with the correct response locals', async () => {
+      when(referralService.getOtherReferrals)
+        .calledWith(request.user as Express.User, referral.id)
+        .mockResolvedValue([
+          {
+            course: courseFactory.build({ audience: 'General offence', name: 'Becoming New Me Plus' }),
+            organisation: organisationFactory.build({ name: 'Whatton' }),
+            referral,
+            status: referralStatusRefDataFactory.build({ colour: 'blue', description: 'Referral started' }),
+            user: userFactory.build({ name: 'Joe Bloggs' }),
+          },
+        ])
+
+      const requestHandler = controller.otherReferrals()
+      await requestHandler(request, response, next)
+
+      assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+      expect(response.render).toHaveBeenCalledWith('referrals/show/otherReferrals', {
+        ...sharedPageData,
+        tableRows: [
+          [
+            { text: 'Becoming New Me Plus' },
+            { text: 'General offence' },
+            { text: 'Whatton' },
+            { text: 'Joe Bloggs' },
+            { attributes: { 'data-sort-value': '2025-04-01' }, text: '1 April 2025' },
+            { html: '<strong class="govuk-tag govuk-tag--blue">Referral started</strong>' },
+          ],
+        ],
       })
     })
   })

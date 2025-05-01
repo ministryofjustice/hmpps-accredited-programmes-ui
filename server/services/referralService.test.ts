@@ -2,7 +2,9 @@ import { createMock } from '@golevelup/ts-jest'
 import { when } from 'jest-when'
 
 import type CourseService from './courseService'
+import type OrganisationService from './organisationService'
 import type PniService from './pniService'
+import type ReferenceDataService from './referenceDataService'
 import ReferralService from './referralService'
 import type UserService from './userService'
 import logger from '../../logger'
@@ -12,13 +14,15 @@ import {
   confirmationFieldsFactory,
   courseFactory,
   courseOfferingFactory,
+  organisationFactory,
   pniScoreFactory,
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusRefDataFactory,
   referralViewFactory,
+  userFactory,
 } from '../testutils/factories'
-import type { ReferralStatusGroup, ReferralStatusUpdate } from '@accredited-programmes/models'
+import type { ReferralStatus, ReferralStatusGroup, ReferralStatusUpdate } from '@accredited-programmes/models'
 import type { ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
@@ -41,12 +45,16 @@ describe('ReferralService', () => {
   const userService = createMock<UserService>()
   const courseService = createMock<CourseService>()
   const pniService = createMock<PniService>()
+  const organisationService = createMock<OrganisationService>()
+  const referenceDataService = createMock<ReferenceDataService>()
   const service = new ReferralService(
     hmppsAuthClientBuilder,
     referralClientBuilder,
     userService,
     courseService,
     pniService,
+    organisationService,
+    referenceDataService,
   )
 
   beforeEach(() => {
@@ -224,6 +232,56 @@ describe('ReferralService', () => {
         expect(referralClient.find).toHaveBeenCalledWith(referral.id, query)
         expect(result).toEqual(referral)
       })
+    })
+  })
+
+  describe('getOtherReferrals', () => {
+    it('calls the correct service methods to return the information required to display other referrals for a referral', async () => {
+      const loggedInUser: Express.User = { authSource: 'nomis', token: userToken, userId: 'user-id', username }
+      const referral = referralFactory.build()
+      const otherReferrals = referralFactory.buildList(2, {
+        prisonNumber: referral.prisonNumber,
+      })
+
+      const expectedResponse = otherReferrals.map(otherReferral => {
+        const user = userFactory.build({ username: otherReferral.referrerUsername })
+        const status = referralStatusRefDataFactory.build()
+        const organisation = organisationFactory.build()
+        const offering = courseOfferingFactory.build({
+          id: otherReferral.offeringId,
+          organisationId: organisation.id,
+        })
+        const course = courseFactory.build({ courseOfferings: [offering] })
+
+        when(courseService.getOffering).calledWith(username, otherReferral.offeringId).mockResolvedValue(offering)
+        when(courseService.getCourseByOffering).calledWith(username, otherReferral.offeringId).mockResolvedValue(course)
+        when(organisationService.getOrganisation)
+          .calledWith(username, offering.organisationId)
+          .mockResolvedValue(organisation)
+        when(referenceDataService.getReferralStatusCodeData)
+          .calledWith(username, otherReferral.status as ReferralStatus)
+          .mockResolvedValue(status)
+        when(userService.getUserFromUsername)
+          .calledWith(userToken, otherReferral.referrerUsername)
+          .mockResolvedValue(user)
+
+        return {
+          course,
+          organisation,
+          referral: otherReferral,
+          status,
+          user,
+        }
+      })
+
+      when(referralClient.findOtherReferrals).calledWith(referral.id).mockResolvedValue(otherReferrals)
+
+      const result = await service.getOtherReferrals(loggedInUser, referral.id)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(result).toEqual(expectedResponse)
     })
   })
 

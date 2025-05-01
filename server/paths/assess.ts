@@ -27,6 +27,7 @@ export default {
     additionalInformation: referralShowPathBase.path('additional-information'),
     duplicate: referralShowPathBase.path('duplicate'),
     offenceHistory: referralShowPathBase.path('offence-history'),
+    otherReferrals: referralShowPathBase.path('other-referrals'),
     personalDetails: referralShowPathBase.path('personal-details'),
     pni: referralShowPathBase.path('pni'),
     programmeHistory: showProgrammeHistoryPath,

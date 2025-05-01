@@ -1,5 +1,7 @@
 import type CourseService from './courseService'
+import type OrganisationService from './organisationService'
 import type PniService from './pniService'
+import type ReferenceDataService from './referenceDataService'
 import type UserService from './userService'
 import logger from '../../logger'
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
@@ -7,6 +9,7 @@ import type {
   ConfirmationFields,
   Organisation,
   Paginated,
+  ReferralStatus,
   ReferralStatusGroup,
   ReferralStatusRefData,
   ReferralStatusUpdate,
@@ -24,6 +27,8 @@ export default class ReferralService {
     private readonly userService: UserService,
     private readonly courseService: CourseService,
     private readonly pniService: PniService,
+    private readonly organisationService: OrganisationService,
+    private readonly referenceDataService: ReferenceDataService,
   ) {}
 
   async createReferral(
@@ -103,6 +108,35 @@ export default class ReferralService {
     const referral = await this.getReferral(username, referralId)
 
     return referralProgressIndicatorKeys.filter(item => referral[item]).length
+  }
+
+  async getOtherReferrals(
+    user: Express.User,
+    referralId: Referral['id'],
+  ): Promise<
+    Array<{ course: Course; organisation: Organisation; referral: Referral; status: ReferralStatusRefData; user: User }>
+  > {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    const otherReferrals = await referralClient.findOtherReferrals(referralId)
+
+    return Promise.all(
+      otherReferrals.map(async referral => {
+        const offering = await this.courseService.getOffering(user.username, referral.offeringId)
+        return {
+          course: await this.courseService.getCourseByOffering(user.username, referral.offeringId),
+          organisation: await this.organisationService.getOrganisation(user.token, offering.organisationId),
+          referral,
+          status: await this.referenceDataService.getReferralStatusCodeData(
+            user.username,
+            referral.status as ReferralStatus,
+          ),
+          user: await this.userService.getUserFromUsername(user.token, referral.referrerUsername),
+        }
+      }),
+    )
   }
 
   async getPathways(
