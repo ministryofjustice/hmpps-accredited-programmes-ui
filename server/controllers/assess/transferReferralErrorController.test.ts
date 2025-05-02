@@ -173,7 +173,7 @@ describe('TransferReferralErrorController', () => {
           expect(response.render).toHaveBeenCalledWith('referrals/transfer/error/show', {
             backLinkHref: assessPaths.show.personalDetails({ referralId: referral.id }),
             errorText: [
-              `This referral cannot be moved because ${originalOfferingOrganisation.name} does not offer Building Choices: ${originalCourse.intensity?.toLowerCase()} intensity.`,
+              `This referral cannot be moved because ${originalOfferingOrganisation.name} does not offer the general offence strand of Building Choices: ${originalCourse.intensity?.toLowerCase()} intensity.`,
               'Close this referral and submit a new one to a different location.',
             ],
             pageHeading: 'This referral cannot be moved to Building Choices',
