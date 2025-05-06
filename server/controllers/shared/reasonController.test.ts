@@ -132,7 +132,11 @@ describe('ReasonController', () => {
         timelineItems: timelineItems.slice(0, 1),
       })
 
-      expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(username, 'DESELECTED')
+      expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
+        username,
+        'DESELECTED',
+        { deselectAndKeepOpen: false },
+      )
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referral.id)
       expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
       expect(personService.getPerson).toHaveBeenCalledWith(username, referral.prisonNumber)
@@ -183,6 +187,7 @@ describe('ReasonController', () => {
         expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
           username,
           'WITHDRAWN',
+          { deselectAndKeepOpen: false },
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
@@ -217,6 +222,7 @@ describe('ReasonController', () => {
         expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
           username,
           'DESELECTED',
+          { deselectAndKeepOpen: true },
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
@@ -252,6 +258,7 @@ describe('ReasonController', () => {
         expect(referenceDataService.getReferralStatusCodeReasonsWithCategory).toHaveBeenCalledWith(
           username,
           'ASSESSED_SUITABLE',
+          { deselectAndKeepOpen: false },
         )
         expect(referralService.getReferralStatusHistory).toHaveBeenCalledWith(userToken, username, referral.id)
 
