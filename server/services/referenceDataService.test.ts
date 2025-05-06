@@ -83,7 +83,7 @@ describe('ReferenceDataService', () => {
       it('calls the `getReferralStatusCodeReasons` method with those same query parameters', async () => {
         const categoryCode = 'B'
         const reasons = referralStatusReasonFactory.buildList(2, { referralCategoryCode: categoryCode })
-        const query = { deselectAndKeepOpen: true }
+        const query = { deselectAndKeepOpen: false }
 
         when(referenceDataClient.findReferralStatusCodeReasons)
           .calledWith(categoryCode, referralStatusCode, query)
@@ -99,12 +99,13 @@ describe('ReferenceDataService', () => {
   describe('getReferralStatusCodeReasonsWithCategory', () => {
     it('should return referral status code reasons with category', async () => {
       const reasons = referralStatusReasonFactory.buildList(2, { referralCategoryCode: 'C' })
+      const query = { deselectAndKeepOpen: false }
 
       when(referenceDataClient.findReferralStatusCodeReasonsWithCategory)
-        .calledWith(referralStatusCode)
+        .calledWith(referralStatusCode, query)
         .mockResolvedValue(reasons)
 
-      const result = await service.getReferralStatusCodeReasonsWithCategory(username, referralStatusCode)
+      const result = await service.getReferralStatusCodeReasonsWithCategory(username, referralStatusCode, query)
 
       expect(result).toEqual(reasons)
     })

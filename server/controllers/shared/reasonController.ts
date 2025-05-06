@@ -66,6 +66,7 @@ export default class ReasonController {
         this.referenceDataService.getReferralStatusCodeReasonsWithCategory(
           username,
           decisionForCategoryAndReason as ReferralStatusWithReasons,
+          { deselectAndKeepOpen: initialStatusDecision === 'DESELECTED|OPEN' },
         ),
       ])
 
