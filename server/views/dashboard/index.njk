@@ -58,6 +58,18 @@
           <p class="govuk-body dashboard__card-description">See data about Accredited programmes.</p>
         </div>
       </div>
+
+      {% if 'ROLE_ACP_EDITOR' in user.roles %}
+        <div class="govuk-grid-column-one-third dashboard__card-wrapper">
+          <div class="dashboard__card">
+            <h2 class="govuk-heading-m dashboard__card-heading">
+              <a class="govuk-link dashboard__card-link" href="{{ findAllProgrammesPath }}">Manage courses</a>
+            </h2>
+            <p class="govuk-body dashboard__card-description">Manage courses and offerings.</p>
+          </div>
+        </div>
+      {% endif %}
+
     </div>
   </div>
 {% endblock content %}
