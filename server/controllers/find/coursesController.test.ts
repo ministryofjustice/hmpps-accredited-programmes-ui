@@ -4,6 +4,7 @@ import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
 import CoursesController from './coursesController'
+import config from '../../config'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
@@ -122,6 +123,25 @@ describe('CoursesController', () => {
         organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
         pageHeading: coursePresenter.displayName,
         pageTitleOverride: `${coursePresenter.displayName} programme description`,
+      })
+    })
+
+    describe('when viewing the "Healthy sex programme" course and the feature is enabled', () => {
+      it('renders the course show template with `canReferToHsp` set to `true`', async () => {
+        jest.spyOn(CourseUtils, 'isHsp').mockReturnValue(true)
+        config.flags.hspEnabled = true
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(response.render).toHaveBeenCalledWith(
+          'courses/show',
+          expect.objectContaining({
+            hrefs: expect.objectContaining({
+              startHspReferral: findPaths.hsp.details.show({ courseId: course.id }),
+            }),
+          }),
+        )
       })
     })
 
