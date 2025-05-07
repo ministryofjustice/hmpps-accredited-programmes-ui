@@ -40,6 +40,7 @@ describe('DashboardController', () => {
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: '/refer/referrals/case-list',
         reportPath: '/reports',
+        findAllProgrammesPath: '/find/programmes',
       })
     })
   })

@@ -19,6 +19,7 @@ export default class DashboardController {
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: referPaths.caseList.index({}),
         reportPath: reportsPaths.show({}),
+        findAllProgrammesPath: findPaths.index({}),
       })
     }
   }
