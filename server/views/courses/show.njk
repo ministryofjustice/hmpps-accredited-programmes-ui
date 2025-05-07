@@ -65,6 +65,14 @@
         {% include "./_locationsTable.njk" %}
       {% else %}
         <p data-testid="no-offerings-text">{{ noOfferingsMessage | safe }}</p>
+
+        {% if hrefs.startHspReferral %}
+          {{ govukButton({
+            text: "Start referral",
+            href: hrefs.startHspReferral,
+            classes: "govuk-!-margin-top-3"
+          }) }}
+        {% endif %}
       {% endif %}
     </div>
   </div>

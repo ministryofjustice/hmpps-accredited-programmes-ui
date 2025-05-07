@@ -1,5 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
+import config from '../../config'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
@@ -52,6 +53,7 @@ export default class CoursesController {
 
       const organisationsTableData = OrganisationUtils.organisationTableRows(organisationsWithOfferingIds)
 
+      const canReferToHsp = isPniFind && config.flags.hspEnabled && CourseUtils.isHsp(course.name)
       const coursePresenter = CourseUtils.presentCourse(course)
 
       res.render('courses/show', {
@@ -60,6 +62,7 @@ export default class CoursesController {
         hrefs: {
           addOffering: findPaths.offerings.add.create({ courseId: course.id }),
           back: isPniFind ? findPaths.pniFind.recommendedProgrammes({}) : findPaths.index({}),
+          startHspReferral: canReferToHsp ? findPaths.hsp.details.show({ courseId: course.id }) : undefined,
           updateProgramme: findPaths.course.update.show({ courseId: course.id }),
         },
         isBuildingChoices: CourseUtils.isBuildingChoices(course.displayName),
