@@ -64,6 +64,10 @@ export default class CourseUtils {
     return courseDisplayName?.toLowerCase()?.startsWith('building choices:') ?? false
   }
 
+  static isHsp(courseDisplayName?: string): boolean {
+    return courseDisplayName?.toLowerCase().startsWith('healthy sex programme') ?? false
+  }
+
   static noOfferingsMessage(courseName: Course['name']): string {
     const actionStrings = new Map<Course['name'], string>([
       [

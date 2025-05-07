@@ -96,6 +96,21 @@ describe('CourseUtils', () => {
     })
   })
 
+  describe('isHsp', () => {
+    it('should ignore case', () => {
+      expect(CourseUtils.isHsp('Healthy Sex Programme')).toBe(true)
+      expect(CourseUtils.isHsp('HEALTHY SEX PROGRAMME')).toBe(true)
+    })
+
+    it('should return false when the course displayName does not equal "healthy sex programme"', () => {
+      expect(CourseUtils.isHsp('Lime Course')).toBe(false)
+    })
+
+    it('should return false when the course displayName is undefined', () => {
+      expect(CourseUtils.isHsp()).toBe(false)
+    })
+  })
+
   describe('noOfferingsMessage', () => {
     it('returns a message for when a course has no offerings', () => {
       expect(CourseUtils.noOfferingsMessage('Test Course')).toBe(

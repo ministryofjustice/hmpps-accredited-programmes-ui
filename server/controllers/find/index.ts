@@ -6,6 +6,7 @@ import BuildingChoicesController from './buildingChoicesController'
 import BuildingChoicesFormController from './buildingChoicesFormController'
 import CourseOfferingsController from './courseOfferingsController'
 import CoursesController from './coursesController'
+import HspDetailsController from './hspDetailsController'
 import PersonSearchController from './personSearchController'
 import RecommendedPathwayController from './recommendedPathwayController'
 import RecommendedProgrammesController from './recommendedProgrammesController'
@@ -37,6 +38,7 @@ const controllers = (services: Services) => {
     services.courseService,
     services.organisationService,
   )
+  const hspDetailsController = new HspDetailsController(services.courseService, services.personService)
 
   return {
     addCourseController,
@@ -45,6 +47,7 @@ const controllers = (services: Services) => {
     buildingChoicesFormController,
     courseOfferingsController,
     coursesController,
+    hspDetailsController,
     personSearchController,
     recommendedPathwayController,
     recommendedProgrammesController,
