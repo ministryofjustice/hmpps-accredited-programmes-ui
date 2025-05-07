@@ -6,8 +6,13 @@ import { RouteUtils } from '../utils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
   const { get, post } = RouteUtils.actions(router)
-  const { buildingChoicesController, buildingChoicesFormController, coursesController, courseOfferingsController } =
-    controllers
+  const {
+    buildingChoicesController,
+    buildingChoicesFormController,
+    coursesController,
+    courseOfferingsController,
+    hspDetailsController,
+  } = controllers
 
   get(findPaths.index.pattern, coursesController.index())
 
@@ -25,6 +30,8 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(findPaths.pniFind.recommendedPathway.pattern, controllers.recommendedPathwayController.show())
 
   get(findPaths.pniFind.recommendedProgrammes.pattern, controllers.recommendedProgrammesController.show())
+
+  get(findPaths.hsp.details.show.pattern, hspDetailsController.show())
 
   return router
 }

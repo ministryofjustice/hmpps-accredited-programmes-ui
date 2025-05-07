@@ -11,6 +11,9 @@ const updateCoursePath = coursePath.path('update')
 
 const buildingChoicesPath = findPathBase.path('building-choices/:courseId')
 
+const hspPathBase = coursePath.path('/hsp')
+const hspDetailsPath = hspPathBase.path('details')
+
 const addCourseOfferingPath = coursePath.path('offerings/add')
 const deleteCourseOfferingPath = coursePath.path('offerings/:courseOfferingId/delete')
 const courseOfferingPath = findPathBase.path('offerings/:courseOfferingId')
@@ -32,6 +35,11 @@ export default {
     update: {
       show: updateCoursePath,
       submit: updateCoursePath,
+    },
+  },
+  hsp: {
+    details: {
+      show: hspDetailsPath,
     },
   },
   index: coursesPath,
