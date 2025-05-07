@@ -36,11 +36,11 @@ describe('DashboardController', () => {
 
       expect(response.render).toHaveBeenCalledWith('dashboard/index', {
         assessCaseListPath: '/assess/referrals/case-list',
+        findAllProgrammesPath: '/find/programmes',
         findPath: findPaths.pniFind.personSearch({}),
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: '/refer/referrals/case-list',
         reportPath: '/reports',
-        findAllProgrammesPath: '/find/programmes',
       })
     })
   })
