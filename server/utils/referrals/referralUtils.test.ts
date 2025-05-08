@@ -14,7 +14,7 @@ describe('ReferralUtils', () => {
     })
 
     it('returns true if either parameter is missing', () => {
-      expect(ReferralUtils.checkIfOverride(undefined, 'HIGH_INTENSITY')).toEqual(true)
+      expect(ReferralUtils.checkIfOverride(undefined, 'HIGH')).toEqual(true)
       expect(ReferralUtils.checkIfOverride('LOW_INTENSITY', undefined)).toEqual(true)
     })
   })
