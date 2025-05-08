@@ -105,6 +105,7 @@ export default {
       statusCodeReasons: referralStatusCodeReasonsPath,
       statusCodeReasonsWithCategories: referralStatusCodeCategoriesPath.path('reasons'),
     },
+    sexualOffenceDetails: referenceDataPath.path('sexual-offence-details'),
   },
   referrals: {
     confirmationText: confirmationTextPath,

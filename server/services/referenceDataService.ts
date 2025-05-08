@@ -6,7 +6,7 @@ import type {
   ReferralStatusUppercase,
   ReferralStatusWithReasons,
 } from '@accredited-programmes/models'
-import type { ReferralStatusReason } from '@accredited-programmes-api'
+import type { ReferralStatusReason, SexualOffenceDetails } from '@accredited-programmes-api'
 
 export default class ReferenceDataService {
   constructor(
@@ -71,5 +71,13 @@ export default class ReferenceDataService {
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findReferralStatuses()
+  }
+
+  async getSexualOffenceDetails(username: Express.User['username']): Promise<Array<SexualOffenceDetails>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referenceDataClient = this.referenceDataClient(systemToken)
+
+    return referenceDataClient.findSexualOffenceDetails()
   }
 }
