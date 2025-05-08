@@ -40,6 +40,7 @@ import reportContentFactory from './reportContent'
 import risksAndAlertsFactory from './risksAndAlerts'
 import roshAnalysisFactory from './roshAnalysis'
 import sentenceDetailsFactory from './sentenceDetails'
+import sexualOffenceDetailsFactory from './sexualOffenceDetails'
 import staffDetailFactory from './staffDetail'
 import userFactory from './user'
 
@@ -86,6 +87,7 @@ export {
   risksAndAlertsFactory,
   roshAnalysisFactory,
   sentenceDetailsFactory,
+  sexualOffenceDetailsFactory,
   staffDetailFactory,
   userFactory,
 }
