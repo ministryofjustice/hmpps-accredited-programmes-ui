@@ -1,13 +1,14 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import { findPaths } from '../../paths'
-import type { CourseService, PersonService } from '../../services'
-import { CourseUtils, TypeUtils } from '../../utils'
+import type { CourseService, PersonService, ReferenceDataService } from '../../services'
+import { CourseUtils, ReferenceDataUtils, TypeUtils } from '../../utils'
 
 export default class HspDetailsController {
   constructor(
     private readonly courseService: CourseService,
     private readonly personService: PersonService,
+    private readonly referenceDataService: ReferenceDataService,
   ) {}
 
   show(): TypedRequestHandler<Request, Response> {
@@ -25,12 +26,18 @@ export default class HspDetailsController {
         return res.redirect(findPaths.pniFind.personSearch.pattern)
       }
 
-      const person = await this.personService.getPerson(username, prisonNumber)
-      // TODO: Get checkbox items from API
+      const [person, details] = await Promise.all([
+        this.personService.getPerson(username, prisonNumber),
+        this.referenceDataService.getSexualOffenceDetails(username),
+      ])
+
+      const groupedDetailOptions = ReferenceDataUtils.groupOptionsByKey(details, 'categoryDescription')
 
       return res.render('courses/hsp/details/show', {
+        checkboxFieldsets: ReferenceDataUtils.createSexualOffenceDetailsFieldset(groupedDetailOptions, []),
         hrefs: {
           back: findPaths.show({ courseId: course.id }),
+          programmeIndex: findPaths.pniFind.recommendedProgrammes({}),
         },
         pageHeading: 'Sexual offence details',
         personName: person.name,

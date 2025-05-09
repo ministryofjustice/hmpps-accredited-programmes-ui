@@ -38,7 +38,11 @@ const controllers = (services: Services) => {
     services.courseService,
     services.organisationService,
   )
-  const hspDetailsController = new HspDetailsController(services.courseService, services.personService)
+  const hspDetailsController = new HspDetailsController(
+    services.courseService,
+    services.personService,
+    services.referenceDataService,
+  )
 
   return {
     addCourseController,

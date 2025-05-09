@@ -1,5 +1,6 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
 {% extends "../../../partials/layout.njk" %}
 
@@ -33,7 +34,37 @@
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
       <h2 class="govuk-heading-m">Do any of these statements apply to their sexual offending?</h2>
+      <p class="govuk-hint">Select all that apply.</p>
 
+      <form method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {% for fieldset in checkboxFieldsets %}
+          {{ govukCheckboxes({
+              name: "sexualOffenceDetails",
+              fieldset: {
+                legend: {
+                  text: fieldset.legend.text,
+                  classes: "govuk-fieldset__legend--s"
+                }
+              },
+              items: fieldset.checkboxes,        
+              errorMessage: errors.messages.sexualOffenceDetails
+            }) }}
+        {% endfor %}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            href: hrefs.programmeIndex,
+            classes: "govuk-button--secondary",
+            text: "Return to programme list"
+          }) }}
+        </div>
+      </form>
     </div>
   </div>
 {% endblock content %}
