@@ -4,6 +4,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
 {% extends "../../../partials/layout.njk" %}
 
@@ -35,6 +36,37 @@
           errorMessage: errors.messages.organisationId,
           value: offering.organisationId
         }) }}
+
+        {% if showBuildingChoicesOptions %}
+          {{ govukCheckboxes({
+              name: "buildingChoicesOptions",
+              fieldset: {
+                legend: {
+                  text: "Variants",
+                  isPageHeading: false,
+                  classes: "govuk-fieldset__legend--s"
+                }
+              },
+              hint: {
+                text: "Select all variants you wish to offer at the above location"
+              },
+              items: [
+                {
+                  value: "createGeneralOffenceStrand",
+                  text: "General Offence"
+                },
+                {
+                  value: "createSexualOffenceStrand",
+                  text: "Sexual Offence"
+                },
+                {
+                  value: "targetsWomensPrison",
+                  text: "Is for a women's prison"
+                }
+              ]
+            })
+          }}
+        {% endif %}
 
         {{ govukInput({
           label: {

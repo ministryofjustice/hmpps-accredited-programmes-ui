@@ -7,7 +7,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: backLinkHref
+    href: hrefs.back
   }) }}
 {% endblock backLink %}
 
@@ -35,7 +35,7 @@
         {% if 'ROLE_ACP_EDITOR' in user.roles %}
           {{ govukButton({
             text: "Add a new location",
-            href: addOfferingPath,
+            href: hrefs.addOffering,
             classes: "govuk-button--secondary",
             attributes: {
               "data-testid": "add-programme-offering-link"
