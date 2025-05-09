@@ -1,5 +1,6 @@
 import CourseUtils from './courseUtils'
 import { audienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
+import type { Course } from '@accredited-programmes-api'
 
 describe('CourseUtils', () => {
   describe('audienceSelectItems', () => {
@@ -66,11 +67,10 @@ describe('CourseUtils', () => {
   })
 
   describe('formatIntensityValue', () => {
-    it.each([
+    it.each<[Course['intensity'], string]>([
       ['HIGH', 'High intensity'],
       ['HIGH_MODERATE', 'High or moderate intensity'],
       ['MODERATE', 'Moderate intensity'],
-      ['UNKNOWN', 'Unknown'],
       [undefined, 'Unknown'],
     ])('returns the correct intensity text for %s', (intensity, expectedText) => {
       expect(CourseUtils.formatIntensityValue(intensity)).toBe(expectedText)

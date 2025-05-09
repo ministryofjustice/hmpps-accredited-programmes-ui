@@ -32,8 +32,8 @@ context('Additional information', () => {
     referrerOverrideReason: undefined,
     referrerUsername: auth.mockedUser.username,
   })
-  const programmePathway = 'MEDIUM_INTENSITY'
-  const course = courseFactory.build({ intensity: programmePathway })
+  const programmePathway = 'MODERATE_INTENSITY'
+  const course = courseFactory.build({ intensity: 'MODERATE' })
   const pniScore = pniScoreFactory.build({
     programmePathway,
   })
@@ -158,8 +158,8 @@ context('Additional information with override', () => {
     referrerOverrideReason: undefined,
     referrerUsername: auth.mockedUser.username,
   })
-  const programmePathway = 'MEDIUM_INTENSITY'
-  const course = courseFactory.build({ intensity: 'HIGH_INTENSITY' })
+  const programmePathway = 'MODERATE_INTENSITY'
+  const course = courseFactory.build({ intensity: 'HIGH' })
   const pniScore = pniScoreFactory.build({
     programmePathway,
   })

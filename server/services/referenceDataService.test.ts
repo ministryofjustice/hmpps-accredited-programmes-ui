@@ -8,6 +8,7 @@ import {
   referralStatusCategoryFactory,
   referralStatusReasonFactory,
   referralStatusRefDataFactory,
+  sexualOffenceDetailsFactory,
 } from '../testutils/factories'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
@@ -120,6 +121,18 @@ describe('ReferenceDataService', () => {
       const result = await service.getReferralStatuses(username)
 
       expect(result).toEqual(referralStatuses)
+    })
+  })
+
+  describe('getSexualOffenceDetails', () => {
+    it('should return sexual offence details', async () => {
+      const sexualOffenceDetails = sexualOffenceDetailsFactory.buildList(3)
+
+      referenceDataClient.findSexualOffenceDetails.mockResolvedValue(sexualOffenceDetails)
+
+      const result = await service.getSexualOffenceDetails(username)
+
+      expect(result).toEqual(sexualOffenceDetails)
     })
   })
 })

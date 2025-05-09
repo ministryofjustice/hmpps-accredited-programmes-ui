@@ -8,6 +8,7 @@ import type { PersonService, ReferralService } from '../../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { FormUtils, TypeUtils } from '../../../utils'
+import type { Course, PniScore } from '@accredited-programmes-api'
 
 jest.mock('../../../utils/formUtils')
 
@@ -37,13 +38,19 @@ describe('NewReferralsAdditionalInformationController', () => {
     prisonNumber: person.prisonNumber,
     referrerUsername: username,
   })
-  const nonOverridePathways = {
+  const nonOverridePathways: {
+    recommended: PniScore['programmePathway']
+    requested: Course['intensity']
+  } = {
     recommended: 'HIGH_INTENSITY',
-    requested: 'HIGH_INTENSITY',
+    requested: 'HIGH',
   }
-  const isOverridePathways = {
+  const isOverridePathways: {
+    recommended: PniScore['programmePathway']
+    requested: Course['intensity']
+  } = {
     recommended: 'MEDIUM_INTENSITY',
-    requested: 'HIGH_INTENSITY',
+    requested: 'HIGH',
   }
 
   let controller: NewReferralsAdditionalInformationController
