@@ -3,6 +3,7 @@ export type CourseOffering = {
   contactEmail: string
   organisationId: string
   referable: boolean
+  gender?: 'FEMALE' | 'MALE' | undefined
   secondaryContactEmail?: string
   withdrawn?: boolean
 }

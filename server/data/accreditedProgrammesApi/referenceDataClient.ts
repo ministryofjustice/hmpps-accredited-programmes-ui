@@ -9,7 +9,7 @@ import type {
   ReferralStatusUppercase,
   ReferralStatusWithReasons,
 } from '@accredited-programmes/models'
-import type { ReferralStatusReason } from '@accredited-programmes-api'
+import type { ReferralStatusReason, SexualOffenceDetails } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class ReferenceDataClient {
@@ -74,5 +74,11 @@ export default class ReferenceDataClient {
     return (await this.restClient.get({
       path: apiPaths.referenceData.referralStatuses.show({}),
     })) as Array<ReferralStatusRefData>
+  }
+
+  async findSexualOffenceDetails(): Promise<Array<SexualOffenceDetails>> {
+    return (await this.restClient.get({
+      path: apiPaths.referenceData.sexualOffenceDetails({}),
+    })) as Array<SexualOffenceDetails>
   }
 }

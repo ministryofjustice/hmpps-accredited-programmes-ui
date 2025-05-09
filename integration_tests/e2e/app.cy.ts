@@ -83,4 +83,17 @@ context('App', () => {
       indexPage.shouldContainLink('Reporting data', '/reports')
     })
   })
+
+  describe('When the user has the `ACP_HSP` role', () => {
+    it('shows correct links on the index page', () => {
+      cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_HSP] })
+      cy.signIn()
+      cy.visit('/')
+
+      const indexPage = Page.verifyOnPage(IndexPage)
+      indexPage.shouldContainLink('Find a programme and make a referral', '/find')
+      indexPage.shouldContainLink('Reporting data', '/reports')
+      indexPage.shouldContainLink('HSP referrals', '/hsp-referrals')
+    })
+  })
 })

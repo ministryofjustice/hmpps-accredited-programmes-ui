@@ -27,23 +27,29 @@ export default class BuildingChoicesController {
         buildingChoicesData,
       )
 
-      const course = courseVariants[0]
+      const courseVariant = courseVariants[0]
 
-      const organisationIds = course.courseOfferings.map(offering => offering.organisationId)
+      const organisationIds = courseVariant.courseOfferings.map(offering => offering.organisationId)
       const organisations = await this.organisationService.getOrganisations(req.user.token, organisationIds)
       const organisationsWithOfferingIds = organisations.map(organisation => {
-        const courseOffering = course.courseOfferings.find(offering => offering.organisationId === organisation.id)
+        const courseOffering = courseVariant.courseOfferings.find(
+          offering => offering.organisationId === organisation.id,
+        )
         return { ...organisation, courseOfferingId: courseOffering?.id }
       })
 
       return res.render('courses/buildingChoices/show', {
-        backLinkHref: findPaths.buildingChoices.form.show({ courseId }),
         buildingChoicesAnswersSummaryListRows: CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesData),
-        course,
+        course: courseVariant,
         hideTitleServiceName: true,
+        hrefs: {
+          addOffering: findPaths.offerings.add.create({ courseId }),
+          back: findPaths.buildingChoices.form.show({ courseId }),
+          updateProgramme: findPaths.course.update.show({ courseId: courseVariant.id }),
+        },
         organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
-        pageHeading: course.displayName,
-        pageTitleOverride: `${course.displayName} programme description`,
+        pageHeading: courseVariant.displayName,
+        pageTitleOverride: `${courseVariant.displayName} programme description`,
       })
     }
   }

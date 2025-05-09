@@ -48,6 +48,7 @@ export default {
     audiences: coursesPath.path('audiences'),
     buildingChoices: buildingChoicesBasePath.path(':courseId'),
     buildingChoicesByReferral: buildingChoicesBasePath.path('referral/:referralId'),
+    buildingChoicesVariants: buildingChoicesBasePath.path(':courseId/course-variants'),
     create: coursesPath,
     index: coursesPath,
     names: courseNamesPath,
@@ -105,6 +106,7 @@ export default {
       statusCodeReasons: referralStatusCodeReasonsPath,
       statusCodeReasonsWithCategories: referralStatusCodeCategoriesPath.path('reasons'),
     },
+    sexualOffenceDetails: referenceDataPath.path('sexual-offence-details'),
   },
   referrals: {
     confirmationText: confirmationTextPath,

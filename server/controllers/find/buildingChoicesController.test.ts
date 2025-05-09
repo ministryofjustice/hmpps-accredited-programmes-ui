@@ -117,10 +117,14 @@ describe('BuildingChoicesFormController', () => {
           })),
         )
         expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/show', {
-          backLinkHref: findPaths.buildingChoices.form.show({ courseId }),
           buildingChoicesAnswersSummaryListRows,
           course,
           hideTitleServiceName: true,
+          hrefs: {
+            addOffering: findPaths.offerings.add.create({ courseId }),
+            back: findPaths.buildingChoices.form.show({ courseId }),
+            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+          },
           organisationsTableData,
           pageHeading: course.displayName,
           pageTitleOverride: `${course.displayName} programme description`,

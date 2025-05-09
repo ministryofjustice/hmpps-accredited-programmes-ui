@@ -7,6 +7,8 @@ import BuildingChoicesFormController from './buildingChoicesFormController'
 import CourseOfferingsController from './courseOfferingsController'
 import CoursesController from './coursesController'
 import HspDetailsController from './hspDetailsController'
+import HspNotEligibleController from './hspNotEligibleController'
+import HspReferralReasonController from './hspReferralReasonController'
 import PersonSearchController from './personSearchController'
 import RecommendedPathwayController from './recommendedPathwayController'
 import RecommendedProgrammesController from './recommendedProgrammesController'
@@ -38,7 +40,13 @@ const controllers = (services: Services) => {
     services.courseService,
     services.organisationService,
   )
-  const hspDetailsController = new HspDetailsController(services.courseService, services.personService)
+  const hspDetailsController = new HspDetailsController(
+    services.courseService,
+    services.personService,
+    services.referenceDataService,
+  )
+  const hspNotEligibleController = new HspNotEligibleController(services.courseService, services.personService)
+  const hspReferralReasonController = new HspReferralReasonController(services.courseService)
 
   return {
     addCourseController,
@@ -48,6 +56,8 @@ const controllers = (services: Services) => {
     courseOfferingsController,
     coursesController,
     hspDetailsController,
+    hspNotEligibleController,
+    hspReferralReasonController,
     personSearchController,
     recommendedPathwayController,
     recommendedProgrammesController,

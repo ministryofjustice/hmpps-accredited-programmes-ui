@@ -70,31 +70,33 @@ export default class NewReferralsAdditionalInformationController {
       const isSkip = req.body.skip === 'true'
       const hasAdditonalInfo = req.body.additionalInformation?.length > 0
       const formattedAdditionalInformation = hasAdditonalInfo ? req.body.additionalInformation.trim() : null
-      const formattedOverrideReason = isOverride ? req.body.referrerOverrideReason?.trim() : null
+      const formattedReferrerOverrideReason = isOverride ? req.body.referrerOverrideReason?.trim() : null
 
-      if (!isSkip) {
-        if (formattedAdditionalInformation?.length > maxLength) {
-          req.flash('additionalInformationError', `Additional information must be ${maxLength} characters or fewer`)
-          req.flash('formValues', [JSON.stringify({ formattedAdditionalInformation })])
+      if (isOverride) {
+        if (formattedReferrerOverrideReason?.length > maxLength) {
+          req.flash('referrerOverrideReasonError', `Override reason must be ${maxLength} characters or fewer`)
+          hasErrors = true
+        }
+        if (formattedReferrerOverrideReason.length <= 0) {
+          req.flash('referrerOverrideReasonError', 'Override reason is required')
           hasErrors = true
         }
       }
 
-      if (isOverride) {
-        if (formattedOverrideReason.length <= 0) {
-          req.flash('referrerOverrideReasonError', 'Override reason is required')
-          req.flash('formValues', [JSON.stringify({ formattedOverrideReason })])
-          hasErrors = true
-        }
-
-        if (formattedOverrideReason > maxLength) {
-          req.flash('referrerOverrideReasonError', `Override reason must be ${maxLength} characters or fewer`)
-          req.flash('formValues', [JSON.stringify({ formattedOverrideReason })])
+      if (!isSkip) {
+        if (formattedAdditionalInformation?.length > maxLength) {
+          req.flash('additionalInformationError', `Additional information must be ${maxLength} characters or fewer`)
           hasErrors = true
         }
       }
 
       if (hasErrors) {
+        req.flash('formValues', [
+          JSON.stringify({
+            formattedAdditionalInformation,
+            formattedReferrerOverrideReason,
+          }),
+        ])
         return res.redirect(referPaths.new.additionalInformation.show({ referralId }))
       }
 
@@ -103,7 +105,7 @@ export default class NewReferralsAdditionalInformationController {
         hasReviewedAdditionalInformation: isSkip || isOverride ? true : hasAdditonalInfo,
         hasReviewedProgrammeHistory: referral.hasReviewedProgrammeHistory,
         oasysConfirmed: referral.oasysConfirmed,
-        referrerOverrideReason: isOverride ? formattedOverrideReason : null,
+        referrerOverrideReason: isOverride ? formattedReferrerOverrideReason : null,
       }
 
       await this.referralService.updateReferral(req.user.username, referralId, referralUpdate)

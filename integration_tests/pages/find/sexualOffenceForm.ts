@@ -17,7 +17,11 @@ export default class SexualOffenceFormPage extends Page {
   }
 
   submitForm(bcCourseVariant: Course) {
-    cy.task('stubBuildingChoicesCourseVariant', bcCourseVariant)
+    cy.task('stubBuildingChoicesCourseVariant', {
+      course: bcCourseVariant,
+      isConvictedOfASexualOffence: 'true',
+      isInAWomensPrison: 'false',
+    })
 
     this.selectRadioButton('isConvictedOfSexualOffence', 'true')
     this.shouldContainButton('Continue').click()

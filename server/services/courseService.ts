@@ -120,8 +120,8 @@ export default class CourseService {
     }
 
     return courseClient.findBuildingChoicesVariants(courseId, {
-      isConvictedOfSexualOffence: isConvictedOfSexualOffence === 'true',
-      isInAWomensPrison: isInAWomensPrison === 'true',
+      isConvictedOfSexualOffence,
+      isInAWomensPrison,
     })
   }
 
@@ -163,14 +163,16 @@ export default class CourseService {
   async getCourses(
     username: Express.User['username'],
     query?: {
+      buildingChoicesOnly?: 'false' | 'true'
       intensity?: 'HIGH' | 'MODERATE'
+      withdrawn?: 'false' | 'true'
     },
   ): Promise<Array<Course>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
-    return courseClient.all(query)
+    return courseClient.findCourses(query)
   }
 
   async getCoursesByOrganisation(

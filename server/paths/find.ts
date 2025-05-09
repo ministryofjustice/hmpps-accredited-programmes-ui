@@ -13,6 +13,7 @@ const buildingChoicesPath = findPathBase.path('building-choices/:courseId')
 
 const hspPathBase = coursePath.path('/hsp')
 const hspDetailsPath = hspPathBase.path('details')
+const hspReasonPath = hspPathBase.path('reason')
 
 const addCourseOfferingPath = coursePath.path('offerings/add')
 const deleteCourseOfferingPath = coursePath.path('offerings/:courseOfferingId/delete')
@@ -40,6 +41,14 @@ export default {
   hsp: {
     details: {
       show: hspDetailsPath,
+      submit: hspDetailsPath,
+    },
+    notEligible: {
+      show: hspPathBase.path('not-eligible'),
+    },
+    reason: {
+      show: hspReasonPath,
+      submit: hspReasonPath,
     },
   },
   index: coursesPath,

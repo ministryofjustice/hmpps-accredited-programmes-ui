@@ -7,6 +7,7 @@ import type {
   PniScore,
   Referral,
   ReferralStatusHistory,
+  SexualOffenceDetails,
 } from '@accredited-programmes-api'
 import type {
   GovukFrontendButton,
@@ -248,6 +249,12 @@ interface BuildingChoicesData {
   isInAWomensPrison: string
 }
 
+interface HspReferralData {
+  selectedOffenceDetails: Array<SexualOffenceDetails['id']>
+  totalScore: number
+  reason?: string
+}
+
 interface PniFindAndReferData {
   prisonNumber?: PeopleSearchResponse['prisonerNumber']
   programmePathway?: PniScore['programmePathway']
@@ -274,6 +281,7 @@ export type {
   GovukFrontendTagWithText,
   HasHtmlString,
   HasTextString,
+  HspReferralData,
   MojButtonMenu,
   MojButtonMenuButton,
   MojFrontendNavigationItem,

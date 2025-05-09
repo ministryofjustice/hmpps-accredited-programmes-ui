@@ -5,7 +5,6 @@ import RestClient from '../restClient'
 import type { CourseCreateRequest, CourseOffering, CoursePrerequisite, Person } from '@accredited-programmes/models'
 import type {
   Audience,
-  BuildingChoicesSearchRequest,
   Course,
   CourseParticipation,
   CourseParticipationCreate,
@@ -28,15 +27,6 @@ export default class CourseClient {
       data: courseOffering,
       path: apiPaths.offerings.create({ courseId }),
     })) as CourseOffering
-  }
-
-  async all(query?: { intensity?: 'HIGH' | 'MODERATE' }): Promise<Array<Course>> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.index({}),
-      query: {
-        ...(query?.intensity && { intensity: query.intensity }),
-      },
-    })) as Array<Course>
   }
 
   async createCourse(courseCreateRequest: CourseCreateRequest): Promise<Course> {
@@ -86,11 +76,17 @@ export default class CourseClient {
   /* istanbul ignore next */
   async findBuildingChoicesVariants(
     courseId: Course['id'],
-    requestBody: BuildingChoicesSearchRequest,
+    query?: {
+      isConvictedOfSexualOffence: string
+      isInAWomensPrison: string
+    },
   ): Promise<Array<Course>> {
-    return (await this.restClient.post({
-      data: { ...requestBody },
-      path: apiPaths.courses.buildingChoices({ courseId }),
+    return (await this.restClient.get({
+      path: apiPaths.courses.buildingChoicesVariants({ courseId }),
+      query: {
+        ...(query?.isInAWomensPrison && { isInAWomensPrison: query.isInAWomensPrison }),
+        ...(query?.isConvictedOfSexualOffence && { isConvictedOfASexualOffence: query.isConvictedOfSexualOffence }),
+      },
     })) as Array<Course>
   }
 
@@ -113,6 +109,15 @@ export default class CourseClient {
     return (await this.restClient.get({
       path: apiPaths.courses.names({}),
     })) as Array<Course['name']>
+  }
+
+  async findCourses(query?: { intensity?: 'HIGH' | 'MODERATE' }): Promise<Array<Course>> {
+    return (await this.restClient.get({
+      path: apiPaths.courses.index({}),
+      query: {
+        ...(query?.intensity && { intensity: query.intensity }),
+      },
+    })) as Array<Course>
   }
 
   async findCoursesByOrganisation(organisationId: string): Promise<Array<Course>> {

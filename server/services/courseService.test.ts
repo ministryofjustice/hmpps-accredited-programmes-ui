@@ -223,7 +223,7 @@ describe('CourseService', () => {
       const formRequestBody = { isConvictedOfSexualOffence: 'true', isInAWomensPrison: 'false' }
 
       when(courseClient.findBuildingChoicesVariants)
-        .calledWith(course.id, { isConvictedOfSexualOffence: true, isInAWomensPrison: false })
+        .calledWith(course.id, { isConvictedOfSexualOffence: 'true', isInAWomensPrison: 'false' })
         .mockResolvedValue([course])
 
       const result = await service.getBuildingChoicesVariants(username, course.id, formRequestBody)
@@ -249,27 +249,27 @@ describe('CourseService', () => {
   describe('getCourses', () => {
     it('returns a list of all courses', async () => {
       const courses = courseFactory.buildList(3)
-      courseClient.all.mockResolvedValue(courses)
+      courseClient.findCourses.mockResolvedValue(courses)
 
       const result = await service.getCourses(username)
 
       expect(result).toEqual(courses)
 
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(courseClient.all).toHaveBeenCalled()
+      expect(courseClient.findCourses).toHaveBeenCalled()
     })
 
     describe('when there are query parameters', () => {
       it('returns a list of courses filtered by the query parameters', async () => {
         const courses = courseFactory.buildList(3)
-        courseClient.all.mockResolvedValue(courses)
+        courseClient.findCourses.mockResolvedValue(courses)
 
         const result = await service.getCourses(username, { intensity: 'HIGH' })
 
         expect(result).toEqual(courses)
 
         expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
-        expect(courseClient.all).toHaveBeenCalledWith({ intensity: 'HIGH' })
+        expect(courseClient.findCourses).toHaveBeenCalledWith({ intensity: 'HIGH' })
       })
     })
   })

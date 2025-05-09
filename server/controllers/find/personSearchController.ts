@@ -43,6 +43,7 @@ export default class PersonSearchController {
           canViewAllPrisoners ? [] : res.locals.user.caseloads,
         )
 
+        req.session.hspReferralData = undefined
         req.session.pniFindAndReferData = {
           prisonNumber: person.prisonNumber,
         }

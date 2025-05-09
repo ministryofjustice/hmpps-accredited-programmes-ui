@@ -12,6 +12,7 @@ import OrganisationUtils from './organisationUtils'
 import PaginationUtils from './paginationUtils'
 import PathUtils from './pathUtils'
 import PersonUtils from './personUtils'
+import ReferenceDataUtils from './referenceDataUtils'
 import CaseListUtils from './referrals/caseListUtils'
 import NewReferralUtils from './referrals/newReferralUtils'
 import ReferralUtils from './referrals/referralUtils'
@@ -58,6 +59,7 @@ export {
   PathUtils,
   PersonUtils,
   PniUtils,
+  ReferenceDataUtils,
   ReferralUtils,
   RelationshipsUtils,
   RisksAndAlertsUtils,
