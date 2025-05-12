@@ -6,7 +6,9 @@ import HspDetailsController from './hspDetailsController'
 import { findPaths } from '../../paths'
 import type { CourseService, PersonService, ReferenceDataService } from '../../services'
 import { courseFactory, personFactory, sexualOffenceDetailsFactory } from '../../testutils/factories'
-import { CourseUtils, ReferenceDataUtils } from '../../utils'
+import { CourseUtils, FormUtils, ReferenceDataUtils } from '../../utils'
+
+jest.mock('../../utils/formUtils')
 
 describe('HspDetailsController', () => {
   const username = 'SOME_USER'
@@ -81,6 +83,7 @@ describe('HspDetailsController', () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['sexualOffenceDetails'])
       expect(ReferenceDataUtils.groupOptionsByKey).toHaveBeenCalledWith(sexualOffenceDetails, 'categoryDescription')
       expect(ReferenceDataUtils.createSexualOffenceDetailsFieldset).toHaveBeenCalledWith(mockGroupedDetailOptions, [])
       expect(response.render).toHaveBeenCalledWith('courses/hsp/details/show', {
@@ -124,6 +127,45 @@ describe('HspDetailsController', () => {
         await requestHandler(request, response, next)
 
         expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch.pattern)
+      })
+    })
+  })
+
+  describe('submit', () => {
+    describe('when the total score of the submitted selections meets the threshold of 3', () => {
+      it('should return that thy are eligible for HSP', async () => {
+        request.body = { sexualOffenceDetails: ['ABC-123::1', 'ABC-456::2'] }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.send).toHaveBeenCalledWith('Eligible')
+      })
+    })
+
+    describe('when the total score of the submitted selections does not meet the threshold of 3', () => {
+      it('should return that they are ineligible for HSP', async () => {
+        request.body = { sexualOffenceDetails: 'ABC-123::1' }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.send).toHaveBeenCalledWith('Ineligible')
+      })
+    })
+
+    describe('when no sexual offence has been selected', () => {
+      it('should redirect to the HSP details page with an error message', async () => {
+        request.body = { sexualOffenceDetails: undefined }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(request.flash).toHaveBeenCalledWith(
+          'sexualOffenceDetailsError',
+          'Please select at least one sexual offence',
+        )
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.details.show({ courseId: hspCourse.id }))
       })
     })
   })
