@@ -32,6 +32,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(findPaths.pniFind.recommendedProgrammes.pattern, controllers.recommendedProgrammesController.show())
 
   get(findPaths.hsp.details.show.pattern, hspDetailsController.show())
+  post(findPaths.hsp.details.submit.pattern, hspDetailsController.submit())
 
   return router
 }

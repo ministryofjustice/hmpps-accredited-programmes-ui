@@ -40,6 +40,7 @@ export default {
   hsp: {
     details: {
       show: hspDetailsPath,
+      submit: hspDetailsPath,
     },
   },
   index: coursesPath,
