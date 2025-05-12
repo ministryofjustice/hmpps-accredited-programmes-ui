@@ -37,10 +37,14 @@ export default class BuildingChoicesController {
       })
 
       return res.render('courses/buildingChoices/show', {
-        backLinkHref: findPaths.buildingChoices.form.show({ courseId }),
         buildingChoicesAnswersSummaryListRows: CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesData),
         course,
         hideTitleServiceName: true,
+        hrefs: {
+          addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+          back: findPaths.buildingChoices.form.show({ courseId }),
+          updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+        },
         organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
         pageHeading: course.displayName,
         pageTitleOverride: `${course.displayName} programme description`,

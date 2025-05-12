@@ -5,7 +5,7 @@ import type { NextFunction, Request, Response } from 'express'
 import AddCourseOfferingController from './addCourseOfferingController'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
-import { courseOfferingFactory, prisonFactory } from '../../testutils/factories'
+import { courseFactory, courseOfferingFactory, prisonFactory } from '../../testutils/factories'
 import { OrganisationUtils } from '../../utils'
 import type { GovukFrontendSelectItem } from '@govuk-frontend'
 
@@ -45,6 +45,8 @@ describe('AddCourseController', () => {
     it('renders the create course offering form template with organisation select items', async () => {
       const organisations = prisonFactory.buildList(3)
       organisationService.getAllOrganisations.mockResolvedValue(organisations)
+      const course = courseFactory.build({ displayName: 'Course Name', id: courseId })
+      courseService.getCourse.mockResolvedValue(course)
 
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
@@ -56,6 +58,7 @@ describe('AddCourseController', () => {
         backLinkHref: '/find/programmes/course-id',
         organisationSelectItems,
         pageHeading: 'Add a Location',
+        showBuildingChoicesOptions: false,
       })
       expect(OrganisationUtils.organisationSelectItems).toHaveBeenCalledWith(organisations)
     })
@@ -78,7 +81,9 @@ describe('AddCourseController', () => {
         withdrawn: false,
       })
 
+      const course = courseFactory.build({ displayName: 'Course Name', id: courseId })
       courseService.addCourseOffering.mockResolvedValue(courseOffering)
+      courseService.getCourse.mockResolvedValue(course)
 
       request.body = newCourseOfferingBody
 
