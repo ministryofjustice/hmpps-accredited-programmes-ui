@@ -70,7 +70,7 @@ export default class HspDetailsController {
       const totalScore = selectedValues.reduce((acc, [_value, score]) => acc + parseInt(score, 10), 0)
 
       if (totalScore < this.ELIGIBILITY_THRESHOLD_SCORE) {
-        return res.send('Ineligible')
+        return res.redirect(findPaths.hsp.notEligible.show({ courseId }))
       }
 
       return res.send('Eligible')

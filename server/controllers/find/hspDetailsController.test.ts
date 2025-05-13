@@ -144,13 +144,13 @@ describe('HspDetailsController', () => {
     })
 
     describe('when the total score of the submitted selections does not meet the threshold of 3', () => {
-      it('should return that they are ineligible for HSP', async () => {
+      it('should redirect to the HSP not eligible path', async () => {
         request.body = { sexualOffenceDetails: 'ABC-123::1' }
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(response.send).toHaveBeenCalledWith('Ineligible')
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.notEligible.show({ courseId: hspCourse.id }))
       })
     })
 

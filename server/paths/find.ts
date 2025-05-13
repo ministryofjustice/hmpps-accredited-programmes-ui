@@ -42,6 +42,9 @@ export default {
       show: hspDetailsPath,
       submit: hspDetailsPath,
     },
+    notEligible: {
+      show: hspPathBase.path('not-eligible'),
+    },
   },
   index: coursesPath,
   offerings: {
