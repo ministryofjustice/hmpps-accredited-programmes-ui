@@ -52,6 +52,7 @@ describe('HspNotEligibleController', () => {
       expect(response.render).toHaveBeenCalledWith('courses/hsp/notEligible/show', {
         hrefs: {
           back: findPaths.hsp.details.show({ courseId: hspCourse.id }),
+          continueReferral: findPaths.hsp.reason.show({ courseId: hspCourse.id }),
           programmeIndex: findPaths.pniFind.recommendedProgrammes({}),
         },
         pageHeading: 'Del Hatton may not be eligible for Healthy Sex Programme',
