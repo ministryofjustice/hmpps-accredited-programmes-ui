@@ -25,6 +25,7 @@ export default class HspReferralReasonController {
       }
 
       FormUtils.setFieldErrors(req, res, ['hspReferralReason'])
+      FormUtils.setFormValues(req, res)
 
       return res.render('courses/hsp/reason/show', {
         hrefs: {
@@ -33,6 +34,34 @@ export default class HspReferralReasonController {
         maxLength: this.MAX_LENGTH,
         pageHeading: 'Reason for referral to HSP',
       })
+    }
+  }
+
+  submit(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      let hasErrors = false
+      const { courseId } = req.params
+      const { hspReferralReason } = req.body
+      const formattedHspReferralReason = hspReferralReason?.trim()
+
+      if (!formattedHspReferralReason) {
+        req.flash('hspReferralReasonError', 'Please enter a reason for referring this person to HSP')
+        hasErrors = true
+      }
+
+      if (formattedHspReferralReason.length > this.MAX_LENGTH) {
+        req.flash('hspReferralReasonError', `Reason must be less than ${this.MAX_LENGTH} characters`)
+        req.flash('formValues', [JSON.stringify({ formattedHspReferralReason })])
+        hasErrors = true
+      }
+
+      if (hasErrors) {
+        return res.redirect(findPaths.hsp.reason.show({ courseId }))
+      }
+
+      return res.send('Reason entered')
     }
   }
 }

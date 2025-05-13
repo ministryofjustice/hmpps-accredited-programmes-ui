@@ -32,7 +32,7 @@
         <li>concerns about their ability to manage their sexual interests</li>
       </ul>
 
-      <form>
+      <form method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukCharacterCount({
@@ -45,7 +45,7 @@
           label: {
             text: "What is your reason for referring this person to HSP?"
           },
-          value: formValues.hspReferralReason,
+          value: formValues.formattedHspReferralReason,
           errorMessage: errors.messages.hspReferralReason
         }) }}
 

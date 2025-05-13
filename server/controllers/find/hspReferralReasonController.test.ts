@@ -50,6 +50,7 @@ describe('HspReferralReasonController', () => {
       await requestHandler(request, response, next)
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['hspReferralReason'])
+      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
       expect(response.render).toHaveBeenCalledWith('courses/hsp/reason/show', {
         hrefs: {
           back: findPaths.hsp.notEligible.show({ courseId: hspCourse.id }),
@@ -90,6 +91,44 @@ describe('HspReferralReasonController', () => {
 
         expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch.pattern)
       })
+    })
+  })
+
+  describe('submit', () => {
+    it('should redirect to the next page when the referral reason is valid', async () => {
+      request.body = { hspReferralReason: 'Valid reason' }
+
+      const requestHandler = controller.submit()
+      await requestHandler(request, response, next)
+
+      expect(response.send).toHaveBeenCalledWith('Reason entered')
+    })
+
+    it('should redirect back to the form with an error message when the referral reason is empty', async () => {
+      request.body = { hspReferralReason: '' }
+
+      const requestHandler = controller.submit()
+      await requestHandler(request, response, next)
+
+      expect(request.flash).toHaveBeenCalledWith(
+        'hspReferralReasonError',
+        'Please enter a reason for referring this person to HSP',
+      )
+      expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.reason.show({ courseId: hspCourse.id }))
+    })
+
+    it('should redirect back to the form with an error message when the referral reason exceeds max length', async () => {
+      const longReason = 'a'.repeat(5001)
+      request.body = { hspReferralReason: longReason }
+
+      const requestHandler = controller.submit()
+      await requestHandler(request, response, next)
+
+      expect(request.flash).toHaveBeenCalledWith('hspReferralReasonError', 'Reason must be less than 5000 characters')
+      expect(request.flash).toHaveBeenCalledWith('formValues', [
+        JSON.stringify({ formattedHspReferralReason: longReason }),
+      ])
+      expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.reason.show({ courseId: hspCourse.id }))
     })
   })
 })
