@@ -32,6 +32,7 @@ export default class HspNotEligibleController {
       return res.render('courses/hsp/notEligible/show', {
         hrefs: {
           back: findPaths.hsp.details.show({ courseId: course.id }),
+          continueReferral: findPaths.hsp.reason.show({ courseId: course.id }),
           programmeIndex: findPaths.pniFind.recommendedProgrammes({}),
         },
         pageHeading: `${person.name} may not be eligible for Healthy Sex Programme`,

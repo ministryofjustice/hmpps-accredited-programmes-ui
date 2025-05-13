@@ -2,21 +2,22 @@ import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import HspNotEligibleController from './hspNotEligibleController'
+import HspReferralReasonController from './hspReferralReasonController'
 import { findPaths } from '../../paths'
-import type { CourseService, PersonService } from '../../services'
+import type { CourseService } from '../../services'
 import { courseFactory, personFactory } from '../../testutils/factories'
-import { CourseUtils } from '../../utils'
+import { CourseUtils, FormUtils } from '../../utils'
 
-describe('HspNotEligibleController', () => {
+jest.mock('../../utils/formUtils')
+
+describe('HspReferralReasonController', () => {
   const username = 'SOME_USER'
   let request: DeepMocked<Request>
   let response: DeepMocked<Response>
   const next: DeepMocked<NextFunction> = createMock<NextFunction>({})
   const courseService = createMock<CourseService>({})
-  const personService = createMock<PersonService>({})
 
-  let controller: HspNotEligibleController
+  let controller: HspReferralReasonController
 
   const hspCourse = courseFactory.build({ name: 'Healthy Sex Programme' })
   const person = personFactory.build({ name: 'Del Hatton' })
@@ -34,10 +35,9 @@ describe('HspNotEligibleController', () => {
     })
 
     response = createMock<Response>({})
-    controller = new HspNotEligibleController(courseService, personService)
+    controller = new HspReferralReasonController(courseService)
 
     when(courseService.getCourse).calledWith(username, hspCourse.id).mockResolvedValue(hspCourse)
-    when(personService.getPerson).calledWith(username, person.prisonNumber).mockResolvedValue(person)
   })
 
   afterEach(() => {
@@ -45,19 +45,18 @@ describe('HspNotEligibleController', () => {
   })
 
   describe('show', () => {
-    it('should render the HSP Not eligible page with the correct data', async () => {
+    it('should render the HSP referral reason page with the correct data', async () => {
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
-      expect(response.render).toHaveBeenCalledWith('courses/hsp/notEligible/show', {
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['hspReferralReason'])
+      expect(FormUtils.setFormValues).toHaveBeenCalledWith(request, response)
+      expect(response.render).toHaveBeenCalledWith('courses/hsp/reason/show', {
         hrefs: {
-          back: findPaths.hsp.details.show({ courseId: hspCourse.id }),
-          continueReferral: findPaths.hsp.reason.show({ courseId: hspCourse.id }),
-          programmeIndex: findPaths.pniFind.recommendedProgrammes({}),
+          back: findPaths.hsp.notEligible.show({ courseId: hspCourse.id }),
         },
-        pageHeading: 'Del Hatton may not be eligible for Healthy Sex Programme',
-        pageTitleOverride: 'Not Eligible for HSP',
-        personName: person.name,
+        maxLength: 5000,
+        pageHeading: 'Reason for referral to HSP',
       })
     })
 
@@ -92,6 +91,44 @@ describe('HspNotEligibleController', () => {
 
         expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch.pattern)
       })
+    })
+  })
+
+  describe('submit', () => {
+    it('should redirect to the next page when the referral reason is valid', async () => {
+      request.body = { hspReferralReason: 'Valid reason' }
+
+      const requestHandler = controller.submit()
+      await requestHandler(request, response, next)
+
+      expect(response.send).toHaveBeenCalledWith('Reason entered')
+    })
+
+    it('should redirect back to the form with an error message when the referral reason is empty', async () => {
+      request.body = { hspReferralReason: '' }
+
+      const requestHandler = controller.submit()
+      await requestHandler(request, response, next)
+
+      expect(request.flash).toHaveBeenCalledWith(
+        'hspReferralReasonError',
+        'Please enter a reason for referring this person to HSP',
+      )
+      expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.reason.show({ courseId: hspCourse.id }))
+    })
+
+    it('should redirect back to the form with an error message when the referral reason exceeds max length', async () => {
+      const longReason = 'a'.repeat(5001)
+      request.body = { hspReferralReason: longReason }
+
+      const requestHandler = controller.submit()
+      await requestHandler(request, response, next)
+
+      expect(request.flash).toHaveBeenCalledWith('hspReferralReasonError', 'Reason must be less than 5000 characters')
+      expect(request.flash).toHaveBeenCalledWith('formValues', [
+        JSON.stringify({ formattedHspReferralReason: longReason }),
+      ])
+      expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.reason.show({ courseId: hspCourse.id }))
     })
   })
 })
