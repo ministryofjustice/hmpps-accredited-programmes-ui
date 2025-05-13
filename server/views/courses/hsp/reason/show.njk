@@ -1,0 +1,58 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: hrefs.back
+  }) }}
+{% endblock backLink %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.list.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.list
+        }) }}
+      {% endif %}
+
+      <h1>{{ pageHeading }}</h1>
+
+      <p class="govuk-body">Include any information the Treatment Manager should consider when assessing the person's suitability and readiness. For example:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>sexual offences not covered in the previous questions</li>
+        <li>self-reported information about their sexual interests</li>
+        <li>concerns about their ability to manage their sexual interests</li>
+      </ul>
+
+      <form>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+        {{ govukCharacterCount({
+          id: "hspReferralReason",
+          name: "hspReferralReason",
+          maxlength: maxLength,
+          attributes: {
+            "data-testid": "hsp-reason-text-area"
+          },
+          label: {
+            text: "What is your reason for referring this person to HSP?"
+          },
+          value: formValues.hspReferralReason,
+          errorMessage: errors.messages.hspReferralReason
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock content %}
