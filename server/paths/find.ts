@@ -45,6 +45,9 @@ export default {
     notEligible: {
       show: hspPathBase.path('not-eligible'),
     },
+    reason: {
+      show: hspPathBase.path('reason'),
+    },
   },
   index: coursesPath,
   offerings: {
