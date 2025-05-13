@@ -12,6 +12,7 @@ export default function routes(controllers: Controllers, router: Router): Router
     coursesController,
     courseOfferingsController,
     hspDetailsController,
+    hspNotEligibleController,
   } = controllers
 
   get(findPaths.index.pattern, coursesController.index())
@@ -33,6 +34,8 @@ export default function routes(controllers: Controllers, router: Router): Router
 
   get(findPaths.hsp.details.show.pattern, hspDetailsController.show())
   post(findPaths.hsp.details.submit.pattern, hspDetailsController.submit())
+
+  get(findPaths.hsp.notEligible.show.pattern, hspNotEligibleController.show())
 
   return router
 }
