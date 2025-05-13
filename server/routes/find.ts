@@ -39,6 +39,7 @@ export default function routes(controllers: Controllers, router: Router): Router
   get(findPaths.hsp.notEligible.show.pattern, hspNotEligibleController.show())
 
   get(findPaths.hsp.reason.show.pattern, hspReferralReasonController.show())
+  post(findPaths.hsp.reason.submit.pattern, hspReferralReasonController.submit())
 
   return router
 }
