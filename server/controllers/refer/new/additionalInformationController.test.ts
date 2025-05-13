@@ -239,13 +239,15 @@ describe('NewReferralsAdditionalInformationController', () => {
           it('redirects to the additional information show action with an error', async () => {
             referralService.getReferral.mockResolvedValue(draftReferral)
             referralService.getPathways.mockResolvedValue(isOverridePathways)
-            request.body.referrerOverrideReason = ''
+            request.body = { additionalInformation: '', referrerOverrideReason: '' }
 
             const requestHandler = controller.update()
             await requestHandler(request, response, next)
 
             expect(request.flash).toHaveBeenCalledWith('referrerOverrideReasonError', 'Override reason is required')
-            expect(request.flash).toHaveBeenCalledWith('formValues', [JSON.stringify({ formattedOverrideReason: '' })])
+            expect(request.flash).toHaveBeenCalledWith('formValues', [
+              JSON.stringify({ formattedAdditionalInformation: null, formattedReferrerOverrideReason: '' }),
+            ])
             expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
           })
         })
@@ -266,7 +268,10 @@ describe('NewReferralsAdditionalInformationController', () => {
             'Additional information must be 4000 characters or fewer',
           )
           expect(request.flash).toHaveBeenCalledWith('formValues', [
-            JSON.stringify({ formattedAdditionalInformation: longAdditionalInformation }),
+            JSON.stringify({
+              formattedAdditionalInformation: longAdditionalInformation,
+              formattedReferrerOverrideReason: null,
+            }),
           ])
           expect(response.redirect).toHaveBeenCalledWith(referPaths.new.additionalInformation.show({ referralId }))
         })
