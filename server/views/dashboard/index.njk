@@ -50,6 +50,17 @@
         </div>
       {% endif %}
 
+      {% if showHspLink %}
+        <div class="govuk-grid-column-one-third dashboard__card-wrapper">
+          <div class="dashboard__card">
+            <h2 class="govuk-heading-m dashboard__card-heading">
+              <a class="govuk-link dashboard__card-link" href="{{ hspPath }}">HSP referrals</a>
+            </h2>
+            <p class="govuk-body dashboard__card-description">View and update all national referrals to HSP.</p>
+          </div>
+        </div>
+      {% endif %}
+
       <div class="govuk-grid-column-one-third dashboard__card-wrapper">
         <div class="dashboard__card">
           <h2 class="govuk-heading-m dashboard__card-heading">
