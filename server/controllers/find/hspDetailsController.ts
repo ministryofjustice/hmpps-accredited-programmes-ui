@@ -38,7 +38,10 @@ export default class HspDetailsController {
       FormUtils.setFieldErrors(req, res, ['sexualOffenceDetails'])
 
       return res.render('courses/hsp/details/show', {
-        checkboxFieldsets: ReferenceDataUtils.createSexualOffenceDetailsFieldset(groupedDetailOptions, []),
+        checkboxFieldsets: ReferenceDataUtils.createSexualOffenceDetailsFieldset(
+          groupedDetailOptions,
+          req.session.hspReferralData?.selectedOffenceDetails,
+        ),
         hrefs: {
           back: findPaths.show({ courseId: course.id }),
           programmeIndex: findPaths.pniFind.recommendedProgrammes({}),
@@ -54,7 +57,9 @@ export default class HspDetailsController {
       TypeUtils.assertHasUser(req)
 
       const { courseId } = req.params
-      const { sexualOffenceDetails } = req.body
+      const { sexualOffenceDetails } = req.body as {
+        sexualOffenceDetails: Array<string> | string
+      }
 
       if (!sexualOffenceDetails) {
         req.flash('sexualOffenceDetailsError', 'Please select at least one sexual offence')
@@ -63,11 +68,22 @@ export default class HspDetailsController {
       }
 
       const splitChar = '::'
-      const selectedValues = Array.isArray(sexualOffenceDetails)
-        ? sexualOffenceDetails.map(detail => detail.split(splitChar))
-        : [sexualOffenceDetails.split(splitChar)]
 
-      const totalScore = selectedValues.reduce((acc, [_value, score]) => acc + parseInt(score, 10), 0)
+      const sexualOffenceDetailsArray = Array.isArray(sexualOffenceDetails)
+        ? sexualOffenceDetails
+        : [sexualOffenceDetails]
+
+      const selectedValues = sexualOffenceDetailsArray.map(detail => {
+        const [id, score] = detail.split(splitChar)
+        return { id, score: parseInt(score, 10) }
+      })
+
+      const totalScore = selectedValues.reduce((acc, { score }) => acc + score, 0)
+
+      req.session.hspReferralData = {
+        selectedOffenceDetails: selectedValues.map(({ id }) => id),
+        totalScore,
+      }
 
       if (totalScore < this.ELIGIBILITY_THRESHOLD_SCORE) {
         return res.redirect(findPaths.hsp.notEligible.show({ courseId }))
