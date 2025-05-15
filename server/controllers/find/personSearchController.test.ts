@@ -27,7 +27,17 @@ describe('PersonSearchController', () => {
 
   beforeEach(() => {
     controller = new PersonSearchController(personService)
-    request = createMock<Request>()
+    request = createMock<Request>({
+      session: {
+        hspReferralData: {
+          selectedOffenceDetails: ['ABC-123'],
+          totalScore: 1,
+        },
+        pniFindAndReferData: {
+          prisonNumber: 'XYZ7890',
+        },
+      },
+    })
     response = createMock<Response>({
       locals: {
         user: {
@@ -58,13 +68,14 @@ describe('PersonSearchController', () => {
     const prisonNumber = 'A1234AA'
     const person = personFactory.build({ prisonNumber })
 
-    it('should redirect to the recommended pathway page', async () => {
+    it('should clear any referral related session data and redirect to the recommended pathway page', async () => {
       when(personService.getPerson).calledWith(username, prisonNumber, []).mockResolvedValue(person)
 
       request.body = { prisonNumber }
 
       await controller.submit()(request, response, next)
 
+      expect(request.session.hspReferralData).toBeUndefined()
       expect(request.session.pniFindAndReferData).toEqual({ prisonNumber })
       expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.recommendedPathway.pattern)
     })
