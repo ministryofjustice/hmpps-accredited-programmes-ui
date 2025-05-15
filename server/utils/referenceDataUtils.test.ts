@@ -34,7 +34,7 @@ describe('ReferenceDataUtils', () => {
           },
         ],
       }
-      const selectedOptions = ['ABC-456::2']
+      const selectedOptions = ['ABC-456']
 
       expect(ReferenceDataUtils.createSexualOffenceDetailsFieldset(groupedOptions, selectedOptions)).toEqual([
         {
