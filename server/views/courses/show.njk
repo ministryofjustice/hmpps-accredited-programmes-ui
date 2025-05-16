@@ -3,6 +3,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% from "../partials/audienceTag.njk" import audienceTag %}
+{% from "./_locationsTable.njk" import locationsTable %}
 
 {% extends "../partials/layout.njk" %}
 
@@ -62,7 +63,7 @@
       {% if organisationsTableData | length %}
         <p data-testid="offerings-text">Select a prison to contact the programme team or make a referral.</p>
 
-        {% include "./_locationsTable.njk" %}
+        {{ locationsTable({locations: organisationsTableData}) }}
       {% else %}
         <p data-testid="no-offerings-text">{{ noOfferingsMessage | safe }}</p>
 
@@ -74,6 +75,14 @@
           }) }}
         {% endif %}
       {% endif %}
+
+      {% if 'ROLE_ACP_EDITOR' in user.roles %}
+        {% if withdrawnOrganisationsTableData | length %}
+          <h2 class="header-with-actions__title govuk-heading-m">Withdrawn Locations</h2>
+          {{ locationsTable({locations: withdrawnOrganisationsTableData}) }}
+        {% endif %}
+      {% endif %}
+
     </div>
   </div>
 {% endblock content %}

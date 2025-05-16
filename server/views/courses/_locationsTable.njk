@@ -1,28 +1,30 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
-{{ govukTable({
-  attributes: {
-    "data-module": "moj-sortable-table"
-  },
-  head: [
-    {
-      text: "Prison",
+{% macro locationsTable(params) %}
+    {{ govukTable({
       attributes: {
-        "aria-sort": "ascending"
-      }
-    },
-    {
-      text: "Category",
-      attributes: {
-        "aria-sort": "none"
-      }
-    },
-    {
-      text: "County",
-      attributes: {
-        "aria-sort": "none"
-      }
-    }
-  ],
-  rows: organisationsTableData
-}) }}
+        "data-module": "moj-sortable-table"
+      },
+      head: [
+        {
+          text: "Prison",
+          attributes: {
+            "aria-sort": "ascending"
+          }
+        },
+        {
+          text: "Category",
+          attributes: {
+            "aria-sort": "none"
+          }
+        },
+        {
+          text: "County",
+          attributes: {
+            "aria-sort": "none"
+          }
+        }
+      ],
+      rows: params.locations
+    }) }}
+{% endmacro %}

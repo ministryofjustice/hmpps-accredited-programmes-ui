@@ -148,11 +148,15 @@ export default {
   stubOfferingsByCourse: (args: {
     courseId: Course['id']
     courseOfferings: Array<CourseOffering>
+    includeWithdrawn: string
   }): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        url: apiPaths.courses.offerings({ courseId: args.courseId }),
+        queryParameters: {
+          includeWithdrawn: { equalTo: args.includeWithdrawn },
+        },
+        urlPath: apiPaths.courses.offerings({ courseId: args.courseId }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },

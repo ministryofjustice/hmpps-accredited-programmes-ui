@@ -410,10 +410,12 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
       courseOfferingFactory.build({
         id: '790a2dfe-7de5-4504-bb9c-83e6e53a6537',
         secondaryContactEmail: 'nobody2-bwn@digital.justice.gov.uk',
+        withdrawn: false,
       }),
       courseOfferingFactory.build({
         id: '7fffcc6a-11f8-4713-be35-cf5ff1aee517',
         secondaryContactEmail: 'nobody2-mdi@digital.justice.gov.uk',
+        withdrawn: false,
       }),
     ]
 
@@ -432,12 +434,17 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
           },
           method: 'GET',
           path: apiPaths.courses.offerings({ courseId: 'd3abc217-75ee-46e9-a010-368f30282367' }),
+          query: {
+            includeWithdrawn: 'false',
+          },
         },
       })
     })
 
     it("fetches the given course's offerings", async () => {
-      const result = await courseClient.findOfferings('d3abc217-75ee-46e9-a010-368f30282367')
+      const result = await courseClient.findOfferings('d3abc217-75ee-46e9-a010-368f30282367', {
+        includeWithdrawn: false,
+      })
 
       expect(result).toEqual(courseOfferings)
     })

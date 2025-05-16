@@ -5,6 +5,7 @@ import { when } from 'jest-when'
 
 import CoursesController from './coursesController'
 import config from '../../config'
+import { ApplicationRoles } from '../../middleware'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
@@ -38,7 +39,13 @@ describe('CoursesController', () => {
       },
       user: { token: userToken, username },
     })
-    response = createMock<Response>({})
+    response = createMock<Response>({
+      locals: {
+        user: {
+          roles: [],
+        },
+      },
+    })
     controller = new CoursesController(courseService, organisationService)
   })
 
@@ -86,7 +93,11 @@ describe('CoursesController', () => {
     organisations.forEach(organisation => {
       const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
       courseOfferings.push(courseOffering)
-      organisationsWithOfferingIds.push({ ...organisation, courseOfferingId: courseOffering.id })
+      organisationsWithOfferingIds.push({
+        ...organisation,
+        courseOfferingId: courseOffering.id,
+        withdrawn: courseOffering.withdrawn,
+      })
     })
 
     beforeEach(() => {
@@ -94,6 +105,9 @@ describe('CoursesController', () => {
 
       when(courseService.getCourse).calledWith(username, course.id).mockResolvedValue(course)
       when(courseService.getOfferingsByCourse).calledWith(username, course.id).mockResolvedValue(courseOfferings)
+      when(courseService.getOfferingsByCourse)
+        .calledWith(username, course.id, { includeWithdrawn: false })
+        .mockResolvedValue(courseOfferings)
 
       jest.spyOn(CourseUtils, 'noOfferingsMessage').mockReturnValue(noOfferingsMessage)
     })
@@ -116,13 +130,23 @@ describe('CoursesController', () => {
         hrefs: {
           addOffering: findPaths.offerings.add.create({ courseId: course.id }),
           back: findPaths.pniFind.recommendedProgrammes({}),
+          startHspReferral: undefined,
           updateProgramme: findPaths.course.update.show({ courseId: course.id }),
         },
         isBuildingChoices: false,
         noOfferingsMessage,
-        organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
+        organisationsTableData: OrganisationUtils.organisationTableRows(
+          organisationsWithOfferingIds.filter(
+            organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === false,
+          ),
+        ),
         pageHeading: coursePresenter.displayName,
         pageTitleOverride: `${coursePresenter.displayName} programme description`,
+        withdrawnOrganisationsTableData: OrganisationUtils.organisationTableRows(
+          organisationsWithOfferingIds.filter(
+            organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === true,
+          ),
+        ),
       })
     })
 
@@ -160,6 +184,50 @@ describe('CoursesController', () => {
             }),
           }),
         )
+      })
+    })
+
+    describe('when the user has the ACP_EDITOR role', () => {
+      it('should call the getOfferingsByCourse service method with the query parameter includeWithdrawal set to true', async () => {
+        response.locals.user.roles = [ApplicationRoles.ACP_EDITOR]
+
+        when(courseService.getOfferingsByCourse)
+          .calledWith(username, course.id, { includeWithdrawn: true })
+          .mockResolvedValue(courseOfferings)
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(courseService.getOfferingsByCourse).toHaveBeenCalledWith(username, course.id, { includeWithdrawn: true })
+
+        const organisationIds = organisations.map(organisation => organisation.id)
+        expect(organisationService.getOrganisations).toHaveBeenCalledWith(userToken, organisationIds)
+
+        const coursePresenter = CourseUtils.presentCourse(course)
+        expect(response.render).toHaveBeenCalledWith('courses/show', {
+          course: coursePresenter,
+          hideTitleServiceName: true,
+          hrefs: {
+            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+            back: findPaths.pniFind.recommendedProgrammes({}),
+            startHspReferral: undefined,
+            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+          },
+          isBuildingChoices: false,
+          noOfferingsMessage,
+          organisationsTableData: OrganisationUtils.organisationTableRows(
+            organisationsWithOfferingIds.filter(
+              organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === false,
+            ),
+          ),
+          pageHeading: coursePresenter.displayName,
+          pageTitleOverride: `${coursePresenter.displayName} programme description`,
+          withdrawnOrganisationsTableData: OrganisationUtils.organisationTableRows(
+            organisationsWithOfferingIds.filter(
+              organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === true,
+            ),
+          ),
+        })
       })
     })
   })

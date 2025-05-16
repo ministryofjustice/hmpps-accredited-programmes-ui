@@ -33,8 +33,20 @@ export default class BuildingChoicesController {
       const organisations = await this.organisationService.getOrganisations(req.user.token, organisationIds)
       const organisationsWithOfferingIds = organisations.map(organisation => {
         const courseOffering = course.courseOfferings.find(offering => offering.organisationId === organisation.id)
-        return { ...organisation, courseOfferingId: courseOffering?.id }
+        return { ...organisation, courseOfferingId: courseOffering?.id, withdrawn: courseOffering?.withdrawn }
       })
+
+      const organisationsTableData = OrganisationUtils.organisationTableRows(
+        organisationsWithOfferingIds.filter(
+          organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === false,
+        ),
+      )
+
+      const withdrawnOrganisationsTableData = OrganisationUtils.organisationTableRows(
+        organisationsWithOfferingIds.filter(
+          organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === true,
+        ),
+      )
 
       return res.render('courses/buildingChoices/show', {
         buildingChoicesAnswersSummaryListRows: CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesData),
@@ -45,9 +57,10 @@ export default class BuildingChoicesController {
           back: findPaths.buildingChoices.form.show({ courseId }),
           updateProgramme: findPaths.course.update.show({ courseId: course.id }),
         },
-        organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
+        organisationsTableData,
         pageHeading: course.displayName,
         pageTitleOverride: `${course.displayName} programme description`,
+        withdrawnOrganisationsTableData,
       })
     }
   }

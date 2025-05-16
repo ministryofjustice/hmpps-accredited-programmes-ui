@@ -99,6 +99,7 @@ type OffenceHistory = {
 
 type OrganisationWithOfferingId = Organisation & {
   courseOfferingId: CourseOffering['id']
+  withdrawn: boolean | undefined
 }
 
 type OrganisationWithOfferingEmailsPresenter = Organisation & {
