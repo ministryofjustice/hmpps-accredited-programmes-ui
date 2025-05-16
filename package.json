@@ -149,7 +149,7 @@
     "start-server-and-test": "^2.0.0",
     "stylelint": "^16.0.2",
     "stylelint-config-clean-order": "^7.0.0",
-    "stylelint-config-standard-scss": "^14.0.0",
+    "stylelint-config-standard-scss": "^15.0.0",
     "stylelint-selector-bem-pattern": "^4.0.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.0",
