@@ -1,5 +1,7 @@
 import type { Request, RequestHandler, Response } from 'express'
 
+import config from '../config'
+import { ApplicationRoles } from '../middleware'
 import { assessPaths, findPaths, referPaths, reportsPaths } from '../paths'
 
 export default class DashboardController {
@@ -17,9 +19,11 @@ export default class DashboardController {
         assessCaseListPath: assessPaths.caseList.index({}),
         findAllProgrammesPath: findPaths.index({}),
         findPath: findPaths.pniFind.personSearch({}),
+        hspPath: '/hsp-referrals',
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: referPaths.caseList.index({}),
         reportPath: reportsPaths.show({}),
+        showHspLink: config.flags.hspEnabled && res.locals.user.roles.includes(ApplicationRoles.ACP_HSP),
       })
     }
   }

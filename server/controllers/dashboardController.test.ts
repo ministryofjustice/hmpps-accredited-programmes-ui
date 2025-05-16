@@ -38,9 +38,11 @@ describe('DashboardController', () => {
         assessCaseListPath: '/assess/referrals/case-list',
         findAllProgrammesPath: '/find/programmes',
         findPath: findPaths.pniFind.personSearch({}),
+        hspPath: '/hsp-referrals',
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: '/refer/referrals/case-list',
         reportPath: '/reports',
+        showHspLink: false,
       })
     })
   })
