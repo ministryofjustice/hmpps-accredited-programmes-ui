@@ -1,8 +1,10 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import config from '../../config'
+import { ApplicationRoles } from '../../middleware'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
+import user from '../../testutils/factories/user'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
 import type { CourseOffering } from '@accredited-programmes/models'
 
@@ -39,9 +41,12 @@ export default class CoursesController {
       TypeUtils.assertHasUser(req)
 
       const isPniFind = req.session.pniFindAndReferData !== undefined
+      const showWithdrawnCourses = res.locals.user.roles.includes(ApplicationRoles.ACP_EDITOR)
 
       const course = await this.courseService.getCourse(req.user.username, req.params.courseId)
-      const offerings = await this.courseService.getOfferingsByCourse(req.user.username, course.id)
+      const offerings = await this.courseService.getOfferingsByCourse(req.user.username, course.id, {
+        includeWithdrawn: showWithdrawnCourses,
+      })
 
       const organisationIds = offerings.map((offering: CourseOffering) => offering.organisationId)
       const organisations = await this.organisationService.getOrganisations(req.user.token, organisationIds)

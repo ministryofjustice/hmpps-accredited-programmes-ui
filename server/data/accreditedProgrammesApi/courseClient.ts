@@ -67,7 +67,9 @@ export default class CourseClient {
   }
 
   async find(courseId: Course['id']): Promise<Course> {
-    return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
+    return (await this.restClient.get({
+      path: apiPaths.courses.show({ courseId }),
+    })) as Course
   }
 
   /* istanbul ignore next */
@@ -127,9 +129,12 @@ export default class CourseClient {
     })) as CourseOffering
   }
 
-  async findOfferings(courseId: Course['id']): Promise<Array<CourseOffering>> {
+  async findOfferings(courseId: Course['id'], query?: { includeWithdrawn?: boolean }): Promise<Array<CourseOffering>> {
     return (await this.restClient.get({
       path: apiPaths.courses.offerings({ courseId }),
+      query: {
+        ...(query?.includeWithdrawn && { includeWithdrawn: 'true' }),
+      },
     })) as Array<CourseOffering>
   }
 

@@ -125,7 +125,10 @@ export default class CourseService {
     })
   }
 
-  async getCourse(username: Express.User['username'], courseId: Course['id']): Promise<Course> {
+  async getCourse(
+    username: Express.User['username'],
+    courseId: Course['id'],
+  ): Promise<Course> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
@@ -198,12 +201,13 @@ export default class CourseService {
   async getOfferingsByCourse(
     username: Express.User['username'],
     courseId: Course['id'],
+    query?: { includeWithdrawn?: boolean },
   ): Promise<Array<CourseOffering>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
     const systemToken = await hmppsAuthClient.getSystemClientToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
-    return courseClient.findOfferings(courseId)
+    return courseClient.findOfferings(courseId, query)
   }
 
   async getParticipation(

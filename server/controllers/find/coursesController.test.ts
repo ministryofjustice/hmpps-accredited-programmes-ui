@@ -11,6 +11,7 @@ import { courseFactory, courseOfferingFactory, organisationFactory } from '../..
 import { CourseUtils, OrganisationUtils } from '../../utils'
 import type { CourseOffering } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
+import { ApplicationRoles } from '../../middleware'
 
 describe('CoursesController', () => {
   const userToken = 'SOME_TOKEN'
@@ -38,7 +39,13 @@ describe('CoursesController', () => {
       },
       user: { token: userToken, username },
     })
-    response = createMock<Response>({})
+    response = createMock<Response>({
+      locals: {
+        user: {
+          roles: [],
+        },
+      },
+    })
     controller = new CoursesController(courseService, organisationService)
   })
 
