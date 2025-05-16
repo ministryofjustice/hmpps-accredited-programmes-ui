@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import AssessCaseListController from './caseListController'
+import HspReferralsController from './hspReferralsController'
 import PniController from './pniController'
 import TransferReferralController from './transferReferralController'
 import TransferReferralErrorController from './transferReferralErrorController'
@@ -48,8 +49,11 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
+  const hspReferralsController = new HspReferralsController(services.referralService, services.referenceDataService)
+
   return {
     assessCaseListController,
+    hspReferralsController,
     pniController,
     transferReferralController,
     transferReferralErrorController,

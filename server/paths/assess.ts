@@ -23,6 +23,10 @@ export default {
     index: caseListIndex,
     show: courseCaseListPath.path(':referralStatusGroup'),
   },
+  hspReferrals: {
+    filter: caseListIndex.path('hsp/:referralStatusGroup'),
+    show: caseListIndex.path('hsp/:referralStatusGroup'),
+  },
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),
     duplicate: referralShowPathBase.path('duplicate'),

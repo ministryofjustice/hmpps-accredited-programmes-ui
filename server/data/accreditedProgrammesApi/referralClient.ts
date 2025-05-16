@@ -90,6 +90,28 @@ export default class ReferralClient {
     })) as Array<Referral>
   }
 
+  async findHspReferralViews(query?: {
+    nameOrId?: string
+    page?: string
+    sortColumn?: string
+    sortDirection?: string
+    status?: string
+    statusGroup?: ReferralStatusGroup
+  }): Promise<Paginated<ReferralView>> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.hspReferralDashboard({}),
+      query: {
+        ...(query?.nameOrId && { nameOrId: query.nameOrId }),
+        ...(query?.page && { page: query.page }),
+        ...(query?.status && { status: query.status }),
+        ...(query?.statusGroup && { statusGroup: query.statusGroup }),
+        ...(query?.sortColumn && { sortColumn: query.sortColumn }),
+        ...(query?.sortDirection && { sortDirection: query.sortDirection }),
+        size: '15',
+      },
+    })) as Paginated<ReferralView>
+  }
+
   async findMyReferralViews(query?: {
     nameOrId?: string
     page?: string
