@@ -1291,6 +1291,11 @@ export interface GovukFrontendFooter {
     HTML attributes (for example data attributes) to add to the footer component container.
   */
   attributes?: Record<string, unknown> | null
+
+  /*
+    If `true`, use the redesigned footer with the GOV.UK crown. Default is `false`.
+  */
+  rebrand?: boolean | null
 }
 
 export interface GovukFrontendFooterMeta {
@@ -1461,6 +1466,11 @@ export interface GovukFrontendHeader {
     If `true`, uses the Tudor crown from King Charles III's royal cypher. Otherwise, uses the St. Edward's crown. Default is `true`.
   */
   useTudorCrown?: boolean | null
+
+  /*
+    If `true`, use the redesigned header and new GOV.UK logotype. Default is `false`.
+  */
+  rebrand?: boolean | null
 }
 
 export interface GovukFrontendHeaderNavigationElement {
