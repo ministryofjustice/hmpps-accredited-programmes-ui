@@ -43,6 +43,7 @@ describe('DashboardController', () => {
         referCaseListPath: '/refer/referrals/case-list',
         reportPath: '/reports',
         showHspLink: true,
+        pageHeading: "Accessibility statement"
       })
     })
   })
