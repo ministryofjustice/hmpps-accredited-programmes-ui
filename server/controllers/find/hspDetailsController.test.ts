@@ -23,11 +23,15 @@ describe('HspDetailsController', () => {
 
   const hspCourse = courseFactory.build({ name: 'Healthy Sex Programme' })
   const person = personFactory.build({ name: 'Del Hatton' })
+  const selectedOffenceDetails = ['ABC-123']
 
   beforeEach(() => {
     request = createMock<Request>({
       params: { courseId: hspCourse.id },
       session: {
+        hspReferralData: {
+          selectedOffenceDetails,
+        },
         pniFindAndReferData: {
           prisonNumber: person.prisonNumber,
           programmePathway: 'HIGH_INTENSITY_BC',
@@ -85,7 +89,10 @@ describe('HspDetailsController', () => {
 
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['sexualOffenceDetails'])
       expect(ReferenceDataUtils.groupOptionsByKey).toHaveBeenCalledWith(sexualOffenceDetails, 'categoryDescription')
-      expect(ReferenceDataUtils.createSexualOffenceDetailsFieldset).toHaveBeenCalledWith(mockGroupedDetailOptions, [])
+      expect(ReferenceDataUtils.createSexualOffenceDetailsFieldset).toHaveBeenCalledWith(
+        mockGroupedDetailOptions,
+        selectedOffenceDetails,
+      )
       expect(response.render).toHaveBeenCalledWith('courses/hsp/details/show', {
         checkboxFieldsets: mockFieldsets,
         hrefs: {
@@ -139,6 +146,10 @@ describe('HspDetailsController', () => {
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
+        expect(request.session.hspReferralData).toEqual({
+          selectedOffenceDetails: ['ABC-123', 'ABC-456'],
+          totalScore: 3,
+        })
         expect(response.send).toHaveBeenCalledWith('Eligible')
       })
     })
@@ -150,6 +161,10 @@ describe('HspDetailsController', () => {
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
+        expect(request.session.hspReferralData).toEqual({
+          selectedOffenceDetails: ['ABC-123'],
+          totalScore: 1,
+        })
         expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.notEligible.show({ courseId: hspCourse.id }))
       })
     })

@@ -4,7 +4,7 @@ import type { GovukFrontendCheckboxesItem, GovukFrontendFieldsetLegend } from '@
 export default class ReferenceDataUtils {
   static createSexualOffenceDetailsFieldset(
     groupedOptions: Record<string, Array<SexualOffenceDetails>>,
-    selectedOptions: Array<string>,
+    selectedOptions?: Array<string>,
   ): Array<{ checkboxes: Array<GovukFrontendCheckboxesItem>; legend: GovukFrontendFieldsetLegend }> {
     return Object.entries(groupedOptions).map(([categoryCode, options]) => ({
       checkboxes: this.sexualOffenceDetailsToCheckboxItems(options, selectedOptions),
@@ -33,18 +33,15 @@ export default class ReferenceDataUtils {
 
   private static sexualOffenceDetailsToCheckboxItems(
     options: Array<SexualOffenceDetails>,
-    selectedOptions: Array<string>,
+    selectedOptions?: Array<string>,
   ): Array<GovukFrontendCheckboxesItem> {
-    return options.map(option => {
-      const optionValue = `${option.id}::${option.score}`
-      return {
-        checked: selectedOptions.includes(optionValue),
-        hint: {
-          text: option.hintText,
-        },
-        text: option.description,
-        value: optionValue,
-      }
-    })
+    return options.map(option => ({
+      checked: selectedOptions?.includes(option.id),
+      hint: {
+        text: option.hintText,
+      },
+      text: option.description,
+      value: `${option.id}::${option.score}`,
+    }))
   }
 }
