@@ -42,8 +42,7 @@ describe('DashboardController', () => {
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: '/refer/referrals/case-list',
         reportPath: '/reports',
-        showHspLink: true,
-        pageHeading: "Accessibility statement"
+        showHspLink: false,
       })
     })
   })
