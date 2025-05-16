@@ -5,13 +5,13 @@ import { when } from 'jest-when'
 
 import CoursesController from './coursesController'
 import config from '../../config'
+import { ApplicationRoles } from '../../middleware'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
 import type { CourseOffering } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
-import { ApplicationRoles } from '../../middleware'
 
 describe('CoursesController', () => {
   const userToken = 'SOME_TOKEN'
@@ -101,6 +101,9 @@ describe('CoursesController', () => {
 
       when(courseService.getCourse).calledWith(username, course.id).mockResolvedValue(course)
       when(courseService.getOfferingsByCourse).calledWith(username, course.id).mockResolvedValue(courseOfferings)
+      when(courseService.getOfferingsByCourse)
+        .calledWith(username, course.id, { includeWithdrawn: false })
+        .mockResolvedValue(courseOfferings)
 
       jest.spyOn(CourseUtils, 'noOfferingsMessage').mockReturnValue(noOfferingsMessage)
     })
@@ -167,6 +170,40 @@ describe('CoursesController', () => {
             }),
           }),
         )
+      })
+    })
+
+    describe('when the user has the ACP_EDITOR role', () => {
+      it('should call the getOfferingsByCourse service method with the query parameter includeWithdrawal set to true', async () => {
+        response.locals.user.roles = [ApplicationRoles.ACP_EDITOR]
+
+        when(courseService.getOfferingsByCourse)
+          .calledWith(username, course.id, { includeWithdrawn: true })
+          .mockResolvedValue(courseOfferings)
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(courseService.getOfferingsByCourse).toHaveBeenCalledWith(username, course.id, { includeWithdrawn: true })
+
+        const organisationIds = organisations.map(organisation => organisation.id)
+        expect(organisationService.getOrganisations).toHaveBeenCalledWith(userToken, organisationIds)
+
+        const coursePresenter = CourseUtils.presentCourse(course)
+        expect(response.render).toHaveBeenCalledWith('courses/show', {
+          course: coursePresenter,
+          hideTitleServiceName: true,
+          hrefs: {
+            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+            back: findPaths.pniFind.recommendedProgrammes({}),
+            updateProgramme: findPaths.course.update.show({ courseId: course.id }),
+          },
+          isBuildingChoices: false,
+          noOfferingsMessage,
+          organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
+          pageHeading: coursePresenter.displayName,
+          pageTitleOverride: `${coursePresenter.displayName} programme description`,
+        })
       })
     })
   })
