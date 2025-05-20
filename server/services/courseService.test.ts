@@ -223,7 +223,7 @@ describe('CourseService', () => {
       const formRequestBody = { isConvictedOfSexualOffence: 'true', isInAWomensPrison: 'false' }
 
       when(courseClient.findBuildingChoicesVariants)
-        .calledWith(course.id, { isConvictedOfSexualOffence: true, isInAWomensPrison: false })
+        .calledWith(course.id, { isConvictedOfSexualOffence: 'true', isInAWomensPrison: 'false' })
         .mockResolvedValue([course])
 
       const result = await service.getBuildingChoicesVariants(username, course.id, formRequestBody)

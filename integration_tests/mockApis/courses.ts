@@ -27,15 +27,23 @@ export default {
       },
     }),
 
-  stubBuildingChoicesCourseVariant: (course: Course): SuperAgentRequest =>
+  stubBuildingChoicesCourseVariant: (args: {
+    course: Course
+    isConvictedOfASexualOffence: string
+    isInAWomensPrison: string
+  }): SuperAgentRequest =>
     stubFor({
       request: {
-        method: 'POST',
-        url: apiPaths.courses.buildingChoices({ courseId: course.id }),
+        method: 'GET',
+        queryParameters: {
+          isConvictedOfASexualOffence: { equalTo: args.isConvictedOfASexualOffence },
+          isInAWomensPrison: { equalTo: args.isInAWomensPrison },
+        },
+        urlPath: apiPaths.courses.buildingChoicesVariants({ courseId: args.course.id }),
       },
       response: {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: course ? [course] : [],
+        jsonBody: args.course ? [args.course] : [],
         status: 200,
       },
     }),

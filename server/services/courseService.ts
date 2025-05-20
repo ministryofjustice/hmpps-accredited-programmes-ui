@@ -120,8 +120,8 @@ export default class CourseService {
     }
 
     return courseClient.findBuildingChoicesVariants(courseId, {
-      isConvictedOfSexualOffence: isConvictedOfSexualOffence === 'true',
-      isInAWomensPrison: isInAWomensPrison === 'true',
+      isConvictedOfSexualOffence,
+      isInAWomensPrison,
     })
   }
 
