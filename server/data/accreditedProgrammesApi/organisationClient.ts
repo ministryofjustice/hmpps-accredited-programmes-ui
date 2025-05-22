@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 import type { ApiConfig } from '../../config'
 import config from '../../config'
 import { apiPaths } from '../../paths'
