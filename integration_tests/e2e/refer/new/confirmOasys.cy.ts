@@ -5,13 +5,12 @@ import {
   courseOfferingFactory,
   peopleSearchResponseFactory,
   personFactory,
-  prisonFactory,
   referralFactory,
 } from '../../../../server/testutils/factories'
-import { OrganisationUtils } from '../../../../server/utils'
 import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import { NewReferralConfirmOasysPage, NewReferralTaskListPage } from '../../../pages/refer'
+import type { Organisation } from '@accredited-programmes-api'
 
 context('OASys confirmation', () => {
   const courseOffering = courseOfferingFactory.build()
@@ -103,9 +102,8 @@ context('OASys confirmation', () => {
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
       cy.task('stubOffering', { courseId: course.id, courseOffering })
 
-      const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-      const organisation = OrganisationUtils.organisationFromPrison(prison)
-      cy.task('stubPrison', prison)
+      const organisation: Organisation = { code: courseOffering.organisationId, prisonName: 'HMP Test' }
+      cy.task('stubOrganisation', organisation)
 
       const path = referPaths.new.confirmOasys.show({ referralId: referral.id })
       cy.visit(path)

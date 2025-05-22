@@ -6,7 +6,7 @@ import CourseUtils from '../courseUtils'
 import DateUtils from '../dateUtils'
 import PniUtils from '../risksAndNeeds/pniUtils'
 import StringUtils from '../stringUtils'
-import type { CourseOffering, Organisation, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { CourseOffering, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -15,7 +15,7 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
-import type { Course, PniScore, Referral } from '@accredited-programmes-api'
+import type { Course, Organisation, PniScore, Referral } from '@accredited-programmes-api'
 import type { GovukFrontendButton } from '@govuk-frontend'
 import type { User, UserEmail } from '@manage-users-api'
 
@@ -127,7 +127,7 @@ export default class ShowReferralUtils {
     applicantName: User['name'],
     coursePresenter: CoursePresenter,
     contactEmail: CourseOffering['contactEmail'],
-    organisationName: Organisation['name'],
+    organisationName: Organisation['prisonName'],
   ): Array<GovukFrontendSummaryListRowWithKeyAndValue> {
     return [
       {

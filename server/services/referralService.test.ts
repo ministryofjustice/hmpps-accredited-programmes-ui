@@ -14,7 +14,6 @@ import {
   confirmationFieldsFactory,
   courseFactory,
   courseOfferingFactory,
-  organisationFactory,
   pniScoreFactory,
   referralFactory,
   referralStatusHistoryFactory,
@@ -23,7 +22,7 @@ import {
   userFactory,
 } from '../testutils/factories'
 import type { ReferralStatus, ReferralStatusGroup, ReferralStatusUpdate } from '@accredited-programmes/models'
-import type { ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
+import type { Organisation, ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
@@ -246,16 +245,16 @@ describe('ReferralService', () => {
       const expectedResponse = otherReferrals.map(otherReferral => {
         const user = userFactory.build({ username: otherReferral.referrerUsername })
         const status = referralStatusRefDataFactory.build()
-        const organisation = organisationFactory.build()
+        const organisation: Organisation = { code: 'WTI', prisonName: 'WTI' }
         const offering = courseOfferingFactory.build({
           id: otherReferral.offeringId,
-          organisationId: organisation.id,
+          organisationId: organisation.code,
         })
         const course = courseFactory.build({ courseOfferings: [offering] })
 
         when(courseService.getOffering).calledWith(username, otherReferral.offeringId).mockResolvedValue(offering)
         when(courseService.getCourseByOffering).calledWith(username, otherReferral.offeringId).mockResolvedValue(course)
-        when(organisationService.getOrganisation)
+        when(organisationService.getOrganisationFromAcp)
           .calledWith(username, offering.organisationId)
           .mockResolvedValue(organisation)
         when(referenceDataService.getReferralStatusCodeData)

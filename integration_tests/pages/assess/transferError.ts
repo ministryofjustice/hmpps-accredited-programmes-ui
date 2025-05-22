@@ -1,7 +1,7 @@
 import { assessPaths } from '../../../server/paths'
 import Page from '../page'
-import type { Organisation, Person } from '@accredited-programmes/models'
-import type { Course, Referral } from '@accredited-programmes-api'
+import type { Person } from '@accredited-programmes/models'
+import type { Course, Organisation, Referral } from '@accredited-programmes-api'
 
 export default class TransferErrorPage extends Page {
   organisation: Organisation
@@ -42,7 +42,7 @@ export default class TransferErrorPage extends Page {
 
   shouldContainNoCourseText() {
     this.shouldContainText(
-      `This referral cannot be moved because ${this.organisation.name} does not offer the general offence strand of Building Choices: ${this.originalCourse.intensity?.toLowerCase()} intensity.`,
+      `This referral cannot be moved because ${this.organisation.prisonName} does not offer the general offence strand of Building Choices: ${this.originalCourse.intensity?.toLowerCase()} intensity.`,
     )
     this.shouldContainText('Close this referral and submit a new one to a different location.')
   }

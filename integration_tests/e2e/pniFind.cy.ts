@@ -28,6 +28,7 @@ import {
   NewReferralStartPage,
   NewReferralTaskListPage,
 } from '../pages/refer'
+import type { Organisation } from '@accredited-programmes-api'
 
 context('Find programmes based on PNI Pathway', () => {
   const personSearchPath = findPaths.pniFind.personSearch({})
@@ -292,6 +293,10 @@ context('Find programmes based on PNI Pathway', () => {
           prisonId: referableOffering.organisationId,
           prisonName: 'Moorland (HMP)',
         })
+        const organisationFromAcp: Organisation = {
+          code: referablePrison.prisonId,
+          prisonName: referablePrison.prisonName,
+        }
         const referableOrganisation = OrganisationUtils.organisationFromPrison(referablePrison)
         const prisons = [
           referablePrison,
@@ -314,6 +319,7 @@ context('Find programmes based on PNI Pathway', () => {
             })
             cy.task('stubOffering', { courseOffering: referableOffering })
             cy.task('stubCourseByOffering', { course: becomingNewMeCourse, courseOfferingId: referableOffering.id })
+            cy.task('stubOrganisation', organisationFromAcp)
 
             cy.visit(personSearchPath)
 
@@ -372,7 +378,7 @@ context('Find programmes based on PNI Pathway', () => {
             const startReferralPage = Page.verifyOnPage(NewReferralStartPage, {
               course: becomingNewMeCourse,
               courseOffering: referableOffering,
-              organisation: referableOrganisation,
+              organisation: organisationFromAcp,
               prisonNumber,
             })
             startReferralPage.shouldContainBackLink(
@@ -423,7 +429,7 @@ context('Find programmes based on PNI Pathway', () => {
             Page.verifyOnPage(NewReferralTaskListPage, {
               course: becomingNewMeCourse,
               courseOffering: referableOffering,
-              organisation: referableOrganisation,
+              organisation: organisationFromAcp,
               referral,
             })
           })
@@ -462,7 +468,7 @@ context('Find programmes based on PNI Pathway', () => {
               const duplicatePage = Page.verifyOnPage(NewReferralDuplicatePage, {
                 course: becomingNewMeCourse,
                 courseOffering: referableOffering,
-                organisation: referableOrganisation,
+                organisation: organisationFromAcp,
                 person,
                 referral,
               })
@@ -492,6 +498,13 @@ context('Find programmes based on PNI Pathway', () => {
             cy.task('stubPrison', prisonFactory.build({ female: false, prisonId: prisoner.prisonId }))
             cy.task('stubOffering', { courseOffering: referableOffering })
             cy.task('stubCourseByOffering', { course: buildingChoicesCourse, courseOfferingId: referableOffering.id })
+
+            cy.task('stubOrganisation', { code: prisoner.prisonId, gender: 'MALE', prisonName: 'HMP Test' })
+            cy.task('stubOrganisation', {
+              code: referablePrison.prisonId,
+              gender: 'MALE',
+              prisonName: referablePrison.prisonName,
+            })
 
             cy.visit(personSearchPath)
 
@@ -564,7 +577,7 @@ context('Find programmes based on PNI Pathway', () => {
             const startReferralPage = Page.verifyOnPage(NewReferralStartPage, {
               course: buildingChoicesCourse,
               courseOffering: referableOffering,
-              organisation: referableOrganisation,
+              organisation: organisationFromAcp,
               prisonNumber,
             })
             startReferralPage.shouldContainBackLink(
@@ -615,7 +628,7 @@ context('Find programmes based on PNI Pathway', () => {
             Page.verifyOnPage(NewReferralTaskListPage, {
               course: buildingChoicesCourse,
               courseOffering: referableOffering,
-              organisation: referableOrganisation,
+              organisation: organisationFromAcp,
               referral,
             })
           })

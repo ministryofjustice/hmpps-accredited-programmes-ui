@@ -17,7 +17,6 @@ import {
   peopleSearchResponseFactory,
   personFactory,
   pniScoreFactory,
-  prisonFactory,
   psychiatricFactory,
   referralFactory,
   referralStatusHistoryFactory,
@@ -28,7 +27,7 @@ import {
   sentenceDetailsFactory,
   userFactory,
 } from '../../server/testutils/factories'
-import { CourseUtils, OrganisationUtils } from '../../server/utils'
+import { CourseUtils } from '../../server/utils'
 import { releaseDateFields } from '../../server/utils/personUtils'
 import auth from '../mockApis/auth'
 import BadRequestPage from '../pages/badRequest'
@@ -56,7 +55,7 @@ import {
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { CourseParticipation, PeopleSearchResponse, Referral } from '@accredited-programmes-api'
+import type { CourseParticipation, Organisation, PeopleSearchResponse, Referral } from '@accredited-programmes-api'
 import type { User, UserEmail } from '@manage-users-api'
 
 type ApplicationRole = `${ApplicationRoles}`
@@ -64,7 +63,8 @@ type ApplicationRole = `${ApplicationRoles}`
 const course = courseFactory.build({ intensity: 'MODERATE' })
 const coursePresenter = CourseUtils.presentCourse(course)
 const courseOffering = courseOfferingFactory.build()
-const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+// const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
+const organisation: Organisation = { code: courseOffering.organisationId, prisonName: 'HMP Test' }
 let prisoner: PeopleSearchResponse
 const defaultPrisoner = peopleSearchResponseFactory.build({
   bookingId: 'A-BOOKING-ID',
@@ -101,7 +101,6 @@ const recentCompletedAssessmentDate = '2023-12-19'
 const recentCompletedAssessmentDateString = '19 December 2023'
 let referral: Referral
 let referringUser: User
-const organisation = OrganisationUtils.organisationFromPrison(prison)
 const user = userFactory.build()
 const addedByUser1Email: UserEmail = {
   email: 'referrer.email@test-email.co.uk',
@@ -156,7 +155,7 @@ const sharedTests = {
 
       cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
       cy.task('stubOffering', { courseId: course.id, courseOffering })
-      cy.task('stubPrison', prison)
+      cy.task('stubOrganisation', organisation)
       cy.task('stubPrisoner', prisoner)
       cy.task('stubReferral', referral)
       cy.task('stubUserDetails', referringUser)
@@ -252,7 +251,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       additionalInformationPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -315,7 +314,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       offenceHistoryPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -351,7 +350,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       programmeHistoryPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -419,7 +418,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       offenceHistoryPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -451,7 +450,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       personalDetailsPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -488,7 +487,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       programmeHistoryPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -521,7 +520,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       releaseDatesPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -563,7 +562,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       releaseDatesPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -597,7 +596,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       sentenceInformationPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,
@@ -639,7 +638,7 @@ const sharedTests = {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       )
       sentenceInformationPage.shouldContainSubmissionSummaryList(
         referral.submittedOn,

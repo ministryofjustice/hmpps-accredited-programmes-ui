@@ -45,7 +45,7 @@ export default class NewReferralsController {
       ])
 
       const [organisation, participationsForReferral] = await Promise.all([
-        this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId),
+        this.organisationService.getOrganisationFromAcp(req.user.username, courseOffering.organisationId),
         this.courseService.getParticipationsByReferral(req.user.username, referralId),
       ])
 
@@ -168,7 +168,10 @@ export default class NewReferralsController {
         this.courseService.getOffering(req.user.username, referral.offeringId),
         this.personService.getPerson(req.user.username, referral.prisonNumber),
       ])
-      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+      const organisation = await this.organisationService.getOrganisationFromAcp(
+        req.user.username,
+        courseOffering.organisationId,
+      )
       const coursePresenter = CourseUtils.presentCourse(course)
 
       delete req.session.returnTo
@@ -230,7 +233,10 @@ export default class NewReferralsController {
         this.courseService.getCourseByOffering(req.user.username, req.params.courseOfferingId),
         this.courseService.getOffering(req.user.username, req.params.courseOfferingId),
       ])
-      const organisation = await this.organisationService.getOrganisation(req.user.token, courseOffering.organisationId)
+      const organisation = await this.organisationService.getOrganisationFromAcp(
+        req.user.token,
+        courseOffering.organisationId,
+      )
       const coursePresenter = CourseUtils.presentCourse(course)
 
       return res.render('referrals/new/start', {

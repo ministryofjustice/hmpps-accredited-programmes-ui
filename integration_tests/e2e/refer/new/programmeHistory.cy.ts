@@ -6,11 +6,10 @@ import {
   courseParticipationFactory,
   peopleSearchResponseFactory,
   personFactory,
-  prisonFactory,
   referralFactory,
   userFactory,
 } from '../../../../server/testutils/factories'
-import { type CourseParticipationDetailsBody, OrganisationUtils, StringUtils } from '../../../../server/utils'
+import { type CourseParticipationDetailsBody, StringUtils } from '../../../../server/utils'
 import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import {
@@ -22,7 +21,7 @@ import {
   NewReferralTaskListPage,
 } from '../../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
-import type { CourseParticipation } from '@accredited-programmes-api'
+import type { CourseParticipation, Organisation } from '@accredited-programmes-api'
 
 context('Programme history', () => {
   const prisoner = peopleSearchResponseFactory.build({
@@ -81,8 +80,7 @@ context('Programme history', () => {
   })
 
   describe('Showing the programme history page', () => {
-    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison(prison)
+    const organisation: Organisation = { code: courseOffering.organisationId, prisonName: 'HMP Test' }
 
     const existingParticipations = [courseParticipationWithKnownCourseName, courseParticipationWithUnknownCourseName]
     const referralParticipations = courseParticipationFactory.buildList(2, {
@@ -139,7 +137,7 @@ context('Programme history', () => {
         beforeEach(() => {
           cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
           cy.task('stubOffering', { courseId: courses[0].id, courseOffering })
-          cy.task('stubPrison', prison)
+          cy.task('stubOrganisation', organisation)
           cy.task('stubUpdateReferral', referral.id)
         })
 
@@ -196,7 +194,7 @@ context('Programme history', () => {
         beforeEach(() => {
           cy.task('stubCourseByOffering', { course: courses[0], courseOfferingId: courseOffering.id })
           cy.task('stubOffering', { courseId: courses[0].id, courseOffering })
-          cy.task('stubPrison', prison)
+          cy.task('stubOrganisation', organisation)
           cy.task('stubUpdateReferral', referral.id)
         })
 

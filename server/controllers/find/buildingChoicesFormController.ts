@@ -15,7 +15,7 @@ export default class BuildingChoicesFormController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
-      const { username, token } = req.user
+      const { username } = req.user
       const pniFindPrisonNumber = req.session.pniFindAndReferData?.prisonNumber
       const pageTitleOverride = "About the person you're referring"
       const formTemplate = 'courses/buildingChoices/form/show'
@@ -35,10 +35,10 @@ export default class BuildingChoicesFormController {
 
       const person = await this.personService.getPerson(username, pniFindPrisonNumber)
       const organisation = person.prisonId
-        ? await this.organisationService.getOrganisation(token, person.prisonId)
+        ? await this.organisationService.getOrganisationFromAcp(username, person.prisonId)
         : undefined
 
-      const isInAWomensPrisonValue = organisation?.female?.toString() ?? ''
+      const isInAWomensPrisonValue = organisation?.gender ? (organisation.gender === 'FEMALE').toString() : ''
 
       FormUtils.setFormValues(req, res, { isInAWomensPrison: isInAWomensPrisonValue })
 

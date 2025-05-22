@@ -1,13 +1,8 @@
 import NewReferralUtils from './newReferralUtils'
-import {
-  courseFactory,
-  courseOfferingFactory,
-  organisationFactory,
-  personFactory,
-  referralFactory,
-} from '../../testutils/factories'
+import { courseFactory, courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import CourseUtils from '../courseUtils'
 import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
+import type { Organisation } from '@accredited-programmes-api'
 
 describe('NewReferralUtils', () => {
   describe('courseOfferingSummaryListRows', () => {
@@ -19,7 +14,7 @@ describe('NewReferralUtils', () => {
       })
       const courseOffering = courseOfferingFactory.build({ contactEmail: 'nobody-hmp-what@digital.justice.gov.uk' })
       const coursePresenter = CourseUtils.presentCourse(course)
-      const organisation = organisationFactory.build({ name: 'HMP Hewell' })
+      const organisation: Organisation = { code: 'HEW', gender: 'Male', prisonName: 'HMP Hewell' }
       const person = personFactory.build({ name: 'Del Hatton' })
 
       expect(

@@ -91,7 +91,7 @@ export default class ReferralsController {
         },
         pageHeading: 'Duplicate referral found',
         pageTitleOverride: 'Duplicate referral found',
-        summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.name}.`,
+        summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.prisonName}.`,
         withdrawButtonText,
       })
     }
@@ -139,7 +139,7 @@ export default class ReferralsController {
         tableRows: otherReferrals.map(({ referral: otherReferral, course, organisation, user, status }) => [
           { text: course.name },
           { text: course.audience },
-          { text: organisation.name },
+          { text: organisation.prisonName },
           { text: user.name },
           {
             attributes: {
@@ -288,7 +288,7 @@ export default class ReferralsController {
         isRefer ? this.referralService.getStatusTransitions(username, referral.id) : undefined,
       ])
 
-    const organisation = await this.organisationService.getOrganisation(userToken, courseOffering.organisationId)
+    const organisation = await this.organisationService.getOrganisationFromAcp(username, courseOffering.organisationId)
 
     const coursePresenter = CourseUtils.presentCourse(course)
 
@@ -309,7 +309,7 @@ export default class ReferralsController {
         person.name,
         coursePresenter,
         courseOffering.contactEmail,
-        organisation.name,
+        organisation.prisonName,
       ),
       hideTitleServiceName: true,
       navigationItems: ShowReferralUtils.viewReferralNavigationItems(req.path, referral.id),

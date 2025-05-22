@@ -6,17 +6,16 @@ import {
   peopleSearchResponseFactory,
   personFactory,
   pniScoreFactory,
-  prisonFactory,
   referralFactory,
   referralStatusHistoryFactory,
   userFactory,
 } from '../../../server/testutils/factories'
-import { OrganisationUtils } from '../../../server/utils'
 import auth from '../../mockApis/auth'
 import TransferPage from '../../pages/assess/transfer'
 import TransferErrorPage from '../../pages/assess/transferError'
 import Page from '../../pages/page'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { Organisation } from '@accredited-programmes-api'
 
 context('Transferring a referral to building choices', () => {
   // Person and their PNI score
@@ -39,8 +38,7 @@ context('Transferring a referral to building choices', () => {
   const originalCourse = courseFactory.build({
     courseOfferings: [originalCourseOffering],
   })
-  const prison = prisonFactory.build({ prisonId: originalCourseOffering.organisationId })
-  const organisation = OrganisationUtils.organisationFromPrison(prison)
+  const organisation: Organisation = { code: originalCourseOffering.organisationId, prisonName: 'HMP Test' }
 
   // Target moderate Building Choices course
   const buildingChoicesModerateOffering = courseOfferingFactory.build()
@@ -234,7 +232,7 @@ context('Transferring a referral to building choices', () => {
           referralId: referral.id,
         })
         cy.task('stubOffering', { courseOffering: originalCourseOffering })
-        cy.task('stubPrison', prison)
+        cy.task('stubOrganisation', organisation)
 
         cy.visit(transferPath)
 

@@ -1,8 +1,8 @@
 import { CourseUtils, ShowReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
-import type { CourseOffering, Organisation, Person } from '@accredited-programmes/models'
+import type { CourseOffering, Person } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'
-import type { Course, Referral } from '@accredited-programmes-api'
+import type { Course, Organisation, Referral } from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 
 export default class NewReferralDuplicatePage extends Page {
@@ -40,7 +40,7 @@ export default class NewReferralDuplicatePage extends Page {
           this.person.name,
           this.course,
           this.courseOffering.contactEmail,
-          this.organisation.name,
+          this.organisation.prisonName,
         ),
         summaryListElement,
       )
@@ -50,7 +50,7 @@ export default class NewReferralDuplicatePage extends Page {
   shouldContainReferralExistsText() {
     cy.get('[data-testid="referral-exists-text"]').should(
       'have.text',
-      `A referral already exists for ${this.person.name} to ${this.course.displayName} at ${this.organisation.name}.`,
+      `A referral already exists for ${this.person.name} to ${this.course.displayName} at ${this.organisation.prisonName}.`,
     )
   }
 
