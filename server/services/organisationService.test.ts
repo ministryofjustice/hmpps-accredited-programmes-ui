@@ -1,24 +1,46 @@
+import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import OrganisationService from './organisationService'
-import { PrisonRegisterApiClient } from '../data'
+import { HmppsAuthClient, type RedisClient } from '../data'
+import { OrganisationClient, PrisonRegisterApiClient, TokenStore } from '../data'
 import { prisonFactory } from '../testutils/factories'
 import { OrganisationUtils } from '../utils'
+import type { Organisation } from '@accredited-programmes-api'
 
+jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/prisonRegisterApiClient')
+jest.mock('../data/accreditedProgrammesApi/organisationClient')
 
 describe('OrganisationService', () => {
+  const redisClient = createMock<RedisClient>({})
+  const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+  const username = 'USERNAME'
+  const systemToken = 'system-token'
   const userToken = 'token'
+
+  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClientBuilder = jest.fn()
+
+  const organisationClient = new OrganisationClient(systemToken) as jest.Mocked<OrganisationClient>
+  const organisationClientBuilder = jest.fn()
 
   const prisonRegisterApiClient = new PrisonRegisterApiClient(userToken) as jest.Mocked<PrisonRegisterApiClient>
   const prisonRegisterApiClientBuilder = jest.fn()
 
-  const service = new OrganisationService(prisonRegisterApiClientBuilder)
+  const service = new OrganisationService(
+    hmppsAuthClientBuilder,
+    organisationClientBuilder,
+    prisonRegisterApiClientBuilder,
+  )
 
   beforeEach(() => {
     jest.resetAllMocks()
+    hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
+    organisationClientBuilder.mockReturnValue(organisationClient)
     prisonRegisterApiClientBuilder.mockReturnValue(prisonRegisterApiClient)
+    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
   })
 
   describe('getAllOrganisations', () => {
@@ -120,6 +142,50 @@ describe('OrganisationService', () => {
 
         expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
         expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prisonId)
+      })
+    })
+  })
+
+  describe('getOrganisationFromAcp', () => {
+    const organisationCode = 'WTI'
+
+    it('returns the specified organisation', async () => {
+      const organisation: Organisation = { code: organisationCode, prisonName: 'Whatton' }
+      organisationClient.findOrganisation.mockResolvedValue(organisation)
+
+      const result = await service.getOrganisationFromAcp(username, organisationCode)
+
+      expect(result).toEqual(organisation)
+
+      expect(organisationClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(organisationClient.findOrganisation).toHaveBeenCalledWith(organisationCode)
+    })
+
+    describe('when the organisation client throws a 404 error', () => {
+      it('re-throws the error', async () => {
+        const clientError = createError(404)
+        organisationClient.findOrganisation.mockRejectedValue(clientError)
+
+        const expectedError = createError(404, `Organisation with code ${organisationCode} not found.`)
+        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrowError(expectedError)
+      })
+    })
+
+    describe('when the organisation client throws any other error', () => {
+      it('re-throws the known error', async () => {
+        const clientError = createError(500)
+        organisationClient.findOrganisation.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching organisation ${organisationCode}.`)
+        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrowError(expectedError)
+      })
+
+      it('throws a 500 error for any unknown errors', async () => {
+        const clientError = new Error('Any other error')
+        organisationClient.findOrganisation.mockRejectedValue(clientError)
+
+        const expectedError = createError(500, `Error fetching organisation ${organisationCode}.`)
+        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrowError(expectedError)
       })
     })
   })

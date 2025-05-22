@@ -80,6 +80,7 @@ export default {
   },
   organisations: {
     courses: coursesByOrganisationPath,
+    show: path('/organisation/:organisationCode'),
   },
   participations: {
     create: participationsPath,

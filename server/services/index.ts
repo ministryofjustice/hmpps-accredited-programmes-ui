@@ -14,6 +14,7 @@ import {
   hmppsAuthClientBuilder,
   hmppsManageUsersClientBuilder,
   oasysClientBuilder,
+  organisationClientBuilder,
   personClientBuilder,
   pniClientBuilder,
   prisonApiClientBuilder,
@@ -26,7 +27,11 @@ import PniService from './pniService'
 
 const services = () => {
   const oasysService = new OasysService(hmppsAuthClientBuilder, oasysClientBuilder)
-  const organisationService = new OrganisationService(prisonRegisterApiClientBuilder)
+  const organisationService = new OrganisationService(
+    hmppsAuthClientBuilder,
+    organisationClientBuilder,
+    prisonRegisterApiClientBuilder,
+  )
   const personService = new PersonService(hmppsAuthClientBuilder, prisonApiClientBuilder, personClientBuilder)
   const userService = new UserService(hmppsManageUsersClientBuilder, prisonApiClientBuilder)
   const referenceDataService = new ReferenceDataService(hmppsAuthClientBuilder, referenceDataClientBuilder)

@@ -163,7 +163,7 @@ export interface CourseOffering {
    * Gender for which course is offered
    * @example "M"
    */
-  gender?: "MALE" | "FEMALE";
+  gender?: "MALE" | "FEMALE" | "ANY";
 }
 
 export interface CoursePrerequisite {
@@ -314,6 +314,14 @@ export interface CourseEntity {
   intensity?: string;
 }
 
+export interface EligibilityOverrideReasonEntity {
+  /** @format uuid */
+  id?: string;
+  reason: string;
+  overrideType: "HEALTHY_SEX_PROGRAMME";
+  referral: any;
+}
+
 export interface OfferingEntity {
   /** @format uuid */
   id?: string;
@@ -343,7 +351,7 @@ export interface ReferralEntity {
   hasReviewedProgrammeHistory: boolean;
   hasReviewedAdditionalInformation?: boolean;
   status: string;
-  /** @example "2025-05-08T10:22:48" */
+  /** @example "2025-05-22T04:44:23" */
   submittedOn?: object;
   deleted: boolean;
   primaryPomStaffId?: number;
@@ -353,10 +361,31 @@ export interface ReferralEntity {
   originalReferralId?: string;
   hasLdc?: boolean;
   hasLdcBeenOverriddenByProgrammeTeam: boolean;
+  /** @uniqueItems true */
+  selectedSexualOffenceDetails: SelectedSexualOffenceDetailsEntity[];
+  /** @uniqueItems true */
+  eligibilityOverrideReasons: EligibilityOverrideReasonEntity[];
 }
 
 export interface ReferrerUserEntity {
   username: string;
+}
+
+export interface SelectedSexualOffenceDetailsEntity {
+  /** @format uuid */
+  id?: string;
+  referral: ReferralEntity;
+  sexualOffenceDetails?: SexualOffenceDetailsEntity;
+}
+
+export interface SexualOffenceDetailsEntity {
+  /** @format uuid */
+  id?: string;
+  category: "AGAINST_MINORS" | "INCLUDES_VIOLENCE_FORCE_HUMILIATION" | "OTHER";
+  description: string;
+  hintText?: string;
+  /** @format int32 */
+  score: number;
 }
 
 export interface ReferralCreate {
@@ -485,6 +514,30 @@ export interface TransferReferralRequest {
    * @example "The reason for tranferring the referal is"
    */
   transferReason: string;
+}
+
+export interface HspReferralCreate {
+  /**
+   * The id (UUID) of the HSP offering
+   * @format uuid
+   * @example "550e8400-e29b-41d4-a716-446655440000"
+   */
+  offeringId: string;
+  /**
+   * The prison number of the person who is being referred.
+   * @example "A1234AA"
+   */
+  prisonNumber: string;
+  /**
+   * The list of IDs of the selected offences.
+   * @example ["dd69bdbe-a61d-45e5-bb20-e52af4a0ac83","550e8400-e29b-41d4-a716-446655440000"]
+   */
+  selectedOffences: string[];
+  /**
+   * The overriding reason why the prisoner should be considered suitable for the course.
+   * @example "The prisoner meets the requirements"
+   */
+  eligibilityOverrideReason?: string;
 }
 
 export interface PeopleSearchResponse {
@@ -820,59 +873,74 @@ export interface StatusContent {
 }
 
 export interface ReferralStatusRefData {
-  /** @example "WITHDRAWN" */
+  /**
+   * A enum-like, computer-friendly string describing the Referral Status
+   * @example "WITHDRAWN"
+   */
   code: string;
-  /** @example "Withdrawn" */
+  /**
+   * A human-readable string describing the Referral Status
+   * @example "Withdrawn"
+   */
   description: string;
-  /** @example "light-grey" */
+  /**
+   * A computer-friendly string describing the colour of the referral for display purposes.  This doesn't correspond to CSS default colours, or to hex values.
+   * @example "light-grey"
+   */
   colour: string;
-  /** @example "The application has been withdrawn" */
+  /**
+   * A human-friendly string that provides information about the status.  These are set by the system, not a human.
+   * @example "The application has been withdrawn"
+   */
   hintText?: string;
-  /** @example "I confirm that this person is eligible." */
+  /**
+   * Human-written text to confirm information about the Status
+   * @example "I confirm that this person is eligible."
+   */
   confirmationText?: string;
   /**
-   * flag to show this status has notes text box
+   * If true, this status should show a notes text box on the UI
    * @example null
    */
   hasNotes?: boolean;
   /**
-   * flag to show this status has confirmation box
+   * If true, this status should show a confirmation box on the UI
    * @example null
    */
   hasConfirmation?: boolean;
   /**
-   * flag to show this is a closed status
+   * If true, this is a closed status
    * @example null
    */
   closed?: boolean;
   /**
-   * flag to show this is a draft status
+   * If true, this is a draft status
    * @example null
    */
   draft?: boolean;
   /**
-   * flag to show this is a hold status
+   * If true, this is a hold status
    * @example null
    */
   hold?: boolean;
   /**
-   * flag to show this is a release status
+   * If true, this is a release status
    * @example null
    */
   release?: boolean;
   /**
-   * flag to show this a bespoke status of deslected and keep open
+   * If true, this a bespoke status of deselected and keep open
    * @example null
    */
   deselectAndKeepOpen?: boolean;
   /**
-   * sort order for statuses
+   * Sort order for statuses (presently this seems to be ignored in the UI)
    * @format int32
    * @example null
    */
   defaultOrder?: number;
   /**
-   * flag to show whether the notes are optional
+   * Flag to show whether the notes are optional
    * @example null
    */
   notesOptional?: boolean;
@@ -1113,27 +1181,30 @@ export interface SexualOffenceDetails {
    */
   id: string;
   /**
-   * The code of the offence category
-   * @example "INCLUDES_VIOLENCE_FORCE_HUMILIATION"
-   */
-  categoryCode: string;
-  /**
-   * The description of the offence category
-   * @example "Other types of sexual offending"
-   */
-  categoryDescription: string;
-  /**
-   * The description of the offence
-   * @example "67ea1478-e4c3-46be-8b7f-86833fb87540"
+   * A human-friendly description of the Offence itself
+   * @example "Evidence of ritualism in the offence"
    */
   description: string;
   /**
    * Further elaborations of the offence
-   * @example "Any use of additional violence or force not necessary to gain victim compliance"
+   * @example "Fixed actions or words, performed in a specific way"
    */
   hintText?: string;
   /**
-   * The score associated with the offence
+   * A computer-friendly identifier for the Offence's category
+   * @example "INCLUDES_VIOLENCE_FORCE_HUMILIATION"
+   */
+  categoryCode:
+    | "AGAINST_MINORS"
+    | "INCLUDES_VIOLENCE_FORCE_HUMILIATION"
+    | "OTHER";
+  /**
+   * A human-friendly description of the Offence's category (i.e. the categoryCode)
+   * @example "Sexual offences that include violence, force or humiliation"
+   */
+  categoryDescription: string;
+  /**
+   * The score associated with the offence, between 1 and 3.
    * @format int32
    * @example 1
    */
