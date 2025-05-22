@@ -13,7 +13,7 @@ import {
   ShowRisksAndNeedsUtils,
 } from '../../server/utils'
 import Helpers from '../support/helpers'
-import type { CourseOffering, Organisation, Person, ReferralStatusRefData } from '@accredited-programmes/models'
+import type { CourseOffering, Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CourseParticipationPresenter,
   CoursePresenter,
@@ -25,7 +25,7 @@ import type {
   MojTimelineItem,
   ReferralStatusHistoryPresenter,
 } from '@accredited-programmes/ui'
-import type { Course, CourseParticipation, Referral } from '@accredited-programmes-api'
+import type { Course, CourseParticipation, Organisation, Referral } from '@accredited-programmes-api'
 import type {
   GovukFrontendCheckboxesItem,
   GovukFrontendRadiosItem,
@@ -151,7 +151,7 @@ export default abstract class Page {
     applicantName: User['name'],
     course: CoursePresenter,
     contactEmail: CourseOffering['contactEmail'],
-    organisationName: Organisation['name'],
+    organisationName: Organisation['prisonName'],
   ) {
     cy.get('[data-testid="course-offering-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(
@@ -316,7 +316,7 @@ export default abstract class Page {
     const { course, organisation } = pageWithOrganisationAndCoursePresenter
 
     cy.get('[data-testid="organisation-and-course"]').then(organisationAndCourseHeading => {
-      const expectedText = `${organisation.name} | ${course.displayName}`
+      const expectedText = `${organisation.prisonName} | ${course.displayName}`
       const { actual, expected } = Helpers.parseHtml(organisationAndCourseHeading, expectedText)
       expect(actual).to.equal(expected)
     })

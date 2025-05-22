@@ -7,7 +7,6 @@ import logger from '../../logger'
 import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
   ConfirmationFields,
-  Organisation,
   Paginated,
   ReferralStatus,
   ReferralStatusGroup,
@@ -17,7 +16,14 @@ import type {
   ReferralView,
 } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import type { Course, PniScore, Referral, ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
+import type {
+  Course,
+  Organisation,
+  PniScore,
+  Referral,
+  ReferralUpdate,
+  TransferReferralRequest,
+} from '@accredited-programmes-api'
 import type { User } from '@manage-users-api'
 
 export default class ReferralService {
@@ -127,7 +133,7 @@ export default class ReferralService {
         const offering = await this.courseService.getOffering(user.username, referral.offeringId)
         return {
           course: await this.courseService.getCourseByOffering(user.username, referral.offeringId),
-          organisation: await this.organisationService.getOrganisation(user.token, offering.organisationId),
+          organisation: await this.organisationService.getOrganisationFromAcp(user.username, offering.organisationId),
           referral,
           status: await this.referenceDataService.getReferralStatusCodeData(
             user.username,
@@ -208,7 +214,7 @@ export default class ReferralService {
 
   async getReferralViews(
     username: Express.User['username'],
-    organisationId: Organisation['id'],
+    organisationId: string,
     query?: {
       audience?: string
       courseName?: string

@@ -6,11 +6,10 @@ import {
   courseParticipationFactory,
   peopleSearchResponseFactory,
   personFactory,
-  prisonFactory,
   referralFactory,
   userFactory,
 } from '../../../../server/testutils/factories'
-import { OrganisationUtils, StringUtils } from '../../../../server/utils'
+import { StringUtils } from '../../../../server/utils'
 import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import {
@@ -20,6 +19,7 @@ import {
   NewReferralTaskListPage,
 } from '../../../pages/refer'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
+import type { Organisation } from '@accredited-programmes-api'
 import type { UserEmail } from '@manage-users-api'
 
 context('Submitting a referral', () => {
@@ -40,8 +40,7 @@ context('Submitting a referral', () => {
     religionOrBelief: prisoner.religion,
     setting: 'Custody',
   })
-  const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-  const organisation = OrganisationUtils.organisationFromPrison(prison)
+  const organisation: Organisation = { code: courseOffering.organisationId, prisonName: 'HMP Test' }
   const addedByUser1 = userFactory.build({ name: 'Bobby Brown', username: auth.mockedUser.username })
   const addedByUser1Email: UserEmail = {
     email: 'referrer.user@email-test.co.uk',
@@ -87,7 +86,7 @@ context('Submitting a referral', () => {
 
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
     cy.task('stubOffering', { courseId: course.id, courseOffering })
-    cy.task('stubPrison', prison)
+    cy.task('stubOrganisation', organisation)
     cy.task('stubPrisoner', prisoner)
     cy.task('stubUserDetails', addedByUser1)
     cy.task('stubUserDetails', addedByUser2)

@@ -6,15 +6,9 @@ import { when } from 'jest-when'
 import TransferReferralErrorController from './transferReferralErrorController'
 import { assessPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService } from '../../services'
-import {
-  courseFactory,
-  courseOfferingFactory,
-  organisationFactory,
-  personFactory,
-  referralFactory,
-} from '../../testutils/factories'
+import { courseFactory, courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
-import type { Referral } from '@accredited-programmes-api'
+import type { Organisation, Referral } from '@accredited-programmes-api'
 
 describe('TransferReferralErrorController', () => {
   const userToken = 'SOME_TOKEN'
@@ -29,8 +23,8 @@ describe('TransferReferralErrorController', () => {
   const personService = createMock<PersonService>({})
 
   const person = personFactory.build()
-  const originalOfferingOrganisation = organisationFactory.build()
-  const originalCourseOffering = courseOfferingFactory.build({ organisationId: originalOfferingOrganisation.id })
+  const originalOfferingOrganisation: Organisation = { code: 'WTI', gender: 'MALE', prisonName: 'Whatton' }
+  const originalCourseOffering = courseOfferingFactory.build({ organisationId: originalOfferingOrganisation.code })
   const originalCourse = courseFactory.build({
     courseOfferings: [originalCourseOffering],
     intensity: 'MODERATE',
@@ -158,8 +152,8 @@ describe('TransferReferralErrorController', () => {
           when(courseService.getOffering)
             .calledWith(username, originalCourseOffering.id)
             .mockResolvedValue(originalCourseOffering)
-          when(organisationService.getOrganisation)
-            .calledWith(userToken, originalCourseOffering.organisationId)
+          when(organisationService.getOrganisationFromAcp)
+            .calledWith(username, originalCourseOffering.organisationId)
             .mockResolvedValue(originalOfferingOrganisation)
 
           request.session.transferErrorData = {
@@ -173,7 +167,7 @@ describe('TransferReferralErrorController', () => {
           expect(response.render).toHaveBeenCalledWith('referrals/transfer/error/show', {
             backLinkHref: assessPaths.show.personalDetails({ referralId: referral.id }),
             errorText: [
-              `This referral cannot be moved because ${originalOfferingOrganisation.name} does not offer the general offence strand of Building Choices: ${originalCourse.intensity?.toLowerCase()} intensity.`,
+              `This referral cannot be moved because ${originalOfferingOrganisation.prisonName} does not offer the general offence strand of Building Choices: ${originalCourse.intensity?.toLowerCase()} intensity.`,
               'Close this referral and submit a new one to a different location.',
             ],
             pageHeading: 'This referral cannot be moved to Building Choices',

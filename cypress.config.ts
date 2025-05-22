@@ -7,6 +7,7 @@ import courses from './integration_tests/mockApis/courses'
 import courseParticipations from './integration_tests/mockApis/courseParticipations'
 import manageUsers from './integration_tests/mockApis/manageUsers'
 import oasys from './integration_tests/mockApis/oasys'
+import organisations from './integration_tests/mockApis/organisations'
 import prisonApi from './integration_tests/mockApis/prison'
 import prisonRegisterApi from './integration_tests/mockApis/prisonRegister'
 import person from './integration_tests/mockApis/person'
@@ -41,6 +42,7 @@ export const defaultConfig: Cypress.ConfigOptions = {
         ...courseParticipations,
         ...manageUsers,
         ...oasys,
+        ...organisations,
         ...person,
         ...prisonApi,
         ...prisonRegisterApi,

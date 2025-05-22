@@ -5,13 +5,12 @@ import {
   courseOfferingFactory,
   peopleSearchResponseFactory,
   personFactory,
-  prisonFactory,
   referralFactory,
 } from '../../../../server/testutils/factories'
-import { OrganisationUtils } from '../../../../server/utils'
 import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import { NewReferralDeletePage, NewReferralTaskListPage } from '../../../pages/refer'
+import type { Organisation } from '@accredited-programmes-api'
 
 context('Deleting a referral', () => {
   const courseOffering = courseOfferingFactory.build()
@@ -53,9 +52,8 @@ context('Deleting a referral', () => {
     const course = courseFactory.build()
     cy.task('stubCourseByOffering', { course, courseOfferingId: courseOffering.id })
 
-    const prison = prisonFactory.build({ prisonId: courseOffering.organisationId })
-    const organisation = OrganisationUtils.organisationFromPrison(prison)
-    cy.task('stubPrison', prison)
+    const organisation: Organisation = { code: courseOffering.organisationId, prisonName: 'HMP Test' }
+    cy.task('stubOrganisation', organisation)
 
     const path = referPaths.new.show({ referralId: referral.id })
     cy.visit(path)

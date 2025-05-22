@@ -4,7 +4,6 @@ import {
   confirmationFieldsFactory,
   peopleSearchResponseFactory,
   personFactory,
-  prisonFactory,
   referralFactory,
   referralStatusHistoryFactory,
   referralStatusReasonFactory,
@@ -15,10 +14,11 @@ import auth from '../../mockApis/auth'
 import Page from '../../pages/page'
 import { WithdrawConfirmSelectionPage, WithdrawReasonPage } from '../../pages/shared'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type { Organisation } from '@accredited-programmes-api'
 
 context('Withdraw referral', () => {
   const anotherUser = userFactory.build({ name: 'Joshua Smith' })
-  const prison = prisonFactory.build()
+  const organisation: Organisation = { code: 'WTI', prisonName: 'Whatton' }
   const prisoner = peopleSearchResponseFactory.build({
     firstName: 'Del',
     lastName: 'Hatton',
@@ -77,7 +77,7 @@ context('Withdraw referral', () => {
     cy.task('stubDefaultCaseloads')
     cy.signIn()
 
-    cy.task('stubPrison', prison)
+    cy.task('stubOrganisation', organisation)
     cy.task('stubPrisoner', prisoner)
     cy.task('stubReferral', referral)
     cy.task('stubUserDetails', anotherUser)

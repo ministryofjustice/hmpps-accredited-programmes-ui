@@ -13,7 +13,6 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
-  organisationFactory,
   personFactory,
   referralFactory,
 } from '../../../testutils/factories'
@@ -24,6 +23,7 @@ import type {
   GovukFrontendSummaryListRowWithKeyAndValue,
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
+import type { Organisation } from '@accredited-programmes-api'
 
 jest.mock('../../../utils/courseUtils')
 jest.mock('../../../utils/formUtils')
@@ -113,8 +113,8 @@ describe('NewReferralsController', () => {
     })
 
     it('renders the referral start template', async () => {
-      const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
-      organisationService.getOrganisation.mockResolvedValue(organisation)
+      const organisation: Organisation = { code: referableCourseOffering.organisationId, prisonName: 'HMP Test' }
+      organisationService.getOrganisationFromAcp.mockResolvedValue(organisation)
 
       const requestHandler = controller.start()
       await requestHandler(request, response, next)
@@ -237,7 +237,7 @@ describe('NewReferralsController', () => {
   })
 
   describe('show', () => {
-    const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
+    const organisation: Organisation = { code: referableCourseOffering.organisationId, prisonName: 'HMP Test' }
 
     beforeEach(() => {
       request.params.referralId = referralId
@@ -245,7 +245,7 @@ describe('NewReferralsController', () => {
     })
 
     it('renders the referral task list page', async () => {
-      organisationService.getOrganisation.mockResolvedValue(organisation)
+      organisationService.getOrganisationFromAcp.mockResolvedValue(organisation)
 
       personService.getPerson.mockResolvedValue(person)
       referralService.getReferral.mockResolvedValue(draftReferral)
@@ -275,7 +275,7 @@ describe('NewReferralsController', () => {
 
     describe('when the referral has been requested with an `updatePerson` query', () => {
       it('calls `referralService.getReferral` with the same value', async () => {
-        organisationService.getOrganisation.mockResolvedValue(organisation)
+        organisationService.getOrganisationFromAcp.mockResolvedValue(organisation)
 
         personService.getPerson.mockResolvedValue(person)
         referralService.getReferral.mockResolvedValue(draftReferral)
@@ -383,7 +383,7 @@ describe('NewReferralsController', () => {
     const coursePresenter = createMock<CoursePresenter>({
       audience: audienceFactory.build().name,
     })
-    const organisation = organisationFactory.build({ id: referableCourseOffering.organisationId })
+    const organisation: Organisation = { code: referableCourseOffering.organisationId, prisonName: 'HMP Test' }
     const participationsForReferral = courseParticipationFactory.buildList(2, { isDraft: true })
     const summaryListOptions: Array<GovukFrontendSummaryListWithRowsWithKeysAndValues> = [
       {
@@ -409,7 +409,7 @@ describe('NewReferralsController', () => {
 
       TypeUtils.assertHasUser(request)
 
-      organisationService.getOrganisation.mockResolvedValue(organisation)
+      organisationService.getOrganisationFromAcp.mockResolvedValue(organisation)
 
       courseService.getCourse.mockResolvedValue(course)
       ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)

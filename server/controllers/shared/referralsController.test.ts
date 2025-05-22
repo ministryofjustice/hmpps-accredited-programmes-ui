@@ -12,7 +12,6 @@ import {
   courseOfferingFactory,
   courseParticipationFactory,
   offenceDetailsFactory,
-  organisationFactory,
   personFactory,
   referralFactory,
   referralStatusRefDataFactory,
@@ -31,7 +30,7 @@ import {
 } from '../../utils'
 import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue, ReferralSharedPageData } from '@accredited-programmes/ui'
-import type { Referral } from '@accredited-programmes-api'
+import type { Organisation, Referral } from '@accredited-programmes-api'
 import type { GovukFrontendSummaryList, GovukFrontendTable } from '@govuk-frontend'
 import type { User } from '@manage-users-api'
 
@@ -59,8 +58,8 @@ describe('ReferralsController', () => {
 
   const course = courseFactory.build()
   const coursePresenter = CourseUtils.presentCourse(course)
-  const organisation = organisationFactory.build()
-  const courseOffering = courseOfferingFactory.build({ organisationId: organisation.id })
+  const organisation: Organisation = { code: 'WTI', gender: 'Male', prisonName: 'Whatton' }
+  const courseOffering = courseOfferingFactory.build({ organisationId: organisation.code })
   const navigationItems = [{ active: true, href: 'nav-href', text: 'Nav Item' }]
   const subNavigationItems = [{ active: true, href: 'sub-nav-href', text: 'Sub Nav Item' }]
   const buttons = [{ href: 'button-href', text: 'Button' }]
@@ -106,7 +105,7 @@ describe('ReferralsController', () => {
         person.name,
         coursePresenter,
         referrerEmail,
-        organisation.name,
+        organisation.prisonName!,
       ),
       hideTitleServiceName: true,
       navigationItems,
@@ -127,7 +126,7 @@ describe('ReferralsController', () => {
 
     courseService.getCourseByOffering.mockResolvedValue(course)
     courseService.getOffering.mockResolvedValue(courseOffering)
-    organisationService.getOrganisation.mockResolvedValue(organisation)
+    organisationService.getOrganisationFromAcp.mockResolvedValue(organisation)
     personService.getPerson.mockResolvedValue(person)
     when(referralService.getReferral).calledWith(username, referral.id, expect.any(Object)).mockResolvedValue(referral)
     when(referralService.getReferral).calledWith(username, originalReferral.id).mockResolvedValue(originalReferral)
@@ -300,7 +299,7 @@ describe('ReferralsController', () => {
         .mockResolvedValue([
           {
             course: courseFactory.build({ audience: 'General offence', name: 'Becoming New Me Plus' }),
-            organisation: organisationFactory.build({ name: 'Whatton' }),
+            organisation: { code: 'WTI', prisonName: 'Whatton' },
             referral,
             status: referralStatusRefDataFactory.build({ colour: 'blue', description: 'Referral started' }),
             user: userFactory.build({ name: 'Joe Bloggs' }),
@@ -350,7 +349,7 @@ describe('ReferralsController', () => {
         },
         pageHeading: 'Duplicate referral found',
         pageTitleOverride: 'Duplicate referral found',
-        summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.name}.`,
+        summaryText: `A referral already exists for ${sharedPageData.person.name} to ${sharedPageData.course.displayName} at ${sharedPageData.organisation.prisonName}.`,
       })
     })
 
@@ -636,7 +635,7 @@ describe('ReferralsController', () => {
     expect(courseService.getCourseByOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(courseService.getOffering).toHaveBeenCalledWith(username, referral.offeringId)
     expect(personService.getPerson).toHaveBeenCalledWith(username, person.prisonNumber)
-    expect(organisationService.getOrganisation).toHaveBeenCalledWith(userToken, organisation.id)
+    expect(organisationService.getOrganisationFromAcp).toHaveBeenCalledWith(username, organisation.code)
     expect(mockShowReferralUtils.buttons).toHaveBeenCalledWith(
       { currentPath: path, recentCaseListPath },
       referral,

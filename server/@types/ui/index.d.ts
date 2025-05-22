@@ -1,5 +1,6 @@
 import type { Organisation, Person, RiskLevel } from '@accredited-programmes/models'
 import type {
+  Organisation as AcpOrganisation,
   Course,
   CourseOffering,
   CourseParticipation,
@@ -115,7 +116,7 @@ type ReferralSharedPageData = {
   courseOfferingSummaryListRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>
   hideTitleServiceName: boolean
   navigationItems: Array<MojFrontendNavigationItem>
-  organisation: Organisation
+  organisation: AcpOrganisation
   pageHeading: string
   pageSubHeading: string
   pageTitleOverride: string

@@ -5,8 +5,9 @@ import type { NextFunction, Request, Response } from 'express'
 import BuildingChoicesFormController from './buildingChoicesFormController'
 import { findPaths } from '../../paths'
 import type { OrganisationService, PersonService } from '../../services'
-import { organisationFactory, personFactory } from '../../testutils/factories'
+import { personFactory } from '../../testutils/factories'
 import { FormUtils } from '../../utils'
+import type { Organisation } from '@accredited-programmes-api'
 
 jest.mock('../../utils/formUtils')
 
@@ -56,7 +57,7 @@ describe('BuildingChoicesFormController', () => {
     describe('when the user is coming from the PNI find page', () => {
       const prisonNumber = 'ABC1234'
       const person = personFactory.build({ name: 'Del Hatton', prisonId: 'HEW', prisonNumber })
-      const organisation = organisationFactory.build({ id: 'HEW' })
+      const organisation: Organisation = { code: 'HEW', gender: 'MALE', prisonName: 'Hewell' }
 
       beforeEach(() => {
         request.session.pniFindAndReferData = {
@@ -67,7 +68,7 @@ describe('BuildingChoicesFormController', () => {
       })
 
       it('should render the buildingChoices/show template with correct response locals', async () => {
-        organisationService.getOrganisation.mockResolvedValue(organisation)
+        organisationService.getOrganisationFromAcp.mockResolvedValue(organisation)
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -87,7 +88,7 @@ describe('BuildingChoicesFormController', () => {
 
       describe('when the organisation is a women’s prison', () => {
         it('should set `isInAWomensPrison` default form value to `true`', async () => {
-          organisationService.getOrganisation.mockResolvedValue({ ...organisation, female: true })
+          organisationService.getOrganisationFromAcp.mockResolvedValue({ ...organisation, gender: 'FEMALE' })
 
           const requestHandler = controller.show()
           await requestHandler(request, response, next)
