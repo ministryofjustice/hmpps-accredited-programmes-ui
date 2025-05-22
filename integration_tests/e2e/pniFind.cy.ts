@@ -283,8 +283,9 @@ context('Find programmes based on PNI Pathway', () => {
         const referableOffering = courseOfferingFactory.build({
           organisationId: 'MDI',
           referable: true,
+          withdrawn: false,
         })
-        const otherOfferings = courseOfferingFactory.buildList(2, { referable: false })
+        const otherOfferings = courseOfferingFactory.buildList(2, { referable: false, withdrawn: false })
         const courseOfferings = [referableOffering, ...otherOfferings]
 
         const referablePrison = prisonFactory.build({
@@ -306,7 +307,11 @@ context('Find programmes based on PNI Pathway', () => {
           beforeEach(() => {
             cy.task('stubCourse', becomingNewMeCourse)
             prisons.forEach(prison => cy.task('stubPrison', prison))
-            cy.task('stubOfferingsByCourse', { courseId: becomingNewMeCourse.id, courseOfferings })
+            cy.task('stubOfferingsByCourse', {
+              courseId: becomingNewMeCourse.id,
+              courseOfferings,
+              includeWithdrawn: 'false',
+            })
             cy.task('stubOffering', { courseOffering: referableOffering })
             cy.task('stubCourseByOffering', { course: becomingNewMeCourse, courseOfferingId: referableOffering.id })
 
@@ -339,6 +344,7 @@ context('Find programmes based on PNI Pathway', () => {
               prisons.map(prison => ({
                 ...OrganisationUtils.organisationFromPrison(prison),
                 courseOfferingId: courseOfferings.find(offering => offering.organisationId === prison.prisonId)?.id,
+                withdrawn: courseOfferings.find(offering => offering.organisationId === prison.prisonId)?.withdrawn,
               })),
             )
             coursePage
@@ -528,6 +534,7 @@ context('Find programmes based on PNI Pathway', () => {
               prisons.map(prison => ({
                 ...OrganisationUtils.organisationFromPrison(prison),
                 courseOfferingId: courseOfferings.find(offering => offering.organisationId === prison.prisonId)?.id,
+                withdrawn: courseOfferings.find(offering => offering.organisationId === prison.prisonId)?.withdrawn,
               })),
             )
             coursePage

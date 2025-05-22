@@ -17,6 +17,7 @@ context('Find', () => {
   const referableCourseOffering = courseOfferingFactory.build({
     organisationId: organisation.id,
     referable: true,
+    withdrawn: false,
   })
 
   describe('For a user without any roles used by our service', () => {
@@ -29,9 +30,16 @@ context('Find', () => {
 
       cy.task('stubCourses', courses)
       cy.task('stubCourse', targetCourse)
-      cy.task('stubOfferingsByCourse', { courseId: targetCourse.id, courseOfferings: [referableCourseOffering] })
+      cy.task('stubOfferingsByCourse', {
+        courseId: targetCourse.id,
+        courseOfferings: [referableCourseOffering],
+        includeWithdrawn: 'false',
+      })
       cy.task('stubOffering', { courseOffering: referableCourseOffering })
-      cy.task('stubCourseByOffering', { course: targetCourse, courseOfferingId: referableCourseOffering.id })
+      cy.task('stubCourseByOffering', {
+        course: targetCourse,
+        courseOfferingId: referableCourseOffering.id,
+      })
       cy.task('stubPrison', prison)
     })
 
@@ -43,7 +51,7 @@ context('Find', () => {
 
       const coursesPage = Page.verifyOnPage(CoursesPage)
       coursesPage.shouldHaveCourses(sortedCourses)
-      personSearchPage.shouldContainLink(targetCourse.name, findPaths.show({ courseId: targetCourse.id })).click()
+      coursesPage.shouldContainLink(targetCourse.name, findPaths.show({ courseId: targetCourse.id })).click()
 
       const coursePage = Page.verifyOnPage(CoursePage, targetCourse)
       coursePage
@@ -92,7 +100,11 @@ context('Find', () => {
       it('shows the "Add a new location" and "Update programme" links', () => {
         const courseOfferings: Array<CourseOffering> = []
 
-        cy.task('stubOfferingsByCourse', { courseId: targetCourse.id, courseOfferings })
+        cy.task('stubOfferingsByCourse', {
+          courseId: targetCourse.id,
+          courseOfferings,
+          includeWithdrawn: 'true',
+        })
 
         cy.visit(findPaths.show({ courseId: targetCourse.id }))
 
@@ -103,7 +115,11 @@ context('Find', () => {
 
       describe('when there are no offerings', () => {
         it('shows a message that there are no offerings', () => {
-          cy.task('stubOfferingsByCourse', { courseId: targetCourse.id, courseOfferings: [] })
+          cy.task('stubOfferingsByCourse', {
+            courseId: targetCourse.id,
+            courseOfferings: [],
+            includeWithdrawn: 'true',
+          })
 
           cy.visit(findPaths.show({ courseId: targetCourse.id }))
 

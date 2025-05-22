@@ -351,14 +351,29 @@ describe('CourseService', () => {
     it('returns a list of offerings for a given course', async () => {
       const course = courseFactory.build()
       const courseOfferings = courseOfferingFactory.buildList(3)
-      when(courseClient.findOfferings).calledWith(course.id).mockResolvedValue(courseOfferings)
+      when(courseClient.findOfferings).calledWith(course.id, undefined).mockResolvedValue(courseOfferings)
 
       const result = await service.getOfferingsByCourse(username, course.id)
 
       expect(result).toEqual(courseOfferings)
 
       expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(courseClient.findOfferings).toHaveBeenCalledWith(course.id)
+      expect(courseClient.findOfferings).toHaveBeenCalledWith(course.id, undefined)
+    })
+
+    it('returns a list of offerings for a given course when the includeWithdrawn parameter is passed', async () => {
+      const course = courseFactory.build()
+      const courseOfferings = courseOfferingFactory.buildList(3)
+      when(courseClient.findOfferings)
+        .calledWith(course.id, { includeWithdrawn: true })
+        .mockResolvedValue(courseOfferings)
+
+      const result = await service.getOfferingsByCourse(username, course.id, { includeWithdrawn: true })
+
+      expect(result).toEqual(courseOfferings)
+
+      expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(courseClient.findOfferings).toHaveBeenCalledWith(course.id, { includeWithdrawn: true })
     })
   })
 

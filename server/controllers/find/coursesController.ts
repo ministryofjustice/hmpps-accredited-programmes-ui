@@ -1,6 +1,7 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
 import config from '../../config'
+import { ApplicationRoles } from '../../middleware'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { CourseUtils, OrganisationUtils, TypeUtils } from '../../utils'
@@ -39,19 +40,32 @@ export default class CoursesController {
       TypeUtils.assertHasUser(req)
 
       const isPniFind = req.session.pniFindAndReferData !== undefined
+      const showWithdrawnCourses = res.locals.user.roles.includes(ApplicationRoles.ACP_EDITOR)
 
       const course = await this.courseService.getCourse(req.user.username, req.params.courseId)
-      const offerings = await this.courseService.getOfferingsByCourse(req.user.username, course.id)
+      const offerings = await this.courseService.getOfferingsByCourse(req.user.username, course.id, {
+        includeWithdrawn: showWithdrawnCourses,
+      })
 
       const organisationIds = offerings.map((offering: CourseOffering) => offering.organisationId)
       const organisations = await this.organisationService.getOrganisations(req.user.token, organisationIds)
 
       const organisationsWithOfferingIds = organisations.map(organisation => {
         const courseOffering = offerings.find(offering => offering.organisationId === organisation.id) as CourseOffering
-        return { ...organisation, courseOfferingId: courseOffering.id }
+        return { ...organisation, courseOfferingId: courseOffering.id, withdrawn: courseOffering.withdrawn }
       })
 
-      const organisationsTableData = OrganisationUtils.organisationTableRows(organisationsWithOfferingIds)
+      const organisationsTableData = OrganisationUtils.organisationTableRows(
+        organisationsWithOfferingIds.filter(
+          organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === false,
+        ),
+      )
+
+      const withdrawnOrganisationsTableData = OrganisationUtils.organisationTableRows(
+        organisationsWithOfferingIds.filter(
+          organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === true,
+        ),
+      )
 
       const canReferToHsp = isPniFind && config.flags.hspEnabled && CourseUtils.isHsp(course.name)
       const coursePresenter = CourseUtils.presentCourse(course)
@@ -70,6 +84,7 @@ export default class CoursesController {
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
         pageTitleOverride: `${coursePresenter.displayName} programme description`,
+        withdrawnOrganisationsTableData,
       })
     }
   }

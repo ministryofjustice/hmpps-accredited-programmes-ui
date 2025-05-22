@@ -3,6 +3,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% extends "../../partials/layout.njk" %}
+{% from "../_locationsTable.njk" import locationsTable %}
 
 {% block backLink %}
   {{ govukBackLink({
@@ -57,9 +58,16 @@
           rows: buildingChoicesAnswersSummaryListRows
         }) }}
 
-        {% include "../_locationsTable.njk" %}
+      {{ locationsTable({locations: organisationsTableData}) }}
       {% else %}
         <p data-testid="no-offerings-text">To find out where {{ course.displayName }} is offered, speak to your Offender Management Unit (custody) or regional probation team (community).</p>
+      {% endif %}
+
+      {% if 'ROLE_ACP_EDITOR' in user.roles %}
+        {% if withdrawnOrganisationsTableData | length %}
+          <h2 class="header-with-actions__title govuk-heading-m">Withdrawn Locations</h2>
+          {{ locationsTable({locations: withdrawnOrganisationsTableData}) }}
+        {% endif %}
       {% endif %}
     </div>
   </div>
