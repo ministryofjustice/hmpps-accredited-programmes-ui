@@ -7,7 +7,7 @@ describe('ReferenceDataUtils', () => {
       const groupedOptions: Record<string, Array<SexualOffenceDetails>> = {
         'Category 1': [
           {
-            categoryCode: 'CAT1',
+            categoryCode: 'INCLUDES_VIOLENCE_FORCE_HUMILIATION',
             categoryDescription: 'Category 1',
             description: 'Option 1',
             hintText: 'Hint 1',
@@ -15,7 +15,7 @@ describe('ReferenceDataUtils', () => {
             score: 1,
           },
           {
-            categoryCode: 'CAT1',
+            categoryCode: 'INCLUDES_VIOLENCE_FORCE_HUMILIATION',
             categoryDescription: 'Category 1',
             description: 'Option 2',
             hintText: 'Hint 2',
@@ -25,7 +25,7 @@ describe('ReferenceDataUtils', () => {
         ],
         'Category 2': [
           {
-            categoryCode: 'CAT2',
+            categoryCode: 'OTHER',
             categoryDescription: 'Category 2',
             description: 'Option 3',
             hintText: 'Hint 3',

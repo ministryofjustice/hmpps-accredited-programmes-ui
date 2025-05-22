@@ -6,7 +6,7 @@ import type { SexualOffenceDetails } from '@accredited-programmes-api'
 
 export default Factory.define<SexualOffenceDetails>(() => {
   return {
-    categoryCode: `${faker.string.alpha(5)}_${faker.string.alpha(5)}`.toUpperCase(),
+    categoryCode: faker.helpers.arrayElement(['AGAINST_MINORS', 'INCLUDES_VIOLENCE_FORCE_HUMILIATION', 'OTHER']),
     categoryDescription: faker.lorem.sentence(),
     description: faker.lorem.sentence(),
     hintText: FactoryHelpers.optionalArrayElement(faker.lorem.sentence()),
