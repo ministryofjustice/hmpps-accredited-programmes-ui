@@ -170,7 +170,39 @@ describe('NewReferralsController', () => {
         username,
         draftReferral.offeringId,
         draftReferral.prisonNumber,
+        undefined,
       )
+    })
+
+    describe('when there is hspReferralData in the session', () => {
+      it('asks the service to create a referral with the hspReferralData from the session', async () => {
+        const hspReferralData = {
+          eligibilityOverrideReason: 'A valid reason',
+          selectedOffences: ['ABC-123'],
+        }
+        request.body.courseOfferingId = draftReferral.offeringId
+        request.body.prisonNumber = draftReferral.prisonNumber
+        request.session.hspReferralData = {
+          ...hspReferralData,
+          totalScore: 1,
+        }
+
+        courseService.getOffering.mockResolvedValue(referableCourseOffering)
+
+        TypeUtils.assertHasUser(request)
+
+        referralService.createReferral.mockResolvedValue(referralFactory.started().build({ id: referralId }))
+
+        const requestHandler = controller.create()
+        await requestHandler(request, response, next)
+
+        expect(referralService.createReferral).toHaveBeenCalledWith(
+          username,
+          draftReferral.offeringId,
+          draftReferral.prisonNumber,
+          hspReferralData,
+        )
+      })
     })
 
     describe('when the course offering is not referable', () => {

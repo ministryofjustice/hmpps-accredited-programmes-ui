@@ -116,6 +116,7 @@ export default class NewReferralsController {
 
       const { courseOfferingId, prisonNumber } = req.body
       const { username } = req.user
+      const { hspReferralData } = req.session
 
       const courseOffering = await this.courseService.getOffering(req.user.username, courseOfferingId)
       if (!courseOffering.referable) {
@@ -127,6 +128,12 @@ export default class NewReferralsController {
           username,
           courseOfferingId,
           prisonNumber,
+          hspReferralData
+            ? {
+                eligibilityOverrideReason: hspReferralData.eligibilityOverrideReason,
+                selectedOffences: hspReferralData.selectedOffences,
+              }
+            : undefined,
         )
 
         return res.redirect(referPaths.new.show({ referralId: createReferralResponse.id }))
