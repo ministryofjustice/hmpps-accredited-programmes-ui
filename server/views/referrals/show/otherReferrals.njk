@@ -8,7 +8,7 @@
 {% block primaryContent %}
 
     {% if tableRows | length  %}
-    <p>{{ person.name }} has other open referrals.<p>
+    <p>{{ person.name }} has other open referrals.</p>
     {{ govukTable({
         attributes: {
             "data-module": "moj-sortable-table"
@@ -57,6 +57,6 @@
     }) }}
 
     {% else %}
-    <p>{{ person.name }} has no other open referrals.<p>
+    <p>{{ person.name }} has no other open referrals.</p>
     {% endif %}
     {% endblock primaryContent %}
