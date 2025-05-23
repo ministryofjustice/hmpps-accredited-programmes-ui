@@ -112,6 +112,7 @@ export default {
   referrals: {
     confirmationText: confirmationTextPath,
     create: referralsPath,
+    createHsp: path('/referral/hsp'),
     dashboard: dashboardPath,
     delete: referralPath,
     duplicates: referralsPath.path('duplicates'),

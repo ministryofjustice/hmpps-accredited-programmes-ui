@@ -14,6 +14,7 @@ import type {
   ReferralView,
 } from '@accredited-programmes/models'
 import type {
+  HspReferralCreate,
   Referral,
   ReferralStatusHistory,
   ReferralUpdate,
@@ -32,6 +33,13 @@ export default class ReferralClient {
     return (await this.restClient.post({
       data: { offeringId: courseOfferingId, prisonNumber },
       path: apiPaths.referrals.create({}),
+    })) as Referral
+  }
+
+  async createHspReferral(createHspBody: HspReferralCreate): Promise<Referral> {
+    return (await this.restClient.post({
+      data: { ...createHspBody },
+      path: apiPaths.referrals.createHsp({}),
     })) as Referral
   }
 
