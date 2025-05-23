@@ -252,9 +252,9 @@ interface BuildingChoicesData {
 }
 
 interface HspReferralData {
-  selectedOffenceDetails: Array<SexualOffenceDetails['id']>
+  selectedOffences: Array<SexualOffenceDetails['id']>
   totalScore: number
-  reason?: string
+  eligibilityOverrideReason?: string
 }
 
 interface PniFindAndReferData {

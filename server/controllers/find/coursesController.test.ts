@@ -134,6 +134,7 @@ describe('CoursesController', () => {
           updateProgramme: findPaths.course.update.show({ courseId: course.id }),
         },
         isBuildingChoices: false,
+        isHsp: false,
         noOfferingsMessage,
         organisationsTableData: OrganisationUtils.organisationTableRows(
           organisationsWithOfferingIds.filter(
@@ -214,6 +215,7 @@ describe('CoursesController', () => {
             updateProgramme: findPaths.course.update.show({ courseId: course.id }),
           },
           isBuildingChoices: false,
+          isHsp: false,
           noOfferingsMessage,
           organisationsTableData: OrganisationUtils.organisationTableRows(
             organisationsWithOfferingIds.filter(

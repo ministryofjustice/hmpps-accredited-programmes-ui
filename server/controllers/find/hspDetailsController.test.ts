@@ -3,9 +3,14 @@ import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
 import HspDetailsController from './hspDetailsController'
-import { findPaths } from '../../paths'
+import { findPaths, referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferenceDataService } from '../../services'
-import { courseFactory, personFactory, sexualOffenceDetailsFactory } from '../../testutils/factories'
+import {
+  courseFactory,
+  courseOfferingFactory,
+  personFactory,
+  sexualOffenceDetailsFactory,
+} from '../../testutils/factories'
 import { CourseUtils, FormUtils, ReferenceDataUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
@@ -21,16 +26,17 @@ describe('HspDetailsController', () => {
 
   let controller: HspDetailsController
 
-  const hspCourse = courseFactory.build({ name: 'Healthy Sex Programme' })
+  const nationalHspOffering = courseOfferingFactory.build({ organisationId: 'NAT' })
+  const hspCourse = courseFactory.build({ courseOfferings: [nationalHspOffering], name: 'Healthy Sex Programme' })
   const person = personFactory.build({ name: 'Del Hatton' })
-  const selectedOffenceDetails = ['ABC-123']
+  const selectedOffences = ['ABC-123']
 
   beforeEach(() => {
     request = createMock<Request>({
       params: { courseId: hspCourse.id },
       session: {
         hspReferralData: {
-          selectedOffenceDetails,
+          selectedOffences,
         },
         pniFindAndReferData: {
           prisonNumber: person.prisonNumber,
@@ -91,7 +97,7 @@ describe('HspDetailsController', () => {
       expect(ReferenceDataUtils.groupOptionsByKey).toHaveBeenCalledWith(sexualOffenceDetails, 'categoryDescription')
       expect(ReferenceDataUtils.createSexualOffenceDetailsFieldset).toHaveBeenCalledWith(
         mockGroupedDetailOptions,
-        selectedOffenceDetails,
+        selectedOffences,
       )
       expect(response.render).toHaveBeenCalledWith('courses/hsp/details/show', {
         checkboxFieldsets: mockFieldsets,
@@ -139,6 +145,10 @@ describe('HspDetailsController', () => {
   })
 
   describe('submit', () => {
+    beforeEach(() => {
+      when(courseService.getNationalOffering).calledWith(username, hspCourse.id).mockResolvedValue(nationalHspOffering)
+    })
+
     describe('when the total score of the submitted selections meets the threshold of 3', () => {
       it('should return that thy are eligible for HSP', async () => {
         request.body = { sexualOffenceDetails: ['ABC-123::1', 'ABC-456::2'] }
@@ -147,10 +157,12 @@ describe('HspDetailsController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.hspReferralData).toEqual({
-          selectedOffenceDetails: ['ABC-123', 'ABC-456'],
+          selectedOffences: ['ABC-123', 'ABC-456'],
           totalScore: 3,
         })
-        expect(response.send).toHaveBeenCalledWith('Eligible')
+        expect(response.redirect).toHaveBeenCalledWith(
+          referPaths.new.start({ courseOfferingId: nationalHspOffering.id }),
+        )
       })
     })
 
@@ -162,7 +174,7 @@ describe('HspDetailsController', () => {
         await requestHandler(request, response, next)
 
         expect(request.session.hspReferralData).toEqual({
-          selectedOffenceDetails: ['ABC-123'],
+          selectedOffences: ['ABC-123'],
           totalScore: 1,
         })
         expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.notEligible.show({ courseId: hspCourse.id }))
@@ -181,6 +193,19 @@ describe('HspDetailsController', () => {
           'Please select at least one sexual offence',
         )
         expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.details.show({ courseId: hspCourse.id }))
+      })
+    })
+
+    describe('when there is no national offering for HSP', () => {
+      it('should redirect back to the person search page', async () => {
+        when(courseService.getNationalOffering).calledWith(username, hspCourse.id).mockResolvedValue(undefined)
+
+        request.body = { sexualOffenceDetails: ['ABC-123::1', 'ABC-456::2'] }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch({}))
       })
     })
   })

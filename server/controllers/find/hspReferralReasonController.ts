@@ -1,6 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { findPaths } from '../../paths'
+import { findPaths, referPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { CourseUtils, FormUtils, TypeUtils } from '../../utils'
 
@@ -42,6 +42,7 @@ export default class HspReferralReasonController {
       TypeUtils.assertHasUser(req)
 
       let hasErrors = false
+      const { username } = req.user
       const { courseId } = req.params
       const { hspReferralReason } = req.body
       const formattedHspReferralReason = hspReferralReason?.trim()
@@ -61,7 +62,15 @@ export default class HspReferralReasonController {
         return res.redirect(findPaths.hsp.reason.show({ courseId }))
       }
 
-      return res.send('Reason entered')
+      const nationalHspOffering = await this.courseService.getNationalOffering(username, courseId)
+
+      if (!nationalHspOffering || !req.session.hspReferralData) {
+        return res.redirect(findPaths.pniFind.personSearch({}))
+      }
+
+      req.session.hspReferralData.eligibilityOverrideReason = formattedHspReferralReason
+
+      return res.redirect(referPaths.new.start({ courseOfferingId: nationalHspOffering.id }))
     }
   }
 }
