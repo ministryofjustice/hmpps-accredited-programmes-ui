@@ -84,8 +84,6 @@ export default class AssessCaseListController {
       const { activeCaseLoadId, username } = res.locals.user
 
       const selectedCourse = await this.courseService.getCourse(username, courseId)
-      const isHsp = CourseUtils.isHsp(selectedCourse.displayName)
-
       const [courses, courseAudiences] = await Promise.all([
         this.courseService.getCoursesByOrganisation(username, activeCaseLoadId),
         this.courseService.getCourseAudiences(username, { courseId }),
@@ -94,6 +92,7 @@ export default class AssessCaseListController {
         throw createError(404, `Course with ID ${courseId} not found.`)
       }
 
+      const isHsp = CourseUtils.isHsp(selectedCourse.displayName)
       const [allReferralViews, referralStatuses] = await Promise.all([
         Object.fromEntries(
           await Promise.all(
