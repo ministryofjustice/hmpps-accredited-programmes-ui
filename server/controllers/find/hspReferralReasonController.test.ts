@@ -3,9 +3,9 @@ import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
 import HspReferralReasonController from './hspReferralReasonController'
-import { findPaths } from '../../paths'
+import { findPaths, referPaths } from '../../paths'
 import type { CourseService } from '../../services'
-import { courseFactory, personFactory } from '../../testutils/factories'
+import { courseFactory, courseOfferingFactory, personFactory } from '../../testutils/factories'
 import { CourseUtils, FormUtils } from '../../utils'
 
 jest.mock('../../utils/formUtils')
@@ -19,13 +19,18 @@ describe('HspReferralReasonController', () => {
 
   let controller: HspReferralReasonController
 
-  const hspCourse = courseFactory.build({ name: 'Healthy Sex Programme' })
+  const nationalHspOffering = courseOfferingFactory.build({ organisationId: 'NAT' })
+  const hspCourse = courseFactory.build({ courseOfferings: [nationalHspOffering], name: 'Healthy Sex Programme' })
   const person = personFactory.build({ name: 'Del Hatton' })
+  const selectedOffences = ['ABC-123']
 
   beforeEach(() => {
     request = createMock<Request>({
       params: { courseId: hspCourse.id },
       session: {
+        hspReferralData: {
+          selectedOffences,
+        },
         pniFindAndReferData: {
           prisonNumber: person.prisonNumber,
           programmePathway: 'HIGH_INTENSITY_BC',
@@ -95,13 +100,21 @@ describe('HspReferralReasonController', () => {
   })
 
   describe('submit', () => {
+    beforeEach(() => {
+      when(courseService.getNationalOffering).calledWith(username, hspCourse.id).mockResolvedValue(nationalHspOffering)
+    })
+
     it('should redirect to the next page when the referral reason is valid', async () => {
       request.body = { hspReferralReason: 'Valid reason' }
 
       const requestHandler = controller.submit()
       await requestHandler(request, response, next)
 
-      expect(response.send).toHaveBeenCalledWith('Reason entered')
+      expect(request.session.hspReferralData).toEqual({
+        eligibilityOverrideReason: 'Valid reason',
+        selectedOffences,
+      })
+      expect(response.redirect).toHaveBeenCalledWith(referPaths.new.start({ courseOfferingId: nationalHspOffering.id }))
     })
 
     it('should redirect back to the form with an error message when the referral reason is empty', async () => {
@@ -129,6 +142,32 @@ describe('HspReferralReasonController', () => {
         JSON.stringify({ formattedHspReferralReason: longReason }),
       ])
       expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.reason.show({ courseId: hspCourse.id }))
+    })
+
+    describe('when there is hspReferralData in the session', () => {
+      it('should redirect back to the person search page', async () => {
+        delete request.session.hspReferralData
+
+        request.body = { hspReferralReason: 'A valid reason' }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch({}))
+      })
+    })
+
+    describe('when there is no national offering for HSP', () => {
+      it('should redirect back to the person search page', async () => {
+        when(courseService.getNationalOffering).calledWith(username, hspCourse.id).mockResolvedValue(undefined)
+
+        request.body = { hspReferralReason: 'A valid reason' }
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.pniFind.personSearch({}))
+      })
     })
   })
 })

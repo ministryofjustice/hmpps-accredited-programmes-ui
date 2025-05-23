@@ -30,7 +30,7 @@ describe('PersonSearchController', () => {
     request = createMock<Request>({
       session: {
         hspReferralData: {
-          selectedOffenceDetails: ['ABC-123'],
+          selectedOffences: ['ABC-123'],
           totalScore: 1,
         },
         pniFindAndReferData: {

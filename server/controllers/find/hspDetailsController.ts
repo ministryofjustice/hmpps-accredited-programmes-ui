@@ -1,6 +1,6 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import { findPaths } from '../../paths'
+import { findPaths, referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferenceDataService } from '../../services'
 import { CourseUtils, FormUtils, ReferenceDataUtils, TypeUtils } from '../../utils'
 
@@ -40,7 +40,7 @@ export default class HspDetailsController {
       return res.render('courses/hsp/details/show', {
         checkboxFieldsets: ReferenceDataUtils.createSexualOffenceDetailsFieldset(
           groupedDetailOptions,
-          req.session.hspReferralData?.selectedOffenceDetails,
+          req.session.hspReferralData?.selectedOffences,
         ),
         hrefs: {
           back: findPaths.show({ courseId: course.id }),
@@ -56,6 +56,7 @@ export default class HspDetailsController {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
 
+      const { username } = req.user
       const { courseId } = req.params
       const { sexualOffenceDetails } = req.body as {
         sexualOffenceDetails: Array<string> | string
@@ -67,21 +68,27 @@ export default class HspDetailsController {
         return res.redirect(findPaths.hsp.details.show({ courseId }))
       }
 
+      const nationalOffering = await this.courseService.getNationalOffering(username, courseId)
+
+      if (!nationalOffering) {
+        return res.redirect(findPaths.pniFind.personSearch({}))
+      }
+
       const splitChar = '::'
 
       const sexualOffenceDetailsArray = Array.isArray(sexualOffenceDetails)
         ? sexualOffenceDetails
         : [sexualOffenceDetails]
 
-      const selectedValues = sexualOffenceDetailsArray.map(detail => {
+      const selectedOffenceValues = sexualOffenceDetailsArray.map(detail => {
         const [id, score] = detail.split(splitChar)
         return { id, score: parseInt(score, 10) }
       })
 
-      const totalScore = selectedValues.reduce((acc, { score }) => acc + score, 0)
+      const totalScore = selectedOffenceValues.reduce((acc, { score }) => acc + score, 0)
 
       req.session.hspReferralData = {
-        selectedOffenceDetails: selectedValues.map(({ id }) => id),
+        selectedOffences: selectedOffenceValues.map(({ id }) => id),
         totalScore,
       }
 
@@ -89,7 +96,7 @@ export default class HspDetailsController {
         return res.redirect(findPaths.hsp.notEligible.show({ courseId }))
       }
 
-      return res.send('Eligible')
+      return res.redirect(referPaths.new.start({ courseOfferingId: nationalOffering.id }))
     }
   }
 }
