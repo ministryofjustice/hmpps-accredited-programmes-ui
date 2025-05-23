@@ -83,32 +83,35 @@ export default class AssessCaseListController {
 
       const { activeCaseLoadId, username } = res.locals.user
 
+      const selectedCourse = await this.courseService.getCourse(username, courseId)
       const [courses, courseAudiences] = await Promise.all([
         this.courseService.getCoursesByOrganisation(username, activeCaseLoadId),
         this.courseService.getCourseAudiences(username, { courseId }),
       ])
-
-      const selectedCourse = courses.find(course => course.id === courseId)
-
       if (!selectedCourse) {
         throw createError(404, `Course with ID ${courseId} not found.`)
       }
 
+      const isHsp = CourseUtils.isHsp(selectedCourse.displayName)
       const [allReferralViews, referralStatuses] = await Promise.all([
         Object.fromEntries(
           await Promise.all(
             statusGroups.map(async group => {
-              const referralViews = await this.referralService.getReferralViews(username, activeCaseLoadId, {
-                audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
-                courseName: selectedCourse.name,
-                hasLdcString,
-                nameOrId,
-                page: page ? (Number(page) - 1).toString() : undefined,
-                sortColumn,
-                sortDirection,
-                status,
-                statusGroup: group,
-              })
+              const referralViews = await this.referralService.getReferralViews(
+                username,
+                isHsp ? 'NAT' : activeCaseLoadId,
+                {
+                  audience: CaseListUtils.uiToApiAudienceQueryParam(audience),
+                  courseName: selectedCourse.name,
+                  hasLdcString,
+                  nameOrId,
+                  page: page ? (Number(page) - 1).toString() : undefined,
+                  sortColumn,
+                  sortDirection,
+                  status,
+                  statusGroup: group,
+                },
+              )
               return [group, referralViews]
             }),
           ),
@@ -158,13 +161,13 @@ export default class AssessCaseListController {
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         /** INFO: This is more recently presented as 'Strands' in UI mock ups */
-        audienceSelectItems,
+        audienceSelectItems: isHsp ? [] : audienceSelectItems,
         ldcStatusChangedMessage: req.flash('ldcStatusChangedMessage')[0],
         nameOrId,
         pageHeading: selectedCourse.name,
         pageTitleOverride: `Manage ${referralStatusGroup} programme team referrals: ${selectedCourse.name}`,
         pagination,
-        primaryNavigationItems: CaseListUtils.primaryNavigationItems(req.path, courses),
+        primaryNavigationItems: isHsp ? undefined : CaseListUtils.primaryNavigationItems(req.path, courses),
         referralStatusGroup,
         referralStatusSelectItems: {
           closed: CaseListUtils.statusSelectItems(closedReferralStatuses, status, true),

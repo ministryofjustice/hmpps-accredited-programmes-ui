@@ -93,7 +93,7 @@ context('App', () => {
       const indexPage = Page.verifyOnPage(IndexPage)
       indexPage.shouldContainLink('Find a programme and make a referral', '/find')
       indexPage.shouldContainLink('Reporting data', '/reports')
-      indexPage.shouldContainLink('HSP referrals', '/hsp-referrals')
+      indexPage.shouldContainLink('HSP referrals', '/assess/referrals/case-list/hsp')
     })
   })
 })

@@ -76,7 +76,8 @@
               errorMessage: errors.messages.nameOrId
             }) }}
 
-            {{ govukSelect({
+            {% if audienceSelectItems | length %}
+              {{ govukSelect({
               id: "audience",
               name: "audience",
               label: {
@@ -89,6 +90,7 @@
               classes: "govuk-select--restrict-width",
               errorMessage: errors.messages.audience
             }) }}
+            {% endif %}
 
             {{
               govukSelectWithOptgroup({

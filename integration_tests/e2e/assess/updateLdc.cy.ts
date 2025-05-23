@@ -34,7 +34,6 @@ context('Updating a persons LDC status for a referral', () => {
 
     beforeEach(() => {
       cy.task('stubReferral', referralWithLdc)
-
       cy.visit(assessPaths.updateLdc.show({ referralId: referralWithLdc.id }))
     })
 

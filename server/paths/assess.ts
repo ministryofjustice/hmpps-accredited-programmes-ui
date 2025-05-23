@@ -24,8 +24,7 @@ export default {
     show: courseCaseListPath.path(':referralStatusGroup'),
   },
   hspReferrals: {
-    filter: caseListIndex.path('hsp/:referralStatusGroup'),
-    show: caseListIndex.path('hsp/:referralStatusGroup'),
+    show: caseListIndex.path('hsp'),
   },
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),

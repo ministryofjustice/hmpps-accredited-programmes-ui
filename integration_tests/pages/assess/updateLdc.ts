@@ -80,6 +80,7 @@ export default class UpdateLdcPage extends Page {
     // Stubs for submitting LDC update
     cy.task('stubCourseByOffering', { course, courseOfferingId: this.referral.offeringId })
     cy.task('stubUpdateReferral', this.referral.id)
+    cy.task('stubCourse', course)
 
     // Stubs for loading Case List page
     cy.task('stubCoursesForOrganisation', { courses: [course], organisationId: 'MRI' })

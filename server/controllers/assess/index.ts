@@ -49,7 +49,7 @@ const controllers = (services: Services) => {
     services.referralService,
   )
 
-  const hspReferralsController = new HspReferralsController(services.referralService, services.referenceDataService)
+  const hspReferralsController = new HspReferralsController(services.courseService)
 
   return {
     assessCaseListController,
