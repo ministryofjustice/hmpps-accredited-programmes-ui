@@ -13,7 +13,7 @@ export default class HspReferralsController {
       const courses = await this.courseService.getCourses(req.user.username, { intensity: 'HIGH' })
       const hspCourse = courses.find(course => course.name === 'Healthy Sex Programme')
       if (hspCourse) {
-        return res.redirect(assessPaths.caseList.show({ courseId: hspCourse.id, referralStatusGroup: 'OPEN' }))
+        return res.redirect(assessPaths.caseList.show({ courseId: hspCourse.id, referralStatusGroup: 'open' }))
       }
 
       return res.redirect('/')
