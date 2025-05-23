@@ -25,6 +25,8 @@ export default function routes(controllers: Controllers, router: Router): Router
     updateStatusSelectionController,
   } = controllers
 
+  get(assessPaths.hspReferrals.show.pattern, controllers.hspReferralsController.show())
+
   get(assessPaths.caseList.index.pattern, assessCaseListController.indexRedirect())
   get(assessPaths.caseList.show.pattern, assessCaseListController.show())
   post(assessPaths.caseList.filter.pattern, assessCaseListController.filter())

@@ -98,6 +98,25 @@ export default class ReferralService {
     return referralClient.findDuplicateReferrals(offeringId, prisonNumber)
   }
 
+  async getHspReferralViews(
+    username: Express.User['username'],
+    query?: {
+      hasLdcString?: string
+      nameOrId?: string
+      page?: string
+      sortColumn?: string
+      sortDirection?: string
+      status?: string
+      statusGroup?: ReferralStatusGroup
+    },
+  ): Promise<Paginated<ReferralView>> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.findHspReferralViews(query)
+  }
+
   async getMyReferralViews(
     username: Express.User['username'],
     query?: {

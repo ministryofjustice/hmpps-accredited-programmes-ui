@@ -538,5 +538,75 @@ describe('AssessCaseListController', () => {
         expect(referralService.getReferralViews).not.toHaveBeenCalled()
       })
     })
+
+    describe('when the course is hsp', () => {
+      const hspCourse = courseFactory.build({ name: 'Healthy Sex Programme' })
+      beforeEach(() => {
+        request.params = { courseId: hspCourse.id, referralStatusGroup }
+        when(courseService.getCourse).calledWith(username, hspCourse.id).mockResolvedValue(hspCourse)
+      })
+
+      it('renders the show template with the correct response locals', async () => {
+        expect(request.session.recentCaseListPath).toBeUndefined()
+
+        const requestHandler = controller.show()
+        await requestHandler(request, response, next)
+
+        expect(request.session.recentCaseListPath).toBe(originalUrl)
+        expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
+          action: assessPaths.caseList.filter({ courseId: hspCourse.id, referralStatusGroup }),
+          audienceSelectItems,
+          pageHeading: 'Healthy Sex Programme',
+          pageTitleOverride: 'Manage open programme team referrals: Healthy Sex Programme',
+          pagination,
+          referralStatusGroup,
+          referralStatusSelectItems: {
+            closed: referralStatusSelectItems,
+            open: referralStatusSelectItems,
+          },
+          referralsFiltered: false,
+          subNavigationItems,
+          tableHeadings,
+          tableRows,
+        })
+        expect(CaseListUtils.uiToApiAudienceQueryParam).toHaveBeenCalledWith(undefined)
+        expect(referralService.getReferralViews).toHaveBeenCalledWith(username, 'NAT', {
+          audience: undefined,
+          courseName: 'Healthy Sex Programme',
+          hasLdcString: undefined,
+          status: undefined,
+          statusGroup: referralStatusGroup,
+        })
+        expect(CaseListUtils.queryParamsExcludingPage).toHaveBeenLastCalledWith(
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+        )
+
+        expect(PathUtils.pathWithQuery).toHaveBeenCalledWith(
+          assessPaths.caseList.show({ courseId: hspCourse.id, referralStatusGroup }),
+          queryParamsExcludingSort,
+        )
+        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, false, undefined)
+        expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
+          pathWithQuery,
+          {
+            audience: 'Programme strand',
+            earliestReleaseDate: 'Earliest release date',
+            location: 'Location',
+            sentenceType: 'Sentence type',
+            status: 'Referral status',
+            surname: 'Name and prison number',
+          },
+          undefined,
+          undefined,
+        )
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(closedReferralStatuses, undefined, true)
+        expect(CaseListUtils.statusSelectItems).toHaveBeenCalledWith(openReferralStatuses, undefined, true)
+      })
+    })
   })
 })

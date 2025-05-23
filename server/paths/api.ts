@@ -22,6 +22,7 @@ const updateStatusPath = referralPath.path('status')
 const submitPath = referralPath.path('submit')
 const dashboardPath = referralsPath.path('view/organisation/:organisationId/dashboard')
 const myDashboardPath = referralsPath.path('view/me/dashboard')
+const hspDashboardPath = referralsPath.path('view/hsp/dashboard')
 const statusHistoryPath = referralPath.path('status-history')
 const statusTransitionsPath = referralPath.path('status-transitions')
 const confirmationTextPath = referralPath.path('confirmation-text/:chosenStatusCode')
@@ -116,6 +117,7 @@ export default {
     dashboard: dashboardPath,
     delete: referralPath,
     duplicates: referralsPath.path('duplicates'),
+    hspReferralDashboard: hspDashboardPath,
     myDashboard: myDashboardPath,
     otherReferrals: referralPath.path('/others'),
     show: referralPath,
