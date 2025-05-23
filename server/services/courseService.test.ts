@@ -377,6 +377,19 @@ describe('CourseService', () => {
     })
   })
 
+  describe('getNationalOffering', () => {
+    it('returns the offering with the `NAT` organisation ID', async () => {
+      const nationalOffering = courseOfferingFactory.build({ organisationId: 'NAT' })
+      jest
+        .spyOn(service, 'getOfferingsByCourse')
+        .mockResolvedValue([courseOfferingFactory.build({ organisationId: 'MDI' }), nationalOffering])
+
+      const result = await service.getNationalOffering(username, 'courseId')
+
+      expect(result).toEqual(nationalOffering)
+    })
+  })
+
   describe('getOffering', () => {
     it('returns a given offering', async () => {
       const courseOffering = courseOfferingFactory.build()

@@ -184,6 +184,15 @@ export default class CourseService {
     return courseClient.findCoursesByOrganisation(organisationId)
   }
 
+  async getNationalOffering(
+    username: Express.User['username'],
+    courseId: Course['id'],
+  ): Promise<CourseOffering | undefined> {
+    const offeringsForCourse = await this.getOfferingsByCourse(username, courseId)
+
+    return offeringsForCourse.find(offering => offering.organisationId === 'NAT')
+  }
+
   async getOffering(
     username: Express.User['username'],
     courseOfferingId: CourseOffering['id'],
