@@ -60,7 +60,7 @@
         {% endif %}
       </div>
 
-      {% if organisationsTableData | length %}
+      {% if not isHsp and organisationsTableData.length > 0 %}
         <p data-testid="offerings-text">Select a prison to contact the programme team or make a referral.</p>
 
         {{ locationsTable({locations: organisationsTableData}) }}

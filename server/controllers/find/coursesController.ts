@@ -80,6 +80,7 @@ export default class CoursesController {
           updateProgramme: findPaths.course.update.show({ courseId: course.id }),
         },
         isBuildingChoices: CourseUtils.isBuildingChoices(course.displayName),
+        isHsp: CourseUtils.isHsp(course.name),
         noOfferingsMessage: CourseUtils.noOfferingsMessage(course.name),
         organisationsTableData,
         pageHeading: coursePresenter.displayName,
