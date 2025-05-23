@@ -80,6 +80,34 @@ describe('ReferralService', () => {
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(referralClient.create).toHaveBeenCalledWith(referral.offeringId, referral.prisonNumber)
     })
+
+    describe('when there is `hspReferralData`', () => {
+      it('calls the referral client createHspReferral method with the hspReferralData', async () => {
+        const referral = referralFactory.started().build()
+        const hspReferralData = {
+          eligibilityOverrideReason: 'A valid reason',
+          selectedOffences: ['ABC-123'],
+        }
+
+        when(referralClient.createHspReferral)
+          .calledWith({ offeringId: referral.offeringId, prisonNumber: referral.prisonNumber, ...hspReferralData })
+          .mockResolvedValue(referral)
+
+        const result = await service.createReferral(
+          username,
+          referral.offeringId,
+          referral.prisonNumber,
+          hspReferralData,
+        )
+
+        expect(result).toEqual(referral)
+
+        expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+        expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      })
+    })
   })
 
   describe('deleteReferral', () => {
