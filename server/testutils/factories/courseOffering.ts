@@ -5,12 +5,15 @@ import type { CourseOffering } from '@accredited-programmes/models'
 
 export default Factory.define<CourseOffering>(({ params }) => {
   const organisationId = params.organisationId || faker.string.alpha({ casing: 'upper', length: 3 })
+  const gender = params.gender || undefined
 
   return {
     id: faker.string.uuid(), // eslint-disable-next-line sort-keys
     contactEmail: `nobody-${organisationId.toLowerCase()}@digital.justice.gov.uk`,
     organisationId,
     referable: faker.datatype.boolean(),
+    // eslint-disable-next-line sort-keys
+    gender,
     secondaryContactEmail: faker.helpers.arrayElement([
       `nobody2-${organisationId.toLowerCase()}@digital.justice.gov.uk`,
       undefined,
