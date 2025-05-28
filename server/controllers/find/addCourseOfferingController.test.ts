@@ -65,37 +65,128 @@ describe('AddCourseController', () => {
   })
 
   describe('submit', () => {
-    it('creates a course offering and redirects back to the course page', async () => {
-      const newCourseOfferingBody: Record<string, string> = {
-        contactEmail: 'contact-email@test.com',
-        organisationId: 'organisation-id',
-        referable: 'true',
-        secondaryContactEmail: 'secondary-contact-email@test.com',
-        withdrawn: 'false',
-      }
-      const courseOffering = courseOfferingFactory.build({
-        contactEmail: newCourseOfferingBody.contactEmail,
-        organisationId: newCourseOfferingBody.organisationId,
-        referable: true,
-        secondaryContactEmail: newCourseOfferingBody.secondaryContactEmail,
-        withdrawn: false,
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+    describe('when target course is not a BC course', () => {
+      it('creates a course offering and redirects back to the course page', async () => {
+        const newCourseOfferingBody: Record<string, string> = {
+          contactEmail: 'contact-email@test.com',
+          organisationId: 'organisation-id',
+          referable: 'true',
+          secondaryContactEmail: 'secondary-contact-email@test.com',
+          withdrawn: 'false',
+        }
+        const courseOffering = courseOfferingFactory.build({
+          contactEmail: newCourseOfferingBody.contactEmail,
+          organisationId: newCourseOfferingBody.organisationId,
+          referable: true,
+          secondaryContactEmail: newCourseOfferingBody.secondaryContactEmail,
+          withdrawn: false,
+        })
+
+        const course = courseFactory.build({ displayName: 'Course Name', id: courseId })
+        courseService.addCourseOffering.mockResolvedValue(courseOffering)
+        courseService.getCourse.mockResolvedValue(course)
+
+        request.body = newCourseOfferingBody
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(courseService.addCourseOffering).toHaveBeenCalledWith(username, courseId, {
+          ...newCourseOfferingBody,
+          referable: true,
+          withdrawn: false,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(
+          findPaths.offerings.show({ courseOfferingId: courseOffering.id }),
+        )
       })
+    })
+    describe('when target course is a BC course and a general strand offering is requested', () => {
+      it('creates a course offering using the general strand and redirects back to the course page', async () => {
+        const newCourseOfferingBodyWithBuildingChoices = {
+          buildingChoicesOptions: ['createGeneralOffenceStrand'],
+          contactEmail: 'contact-email@test.com',
+          organisationId: 'organisation-id',
+          referable: 'true',
+          secondaryContactEmail: 'secondary-contact-email@test.com',
+          withdrawn: 'false',
+        }
+        const courseOffering = courseOfferingFactory.build({
+          contactEmail: newCourseOfferingBodyWithBuildingChoices.contactEmail,
+          organisationId: newCourseOfferingBodyWithBuildingChoices.organisationId,
+          referable: true,
+          secondaryContactEmail: newCourseOfferingBodyWithBuildingChoices.secondaryContactEmail,
+          withdrawn: false,
+        })
 
-      const course = courseFactory.build({ displayName: 'Course Name', id: courseId })
-      courseService.addCourseOffering.mockResolvedValue(courseOffering)
-      courseService.getCourse.mockResolvedValue(course)
+        const course = courseFactory.build({
+          displayName: 'Building Choices: high intensity',
+          id: courseId,
+        })
+        const courseVariant = courseFactory.build({
+          audience: 'General offence',
+          displayName: 'Building Choices: high intensity',
+        })
+        courseService.getCourses.mockResolvedValue([courseVariant])
+        courseService.addCourseOffering.mockResolvedValue(courseOffering)
+        courseService.getCourse.mockResolvedValue(course)
 
-      request.body = newCourseOfferingBody
+        request.body = newCourseOfferingBodyWithBuildingChoices
 
-      const requestHandler = controller.submit()
-      await requestHandler(request, response, next)
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
 
-      expect(courseService.addCourseOffering).toHaveBeenCalledWith(username, courseId, {
-        ...newCourseOfferingBody,
-        referable: true,
-        withdrawn: false,
+        expect(courseService.addCourseOffering).toHaveBeenCalledTimes(1)
+        expect(courseService.getCourses).toHaveBeenCalledTimes(1)
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.buildingChoices.show({ courseId }))
       })
-      expect(response.redirect).toHaveBeenCalledWith(findPaths.offerings.show({ courseOfferingId: courseOffering.id }))
+    })
+    describe('when target course is a BC course and a general and sexual offence strand offering is requested', () => {
+      it('creates a course offering for both strands and redirects back to the course page', async () => {
+        const newCourseOfferingBodyWithBuildingChoices = {
+          buildingChoicesOptions: ['createGeneralOffenceStrand', 'createSexualOffenceStrand'],
+          contactEmail: 'contact-email@test.com',
+          organisationId: 'organisation-id',
+          referable: 'true',
+          secondaryContactEmail: 'secondary-contact-email@test.com',
+          withdrawn: 'false',
+        }
+        const courseOffering = courseOfferingFactory.build({
+          contactEmail: newCourseOfferingBodyWithBuildingChoices.contactEmail,
+          organisationId: newCourseOfferingBodyWithBuildingChoices.organisationId,
+          referable: true,
+          secondaryContactEmail: newCourseOfferingBodyWithBuildingChoices.secondaryContactEmail,
+          withdrawn: false,
+        })
+
+        const course = courseFactory.build({
+          displayName: 'Building Choices: high intensity',
+          id: courseId,
+        })
+        const generalCourseVariant = courseFactory.build({
+          audience: 'General offence',
+          displayName: 'Building Choices: high intensity',
+        })
+        const seuxalOffenceCourseVariant = courseFactory.build({
+          audience: 'Sexual offence',
+          displayName: 'Building Choices: high intensity',
+        })
+        courseService.getCourses.mockResolvedValue([generalCourseVariant, seuxalOffenceCourseVariant])
+        courseService.addCourseOffering.mockResolvedValue(courseOffering)
+        courseService.getCourse.mockResolvedValue(course)
+
+        request.body = newCourseOfferingBodyWithBuildingChoices
+
+        const requestHandler = controller.submit()
+        await requestHandler(request, response, next)
+
+        expect(courseService.addCourseOffering).toHaveBeenCalledTimes(2)
+        expect(courseService.getCourses).toHaveBeenCalledTimes(1)
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.buildingChoices.show({ courseId }))
+      })
     })
   })
 })

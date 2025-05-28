@@ -116,7 +116,7 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
     })
 
     it('fetches all courses', async () => {
-      const result = await courseClient.all()
+      const result = await courseClient.findCourses()
 
       expect(result).toEqual(courses)
     })

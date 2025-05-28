@@ -74,7 +74,6 @@ describe('BuildingChoicesFormController', () => {
           { text: 'Manchester' },
         ],
       ]
-      const withdrawnOrganisationsTableData: Array<GovukFrontendTableRow> = []
       const buildingChoicesAnswersSummaryListRows = [
         { key: { text: 'Convicted of a sexual offence' }, value: { text: 'No' } },
         { key: { text: 'In a women’s prison' }, value: { text: 'Yes' } },
@@ -89,6 +88,7 @@ describe('BuildingChoicesFormController', () => {
         request.session.buildingChoicesData = buildingChoicesData
 
         mockedCourse.buildingChoicesAnswersSummaryListRows.mockReturnValue(buildingChoicesAnswersSummaryListRows)
+        mockedOrganisationUtils.organisationTableRows.mockReturnValue(organisationsTableData)
       })
 
       it('should render the buildingChoices/show template', async () => {
@@ -104,49 +104,31 @@ describe('BuildingChoicesFormController', () => {
           .calledWith(username, courseId, buildingChoicesData)
           .mockResolvedValue(returnedCourses)
 
-        const active = organisations
-          .map((organisation, index) => ({
-            ...organisation,
-            courseOfferingId: courseOfferings[index].id,
-            withdrawn: courseOfferings[index].withdrawn,
-          }))
-          .filter(organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === false)
-
-        const withdrawn = organisations
-          .map((organisation, index) => ({
-            ...organisation,
-            courseOfferingId: courseOfferings[index].id,
-            withdrawn: courseOfferings[index].withdrawn,
-          }))
-          .filter(organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === true)
-
-        when(mockedOrganisationUtils.organisationTableRows).calledWith(active).mockReturnValue(organisationsTableData)
-
-        when(mockedOrganisationUtils.organisationTableRows)
-          .calledWith(withdrawn)
-          .mockReturnValue(withdrawnOrganisationsTableData)
-
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
 
         const course = returnedCourses[0]
 
         expect(CourseUtils.buildingChoicesAnswersSummaryListRows).toHaveBeenCalledWith(buildingChoicesData)
-        expect(OrganisationUtils.organisationTableRows).toHaveBeenCalledWith(active)
-        expect(OrganisationUtils.organisationTableRows).toHaveBeenCalledWith(withdrawn)
+        expect(OrganisationUtils.organisationTableRows).toHaveBeenCalledWith(
+          organisations.map((organisation, index) => ({
+            ...organisation,
+            courseOfferingId: courseOfferings[index].id,
+            withdrawn: courseOfferings[index].withdrawn,
+          })),
+        )
         expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/show', {
           buildingChoicesAnswersSummaryListRows,
           course,
           hideTitleServiceName: true,
           hrefs: {
-            addOffering: findPaths.offerings.add.create({ courseId: course.id }),
+            addOffering: findPaths.offerings.add.create({ courseId }),
             back: findPaths.buildingChoices.form.show({ courseId }),
             updateProgramme: findPaths.course.update.show({ courseId: course.id }),
           },
           organisationsTableData,
           pageHeading: course.displayName,
           pageTitleOverride: `${course.displayName} programme description`,
-          withdrawnOrganisationsTableData,
         })
       })
     })

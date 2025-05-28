@@ -24,18 +24,9 @@ export default class CourseClient {
   /* istanbul ignore next */
   async addCourseOffering(courseId: Course['id'], courseOffering: Omit<CourseOffering, 'id'>): Promise<CourseOffering> {
     return (await this.restClient.post({
-      data: courseOffering,
+      data: { ...courseOffering },
       path: apiPaths.offerings.create({ courseId }),
     })) as CourseOffering
-  }
-
-  async all(query?: { intensity?: 'HIGH' | 'MODERATE' }): Promise<Array<Course>> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.index({}),
-      query: {
-        ...(query?.intensity && { intensity: query.intensity }),
-      },
-    })) as Array<Course>
   }
 
   async createCourse(courseCreateRequest: CourseCreateRequest): Promise<Course> {
@@ -66,9 +57,7 @@ export default class CourseClient {
   }
 
   async find(courseId: Course['id']): Promise<Course> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.show({ courseId }),
-    })) as Course
+    return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
   }
 
   /* istanbul ignore next */
@@ -120,6 +109,15 @@ export default class CourseClient {
     return (await this.restClient.get({
       path: apiPaths.courses.names({}),
     })) as Array<Course['name']>
+  }
+
+  async findCourses(query?: { intensity?: 'HIGH' | 'MODERATE' }): Promise<Array<Course>> {
+    return (await this.restClient.get({
+      path: apiPaths.courses.index({}),
+      query: {
+        ...(query?.intensity && { intensity: query.intensity }),
+      },
+    })) as Array<Course>
   }
 
   async findCoursesByOrganisation(organisationId: string): Promise<Array<Course>> {
