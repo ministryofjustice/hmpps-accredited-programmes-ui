@@ -291,6 +291,8 @@ export default class CourseService {
       addedByDisplayName,
     }
 
+    console.log('participation', courseParticipationPresenter)
+
     return CourseParticipationUtils.summaryListOptions(
       courseParticipationPresenter,
       referralId,

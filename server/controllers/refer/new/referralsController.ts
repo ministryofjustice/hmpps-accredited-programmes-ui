@@ -3,14 +3,7 @@ import createError from 'http-errors'
 
 import { authPaths, findPaths, referPaths } from '../../../paths'
 import { type SanitisedError, isErrorWithData } from '../../../sanitisedError'
-import type {
-  CourseService,
-  OrganisationService,
-  PersonService,
-  ReferenceDataService,
-  ReferralService,
-  UserService,
-} from '../../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
 import SexualOffenceDetailsUtils from '../../../utils/sexualOffenceDetailsUtils'
 import type { Referral } from '@accredited-programmes-api'
@@ -22,7 +15,6 @@ export default class NewReferralsController {
     private readonly personService: PersonService,
     private readonly referralService: ReferralService,
     private readonly userService: UserService,
-    private readonly referenceDataService: ReferenceDataService,
   ) {}
 
   checkAnswers(): TypedRequestHandler<Request, Response> {
