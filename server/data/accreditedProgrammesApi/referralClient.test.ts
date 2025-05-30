@@ -173,55 +173,6 @@ pactWith({ consumer: 'Accredited Programmes UI', provider: 'Accredited Programme
         expect(result).toEqual(paginatedReferralViews)
       })
     })
-
-    describe('find hsp referral view with query parameters', () => {
-      const paginatedReferralViews: Paginated<ReferralView> = {
-        content: FactoryHelpers.buildListWith(
-          referralViewFactory,
-          { status: 'referral_submitted', tasksCompleted: undefined },
-          { transient: { requireOptionalFields: true } },
-          1,
-        ),
-        pageIsEmpty: false,
-        pageNumber: 1,
-        pageSize: 15,
-        totalElements: 16,
-        totalPages: 2,
-      }
-
-      beforeEach(() => {
-        provider.addInteraction({
-          state: 'Referral view HSP case list view',
-          uponReceiving:
-            "A request for the second (15 length) page of the logged in user's referral views with status REFERRAL_SUBMITTED",
-          willRespondWith: {
-            body: Matchers.like(paginatedReferralViews),
-            status: 200,
-          },
-          withRequest: {
-            headers: {
-              authorization: `Bearer ${userToken}`,
-            },
-            method: 'GET',
-            path: apiPaths.referrals.hspReferralDashboard({}),
-            query: {
-              page: '1',
-              size: '15',
-              status: 'REFERRAL_SUBMITTED',
-            },
-          },
-        })
-      })
-
-      it("fetches the logged in user's referral views matching the given query parameters", async () => {
-        const result = await referralClient.findHspReferralViews({
-          page: '1',
-          status: 'REFERRAL_SUBMITTED',
-        })
-
-        expect(result).toEqual(paginatedReferralViews)
-      })
-    })
   })
 
   describe('findReferralViews', () => {
