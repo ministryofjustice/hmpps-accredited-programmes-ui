@@ -34,12 +34,14 @@ import type {
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
 import type { Organisation } from '@accredited-programmes-api'
+import { after } from 'node:test'
 
 jest.mock('../../../utils/courseUtils')
 jest.mock('../../../utils/formUtils')
 jest.mock('../../../utils/referrals/newReferralUtils')
 
 const mockNewReferralUtils = NewReferralUtils as jest.Mocked<typeof NewReferralUtils>
+const mockCourseUtils = CourseUtils as jest.Mocked<typeof CourseUtils>
 
 describe('NewReferralsController', () => {
   const userToken = 'SOME_TOKEN'
@@ -54,7 +56,6 @@ describe('NewReferralsController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
   const userService = createMock<UserService>({})
-  const referenceDataService = createMock<ReferenceDataService>({})
 
   const course = courseFactory.build()
   const referableCourseOffering = courseOfferingFactory.build({ referable: true })
@@ -106,7 +107,6 @@ describe('NewReferralsController', () => {
       personService,
       referralService,
       userService,
-      referenceDataService,
     )
 
     when(courseService.getOffering)
@@ -461,6 +461,7 @@ describe('NewReferralsController', () => {
       mockNewReferralUtils.isReadyForSubmission.mockReturnValue(true)
       mockNewReferralUtils.courseOfferingSummaryListRows.mockReturnValue(courseOfferingSummaryListRows)
       mockNewReferralUtils.referrerSummaryListRows.mockReturnValue(referrerSummaryListRows)
+      mockCourseUtils.isHsp.mockReturnValue(false)
 
       TypeUtils.assertHasUser(request)
 
@@ -479,60 +480,12 @@ describe('NewReferralsController', () => {
       })
     })
 
-    it('renders the referral check answers page and sets the `returnTo` value in the session', async () => {
-      const actions = {
-        change: true,
-        remove: false,
-      }
-      const requestHandler = controller.checkAnswers()
-      await requestHandler(request, response, next)
-
-      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
-      expect(personService.getPerson).toHaveBeenCalledWith(username, submittableReferral.prisonNumber)
-      expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
-      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
-      expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
-      expect(courseService.presentCourseParticipation).toHaveBeenCalledTimes(2)
-      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
-        userToken,
-        participationsForReferral[0],
-        referralId,
-        undefined,
-        actions,
-      )
-      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
-        userToken,
-        participationsForReferral[1],
-        referralId,
-        undefined,
-        actions,
-      )
-      expect(request.session.returnTo).toBe('check-answers')
-      expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
-        additionalInformation: submittableReferral.additionalInformation,
-        courseOfferingSummaryListRows,
-        pageHeading: 'Check your answers',
-        participationSummaryListsOptions: [summaryListOptions, summaryListOptions],
-        person,
-        personSummaryListRows: PersonUtils.summaryListRows(person),
-        referralId,
-        referrerSummaryListRows,
-      })
-      expect(NewReferralUtils.courseOfferingSummaryListRows).toHaveBeenCalledWith(
-        referableCourseOffering,
-        coursePresenter,
-        organisation,
-        person,
-      )
-      expect(NewReferralUtils.referrerSummaryListRows).toHaveBeenCalledWith(referrerName, referrerEmail)
+    afterEach(() => {
+      jest.clearAllMocks()
     })
 
     it('renders the referral check answers page when the referral is for a HSP course', async () => {
-      ;(CourseUtils.isHsp as jest.Mock).mockReturnValue(true)
-      const actions = {
-        change: true,
-        remove: false,
-      }
+      mockCourseUtils.isHsp.mockReturnValue(true)
 
       const requestHandler = controller.checkAnswers()
       await requestHandler(request, response, next)
@@ -543,20 +496,6 @@ describe('NewReferralsController', () => {
       expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
       expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
       expect(courseService.presentCourseParticipation).toHaveBeenCalledTimes(2)
-      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
-        userToken,
-        participationsForReferral[0],
-        referralId,
-        undefined,
-        actions,
-      )
-      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
-        userToken,
-        participationsForReferral[1],
-        referralId,
-        undefined,
-        actions,
-      )
       expect(referralService.getHspReferralDetails).toHaveBeenCalledWith(username, referralId)
 
       expect(request.session.returnTo).toBe('check-answers')
@@ -574,13 +513,45 @@ describe('NewReferralsController', () => {
           sexualOffenceDetails.filter(detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION'),
         ),
         pageHeading: 'Check your answers',
-        participationSummaryListsOptions: [summaryListOptions, summaryListOptions],
+        participationSummaryListsOptions: [summaryListOptions],
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
-        // referrerOverrideReason: undefined,
         referrerSummaryListRows,
-        // successMessage: undefined,
+      })
+      expect(NewReferralUtils.courseOfferingSummaryListRows).toHaveBeenCalledWith(
+        referableCourseOffering,
+        coursePresenter,
+        organisation,
+        person,
+      )
+      expect(NewReferralUtils.referrerSummaryListRows).toHaveBeenCalledWith(referrerName, referrerEmail)
+    })
+
+    it('renders the referral check answers page and sets the `returnTo` value in the session', async () => {
+      const requestHandler = controller.checkAnswers()
+      await requestHandler(request, response, next)
+
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(personService.getPerson).toHaveBeenCalledWith(username, submittableReferral.prisonNumber)
+      expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
+      expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledTimes(2)
+      expect(request.session.returnTo).toBe('check-answers')
+      expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
+        additionalInformation: submittableReferral.additionalInformation,
+        courseOfferingSummaryListRows,
+        isHsp: false,
+        offenceAgainstMinorsSummaryListRows: undefined,
+        offenceOtherSummaryListRows: undefined,
+        offenceViolenceForceSummaryListRows: undefined,
+        pageHeading: 'Check your answers',
+        participationSummaryListsOptions: [summaryListOptions],
+        person,
+        personSummaryListRows: PersonUtils.summaryListRows(person),
+        referralId,
+        referrerSummaryListRows,
       })
       expect(NewReferralUtils.courseOfferingSummaryListRows).toHaveBeenCalledWith(
         referableCourseOffering,
