@@ -19,7 +19,7 @@ export default class DashboardController {
         assessCaseListPath: assessPaths.caseList.index({}),
         findAllProgrammesPath: findPaths.index({}),
         findPath: findPaths.pniFind.personSearch({}),
-        hspPath: '/hsp-referrals',
+        hspPath: assessPaths.hspReferrals.show({}),
         pageHeading: 'Accredited Programmes: find and refer',
         referCaseListPath: referPaths.caseList.index({}),
         reportPath: reportsPaths.show({}),

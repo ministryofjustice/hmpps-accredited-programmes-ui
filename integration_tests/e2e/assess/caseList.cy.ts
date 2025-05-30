@@ -46,6 +46,7 @@ context('Referral case lists', () => {
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
     cy.task('stubAuthUser')
     cy.task('stubDefaultCaseloads')
+    cy.task('stubCourse', limeCourse)
     cy.task('stubCoursesForOrganisation', { courses, organisationId: 'MRI' })
     cy.task('stubCourseAudiences', { audiences: limeCourseAudiences, courseId: limeCourse.id })
     cy.task('stubReferralStatuses', referralStatuses)
@@ -341,6 +342,7 @@ context('Referral case lists', () => {
     describe('when visiting the index, without specifying a course', () => {
       beforeEach(() => {
         cy.task('stubCourseAudiences', { audiences: blueCourseAudiences, courseId: blueCourse.id })
+        cy.task('stubCourse', blueCourse)
       })
 
       it('redirects to the correct course case list page', () => {
