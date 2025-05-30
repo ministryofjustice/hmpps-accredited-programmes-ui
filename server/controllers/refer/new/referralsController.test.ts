@@ -7,17 +7,27 @@ import { when } from 'jest-when'
 import NewReferralsController from './referralsController'
 import { authPaths, findPaths, referPaths } from '../../../paths'
 import sanitiseError from '../../../sanitisedError'
-import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
+import type {
+  CourseService,
+  OrganisationService,
+  PersonService,
+  ReferenceDataService,
+  ReferralService,
+  UserService,
+} from '../../../services'
 import {
   audienceFactory,
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  hspReferralDetailsFactory,
   personFactory,
   referralFactory,
+  sexualOffenceDetailsFactory,
 } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
+import SexualOffenceDetailsUtils from '../../../utils/sexualOffenceDetailsUtils'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,
@@ -44,6 +54,7 @@ describe('NewReferralsController', () => {
   const personService = createMock<PersonService>({})
   const referralService = createMock<ReferralService>({})
   const userService = createMock<UserService>({})
+  const referenceDataService = createMock<ReferenceDataService>({})
 
   const course = courseFactory.build()
   const referableCourseOffering = courseOfferingFactory.build({ referable: true })
@@ -95,6 +106,7 @@ describe('NewReferralsController', () => {
       personService,
       referralService,
       userService,
+      referenceDataService,
     )
 
     when(courseService.getOffering)
@@ -428,6 +440,17 @@ describe('NewReferralsController', () => {
       },
     ]
 
+    const sexualOffenceDetails = [
+      sexualOffenceDetailsFactory.build({ categoryCode: 'AGAINST_MINORS', description: 'offence 1', score: 1 }),
+      sexualOffenceDetailsFactory.build({
+        categoryCode: 'INCLUDES_VIOLENCE_FORCE_HUMILIATION',
+        description: 'offence 2',
+        score: 2,
+      }),
+      sexualOffenceDetailsFactory.build({ categoryCode: 'OTHER', description: 'offence 3', score: 3 }),
+    ]
+    const hspReferralDetails = hspReferralDetailsFactory.build({ selectedOffences: sexualOffenceDetails })
+
     beforeEach(() => {
       personService.getPerson.mockResolvedValue(person)
       userService.getFullNameFromUsername.mockResolvedValue(referrerName)
@@ -448,13 +471,15 @@ describe('NewReferralsController', () => {
 
       courseService.getParticipationsByReferral.mockResolvedValue(participationsForReferral)
 
+      referralService.getHspReferralDetails.mockResolvedValue(hspReferralDetails)
+
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
         response.locals.errors = emptyErrorsLocal
       })
     })
 
-    it('renders the referral check answers page and sets the `returnTo` value in the sesssion', async () => {
+    it('renders the referral check answers page and sets the `returnTo` value in the session', async () => {
       const actions = {
         change: true,
         remove: false,
@@ -492,6 +517,70 @@ describe('NewReferralsController', () => {
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
         referrerSummaryListRows,
+      })
+      expect(NewReferralUtils.courseOfferingSummaryListRows).toHaveBeenCalledWith(
+        referableCourseOffering,
+        coursePresenter,
+        organisation,
+        person,
+      )
+      expect(NewReferralUtils.referrerSummaryListRows).toHaveBeenCalledWith(referrerName, referrerEmail)
+    })
+
+    it('renders the referral check answers page when the referral is for a HSP course', async () => {
+      ;(CourseUtils.isHsp as jest.Mock).mockReturnValue(true)
+      const actions = {
+        change: true,
+        remove: false,
+      }
+
+      const requestHandler = controller.checkAnswers()
+      await requestHandler(request, response, next)
+
+      expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
+      expect(personService.getPerson).toHaveBeenCalledWith(username, submittableReferral.prisonNumber)
+      expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
+      expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
+      expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledTimes(2)
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
+        userToken,
+        participationsForReferral[0],
+        referralId,
+        undefined,
+        actions,
+      )
+      expect(courseService.presentCourseParticipation).toHaveBeenCalledWith(
+        userToken,
+        participationsForReferral[1],
+        referralId,
+        undefined,
+        actions,
+      )
+      expect(referralService.getHspReferralDetails).toHaveBeenCalledWith(username, referralId)
+
+      expect(request.session.returnTo).toBe('check-answers')
+      expect(response.render).toHaveBeenCalledWith('referrals/new/checkAnswers', {
+        additionalInformation: submittableReferral.additionalInformation,
+        courseOfferingSummaryListRows,
+        isHsp: true,
+        offenceAgainstMinorsSummaryListRows: SexualOffenceDetailsUtils.offenceSummaryListRows(
+          sexualOffenceDetails.filter(detail => detail.categoryCode === 'AGAINST_MINORS'),
+        ),
+        offenceOtherSummaryListRows: SexualOffenceDetailsUtils.offenceSummaryListRows(
+          sexualOffenceDetails.filter(detail => detail.categoryCode === 'OTHER'),
+        ),
+        offenceViolenceForceSummaryListRows: SexualOffenceDetailsUtils.offenceSummaryListRows(
+          sexualOffenceDetails.filter(detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION'),
+        ),
+        pageHeading: 'Check your answers',
+        participationSummaryListsOptions: [summaryListOptions, summaryListOptions],
+        person,
+        personSummaryListRows: PersonUtils.summaryListRows(person),
+        referralId,
+        // referrerOverrideReason: undefined,
+        referrerSummaryListRows,
+        // successMessage: undefined,
       })
       expect(NewReferralUtils.courseOfferingSummaryListRows).toHaveBeenCalledWith(
         referableCourseOffering,

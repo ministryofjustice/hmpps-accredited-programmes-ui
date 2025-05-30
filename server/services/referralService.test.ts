@@ -262,6 +262,24 @@ describe('ReferralService', () => {
     })
   })
 
+  // describe('getHspReferralDetails', () => {
+  //   const referral = referralFactory.build()
+  //
+  //   it('returns a given referral', async () => {
+  //     when(referralClient.find).calledWith(referral.id, undefined).mockResolvedValue(referral)
+  //
+  //     const result = await service.getReferral(username, referral.id)
+  //     expect(referralClient.find).toHaveBeenCalledWith(referral.id, undefined)
+  //     expect(result).toEqual(referral)
+  //
+  //     expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+  //     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+  //
+  //     expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+  //     expect(referralClient.find).toHaveBeenCalledWith(referral.id, undefined)
+  //   })
+  // })
+
   describe('getOtherReferrals', () => {
     it('calls the correct service methods to return the information required to display other referrals for a referral', async () => {
       const loggedInUser: Express.User = { authSource: 'nomis', token: userToken, userId: 'user-id', username }

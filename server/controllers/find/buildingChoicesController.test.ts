@@ -96,7 +96,7 @@ describe('BuildingChoicesFormController', () => {
         organisationService.getOrganisations.mockResolvedValue(organisations)
 
         const courseOfferings = organisations.map(organisation =>
-          courseOfferingFactory.build({ organisationId: organisation.id }),
+          courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: false }),
         )
         const returnedCourses = [courseFactory.build({ courseOfferings })]
 

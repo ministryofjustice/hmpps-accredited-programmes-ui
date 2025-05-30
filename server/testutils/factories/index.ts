@@ -12,6 +12,7 @@ import courseParticipationSettingFactory from './courseParticipationSetting'
 import coursePrerequisiteFactory from './coursePrerequisite'
 import drugAlcoholDetailFactory from './drugAlcoholDetail'
 import healthFactory from './health'
+import hspReferralDetailsFactory from './hspReferralDetails'
 import inmateDetailFactory from './inmateDetail'
 import keyDatesFactory from './keyDates'
 import learningNeedsFactory from './learningNeeds'
@@ -59,6 +60,7 @@ export {
   coursePrerequisiteFactory,
   drugAlcoholDetailFactory,
   healthFactory,
+  hspReferralDetailsFactory,
   inmateDetailFactory,
   keyDatesFactory,
   learningNeedsFactory,

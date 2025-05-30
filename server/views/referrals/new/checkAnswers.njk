@@ -60,6 +60,49 @@
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-6">
 
+      {% if isHsp %}
+          <h2 class="govuk-heading-m">Sexual offence details</h2>
+
+          {{ govukSummaryList({
+            card: {
+              title: {
+                headingLevel: 3,
+                text: "Offences against someone aged under 18"
+              }
+            },
+            rows: offenceAgainstMinorsSummaryListRows,
+            attributes: {
+              "data-testid": "offence-against-minors-summary-list"
+            }
+          }) }}
+
+          {{ govukSummaryList({
+            card: {
+              title: {
+                headingLevel: 3,
+                text: "Sexual offences that include violence, force or humiliation"
+              }
+            },
+            rows: offenceViolenceForceSummaryListRows,
+            attributes: {
+              "data-testid": "offence-violence-force-summary-list"
+            }
+          }) }}
+
+          {{ govukSummaryList({
+            card: {
+              title: {
+                headingLevel: 3,
+                text: "Other sexual offences"
+              }
+            },
+            rows: offenceOtherSummaryListRows,
+            attributes: {
+              "data-testid": "offence-other-summary-list"
+            }
+          }) }}
+      {% endif %}
+
       <h2 class="govuk-heading-m">Person being referred</h2>
 
       {{ govukSummaryList({
