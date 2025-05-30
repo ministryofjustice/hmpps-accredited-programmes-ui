@@ -351,7 +351,7 @@ export interface ReferralEntity {
   hasReviewedProgrammeHistory: boolean;
   hasReviewedAdditionalInformation?: boolean;
   status: string;
-  /** @example "2025-05-23T14:11:38" */
+  /** @example "2025-05-28T14:00:45" */
   submittedOn?: object;
   deleted: boolean;
   primaryPomStaffId?: number;
@@ -1017,6 +1017,59 @@ export interface ReferralStatusHistory {
   reasonDescription?: string;
 }
 
+export interface HspReferralDetails {
+  /**
+   * The prison number of the person who is being referred.
+   * @example "A1234AA"
+   */
+  prisonNumber: string;
+  /** A list of all possible sexual offence details. */
+  selectedOffences: SexualOffenceDetails[];
+  /**
+   * The overriding reason why the prisoner should be considered suitable for the course.
+   * @example "The prisoner meets the requirements"
+   */
+  eligibilityOverrideReason?: string;
+}
+
+export interface SexualOffenceDetails {
+  /**
+   * The unique sexual offence identifier
+   * @format uuid
+   * @example "67ea1478-e4c3-46be-8b7f-86833fb87540"
+   */
+  id: string;
+  /**
+   * A human-friendly description of the Offence itself
+   * @example "Evidence of ritualism in the offence"
+   */
+  description: string;
+  /**
+   * Further elaborations of the offence
+   * @example "Fixed actions or words, performed in a specific way"
+   */
+  hintText?: string;
+  /**
+   * A computer-friendly identifier for the Offence's category
+   * @example "INCLUDES_VIOLENCE_FORCE_HUMILIATION"
+   */
+  categoryCode:
+    | "AGAINST_MINORS"
+    | "INCLUDES_VIOLENCE_FORCE_HUMILIATION"
+    | "OTHER";
+  /**
+   * A human-friendly description of the Offence's category (i.e. the categoryCode)
+   * @example "Sexual offences that include violence, force or humiliation"
+   */
+  categoryDescription: string;
+  /**
+   * The score associated with the offence, between 1 and 3.
+   * @format int32
+   * @example 1
+   */
+  score: number;
+}
+
 export interface ConfirmationFields {
   /** @example "Move referral to awaiting assessment" */
   primaryHeading?: string;
@@ -1171,44 +1224,6 @@ export interface ReferralView {
    * @example true
    */
   hasLdc?: boolean;
-}
-
-export interface SexualOffenceDetails {
-  /**
-   * The unique sexual offence identifier
-   * @format uuid
-   * @example "67ea1478-e4c3-46be-8b7f-86833fb87540"
-   */
-  id: string;
-  /**
-   * A human-friendly description of the Offence itself
-   * @example "Evidence of ritualism in the offence"
-   */
-  description: string;
-  /**
-   * Further elaborations of the offence
-   * @example "Fixed actions or words, performed in a specific way"
-   */
-  hintText?: string;
-  /**
-   * A computer-friendly identifier for the Offence's category
-   * @example "INCLUDES_VIOLENCE_FORCE_HUMILIATION"
-   */
-  categoryCode:
-    | "AGAINST_MINORS"
-    | "INCLUDES_VIOLENCE_FORCE_HUMILIATION"
-    | "OTHER";
-  /**
-   * A human-friendly description of the Offence's category (i.e. the categoryCode)
-   * @example "Sexual offences that include violence, force or humiliation"
-   */
-  categoryDescription: string;
-  /**
-   * The score associated with the offence, between 1 and 3.
-   * @format int32
-   * @example 1
-   */
-  score: number;
 }
 
 export interface ReferralStatusReason {

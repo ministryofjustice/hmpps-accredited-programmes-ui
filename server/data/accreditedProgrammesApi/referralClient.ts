@@ -13,8 +13,9 @@ import type {
   ReferralStatusUppercase,
   ReferralView,
 } from '@accredited-programmes/models'
-import type {
-  HspReferralCreate,
+import type { HspReferralData } from '@accredited-programmes/ui'
+import {
+  HspReferralCreate, HspReferralDetails,
   Referral,
   ReferralStatusHistory,
   ReferralUpdate,
@@ -61,6 +62,12 @@ export default class ReferralClient {
         ...(query?.updatePerson && { updatePerson: query.updatePerson }),
       },
     })) as Referral
+  }
+
+  async findHspReferralDetails(referralId: Referral['id']): Promise<HspReferralDetails> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.hspDetails({ referralId }),
+    })) as HspReferralDetails
   }
 
   async findConfirmationText(

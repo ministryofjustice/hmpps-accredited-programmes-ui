@@ -16,6 +16,7 @@ const controllers = (services: Services) => {
     services.personService,
     services.referralService,
     services.userService,
+    services.referenceDataService,
   )
   const newReferralsDeleteController = new NewReferralsDeleteController(
     services.personService,

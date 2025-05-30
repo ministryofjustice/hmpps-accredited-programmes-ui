@@ -118,6 +118,7 @@ export default {
     delete: referralPath,
     duplicates: referralsPath.path('duplicates'),
     hspReferralDashboard: hspDashboardPath,
+    hspDetails: referralPath.path('hsp-details'),
     myDashboard: myDashboardPath,
     otherReferrals: referralPath.path('/others'),
     show: referralPath,
