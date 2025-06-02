@@ -11,7 +11,6 @@ import type {
   CourseService,
   OrganisationService,
   PersonService,
-  ReferenceDataService,
   ReferralService,
   UserService,
 } from '../../../services'
@@ -34,7 +33,6 @@ import type {
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
 import type { Organisation } from '@accredited-programmes-api'
-import { after } from 'node:test'
 
 jest.mock('../../../utils/courseUtils')
 jest.mock('../../../utils/formUtils')
@@ -435,10 +433,15 @@ describe('NewReferralsController', () => {
         rows: [{ key: { text: 'Setting' }, value: { text: 'Community' } }],
       },
       {
-        card: { title: { text: 'Participation 2' } },
-        rows: [{ key: { text: 'Setting' }, value: { text: 'Custody' } }],
+        card: { title: { text: 'Participation 1' } },
+        rows: [{ key: { text: 'Setting' }, value: { text: 'Community' } }],
       },
     ]
+
+    const options = {
+      card: { title: { text: 'Participation 1' } },
+      rows: [{ key: { text: 'Setting' }, value: { text: 'Community' } }],
+    }
 
     const sexualOffenceDetails = [
       sexualOffenceDetailsFactory.build({ categoryCode: 'AGAINST_MINORS', description: 'offence 1', score: 1 }),
@@ -473,6 +476,8 @@ describe('NewReferralsController', () => {
       courseService.getParticipationsByReferral.mockResolvedValue(participationsForReferral)
 
       referralService.getHspReferralDetails.mockResolvedValue(hspReferralDetails)
+
+      courseService.presentCourseParticipation.mockResolvedValue(options)
 
       const emptyErrorsLocal = { list: [], messages: {} }
       ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
@@ -513,7 +518,7 @@ describe('NewReferralsController', () => {
           sexualOffenceDetails.filter(detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION'),
         ),
         pageHeading: 'Check your answers',
-        participationSummaryListsOptions: [summaryListOptions],
+        participationSummaryListsOptions: summaryListOptions,
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
@@ -529,6 +534,12 @@ describe('NewReferralsController', () => {
     })
 
     it('renders the referral check answers page and sets the `returnTo` value in the session', async () => {
+
+      const coursePresenter1 = createMock<CoursePresenter>({
+        audience: audienceFactory.build().name,
+      })
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter1)
+
       const requestHandler = controller.checkAnswers()
       await requestHandler(request, response, next)
 
@@ -547,7 +558,7 @@ describe('NewReferralsController', () => {
         offenceOtherSummaryListRows: undefined,
         offenceViolenceForceSummaryListRows: undefined,
         pageHeading: 'Check your answers',
-        participationSummaryListsOptions: [summaryListOptions],
+        participationSummaryListsOptions: summaryListOptions,
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
@@ -555,7 +566,7 @@ describe('NewReferralsController', () => {
       })
       expect(NewReferralUtils.courseOfferingSummaryListRows).toHaveBeenCalledWith(
         referableCourseOffering,
-        coursePresenter,
+        coursePresenter1,
         organisation,
         person,
       )
