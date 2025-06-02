@@ -13,7 +13,6 @@ import type {
   ReferralStatusUppercase,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { HspReferralData } from '@accredited-programmes/ui'
 import type {
   HspReferralCreate,
   HspReferralDetails,
@@ -92,6 +91,12 @@ export default class ReferralClient {
     })) as Array<Referral>
   }
 
+  async findHspReferralDetails(referralId: Referral['id']): Promise<HspReferralDetails> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.hspDetails({ referralId }),
+    })) as HspReferralDetails
+  }
+
   async findHspReferralViews(query?: {
     nameOrId?: string
     page?: string
@@ -112,12 +117,6 @@ export default class ReferralClient {
         size: '15',
       },
     })) as Paginated<ReferralView>
-  }
-
-  async findHspReferralDetails(referralId: Referral['id']): Promise<HspReferralDetails> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.hspDetails({ referralId }),
-    })) as HspReferralDetails
   }
 
   async findMyReferralViews(query?: {

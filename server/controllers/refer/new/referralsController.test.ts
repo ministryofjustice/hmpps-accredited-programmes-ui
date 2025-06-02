@@ -7,13 +7,7 @@ import { when } from 'jest-when'
 import NewReferralsController from './referralsController'
 import { authPaths, findPaths, referPaths } from '../../../paths'
 import sanitiseError from '../../../sanitisedError'
-import type {
-  CourseService,
-  OrganisationService,
-  PersonService,
-  ReferralService,
-  UserService,
-} from '../../../services'
+import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
   audienceFactory,
   courseFactory,
@@ -534,7 +528,6 @@ describe('NewReferralsController', () => {
     })
 
     it('renders the referral check answers page and sets the `returnTo` value in the session', async () => {
-
       const coursePresenter1 = createMock<CoursePresenter>({
         audience: audienceFactory.build().name,
       })

@@ -278,7 +278,7 @@ describe('ReferralService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
 
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
-      expect(referralClient.findHspReferralDetails).toHaveBeenCalledWith(referral.id,)
+      expect(referralClient.findHspReferralDetails).toHaveBeenCalledWith(referral.id)
     })
   })
 

@@ -15,10 +15,11 @@ import type {
   ReferralStatusUppercase,
   ReferralView,
 } from '@accredited-programmes/models'
-import type { HspReferralData, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
-import {
+import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
+import type {
   Course,
-  HspReferralCreate, HspReferralDetails,
+  HspReferralCreate,
+  HspReferralDetails,
   Organisation,
   PniScore,
   Referral,
