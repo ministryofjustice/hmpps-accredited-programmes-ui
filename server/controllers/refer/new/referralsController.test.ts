@@ -1,5 +1,5 @@
-import type { DeepMocked } from '@golevelup/ts-jest'
 import { faker } from '@faker-js/faker/locale/en_GB'
+import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
@@ -28,7 +28,6 @@ import type {
   GovukFrontendSummaryListWithRowsWithKeysAndValues,
 } from '@accredited-programmes/ui'
 import type { Organisation } from '@accredited-programmes-api'
-
 
 jest.mock('../../../utils/courseUtils')
 jest.mock('../../../utils/formUtils')
@@ -126,7 +125,7 @@ describe('NewReferralsController', () => {
       await requestHandler(request, response, next)
 
       const coursePresenter = createMock<CoursePresenter>({ name: course.name })
-        ; (CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/start', {
         course: coursePresenter,
@@ -292,7 +291,7 @@ describe('NewReferralsController', () => {
       await requestHandler(request, response, next)
 
       const coursePresenter = createMock<CoursePresenter>({ name: course.name })
-        ; (CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId, { updatePerson: undefined })
       expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
@@ -468,7 +467,7 @@ describe('NewReferralsController', () => {
       organisationService.getOrganisationFromAcp.mockResolvedValue(organisation)
 
       courseService.getCourse.mockResolvedValue(course)
-        ; (CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
+      ;(CourseUtils.presentCourse as jest.Mock).mockReturnValue(coursePresenter)
 
       courseService.getParticipationsByReferral.mockResolvedValue(participationsForReferral)
 
@@ -477,9 +476,9 @@ describe('NewReferralsController', () => {
       courseService.presentCourseParticipation.mockResolvedValue(options)
 
       const emptyErrorsLocal = { list: [], messages: {} }
-        ; (FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
-          response.locals.errors = emptyErrorsLocal
-        })
+      ;(FormUtils.setFieldErrors as jest.Mock).mockImplementation((_request, _response, _fields) => {
+        response.locals.errors = emptyErrorsLocal
+      })
     })
 
     afterEach(() => {
@@ -495,23 +494,26 @@ describe('NewReferralsController', () => {
         person,
         personSummaryListRows: PersonUtils.summaryListRows(person),
         referralId,
+        referrerOverrideReason: undefined,
         referrerSummaryListRows,
         successMessage: undefined,
-        referrerOverrideReason: undefined,
       }
 
       beforeAll(() => {
-        ; (request.flash as jest.Mock).mockImplementation(() => [])
+        ;(request.flash as jest.Mock).mockImplementation(() => [])
 
         return () => {
-          ; (request.flash as jest.Mock).mockReset()
+          ;(request.flash as jest.Mock).mockReset()
         }
       })
 
       afterEach(() => {
         expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
         expect(personService.getPerson).toHaveBeenCalledWith(username, submittableReferral.prisonNumber)
-        expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(userToken, submittableReferral.referrerUsername)
+        expect(userService.getFullNameFromUsername).toHaveBeenCalledWith(
+          userToken,
+          submittableReferral.referrerUsername,
+        )
         expect(FormUtils.setFieldErrors).toHaveBeenCalledWith(request, response, ['confirmation'])
         expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
         expect(courseService.presentCourseParticipation).toHaveBeenCalledTimes(2)
@@ -522,7 +524,7 @@ describe('NewReferralsController', () => {
 
       it('passes the message to the template', async () => {
         const successMessage = 'A success message'
-          ; (request.flash as jest.Mock).mockImplementation(() => [successMessage])
+        ;(request.flash as jest.Mock).mockImplementation(() => [successMessage])
 
         const requestHandler = controller.checkAnswers()
         await requestHandler(request, response, next)
@@ -535,8 +537,8 @@ describe('NewReferralsController', () => {
         )
       })
 
-      it(`Renders a non-HSP referral`, async () => {
-        // Given 
+      it('Renders a non-HSP referral', async () => {
+        // Given
         mockCourseUtils.isHsp.mockReturnValue(false)
 
         // When
@@ -553,9 +555,9 @@ describe('NewReferralsController', () => {
           offenceViolenceForceSummaryListRows: undefined,
           ...defaultRenderData,
         })
-      });
+      })
 
-      it(`Reacts accordingly when the Referral is for a Healthy Sex Programme (HSP)`, async () => {
+      it('Reacts accordingly when the Referral is for a Healthy Sex Programme (HSP)', async () => {
         // Given
         mockCourseUtils.isHsp.mockReturnValue(true)
 
@@ -577,7 +579,7 @@ describe('NewReferralsController', () => {
           offenceViolenceForceSummaryListRows: SexualOffenceDetailsUtils.offenceSummaryListRows(
             sexualOffenceDetails.filter(detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION'),
           ),
-          ...defaultRenderData
+          ...defaultRenderData,
         })
       })
     })
