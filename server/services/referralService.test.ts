@@ -14,6 +14,7 @@ import {
   confirmationFieldsFactory,
   courseFactory,
   courseOfferingFactory,
+  hspReferralDetailsFactory,
   pniScoreFactory,
   referralFactory,
   referralStatusHistoryFactory,
@@ -259,6 +260,25 @@ describe('ReferralService', () => {
         expect(referralClient.find).toHaveBeenCalledWith(referral.id, query)
         expect(result).toEqual(referral)
       })
+    })
+  })
+
+  describe('getHspReferralDetails', () => {
+    const referral = referralFactory.build()
+
+    it('returns hsp referral details', async () => {
+      const hspReferralDetails = hspReferralDetailsFactory.build()
+      when(referralClient.findHspReferralDetails).calledWith(referral.id).mockResolvedValue(hspReferralDetails)
+
+      const result = await service.getHspReferralDetails(username, referral.id)
+      expect(referralClient.findHspReferralDetails).toHaveBeenCalledWith(referral.id)
+      expect(result).toEqual(hspReferralDetails)
+
+      expect(hmppsAuthClientBuilder).toHaveBeenCalled()
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+
+      expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      expect(referralClient.findHspReferralDetails).toHaveBeenCalledWith(referral.id)
     })
   })
 

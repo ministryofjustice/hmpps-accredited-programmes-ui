@@ -15,6 +15,7 @@ import type {
 } from '@accredited-programmes/models'
 import type {
   HspReferralCreate,
+  HspReferralDetails,
   Referral,
   ReferralStatusHistory,
   ReferralUpdate,
@@ -88,6 +89,12 @@ export default class ReferralClient {
         prisonNumber,
       },
     })) as Array<Referral>
+  }
+
+  async findHspReferralDetails(referralId: Referral['id']): Promise<HspReferralDetails> {
+    return (await this.restClient.get({
+      path: apiPaths.referrals.hspDetails({ referralId }),
+    })) as HspReferralDetails
   }
 
   async findHspReferralViews(query?: {

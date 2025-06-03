@@ -5,6 +5,7 @@ import { authPaths, findPaths, referPaths } from '../../../paths'
 import { type SanitisedError, isErrorWithData } from '../../../sanitisedError'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
+import SexualOffenceDetailsUtils from '../../../utils/sexualOffenceDetailsUtils'
 import type { Referral } from '@accredited-programmes-api'
 
 export default class NewReferralsController {
@@ -59,6 +60,29 @@ export default class NewReferralsController {
       )
 
       const coursePresenter = CourseUtils.presentCourse(course)
+      const isHsp = CourseUtils.isHsp(course.name)
+
+      let offenceAgainstMinorsSummaryListRows
+      let offenceViolenceForceSummaryListRows
+      let offenceOtherSummaryListRows
+      let hspReferralDetails
+
+      if (isHsp) {
+        hspReferralDetails = await this.referralService.getHspReferralDetails(req.user.username, referralId)
+
+        offenceAgainstMinorsSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+          hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'AGAINST_MINORS'),
+        )
+
+        offenceViolenceForceSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+          hspReferralDetails.selectedOffences.filter(
+            detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION',
+          ),
+        )
+        offenceOtherSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+          hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'OTHER'),
+        )
+      }
 
       FormUtils.setFieldErrors(req, res, ['confirmation'])
 
@@ -74,6 +98,10 @@ export default class NewReferralsController {
           organisation,
           person,
         ),
+        isHsp,
+        offenceAgainstMinorsSummaryListRows,
+        offenceOtherSummaryListRows,
+        offenceViolenceForceSummaryListRows,
         pageHeading: 'Check your answers',
         participationSummaryListsOptions,
         person,

@@ -19,6 +19,7 @@ import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type {
   Course,
   HspReferralCreate,
+  HspReferralDetails,
   Organisation,
   PniScore,
   Referral,
@@ -96,6 +97,17 @@ export default class ReferralService {
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findDuplicateReferrals(offeringId, prisonNumber)
+  }
+
+  async getHspReferralDetails(
+    username: Express.User['username'],
+    referralId: Referral['id'],
+  ): Promise<HspReferralDetails> {
+    const hmppsAuthClient = this.hmppsAuthClientBuilder()
+    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const referralClient = this.referralClientBuilder(systemToken)
+
+    return referralClient.findHspReferralDetails(referralId)
   }
 
   async getMyReferralViews(
