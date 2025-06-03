@@ -6,7 +6,7 @@ import type { HspReferralDetails } from '@accredited-programmes-api'
 
 export default Factory.define<HspReferralDetails>(() => {
   return {
-    eligibilityOverrideReason: faker.lorem.sentence(),
+    eligibilityOverrideReason: Math.random() < 0.5 ? faker.lorem.sentence() : undefined,
     prisonNumber: faker.string.alphanumeric({ length: 7 }),
     selectedOffences: sexualOffenceDetailsFactory.buildList(3),
   }
