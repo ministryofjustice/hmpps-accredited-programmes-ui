@@ -29,6 +29,7 @@ export default {
   show: {
     additionalInformation: referralShowPathBase.path('additional-information'),
     duplicate: referralShowPathBase.path('duplicate'),
+    hspDetails: referralShowPathBase.path('hsp-details'),
     offenceHistory: referralShowPathBase.path('offence-history'),
     otherReferrals: referralShowPathBase.path('other-referrals'),
     personalDetails: referralShowPathBase.path('personal-details'),

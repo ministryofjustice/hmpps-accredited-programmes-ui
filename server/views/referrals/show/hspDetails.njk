@@ -1,0 +1,53 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% extends "./partials/referralLayout.njk" %}
+
+{% block primaryContent %}
+  {{ govukInsetText({
+    classes: "govuk-!-margin-top-0",
+    text: submittedText,
+    attributes: {
+      "data-testid": "submitted-text"
+    }
+  }) }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        headingLevel: 3,
+        text: "Offences against someone aged under 18"
+      }
+    },
+    rows: offenceAgainstMinorsSummaryListRows,
+    attributes: {
+      "data-testid": "offence-against-minors-summary-list"
+    }
+  }) }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        headingLevel: 3,
+        text: "Sexual offences that include violence, force or humiliation"
+      }
+    },
+    rows: offenceViolenceForceSummaryListRows,
+    attributes: {
+      "data-testid": "offence-violence-force-summary-list"
+    }
+  }) }}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        headingLevel: 3,
+        text: "Other sexual offences"
+      }
+    },
+    rows: offenceOtherSummaryListRows,
+    attributes: {
+      "data-testid": "offence-other-summary-list"
+    }
+  }) }}
+{% endblock primaryContent %}

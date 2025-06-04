@@ -15,6 +15,7 @@ import {
   ShowReferralUtils,
   TypeUtils,
 } from '../../utils'
+import SexualOffenceDetailsUtils from '../../utils/sexualOffenceDetailsUtils'
 import type { ReferralSharedPageData } from '@accredited-programmes/ui'
 import type { Referral } from '@accredited-programmes-api'
 
@@ -33,10 +34,7 @@ export default class ReferralsController {
 
       const sharedPageData = await this.sharedPageData(req, res)
       const { referral } = sharedPageData
-
-      if (referral.status === 'referral_started') {
-        throw createError(400, 'Referral has not been submitted.')
-      }
+      this.validateReferralStatus(referral)
 
       const pathways = await this.referralService.getPathways(req.user.username, referral.id)
       const isOverride = ReferralUtils.checkIfOverride(pathways.recommended, pathways.requested)
@@ -97,6 +95,39 @@ export default class ReferralsController {
     }
   }
 
+  hspDetails(): TypedRequestHandler<Request, Response> {
+    return async (req: Request, res: Response) => {
+      TypeUtils.assertHasUser(req)
+
+      const sharedPageData = await this.sharedPageData(req, res)
+      const { referral } = sharedPageData
+
+      this.validateReferralStatus(referral)
+
+      const hspReferralDetails = await this.referralService.getHspReferralDetails(req.user.username, referral.id)
+
+      const offenceAgainstMinorsSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+        hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'AGAINST_MINORS'),
+      )
+      const offenceViolenceForceSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+        hspReferralDetails.selectedOffences.filter(
+          detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION',
+        ),
+      )
+      const offenceOtherSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+        hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'OTHER'),
+      )
+
+      return res.render('referrals/show/hspDetails', {
+        ...sharedPageData,
+        offenceAgainstMinorsSummaryListRows,
+        offenceOtherSummaryListRows,
+        offenceViolenceForceSummaryListRows,
+        submittedText: `Submitted in referral on ${DateUtils.govukFormattedFullDateString(referral.submittedOn)}.`,
+      })
+    }
+  }
+
   offenceHistory(): TypedRequestHandler<Request, Response> {
     return async (req: Request, res: Response) => {
       TypeUtils.assertHasUser(req)
@@ -104,9 +135,7 @@ export default class ReferralsController {
       const sharedPageData = await this.sharedPageData(req, res)
       const { referral } = sharedPageData
 
-      if (referral.status === 'referral_started') {
-        throw createError(400, 'Referral has not been submitted.')
-      }
+      this.validateReferralStatus(referral)
 
       const { additionalOffences, indexOffence } = await this.personService.getOffenceHistory(
         req.user.username,
@@ -160,9 +189,7 @@ export default class ReferralsController {
       const sharedPageData = await this.sharedPageData(req, res)
       const { referral } = sharedPageData
 
-      if (referral.status === 'referral_started') {
-        throw createError(400, 'Referral has not been submitted.')
-      }
+      this.validateReferralStatus(referral)
 
       return res.render('referrals/show/personalDetails', {
         ...sharedPageData,
@@ -179,9 +206,7 @@ export default class ReferralsController {
       const sharedPageData = await this.sharedPageData(req, res)
       const { referral } = sharedPageData
 
-      if (referral.status === 'referral_started') {
-        throw createError(400, 'Referral has not been submitted.')
-      }
+      this.validateReferralStatus(referral)
 
       const courseParticipations = await this.courseService.getParticipationsByPerson(
         req.user.username,
@@ -207,9 +232,7 @@ export default class ReferralsController {
       const sharedPageData = await this.sharedPageData(req, res)
       const { referral } = sharedPageData
 
-      if (referral.status === 'referral_started') {
-        throw createError(400, 'Referral has not been submitted.')
-      }
+      this.validateReferralStatus(referral)
 
       const sentenceDetails = await this.personService.getSentenceDetails(
         req.user.username,
@@ -231,9 +254,7 @@ export default class ReferralsController {
       const sharedPageData = await this.sharedPageData(req, res)
       const { referral } = sharedPageData
 
-      if (referral.status === 'referral_started') {
-        throw createError(400, 'Referral has not been submitted.')
-      }
+      this.validateReferralStatus(referral)
 
       const sentenceDetails = await this.personService.getSentenceDetails(
         req.user.username,
@@ -312,7 +333,11 @@ export default class ReferralsController {
         organisation.prisonName,
       ),
       hideTitleServiceName: true,
-      navigationItems: ShowReferralUtils.viewReferralNavigationItems(req.path, referral.id),
+      navigationItems: ShowReferralUtils.viewReferralNavigationItems(
+        req.path,
+        referral.id,
+        CourseUtils.isHsp(course?.displayName),
+      ),
       organisation,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Referral summary',
@@ -326,6 +351,12 @@ export default class ReferralsController {
         referrerEmailAddress,
         referral.primaryPrisonOffenderManager,
       ),
+    }
+  }
+
+  private validateReferralStatus(referral: Referral) {
+    if (referral.status === 'referral_started') {
+      throw createError(400, 'Referral has not been submitted.')
     }
   }
 }

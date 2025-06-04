@@ -790,10 +790,19 @@ describe('ShowReferralUtils', () => {
     const mockReferralId = 'mock-referral-id'
 
     describe('when viewing the referral on the refer journey', () => {
-      it('returns navigation items for the view referral pages with the refer paths and sets the requested page as active', () => {
-        const currentRequestPath = referPaths.show.personalDetails({ referralId: mockReferralId })
+      const currentRequestPath = referPaths.show.personalDetails({ referralId: mockReferralId })
 
-        expect(ShowReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
+      it('should add the HSP item when the course is a Healthy Sex Programme course', () => {
+        const items = ShowReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId, true)
+        expect(items).toContainEqual({
+          active: false,
+          href: '/refer/referrals/mock-referral-id/hsp-details#content',
+          text: 'HSP details',
+        })
+      })
+
+      it('returns navigation items for the view referral pages with the refer paths and sets the requested page as active', () => {
+        expect(ShowReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId, false)).toEqual([
           {
             active: true,
             href: `${referPaths.show.personalDetails({ referralId: mockReferralId })}#content`,
@@ -837,7 +846,7 @@ describe('ShowReferralUtils', () => {
       it('returns navigation items for the view referral pages with the assess paths and sets the requested page as active', () => {
         const currentRequestPath = assessPaths.show.personalDetails({ referralId: mockReferralId })
 
-        expect(ShowReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId)).toEqual([
+        expect(ShowReferralUtils.viewReferralNavigationItems(currentRequestPath, mockReferralId, false)).toEqual([
           {
             active: true,
             href: `${assessPaths.show.personalDetails({ referralId: mockReferralId })}#content`,

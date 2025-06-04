@@ -351,7 +351,7 @@ export interface ReferralEntity {
   hasReviewedProgrammeHistory: boolean;
   hasReviewedAdditionalInformation?: boolean;
   status: string;
-  /** @example "2025-05-28T14:00:45" */
+  /** @example "2025-06-01T18:47:24" */
   submittedOn?: object;
   deleted: boolean;
   primaryPomStaffId?: number;
