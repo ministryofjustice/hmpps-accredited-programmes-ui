@@ -104,23 +104,21 @@ export default class ReferralsController {
 
       this.validateReferralStatus(referral)
 
-      const hspReferralDetails = await this.referralService.getHspReferralDetails(req.user.username, referral.id)
+      const hspDetails = await this.referralService.getHspReferralDetails(req.user.username, referral.id)
 
       const offenceAgainstMinorsSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
-        hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'AGAINST_MINORS'),
+        hspDetails.selectedOffences.filter(detail => detail.categoryCode === 'AGAINST_MINORS'),
       )
       const offenceViolenceForceSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
-        hspReferralDetails.selectedOffences.filter(
-          detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION',
-        ),
+        hspDetails.selectedOffences.filter(detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION'),
       )
       const offenceOtherSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
-        hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'OTHER'),
+        hspDetails.selectedOffences.filter(detail => detail.categoryCode === 'OTHER'),
       )
 
       return res.render('referrals/show/hspDetails', {
         ...sharedPageData,
-        eligibilityOverrideReason: hspReferralDetails.eligibilityOverrideReason,
+        eligibilityOverrideReason: hspDetails.eligibilityOverrideReason,
         offenceAgainstMinorsSummaryListRows,
         offenceOtherSummaryListRows,
         offenceViolenceForceSummaryListRows,
