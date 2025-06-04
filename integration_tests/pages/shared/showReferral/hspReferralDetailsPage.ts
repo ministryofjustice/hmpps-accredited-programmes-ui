@@ -19,6 +19,12 @@ export default class HspReferralDetailsPage extends Page {
     this.person = person
   }
 
+  shouldContainEligibilityOverrideSummaryCard(): void {
+    cy.get('[data-testid="eligibility-override-summary-card"]').then(summaryCardElement => {
+      this.shouldContainKeylessSummaryCard('Reason for referring this person to HSP', 'Eligible', summaryCardElement)
+    })
+  }
+
   shouldContainMinorsSummaryList(listRows: Array<GovukFrontendSummaryListRowWithKeyAndValue>): void {
     cy.get('[data-testid="offence-against-minors-summary-list"]').then(summaryListElement => {
       this.shouldContainSummaryListRows(listRows, summaryListElement)

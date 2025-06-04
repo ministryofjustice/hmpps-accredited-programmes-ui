@@ -120,6 +120,7 @@ export default class ReferralsController {
 
       return res.render('referrals/show/hspDetails', {
         ...sharedPageData,
+        eligibilityOverrideReason: hspReferralDetails.eligibilityOverrideReason,
         offenceAgainstMinorsSummaryListRows,
         offenceOtherSummaryListRows,
         offenceViolenceForceSummaryListRows,

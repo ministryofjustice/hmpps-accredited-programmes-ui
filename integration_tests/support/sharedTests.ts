@@ -378,7 +378,7 @@ const sharedTests = {
     showsHspDetailsPage: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
 
-      const hspReferralDetails = hspReferralDetailsFactory.build()
+      const hspReferralDetails = hspReferralDetailsFactory.build({ eligibilityOverrideReason: 'Eligible' })
       cy.task('stubHspReferralDetails', {
         hspReferralDetails,
         referralId: referral.id,
@@ -400,6 +400,7 @@ const sharedTests = {
       )
 
       const hspReferralDetailsPage = Page.verifyOnPage(HspReferralDetailsPage, { course, person })
+      hspReferralDetailsPage.shouldContainEligibilityOverrideSummaryCard()
       hspReferralDetailsPage.shouldContainMinorsSummaryList(offenceAgainstMinorsSummaryListRows)
       hspReferralDetailsPage.shouldContainViolenceForceSummaryList(offenceViolenceForceSummaryListRows)
       hspReferralDetailsPage.shouldContainOtherSummarySummaryList(offenceOtherSummaryListRows)
