@@ -70,6 +70,12 @@ context('Viewing a submitted referral', () => {
         })
       })
     })
+
+    describe('When reviewing hsp referral details', () => {
+      it('shows the hsp details page', () => {
+        sharedTests.referrals.showsHspDetailsPage(ApplicationRoles.ACP_REFERRER)
+      })
+    })
   })
 
   context('And reviewing risks and needs', () => {

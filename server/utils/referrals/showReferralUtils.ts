@@ -308,6 +308,7 @@ export default class ShowReferralUtils {
   static viewReferralNavigationItems(
     currentPath: Request['path'],
     referralId: Referral['id'],
+    showHspItem?: boolean,
   ): Array<MojFrontendNavigationItem> {
     const paths = currentPath.startsWith(assessPathBase.pattern) ? assessPaths : referPaths
 
@@ -341,6 +342,12 @@ export default class ShowReferralUtils {
         text: 'Other referrals',
       },
     ]
+    if (showHspItem) {
+      navigationItems.push({
+        href: paths.show.hspDetails({ referralId }),
+        text: 'HSP details',
+      })
+    }
 
     return navigationItems.map(item => ({
       ...item,

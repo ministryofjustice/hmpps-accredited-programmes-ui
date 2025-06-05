@@ -11,6 +11,7 @@ import type {
 } from '@accredited-programmes/models'
 import type {
   CourseOffering,
+  HspReferralDetails,
   PeopleSearchResponse,
   Referral,
   ReferralStatusHistory,
@@ -181,6 +182,22 @@ export default {
       },
     })
   },
+
+  stubHspReferralDetails: (args: {
+    hspReferralDetails: HspReferralDetails
+    referralId: Referral['id']
+  }): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        url: apiPaths.referrals.hspDetails({ referralId: args.referralId }),
+      },
+      response: {
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.hspReferralDetails,
+        status: 200,
+      },
+    }),
 
   stubReferral: (referral: Referral): SuperAgentRequest =>
     stubFor({

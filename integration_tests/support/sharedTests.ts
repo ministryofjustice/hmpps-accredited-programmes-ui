@@ -8,6 +8,7 @@ import {
   courseParticipationFactory,
   drugAlcoholDetailFactory,
   healthFactory,
+  hspReferralDetailsFactory,
   inmateDetailFactory,
   learningNeedsFactory,
   lifestyleFactory,
@@ -29,6 +30,7 @@ import {
 } from '../../server/testutils/factories'
 import { CourseUtils } from '../../server/utils'
 import { releaseDateFields } from '../../server/utils/personUtils'
+import SexualOffenceDetailsUtils from '../../server/utils/sexualOffenceDetailsUtils'
 import auth from '../mockApis/auth'
 import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
@@ -52,6 +54,7 @@ import {
   StatusHistoryPage,
   ThinkingAndBehavingPage,
 } from '../pages/shared'
+import HspReferralDetailsPage from '../pages/shared/showReferral/hspReferralDetailsPage'
 import EmotionalWellbeing from '../pages/shared/showReferral/risksAndNeeds/emotionalWellbeing'
 import type { Person, ReferralStatusRefData, SentenceDetails } from '@accredited-programmes/models'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
@@ -370,6 +373,37 @@ const sharedTests = {
 
       const badRequestPage = Page.verifyOnPage(BadRequestPage, { errorMessage: 'Referral has not been submitted.' })
       badRequestPage.shouldContain400Heading()
+    },
+
+    showsHspDetailsPage: (role: ApplicationRole): void => {
+      sharedTests.referrals.beforeEach(role)
+
+      const hspReferralDetails = hspReferralDetailsFactory.build({ eligibilityOverrideReason: 'Eligible' })
+      cy.task('stubHspReferralDetails', {
+        hspReferralDetails,
+        referralId: referral.id,
+      })
+
+      const path = pathsByRole(role).show.hspDetails({ referralId: referral.id })
+      cy.visit(path)
+
+      const offenceAgainstMinorsSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+        hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'AGAINST_MINORS'),
+      )
+      const offenceViolenceForceSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+        hspReferralDetails.selectedOffences.filter(
+          detail => detail.categoryCode === 'INCLUDES_VIOLENCE_FORCE_HUMILIATION',
+        ),
+      )
+      const offenceOtherSummaryListRows = SexualOffenceDetailsUtils.offenceSummaryListRows(
+        hspReferralDetails.selectedOffences.filter(detail => detail.categoryCode === 'OTHER'),
+      )
+
+      const hspReferralDetailsPage = Page.verifyOnPage(HspReferralDetailsPage, { course, person })
+      hspReferralDetailsPage.shouldContainEligibilityOverrideSummaryCard()
+      hspReferralDetailsPage.shouldContainMinorsSummaryList(offenceAgainstMinorsSummaryListRows)
+      hspReferralDetailsPage.shouldContainViolenceForceSummaryList(offenceViolenceForceSummaryListRows)
+      hspReferralDetailsPage.shouldContainOtherSummarySummaryList(offenceOtherSummaryListRows)
     },
 
     showsOffenceHistoryPage: (role: ApplicationRole): void => {

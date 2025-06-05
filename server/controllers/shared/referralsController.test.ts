@@ -11,6 +11,7 @@ import {
   courseFactory,
   courseOfferingFactory,
   courseParticipationFactory,
+  hspReferralDetailsFactory,
   offenceDetailsFactory,
   personFactory,
   referralFactory,
@@ -38,6 +39,7 @@ jest.mock('../../utils/courseParticipationUtils')
 jest.mock('../../utils/personUtils')
 jest.mock('../../utils/sentenceInformationUtils')
 jest.mock('../../utils/referrals/showReferralUtils')
+jest.mock('../../utils/sexualOffenceDetailsUtils')
 
 const mockPersonUtils = PersonUtils as jest.Mocked<typeof PersonUtils>
 const mockShowReferralUtils = ShowReferralUtils as jest.Mocked<typeof ShowReferralUtils>
@@ -583,6 +585,32 @@ describe('ReferralsController', () => {
     })
   })
 
+  describe('hspDetails', () => {
+    beforeAll(() => {
+      response = Helpers.createMockResponseWithCaseloads()
+    })
+
+    it('Renders a response', async () => {
+      // Given
+      request.path = 'hsp-details'
+      const hspReferral = hspReferralDetailsFactory.build()
+      referralService.getHspReferralDetails.mockResolvedValueOnce(hspReferral)
+
+      // When
+      const requestHandler = controller.hspDetails()
+      await requestHandler(request, response, next)
+
+      // Then
+      expect(response.render).toHaveBeenCalledTimes(1)
+      expect(response.render).toHaveBeenCalledWith(
+        'referrals/show/hspDetails',
+        expect.objectContaining({
+          ...sharedPageData,
+        }),
+      )
+    })
+  })
+
   describe('sentenceInformation', () => {
     const mockSentenceInformationUtils = SentenceInformationUtils as jest.Mocked<typeof SentenceInformationUtils>
 
@@ -641,7 +669,6 @@ describe('ReferralsController', () => {
       referral,
       isRefer ? statusTransitions : undefined,
     )
-    expect(mockShowReferralUtils.viewReferralNavigationItems).toHaveBeenCalledWith(path, referral.id)
     expect(mockShowReferralUtils.subNavigationItems).toHaveBeenCalledWith(path, 'referral', referral.id)
     expect(mockShowReferralUtils.buttonMenu).toHaveBeenCalledWith(course, referral, {
       currentPath: path,
