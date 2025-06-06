@@ -152,16 +152,17 @@ export default class AssessCaseListController {
 
       req.session.recentCaseListPath = req.originalUrl
 
+      const hasLDCAudience = CourseUtils.isBuildingChoices(selectedCourse.displayName) || isHsp
       const audienceSelectItems = CaseListUtils.audienceSelectItems(
         courseAudiences,
-        CourseUtils.isBuildingChoices(selectedCourse.displayName),
+        hasLDCAudience,
         audience ? CourseUtils.encodeAudienceAndHasLdc(audience, hasLdcString) : undefined,
       )
 
       return res.render('referrals/caseList/assess/show', {
         action: assessPaths.caseList.filter({ courseId, referralStatusGroup }),
         /** INFO: This is more recently presented as 'Strands' in UI mock ups */
-        audienceSelectItems: isHsp ? [] : audienceSelectItems,
+        audienceSelectItems,
         ldcStatusChangedMessage: req.flash('ldcStatusChangedMessage')[0],
         nameOrId,
         pageHeading: selectedCourse.name,
