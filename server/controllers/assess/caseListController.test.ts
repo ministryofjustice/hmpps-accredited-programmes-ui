@@ -557,7 +557,39 @@ describe('AssessCaseListController', () => {
         expect(request.session.recentCaseListPath).toBe(originalUrl)
         expect(response.render).toHaveBeenCalledWith('referrals/caseList/assess/show', {
           action: assessPaths.caseList.filter({ courseId: hspCourse.id, referralStatusGroup }),
-          audienceSelectItems: [],
+          audienceSelectItems: [
+            {
+              selected: false,
+              text: 'All offences',
+              value: 'all offences',
+            },
+            {
+              selected: false,
+              text: 'Extremism offence',
+              value: 'extremism offence',
+            },
+            {
+              selected: false,
+              text: 'General offence',
+              value: 'general offence',
+            },
+            { selected: false, text: 'Gang offence', value: 'gang offence' },
+            {
+              selected: false,
+              text: 'General violence offence',
+              value: 'general violence offence',
+            },
+            {
+              selected: false,
+              text: 'Intimate partner violence offence',
+              value: 'intimate partner violence offence',
+            },
+            {
+              selected: false,
+              text: 'Sexual offence',
+              value: 'sexual offence',
+            },
+          ],
           pageHeading: 'Healthy Sex Programme',
           pageTitleOverride: 'Manage open programme team referrals: Healthy Sex Programme',
           pagination,
@@ -592,7 +624,7 @@ describe('AssessCaseListController', () => {
           assessPaths.caseList.show({ courseId: hspCourse.id, referralStatusGroup }),
           queryParamsExcludingSort,
         )
-        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, false, undefined)
+        expect(CaseListUtils.audienceSelectItems).toHaveBeenCalledWith(limeCourseAudiences, true, undefined)
         expect(CaseListUtils.sortableTableHeadings).toHaveBeenCalledWith(
           pathWithQuery,
           {
