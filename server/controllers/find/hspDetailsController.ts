@@ -62,12 +62,6 @@ export default class HspDetailsController {
         sexualOffenceDetails: Array<string> | string
       }
 
-      if (!sexualOffenceDetails) {
-        req.flash('sexualOffenceDetailsError', 'Please select at least one sexual offence')
-
-        return res.redirect(findPaths.hsp.details.show({ courseId }))
-      }
-
       const nationalOffering = await this.courseService.getNationalOffering(username, courseId)
 
       if (!nationalOffering) {
@@ -78,7 +72,9 @@ export default class HspDetailsController {
 
       const sexualOffenceDetailsArray = Array.isArray(sexualOffenceDetails)
         ? sexualOffenceDetails
-        : [sexualOffenceDetails]
+        : sexualOffenceDetails
+          ? [sexualOffenceDetails]
+          : []
 
       const selectedOffenceValues = sexualOffenceDetailsArray.map(detail => {
         const [id, score] = detail.split(splitChar)
