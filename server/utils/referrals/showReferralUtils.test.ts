@@ -30,6 +30,9 @@ describe('ShowReferralUtils', () => {
     audience: 'General offence',
     name: 'Building Choices: High Intensity',
   })
+
+  const hspCourse = courseFactory.build({ audience: 'Sexual offence', name: 'Healthy Sex Programme' })
+
   const becomingNewMePlusCourse = courseFactory.build({
     alternateName: 'BNM',
     audience: 'General offence',
@@ -97,7 +100,37 @@ describe('ShowReferralUtils', () => {
           })
         })
 
-        describe('when the course is not Building Choices', () => {
+        describe('when the course is Healthy Sex Programme', () => {
+          it('should show the Update status and Change LDC status buttons in the menu', () => {
+            expect(
+              ShowReferralUtils.buttonMenu(hspCourse, submittedReferral, {
+                currentPath: assessPaths.show.statusHistory({ referralId: submittedReferral.id }),
+              }),
+            ).toEqual({
+              button: {
+                classes: 'govuk-button--secondary',
+                text: 'Update referral',
+              },
+              items: [
+                {
+                  attributes: {
+                    'aria-disabled': false,
+                  },
+                  classes: 'govuk-button--secondary',
+                  href: assessPaths.updateStatus.decision.show({ referralId: submittedReferral.id }),
+                  text: 'Update status',
+                },
+                {
+                  classes: 'govuk-button--secondary',
+                  href: assessPaths.updateLdc.show({ referralId: submittedReferral.id }),
+                  text: 'Change LDC status',
+                },
+              ],
+            })
+          })
+        })
+
+        describe('when the course is not Building Choices and not Healthy sex programme', () => {
           it('should show the Update status and Move to Building choices buttons in the menu', () => {
             expect(
               ShowReferralUtils.buttonMenu(becomingNewMePlusCourse, submittedReferral, {

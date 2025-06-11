@@ -30,6 +30,7 @@ export default class ShowReferralUtils {
   ): MojButtonMenu {
     const isAssess = referencePaths.currentPath.startsWith(assessPathBase.pattern)
     const isBuildingChoices = course ? CourseUtils.isBuildingChoices(course?.name) : false
+    const isHsp = course ? CourseUtils.isHsp(course?.name) : false
     const { closed, status } = referral
 
     const menuButtons: Array<GovukFrontendButton> = []
@@ -45,7 +46,7 @@ export default class ShowReferralUtils {
       })
 
       if (status !== 'on_programme' && !closed) {
-        if (isBuildingChoices) {
+        if (isBuildingChoices || isHsp) {
           menuButtons.push({
             classes: 'govuk-button--secondary',
             href: assessPaths.updateLdc.show({ referralId: referral.id }),
