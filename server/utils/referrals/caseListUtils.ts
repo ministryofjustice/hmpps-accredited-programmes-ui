@@ -62,7 +62,8 @@ export default class CaseListUtils {
   }
 
   static hasLdcTagHtml(referral: ReferralView): string {
-    return referral.hasLdc && CourseUtils.isBuildingChoices(referral.courseName)
+    return referral.hasLdc &&
+      (CourseUtils.isBuildingChoices(referral.courseName) || CourseUtils.isHsp(referral.courseName))
       ? '</br><span class="moj-badge moj-badge--bright-purple">LDC</span>'
       : ''
   }
