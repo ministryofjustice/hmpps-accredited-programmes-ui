@@ -124,7 +124,7 @@
     "cypress-axe": "^1.4.0",
     "cypress-mochawesome-reporter": "^3.5.1",
     "cypress-multi-reporters": "^2.0.0",
-    "dotenv": "^16.0.3",
+    "dotenv": "^17.0.0",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^10.0.0",
