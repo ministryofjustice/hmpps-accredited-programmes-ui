@@ -1,11 +1,10 @@
 import type { RedisClient } from './redisClient'
-import TokenStore from './tokenStore'
 import { createRedisClient } from './redisClient'
+import TokenStore from './tokenStore'
 
 describe('tokenStore', () => {
-  let redisClient: jest.Mocked<RedisClient>;
+  let redisClient: jest.Mocked<RedisClient>
   let tokenStore: TokenStore
-
 
   beforeEach(() => {
     redisClient = createRedisClient() as unknown as jest.Mocked<RedisClient>

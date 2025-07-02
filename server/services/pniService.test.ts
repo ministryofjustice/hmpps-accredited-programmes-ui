@@ -1,7 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 
-import { createRedisClient, HmppsAuthClient, PniClient, type RedisClient, TokenStore } from '../data'
+import { HmppsAuthClient, PniClient, TokenStore, createRedisClient } from '../data'
 import PniService from './pniService'
 import { pniScoreFactory } from '../testutils/factories'
 

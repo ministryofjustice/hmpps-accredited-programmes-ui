@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
-import { createClient, RedisClientOptions } from 'redis'
+import type { RedisClientOptions } from 'redis'
+import { createClient } from 'redis'
 
 import logger from '../../logger'
 import config from '../config'
@@ -12,21 +13,21 @@ const url =
     ? `rediss://${config.redis.host}:${config.redis.port}`
     : `redis://${config.redis.host}:${config.redis.port}`
 
-const createRedisClient = (): ReturnType<typeof createClient>  => {
+const createRedisClient = (): ReturnType<typeof createClient> => {
   const shouldUseTls = config.redis.tls_enabled === 'true'
-  
-  const redisConfig: RedisClientOptions ={
+
+  const redisConfig: RedisClientOptions = {
     password: config.redis.password,
     socket: {
-      port: config.redis.port,
       host: config.redis.host,
-      tls: shouldUseTls ? true : undefined,
+      port: config.redis.port,
       reconnectStrategy: (attempts: number) => {
         // Exponential back off: 20ms, 40ms, 80ms..., capped to retry every 30 seconds
         const nextDelay = Math.min(2 ** attempts * 20, 30000)
         logger.info(`Retry Redis connection attempt: ${attempts}, next attempt in: ${nextDelay}ms`)
         return nextDelay
       },
+      tls: shouldUseTls ? true : undefined,
     },
     url,
   }

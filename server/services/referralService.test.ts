@@ -8,7 +8,7 @@ import type ReferenceDataService from './referenceDataService'
 import ReferralService from './referralService'
 import type UserService from './userService'
 import logger from '../../logger'
-import { createRedisClient, HmppsAuthClient, ReferralClient, TokenStore } from '../data'
+import { HmppsAuthClient, ReferralClient, TokenStore, createRedisClient } from '../data'
 import {
   confirmationFieldsFactory,
   courseFactory,

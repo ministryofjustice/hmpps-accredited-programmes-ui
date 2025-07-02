@@ -1,20 +1,20 @@
-import { createClient } from "redis"
+import type { createClient } from 'redis'
 
 const aMockedOutRedisClient = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
   connect: jest.fn(),
+  del: jest.fn(),
+  get: jest.fn(),
   isOpen: true,
   on: jest.fn(),
+  set: jest.fn(),
 }
 
 const createRedisClient = () => {
   return aMockedOutRedisClient
 }
 
-export { createRedisClient }
-
 type RedisClient = ReturnType<typeof createClient>
+
+export { createRedisClient }
 
 export type { RedisClient }

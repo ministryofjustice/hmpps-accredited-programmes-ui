@@ -2,7 +2,7 @@ import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import PersonService from './personService'
-import { createRedisClient, HmppsAuthClient, PersonClient, PrisonApiClient, TokenStore } from '../data'
+import { HmppsAuthClient, PersonClient, PrisonApiClient, TokenStore, createRedisClient } from '../data'
 import {
   caseloadFactory,
   offenceDtoFactory,

@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 
-import { createRedisClient, HmppsAuthClient, type RedisClient, StatisticsClient, TokenStore } from '../data'
+import { HmppsAuthClient, StatisticsClient, TokenStore, createRedisClient } from '../data'
 import StatisticsService from './statisticsService'
 import { reportContentFactory } from '../testutils/factories'
 
