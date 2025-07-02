@@ -5,12 +5,12 @@ import HmppsAuthClient from './hmppsAuthClient'
 import type { RedisClient } from './redisClient'
 import TokenStore from './tokenStore'
 import config from '../config'
+import { mockedRedisClient } from '../testutils/mockRedisClient'
 
 jest.mock('./tokenStore')
 jest.mock('./redisClient')
 
-const redisClient = createMock<RedisClient>({})
-const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const tokenStore = new TokenStore(mockedRedisClient) as jest.Mocked<TokenStore>
 
 const username = 'Bob'
 const token = { access_token: 'token-1', expires_in: 300 }

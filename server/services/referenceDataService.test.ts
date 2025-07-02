@@ -3,7 +3,7 @@ import { when } from 'jest-when'
 
 import type { RedisClient } from '../data'
 import ReferenceDataService from './referenceDataService'
-import { HmppsAuthClient, ReferenceDataClient, TokenStore } from '../data'
+import { createRedisClient, HmppsAuthClient, ReferenceDataClient, TokenStore } from '../data'
 import {
   referralStatusCategoryFactory,
   referralStatusReasonFactory,
@@ -15,8 +15,7 @@ import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 jest.mock('../data/accreditedProgrammesApi/referenceDataClient')
 jest.mock('../data/hmppsAuthClient')
 
-const redisClient = createMock<RedisClient>({})
-const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const tokenStore = new TokenStore(createRedisClient()) as jest.Mocked<TokenStore>
 const systemToken = 'some system token'
 const username = 'USERNAME'
 const referralStatusCode: ReferralStatusUppercase = 'WITHDRAWN'

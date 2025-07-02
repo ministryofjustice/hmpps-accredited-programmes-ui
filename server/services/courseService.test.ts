@@ -6,7 +6,7 @@ import { when } from 'jest-when'
 import CourseService from './courseService'
 import type UserService from './userService'
 import type { RedisClient } from '../data'
-import { CourseClient, HmppsAuthClient, TokenStore } from '../data'
+import { CourseClient, createRedisClient, HmppsAuthClient, TokenStore } from '../data'
 import {
   audienceFactory,
   courseFactory,
@@ -26,8 +26,7 @@ jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../utils/courseParticipationUtils')
 
-const redisClient = createMock<RedisClient>({})
-const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const tokenStore = new TokenStore(createRedisClient());
 
 describe('CourseService', () => {
   const userToken = 'user token'

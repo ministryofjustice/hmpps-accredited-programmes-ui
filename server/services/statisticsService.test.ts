@@ -1,7 +1,6 @@
-import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 
-import { HmppsAuthClient, type RedisClient, StatisticsClient, TokenStore } from '../data'
+import { createRedisClient, HmppsAuthClient, type RedisClient, StatisticsClient, TokenStore } from '../data'
 import StatisticsService from './statisticsService'
 import { reportContentFactory } from '../testutils/factories'
 
@@ -9,8 +8,7 @@ jest.mock('../data/accreditedProgrammesApi/statisticsClient')
 jest.mock('../data/hmppsAuthClient')
 
 describe('StatisticsService', () => {
-  const redisClient = createMock<RedisClient>({})
-  const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+  const tokenStore = new TokenStore(createRedisClient()) as jest.Mocked<TokenStore>
   const systemToken = 'SYSTEM_TOKEN'
   const username = 'USERNAME'
 

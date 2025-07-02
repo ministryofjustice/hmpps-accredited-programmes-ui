@@ -1,19 +1,15 @@
 import type { RedisClient } from './redisClient'
 import TokenStore from './tokenStore'
-
-const redisClient = {
-  connect: jest.fn(),
-  get: jest.fn(),
-  isOpen: true,
-  on: jest.fn(),
-  set: jest.fn(),
-} as unknown as jest.Mocked<RedisClient>
+import { createRedisClient } from './redisClient'
 
 describe('tokenStore', () => {
+  let redisClient: jest.Mocked<RedisClient>;
   let tokenStore: TokenStore
 
+
   beforeEach(() => {
-    tokenStore = new TokenStore(redisClient as unknown as RedisClient)
+    redisClient = createRedisClient() as unknown as jest.Mocked<RedisClient>
+    tokenStore = new TokenStore(redisClient)
   })
 
   afterEach(() => {
