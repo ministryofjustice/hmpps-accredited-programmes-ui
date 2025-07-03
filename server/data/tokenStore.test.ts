@@ -1,11 +1,11 @@
-import { aMockedOutRedisClient } from '../../__mocks__/server/data/redisClient'
 import TokenStore from './tokenStore'
+import { aMockedOutRedisClient } from '../../__mocks__/server/data/redisClient'
 
 describe('tokenStore', () => {
-  const redisClient = aMockedOutRedisClient
   let tokenStore: TokenStore
 
   beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tokenStore = new TokenStore(aMockedOutRedisClient as unknown as any)
   })
 
@@ -25,7 +25,7 @@ describe('tokenStore', () => {
     describe('when there is no Redis connection', () => {
       it('connects to Redis', async () => {
         // Given
-       aMockedOutRedisClient.isOpen = false 
+        aMockedOutRedisClient.isOpen = false
 
         // When
         await tokenStore.getToken('user-1')
