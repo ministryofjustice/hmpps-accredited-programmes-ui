@@ -1,16 +1,14 @@
-import { createMock } from '@golevelup/ts-jest'
 import nock from 'nock'
 
-import HmppsAuthClient from './hmppsAuthClient'
-import type { RedisClient } from './redisClient'
-import TokenStore from './tokenStore'
 import config from '../config'
+import HmppsAuthClient from './hmppsAuthClient'
+import { createRedisClient } from './redisClient'
+import TokenStore from './tokenStore'
 
 jest.mock('./tokenStore')
 jest.mock('./redisClient')
 
-const redisClient = createMock<RedisClient>({})
-const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const tokenStore = new TokenStore(createRedisClient()) as jest.Mocked<TokenStore>
 
 const username = 'Bob'
 const token = { access_token: 'token-1', expires_in: 300 }
