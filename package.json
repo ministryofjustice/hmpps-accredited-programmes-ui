@@ -62,7 +62,7 @@
     "@faker-js/faker": "^9.0.0",
     "@ministryofjustice/frontend": "^4.0.0",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.1.0",
-    "@sentry/node": "^9.0.0",
+    "@sentry/node": "^9.33.0",
     "agentkeepalive": "^4.3.0",
     "applicationinsights": "^2.5.1",
     "bunyan": "^1.8.15",
