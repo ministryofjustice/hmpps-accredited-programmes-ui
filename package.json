@@ -89,7 +89,7 @@
     "prom-client": "^15.1.0",
     "redis": "^5.0.0",
     "static-path": "^0.0.4",
-    "superagent": "^10.0.0",
+    "superagent": "^10.2.2",
     "url-value-parser": "^2.2.0",
     "uuid": "^11.0.0"
   },
