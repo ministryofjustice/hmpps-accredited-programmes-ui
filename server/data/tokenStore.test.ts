@@ -1,41 +1,37 @@
-import type { RedisClient } from './redisClient'
 import TokenStore from './tokenStore'
-
-const redisClient = {
-  connect: jest.fn(),
-  get: jest.fn(),
-  isOpen: true,
-  on: jest.fn(),
-  set: jest.fn(),
-} as unknown as jest.Mocked<RedisClient>
+import { aMockedOutRedisClient } from '../../__mocks__/server/data/redisClient'
 
 describe('tokenStore', () => {
   let tokenStore: TokenStore
 
   beforeEach(() => {
-    tokenStore = new TokenStore(redisClient as unknown as RedisClient)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tokenStore = new TokenStore(aMockedOutRedisClient as unknown as any)
   })
 
   afterEach(() => {
-    jest.resetAllMocks()
+    aMockedOutRedisClient.isOpen = true // Reset the connection state after each test
   })
 
   describe('getToken', () => {
     it('calls Redis and retrieves token', async () => {
-      ;(redisClient.get as jest.Mock).mockResolvedValue('token-1')
+      jest.spyOn(aMockedOutRedisClient, 'get').mockResolvedValueOnce('token-1')
 
       await expect(tokenStore.getToken('user-1')).resolves.toBe('token-1')
 
-      expect(redisClient.get).toHaveBeenCalledWith('systemToken:user-1')
+      expect(aMockedOutRedisClient.get).toHaveBeenCalledWith('systemToken:user-1')
     })
 
     describe('when there is no Redis connection', () => {
       it('connects to Redis', async () => {
-        ;(redisClient as unknown as Record<string, boolean>).isOpen = false
+        // Given
+        aMockedOutRedisClient.isOpen = false
 
+        // When
         await tokenStore.getToken('user-1')
 
-        expect(redisClient.connect).toHaveBeenCalledWith()
+        // Then
+        expect(aMockedOutRedisClient.connect).toHaveBeenCalledWith()
       })
     })
   })
@@ -44,16 +40,19 @@ describe('tokenStore', () => {
     it('asks Redis to set the token', async () => {
       await tokenStore.setToken('user-1', 'token-1', 10)
 
-      expect(redisClient.set).toHaveBeenCalledWith('systemToken:user-1', 'token-1', { EX: 10 })
+      expect(aMockedOutRedisClient.set).toHaveBeenCalledWith('systemToken:user-1', 'token-1', { EX: 10 })
     })
 
     describe('when there is no Redis connection', () => {
       it('connects to Redis', async () => {
-        ;(redisClient as unknown as Record<string, boolean>).isOpen = false
+        // Given
+        aMockedOutRedisClient.isOpen = false
 
+        // When
         await tokenStore.setToken('user-1', 'token-1', 10)
 
-        expect(redisClient.connect).toHaveBeenCalledWith()
+        // Then
+        expect(aMockedOutRedisClient.connect).toHaveBeenCalledWith()
       })
     })
   })

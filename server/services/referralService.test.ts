@@ -8,8 +8,7 @@ import type ReferenceDataService from './referenceDataService'
 import ReferralService from './referralService'
 import type UserService from './userService'
 import logger from '../../logger'
-import type { RedisClient } from '../data'
-import { HmppsAuthClient, ReferralClient, TokenStore } from '../data'
+import { HmppsAuthClient, ReferralClient, TokenStore, createRedisClient } from '../data'
 import {
   confirmationFieldsFactory,
   courseFactory,
@@ -29,8 +28,7 @@ jest.mock('../data/accreditedProgrammesApi/referralClient')
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../../logger')
 
-const redisClient = createMock<RedisClient>({})
-const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const tokenStore = new TokenStore(createRedisClient()) as jest.Mocked<TokenStore>
 const systemToken = 'SOME_SYSTEM_TOKEN'
 const userToken = 'SOME_USER_TOKEN'
 const username = 'USERNAME'

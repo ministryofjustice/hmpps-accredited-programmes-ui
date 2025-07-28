@@ -3,10 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import CourseService from './courseService'
-import type UserService from './userService'
-import type { RedisClient } from '../data'
-import { CourseClient, HmppsAuthClient, TokenStore } from '../data'
+import { CourseClient, HmppsAuthClient, TokenStore, createRedisClient } from '../data'
 import {
   audienceFactory,
   courseFactory,
@@ -18,6 +15,8 @@ import {
   userFactory,
 } from '../testutils/factories'
 import { CourseParticipationUtils, StringUtils } from '../utils'
+import CourseService from './courseService'
+import type UserService from './userService'
 import type { CourseCreateRequest, CourseOffering } from '@accredited-programmes/models'
 import type { BuildingChoicesData } from '@accredited-programmes/ui'
 import type { CourseParticipationCreate, CourseParticipationUpdate } from '@accredited-programmes-api'
@@ -26,8 +25,7 @@ jest.mock('../data/accreditedProgrammesApi/courseClient')
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../utils/courseParticipationUtils')
 
-const redisClient = createMock<RedisClient>({})
-const tokenStore = new TokenStore(redisClient) as jest.Mocked<TokenStore>
+const tokenStore = new TokenStore(createRedisClient())
 
 describe('CourseService', () => {
   const userToken = 'user token'
