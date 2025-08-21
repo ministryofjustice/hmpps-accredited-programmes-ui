@@ -75,7 +75,7 @@
     "express-prom-bundle": "^8.0.0",
     "express-session": "^1.17.3",
     "fishery": "^2.2.2",
-    "govuk-frontend": "^5.2.0",
+    "govuk-frontend": "^5.11.0",
     "helmet": "^8.0.0",
     "http-errors": "^2.0.0",
     "jquery": "^3.6.4",
