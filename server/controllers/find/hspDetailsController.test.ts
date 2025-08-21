@@ -182,17 +182,17 @@ describe('HspDetailsController', () => {
     })
 
     describe('when no sexual offence has been selected', () => {
-      it('should redirect to the HSP details page with an error message', async () => {
-        request.body = { sexualOffenceDetails: undefined }
+      it('should redirect to the HSP not eligible path', async () => {
+        request.body = { sexualOffenceDetails: null }
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)
 
-        expect(request.flash).toHaveBeenCalledWith(
-          'sexualOffenceDetailsError',
-          'Please select at least one sexual offence',
-        )
-        expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.details.show({ courseId: hspCourse.id }))
+        expect(request.session.hspReferralData).toEqual({
+          selectedOffences: [],
+          totalScore: 0,
+        })
+        expect(response.redirect).toHaveBeenCalledWith(findPaths.hsp.notEligible.show({ courseId: hspCourse.id }))
       })
     })
 
