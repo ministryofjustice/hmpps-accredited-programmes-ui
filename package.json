@@ -27,6 +27,8 @@
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
     "test:integration:ci:server": "export $(cat integration.env) REDIS_PORT=6379 && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
     "test:integration:cli:run": "cypress run",
+    "int-test": "cypress run --config video=false",
+    "int-test-ui": "cypress open --e2e --browser chrome",
     "test:integration:cli:server": "export $(cat integration.env) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
     "test:integration:cli": "npm run test:integration:start-backing-services && start-server-and-test test:integration:cli:server http://localhost:3007/ping test:integration:cli:run",
     "test:integration:refer-disabled:ci:server": "export $(cat integration.env) REDIS_PORT=6379 REFER_ENABLED=false && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
