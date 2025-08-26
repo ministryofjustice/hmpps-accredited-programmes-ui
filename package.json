@@ -22,7 +22,7 @@
     "start:integration:refer-disabled": "NODE_WATCH=\"npm run watch:node:integration:refer-disabled\" npm run start:template",
     "start:integration": "NODE_WATCH=\"npm run watch:node:integration\" npm run start:template",
     "start:template": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch:views\" \"npm run watch:ts\" \"$NODE_WATCH\" \"npm run watch:sass\"",
-    "start-feature": "npm run start:template",
+    "start-feature": "npm run start",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
     "test:integration:ci:server": "export $(cat integration.env) REDIS_PORT=6379 && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
     "test:integration:cli:run": "cypress run",
