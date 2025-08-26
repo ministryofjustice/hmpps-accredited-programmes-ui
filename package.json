@@ -125,6 +125,7 @@
     "cypress-axe": "^1.4.0",
     "cypress-mochawesome-reporter": "^4.0.0",
     "cypress-multi-reporters": "^2.0.0",
+    "djlint": "^1.36.4",
     "dotenv": "^17.0.0",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -158,6 +159,5 @@
     "typescript": "^5.0.0"
   },
   "optionalDependencies": {
-    "djlint": "^1.27.0"
   }
 }
