@@ -15,8 +15,7 @@
     "lint:css": "npx stylelint \"assets/scss/components/*.scss\"",
     "lint:js": "eslint . --cache --max-warnings 0",
     "lint:js:fix": "eslint . --fix",
-    "lint:njk": "djlint .",
-    "lint": "npm run lint:css && npm run lint:js && npm run lint:njk",
+    "lint": "npm run lint:css && npm run lint:js",
     "record-build-info": "node ./bin/record-build-info",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "start:dev": "NODE_WATCH=\"npm run watch:node:dev\" npm run start:template",
@@ -127,7 +126,6 @@
     "cypress-axe": "^1.4.0",
     "cypress-mochawesome-reporter": "^4.0.0",
     "cypress-multi-reporters": "^2.0.0",
-    "djlint": "^1.36.4",
     "dotenv": "^17.0.0",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -159,7 +157,5 @@
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0"
-  },
-  "optionalDependencies": {
   }
 }
