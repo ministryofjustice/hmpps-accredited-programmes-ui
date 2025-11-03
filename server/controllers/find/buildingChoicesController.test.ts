@@ -92,12 +92,17 @@ describe('BuildingChoicesFormController', () => {
       })
 
       it('should render the buildingChoices/show template', async () => {
-        const organisations = organisationFactory.buildList(3)
+        const organisations = organisationFactory.buildList(4)
         organisationService.getOrganisations.mockResolvedValue(organisations)
 
-        const courseOfferings = organisations.map(organisation =>
-          courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: false }),
-        )
+        const courseOfferings = [
+          ...organisations.slice(0, 2).map(organisation =>
+            courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: false }),
+          ),
+          ...organisations.slice(2).map(organisation =>
+            courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: true }),
+          ),
+        ]
         const returnedCourses = [courseFactory.build({ courseOfferings })]
 
         when(courseService.getBuildingChoicesVariants)
@@ -108,14 +113,19 @@ describe('BuildingChoicesFormController', () => {
         await requestHandler(request, response, next)
 
         const course = returnedCourses[0]
+        const organisationsWithOfferingIds = organisations.map((organisation, index) => ({
+          ...organisation,
+          courseOfferingId: courseOfferings[index].id,
+          withdrawn: courseOfferings[index].withdrawn,
+        }))
 
         expect(CourseUtils.buildingChoicesAnswersSummaryListRows).toHaveBeenCalledWith(buildingChoicesData)
-        expect(OrganisationUtils.organisationTableRows).toHaveBeenCalledWith(
-          organisations.map((organisation, index) => ({
-            ...organisation,
-            courseOfferingId: courseOfferings[index].id,
-            withdrawn: courseOfferings[index].withdrawn,
-          })),
+        expect(OrganisationUtils.organisationTableRows).toHaveBeenCalledTimes(2)
+        expect(OrganisationUtils.organisationTableRows).toHaveBeenNthCalledWith(1,
+          organisationsWithOfferingIds.filter(org => org.withdrawn === false)
+        )
+        expect(OrganisationUtils.organisationTableRows).toHaveBeenNthCalledWith(2,
+          organisationsWithOfferingIds.filter(org => org.withdrawn === true)
         )
         expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/show', {
           buildingChoicesAnswersSummaryListRows,
@@ -129,6 +139,7 @@ describe('BuildingChoicesFormController', () => {
           organisationsTableData,
           pageHeading: course.displayName,
           pageTitleOverride: `${course.displayName} programme description`,
+          withdrawnOrganisationsTableData: organisationsTableData,
         })
       })
     })
