@@ -439,10 +439,10 @@ export default class RisksAndNeedsController {
   private async withErrorHandling<T>(fn: Promise<T>, res: Response): Promise<T | null> {
     try {
       return await fn
+      // eslint-disable-next-line  @typescript-eslint/no-unused-vars
     } catch (error) {
       res.locals.oasysNomisErrorMessage =
         'We cannot retrieve this information from OASys or NOMIS at the moment. Try again later.'
-
       return null
     }
   }

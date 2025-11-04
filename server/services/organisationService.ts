@@ -25,6 +25,7 @@ export default class OrganisationService {
 
     try {
       return await prisonRegisterApiClient.all()
+      // eslint-disable-next-line  @typescript-eslint/no-unused-vars
     } catch (error) {
       throw createError(500, 'Error fetching organisations')
     }
