@@ -85,14 +85,18 @@ describe('CategoryController', () => {
 
     controller = new CategoryController(personService, referenceDataService, referralService)
 
-    request = createMock<Request>({
-      params: { referralId: referral.id },
-      path: referPaths.updateStatus.category.show({ referralId: referral.id }),
-      session: { referralStatusUpdateData },
-      user: { token: userToken, username },
-    })
+    request = buildRequest(referPaths.updateStatus.category.show({ referralId: referral.id }))
     response = Helpers.createMockResponseWithCaseloads()
   })
+
+  function buildRequest(path?: string): DeepMocked<Request> {
+    return createMock<Request>({
+      params: { referralId: referral.id },
+      session: { referralStatusUpdateData },
+      user: { token: userToken, username },
+      ...(path ? { path } : {}),
+    })
+  }
 
   describe('show', () => {
     it('should render the show template with the correct response locals', async () => {
@@ -153,7 +157,7 @@ describe('CategoryController', () => {
 
     describe('when the request path is on the assess journey', () => {
       it('should render the show template with the correct response locals', async () => {
-        request.path = assessPaths.updateStatus.category.show({ referralId: referral.id })
+        const request = buildRequest(assessPaths.updateStatus.category.show({ referralId: referral.id }))
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -270,7 +274,7 @@ describe('CategoryController', () => {
 
     describe('when submitting the form on the assess journey', () => {
       it('should update `referralStatusUpdateData` and redirect to the assess select reason page', async () => {
-        request.path = assessPaths.updateStatus.category.show({ referralId: referral.id })
+        const request = buildRequest(assessPaths.updateStatus.category.show({ referralId: referral.id }))
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)

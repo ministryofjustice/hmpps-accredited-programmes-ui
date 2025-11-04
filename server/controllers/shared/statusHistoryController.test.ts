@@ -98,14 +98,18 @@ describe('StatusHistoryController', () => {
 
     controller = new StatusHistoryController(courseService, personService, referralService)
 
-    request = createMock<Request>({
-      params: { referralId: referral.id },
-      path: referPaths.show.statusHistory({ referralId: referral.id }),
+    request = buildRequest(referPaths.show.statusHistory({ referralId: referral.id }))
+    response = Helpers.createMockResponseWithCaseloads()
+  })
+
+  function buildRequest(path?: string, id: string = referral.id): DeepMocked<Request> {
+    return createMock<Request>({
+      params: { referralId: id },
+      path,
       session: { recentCaseListPath },
       user: { token: userToken, username },
     })
-    response = Helpers.createMockResponseWithCaseloads()
-  })
+  }
 
   afterEach(() => {
     jest.resetAllMocks()
@@ -151,8 +155,7 @@ describe('StatusHistoryController', () => {
       )
     })
     it('should render the show template with the previous referral link when the referral has a previous referral Id', async () => {
-      request.params = { referralId: transferredReferral.id }
-      request.path = assessPaths.show.statusHistory({ referralId: transferredReferral.id })
+      const request = buildRequest(assessPaths.show.statusHistory({ referralId: transferredReferral.id }), transferredReferral.id)
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
@@ -193,7 +196,7 @@ describe('StatusHistoryController', () => {
 
     describe('when on the assess path', () => {
       it('should not call `getStatusTransitions`', async () => {
-        request.path = assessPaths.show.statusHistory({ referralId: referral.id })
+        const request = buildRequest(assessPaths.show.statusHistory({ referralId: referral.id }))
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)

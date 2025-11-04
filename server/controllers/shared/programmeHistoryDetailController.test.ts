@@ -43,16 +43,7 @@ describe('ProgrammeHistoryDetailController', () => {
   const summaryListOptions = 'summary list options' as unknown as GovukFrontendSummaryListWithRowsWithKeysAndValues
 
   beforeEach(() => {
-    request = createMock<Request>({
-      params: {
-        courseParticipationId: courseParticipation.id,
-        referralId: referral.id,
-      },
-      user: {
-        token: userToken,
-        username,
-      },
-    })
+    request = buildRequest()
     response = Helpers.createMockResponseWithCaseloads()
 
     controller = new ProgrammeHistoryDetailController(courseService, personService, referralService)
@@ -62,6 +53,20 @@ describe('ProgrammeHistoryDetailController', () => {
     referralService.getReferral.mockResolvedValue(referral)
   })
 
+  function buildRequest(path?: string): DeepMocked<Request> {
+    return createMock<Request>({
+      params: {
+        courseParticipationId: courseParticipation.id,
+        referralId: referral.id,
+      },
+      ...(path ? { path } : {}),
+      user: {
+        token: userToken,
+        username,
+      },
+    })
+  }
+
   afterEach(() => {
     jest.resetAllMocks()
   })
@@ -69,10 +74,12 @@ describe('ProgrammeHistoryDetailController', () => {
   describe('show', () => {
     describe('when the request is for a new referral', () => {
       beforeEach(() => {
-        request.path = referPaths.new.programmeHistory.show({
-          courseParticipationId: courseParticipation.id,
-          referralId: referral.id,
-        })
+        request = buildRequest(
+          referPaths.new.programmeHistory.show({
+            courseParticipationId: courseParticipation.id,
+            referralId: referral.id,
+          }),
+        )
       })
 
       it('renders the show programme history detail template for a specific course participation', async () => {
@@ -122,10 +129,12 @@ describe('ProgrammeHistoryDetailController', () => {
     describe('when the request is for an existing referral', () => {
       describe('and on the assess path', () => {
         beforeEach(() => {
-          request.path = assessPaths.show.programmeHistoryDetail({
-            courseParticipationId: courseParticipation.id,
-            referralId: referral.id,
-          })
+          request = buildRequest(
+            assessPaths.show.programmeHistoryDetail({
+              courseParticipationId: courseParticipation.id,
+              referralId: referral.id,
+            }),
+          )
         })
 
         it('renders the show programme history detail template with the correct response locals', async () => {
@@ -159,10 +168,12 @@ describe('ProgrammeHistoryDetailController', () => {
 
       describe('and on the refer path', () => {
         beforeEach(() => {
-          request.path = referPaths.show.programmeHistoryDetail({
-            courseParticipationId: courseParticipation.id,
-            referralId: referral.id,
-          })
+          request = buildRequest(
+            referPaths.show.programmeHistoryDetail({
+              courseParticipationId: courseParticipation.id,
+              referralId: referral.id,
+            }),
+          )
         })
 
         it('renders the show programme history detail template with the correct response locals', async () => {

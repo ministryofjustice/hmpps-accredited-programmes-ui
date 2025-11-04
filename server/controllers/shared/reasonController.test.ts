@@ -104,14 +104,18 @@ describe('ReasonController', () => {
 
     controller = new ReasonController(personService, referenceDataService, referralService)
 
-    request = createMock<Request>({
+    request = buildRequest(referPaths.updateStatus.reason.show({ referralId: referral.id }))
+    response = Helpers.createMockResponseWithCaseloads()
+  })
+
+  function buildRequest(path?: string): DeepMocked<Request> {
+    return createMock<Request>({
       params: { referralId: referral.id },
-      path: referPaths.updateStatus.reason.show({ referralId: referral.id }),
+      path,
       session: { referralStatusUpdateData },
       user: { token: userToken, username },
     })
-    response = Helpers.createMockResponseWithCaseloads()
-  })
+  }
 
   afterEach(() => {
     jest.clearAllMocks()
@@ -149,7 +153,7 @@ describe('ReasonController', () => {
 
     describe('when the request path is on the assess journey', () => {
       it('should render the show template with the correct response locals', async () => {
-        request.path = assessPaths.updateStatus.reason.show({ referralId: referral.id })
+        const request = buildRequest(assessPaths.updateStatus.reason.show({ referralId: referral.id }))
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -347,7 +351,7 @@ describe('ReasonController', () => {
 
     describe('when submitting the form on the assess journey', () => {
       it('should update `referralStatusUpdateData` and redirect to the assess selection page', async () => {
-        request.path = assessPaths.updateStatus.reason.show({ referralId: referral.id })
+        const request = buildRequest(assessPaths.updateStatus.reason.show({ referralId: referral.id }))
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)

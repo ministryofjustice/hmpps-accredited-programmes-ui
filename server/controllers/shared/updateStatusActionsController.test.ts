@@ -17,13 +17,17 @@ describe('UpdateStatusActionsController', () => {
   beforeEach(() => {
     controller = new UpdateStatusActionsController()
 
-    request = createMock<Request>({
-      params: { referralId },
-      path: referPaths.withdraw({ referralId }),
-      session: {},
-    })
+    request = buildRequest(referPaths.withdraw({ referralId }))
     response = createMock<Response>({})
   })
+
+  function buildRequest(path?: string): DeepMocked<Request> {
+    return createMock<Request>({
+      params: { referralId },
+      session: {},
+      ...(path ? { path } : {}),
+    })
+  }
 
   describe('manageHold', () => {
     it('should set `referralStatusUpdateData` in the session and redirect to the update status select category show page', async () => {
@@ -54,7 +58,7 @@ describe('UpdateStatusActionsController', () => {
 
     describe('when the path does not start with `/refer`', () => {
       it('should redirect to the assess paths', async () => {
-        request.path = assessPaths.withdraw({ referralId })
+        const request = buildRequest(assessPaths.withdraw({ referralId }))
 
         controller.withdraw()(request, response, next)
 

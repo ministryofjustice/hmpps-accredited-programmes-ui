@@ -733,6 +733,7 @@ describe('CourseParticipationUtils', () => {
       }
 
       beforeEach(() => {
+        // @ts-ignore
         request.path = referPaths.new.programmeHistory.index({ referralId: referral.id })
       })
 
@@ -779,6 +780,7 @@ describe('CourseParticipationUtils', () => {
 
     describe('when viewing a submitted referral', () => {
       it('returns a GovukFrontendTable with the correct properties and data', () => {
+        // @ts-ignore
         request.path = assessPaths.show.programmeHistory({ referralId: referral.id })
 
         expect(
