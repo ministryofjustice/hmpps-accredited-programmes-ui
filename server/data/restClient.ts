@@ -19,6 +19,7 @@ interface GetRequest {
   responseType?: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface DeleteRequest extends GetRequest {}
 
 interface PostRequest {
@@ -29,6 +30,7 @@ interface PostRequest {
   responseType?: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface PutRequest extends PostRequest {}
 
 interface StreamRequest {

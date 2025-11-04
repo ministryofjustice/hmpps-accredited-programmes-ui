@@ -157,7 +157,7 @@ describe('CategoryController', () => {
 
     describe('when the request path is on the assess journey', () => {
       it('should render the show template with the correct response locals', async () => {
-        const request = buildRequest(assessPaths.updateStatus.category.show({ referralId: referral.id }))
+        request = buildRequest(assessPaths.updateStatus.category.show({ referralId: referral.id }))
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -274,7 +274,7 @@ describe('CategoryController', () => {
 
     describe('when submitting the form on the assess journey', () => {
       it('should update `referralStatusUpdateData` and redirect to the assess select reason page', async () => {
-        const request = buildRequest(assessPaths.updateStatus.category.show({ referralId: referral.id }))
+        request = buildRequest(assessPaths.updateStatus.category.show({ referralId: referral.id }))
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)

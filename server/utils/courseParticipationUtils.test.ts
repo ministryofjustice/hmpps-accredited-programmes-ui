@@ -733,7 +733,7 @@ describe('CourseParticipationUtils', () => {
       }
 
       beforeEach(() => {
-        // @ts-ignore
+        // @ts-expect-error path is no longer immutable
         request.path = referPaths.new.programmeHistory.index({ referralId: referral.id })
       })
 
@@ -780,7 +780,7 @@ describe('CourseParticipationUtils', () => {
 
     describe('when viewing a submitted referral', () => {
       it('returns a GovukFrontendTable with the correct properties and data', () => {
-        // @ts-ignore
+        // @ts-expect-error path is no longer immutable
         request.path = assessPaths.show.programmeHistory({ referralId: referral.id })
 
         expect(

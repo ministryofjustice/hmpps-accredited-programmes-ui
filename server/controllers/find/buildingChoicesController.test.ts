@@ -96,12 +96,12 @@ describe('BuildingChoicesFormController', () => {
         organisationService.getOrganisations.mockResolvedValue(organisations)
 
         const courseOfferings = [
-          ...organisations.slice(0, 2).map(organisation =>
-            courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: false }),
-          ),
-          ...organisations.slice(2).map(organisation =>
-            courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: true }),
-          ),
+          ...organisations
+            .slice(0, 2)
+            .map(organisation => courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: false })),
+          ...organisations
+            .slice(2)
+            .map(organisation => courseOfferingFactory.build({ organisationId: organisation.id, withdrawn: true })),
         ]
         const returnedCourses = [courseFactory.build({ courseOfferings })]
 
@@ -121,11 +121,13 @@ describe('BuildingChoicesFormController', () => {
 
         expect(CourseUtils.buildingChoicesAnswersSummaryListRows).toHaveBeenCalledWith(buildingChoicesData)
         expect(OrganisationUtils.organisationTableRows).toHaveBeenCalledTimes(2)
-        expect(OrganisationUtils.organisationTableRows).toHaveBeenNthCalledWith(1,
-          organisationsWithOfferingIds.filter(org => org.withdrawn === false)
+        expect(OrganisationUtils.organisationTableRows).toHaveBeenNthCalledWith(
+          1,
+          organisationsWithOfferingIds.filter(org => org.withdrawn === false),
         )
-        expect(OrganisationUtils.organisationTableRows).toHaveBeenNthCalledWith(2,
-          organisationsWithOfferingIds.filter(org => org.withdrawn === true)
+        expect(OrganisationUtils.organisationTableRows).toHaveBeenNthCalledWith(
+          2,
+          organisationsWithOfferingIds.filter(org => org.withdrawn === true),
         )
         expect(response.render).toHaveBeenCalledWith('courses/buildingChoices/show', {
           buildingChoicesAnswersSummaryListRows,

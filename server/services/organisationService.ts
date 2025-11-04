@@ -26,7 +26,7 @@ export default class OrganisationService {
     try {
       return await prisonRegisterApiClient.all()
     } catch (error) {
-      throw createError(500, 'Error fetching organisations.')
+      throw createError(500, 'Error fetching organisations')
     }
   }
 

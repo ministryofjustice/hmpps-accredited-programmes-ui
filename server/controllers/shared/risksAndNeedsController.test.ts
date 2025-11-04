@@ -173,7 +173,7 @@ describe('RisksAndNeedsController', () => {
         .calledWith(username, person.prisonNumber)
         .mockResolvedValue(getDrugAndAlcoholDetails)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: referral.id }))
 
       const requestHandler = controller.alcoholMisuse()
       await requestHandler(request, response, next)
@@ -193,7 +193,7 @@ describe('RisksAndNeedsController', () => {
         when(oasysService.getDrugAndAlcoholDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
         when(oasysService.getAssessmentDateInfo).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.alcoholMisuse({ referralId: referral.id }))
 
         const requestHandler = controller.alcoholMisuse()
         await requestHandler(request, response, next)
@@ -219,7 +219,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getAttitude).calledWith(username, person.prisonNumber).mockResolvedValue(attitudes)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
 
       const requestHandler = controller.attitudes()
       await requestHandler(request, response, next)
@@ -241,7 +241,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the attitudes page with the correct response locals', async () => {
         when(oasysService.getAttitude).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
 
         const requestHandler = controller.attitudes()
         await requestHandler(request, response, next)
@@ -261,7 +261,7 @@ describe('RisksAndNeedsController', () => {
 
     describe('when on the assess path', () => {
       it('renders the attitudes page with the correct response locals', async () => {
-        const request = buildRequest(assessPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
+        request = buildRequest(assessPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
 
         const requestHandler = controller.attitudes()
         await requestHandler(request, response, next)
@@ -284,7 +284,7 @@ describe('RisksAndNeedsController', () => {
         const error = new Error('An error')
         when(oasysService.getAttitude).calledWith(username, person.prisonNumber).mockRejectedValue(error)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.attitudes({ referralId: referral.id }))
 
         const requestHandler = controller.attitudes()
         await requestHandler(request, response, next)
@@ -315,7 +315,7 @@ describe('RisksAndNeedsController', () => {
         .calledWith(username, person.prisonNumber)
         .mockResolvedValue(getDrugAndAlcoholDetails)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.drugMisuse({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.drugMisuse({ referralId: referral.id }))
 
       const requestHandler = controller.drugMisuse()
       await requestHandler(request, response, next)
@@ -335,7 +335,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the drug misuse page with the correct response locals', async () => {
         when(oasysService.getDrugAndAlcoholDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.drugMisuse({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.drugMisuse({ referralId: referral.id }))
 
         const requestHandler = controller.drugMisuse()
         await requestHandler(request, response, next)
@@ -361,7 +361,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getPsychiatric).calledWith(username, person.prisonNumber).mockResolvedValue(psychiatric)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id }))
 
       const requestHandler = controller.emotionalWellbeing()
       await requestHandler(request, response, next)
@@ -383,7 +383,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the emotional wellbeing page with the correct response locals', async () => {
         when(oasysService.getPsychiatric).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.emotionalWellbeing({ referralId: referral.id }))
 
         const requestHandler = controller.emotionalWellbeing()
         await requestHandler(request, response, next)
@@ -413,7 +413,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getLearningNeeds).calledWith(username, person.prisonNumber).mockResolvedValue(learningNeeds)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.learningNeeds({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.learningNeeds({ referralId: referral.id }))
 
       const requestHandler = controller.learningNeeds()
       await requestHandler(request, response, next)
@@ -436,7 +436,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the learning needs page with the correct response locals', async () => {
         when(oasysService.getLearningNeeds).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.learningNeeds({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.learningNeeds({ referralId: referral.id }))
 
         const requestHandler = controller.learningNeeds()
         await requestHandler(request, response, next)
@@ -464,7 +464,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getHealth).calledWith(username, person.prisonNumber).mockResolvedValue(health)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.health({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.health({ referralId: referral.id }))
 
       const requestHandler = controller.health()
       await requestHandler(request, response, next)
@@ -486,7 +486,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the health page with the correct response locals', async () => {
         when(oasysService.getHealth).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.health({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.health({ referralId: referral.id }))
 
         const requestHandler = controller.health()
         await requestHandler(request, response, next)
@@ -521,7 +521,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getLifestyle).calledWith(username, person.prisonNumber).mockResolvedValue(lifestyle)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: referral.id }))
 
       const requestHandler = controller.lifestyleAndAssociates()
       await requestHandler(request, response, next)
@@ -543,7 +543,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the lifestyle and associates page with the correct response locals', async () => {
         when(oasysService.getLifestyle).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.lifestyleAndAssociates({ referralId: referral.id }))
 
         const requestHandler = controller.lifestyleAndAssociates()
         await requestHandler(request, response, next)
@@ -591,7 +591,7 @@ describe('RisksAndNeedsController', () => {
         .calledWith(offenceDetails.offenceDetails)
         .mockReturnValue(offenceDetailsText)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: referral.id }))
 
       const requestHandler = controller.offenceAnalysis()
       await requestHandler(request, response, next)
@@ -619,7 +619,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the offence analysis page with the correct response locals', async () => {
         when(oasysService.getOffenceDetails).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.offenceAnalysis({ referralId: referral.id }))
 
         const requestHandler = controller.offenceAnalysis()
         await requestHandler(request, response, next)
@@ -662,7 +662,7 @@ describe('RisksAndNeedsController', () => {
         .calledWith(relationships.relIssuesDetails)
         .mockReturnValue(relIssuesDetails)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.relationships({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.relationships({ referralId: referral.id }))
 
       const requestHandler = controller.relationships()
       await requestHandler(request, response, next)
@@ -687,7 +687,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the relationships page with the correct response locals', async () => {
         when(oasysService.getRelationships).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.relationships({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.relationships({ referralId: referral.id }))
 
         const requestHandler = controller.relationships()
         await requestHandler(request, response, next)
@@ -805,7 +805,7 @@ describe('RisksAndNeedsController', () => {
         .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsPartner, undefined, 'sara-partner')
         .mockReturnValue(saraPartnerBox)
 
-      const request = buildRequest(referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }))
 
       const requestHandler = controller.risksAndAlerts()
       await requestHandler(request, response, next)
@@ -839,8 +839,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the risks and alerts page with the correct response locals', async () => {
         when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        // @ts-ignore
-        const request = buildRequest(referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id }))
 
         const requestHandler = controller.risksAndAlerts()
         await requestHandler(request, response, next)
@@ -868,8 +867,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getRoshAnalysis).calledWith(username, person.prisonNumber).mockResolvedValue(roshAnalysis)
 
-      // @ts-ignore
-      const request = buildRequest(referPaths.show.risksAndNeeds.roshAnalysis({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.roshAnalysis({ referralId: referral.id }))
 
       const requestHandler = controller.roshAnalysis()
       await requestHandler(request, response, next)
@@ -891,8 +889,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the offence analysis page with the correct response locals', async () => {
         when(oasysService.getRoshAnalysis).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        // @ts-ignore
-        const request = buildRequest(referPaths.show.risksAndNeeds.roshAnalysis({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.roshAnalysis({ referralId: referral.id }))
 
         const requestHandler = controller.roshAnalysis()
         await requestHandler(request, response, next)
@@ -922,8 +919,7 @@ describe('RisksAndNeedsController', () => {
 
       when(oasysService.getBehaviour).calledWith(username, person.prisonNumber).mockResolvedValue(behaviour)
 
-      // @ts-ignore
-      const request = buildRequest(referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id }))
+      request = buildRequest(referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id }))
 
       const requestHandler = controller.thinkingAndBehaving()
       await requestHandler(request, response, next)
@@ -945,7 +941,7 @@ describe('RisksAndNeedsController', () => {
       it('renders the thinking and behaving page with the correct response locals', async () => {
         when(oasysService.getBehaviour).calledWith(username, person.prisonNumber).mockResolvedValue(null)
 
-        const request = buildRequest(referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id }))
+        request = buildRequest(referPaths.show.risksAndNeeds.thinkingAndBehaving({ referralId: referral.id }))
 
         const requestHandler = controller.thinkingAndBehaving()
         await requestHandler(request, response, next)
