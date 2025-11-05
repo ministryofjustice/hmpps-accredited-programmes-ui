@@ -38,6 +38,18 @@ export default class BuildingChoicesController {
         return { ...organisation, courseOfferingId: courseOffering?.id, withdrawn: courseOffering?.withdrawn }
       })
 
+      const organisationsTableData = OrganisationUtils.organisationTableRows(
+        organisationsWithOfferingIds.filter(
+          organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === false,
+        ),
+      )
+
+      const withdrawnOrganisationsTableData = OrganisationUtils.organisationTableRows(
+        organisationsWithOfferingIds.filter(
+          organisationsWithOfferingId => organisationsWithOfferingId.withdrawn === true,
+        ),
+      )
+
       return res.render('courses/buildingChoices/show', {
         buildingChoicesAnswersSummaryListRows: CourseUtils.buildingChoicesAnswersSummaryListRows(buildingChoicesData),
         course: courseVariant,
@@ -47,9 +59,10 @@ export default class BuildingChoicesController {
           back: findPaths.buildingChoices.form.show({ courseId }),
           updateProgramme: findPaths.course.update.show({ courseId: courseVariant.id }),
         },
-        organisationsTableData: OrganisationUtils.organisationTableRows(organisationsWithOfferingIds),
+        organisationsTableData,
         pageHeading: courseVariant.displayName,
         pageTitleOverride: `${courseVariant.displayName} programme description`,
+        withdrawnOrganisationsTableData,
       })
     }
   }
