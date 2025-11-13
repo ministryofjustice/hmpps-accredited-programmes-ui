@@ -122,7 +122,7 @@
     "audit-ci": "^7.0.0",
     "axe-core": "^4.7.2",
     "concurrently": "^9.0.0",
-    "cypress": "^14.0.0",
+    "cypress": "^15.0.0",
     "cypress-axe": "^1.4.0",
     "cypress-mochawesome-reporter": "^4.0.0",
     "cypress-multi-reporters": "^2.0.0",
