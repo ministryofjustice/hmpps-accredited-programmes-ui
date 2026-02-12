@@ -21,7 +21,6 @@ import {
   ThinkingAndBehavingUtils,
   TypeUtils,
 } from '../../utils'
-import type { RiskLevel } from '@accredited-programmes/models'
 import type { RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 
 export default class RisksAndNeedsController {
