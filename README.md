@@ -18,6 +18,9 @@ script/setup
 
 However, if you intend to run the application using the dev apis then following command instead:
 
+**This runs against the dev version of the API, you will need your own credentials to access it.
+Wilson and Phil currently have admin powers to create accounts for you.**
+
 ```bash
 script/setup --dev-api
 ```
@@ -64,6 +67,7 @@ script/server --dev-api
 
 ### Local user accounts
 
+These only work if you are running against a local version of the API.
 There are three user accounts with different roles that can be used when running the application locally:
 
 | Username               | Description                                                                                                                                 | Roles                                | Password         |

@@ -1189,7 +1189,7 @@ const sharedTests = {
       risksAndAlertsPage.shouldContainOasysNomisErrorText()
     },
     showsRisksAndAlertsPageWithData: (role: ApplicationRole): void => {
-      const risksAndAlerts = risksAndAlertsFactory.build()
+      const risksAndAlerts = risksAndAlertsFactory.build({ isLegacy: true })
       sharedTests.referrals.beforeEach(role)
       sharedTests.risksAndNeeds.beforeEach()
 

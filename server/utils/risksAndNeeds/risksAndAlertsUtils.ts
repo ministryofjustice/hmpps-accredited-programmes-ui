@@ -25,8 +25,23 @@ export default class RisksAndAlertsUtils {
     }))
   }
 
-  static levelOrUnknown(level?: RiskLevel): RiskLevelOrUnknown {
+  static allReoffendingPredictor(risksAndAlerts: RisksAndAlerts) {
+    return {
+      bandPercentages: ['0%', '49%', '74%', '90%', '100%'],
+      lastUpdated: risksAndAlerts.lastUpdated,
+      level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrS4Risks?.allReoffendingBand),
+      score: risksAndAlerts.ogrS4Risks?.allReoffendingScore,
+      staticOrDynamic: risksAndAlerts.ogrS4Risks?.allReoffendingScoreType?.toUpperCase(),
+      type: 'All reoffending predictor',
+    }
+  }
+
+  static levelOrUnknown(level?: RiskLevel | null): RiskLevelOrUnknown {
     return level || 'UNKNOWN'
+  }
+
+  static levelOrUnknownStr(level?: string | null): string {
+    return level ? level.toUpperCase().replace(/\s/g, '_') : 'UNKNOWN'
   }
 
   static levelText(level: RiskLevelOrUnknown, casing: 'proper' | 'upper' = 'upper'): string {
