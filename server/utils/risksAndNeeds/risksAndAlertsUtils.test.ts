@@ -40,6 +40,63 @@ describe('RisksAndAlertsUtils', () => {
     })
   })
 
+  describe('allReoffendingPredictor', () => {
+    it('formats OGRS4 all reoffending data in the appropriate format for passing to the view', () => {
+      const risksAndAlerts: RisksAndAlerts = {
+        lastUpdated: '2023-12-18',
+        ogrS4Risks: {
+          allReoffendingBand: 'Medium',
+          allReoffendingScore: 45.5,
+          allReoffendingScoreType: 'Dynamic',
+        },
+      }
+
+      expect(RisksAndAlertsUtils.allReoffendingPredictor(risksAndAlerts)).toEqual({
+        bandPercentages: ['0%', '49%', '74%', '90%', '100%'],
+        lastUpdated: '2023-12-18',
+        level: 'MEDIUM',
+        score: 45.5,
+        staticOrDynamic: 'DYNAMIC',
+        type: 'All reoffending predictor',
+      })
+    })
+
+    describe('when the allReoffendingBand is missing', () => {
+      it('uses "UNKNOWN" for the level', () => {
+        const risksAndAlerts: RisksAndAlerts = {
+          lastUpdated: '2023-12-18',
+          ogrS4Risks: {
+            allReoffendingScore: 45.5,
+            allReoffendingScoreType: 'Dynamic',
+          },
+        }
+
+        expect(RisksAndAlertsUtils.allReoffendingPredictor(risksAndAlerts)).toEqual(
+          expect.objectContaining({
+            level: 'UNKNOWN',
+          }),
+        )
+      })
+    })
+
+    describe('when ogrS4Risks is missing', () => {
+      it('handles undefined values gracefully', () => {
+        const risksAndAlerts: RisksAndAlerts = {
+          lastUpdated: '2023-12-18',
+        }
+
+        expect(RisksAndAlertsUtils.allReoffendingPredictor(risksAndAlerts)).toEqual({
+          bandPercentages: ['0%', '49%', '74%', '90%', '100%'],
+          lastUpdated: '2023-12-18',
+          level: 'UNKNOWN',
+          score: undefined,
+          staticOrDynamic: undefined,
+          type: 'All reoffending predictor',
+        })
+      })
+    })
+  })
+
   describe('levelOrUnknown', () => {
     describe('when provided a level', () => {
       it('returns the level unmodified', () => {
@@ -50,6 +107,44 @@ describe('RisksAndAlertsUtils', () => {
     describe('when provided `undefined`', () => {
       it('returns "UNKNOWN"', () => {
         expect(RisksAndAlertsUtils.levelOrUnknown(undefined)).toEqual('UNKNOWN')
+      })
+    })
+
+    describe('when provided `null`', () => {
+      it('returns "UNKNOWN"', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknown(null)).toEqual('UNKNOWN')
+      })
+    })
+  })
+
+  describe('levelOrUnknownStr', () => {
+    describe('when provided a level string', () => {
+      it('returns the level in uppercase', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknownStr('high')).toEqual('HIGH')
+      })
+    })
+
+    describe('when provided a level string with spaces', () => {
+      it('returns the level in uppercase with spaces replaced by underscores', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknownStr('Very high')).toEqual('VERY_HIGH')
+      })
+    })
+
+    describe('when provided `undefined`', () => {
+      it('returns "UNKNOWN"', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknownStr(undefined)).toEqual('UNKNOWN')
+      })
+    })
+
+    describe('when provided `null`', () => {
+      it('returns "UNKNOWN"', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknownStr(null)).toEqual('UNKNOWN')
+      })
+    })
+
+    describe('when provided an empty string', () => {
+      it('returns "UNKNOWN"', () => {
+        expect(RisksAndAlertsUtils.levelOrUnknownStr('')).toEqual('UNKNOWN')
       })
     })
   })
