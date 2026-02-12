@@ -709,6 +709,7 @@ describe('RisksAndNeedsController', () => {
       const risksAndAlerts = risksAndAlertsFactory.withAllOptionalFields().build({
         imminentRiskOfViolenceTowardsOthers: 'LOW',
         imminentRiskOfViolenceTowardsPartner: 'HIGH',
+        isLegacy: true,
         ogrsYear1: 65.6,
         ogrsYear2: 89.1,
         ovpYear1: 70.2,
@@ -832,6 +833,168 @@ describe('RisksAndNeedsController', () => {
         saraOthersBox,
         saraPartnerBox,
         subNavigationItems,
+      })
+    })
+
+    describe('when isLegacy is false', () => {
+      it('renders the OGRS4 risks and alerts page with the correct response locals', async () => {
+        const risksAndAlerts = risksAndAlertsFactory.withAllOptionalFields().build({
+          dateRetrieved: '2023-12-15',
+          imminentRiskOfViolenceTowardsOthers: 'MEDIUM',
+          imminentRiskOfViolenceTowardsPartner: 'LOW',
+          isLegacy: false,
+          lastUpdated: '2023-12-18',
+          ogrS4Risks: {
+            allReoffendingBand: 'Medium',
+            allReoffendingScore: 45.5,
+            allReoffendingScoreType: 'Dynamic',
+            combinedSeriousReoffendingBand: 'High',
+            combinedSeriousReoffendingScore: 65.3,
+            combinedSeriousReoffendingScoreType: 'Static',
+            directContactSexualReoffendingBand: 'Low',
+            directContactSexualReoffendingScore: 15.2,
+            indirectImageContactSexualReoffendingBand: 'Low',
+            indirectImageContactSexualReoffendingScore: 5.8,
+            violentReoffendingBand: 'Medium',
+            violentReoffendingScore: 38.7,
+            violentReoffendingScoreType: 'Static',
+          },
+          overallRoshLevel: 'HIGH',
+          riskChildrenCommunity: 'MEDIUM',
+          riskChildrenCustody: 'LOW',
+          riskKnownAdultCommunity: 'HIGH',
+          riskKnownAdultCustody: 'MEDIUM',
+          riskPrisonersCustody: 'LOW',
+          riskPublicCommunity: 'HIGH',
+          riskPublicCustody: 'MEDIUM',
+          riskStaffCommunity: 'MEDIUM',
+          riskStaffCustody: 'LOW',
+        })
+
+        const allReoffendingPredictor = {
+          bandPercentages: ['0%', '49%', '74%', '90%', '100%'],
+          lastUpdated: risksAndAlerts.lastUpdated,
+          level: 'MEDIUM',
+          score: 45.5,
+          staticOrDynamic: 'DYNAMIC',
+          type: 'All reoffending predictor',
+        }
+
+        const saraOthersBox: RiskBox = {
+          category: 'SARA',
+          dataTestId: 'sara-others-risk-box',
+          levelClass: 'risk-box--medium',
+          levelText: 'MEDIUM',
+        }
+
+        const saraPartnerBox: RiskBox = {
+          category: 'SARA',
+          dataTestId: 'sara-partner-risk-box',
+          levelClass: 'risk-box--low',
+          levelText: 'LOW',
+        }
+
+        when(oasysService.getRisksAndAlerts).calledWith(username, person.prisonNumber).mockResolvedValue(risksAndAlerts)
+        mockRisksAndAlertsUtils.levelOrUnknownStr.mockImplementation((level?: string | null) =>
+          level ? level.toUpperCase().replace(/\s/g, '_') : 'UNKNOWN',
+        )
+        when(mockRisksAndAlertsUtils.allReoffendingPredictor)
+          .calledWith(risksAndAlerts)
+          .mockReturnValue(allReoffendingPredictor)
+        when(mockRisksAndAlertsUtils.riskBox)
+          .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsOthers, undefined, 'sara-others')
+          .mockReturnValue(saraOthersBox)
+        when(mockRisksAndAlertsUtils.riskBox)
+          .calledWith('SARA', risksAndAlerts.imminentRiskOfViolenceTowardsPartner, undefined, 'sara-partner')
+          .mockReturnValue(saraPartnerBox)
+
+        request.path = referPaths.show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+
+        const requestHandler = controller.risksAndAlerts()
+        await requestHandler(request, response, next)
+
+        assertSharedDataServicesAreCalledWithExpectedArguments(request.path)
+
+        expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlertsOgrs4', {
+          ...sharedPageData,
+          activeAlerts: {
+            flags: risksAndAlerts.alerts?.map(alert => ({ description: alert })),
+            lastUpdated: `<p class="risk-box__body-text govuk-!-margin-bottom-0">Last updated: ${risksAndAlerts.lastUpdated}</p>`,
+          },
+          allReoffendingPredictor,
+          combinedSeriousReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: 'HIGH',
+            score: 65.3,
+            staticOrDynamic: 'STATIC',
+            type: 'Combined serious reoffending predictor',
+          },
+          directContactSexualReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: 'LOW',
+            score: 15.2,
+            type: 'Direct contact: Sexual reoffending predictor',
+          },
+          hasData: true,
+          imagesAndIndirectContactSexualReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: 'LOW',
+            score: 5.8,
+            type: 'Images and indirect contact: Sexual reoffending predictor',
+          },
+          importedFromNdeliusText: {
+            classes: 'govuk-!-margin-top-8',
+            text: `Imported from Nomis on ${risksAndAlerts.dateRetrieved}, last updated on ${sharedPageData.recentCompletedAssessmentDate}`,
+          },
+          navigationItems,
+          pageTitleOverride: `Risks and needs for referral to ${coursePresenter.displayName}`,
+          roshRiskSummary: {
+            hasBeenCompleted: true,
+            lastUpdated: risksAndAlerts.lastUpdated,
+            overallRisk: 'HIGH',
+            risks: [
+              {
+                community: 'MEDIUM',
+                custody: 'LOW',
+                riskTo: 'Children',
+              },
+              {
+                community: 'HIGH',
+                custody: 'MEDIUM',
+                riskTo: 'Public',
+              },
+              {
+                community: 'HIGH',
+                custody: 'MEDIUM',
+                riskTo: 'Known Adult',
+              },
+              {
+                community: 'MEDIUM',
+                custody: 'LOW',
+                riskTo: 'Staff',
+              },
+              {
+                community: 'N/A',
+                custody: 'LOW',
+                riskTo: 'Prisoners',
+              },
+            ],
+          },
+          saraOthersBox,
+          saraPartnerBox,
+          subNavigationItems,
+          updateWarning: {
+            iconFallbackText: 'Warning',
+            text: 'Risk predictor tools updated',
+          },
+          violentReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: 'MEDIUM',
+            score: 38.7,
+            staticOrDynamic: 'STATIC',
+            type: 'Violent reoffending predictor',
+          },
+        })
       })
     })
 
