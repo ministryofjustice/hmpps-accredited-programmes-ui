@@ -289,55 +289,6 @@ export default class RisksAndNeedsController {
         res,
       )
 
-      // const risksAndAlerts = {
-      //   assessmentCompleted: '21 January 2026',
-      //   dateRetrieved: '01 January 2026',
-      //   offenderGroupReconviction: null,
-      //   offenderViolencePredictor: null,
-      //   imminentRiskOfViolenceTowardsOthers: 'LOW' as RiskLevel,
-      //   imminentRiskOfViolenceTowardsPartner: 'LOW' as RiskLevel,
-      //   riskOfSeriousRecidivism: null,
-      //   overallRoshLevel: 'Very high',
-      //   riskPrisonersCustody: null,
-      //   riskStaffCustody: null,
-      //   riskKnownAdultCustody: null,
-      //   riskPublicCustody: null,
-      //   riskChildrenCustody: null,
-      //   riskStaffCommunity: 'Medium',
-      //   riskKnownAdultCommunity: 'High',
-      //   riskPublicCommunity: 'Medium',
-      //   riskChildrenCommunity: 'Very High',
-      //
-      //   alerts: [
-      //     'Risk to Children',
-      //     'Risk to Known Adult',
-      //     'Risk to Prisoner',
-      //     'Risk to Public',
-      //     'Risk to Staff',
-      //     'Medium RoSH',
-      //   ],
-      //   dateRetrieved: '10 February 2026',
-      //   lastUpdated: '21 January 2026',
-      //   isLegacy: false,
-      //   ogrS4Risks: {
-      //     allReoffendingScoreType: 'DYNAMIC',
-      //     allReoffendingScore: 16.8,
-      //     allReoffendingBand: 'Low',
-      //     violentReoffendingScoreType: 'DYNAMIC',
-      //     violentReoffendingScore: 16.94,
-      //     violentReoffendingBand: 'Low',
-      //     seriousViolentReoffendingScoreType: 'DYNAMIC',
-      //     seriousViolentReoffendingScore: 0.28,
-      //     seriousViolentReoffendingBand: 'Low',
-      //     directContactSexualReoffendingScore: 74,
-      //     directContactSexualReoffendingBand: 'High',
-      //     indirectImageContactSexualReoffendingScore: 56,
-      //     indirectImageContactSexualReoffendingBand: 'Medium',
-      //     combinedSeriousReoffendingScoreType: 'DYNAMIC',
-      //     combinedSeriousReoffendingScore: 0.28,
-      //     combinedSeriousReoffendingBand: 'Low',
-      //   },
-      // }
       let templateLocals = {}
       if (risksAndAlerts) {
         if (risksAndAlerts.isLegacy) {
