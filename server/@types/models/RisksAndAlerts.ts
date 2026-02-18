@@ -1,3 +1,5 @@
+import type { ogrs4Risks } from '@accredited-programmes-api'
+
 interface Alert {
   alertType: string
   dateCreated: string
@@ -8,8 +10,12 @@ type RiskLevel = 'HIGH' | 'LOW' | 'MEDIUM' | 'VERY_HIGH'
 
 type RisksAndAlerts = {
   alerts?: Array<Alert>
+  dateRetrieved?: string
   imminentRiskOfViolenceTowardsOthers?: RiskLevel
   imminentRiskOfViolenceTowardsPartner?: RiskLevel
+  isLegacy?: boolean
+  lastUpdated?: string
+  ogrs4Risks?: ogrs4Risks
   ogrsRisk?: RiskLevel
   ogrsYear1?: number
   ogrsYear2?: number

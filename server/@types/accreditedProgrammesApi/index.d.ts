@@ -351,7 +351,7 @@ export interface ReferralEntity {
   hasReviewedProgrammeHistory: boolean;
   hasReviewedAdditionalInformation?: boolean;
   status: string;
-  /** @example "2025-06-01T18:47:24" */
+  /** @example "2026-02-12T06:02:56" */
   submittedOn?: object;
   deleted: boolean;
   primaryPomStaffId?: number;
@@ -703,9 +703,9 @@ export interface CourseCreateRequest {
   displayOnProgrammeDirectory: boolean;
   /**
    * Intensity of the course
-   * @example "HIGH MODERATE"
+   * @example "HIGH"
    */
-  intensity?: string;
+  intensity?: "HIGH" | "MODERATE" | "HIGH_MODERATE";
 }
 
 export interface BuildingChoicesSearchRequest {
@@ -787,6 +787,34 @@ export interface CaseLoad {
    * @example null
    */
   currentlyActive?: boolean;
+}
+
+export interface Attachment {
+  /**
+   * The number of the attachment which will match any corresponding reference in the content section
+   * @format int32
+   */
+  attachmentNumber: number;
+  /** The name or description of the attachment which will be included in the report */
+  name: string;
+  /** The content type of the attachment */
+  contentType: string;
+  /** The url to be used to download the attachment file */
+  url: string;
+  /**
+   * The size of the attachment file in bytes
+   * @format int32
+   */
+  filesize: number;
+  /** The filename of attachment file */
+  filename: string;
+}
+
+export interface HmppsSubjectAccessRequestContent {
+  /** The content of the subject access request response */
+  content: any;
+  /** The details of any attachments for the subject access request response */
+  attachments?: Attachment[];
 }
 
 /** The result of the statistics query */
@@ -1284,10 +1312,17 @@ export interface Sentence {
   /** @example "CJA03 Standard Determinate Sentence" */
   description?: string;
   /**
+   * The sentence start date
    * @format date
-   * @example null
+   * @example "2021-06-14"
    */
   sentenceStartDate?: string;
+  /**
+   * The sentence end date
+   * @format date
+   * @example "2028-02-11"
+   */
+  sentenceEndDate?: string;
 }
 
 export interface SentenceDetails {
@@ -1343,6 +1378,20 @@ export interface RoshAnalysis {
   whyDone?: string;
   /** @example "crown court" */
   sources?: string;
+  /** Any behaviours or incidents that evidence the individual’s ability to cause serious harm and when they happened */
+  identifyBehavioursIncidents?: string;
+  /** An analysis of any current or previous suicide and/or self-harm concerns */
+  analysisSuicideSelfHarm?: string;
+  /** An analysis of of the circumstances, relevant issues, and needs concerning coping in custody and similar settings */
+  analysisCoping?: string;
+  /** An analysis of any current vulnerabilities */
+  analysisVulnerabilities?: string;
+  /** An analysis of any current or previous escape and abscond concerns */
+  analysisEscapeAbscond?: string;
+  /** An analysis of any aggression, control issues, disruptive behaviour, or breach of trust concerns */
+  analysisControlBehaveTrust?: string;
+  /** An analysis of any patterns related to behaviours or incidents such as: victims, triggers, locations, impact */
+  analysisBehavioursIncidents?: string;
 }
 
 export interface Alert {
@@ -1358,7 +1407,27 @@ export interface Alert {
   dateCreated?: string;
 }
 
+export interface ogrs4Risks {
+  allReoffendingScoreType?: string;
+  allReoffendingScore?: number;
+  allReoffendingBand?: string;
+  violentReoffendingScoreType?: string;
+  violentReoffendingScore?: number;
+  violentReoffendingBand?: string;
+  seriousViolentReoffendingScoreType?: string;
+  seriousViolentReoffendingScore?: number;
+  seriousViolentReoffendingBand?: string;
+  directContactSexualReoffendingScore?: number;
+  directContactSexualReoffendingBand?: string;
+  indirectImageContactSexualReoffendingScore?: number;
+  indirectImageContactSexualReoffendingBand?: string;
+  combinedSeriousReoffendingScoreType?: string;
+  combinedSeriousReoffendingScore?: number;
+  combinedSeriousReoffendingBand?: string;
+}
+
 export interface Risks {
+  isLegacy: boolean;
   /** @example 45 */
   ogrsYear1?: number;
   /** @example 65 */
@@ -1405,6 +1474,8 @@ export interface Risks {
   imminentRiskOfViolenceTowardsOthers?: string;
   /** @example null */
   alerts?: Alert[];
+  ogrs4Risks?: ogrs4Risks;
+  legacy?: boolean;
 }
 
 export interface Relationships {

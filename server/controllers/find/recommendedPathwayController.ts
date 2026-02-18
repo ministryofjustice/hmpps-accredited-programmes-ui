@@ -32,7 +32,6 @@ export default class RecommendedPathwayController {
       let templateLocals: Record<string, unknown> = {
         hasData: false,
       }
-
       if (pni) {
         const {
           NeedsScore: {

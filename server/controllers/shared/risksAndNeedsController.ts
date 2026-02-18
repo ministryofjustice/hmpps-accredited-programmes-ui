@@ -289,8 +289,10 @@ export default class RisksAndNeedsController {
         res,
       )
 
-      const templateLocals = risksAndAlerts
-        ? {
+      let templateLocals = {}
+      if (risksAndAlerts) {
+        if (risksAndAlerts.isLegacy) {
+          templateLocals = {
             alertsGroupTables: RisksAndAlertsUtils.alertsGroupTables(risksAndAlerts.alerts),
             hasData: true,
             importedFromNomisText: `Imported from NOMIS on ${DateUtils.govukFormattedFullDateString()}.`,
@@ -332,9 +334,101 @@ export default class RisksAndNeedsController {
               'sara-partner',
             ),
           }
-        : {
-            hasData: false,
-          }
+          return res.render('referrals/show/risksAndNeeds/risksAndAlerts', { ...sharedPageData, ...templateLocals })
+        }
+        templateLocals = {
+          activeAlerts: {
+            flags: risksAndAlerts.alerts?.map(alert => ({ description: alert })),
+            lastUpdated: `<p class="risk-box__body-text govuk-!-margin-bottom-0">Last updated: ${risksAndAlerts.lastUpdated}</p>`,
+          },
+          allReoffendingPredictor: RisksAndAlertsUtils.allReoffendingPredictor(risksAndAlerts),
+          combinedSeriousReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.combinedSeriousReoffendingBand),
+            score: risksAndAlerts.ogrs4Risks?.combinedSeriousReoffendingScore,
+            staticOrDynamic: risksAndAlerts.ogrs4Risks?.combinedSeriousReoffendingScoreType?.toUpperCase(),
+            type: 'Combined serious reoffending predictor',
+          },
+          directContactSexualReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.directContactSexualReoffendingBand),
+            score: risksAndAlerts.ogrs4Risks?.directContactSexualReoffendingScore,
+            type: 'Direct contact: Sexual reoffending predictor',
+          },
+          hasData: true,
+          imagesAndIndirectContactSexualReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: RisksAndAlertsUtils.levelOrUnknownStr(
+              risksAndAlerts.ogrs4Risks?.indirectImageContactSexualReoffendingBand,
+            ),
+            score: risksAndAlerts.ogrs4Risks?.indirectImageContactSexualReoffendingScore,
+            type: 'Images and indirect contact: Sexual reoffending predictor',
+          },
+          importedFromNdeliusText: {
+            classes: 'govuk-!-margin-top-8',
+            text: `Imported from Nomis on ${risksAndAlerts.dateRetrieved}, last updated on ${sharedPageData.recentCompletedAssessmentDate}`,
+          },
+          roshRiskSummary: {
+            hasBeenCompleted: true,
+            lastUpdated: risksAndAlerts.lastUpdated,
+            overallRisk: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.overallRoshLevel),
+            risks: [
+              {
+                community: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskChildrenCommunity),
+                custody: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskChildrenCustody),
+                riskTo: 'Children',
+              },
+              {
+                community: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskPublicCommunity),
+                custody: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskPublicCustody),
+                riskTo: 'Public',
+              },
+              {
+                community: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskKnownAdultCommunity),
+                custody: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskKnownAdultCustody),
+                riskTo: 'Known Adult',
+              },
+              {
+                community: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskStaffCommunity),
+                custody: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskStaffCustody),
+                riskTo: 'Staff',
+              },
+              {
+                community: 'N/A',
+                custody: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.riskPrisonersCustody),
+                riskTo: 'Prisoners',
+              },
+            ],
+          },
+          saraOthersBox: RisksAndAlertsUtils.riskBox(
+            'SARA',
+            risksAndAlerts.imminentRiskOfViolenceTowardsOthers,
+            undefined,
+            'sara-others',
+          ),
+          saraPartnerBox: RisksAndAlertsUtils.riskBox(
+            'SARA',
+            risksAndAlerts.imminentRiskOfViolenceTowardsPartner,
+            undefined,
+            'sara-partner',
+          ),
+          updateWarning: {
+            iconFallbackText: 'Warning',
+            text: 'Risk predictor tools updated',
+          },
+          violentReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.violentReoffendingBand),
+            score: risksAndAlerts.ogrs4Risks?.violentReoffendingScore,
+            staticOrDynamic: risksAndAlerts.ogrs4Risks?.violentReoffendingScoreType?.toUpperCase(),
+            type: 'Violent reoffending predictor',
+          },
+        }
+        return res.render('referrals/show/risksAndNeeds/risksAndAlertsOgrs4', { ...sharedPageData, ...templateLocals })
+      }
+      templateLocals = {
+        hasData: false,
+      }
 
       return res.render('referrals/show/risksAndNeeds/risksAndAlerts', { ...sharedPageData, ...templateLocals })
     }

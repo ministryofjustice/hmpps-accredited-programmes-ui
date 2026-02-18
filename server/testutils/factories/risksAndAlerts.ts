@@ -11,6 +11,7 @@ const alert = (): Alert => ({
 })
 const riskLevel = () => faker.helpers.arrayElement<RiskLevel>(['LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'])
 const percentage = () => faker.number.int({ max: 100, min: 0 })
+const staticOrDynamic = () => faker.helpers.arrayElement(['Static', 'Dynamic'])
 
 class RiskAndAlertsFactory extends Factory<RisksAndAlerts> {
   withAllOptionalFields() {
@@ -18,8 +19,26 @@ class RiskAndAlertsFactory extends Factory<RisksAndAlerts> {
       alerts: Array(faker.helpers.rangeToNumber({ max: 10, min: 0 }))
         .fill(undefined)
         .map(_element => alert()),
+      dateRetrieved: faker.date.past().toISOString().split('T')[0],
       imminentRiskOfViolenceTowardsOthers: riskLevel(),
       imminentRiskOfViolenceTowardsPartner: riskLevel(),
+      isLegacy: faker.datatype.boolean(),
+      lastUpdated: faker.date.past().toISOString().split('T')[0],
+      ogrs4Risks: {
+        allReoffendingBand: riskLevel(),
+        allReoffendingScore: percentage(),
+        allReoffendingScoreType: staticOrDynamic(),
+        combinedSeriousReoffendingBand: riskLevel(),
+        combinedSeriousReoffendingScore: percentage(),
+        combinedSeriousReoffendingScoreType: staticOrDynamic(),
+        directContactSexualReoffendingBand: riskLevel(),
+        directContactSexualReoffendingScore: percentage(),
+        indirectImageContactSexualReoffendingBand: riskLevel(),
+        indirectImageContactSexualReoffendingScore: percentage(),
+        violentReoffendingBand: riskLevel(),
+        violentReoffendingScore: percentage(),
+        violentReoffendingScoreType: staticOrDynamic(),
+      },
       ogrsRisk: riskLevel(),
       ogrsYear1: percentage(),
       ogrsYear2: percentage(),
@@ -53,6 +72,7 @@ export default RiskAndAlertsFactory.define(
     ]),
     imminentRiskOfViolenceTowardsOthers: FactoryHelpers.optionalArrayElement(riskLevel()),
     imminentRiskOfViolenceTowardsPartner: FactoryHelpers.optionalArrayElement(riskLevel()),
+    isLegacy: faker.datatype.boolean(),
     ogrsRisk: FactoryHelpers.optionalArrayElement(riskLevel()),
     ogrsYear1: FactoryHelpers.optionalArrayElement(percentage()),
     ogrsYear2: FactoryHelpers.optionalArrayElement(percentage()),
