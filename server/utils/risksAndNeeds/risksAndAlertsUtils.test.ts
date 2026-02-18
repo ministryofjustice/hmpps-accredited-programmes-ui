@@ -44,7 +44,7 @@ describe('RisksAndAlertsUtils', () => {
     it('formats OGRS4 all reoffending data in the appropriate format for passing to the view', () => {
       const risksAndAlerts: RisksAndAlerts = {
         lastUpdated: '2023-12-18',
-        ogrS4Risks: {
+        ogrs4Risks: {
           allReoffendingBand: 'Medium',
           allReoffendingScore: 45.5,
           allReoffendingScoreType: 'Dynamic',
@@ -65,7 +65,7 @@ describe('RisksAndAlertsUtils', () => {
       it('uses "UNKNOWN" for the level', () => {
         const risksAndAlerts: RisksAndAlerts = {
           lastUpdated: '2023-12-18',
-          ogrS4Risks: {
+          ogrs4Risks: {
             allReoffendingScore: 45.5,
             allReoffendingScoreType: 'Dynamic',
           },
@@ -79,7 +79,7 @@ describe('RisksAndAlertsUtils', () => {
       })
     })
 
-    describe('when ogrS4Risks is missing', () => {
+    describe('when ogrs4Risks is missing', () => {
       it('handles undefined values gracefully', () => {
         const risksAndAlerts: RisksAndAlerts = {
           lastUpdated: '2023-12-18',

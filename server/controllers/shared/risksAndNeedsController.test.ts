@@ -844,7 +844,7 @@ describe('RisksAndNeedsController', () => {
           imminentRiskOfViolenceTowardsPartner: 'LOW',
           isLegacy: false,
           lastUpdated: '2023-12-18',
-          ogrS4Risks: {
+          ogrs4Risks: {
             allReoffendingBand: 'Medium',
             allReoffendingScore: 45.5,
             allReoffendingScoreType: 'Dynamic',

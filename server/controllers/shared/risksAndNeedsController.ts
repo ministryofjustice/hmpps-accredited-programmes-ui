@@ -344,24 +344,24 @@ export default class RisksAndNeedsController {
           allReoffendingPredictor: RisksAndAlertsUtils.allReoffendingPredictor(risksAndAlerts),
           combinedSeriousReoffendingPredictor: {
             completedDate: risksAndAlerts.lastUpdated,
-            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrS4Risks?.combinedSeriousReoffendingBand),
-            score: risksAndAlerts.ogrS4Risks?.combinedSeriousReoffendingScore,
-            staticOrDynamic: risksAndAlerts.ogrS4Risks?.combinedSeriousReoffendingScoreType?.toUpperCase(),
+            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.combinedSeriousReoffendingBand),
+            score: risksAndAlerts.ogrs4Risks?.combinedSeriousReoffendingScore,
+            staticOrDynamic: risksAndAlerts.ogrs4Risks?.combinedSeriousReoffendingScoreType?.toUpperCase(),
             type: 'Combined serious reoffending predictor',
           },
           directContactSexualReoffendingPredictor: {
             completedDate: risksAndAlerts.lastUpdated,
-            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrS4Risks?.directContactSexualReoffendingBand),
-            score: risksAndAlerts.ogrS4Risks?.directContactSexualReoffendingScore,
+            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.directContactSexualReoffendingBand),
+            score: risksAndAlerts.ogrs4Risks?.directContactSexualReoffendingScore,
             type: 'Direct contact: Sexual reoffending predictor',
           },
           hasData: true,
           imagesAndIndirectContactSexualReoffendingPredictor: {
             completedDate: risksAndAlerts.lastUpdated,
             level: RisksAndAlertsUtils.levelOrUnknownStr(
-              risksAndAlerts.ogrS4Risks?.indirectImageContactSexualReoffendingBand,
+              risksAndAlerts.ogrs4Risks?.indirectImageContactSexualReoffendingBand,
             ),
-            score: risksAndAlerts.ogrS4Risks?.indirectImageContactSexualReoffendingScore,
+            score: risksAndAlerts.ogrs4Risks?.indirectImageContactSexualReoffendingScore,
             type: 'Images and indirect contact: Sexual reoffending predictor',
           },
           importedFromNdeliusText: {
@@ -418,9 +418,9 @@ export default class RisksAndNeedsController {
           },
           violentReoffendingPredictor: {
             completedDate: risksAndAlerts.lastUpdated,
-            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrS4Risks?.violentReoffendingBand),
-            score: risksAndAlerts.ogrS4Risks?.violentReoffendingScore,
-            staticOrDynamic: risksAndAlerts.ogrS4Risks?.violentReoffendingScoreType?.toUpperCase(),
+            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.violentReoffendingBand),
+            score: risksAndAlerts.ogrs4Risks?.violentReoffendingScore,
+            staticOrDynamic: risksAndAlerts.ogrs4Risks?.violentReoffendingScoreType?.toUpperCase(),
             type: 'Violent reoffending predictor',
           },
         }

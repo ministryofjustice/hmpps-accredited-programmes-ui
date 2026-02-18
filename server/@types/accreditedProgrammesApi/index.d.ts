@@ -1407,7 +1407,7 @@ export interface Alert {
   dateCreated?: string;
 }
 
-export interface OGRS4Risks {
+export interface ogrs4Risks {
   allReoffendingScoreType?: string;
   allReoffendingScore?: number;
   allReoffendingBand?: string;
@@ -1474,7 +1474,7 @@ export interface Risks {
   imminentRiskOfViolenceTowardsOthers?: string;
   /** @example null */
   alerts?: Alert[];
-  ogrs4Risks?: OGRS4Risks;
+  ogrs4Risks?: ogrs4Risks;
   legacy?: boolean;
 }
 

@@ -29,9 +29,9 @@ export default class RisksAndAlertsUtils {
     return {
       bandPercentages: ['0%', '49%', '74%', '90%', '100%'],
       lastUpdated: risksAndAlerts.lastUpdated,
-      level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrS4Risks?.allReoffendingBand),
-      score: risksAndAlerts.ogrS4Risks?.allReoffendingScore,
-      staticOrDynamic: risksAndAlerts.ogrS4Risks?.allReoffendingScoreType?.toUpperCase(),
+      level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.allReoffendingBand),
+      score: risksAndAlerts.ogrs4Risks?.allReoffendingScore,
+      staticOrDynamic: risksAndAlerts.ogrs4Risks?.allReoffendingScoreType?.toUpperCase(),
       type: 'All reoffending predictor',
     }
   }

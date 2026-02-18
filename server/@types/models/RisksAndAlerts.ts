@@ -1,4 +1,4 @@
-import type { OGRS4Risks } from '@accredited-programmes-api'
+import type { ogrs4Risks } from '@accredited-programmes-api'
 
 interface Alert {
   alertType: string
@@ -15,7 +15,7 @@ type RisksAndAlerts = {
   imminentRiskOfViolenceTowardsPartner?: RiskLevel
   isLegacy?: boolean
   lastUpdated?: string
-  ogrS4Risks?: OGRS4Risks
+  ogrs4Risks?: ogrs4Risks
   ogrsRisk?: RiskLevel
   ogrsYear1?: number
   ogrsYear2?: number

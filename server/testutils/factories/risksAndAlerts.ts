@@ -24,7 +24,7 @@ class RiskAndAlertsFactory extends Factory<RisksAndAlerts> {
       imminentRiskOfViolenceTowardsPartner: riskLevel(),
       isLegacy: faker.datatype.boolean(),
       lastUpdated: faker.date.past().toISOString().split('T')[0],
-      ogrS4Risks: {
+      ogrs4Risks: {
         allReoffendingBand: riskLevel(),
         allReoffendingScore: percentage(),
         allReoffendingScoreType: staticOrDynamic(),
