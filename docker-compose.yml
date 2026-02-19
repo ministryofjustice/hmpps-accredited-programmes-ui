@@ -17,7 +17,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin_password
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-    image: quay.io/hmpps/hmpps-accredited-programmes-api:latest
+    image: ghcr.io/ministryofjustice/hmpps-accredited-programmes-api:latest
     networks:
       - hmpps
     ports:
@@ -52,7 +52,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://hmpps-auth-db:5432/hmpps-auth-db
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
-    image: quay.io/hmpps/hmpps-auth:latest
+    image: ghcr.io/ministryofjustice/hmpps-auth:latest
     networks:
       - hmpps
     ports:
@@ -86,7 +86,7 @@ services:
       - API_BASE_URL_OAUTH=http://hmpps-auth:8080/auth
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
-    image: quay.io/hmpps/hmpps-external-users-api:latest
+    image: ghcr.io/ministryofjustice/hmpps-external-users-api:latest
     networks:
       - hmpps
     ports:
@@ -107,7 +107,7 @@ services:
       - NOMIS_ENDPOINT_URL=http://nomis-user-roles-api:8080
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-    image: quay.io/hmpps/hmpps-manage-users-api:latest
+    image: ghcr.io/ministryofjustice/hmpps-manage-users-api:latest
     networks:
       - hmpps
     ports:
@@ -123,7 +123,7 @@ services:
       - API_BASE_URL_OAUTH=http://hmpps-auth:8080/auth
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-    image: quay.io/hmpps/nomis-user-roles-api:latest
+    image: ghcr.io/ministryofjustice/nomis-user-roles-api:latest
     networks:
       - hmpps
     ports:
@@ -142,7 +142,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://prison-register-db:5432/postgres
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-    image: quay.io/hmpps/prison-register:latest
+    image: ghcr.io/ministryofjustice/prison-register:latest
     networks:
       - hmpps
     ports:
