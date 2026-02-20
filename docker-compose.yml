@@ -17,7 +17,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin_password
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-    image: ghcr.io/ministryofjustice/hmpps-accredited-programmes-api:latest
+    image: quay.io/hmpps/hmpps-accredited-programmes-api:latest
     networks:
       - hmpps
     ports:

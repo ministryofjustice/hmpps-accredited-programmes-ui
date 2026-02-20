@@ -251,7 +251,6 @@ workflows:
           name: helm_lint
       - hmpps/build_docker:
           name: build_docker
-          image_name: ghcr.io/ministryofjustice/hmpps-accredited-programmes-ui
           filters:
             branches:
               only:
