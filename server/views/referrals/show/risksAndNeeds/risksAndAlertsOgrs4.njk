@@ -15,55 +15,56 @@
   {% if hasData %}
     {{ govukWarningText(updateWarning) }}
     {{ govukDetails({
-        summaryText: 'How the risk predictor tools have changed',
+        summaryHtml:
+          '<h2 class="govuk-details__summary-text govuk-body risk-changed">How the risk predictor tools have changed</h2>',
         html:
-        '<h2>All reoffending</h2>' +
-        '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>Offender group reconviction scale (OGRS)</p>' +
-        '<p><span class="govuk-!-font-weight-bold">Updated version: </span>All reoffending predictor</p>' +
-        '<p>The All reoffending predictor has static and dynamic versions.</p>' +
-        '<h2>Sexual reoffending </h2>' +
-        '<h3>Direct contact </h3>' +
-        '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>OASys sexual predictor: Direct contact (OSP-DC)</p>' +
-        '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Direct contact: Sexual reoffending predictor</p>' +
-        '<p>The Direct contact: Sexual reoffending predictor only has a static score. </p>' +
-        '<h3>Indirect contact </h3>' +
-        '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>OASys sexual predictor: Images and indirect contact with children (OSP-IIC)</p>' +
-        '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Images and indirect contact: Sexual reoffending predictor</p>' +
-        '<p>The Images and indirect contact: Sexual reoffending predictor only has a static score.</p>' +
-        '<h2>Serious non-sexual violent reoffending</h2>' +
-        '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>Previously part of RSR but not displayed</p>' +
-        '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Serious violent reoffending predictor</p>' +
-        '<p>The Serious violent reoffending predictor has static and dynamic versions.</p>' +
-        '<h2>Serious reoffending</h2>' +
-        '<p>This predictor is a combination of the Direct contact: Sexual reoffending predictor, Images and indirect contact: Sexual reoffending predictor and Serious violent reoffending predictor scores.</p>' +
-        '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>Risk of serious recidivism (RSR)</p>' +
-        '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Combined serious reoffending predictor</p>' +
-        '<p>The Combined serious reoffending predictor has static and dynamic versions.</p>'
+          '<h3 class="govuk-heading-m">All reoffending</h3>' +
+          '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>Offender group reconviction scale (OGRS)</p>' +
+          '<p><span class="govuk-!-font-weight-bold">Updated version: </span>All reoffending predictor</p>' +
+          '<p>The All reoffending predictor has static and dynamic versions.</p>' +
+          '<h3 class="govuk-heading-m">Sexual reoffending </h3>' +
+          '<h4 class="govuk-heading-s">Direct contact </h4>' +
+          '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>OASys sexual predictor: Direct contact (OSP-DC)</p>' +
+          '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Direct contact: Sexual reoffending predictor</p>' +
+          '<p>The Direct contact: Sexual reoffending predictor only has a static score. </p>' +
+          '<h4 class="govuk-heading-s">Indirect contact </h4>' +
+          '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>OASys sexual predictor: Images and indirect contact with children (OSP-IIC)</p>' +
+          '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Images and indirect contact: Sexual reoffending predictor</p>' +
+          '<p>The Images and indirect contact: Sexual reoffending predictor only has a static score.</p>' +
+          '<h3 class="govuk-heading-m">Serious non-sexual violent reoffending</h3>' +
+          '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>Previously part of RSR but not displayed</p>' +
+          '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Serious violent reoffending predictor</p>' +
+          '<p>The Serious violent reoffending predictor has static and dynamic versions.</p>' +
+          '<h3 class="govuk-heading-m">Serious reoffending</h3>' +
+          '<p>This predictor is a combination of the Direct contact: Sexual reoffending predictor, Images and indirect contact: Sexual reoffending predictor and Serious violent reoffending predictor scores.</p>' +
+          '<p class="govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Old version: </span>Risk of serious recidivism (RSR)</p>' +
+          '<p><span class="govuk-!-font-weight-bold">Updated version: </span>Combined serious reoffending predictor</p>' +
+          '<p>The Combined serious reoffending predictor has static and dynamic versions.</p>'
         })
     }}
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    <div class="ogrs4-content">
+      <h3 class="govuk-heading-m">All reoffending predictor scale</h3>
+      {{ predictorScale(allReoffendingPredictor, true, true, true) }}
 
-    <h3 class="govuk-heading-m">All reoffending predictor scale</h3>
-    {{ predictorScale(allReoffendingPredictor, true, true, true) }}
+      <h3 class="govuk-heading-m">Violent reoffending predictor</h3>
+      {{ expandedPredictorBadge(violentReoffendingPredictor, true, false) }}
 
-    <h3 class="govuk-heading-m">Violent reoffending predictor</h3>
-    {{ expandedPredictorBadge(violentReoffendingPredictor, true, false) }}
+      <h3 class="govuk-heading-m">Spousal assault risk assessment</h3>
+      {{ riskBox(saraPartnerBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards partner', bodyHtml: saraPartnerBody })) }}
+      {{ riskBox(saraOthersBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards others', bodyHtml: saraOthersBody })) }}
 
-    <h3 class="govuk-heading-m">Spousal assault risk assessment</h3>
-    {{ riskBox(saraPartnerBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards partner', bodyHtml: saraPartnerBody })) }}
-    {{ riskBox(saraOthersBox | objectMerge({ ariaLabelPrefix: 'SARA risk of violence towards others', bodyHtml: saraOthersBody })) }}
+      <h3 class="govuk-heading-m">Combined serious reoffending predictor</h3>
+      {{ expandedPredictorBadge(combinedSeriousReoffendingPredictor, true, false) }}
+      {{ expandedPredictorBadge(directContactSexualReoffendingPredictor, true, false) }}
+      {{ expandedPredictorBadge(imagesAndIndirectContactSexualReoffendingPredictor, true, false) }}
+      {{ roshWidget(roshRiskSummary) }}
+      {{ govukInsetText(importedFromNdeliusText) }}
 
-<h3 class="govuk-heading-m">Combined serious reoffending predictor</h3>
-    {{ expandedPredictorBadge(combinedSeriousReoffendingPredictor, true, false) }}
-    {{ expandedPredictorBadge(directContactSexualReoffendingPredictor, true, false) }}
-    {{ expandedPredictorBadge(imagesAndIndirectContactSexualReoffendingPredictor, true, false) }}
-    {{ roshWidget(roshRiskSummary) }}
-    {{ govukInsetText(importedFromNdeliusText) }}
-
-    <h3 class="govuk-heading-m">Risk alerts</h3>
-    {{ riskFlagWidget(activeAlerts) }}
-
+      <h3 class="govuk-heading-m">Risk alerts</h3>
+      {{ riskFlagWidget(activeAlerts) }}
+    </div>
 
   {% else %}
     {{ govukWarningText(noDataWarning)}}

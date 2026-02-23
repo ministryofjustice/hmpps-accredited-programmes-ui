@@ -365,7 +365,6 @@ export default class RisksAndNeedsController {
             type: 'Images and indirect contact: Sexual reoffending predictor',
           },
           importedFromNdeliusText: {
-            classes: 'govuk-!-margin-top-8',
             text: `Imported from Nomis on ${risksAndAlerts.dateRetrieved}, last updated on ${sharedPageData.recentCompletedAssessmentDate}`,
           },
           roshRiskSummary: {
