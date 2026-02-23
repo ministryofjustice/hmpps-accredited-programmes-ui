@@ -28,6 +28,15 @@
   border: none !important;
 }
 
-.expanded-predictor-badge__dynamic {
-  margin-bottom: 30px;
+.risk-changed {
+  color: #1d70b8;
+}
+
+.ogrs4-content {
+  .risk-box,
+  .expanded-predictor-badge__dynamic,
+  .govuk-heading-m,
+  .govuk-heading-s {
+    margin-bottom: 30px;
+  }
 }
