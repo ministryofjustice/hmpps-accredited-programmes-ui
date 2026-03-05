@@ -40,6 +40,7 @@
     "test:integration:ui:server": "npm run start:integration",
     "test:integration:ui": "npm run test:integration:start-backing-services && start-server-and-test test:integration:ui:server http://localhost:3007/ping test:integration:ui:run",
     "test:unit:ci": "TZ=Europe/London jest --runInBand",
+    "test:ci": "jest --runInBand",
     "test:unit:debug": "npm run --collectCoverage=false",
     "test:unit": "TZ=Europe/London jest",
     "test-history": "script/test-history --test=\"script/test\"",
