@@ -85,17 +85,13 @@
 
     <div class="{{ barTypeClass }}">
       <div data-band-persentage-start="{{ predictorScore.bandPercentages[0] }}" data-band-persentage="{{ predictorScore.bandPercentages[1] }}">
-        <span></span>
       </div>
       <div data-band-persentage="{{ predictorScore.bandPercentages[2] }}">
-        <span></span>
       </div>
       <div data-band-persentage="{{ predictorScore.bandPercentages[3] }}">
-        <span></span>
       </div>
       {% if includeVeryHigh === true %}
         <div data-band-persentage="{{ predictorScore.bandPercentages[4] }}">
-          <span></span>
         </div>
       {% endif %}
     </div>
