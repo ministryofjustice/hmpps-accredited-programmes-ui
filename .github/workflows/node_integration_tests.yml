@@ -2,36 +2,43 @@ name: Build and test node
 on:
   workflow_call:
     inputs:
-      npm_script:
-        description: 'The main test script to execute with `npm run`'
-        required: false
-        type: string
-        default: 'test:ci'
       test_results_artifact_name:
-        description: 'Name of uploaded test results artifact; must be unqiue across pipeline (eg. in matrix strategies for parallelised tests)'
+        description: 'Name of uploaded test results artifact; must be unique across pipeline'
         required: false
         type: string
-        default: 'npm_unit_test_artifacts'
+        default: 'npm_integration_test_artifacts'
       node_version_file:
         description: "Passed to setup-node action to specify where to source the version of node from"
         required: false
         type: string
         default: ".nvmrc"
-      redis_tag:
-        description: 'Optionally, start a redis service with this tag'
+      pre_test_run:
+        description: 'Optional command to run before starting the app'
         required: false
+        type: string
+      app_start_command:
+        description: 'Command to start the application'
+        required: true
+        type: string
+      test_command:
+        description: 'Command to run the integration tests'
+        required: true
         type: string
 permissions:
   contents: read
 jobs:
-  integration_test_refer_disabled:
+  integration_tests:
     runs-on: ubuntu-latest
     services:
       redis:
-        image: redis:7.0
+        image: redis:7
         ports:
           - 6379:6379
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
+      wiremock:
+        image: wiremock/wiremock
+        ports:
+          - 9199:8080
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js ${{ inputs.node_version_file }}
@@ -52,6 +59,20 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: npm_build_artifacts
+      - name: Run pre-test command
+        if: ${{ inputs.pre_test_run != '' }}
+        run: ${{ inputs.pre_test_run }}
+      - name: Start the node app
+        run: |
+          ${{ inputs.app_start_command }} &
+      - name: Wait for node app to start
+        run: |
+          until curl http://localhost:3007/health > /dev/null 2>&1; do
+            printf '.'
+            sleep 1
+          done
+      - name: Run integration tests
+        run: ${{ inputs.test_command }}
       - name: upload the artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
@@ -64,7 +85,7 @@ jobs:
         with:
           artifact: ${{ inputs.test_results_artifact_name }}
           name: Test Report
-          path: 'jest/**/*.xml'
+          path: 'test_results/**/*.xml'
           reporter: java-junit
           fail-on-empty: false
           fail-on-error: false

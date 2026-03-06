@@ -38,41 +38,21 @@ jobs:
     secrets: inherit
   node_integration_tests:
     name: node integration tests
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
+    uses: ./.github/workflows/node_integration_tests.yml
     needs: [node_build]
     secrets: inherit
     with:
-      redis_tag: "7"
-      services: |
-        redis:
-          image: redis:7
-          ports:
-            - 6379:6379
-          options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
-        wiremock:
-          image: wiremock/wiremock
-          ports:
-            - 9199:8080
+      test_results_artifact_name: 'node_integration_tests_artifacts'
       pre_test_run: 'npm run compile-sass'
       app_start_command: 'npm run test:integration:ci:server'
       test_command: 'npm run test:integration:cli:run'
   node_integration_tests_refer_disabled:
     name: node integration tests refer disabled
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
+    uses: ./.github/workflows/node_integration_tests.yml
     needs: [node_build]
     secrets: inherit
     with:
-      redis_tag: "7"
-      services: |
-        redis:
-          image: redis:7
-          ports:
-            - 6379:6379
-          options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
-        wiremock:
-          image: wiremock/wiremock
-          ports:
-            - 9199:8080
+      test_results_artifact_name: 'node_integration_tests_refer_disabled_artifacts'
       pre_test_run: 'npm run compile-sass'
       app_start_command: 'npm run test:integration:refer-disabled:ci:server'
       test_command: 'npm run test:integration:refer-disabled:cli:run'
