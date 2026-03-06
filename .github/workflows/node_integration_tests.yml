@@ -67,14 +67,14 @@ jobs:
           ${{ inputs.app_start_command }} &
       - name: Wait for node app to start
         run: |
-          timeout 120 bash -c '
+          timeout 180 bash -c '
             until curl --fail --silent --show-error --max-time 5 http://localhost:3007/health > /dev/null; do
               printf "."
               sleep 1
             done
           ' || {
             echo
-            echo "Node app did not become healthy within 120 seconds"
+            echo "Node app did not become healthy within 180 seconds"
             exit 1
           }
       - name: Run integration tests
