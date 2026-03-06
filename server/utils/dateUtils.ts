@@ -47,18 +47,17 @@ export default class DateUtils {
   }
 
   static removeTimezoneOffset(isoDateString: string): string {
-    const date = new Date(isoDateString);
+    const date = new Date(isoDateString)
     // Check if BST is in effect
-    const year = date.getUTCFullYear();
+    const year = date.getUTCFullYear()
     // BST starts last Sunday of March and ends last Sunday of October
-    const bstStart = new Date(Date.UTC(year, 2, 31));
-    bstStart.setUTCDate(bstStart.getUTCDate() - bstStart.getUTCDay());
-    const bstEnd = new Date(Date.UTC(year, 9, 31));
-    bstEnd.setUTCDate(bstEnd.getUTCDate() - bstEnd.getUTCDay());
+    const bstStart = new Date(Date.UTC(year, 2, 31))
+    bstStart.setUTCDate(bstStart.getUTCDate() - bstStart.getUTCDay())
+    const bstEnd = new Date(Date.UTC(year, 9, 31))
+    bstEnd.setUTCDate(bstEnd.getUTCDate() - bstEnd.getUTCDay())
     if (date >= bstStart && date < bstEnd) {
-      date.setUTCHours(date.getUTCHours() - 1);
+      date.setUTCHours(date.getUTCHours() - 1)
     }
-    return date.toISOString();
+    return date.toISOString()
   }
-
 }
