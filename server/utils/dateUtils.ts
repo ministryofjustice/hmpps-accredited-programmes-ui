@@ -46,10 +46,18 @@ export default class DateUtils {
     return date.toLocaleDateString('en-GB').split('/').reverse().join('-')
   }
 
-  static removeTimezoneOffset(dateString: string): string {
-    const date = new Date(dateString)
-    const serverTimezoneOffset = date.getTimezoneOffset() * 60000
-
-    return new Date(date.getTime() + serverTimezoneOffset).toISOString()
+  static removeTimezoneOffset(isoDateString: string): string {
+    const date = new Date(isoDateString)
+    // Check if BST is in effect
+    const year = date.getUTCFullYear()
+    // BST starts last Sunday of March and ends last Sunday of October
+    const bstStart = new Date(Date.UTC(year, 2, 31))
+    bstStart.setUTCDate(bstStart.getUTCDate() - bstStart.getUTCDay())
+    const bstEnd = new Date(Date.UTC(year, 9, 31))
+    bstEnd.setUTCDate(bstEnd.getUTCDate() - bstEnd.getUTCDay())
+    if (date >= bstStart && date < bstEnd) {
+      date.setUTCHours(date.getUTCHours() - 1)
+    }
+    return date.toISOString()
   }
 }
