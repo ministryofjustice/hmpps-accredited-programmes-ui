@@ -6,5 +6,7 @@ declare module '@ministryofjustice/frontend/moj/filters/all.js' {
     ): string
   }
 
-  export default () => Filters
+  const createFilters: () => Filters
+
+  export default createFilters
 }

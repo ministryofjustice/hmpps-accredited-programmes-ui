@@ -58,7 +58,7 @@
     "watch:views": "nodemon --watch server/views -e html,njk -x npm run copy-views"
   },
   "engines": {
-    "node": "^22",
+    "node": "^24",
     "npm": "^11.0.0"
   },
   "dependencies": {
@@ -101,7 +101,7 @@
     "@golevelup/ts-jest": "^0.5.0",
     "@pact-foundation/pact": "^15.0.0",
     "@pkgjs/parseargs": "^0.11.0",
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.0",
     "@types/bunyan": "^1.8.8",
     "@types/bunyan-format": "^0.2.5",
     "@types/compression": "^1.7.2",
@@ -112,7 +112,7 @@
     "@types/jest-when": "^3.5.2",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/method-override": "^3.0.0",
-    "@types/node": "^22.8.6",
+    "@types/node": "^24.0.0",
     "@types/nunjucks": "^3.2.2",
     "@types/object.groupby": "^1.0.4",
     "@types/passport": "^1.0.12",

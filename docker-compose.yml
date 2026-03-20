@@ -179,5 +179,3 @@ services:
     ports:
       - '9099:8080'
     restart: always
-
-version: '3.1'

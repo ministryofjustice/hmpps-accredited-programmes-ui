@@ -11,5 +11,12 @@ script/utils/launch-docker
 
 echo "==> Installing application dependencies..."
 
-npm_config_yes=true npx @nodenv/nodenv install --skip-existing
+if command -v nodenv >/dev/null 2>&1; then
+  nodenv install --skip-existing
+elif command -v nvm >/dev/null 2>&1; then
+  . "$NVM_DIR/nvm.sh" --no-use
+  nvm install
+else
+  echo "==> Warning: No node version manager (nodenv or nvm) found. Skipping node version installation."
+fi
 npm install

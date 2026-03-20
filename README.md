@@ -10,6 +10,17 @@
 
 ## Setup
 
+If you do not have `nodenv` installed, please install it first with the following command:
+
+```bash
+brew install nodenv
+```
+
+And if necessary upgrade to v24:
+```bash
+nodenv install 24.14.0
+```
+
 When running the application for the first time, run the following command:
 
 ```bash
