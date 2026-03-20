@@ -4,7 +4,7 @@
     "target": "es2024",
     "module": "Node16",
     "moduleResolution": "node16",
-    "lib": ["es2024", "dom"],
+    "lib": ["es2023", "dom"],
     "outDir": "./dist",
     "sourceMap": true,
     "noEmit": false,
