@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:22.11-slim AS base
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS base
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
@@ -10,17 +10,16 @@ ENV TZ=Europe/London
 RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
 
 RUN addgroup --gid 2000 --system appgroup && \
-        adduser --uid 2000 --system appuser --gid 2000
+        adduser --uid 2000 --system appuser --ingroup appgroup --disabled-password
 
 WORKDIR /app
 
 # Cache breaking
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
 
-RUN apt-get update && \
-        apt-get upgrade -y && \
-        apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+        apk upgrade && \
+        rm -rf /var/cache/apk/*
 
 # Stage: build assets
 FROM base as build
@@ -28,8 +27,8 @@ FROM base as build
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
 
-RUN apt-get update && \
-        apt-get install -y --no-install-recommends make python3 g++
+RUN apk update && \
+        apk add --no-cache make python3 g++
 
 COPY package*.json ./
 RUN CYPRESS_INSTALL_BINARY=0 npm ci --no-audit
