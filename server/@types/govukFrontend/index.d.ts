@@ -1291,6 +1291,11 @@ export interface GovukFrontendFooter {
     HTML attributes (for example data attributes) to add to the footer component container.
   */
   attributes?: Record<string, unknown> | null
+
+  /*
+    If `true`, use the redesigned footer with the GOV.UK crown. Default is `false`.
+  */
+  rebrand?: boolean | null
 }
 
 export interface GovukFrontendFooterMeta {
@@ -1461,6 +1466,11 @@ export interface GovukFrontendHeader {
     If `true`, uses the Tudor crown from King Charles III's royal cypher. Otherwise, uses the St. Edward's crown. Default is `true`.
   */
   useTudorCrown?: boolean | null
+
+  /*
+    If `true`, use the redesigned header and new GOV.UK logotype. Default is `false`.
+  */
+  rebrand?: boolean | null
 }
 
 export interface GovukFrontendHeaderNavigationElement {
@@ -1891,19 +1901,19 @@ export interface GovukFrontendPagination {
 
 export interface GovukFrontendPaginationItem {
   /*
-    The pagination item text – usually a page number.
+    The pagination item text – usually a page number.  Required unless the item is an ellipsis.
   */
   number?: string | null
 
   /*
-    The visually hidden label (for the pagination item) which will be applied to an `aria-label` and announced by screen readers on the pagination item link. Should include page number.
+    The visually hidden label for the pagination item, which will be applied to an `aria-label` and announced by screen readers on the pagination item link. Should include page number. Defaults to, for example "Page 1".
   */
   visuallyHiddenText?: string | null
 
   /*
-    The link's URL.
+    The link's URL. Required unless the item is an ellipsis.
   */
-  href: string
+  href?: string | null
 
   /*
     Set to `true` to indicate the current page the user is on.
@@ -2525,6 +2535,11 @@ export interface GovukFrontendServiceNavigation {
     Classes to add to the navigation menu container.
   */
   navigationClasses?: string | null
+
+  /*
+    Whether the navigation should be collapsed inside a menu on mobile. Defaults to true if there is more than one navigation item.
+  */
+  collapseNavigationOnMobile?: boolean | null
 
   /*
     The name of your service.

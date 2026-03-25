@@ -1,4 +1,4 @@
-import { type InterfaceToTemplate, Matchers } from '@pact-foundation/pact'
+import { type InterfaceToTemplate, MatchersV2 as Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
 import CourseClient from './courseClient'
