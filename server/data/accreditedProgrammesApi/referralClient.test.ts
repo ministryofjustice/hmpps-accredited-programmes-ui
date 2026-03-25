@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { type InterfaceToTemplate, Matchers } from '@pact-foundation/pact'
+import { type InterfaceToTemplate, MatchersV2 as Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
 import ReferralClient from './referralClient'
