@@ -40,14 +40,14 @@ jobs:
         ports:
           - 9199:8080
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Use Node.js ${{ inputs.node_version_file }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
         with:
           node-version-file: ${{ inputs.node_version_file }}
       - name: restore cache
         id: restore-cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
         env:
           cache-name: node-modules
         with:
@@ -56,7 +56,7 @@ jobs:
             ~/.cache/Cypress
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json', '!**/node_modules/**') }}
       - name: download the artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: npm_build_artifacts
       - name: Run pre-test command
@@ -75,7 +75,7 @@ jobs:
         run: ${{ inputs.test_command }}
       - name: upload the artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: ${{ inputs.test_results_artifact_name }}
           path: test_results
