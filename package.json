@@ -145,7 +145,7 @@
     "jest-html-reporter": "^4.0.0",
     "jest-junit": "^16.0.0",
     "jest-pact": "0.13.0",
-    "jest-when": "^3.5.2",
+    "jest-when": "^4.0.0",
     "jsonwebtoken": "^9.0.0",
     "mocha-junit-reporter": "^2.2.0",
     "nock": "^14.0.0",
