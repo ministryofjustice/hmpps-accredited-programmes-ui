@@ -855,6 +855,9 @@ describe('RisksAndNeedsController', () => {
             directContactSexualReoffendingScore: 15.2,
             indirectImageContactSexualReoffendingBand: 'Low',
             indirectImageContactSexualReoffendingScore: 5.8,
+            seriousViolentReoffendingBand: 'High',
+            seriousViolentReoffendingScore: 4.56,
+            seriousViolentReoffendingScoreType: 'Static',
             violentReoffendingBand: 'Medium',
             violentReoffendingScore: 38.7,
             violentReoffendingScoreType: 'Static',
@@ -982,6 +985,13 @@ describe('RisksAndNeedsController', () => {
           },
           saraOthersBox,
           saraPartnerBox,
+          seriousViolentReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: 'HIGH',
+            score: 4.56,
+            staticOrDynamic: 'STATIC',
+            type: 'Serious violent reoffending predictor',
+          },
           subNavigationItems,
           updateWarning: {
             iconFallbackText: 'Warning',

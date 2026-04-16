@@ -412,6 +412,13 @@ export default class RisksAndNeedsController {
             undefined,
             'sara-partner',
           ),
+          seriousViolentReoffendingPredictor: {
+            completedDate: risksAndAlerts.lastUpdated,
+            level: RisksAndAlertsUtils.levelOrUnknownStr(risksAndAlerts.ogrs4Risks?.seriousViolentReoffendingBand),
+            score: risksAndAlerts.ogrs4Risks?.seriousViolentReoffendingScore,
+            staticOrDynamic: risksAndAlerts.ogrs4Risks?.seriousViolentReoffendingScoreType?.toUpperCase(),
+            type: 'Serious violent reoffending predictor',
+          },
           updateWarning: {
             iconFallbackText: 'Warning',
             text: 'Risk predictor tools updated',
