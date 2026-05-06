@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
 
 {% extends "../partials/layout.njk" %}
 
@@ -74,6 +75,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+      {{ mojAlert(ogrs3WarningBox) }}
 
       <p class="govuk-body">This is the recommended Accredited Programme pathway. It is based on the person's risks and needs.</p>
 

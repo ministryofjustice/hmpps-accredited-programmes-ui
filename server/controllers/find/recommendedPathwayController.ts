@@ -59,12 +59,21 @@ export default class RecommendedPathwayController {
         programmePathway: pni?.programmePathway || 'UNKNOWN',
       }
 
+      const ogrs3WarningBox = {
+        dismissible: false,
+        html: '<p>The recommended pathway shown here is based on the old risk predictors (OGRS3). If this person’s risk scores use the new predictors (OGRS4), referrers or programme teams should calculate the recommended pathway manually.</p><p>Following the instructions in the Needs and Suitability guide, use the PNI scores under ‘How is this calculated?’ and the risk scores in this service or OASys to calculate this.</p>',
+        showTitleAsHeading: true,
+        title: 'The pathway shown here is currently based on OGRS3 risk scores',
+        variant: 'warning',
+      }
+
       return res.render('find/recommendedPathway', {
         hrefs: {
           back: findPaths.pniFind.personSearch.pattern,
           programmes: findPaths.pniFind.recommendedProgrammes.pattern,
         },
         notEligible: pni?.programmePathway === notEligiblePathway,
+        ogrs3WarningBox,
         pageHeading: `Recommended programme pathway for ${person.name}`,
         pathwayContent: PniUtils.pathwayContent(person.name, pni?.programmePathway),
         ...templateLocals,
