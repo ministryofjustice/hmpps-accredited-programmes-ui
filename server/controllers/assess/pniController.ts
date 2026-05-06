@@ -59,6 +59,14 @@ export default class PniController {
         }
       }
 
+      const ogrs3WarningBox = {
+        dismissible: false,
+        html: '<p>The recommended pathway shown here is based on the old risk predictors (OGRS3). If this person’s risk scores use the new predictors (OGRS4), referrers or programme teams should calculate the recommended pathway manually.</p><p>Following the instructions in the Needs and Suitability guide, use the PNI scores under ‘How is this calculated?’ and the risk scores in this service or OASys to calculate this.</p>',
+        showTitleAsHeading: true,
+        title: 'The pathway shown here is currently based on OGRS3 risk scores',
+        variant: 'warning',
+      }
+
       return res.render('referrals/show/pni/show', {
         buttonMenu: ShowReferralUtils.buttonMenu(course, referral, {
           currentPath: req.path,
@@ -69,6 +77,7 @@ export default class PniController {
           referral,
           undefined,
         ),
+        ogrs3WarningBox,
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Programme needs identifier',
         pageTitleOverride: `Programme needs identifier for referral to ${coursePresenter.displayName}`,
