@@ -165,5 +165,9 @@
   },
   "optionalDependencies": {
     "djlint": "^1.27.0"
+  },
+  "overrides": {
+    "serialize-javascript": "7.0.5",
+    "brace-expansion": "^2.0.3"
   }
 }
