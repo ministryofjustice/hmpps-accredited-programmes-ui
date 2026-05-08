@@ -326,6 +326,8 @@ describe('ReferralService', () => {
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
       expect(referralClientBuilder).toHaveBeenCalledWith(systemToken)
+      console.log(result)
+      console.log(expectedResponse)
       expect(result).toEqual(expectedResponse)
     })
   })
