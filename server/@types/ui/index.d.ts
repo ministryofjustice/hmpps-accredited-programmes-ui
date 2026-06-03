@@ -203,7 +203,7 @@ type OspBox = {
   dataTestId: string
   levelClass: string
   levelText: string
-  type: 'OSP/C' | 'OSP/I'
+  type: 'OSP/C' | 'OSP/DC' | 'OSP/I' | 'OSP/IIOC'
 }
 
 type RiskBox = {

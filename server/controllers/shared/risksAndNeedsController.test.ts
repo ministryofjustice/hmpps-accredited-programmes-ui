@@ -733,8 +733,13 @@ describe('RisksAndNeedsController', () => {
         levelClass: 'risk-box--low',
         levelText: 'LOW',
       }
-      const ospcBox: OspBox = { dataTestId: 'osp-c-box', levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/C' }
-      const ospiBox: OspBox = { dataTestId: 'ocp-i-box', levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/I' }
+      const ospcBox: OspBox = { dataTestId: 'osp-dc-box', levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/DC' }
+      const ospiBox: OspBox = {
+        dataTestId: 'osp-iioc-box',
+        levelClass: 'osp-box--low',
+        levelText: 'LOW',
+        type: 'OSP/IIOC',
+      }
       const ovpYear1Box: RiskBox = {
         category: 'OVP Year 1',
         dataTestId: 'ovp-year-1-risk-box',
@@ -786,8 +791,8 @@ describe('RisksAndNeedsController', () => {
       when(mockRisksAndAlertsUtils.riskBox)
         .calledWith('OGRS Year 2', risksAndAlerts.ogrsRisk, `${risksAndAlerts.ogrsYear2?.toString()}%`)
         .mockReturnValue(ogrsYear2Box)
-      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/C', risksAndAlerts.ospcScore).mockReturnValue(ospcBox)
-      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/I', risksAndAlerts.ospiScore).mockReturnValue(ospiBox)
+      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/DC', risksAndAlerts.ospcScore).mockReturnValue(ospcBox)
+      when(mockRisksAndAlertsUtils.ospBox).calledWith('OSP/IIOC', risksAndAlerts.ospiScore).mockReturnValue(ospiBox)
       when(mockRisksAndAlertsUtils.riskBox)
         .calledWith('OVP Year 1', risksAndAlerts.ovpRisk, `${risksAndAlerts.ovpYear1?.toString()}%`)
         .mockReturnValue(ovpYear1Box)
