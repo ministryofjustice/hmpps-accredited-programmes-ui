@@ -171,17 +171,17 @@ describe('RisksAndAlertsUtils', () => {
 
   describe('ospBox', () => {
     it('formats OSP data in the appropriate format for passing to an OSP box Nunjucks macro', () => {
-      expect(RisksAndAlertsUtils.ospBox('OSP/C', 'VERY_HIGH')).toEqual({
-        dataTestId: 'osp-c-box',
+      expect(RisksAndAlertsUtils.ospBox('OSP/DC', 'VERY_HIGH')).toEqual({
+        dataTestId: 'osp-dc-box',
         levelClass: 'osp-box--very-high',
         levelText: 'VERY HIGH',
-        type: 'OSP/C',
+        type: 'OSP/DC',
       })
     })
 
     describe('when the level is missing', () => {
       it('uses "unknown" for the level', () => {
-        expect(RisksAndAlertsUtils.ospBox('OSP/C', undefined)).toEqual(
+        expect(RisksAndAlertsUtils.ospBox('OSP/DC', undefined)).toEqual(
           expect.objectContaining({
             levelClass: 'osp-box--unknown',
             levelText: 'UNKNOWN',
