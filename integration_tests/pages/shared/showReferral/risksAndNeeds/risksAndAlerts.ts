@@ -170,7 +170,7 @@ export default class RisksAndAlertsPage extends Page {
         this.risksAndAlerts.rsrScore?.toString(),
       )
 
-      cy.get('[data-testid="osp-c-box"]').then(ospcBoxElement => {
+      cy.get('[data-testid="osp-dc-box"]').then(ospcBoxElement => {
         const { actual, expected } = Helpers.parseHtml(
           ospcBoxElement,
           `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risksAndAlerts.ospcScore))} OSP/C`,
@@ -178,7 +178,7 @@ export default class RisksAndAlertsPage extends Page {
         expect(actual).to.equal(expected)
       })
 
-      cy.get('[data-testid="osp-i-box"]').then(ospiBoxElement => {
+      cy.get('[data-testid="osp-iioc-box"]').then(ospiBoxElement => {
         const { actual, expected } = Helpers.parseHtml(
           ospiBoxElement,
           `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risksAndAlerts.ospiScore))} OSP/I`,
