@@ -25,7 +25,7 @@ generic-service:
         "id:1000001,phase:1,pass,nolog,ctl:ruleRemoveById=942000-942999"
       
       SecRule REQUEST_URI "@beginsWith /assess/referrals" \ 
-        "id:1000001,phase:1,pass,nolog,ctl:ruleRemoveById=942000-942999"
+        "id:1000002,phase:1,pass,nolog,ctl:ruleRemoveById=942000-942999"
     
   livenessProbe:
     httpGet:
