@@ -307,7 +307,7 @@ export default class RisksAndNeedsController {
               risksAndAlerts.ogrsYear2 ? `${risksAndAlerts.ogrsYear2}%` : undefined,
             ),
             ospcBox: RisksAndAlertsUtils.ospBox('OSP/DC', risksAndAlerts.ospcScore),
-            ospiBox: RisksAndAlertsUtils.ospBox('OSP/IIOC', risksAndAlerts.ospiScore),
+            ospiBox: RisksAndAlertsUtils.ospBox('OSP/IIC', risksAndAlerts.ospiScore),
             ovpYear1Box: RisksAndAlertsUtils.riskBox(
               'OVP Year 1',
               risksAndAlerts.ovpRisk,
