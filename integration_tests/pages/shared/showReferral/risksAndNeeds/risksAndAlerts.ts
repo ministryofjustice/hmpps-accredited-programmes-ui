@@ -181,7 +181,7 @@ export default class RisksAndAlertsPage extends Page {
       cy.get('[data-testid="osp-iioc-box"]').then(ospiBoxElement => {
         const { actual, expected } = Helpers.parseHtml(
           ospiBoxElement,
-          `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risksAndAlerts.ospiScore))} OSP/IIOC`,
+          `${RisksAndAlertsUtils.levelText(RisksAndAlertsUtils.levelOrUnknown(this.risksAndAlerts.ospiScore))} OSP/IIC`,
         )
         expect(actual).to.equal(expected)
       })
