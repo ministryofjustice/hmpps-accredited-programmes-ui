@@ -735,7 +735,7 @@ describe('RisksAndNeedsController', () => {
       }
       const ospcBox: OspBox = { dataTestId: 'osp-dc-box', levelClass: 'osp-box--low', levelText: 'LOW', type: 'OSP/DC' }
       const ospiBox: OspBox = {
-        dataTestId: 'osp-iioc-box',
+        dataTestId: 'osp-iic-box',
         levelClass: 'osp-box--low',
         levelText: 'LOW',
         type: 'OSP/IIC',
