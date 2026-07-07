@@ -37,13 +37,7 @@ describe('RecommendedPathwayController', () => {
     dataTestId: 'pathway-content',
     headingText: 'High intensity',
   }
-  const ogrs3WarningBoxContent = {
-    dismissible: false,
-    html: '<p>The recommended pathway shown here is based on the old risk predictors (OGRS3). If this person’s risk scores use the new predictors (OGRS4), referrers or programme teams should calculate the recommended pathway manually.</p><p>Following the instructions in the Needs and Suitability guide, use the PNI scores under ‘How is this calculated?’ and the risk scores in this service or OASys to calculate this.</p>',
-    showTitleAsHeading: true,
-    title: 'The pathway shown here is currently based on OGRS3 risk scores',
-    variant: 'warning',
-  }
+
   const person = personFactory.build({
     prisonNumber,
   })
@@ -101,7 +95,6 @@ describe('RecommendedPathwayController', () => {
         },
         missingInformation: false,
         notEligible: false,
-        ogrs3WarningBox: ogrs3WarningBoxContent,
         pageHeading: `Recommended programme pathway for ${person.name}`,
         pathwayContent,
         relationshipsSummaryListRows,
@@ -134,7 +127,6 @@ describe('RecommendedPathwayController', () => {
           },
           missingInformation: false,
           notEligible: true,
-          ogrs3WarningBox: ogrs3WarningBoxContent,
           pageHeading: `Recommended programme pathway for ${person.name}`,
           pathwayContent,
           relationshipsSummaryListRows,
@@ -168,7 +160,6 @@ describe('RecommendedPathwayController', () => {
           },
           missingInformation: true,
           notEligible: false,
-          ogrs3WarningBox: ogrs3WarningBoxContent,
           pageHeading: `Recommended programme pathway for ${person.name}`,
           pathwayContent,
           relationshipsSummaryListRows,
@@ -197,7 +188,6 @@ describe('RecommendedPathwayController', () => {
             programmes: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           notEligible: false,
-          ogrs3WarningBox: ogrs3WarningBoxContent,
           pageHeading: `Recommended programme pathway for ${person.name}`,
           pathwayContent,
         })
@@ -224,7 +214,6 @@ describe('RecommendedPathwayController', () => {
             programmes: findPaths.pniFind.recommendedProgrammes.pattern,
           },
           notEligible: false,
-          ogrs3WarningBox: ogrs3WarningBoxContent,
           pageHeading: `Recommended programme pathway for ${person.name}`,
           pathwayContent,
         })
