@@ -53,13 +53,6 @@ describe('PniController', () => {
     dataTestId: 'pathway-content',
     headingText: 'High intensity',
   }
-  const ogrs3WarningBoxContent = {
-    dismissible: false,
-    html: '<p>The recommended pathway shown here is based on the old risk predictors (OGRS3). If this person’s risk scores use the new predictors (OGRS4), referrers or programme teams should calculate the recommended pathway manually.</p><p>Following the instructions in the Needs and Suitability guide, use the PNI scores under ‘How is this calculated?’ and the risk scores in this service or OASys to calculate this.</p>',
-    showTitleAsHeading: true,
-    title: 'The pathway shown here is currently based on OGRS3 risk scores',
-    variant: 'warning',
-  }
   let person: Person
   let referral: Referral
 
@@ -106,7 +99,6 @@ describe('PniController', () => {
       buttons,
       hasData: true,
       missingInformation: false,
-      ogrs3WarningBox: ogrs3WarningBoxContent,
       pageHeading: `Referral to ${coursePresenter.displayName}`,
       pageSubHeading: 'Programme needs identifier',
       pageTitleOverride: `Programme needs identifier for referral to ${coursePresenter.displayName}`,
@@ -178,7 +170,6 @@ describe('PniController', () => {
       expect(response.render).toHaveBeenCalledWith('referrals/show/pni/show', {
         buttons,
         hasData: false,
-        ogrs3WarningBox: ogrs3WarningBoxContent,
         pageHeading: `Referral to ${coursePresenter.displayName}`,
         pageSubHeading: 'Programme needs identifier',
         pageTitleOverride: `Programme needs identifier for referral to ${coursePresenter.displayName}`,
