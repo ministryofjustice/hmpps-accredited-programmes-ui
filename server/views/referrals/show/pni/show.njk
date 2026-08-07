@@ -1,12 +1,11 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "moj/components/timeline/macro.njk" import mojTimeline %}
-{%- from "moj/components/alert/macro.njk" import mojAlert -%}
+
 
 {% extends "../partials/rootLayout.njk" %}
 
 {% block beforeSupportingContent %}
-{{ mojAlert(ogrs3WarningBox) }}
   {% if showOverrideText %}
     {% set html %}
     <h2 class="govuk-heading-m">Referral does not match PNI</h2>
