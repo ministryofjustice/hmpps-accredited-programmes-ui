@@ -26,7 +26,7 @@ context('App', () => {
       cy.get('.govuk-phase-banner__text').then(phaseBannerTextElement => {
         const { actual, expected } = Helpers.parseHtml(
           phaseBannerTextElement,
-          'This is a new service - your feedback will help us to improve it.',
+          'This is a new service. Give feedback to help us improve it or report a problem through the technology portal.',
         )
         expect(actual).to.equal(expected)
 
