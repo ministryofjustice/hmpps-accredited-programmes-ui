@@ -1,36 +1,16 @@
-# Stage: base image
-FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS base
+# Stage: build assets
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS build
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
-
-LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
-
-RUN apk update && \
-    apk upgrade && \
-    rm -rf /var/cache/apk/*
-
-ENV TZ=Europe/London
-RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
-
-RUN if ! getent group appgroup; then addgroup --gid 2000 --system appgroup; fi && \
-    if ! id -u appuser 2>/dev/null; then adduser --uid 2000 --system appuser --ingroup appgroup; fi
 
 WORKDIR /app
-
-# Cache breaking
-ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
-
-# Stage: build assets
-FROM base AS build
-
-ARG BUILD_NUMBER=1_0_0
-ARG GIT_REF=not-available
 
 RUN apk update && \
     apk add --no-cache make python3 g++
 
-COPY package*.json ./
+# .npmrc and .allowed-scripts.mjs ensure only allowlisted dependency install scripts are run
+COPY package*.json .npmrc .allowed-scripts.mjs ./
 RUN CYPRESS_INSTALL_BINARY=0 npm run setup --no-audit
 
 COPY . .
@@ -40,10 +20,19 @@ RUN export BUILD_NUMBER=${BUILD_NUMBER} && \
     export GIT_REF=${GIT_REF} && \
     npm run record-build-info
 
-RUN npm prune --no-audit --production
+RUN npm prune --no-audit --omit=dev
 
-# Stage: copy production assets and dependencies
-FROM base
+# Stage: copy production assets and dependencies onto a runtime image without npm
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine-runtime
+
+ARG BUILD_NUMBER=1_0_0
+
+LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
+
+WORKDIR /app
+
+# Cache breaking
+ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
 
 COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
@@ -66,5 +55,5 @@ EXPOSE 3000 3001
 ENV NODE_ENV='production'
 USER 2000
 
-CMD [ "npm", "start" ]
-
+# Run node directly so that it receives SIGTERM and can shut down gracefully
+CMD [ "node", "dist/server.js" ]
