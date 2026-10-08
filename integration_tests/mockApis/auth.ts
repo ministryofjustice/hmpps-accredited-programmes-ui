@@ -17,6 +17,7 @@ const createToken = ({ authorities = [] }: { authorities?: Array<ApplicationRole
     jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
     scope: ['read'],
     user_name: mockedUser.username,
+    user_uuid: '11111111-1111-1111-1111-111111111111',
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })

@@ -1,17 +1,4 @@
 /* istanbul ignore file */
-/* eslint-disable import/first, import/order */
-
-/*
- * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
- * In particular, applicationinsights automatically collects bunyan logs
- */
-import type { SystemToken } from '@hmpps-auth'
-import AppInsightsUtils from '../utils/appInsightsUtils'
-
-AppInsightsUtils.initialiseAppInsights()
-AppInsightsUtils.buildClient()
-
-/* eslint-enable import/order */
 
 import CourseClient from './accreditedProgrammesApi/courseClient'
 import OasysClient from './accreditedProgrammesApi/oasysClient'
@@ -31,6 +18,7 @@ import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
 import type { TokenVerifier } from './tokenVerification'
 import verifyToken from './tokenVerification'
+import type { SystemToken } from '@hmpps-auth'
 
 type RestClientBuilder<T> = (token: Express.User['token'] | SystemToken) => T
 type RestClientBuilderWithoutToken<T> = () => T
