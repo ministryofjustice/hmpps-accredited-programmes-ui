@@ -22,6 +22,7 @@ export default function populateCurrentUser(userService: UserService): RequestHa
             activeCaseLoadId,
             hasReferrerRole: roles?.includes(ApplicationRoles.ACP_REFERRER),
             roles,
+            userUuid: UserUtils.getUserUuidFromToken(userToken),
           }
         } else {
           logger.info('No user available')

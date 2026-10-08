@@ -65,11 +65,11 @@
   "dependencies": {
     "@faker-js/faker": "^9.0.0",
     "@ministryofjustice/frontend": "^4.0.0",
+    "@ministryofjustice/hmpps-azure-telemetry": "1.1.0",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.2.0",
     "@pkgjs/parseargs": "^0.11.0",
     "@sentry/node": "^10.0.0",
     "agentkeepalive": "^4.3.0",
-    "applicationinsights": "^2.5.1",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "compression": "^1.7.4",
@@ -167,6 +167,7 @@
     "djlint": "^1.27.0"
   },
   "overrides": {
+    "@opentelemetry/core": "2.11.0",
     "serialize-javascript": "7.0.5",
     "brace-expansion": "^2.0.3",
     "qs": "^6.15.2",
