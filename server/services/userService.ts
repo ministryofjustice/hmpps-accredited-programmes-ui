@@ -4,6 +4,7 @@ import type { ResponseError } from 'superagent'
 import logger from '../../logger'
 import type { HmppsManageUsersClient, PrisonApiClient, RestClientBuilder } from '../data'
 import { StringUtils } from '../utils'
+import AppInsightsUtils from '../utils/appInsightsUtils'
 import type { UserDetails } from '@accredited-programmes/users'
 import type { SystemToken } from '@hmpps-auth'
 import type { User, UserEmail } from '@manage-users-api'
@@ -107,14 +108,23 @@ export default class UserService {
   private async getCaseloads(systemToken: SystemToken): Promise<Array<Caseload>> {
     const prisonApiClient = this.prisonApiClientBuilder(systemToken)
 
-    let cases: Array<Caseload> = []
-
     try {
-      cases = await prisonApiClient.findCurrentUserCaseloads()
+      return await prisonApiClient.findCurrentUserCaseloads()
     } catch (error) {
+      // NOTE: Previously this error was swallowed and an empty array of caseloads was returned instead.
+      // This meant a transient failure fetching caseloads (e.g. a Prison API/NOMIS blip) silently resulted
+      // in `activeCaseLoadId` being `undefined`, which in turn caused course/referral lookups scoped to the
+      // user's organisation to come back empty, surfacing as a misleading "No courses found" 404 rather than
+      // the real underlying error. Worse, because the user object is cached in the session for the lifetime
+      // of the session (see populateCurrentUser), the user would be stuck seeing this 404 on every subsequent
+      // We now let the error propagate so it surfaces correctly (as a
+      // 500) and is not cached against the session.
       logger.error(error, "Failed to fetch user's caseloads")
+      // Emit a distinct, queryable App Insights marker so sustained upstream outages are easy to spot/alert on.
+      // We only reach here once the underlying RestClient (superagent) has already exhausted its retries, so
+      // each event represents a fully-failed fetch rather than a single transient attempt.
+      AppInsightsUtils.trackEvent('CaseloadFetchFailed', { errorMessage: (error as Error).message })
+      throw error
     }
-
-    return cases
   }
 }

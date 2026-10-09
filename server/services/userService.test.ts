@@ -5,11 +5,13 @@ import logger from '../../logger'
 import { HmppsManageUsersClient, PrisonApiClient } from '../data'
 import { caseloadFactory, userFactory } from '../testutils/factories'
 import { StringUtils } from '../utils'
+import AppInsightsUtils from '../utils/appInsightsUtils'
 
 jest.mock('../data/hmppsManageUsersClient')
 jest.mock('../data/prisonApiClient')
 jest.mock('../../logger')
 jest.mock('../utils')
+jest.mock('../utils/appInsightsUtils')
 
 const systemToken = 'a system token'
 const userToken = 'a user token'
@@ -67,13 +69,22 @@ describe('UserService', () => {
     })
 
     describe('when the caseloads client throws an error', () => {
-      it("logs the error but sets the user's caseloads to an empty array so the user can still access the service", async () => {
+      it('logs the error and propagates it, rather than silently continuing with no caseloads', async () => {
         const caseloadError = new Error('some caseload error')
         prisonApiClient.findCurrentUserCaseloads.mockRejectedValue(caseloadError)
 
-        const result = await userService.getCurrentUserWithDetails(userToken)
+        await expect(userService.getCurrentUserWithDetails(userToken)).rejects.toEqual(caseloadError)
         expect(logger.error).toHaveBeenCalledWith(caseloadError, "Failed to fetch user's caseloads")
-        expect(result.caseloads).toEqual([])
+      })
+
+      it('emits a telemetry marker so sustained caseload outages are visible in App Insights', async () => {
+        const caseloadError = new Error('some caseload error')
+        prisonApiClient.findCurrentUserCaseloads.mockRejectedValue(caseloadError)
+
+        await expect(userService.getCurrentUserWithDetails(userToken)).rejects.toEqual(caseloadError)
+        expect(AppInsightsUtils.trackEvent).toHaveBeenCalledWith('CaseloadFetchFailed', {
+          errorMessage: 'some caseload error',
+        })
       })
     })
   })

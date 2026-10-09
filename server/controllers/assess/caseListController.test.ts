@@ -86,6 +86,18 @@ describe('AssessCaseListController', () => {
         expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
+
+    describe('when there is no active caseload', () => {
+      it('throws a 500 error', async () => {
+        response = createMock<Response>({ locals: { user: { activeCaseLoadId: undefined, username } } })
+
+        const requestHandler = controller.indexRedirect()
+        const expectedError = createError(500, "Unable to determine the user's active caseload.")
+
+        await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
+        expect(courseService.getCoursesByOrganisation).not.toHaveBeenCalled()
+      })
+    })
   })
 
   describe('filter', () => {
@@ -446,6 +458,20 @@ describe('AssessCaseListController', () => {
           await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
           expect(referralService.getReferralViews).not.toHaveBeenCalled()
         })
+      })
+    })
+
+    describe('when there is no active caseload', () => {
+      it('throws a 500 error', async () => {
+        request.params = { courseId: limeCourse.id, referralStatusGroup }
+        response = createMock<Response>({ locals: { user: { activeCaseLoadId: undefined, username } } })
+
+        const requestHandler = controller.show()
+        const expectedError = createError(500, "Unable to determine the user's active caseload.")
+
+        await expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
+        expect(courseService.getCourse).not.toHaveBeenCalled()
+        expect(referralService.getReferralViews).not.toHaveBeenCalled()
       })
     })
 
