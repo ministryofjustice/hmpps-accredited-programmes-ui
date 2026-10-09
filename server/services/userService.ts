@@ -4,7 +4,6 @@ import type { ResponseError } from 'superagent'
 import logger from '../../logger'
 import type { HmppsManageUsersClient, PrisonApiClient, RestClientBuilder } from '../data'
 import { StringUtils } from '../utils'
-import AppInsightsUtils from '../utils/appInsightsUtils'
 import type { UserDetails } from '@accredited-programmes/users'
 import type { SystemToken } from '@hmpps-auth'
 import type { User, UserEmail } from '@manage-users-api'
@@ -117,13 +116,15 @@ export default class UserService {
       // user's organisation to come back empty, surfacing as a misleading "No courses found" 404 rather than
       // the real underlying error. Worse, because the user object is cached in the session for the lifetime
       // of the session (see populateCurrentUser), the user would be stuck seeing this 404 on every subsequent
-      // We now let the error propagate so it surfaces correctly (as a
+      // request until their session expired. We now let the error propagate so it surfaces correctly (as a
       // 500) and is not cached against the session.
-      logger.error(error, "Failed to fetch user's caseloads")
-      // Emit a distinct, queryable App Insights marker so sustained upstream outages are easy to spot/alert on.
-      // We only reach here once the underlying RestClient (superagent) has already exhausted its retries, so
-      // each event represents a fully-failed fetch rather than a single transient attempt.
-      AppInsightsUtils.trackEvent('CaseloadFetchFailed', { errorMessage: (error as Error).message })
+      //
+      // The log carries a stable `event` marker: bunyan logs are auto-captured by the OpenTelemetry
+      // instrumentation (see azureAppInsights.ts), so this gives a queryable App Insights signal
+      // (e.g. `traces | where customDimensions.event == "CaseloadFetchFailed"`) to alert on sustained
+      // outages. We only reach here once the underlying RestClient (superagent) has exhausted its retries,
+      // so each occurrence represents a fully-failed fetch rather than a single transient attempt.
+      logger.error({ err: error, event: 'CaseloadFetchFailed' }, "Failed to fetch user's caseloads")
       throw error
     }
   }
