@@ -80,7 +80,7 @@ describe('UserService', () => {
 
         await expect(userService.getCurrentUserWithDetails(userToken)).rejects.toEqual(caseloadError)
         expect(logger.error).toHaveBeenCalledWith(
-          { err: caseloadError, event: 'CaseloadFetchFailed' },
+          { errorMessage: 'some caseload error', event: 'CaseloadFetchFailed' },
           "Failed to fetch user's caseloads",
         )
       })

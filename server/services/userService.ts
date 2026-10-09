@@ -123,8 +123,13 @@ export default class UserService {
       // instrumentation (see azureAppInsights.ts), so this gives a queryable App Insights signal
       // (e.g. `traces | where customDimensions.event == "CaseloadFetchFailed"`) to alert on sustained
       // outages. We only reach here once the underlying RestClient (superagent) has exhausted its retries,
-      // so each occurrence represents a fully-failed fetch rather than a single transient attempt.
-      logger.error({ err: error, event: 'CaseloadFetchFailed' }, "Failed to fetch user's caseloads")
+      // so each occurrence represents a fully-failed fetch rather than a single transient attempt. The full
+      // HTTP error detail (status/path/query) is already logged upstream by RestClient; we deliberately log
+      // plain enumerable fields here (rather than the raw Error) so they serialise into the telemetry.
+      logger.error(
+        { errorMessage: (error as Error).message, event: 'CaseloadFetchFailed' },
+        "Failed to fetch user's caseloads",
+      )
       throw error
     }
   }
