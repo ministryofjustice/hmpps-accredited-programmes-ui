@@ -1,3 +1,4 @@
+import AppInsightsUtils from './appInsightsUtils'
 import type {
   CourseParticipationDetailsBody,
   RequestWithCourseParticipationDetailsBody,
@@ -40,6 +41,7 @@ import UserUtils from './userUtils'
 
 export {
   AlcoholMisuseUtils,
+  AppInsightsUtils,
   AttitudesUtils,
   CaseListUtils,
   CourseParticipationUtils,
