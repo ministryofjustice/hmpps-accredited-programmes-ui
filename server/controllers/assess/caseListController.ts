@@ -45,7 +45,7 @@ export default class AssessCaseListController {
       const { activeCaseLoadId, username } = res.locals.user
 
       if (!activeCaseLoadId) {
-        throw createError(500, "Unable to determine the user's active caseload.")
+        throw createError(404, "Unable to determine the user's active caseload.")
       }
 
       const courses = await this.courseService.getCoursesByOrganisation(username, activeCaseLoadId)
@@ -88,7 +88,7 @@ export default class AssessCaseListController {
       const { activeCaseLoadId, username } = res.locals.user
 
       if (!activeCaseLoadId) {
-        throw createError(500, "Unable to determine the user's active caseload.")
+        throw createError(404, "Unable to determine the user's active caseload.")
       }
 
       const selectedCourse = await this.courseService.getCourse(username, courseId)
