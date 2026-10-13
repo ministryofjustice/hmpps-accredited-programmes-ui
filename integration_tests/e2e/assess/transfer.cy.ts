@@ -75,6 +75,7 @@ context('Transferring a referral to building choices', () => {
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
     cy.signIn()
 
     cy.task('stubCourseByOffering', { course: originalCourse, courseOfferingId: originalCourseOffering.id })
