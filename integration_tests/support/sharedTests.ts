@@ -1163,6 +1163,39 @@ const sharedTests = {
       relationshipsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
       relationshipsPage.shouldContainNoRelationshipsSummaryCard()
     },
+    showsRisksAndAlertsOgrs4PageWithActiveAlerts: (role: ApplicationRole): void => {
+      const alerts = [
+        { alertType: 'Security', dateCreated: '2024-01-01', description: 'Alert description one' },
+        { alertType: 'Self Harm', dateCreated: '2024-02-02', description: 'Alert description two' },
+        { alertType: 'MAPPP Case', dateCreated: '2024-03-03', description: 'Alert description three' },
+      ]
+      const risksAndAlerts = risksAndAlertsFactory.withAllOptionalFields().build({
+        alerts,
+        isLegacy: false,
+      })
+      sharedTests.referrals.beforeEach(role)
+      sharedTests.risksAndNeeds.beforeEach()
+
+      cy.task('stubRisksAndAlerts', {
+        prisonNumber: prisoner.prisonerNumber,
+        risksAndAlerts,
+      })
+
+      const path = pathsByRole(role).show.risksAndNeeds.risksAndAlerts({ referralId: referral.id })
+      cy.visit(path)
+
+      const risksAndAlertsPage = Page.verifyOnPage(RisksAndAlertsPage, {
+        course,
+        risksAndAlerts,
+      })
+      risksAndAlertsPage.shouldHavePersonDetails(person)
+      risksAndAlertsPage.shouldContainHomeLink()
+      risksAndAlertsPage.shouldContainShowReferralButtons(path, referral, statusTransitions)
+      risksAndAlertsPage.shouldContainShowReferralSubNavigation(path, 'risksAndNeeds', referral.id)
+      risksAndAlertsPage.shouldContainShowReferralSubHeading('Risks and needs')
+      risksAndAlertsPage.shouldContainRisksAndNeedsSideNavigation(path, referral.id)
+      risksAndAlertsPage.shouldHaveActiveAlertsInformation()
+    },
     showsRisksAndAlertsPageWithApiError: (role: ApplicationRole): void => {
       sharedTests.referrals.beforeEach(role)
 

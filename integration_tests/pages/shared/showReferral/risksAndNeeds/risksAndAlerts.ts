@@ -31,6 +31,24 @@ export default class RisksAndAlertsPage extends Page {
     })
   }
 
+  shouldHaveActiveAlertsInformation() {
+    cy.get('[aria-label="active risk flags"]').within(() => {
+      cy.get('h3').should('have.text', 'Active alerts')
+
+      if (this.risksAndAlerts.alerts?.length) {
+        cy.get('[aria-label="Risk flags"] li').should('have.length', this.risksAndAlerts.alerts.length)
+
+        this.risksAndAlerts.alerts.forEach((alert, index) => {
+          // Asserts the actual alert description text is rendered (and not, say, `[object Object]`
+          // from accidentally stringifying the whole alert object).
+          cy.get('[aria-label="Risk flags"] li').eq(index).should('have.text', alert.description)
+        })
+      } else {
+        cy.contains('p', 'No risks').should('exist')
+      }
+    })
+  }
+
   shouldHaveAlertsInformation() {
     cy.get('[data-testid="alerts-heading"]').should('have.text', 'Active risk alerts')
 
