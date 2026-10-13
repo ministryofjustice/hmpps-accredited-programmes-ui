@@ -95,8 +95,7 @@
     "redis": "^5.0.0",
     "static-path": "^0.0.4",
     "superagent": "^10.2.2",
-    "url-value-parser": "^2.2.0",
-    "uuid": "^11.1.1"
+    "url-value-parser": "^2.2.0"
   },
   "devDependencies": {
     "@golevelup/ts-jest": "^0.5.0",
@@ -121,7 +120,6 @@
     "@types/passport-oauth2": "^1.4.12",
     "@types/superagent": "^8.0.0",
     "@types/supertest": "^6.0.0",
-    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "audit-ci": "^7.0.0",
