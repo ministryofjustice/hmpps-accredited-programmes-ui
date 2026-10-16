@@ -60,7 +60,7 @@ export default class TransferReferralErrorController {
         ]
       } else {
         errorText = ['This referral cannot be moved at the moment because of an error. Try again later.']
-        pageHeading = 'Cannot complete move to Building Choices'
+        pageHeading = 'This referral cannot be moved to Building Choices'
       }
 
       return res.render('referrals/transfer/error/show', {
