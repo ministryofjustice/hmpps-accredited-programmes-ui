@@ -10,6 +10,7 @@ generic-service:
 
   env:
     ENVIRONMENT: dev
+    LOG_LEVEL: 'debug'
     ACCREDITED_PROGRAMMES_API_URL: 'https://accredited-programmes-api-dev.hmpps.service.justice.gov.uk'
     DPS_URL: 'https://dps-dev.prison.service.justice.gov.uk'
     INGRESS_URL: 'https://accredited-programmes-dev.hmpps.service.justice.gov.uk'

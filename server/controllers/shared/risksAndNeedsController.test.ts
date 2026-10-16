@@ -926,7 +926,7 @@ describe('RisksAndNeedsController', () => {
         expect(response.render).toHaveBeenCalledWith('referrals/show/risksAndNeeds/risksAndAlertsOgrs4', {
           ...sharedPageData,
           activeAlerts: {
-            flags: risksAndAlerts.alerts?.map(alert => ({ description: alert })),
+            flags: risksAndAlerts.alerts?.map(alert => ({ description: alert.description })),
             lastUpdated: `<p class="risk-box__body-text govuk-!-margin-bottom-0">Last updated: ${risksAndAlerts.lastUpdated}</p>`,
           },
           allReoffendingPredictor,

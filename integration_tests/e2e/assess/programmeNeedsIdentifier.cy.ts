@@ -45,6 +45,7 @@ context('Viewing Programme Needs Identifier information when assessing a referra
     cy.task('reset')
     cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_PROGRAMME_TEAM] })
     cy.task('stubAuthUser')
+    cy.task('stubDefaultCaseloads')
     cy.signIn()
 
     cy.task('stubCourseByOffering', {

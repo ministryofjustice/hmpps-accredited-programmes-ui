@@ -16,7 +16,6 @@ declare module 'express-session' {
   interface SessionData {
     buildingChoicesData: BuildingChoicesData
     hspReferralData: HspReferralData
-    nowInMinutes: number
     pniFindAndReferData: PniFindAndReferData
     recentCaseListPath: string
     referralStatusUpdateData: ReferralStatusUpdateSessionData

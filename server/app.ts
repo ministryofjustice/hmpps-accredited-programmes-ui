@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
 import express from 'express'
 import createError from 'http-errors'
@@ -25,7 +26,7 @@ import {
 import { metricsMiddleware } from './monitoring/metricsApp'
 import routes from './routes'
 import type { Services } from './services'
-import { nunjucksSetup } from './utils'
+import { AppInsightsUtils, nunjucksSetup } from './utils'
 
 export default function createApp(controllers: Controllers, services: Services): express.Application {
   const app = express()
@@ -48,7 +49,14 @@ export default function createApp(controllers: Controllers, services: Services):
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser(services))
-  app.get('*', dpsComponents.getPageComponents({ dpsUrl: config.dpsUrl }))
+  // Registered after setUpCurrentUser so the user is available. userId and userUuid are added by default.
+  app.use(
+    telemetryMiddleware.addUserMetadataToTelemetry({
+      getAttributes: (_req, res: express.Response) => AppInsightsUtils.getUserAttributes(res.locals.user),
+    }),
+  )
+  // '/*' rather than '*' so this isn't included in the route names sent to app insights
+  app.get('/*', dpsComponents.getPageComponents({ dpsUrl: config.dpsUrl }))
   app.use(routes(controllers))
 
   // The Sentry middleware must be before any other error middleware and after all controllers

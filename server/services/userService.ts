@@ -107,14 +107,30 @@ export default class UserService {
   private async getCaseloads(systemToken: SystemToken): Promise<Array<Caseload>> {
     const prisonApiClient = this.prisonApiClientBuilder(systemToken)
 
-    let cases: Array<Caseload> = []
-
     try {
-      cases = await prisonApiClient.findCurrentUserCaseloads()
+      return await prisonApiClient.findCurrentUserCaseloads()
     } catch (error) {
-      logger.error(error, "Failed to fetch user's caseloads")
+      // NOTE: Previously this error was swallowed and an empty array of caseloads was returned instead.
+      // This meant a transient failure fetching caseloads (e.g. a Prison API/NOMIS blip) silently resulted
+      // in `activeCaseLoadId` being `undefined`, which in turn caused course/referral lookups scoped to the
+      // user's organisation to come back empty, surfacing as a misleading "No courses found" 404 rather than
+      // the real underlying error. Worse, because the user object is cached in the session for the lifetime
+      // of the session (see populateCurrentUser), the user would be stuck seeing this 404 on every subsequent
+      // request until their session expired. We now let the error propagate so it surfaces correctly (as a
+      // 500) and is not cached against the session.
+      //
+      // The log carries a stable `event` marker: bunyan logs are auto-captured by the OpenTelemetry
+      // instrumentation (see azureAppInsights.ts), so this gives a queryable App Insights signal
+      // (e.g. `traces | where customDimensions.event == "CaseloadFetchFailed"`) to alert on sustained
+      // outages. We only reach here once the underlying RestClient (superagent) has exhausted its retries,
+      // so each occurrence represents a fully-failed fetch rather than a single transient attempt. The full
+      // HTTP error detail (status/path/query) is already logged upstream by RestClient; we deliberately log
+      // plain enumerable fields here (rather than the raw Error) so they serialise into the telemetry.
+      logger.error(
+        { errorMessage: (error as Error).message, event: 'CaseloadFetchFailed' },
+        "Failed to fetch user's caseloads",
+      )
+      throw error
     }
-
-    return cases
   }
 }
