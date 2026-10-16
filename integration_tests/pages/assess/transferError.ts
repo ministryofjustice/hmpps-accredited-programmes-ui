@@ -21,7 +21,7 @@ export default class TransferErrorPage extends Page {
   }) {
     const { organisation, originalCourse, title, person, referral } = args
 
-    super(title || 'This referral cannot be moved to Building Choices')
+    super(title || 'Cannot complete move to Building Choices')
 
     this.organisation = organisation
     this.originalCourse = originalCourse
