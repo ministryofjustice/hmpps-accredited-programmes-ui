@@ -8,6 +8,10 @@
     {
       "matchPackageNames": ["eslint-import-resolver-typescript"],
       "allowedVersions": "3.7.0"
+    },
+    {
+      "matchPackageNames": ["@faker-js/faker"],
+      "allowedVersions": "<10.0.0"
     }
   ]
 }
