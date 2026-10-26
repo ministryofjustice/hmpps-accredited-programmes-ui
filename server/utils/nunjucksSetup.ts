@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-// eslint-disable-next-line import/extensions
+// eslint-disable-next-line import-x/extensions
 import mojFrontendFilters from '@ministryofjustice/frontend/moj/filters/all.js'
 import type express from 'express'
 import nunjucks from 'nunjucks'
