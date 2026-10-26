@@ -6,5 +6,6 @@ export default configureAllowedScripts({
       'node_modules/djlint@1.36.4': 'ALLOW',
       'node_modules/dtrace-provider@0.8.8': 'ALLOW',
       'node_modules/fsevents@2.3.3': 'ALLOW',
+      'node_modules/unrs-resolver@1.12.2': 'ALLOW',
    },
 })

@@ -1,5 +1,5 @@
 import type { AxeRules } from '@accredited-programmes/integration-tests'
-// eslint-disable-next-line import/extensions
+// eslint-disable-next-line import-x/extensions
 import mojFrontendFilters from '@ministryofjustice/frontend/moj/filters/all.js'
 
 import { assessPathBase, findPaths, referPaths } from '../../server/paths'
