@@ -1,1 +1,3 @@
-window.MOJFrontend.initAll()
+import { initAll } from '/assets/moj/all.bundle.mjs'
+
+initAll()
