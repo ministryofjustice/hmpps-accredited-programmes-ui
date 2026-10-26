@@ -38,6 +38,7 @@ context('Find programmes based on PNI Pathway', () => {
       cy.task('reset')
       cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
       cy.task('stubAuthUser')
+      cy.task('stubDefaultCaseloads')
       cy.signIn()
     })
 

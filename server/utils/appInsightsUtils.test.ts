@@ -1,138 +1,59 @@
-import type { DataTelemetry, EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-
-import type { ContextObjects } from './appInsightsUtils'
 import AppInsightsUtils from './appInsightsUtils'
 import type { Caseload } from '@prison-api'
 
-const acpRoles = ['ROLE_ACP_PROGRAMME_TEAM', 'ROLE_ACP_REFERRER']
-
-const user: {
-  activeCaseLoadId: string
-  caseloads: Array<Caseload>
-  roles: Array<string>
-  username: string
-} = {
-  activeCaseLoadId: 'MDI',
-  caseloads: [
-    {
-      caseLoadId: 'MDI',
-      caseloadFunction: 'GENERAL',
-      currentlyActive: false,
-      description: 'Moorland (HMP & YOI)',
-      type: 'INST',
-    },
-    {
-      caseLoadId: 'ONI',
-      caseloadFunction: 'GENERAL',
-      currentlyActive: false,
-      description: 'Onley (HMP & YOI)',
-      type: 'INST',
-    },
-  ],
-  roles: [...acpRoles, 'ROLE_CREATE_USER', 'ROLE_VIEW_PRISONER_DATA'],
-  username: 'TEST_USER',
-}
-
-const createEnvelope = (properties: Record<string, boolean | string> | undefined, baseType = 'RequestData') =>
-  ({
-    data: {
-      baseData: { properties },
-      baseType,
-    } as DataTelemetry,
-  }) as EnvelopeTelemetry
-
-const createContext = (
-  username?: string,
-  activeCaseLoadId?: string,
-  roles?: Array<string>,
-  caseloads?: Array<Caseload>,
-) =>
-  ({
-    'http.ServerRequest': {
-      res: {
-        locals: {
-          user: {
-            activeCaseLoadId,
-            caseloads,
-            roles,
-            username,
-          },
-        },
-      },
-    },
-  }) as ContextObjects
+const caseloads: Array<Caseload> = [
+  {
+    caseLoadId: 'MDI',
+    caseloadFunction: 'GENERAL',
+    currentlyActive: false,
+    description: 'Moorland (HMP & YOI)',
+    type: 'INST',
+  },
+  {
+    caseLoadId: 'ONI',
+    caseloadFunction: 'GENERAL',
+    currentlyActive: false,
+    description: 'Onley (HMP & YOI)',
+    type: 'INST',
+  },
+]
 
 describe('AppInsightsUtils', () => {
-  describe('addUserDataToRequests', () => {
-    it('merges username and activeCaseloadId with existing properties when present for sending to ApplicationInsights', () => {
-      const contextWithUserDetails = createContext(user.username, user.activeCaseLoadId, user.roles, user.caseloads)
-      const envelope = createEnvelope({ other: 'things' })
-
-      AppInsightsUtils.addUserDataToRequests(envelope, contextWithUserDetails)
-
-      expect(envelope.data.baseData!.properties).toEqual({
-        acpRoles,
+  describe('getUserAttributes', () => {
+    it('returns the username, active caseload and ACP roles of the user for sending to ApplicationInsights', () => {
+      expect(
+        AppInsightsUtils.getUserAttributes({
+          activeCaseLoadId: 'MDI',
+          caseloads,
+          roles: ['ROLE_ACP_PROGRAMME_TEAM', 'ROLE_ACP_REFERRER', 'ROLE_CREATE_USER', 'ROLE_VIEW_PRISONER_DATA'],
+          username: 'TEST_USER',
+        }),
+      ).toEqual({
+        acpRoles: 'ROLE_ACP_PROGRAMME_TEAM,ROLE_ACP_REFERRER',
         activeCaseLoadDescription: 'Moorland (HMP & YOI)',
-        activeCaseLoadId: user.activeCaseLoadId,
-        other: 'things',
-        username: user.username,
+        activeCaseLoadId: 'MDI',
+        username: 'TEST_USER',
       })
     })
 
-    it("sets the user fields in the envelope's baseData properties when no other envelope properties have been set", () => {
-      const context = createContext(user.username, user.activeCaseLoadId, user.roles, user.caseloads)
-      const envelope = createEnvelope(undefined)
-
-      AppInsightsUtils.addUserDataToRequests(envelope, context)
-
-      expect(envelope.data.baseData!.properties).toEqual({
-        acpRoles,
-        activeCaseLoadDescription: 'Moorland (HMP & YOI)',
-        activeCaseLoadId: user.activeCaseLoadId,
-        username: user.username,
-      })
+    it('returns an empty acpRoles value when the user has no ACP roles', () => {
+      expect(AppInsightsUtils.getUserAttributes({ roles: ['ROLE_CREATE_USER'], username: 'TEST_USER' })).toEqual(
+        expect.objectContaining({ acpRoles: '' }),
+      )
     })
 
-    it('does not set user data when no username is present on the context object', () => {
-      const contextWithoutUsername = createContext(undefined, user.activeCaseLoadId)
-      const envelope = createEnvelope({ other: 'things' })
-
-      AppInsightsUtils.addUserDataToRequests(envelope, contextWithoutUsername)
-
-      expect(envelope.data.baseData!.properties).toEqual({ other: 'things' })
+    it('returns no activeCaseLoadDescription when the active caseload is not in the caseloads of the user', () => {
+      expect(AppInsightsUtils.getUserAttributes({ activeCaseLoadId: 'BXI', caseloads, username: 'TEST_USER' })).toEqual(
+        expect.objectContaining({ activeCaseLoadDescription: undefined, activeCaseLoadId: 'BXI' }),
+      )
     })
 
-    it("does not set user data when the envelope's baseType is not RequestData", () => {
-      const context = createContext(user.username, user.activeCaseLoadId)
-      const nonRequestTypeEnvelope = createEnvelope({ other: 'things' }, 'NOT_REQUEST_DATA')
-
-      AppInsightsUtils.addUserDataToRequests(nonRequestTypeEnvelope, context)
-
-      expect(nonRequestTypeEnvelope.data.baseData!.properties).toEqual({ other: 'things' })
-    })
-
-    it('does not set user data when there is no baseData', () => {
-      const context = createContext(user.username, user.activeCaseLoadId)
-      const envelopeWithNoBaseData = {
-        data: {
-          baseType: 'RequestData',
-        } as DataTelemetry,
-      } as EnvelopeTelemetry
-
-      AppInsightsUtils.addUserDataToRequests(envelopeWithNoBaseData, context)
-
-      expect(envelopeWithNoBaseData.data.baseData).toBeUndefined()
-    })
-
-    it('ignores the request when no user data is set on the context object', () => {
-      const envelope = createEnvelope({ other: 'things' })
-
-      AppInsightsUtils.addUserDataToRequests(envelope, {
-        'http.ServerRequest': {},
-      } as ContextObjects)
-
-      expect(envelope.data.baseData!.properties).toEqual({
-        other: 'things',
+    it('returns undefined values when there is no user', () => {
+      expect(AppInsightsUtils.getUserAttributes(undefined)).toEqual({
+        acpRoles: undefined,
+        activeCaseLoadDescription: undefined,
+        activeCaseLoadId: undefined,
+        username: undefined,
       })
     })
   })

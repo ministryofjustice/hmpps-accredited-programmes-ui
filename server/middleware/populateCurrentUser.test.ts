@@ -46,7 +46,7 @@ describe('populateCurrentUser', () => {
 
     describe('and the user is not already present in the session', () => {
       describe('and they are found by the user service', () => {
-        it('populates the user with its token, details from the user service and its roles, overriding any duplicate keys, then calls next', async () => {
+        it('populates the user with its token, details from the user service, its roles and its UUID, overriding any duplicate keys, then calls next', async () => {
           userService.getCurrentUserWithDetails.mockResolvedValue({
             active: true,
             authSource: 'nomis',
@@ -57,10 +57,12 @@ describe('populateCurrentUser', () => {
             username: 'DEL_HATTON',
           })
           ;(UserUtils.getUserRolesFromToken as jest.Mock).mockReturnValue(['SOME_REQUIRED_ROLE'])
+          ;(UserUtils.getUserUuidFromToken as jest.Mock).mockReturnValue('11111111-1111-1111-1111-111111111111')
 
           await populateCurrentUser(userService)(req, res, next)
 
           expect(userService.getCurrentUserWithDetails).toHaveBeenCalledWith('SOME-TOKEN')
+          expect(UserUtils.getUserUuidFromToken).toHaveBeenCalledWith('SOME-TOKEN')
 
           expect(res.locals.user).toEqual({
             active: true,
@@ -73,6 +75,7 @@ describe('populateCurrentUser', () => {
             roles: ['SOME_REQUIRED_ROLE'],
             token: 'SOME-TOKEN',
             userId: 'new-uuid-value',
+            userUuid: '11111111-1111-1111-1111-111111111111',
             username: 'DEL_HATTON',
           })
 

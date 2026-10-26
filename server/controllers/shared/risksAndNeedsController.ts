@@ -338,7 +338,7 @@ export default class RisksAndNeedsController {
         }
         templateLocals = {
           activeAlerts: {
-            flags: risksAndAlerts.alerts?.map(alert => ({ description: alert })),
+            flags: risksAndAlerts.alerts?.map(alert => ({ description: alert.description })),
             lastUpdated: `<p class="risk-box__body-text govuk-!-margin-bottom-0">Last updated: ${risksAndAlerts.lastUpdated}</p>`,
           },
           allReoffendingPredictor: RisksAndAlertsUtils.allReoffendingPredictor(risksAndAlerts),

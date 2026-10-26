@@ -67,13 +67,22 @@ describe('UserService', () => {
     })
 
     describe('when the caseloads client throws an error', () => {
-      it("logs the error but sets the user's caseloads to an empty array so the user can still access the service", async () => {
+      it('propagates the error rather than silently continuing with no caseloads', async () => {
         const caseloadError = new Error('some caseload error')
         prisonApiClient.findCurrentUserCaseloads.mockRejectedValue(caseloadError)
 
-        const result = await userService.getCurrentUserWithDetails(userToken)
-        expect(logger.error).toHaveBeenCalledWith(caseloadError, "Failed to fetch user's caseloads")
-        expect(result.caseloads).toEqual([])
+        await expect(userService.getCurrentUserWithDetails(userToken)).rejects.toEqual(caseloadError)
+      })
+
+      it('logs the error with a queryable telemetry marker so sustained caseload outages are visible in App Insights', async () => {
+        const caseloadError = new Error('some caseload error')
+        prisonApiClient.findCurrentUserCaseloads.mockRejectedValue(caseloadError)
+
+        await expect(userService.getCurrentUserWithDetails(userToken)).rejects.toEqual(caseloadError)
+        expect(logger.error).toHaveBeenCalledWith(
+          { errorMessage: 'some caseload error', event: 'CaseloadFetchFailed' },
+          "Failed to fetch user's caseloads",
+        )
       })
     })
   })

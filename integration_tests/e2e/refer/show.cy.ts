@@ -86,6 +86,12 @@ context('Viewing a submitted referral', () => {
         })
       })
 
+      describe('and there are risks and alerts from an OGRS4 (non-legacy) assessment', () => {
+        it('shows the active alert descriptions correctly', () => {
+          sharedTests.risksAndNeeds.showsRisksAndAlertsOgrs4PageWithActiveAlerts(ApplicationRoles.ACP_REFERRER)
+        })
+      })
+
       describe('and there are no risks and alerts', () => {
         it('shows the correct information', () => {
           sharedTests.risksAndNeeds.showsRisksAndAlertsPageWithoutData(ApplicationRoles.ACP_REFERRER)
