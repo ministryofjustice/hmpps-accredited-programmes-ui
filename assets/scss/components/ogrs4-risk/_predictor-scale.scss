@@ -187,17 +187,25 @@ $boarder-colour: #B1B4B6;
   }
 
   & h3 {
-    @include govuk-font(14, "bold");
+    @include govuk-font(false, "bold");
+
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   & p {
-    @include govuk-font(14, "regular");
+    @include govuk-font(false, "regular");
+
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }
 
 .scale-marker__card-bottom p {
-  @include govuk-font(14, "bold");
+  @include govuk-font(false, "bold");
 
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   margin: 0;
 }
 
