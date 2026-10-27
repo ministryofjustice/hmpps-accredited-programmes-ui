@@ -63,7 +63,7 @@
     "npm": "^11.0.0"
   },
   "dependencies": {
-    "@faker-js/faker": "^9.0.0",
+    "@faker-js/faker": "^10.6.0",
     "@ministryofjustice/frontend": "^11.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "1.1.0",
     "@ministryofjustice/hmpps-connect-dps-components": "^6.0.0",
