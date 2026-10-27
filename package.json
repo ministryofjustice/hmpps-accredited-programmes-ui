@@ -102,7 +102,7 @@
     "@eslint/js": "^10.0.1",
     "@golevelup/ts-jest": "^0.5.0",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
-    "@pact-foundation/pact": "16.3.0",
+    "@pact-foundation/pact": "17.1.4",
     "@pkgjs/parseargs": "^0.11.0",
     "@tsconfig/node24": "^24.0.0",
     "@types/bunyan": "^1.8.8",
