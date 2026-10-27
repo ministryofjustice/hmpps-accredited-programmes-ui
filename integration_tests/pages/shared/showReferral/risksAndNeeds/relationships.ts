@@ -1,6 +1,4 @@
-import CourseUtils from '../../../../../server/utils/courseUtils'
-import ShowRisksAndNeedsUtils from '../../../../../server/utils/referrals/showRisksAndNeedsUtils'
-import RelationshipsUtils from '../../../../../server/utils/risksAndNeeds/relationshipsUtils'
+import { CourseUtils, RelationshipsUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
 import type { Course, Relationships } from '@accredited-programmes-api'
 

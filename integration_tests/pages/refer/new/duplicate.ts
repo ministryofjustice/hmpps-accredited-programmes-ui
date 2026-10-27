@@ -1,5 +1,4 @@
-import CourseUtils from '../../../../server/utils/courseUtils'
-import ShowReferralUtils from '../../../../server/utils/referrals/showReferralUtils'
+import { CourseUtils, ShowReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { CourseOffering, Person } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'

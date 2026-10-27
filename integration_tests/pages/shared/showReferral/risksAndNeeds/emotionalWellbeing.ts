@@ -1,5 +1,4 @@
-import CourseUtils from '../../../../../server/utils/courseUtils'
-import EmotionalWellbeingUtils from '../../../../../server/utils/risksAndNeeds/emotionalWellbeingUtils'
+import { CourseUtils, EmotionalWellbeingUtils } from '../../../../../server/utils'
 import Page from '../../../page'
 import type { Course, Psychiatric } from '@accredited-programmes-api'
 

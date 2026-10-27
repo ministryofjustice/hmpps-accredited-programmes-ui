@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../server/middleware/applicationRoles'
+import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
 import {
   audienceFactory,
@@ -7,7 +7,7 @@ import {
   referralViewFactory,
 } from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'
-import PathUtils from '../../../server/utils/pathUtils'
+import { PathUtils } from '../../../server/utils'
 import Page from '../../pages/page'
 import { CaseListPage } from '../../pages/shared'
 import type { CaseListColumnHeader } from '@accredited-programmes/ui'

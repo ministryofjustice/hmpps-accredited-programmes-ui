@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../../server/middleware/applicationRoles'
+import { ApplicationRoles } from '../../../../server/middleware/roleBasedAccessMiddleware'
 import { referPaths } from '../../../../server/paths'
 import {
   courseFactory,
@@ -7,7 +7,7 @@ import {
   personFactory,
   referralFactory,
 } from '../../../../server/testutils/factories'
-import mockedUser from '../../../mockApis/mockedUser'
+import auth from '../../../mockApis/auth'
 import Page from '../../../pages/page'
 import { NewReferralShowPersonPage, NewReferralTaskListPage } from '../../../pages/refer'
 import type { Organisation } from '@accredited-programmes-api'
@@ -32,7 +32,7 @@ context('Showing the referral task list and person page', () => {
   const referral = referralFactory.started().build({
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
-    referrerUsername: mockedUser.username,
+    referrerUsername: auth.mockedUser.username,
   })
 
   beforeEach(() => {

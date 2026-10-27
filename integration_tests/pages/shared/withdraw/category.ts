@@ -1,4 +1,4 @@
-import ReferralUtils from '../../../../server/utils/referrals/referralUtils'
+import { ReferralUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { ReferralStatusCategory } from '@accredited-programmes/models'
 import type { ReferralStatusReason } from '@accredited-programmes-api'

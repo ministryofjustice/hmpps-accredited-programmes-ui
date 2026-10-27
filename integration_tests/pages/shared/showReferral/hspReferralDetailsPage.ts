@@ -1,4 +1,4 @@
-import CourseUtils from '../../../../server/utils/courseUtils'
+import { CourseUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Person } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue } from '@accredited-programmes/ui'

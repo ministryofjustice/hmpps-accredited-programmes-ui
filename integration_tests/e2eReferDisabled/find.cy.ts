@@ -1,7 +1,7 @@
-import { ApplicationRoles } from '../../server/middleware/applicationRoles'
+import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { findPaths } from '../../server/paths'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../server/testutils/factories'
-import OrganisationUtils from '../../server/utils/organisationUtils'
+import { OrganisationUtils } from '../../server/utils'
 import { CourseOfferingPage } from '../pages/find'
 import Page from '../pages/page'
 

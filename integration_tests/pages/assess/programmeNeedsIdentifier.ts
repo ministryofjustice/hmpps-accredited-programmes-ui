@@ -1,4 +1,4 @@
-import PniUtils from '../../../server/utils/risksAndNeeds/pniUtils'
+import { PniUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Course, PeopleSearchResponse, PniScore } from '@accredited-programmes-api'
 

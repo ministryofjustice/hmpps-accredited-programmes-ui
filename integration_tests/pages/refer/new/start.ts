@@ -1,5 +1,5 @@
 import { referPaths } from '../../../../server/paths'
-import CourseUtils from '../../../../server/utils/courseUtils'
+import { CourseUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { CourseOffering } from '@accredited-programmes/models'
 import type { CoursePresenter } from '@accredited-programmes/ui'

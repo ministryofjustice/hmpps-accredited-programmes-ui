@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../server/middleware/applicationRoles'
+import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { findPaths, referPaths } from '../../server/paths'
 import {
   courseFactory,
@@ -10,8 +10,8 @@ import {
   referralFactory,
   userFactory,
 } from '../../server/testutils/factories'
-import OrganisationUtils from '../../server/utils/organisationUtils'
-import mockedUser from '../mockApis/mockedUser'
+import { OrganisationUtils } from '../../server/utils'
+import auth from '../mockApis/auth'
 import {
   CourseOfferingPage,
   CoursePage,
@@ -408,7 +408,7 @@ context('Find programmes based on PNI Pathway', () => {
             const referral = referralFactory.started().build({
               offeringId: referableOffering.id,
               prisonNumber,
-              referrerUsername: mockedUser.username,
+              referrerUsername: auth.mockedUser.username,
             })
 
             cy.task('stubCreateReferral', { referral })
@@ -440,7 +440,7 @@ context('Find programmes based on PNI Pathway', () => {
               const referral = referralFactory.submitted().build({
                 offeringId: referableOffering.id,
                 prisonNumber,
-                referrerUsername: mockedUser.username,
+                referrerUsername: auth.mockedUser.username,
               })
 
               cy.task('stubCreateReferral', { referral, status: 409 })
@@ -607,7 +607,7 @@ context('Find programmes based on PNI Pathway', () => {
             const referral = referralFactory.started().build({
               offeringId: referableOffering.id,
               prisonNumber,
-              referrerUsername: mockedUser.username,
+              referrerUsername: auth.mockedUser.username,
             })
 
             cy.task('stubCreateReferral', { referral })

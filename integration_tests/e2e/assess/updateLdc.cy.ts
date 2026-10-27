@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../server/middleware/applicationRoles'
+import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../../../server/paths'
 import { peopleSearchResponseFactory, personFactory, referralFactory } from '../../../server/testutils/factories'
 import UpdateLdcPage from '../../pages/assess/updateLdc'

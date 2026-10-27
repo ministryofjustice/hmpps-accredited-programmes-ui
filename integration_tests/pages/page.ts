@@ -4,12 +4,14 @@ import mojFrontendFilters from '@ministryofjustice/frontend/moj/filters/all.js'
 
 import { assessPathBase, findPaths, referPaths } from '../../server/paths'
 import { referPathBase } from '../../server/paths/refer'
-import CourseParticipationUtils from '../../server/utils/courseParticipationUtils'
-import CourseUtils from '../../server/utils/courseUtils'
-import DateUtils from '../../server/utils/dateUtils'
-import PersonUtils from '../../server/utils/personUtils'
-import ShowReferralUtils from '../../server/utils/referrals/showReferralUtils'
-import ShowRisksAndNeedsUtils from '../../server/utils/referrals/showRisksAndNeedsUtils'
+import {
+  CourseParticipationUtils,
+  CourseUtils,
+  DateUtils,
+  PersonUtils,
+  ShowReferralUtils,
+  ShowRisksAndNeedsUtils,
+} from '../../server/utils'
 import Helpers from '../support/helpers'
 import type { CourseOffering, Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {

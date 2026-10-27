@@ -1,5 +1,5 @@
 import { findPaths } from '../../../server/paths'
-import CourseUtils from '../../../server/utils/courseUtils'
+import { CourseUtils } from '../../../server/utils'
 import Page from '../page'
 import type { BuildingChoicesData, CoursePresenter, OrganisationWithOfferingId } from '@accredited-programmes/ui'
 import type { Course } from '@accredited-programmes-api'

@@ -1,5 +1,4 @@
-import CourseUtils from '../../../../server/utils/courseUtils'
-import SentenceInformationUtils from '../../../../server/utils/sentenceInformationUtils'
+import { CourseUtils, SentenceInformationUtils } from '../../../../server/utils'
 import Page from '../../page'
 import type { Person, SentenceDetails } from '@accredited-programmes/models'
 import type { Course } from '@accredited-programmes-api'

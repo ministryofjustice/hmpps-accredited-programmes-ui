@@ -1,6 +1,4 @@
-import CourseUtils from '../../../../../server/utils/courseUtils'
-import ShowRisksAndNeedsUtils from '../../../../../server/utils/referrals/showRisksAndNeedsUtils'
-import OffenceAnalysisUtils from '../../../../../server/utils/risksAndNeeds/offenceAnalysisUtils'
+import { CourseUtils, OffenceAnalysisUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
 import Page from '../../../page'
 import type { OffenceDetail } from '@accredited-programmes/models'
 import type { Course } from '@accredited-programmes-api'

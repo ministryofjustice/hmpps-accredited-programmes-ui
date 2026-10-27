@@ -1,7 +1,7 @@
 import type { Router } from 'express'
 
 import type { Controllers } from '../controllers'
-import { ApplicationRoles } from '../middleware/applicationRoles'
+import { ApplicationRoles } from '../middleware/roleBasedAccessMiddleware'
 import { referPaths } from '../paths'
 import { RouteUtils } from '../utils'
 

@@ -1,4 +1,4 @@
-import type { ApplicationRoles } from '../../middleware/applicationRoles'
+import type { ApplicationRoles } from '../../middleware/roleBasedAccessMiddleware'
 import type { User } from '@manage-users-api'
 import type { Caseload } from '@prison-api'
 

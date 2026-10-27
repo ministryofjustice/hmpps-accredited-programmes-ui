@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../server/middleware/applicationRoles'
+import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
 import { referPaths } from '../../../server/paths'
 import {
   confirmationFieldsFactory,
@@ -10,7 +10,7 @@ import {
   referralStatusRefDataFactory,
   userFactory,
 } from '../../../server/testutils/factories'
-import mockedUser from '../../mockApis/mockedUser'
+import auth from '../../mockApis/auth'
 import Page from '../../pages/page'
 import { WithdrawConfirmSelectionPage, WithdrawReasonPage } from '../../pages/shared'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
@@ -42,7 +42,7 @@ context('Withdraw referral', () => {
   })
   const referral = referralFactory
     .submitted()
-    .build({ prisonNumber: prisoner.prisonerNumber, referrerUsername: mockedUser.username })
+    .build({ prisonNumber: prisoner.prisonerNumber, referrerUsername: auth.mockedUser.username })
 
   const referralStatusReasons = referralStatusReasonFactory.buildList(5)
 

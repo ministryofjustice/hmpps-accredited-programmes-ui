@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../server/middleware/applicationRoles'
+import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import IndexPage from '../pages'
 import Page from '../pages/page'
 import Helpers from '../support/helpers'

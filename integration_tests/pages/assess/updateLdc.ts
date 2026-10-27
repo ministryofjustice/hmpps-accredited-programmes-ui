@@ -1,5 +1,5 @@
 import { courseFactory, courseOfferingFactory, referralViewFactory } from '../../../server/testutils/factories'
-import StringUtils from '../../../server/utils/stringUtils'
+import { StringUtils } from '../../../server/utils'
 import Page from '../page'
 import type { Person } from '@accredited-programmes/models'
 import type { Referral } from '@accredited-programmes-api'
