@@ -10,7 +10,7 @@ import {
   userFactory,
 } from '../../../../server/testutils/factories'
 import { type CourseParticipationDetailsBody, StringUtils } from '../../../../server/utils'
-import auth from '../../../mockApis/auth'
+import mockedUser from '../../../mockApis/mockedUser'
 import Page from '../../../pages/page'
 import {
   NewReferralDeleteProgrammeHistoryPage,
@@ -35,7 +35,7 @@ context('Programme history', () => {
   })
   const courses = courseFactory.buildList(4)
   const courseNames = courses.map(course => course.name)
-  const addedByUser1 = userFactory.build({ username: auth.mockedUser.username })
+  const addedByUser1 = userFactory.build({ username: mockedUser.username })
   const addedByUser2 = userFactory.build()
 
   const courseOffering = courseOfferingFactory.build()

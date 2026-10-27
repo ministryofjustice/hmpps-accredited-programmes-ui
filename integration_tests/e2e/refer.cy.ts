@@ -1,7 +1,7 @@
 import { ApplicationRoles } from '../../server/middleware/applicationRoles'
 import { referPaths } from '../../server/paths'
 import { referralFactory } from '../../server/testutils/factories'
-import auth from '../mockApis/auth'
+import mockedUser from '../mockApis/mockedUser'
 import AuthErrorPage from '../pages/authError'
 import Page from '../pages/page'
 import { NewReferralCompletePage } from '../pages/refer'
@@ -18,7 +18,7 @@ context('General Refer functionality', () => {
       cy.task('stubSignIn', { authorities: [ApplicationRoles.ACP_REFERRER] })
       cy.signIn()
 
-      const referral = referralFactory.submitted().build({ referrerUsername: auth.mockedUser.username })
+      const referral = referralFactory.submitted().build({ referrerUsername: mockedUser.username })
       cy.task('stubReferral', referral)
 
       const path = referPaths.new.programmeHistory.index({ referralId: referral.id })

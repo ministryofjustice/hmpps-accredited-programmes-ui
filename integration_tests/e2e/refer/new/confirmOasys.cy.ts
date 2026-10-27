@@ -7,7 +7,7 @@ import {
   personFactory,
   referralFactory,
 } from '../../../../server/testutils/factories'
-import auth from '../../../mockApis/auth'
+import mockedUser from '../../../mockApis/mockedUser'
 import Page from '../../../pages/page'
 import { NewReferralConfirmOasysPage, NewReferralTaskListPage } from '../../../pages/refer'
 import type { Organisation } from '@accredited-programmes-api'
@@ -26,7 +26,7 @@ context('OASys confirmation', () => {
   const referral = referralFactory.started().build({
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
-    referrerUsername: auth.mockedUser.username,
+    referrerUsername: mockedUser.username,
   })
 
   beforeEach(() => {

@@ -10,7 +10,7 @@ import {
   referralStatusHistoryFactory,
   userFactory,
 } from '../../../server/testutils/factories'
-import auth from '../../mockApis/auth'
+import mockedUser from '../../mockApis/mockedUser'
 import TransferPage from '../../pages/assess/transfer'
 import TransferErrorPage from '../../pages/assess/transferError'
 import Page from '../../pages/page'
@@ -50,7 +50,7 @@ context('Transferring a referral to building choices', () => {
 
   // The referring user and timeline history
   const anotherUser = userFactory.build({ name: 'Joshua Smith' })
-  const referringUser = userFactory.build({ name: 'Referring User', username: auth.mockedUser.username })
+  const referringUser = userFactory.build({ name: 'Referring User', username: mockedUser.username })
   const referralStatusHistory = [
     referralStatusHistoryFactory.updated().build({ status: 'assessment_started', username: anotherUser.username }),
     referralStatusHistoryFactory.submitted().build({ username: referringUser.username }),
@@ -64,7 +64,7 @@ context('Transferring a referral to building choices', () => {
   const referral = referralFactory.submitted().build({
     offeringId: originalCourseOffering.id,
     prisonNumber: person.prisonNumber,
-    referrerUsername: auth.mockedUser.username,
+    referrerUsername: mockedUser.username,
   })
 
   const transferPath = assessPaths.transfer.show({ referralId: referral.id })
