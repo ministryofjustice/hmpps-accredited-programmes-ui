@@ -3,7 +3,7 @@ import type { Router } from 'express'
 import type { Controllers } from '../controllers'
 import { ApplicationRoles } from '../middleware'
 import { findPaths } from '../paths'
-import { RouteUtils } from '../utils'
+import RouteUtils from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
   const {
