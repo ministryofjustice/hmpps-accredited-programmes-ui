@@ -1,12 +1,13 @@
 /* istanbul ignore file */
 
 import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
-import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
+import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
 import express from 'express'
 import createError from 'http-errors'
 import methodOverride from 'method-override'
 import path from 'path'
 
+import logger from '../logger'
 import config from './config'
 import type { Controllers } from './controllers'
 import errorHandler from './errorHandler'
@@ -56,7 +57,14 @@ export default function createApp(controllers: Controllers, services: Services):
     }),
   )
   // '/*' rather than '*' so this isn't included in the route names sent to app insights
-  app.get('/*', dpsComponents.getPageComponents({ dpsUrl: config.dpsUrl }))
+  app.get(
+    '/*',
+    getFrontendComponents({
+      componentApiConfig: config.apis.componentApi,
+      dpsUrl: config.dpsUrl,
+      logger,
+    }),
+  )
   app.use(routes(controllers))
 
   // The Sentry middleware must be before any other error middleware and after all controllers

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "npm run compile-sass && tsc && npm run copy-views",
     "clean": "rm -rf dist build node_modules stylesheets",
-    "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend/dist --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
+    "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules --load-path=node_modules/govuk-frontend/dist --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
     "copy-views": "cp -R server/views dist/server/",
     "generate-api-seeds": "ts-node script/utils/generateApiSeeds/runner.ts",
     "generate-govuk-frontend-types": "ts-node script/utils/generateGovukFrontendTypes/runner.ts && prettier --write server/@types/govukFrontend/index.d.ts",
@@ -66,7 +66,7 @@
     "@faker-js/faker": "^9.0.0",
     "@ministryofjustice/frontend": "^11.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "1.1.0",
-    "@ministryofjustice/hmpps-connect-dps-components": "^2.2.0",
+    "@ministryofjustice/hmpps-connect-dps-components": "^6.0.0",
     "@pkgjs/parseargs": "^0.11.0",
     "@sentry/node": "^11.0.0",
     "agentkeepalive": "^4.3.0",
