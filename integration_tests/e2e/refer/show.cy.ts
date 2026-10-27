@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
+import { ApplicationRoles } from '../../../server/middleware/applicationRoles'
 import sharedTests from '../../support/sharedTests'
 
 context('Viewing a submitted referral', () => {

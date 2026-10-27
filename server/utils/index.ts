@@ -32,7 +32,6 @@ import RelationshipsUtils from './risksAndNeeds/relationshipsUtils'
 import RisksAndAlertsUtils from './risksAndNeeds/risksAndAlertsUtils'
 import RoshAnalysisUtils from './risksAndNeeds/roshAnalysisUtils'
 import ThinkingAndBehavingUtils from './risksAndNeeds/thinkingAndBehavingUtils'
-import RouteUtils from './routeUtils'
 import SentenceInformationUtils from './sentenceInformationUtils'
 import StatisticsReportUtils from './statisticsReportUtils'
 import StringUtils from './stringUtils'
@@ -66,7 +65,6 @@ export {
   RelationshipsUtils,
   RisksAndAlertsUtils,
   RoshAnalysisUtils,
-  RouteUtils,
   SentenceInformationUtils,
   ShowReferralUtils,
   ShowRisksAndNeedsUtils,

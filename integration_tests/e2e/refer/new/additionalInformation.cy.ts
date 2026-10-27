@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../../server/middleware/roleBasedAccessMiddleware'
+import { ApplicationRoles } from '../../../../server/middleware/applicationRoles'
 import { referPaths } from '../../../../server/paths'
 import {
   courseFactory,
@@ -8,7 +8,7 @@ import {
   pniScoreFactory,
   referralFactory,
 } from '../../../../server/testutils/factories'
-import auth from '../../../mockApis/auth'
+import mockedUser from '../../../mockApis/mockedUser'
 import Page from '../../../pages/page'
 import { NewReferralAdditionalInformationPage, NewReferralTaskListPage } from '../../../pages/refer'
 import type { Organisation } from '@accredited-programmes-api'
@@ -29,7 +29,7 @@ context('Additional information', () => {
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
     referrerOverrideReason: undefined,
-    referrerUsername: auth.mockedUser.username,
+    referrerUsername: mockedUser.username,
   })
   const programmePathway = 'MODERATE_INTENSITY'
   const course = courseFactory.build({ intensity: 'MODERATE' })
@@ -153,7 +153,7 @@ context('Additional information with override', () => {
     offeringId: courseOffering.id,
     prisonNumber: person.prisonNumber,
     referrerOverrideReason: undefined,
-    referrerUsername: auth.mockedUser.username,
+    referrerUsername: mockedUser.username,
   })
   const programmePathway = 'MODERATE_INTENSITY'
   const course = courseFactory.build({ intensity: 'HIGH' })
