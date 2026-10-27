@@ -4,7 +4,7 @@ import { Factory } from 'fishery'
 import audienceFactory from './audience'
 import FactoryHelpers from './factoryHelpers'
 import { randomStatus, statusDescriptionAndColour } from './referral'
-import { StringUtils } from '../../utils'
+import StringUtils from '../../utils/stringUtils'
 import type { ReferralStatus, ReferralView } from '@accredited-programmes/models'
 
 interface ReferralViewTransientParams {

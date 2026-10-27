@@ -4,7 +4,7 @@ import { Factory } from 'fishery'
 import courseParticipationOutcomeFactory from './courseParticipationOutcome'
 import courseParticipationSettingFactory from './courseParticipationSetting'
 import FactoryHelpers from './factoryHelpers'
-import { StringUtils } from '../../utils'
+import StringUtils from '../../utils/stringUtils'
 import type { CourseParticipation } from '@accredited-programmes-api'
 
 class CourseParticipationFactory extends Factory<CourseParticipation> {

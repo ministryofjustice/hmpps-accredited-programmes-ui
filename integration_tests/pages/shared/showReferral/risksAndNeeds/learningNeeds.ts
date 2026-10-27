@@ -1,4 +1,5 @@
-import { CourseUtils, LearningNeedsUtils } from '../../../../../server/utils'
+import CourseUtils from '../../../../../server/utils/courseUtils'
+import LearningNeedsUtils from '../../../../../server/utils/risksAndNeeds/learningNeedsUtils'
 import Page from '../../../page'
 import type { Course, LearningNeeds } from '@accredited-programmes-api'
 

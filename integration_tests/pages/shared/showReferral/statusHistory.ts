@@ -1,4 +1,5 @@
-import { CourseUtils, ShowReferralUtils } from '../../../../server/utils'
+import CourseUtils from '../../../../server/utils/courseUtils'
+import ShowReferralUtils from '../../../../server/utils/referrals/showReferralUtils'
 import Page from '../../page'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { Course } from '@accredited-programmes-api'

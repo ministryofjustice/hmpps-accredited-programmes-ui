@@ -1,4 +1,5 @@
-import { CourseUtils, RisksAndAlertsUtils } from '../../../../../server/utils'
+import CourseUtils from '../../../../../server/utils/courseUtils'
+import RisksAndAlertsUtils from '../../../../../server/utils/risksAndNeeds/risksAndAlertsUtils'
 import Helpers from '../../../../support/helpers'
 import Page from '../../../page'
 import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'

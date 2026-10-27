@@ -1,5 +1,6 @@
 import { referPaths } from '../../../../server/paths'
-import { CourseUtils, NewReferralUtils } from '../../../../server/utils'
+import CourseUtils from '../../../../server/utils/courseUtils'
+import NewReferralUtils from '../../../../server/utils/referrals/newReferralUtils'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { CourseOffering } from '@accredited-programmes/models'

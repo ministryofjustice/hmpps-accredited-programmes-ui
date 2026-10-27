@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../../server/middleware/roleBasedAccessMiddleware'
+import { ApplicationRoles } from '../../../../server/middleware/applicationRoles'
 import { findPaths, referPaths } from '../../../../server/paths'
 import {
   courseFactory,
@@ -9,8 +9,8 @@ import {
   referralFactory,
   userFactory,
 } from '../../../../server/testutils/factories'
-import { StringUtils } from '../../../../server/utils'
-import auth from '../../../mockApis/auth'
+import StringUtils from '../../../../server/utils/stringUtils'
+import mockedUser from '../../../mockApis/mockedUser'
 import Page from '../../../pages/page'
 import {
   NewReferralCheckAnswersPage,
@@ -41,7 +41,7 @@ context('Submitting a referral', () => {
     setting: 'Custody',
   })
   const organisation: Organisation = { code: courseOffering.organisationId, prisonName: 'HMP Test' }
-  const addedByUser1 = userFactory.build({ name: 'Bobby Brown', username: auth.mockedUser.username })
+  const addedByUser1 = userFactory.build({ name: 'Bobby Brown', username: mockedUser.username })
   const addedByUser1Email: UserEmail = {
     email: 'referrer.user@email-test.co.uk',
     username: addedByUser1.username,
@@ -285,7 +285,7 @@ context('Submitting a referral', () => {
   })
 
   it('Shows the complete page for a completed referral', () => {
-    const submittedReferral = referralFactory.submitted().build({ referrerUsername: auth.mockedUser.username })
+    const submittedReferral = referralFactory.submitted().build({ referrerUsername: mockedUser.username })
     cy.task('stubReferral', submittedReferral)
 
     const path = referPaths.new.complete({ referralId: submittedReferral.id })

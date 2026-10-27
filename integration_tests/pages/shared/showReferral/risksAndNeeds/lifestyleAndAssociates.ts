@@ -1,4 +1,6 @@
-import { CourseUtils, LifestyleAndAssociatesUtils, ShowRisksAndNeedsUtils } from '../../../../../server/utils'
+import CourseUtils from '../../../../../server/utils/courseUtils'
+import ShowRisksAndNeedsUtils from '../../../../../server/utils/referrals/showRisksAndNeedsUtils'
+import LifestyleAndAssociatesUtils from '../../../../../server/utils/risksAndNeeds/lifestyleAndAssociatesUtils'
 import Page from '../../../page'
 import type { Course, Lifestyle } from '@accredited-programmes-api'
 

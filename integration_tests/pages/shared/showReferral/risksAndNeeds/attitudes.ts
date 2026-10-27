@@ -1,4 +1,5 @@
-import { AttitudesUtils, CourseUtils } from '../../../../../server/utils'
+import CourseUtils from '../../../../../server/utils/courseUtils'
+import AttitudesUtils from '../../../../../server/utils/risksAndNeeds/attitudesUtils'
 import Page from '../../../page'
 import type { Attitude, Course } from '@accredited-programmes-api'
 

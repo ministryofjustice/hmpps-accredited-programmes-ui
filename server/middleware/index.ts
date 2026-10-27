@@ -1,5 +1,5 @@
+import { ApplicationRoles } from './applicationRoles'
 import authorisationMiddleware from './authorisationMiddleware'
-import { ApplicationRoles } from './roleBasedAccessMiddleware'
 import setUpAuthentication from './setUpAuthentication'
 import setUpCsrf from './setUpCsrf'
 import setUpCurrentUser from './setUpCurrentUser'

@@ -1,4 +1,5 @@
-import { CourseUtils, RoshAnalysisUtils } from '../../../../../server/utils'
+import CourseUtils from '../../../../../server/utils/courseUtils'
+import RoshAnalysisUtils from '../../../../../server/utils/risksAndNeeds/roshAnalysisUtils'
 import Page from '../../../page'
 import type { RoshAnalysis } from '@accredited-programmes/models'
 import type { Course } from '@accredited-programmes-api'

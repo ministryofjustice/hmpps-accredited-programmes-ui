@@ -4,7 +4,7 @@ import { Factory } from 'fishery'
 import audienceFactory from './audience'
 import courseOfferingFactory from './courseOffering'
 import coursePrerequisiteFactory from './coursePrerequisite'
-import { StringUtils } from '../../utils'
+import StringUtils from '../../utils/stringUtils'
 import type { Course } from '@accredited-programmes-api'
 
 export default Factory.define<Course>(({ params }) => {

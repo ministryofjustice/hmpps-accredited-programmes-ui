@@ -1,4 +1,5 @@
-import { CourseUtils, HealthUtils } from '../../../../../server/utils'
+import CourseUtils from '../../../../../server/utils/courseUtils'
+import HealthUtils from '../../../../../server/utils/risksAndNeeds/healthUtils'
 import Page from '../../../page'
 import type { Health } from '@accredited-programmes/models'
 import type { Course } from '@accredited-programmes-api'

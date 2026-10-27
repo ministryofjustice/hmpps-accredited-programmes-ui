@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
 import FactoryHelpers from './factoryHelpers'
-import { StringUtils } from '../../utils'
+import StringUtils from '../../utils/stringUtils'
 import type { PeopleSearchResponse } from '@accredited-programmes-api'
 
 export default Factory.define<PeopleSearchResponse>(({ params }) => {

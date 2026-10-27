@@ -1,4 +1,4 @@
-import type { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
+import type { ApplicationRoles } from '../../server/middleware/applicationRoles'
 import { assessPaths, referPaths } from '../../server/paths'
 import {
   attitudeFactory,
@@ -28,10 +28,10 @@ import {
   sentenceDetailsFactory,
   userFactory,
 } from '../../server/testutils/factories'
-import { CourseUtils } from '../../server/utils'
+import CourseUtils from '../../server/utils/courseUtils'
 import { releaseDateFields } from '../../server/utils/personUtils'
 import SexualOffenceDetailsUtils from '../../server/utils/sexualOffenceDetailsUtils'
-import auth from '../mockApis/auth'
+import mockedUser from '../mockApis/mockedUser'
 import BadRequestPage from '../pages/badRequest'
 import Page from '../pages/page'
 import {
@@ -1388,7 +1388,7 @@ const sharedTests = {
         .build({ username: referringUser.username })
       const updatedStatusHistory = referralStatusHistoryFactory
         .updated()
-        .build({ status: 'assessment_started', username: auth.mockedUser.username })
+        .build({ status: 'assessment_started', username: mockedUser.username })
 
       const referralStatusHistory = [updatedStatusHistory, submittedStatusHistory, startedStatusHistory]
       const referralStatusHistoryPresenter: Array<ReferralStatusHistoryPresenter> = [

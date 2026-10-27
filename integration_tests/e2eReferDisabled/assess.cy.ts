@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
+import { ApplicationRoles } from '../../server/middleware/applicationRoles'
 import { assessPaths } from '../../server/paths'
 import {
   courseFactory,
@@ -10,7 +10,7 @@ import {
   referralFactory,
   userFactory,
 } from '../../server/testutils/factories'
-import { StringUtils } from '../../server/utils'
+import StringUtils from '../../server/utils/stringUtils'
 import NotFoundPage from '../pages/notFound'
 import Page from '../pages/page'
 

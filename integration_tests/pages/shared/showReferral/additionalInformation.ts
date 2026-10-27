@@ -1,4 +1,6 @@
-import { CourseUtils, DateUtils, ShowReferralUtils } from '../../../../server/utils'
+import CourseUtils from '../../../../server/utils/courseUtils'
+import DateUtils from '../../../../server/utils/dateUtils'
+import ShowReferralUtils from '../../../../server/utils/referrals/showReferralUtils'
 import Helpers from '../../../support/helpers'
 import Page from '../../page'
 import type { Course, PniScore, Referral } from '@accredited-programmes-api'

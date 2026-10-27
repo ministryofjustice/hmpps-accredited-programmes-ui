@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express'
 
-import { ApplicationRoles } from './roleBasedAccessMiddleware'
+import { ApplicationRoles } from './applicationRoles'
 import logger from '../../logger'
 import type { UserService } from '../services'
 import { UserUtils } from '../utils'

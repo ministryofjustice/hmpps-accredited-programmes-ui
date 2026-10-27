@@ -1,4 +1,5 @@
-import { AlcoholMisuseUtils, CourseUtils } from '../../../../../server/utils'
+import CourseUtils from '../../../../../server/utils/courseUtils'
+import AlcoholMisuseUtils from '../../../../../server/utils/risksAndNeeds/alcoholMisuseUtils'
 import Page from '../../../page'
 import type { DrugAlcoholDetail } from '@accredited-programmes/models'
 import type { Course } from '@accredited-programmes-api'
