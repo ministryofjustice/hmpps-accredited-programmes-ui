@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
+import { ApplicationRoles } from '../../server/middleware/applicationRoles'
 import { findPaths, referPaths } from '../../server/paths'
 import {
   courseFactory,
