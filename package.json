@@ -59,7 +59,7 @@
     "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
-    "node": "^24",
+    "node": "^26.0.0",
     "npm": "^11.0.0"
   },
   "dependencies": {
@@ -115,7 +115,7 @@
     "@types/jest-when": "^3.5.2",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/method-override": "^3.0.0",
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.0.0",
     "@types/nunjucks": "^3.2.2",
     "@types/object.groupby": "^1.0.4",
     "@types/passport": "^1.0.12",
