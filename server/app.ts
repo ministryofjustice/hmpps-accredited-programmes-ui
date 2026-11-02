@@ -56,9 +56,9 @@ export default function createApp(controllers: Controllers, services: Services):
       getAttributes: (_req, res: express.Response) => AppInsightsUtils.getUserAttributes(res.locals.user),
     }),
   )
-  // '/*' rather than '*' so this isn't included in the route names sent to app insights
+  // '/{*splat}' matches all routes including root
   app.get(
-    '/*',
+    '/{*splat}',
     getFrontendComponents({
       componentApiConfig: config.apis.componentApi,
       dpsUrl: config.dpsUrl,
