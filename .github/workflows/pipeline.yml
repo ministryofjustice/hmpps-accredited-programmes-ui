@@ -192,7 +192,7 @@ jobs:
             echo "Please check the GH_TO_SLACK_MAPPING variable for user "${{ github.actor }}" and SLACK_WEBHOOK_URL secret."
             exit 1
           fi
-            - name: Generate pending prod release changelog
+      - name: Generate pending prod release changelog
         id: changelog
         continue-on-error: true
         env:
