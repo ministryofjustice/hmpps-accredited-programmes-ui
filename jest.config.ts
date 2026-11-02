@@ -52,7 +52,7 @@ const config: Config = {
       },
     ],
   },
-  transformIgnorePatterns: ['/node_modules/(?!(nock|@mswjs/interceptors|@open-draft/until|rettime)/)'],
+  transformIgnorePatterns: ['/node_modules/(?!(@faker-js/faker|nock|@mswjs/interceptors|@open-draft/until|rettime)/)'],
 }
 
 export default config
