@@ -92,6 +92,7 @@ export default [
             '.allowed-scripts.mjs',
             'eslint.config.mjs',
             'cypress.config.ts',
+            'jest.setup.ts',
           ],
         },
       ],
