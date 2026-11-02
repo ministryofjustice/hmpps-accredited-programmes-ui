@@ -126,7 +126,7 @@
     "audit-ci": "^7.0.0",
     "axe-core": "^4.7.2",
     "babel-jest": "^30.0.0",
-    "babel-plugin-transform-import-meta": "^2.3.3",
+    "babel-plugin-transform-import-meta": "^3.0.0",
     "concurrently": "^10.0.0",
     "cypress": "^16.0.0",
     "cypress-axe": "^1.4.0",
