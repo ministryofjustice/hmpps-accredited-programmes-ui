@@ -2,6 +2,7 @@ import { configureAllowedScripts } from '@ministryofjustice/hmpps-npm-script-all
 
 export default configureAllowedScripts({
    allowlist: {
+      'node_modules/@parcel/watcher@2.6.0': 'ALLOW',
       'node_modules/@scarf/scarf@1.4.0': 'FORBID',
       'node_modules/cypress@16.2.0': 'ALLOW',
       'node_modules/djlint@1.36.4': 'ALLOW',
