@@ -76,7 +76,7 @@
     "connect-flash": "^0.1.1",
     "connect-redis": "^10.0.0",
     "csrf-sync": "^4.0.3",
-    "express": "^4.18.2",
+    "express": "^5.0.0",
     "express-prom-bundle": "^8.0.0",
     "express-session": "^1.17.3",
     "fishery": "^2.2.2",
@@ -98,7 +98,7 @@
     "url-value-parser": "^2.2.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.29.7",
+    "@babel/plugin-transform-modules-commonjs": "^8.0.0",
     "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
     "@golevelup/ts-jest": "^0.5.0",
@@ -126,7 +126,7 @@
     "audit-ci": "^7.0.0",
     "axe-core": "^4.7.2",
     "babel-jest": "^30.0.0",
-    "babel-plugin-transform-import-meta": "^2.3.3",
+    "babel-plugin-transform-import-meta": "^3.0.0",
     "concurrently": "^10.0.0",
     "cypress": "^16.0.0",
     "cypress-axe": "^1.4.0",
