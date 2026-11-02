@@ -155,7 +155,7 @@ describe('PersonService', () => {
           .mockResolvedValue(offenderWithNoOffenceHistory)
 
         const expectedError = createError(404, `Offence history for prisoner ${prisonerNumber} not found.`)
-        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrow(expectedError)
 
         expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonApiClient.findOffenderBookingByOffenderNo).toHaveBeenCalledWith(prisonerNumber)
@@ -168,7 +168,7 @@ describe('PersonService', () => {
         prisonApiClient.findOffenderBookingByOffenderNo.mockRejectedValue(clientError)
 
         const expectedError = createError(404, `Offence history for prisoner ${prisonerNumber} not found.`)
-        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrow(expectedError)
 
         expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonApiClient.findOffenderBookingByOffenderNo).toHaveBeenCalledWith(prisonerNumber)
@@ -181,7 +181,7 @@ describe('PersonService', () => {
         prisonApiClient.findOffenderBookingByOffenderNo.mockRejectedValue(clientError)
 
         const expectedError = createError(500, `Error fetching offence history for prisoner ${prisonerNumber}.`)
-        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getOffenceHistory(systemToken, prisonerNumber)).rejects.toThrow(expectedError)
 
         expect(prisonApiClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(prisonApiClient.findOffenderBookingByOffenderNo).toHaveBeenCalledWith(prisonerNumber)
@@ -220,9 +220,7 @@ describe('PersonService', () => {
         const notFoundPrisonNumber = 'NOT-FOUND'
 
         const expectedError = createError(404, `Person with prison number ${notFoundPrisonNumber} not found.`)
-        await expect(() => service.getPerson(username, notFoundPrisonNumber, caseloads)).rejects.toThrowError(
-          expectedError,
-        )
+        await expect(() => service.getPerson(username, notFoundPrisonNumber, caseloads)).rejects.toThrow(expectedError)
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
@@ -243,7 +241,7 @@ describe('PersonService', () => {
 
         const expectedError = createError(500)
 
-        await expect(() => service.getPerson(username, prisonNumber, caseloads)).rejects.toThrowError(expectedError)
+        await expect(() => service.getPerson(username, prisonNumber, caseloads)).rejects.toThrow(expectedError)
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
         expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
@@ -289,7 +287,7 @@ describe('PersonService', () => {
     describe('when the booking ID is undefined', () => {
       it('throws a 400 error', async () => {
         const expectedError = createError(400, 'No booking ID found: cannot request sentence and offence details.')
-        await expect(() => service.getOffenderSentenceAndOffences(systemToken, undefined)).rejects.toThrowError(
+        await expect(() => service.getOffenderSentenceAndOffences(systemToken, undefined)).rejects.toThrow(
           expectedError,
         )
       })
@@ -304,7 +302,7 @@ describe('PersonService', () => {
           404,
           `Sentence and offence details for booking with ID ${bookingId} not found.`,
         )
-        await expect(() => service.getOffenderSentenceAndOffences(systemToken, bookingId)).rejects.toThrowError(
+        await expect(() => service.getOffenderSentenceAndOffences(systemToken, bookingId)).rejects.toThrow(
           expectedError,
         )
 
@@ -322,7 +320,7 @@ describe('PersonService', () => {
           500,
           `Error fetching sentence and offence details with booking ID ${bookingId}.`,
         )
-        await expect(() => service.getOffenderSentenceAndOffences(systemToken, bookingId)).rejects.toThrowError(
+        await expect(() => service.getOffenderSentenceAndOffences(systemToken, bookingId)).rejects.toThrow(
           expectedError,
         )
 
@@ -352,7 +350,7 @@ describe('PersonService', () => {
         personClient.findSentenceDetails.mockRejectedValue(clientError)
 
         const expectedError = createError(404, `Sentence details for prisoner ${prisonerNumber} not found.`)
-        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrow(expectedError)
 
         expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
@@ -367,7 +365,7 @@ describe('PersonService', () => {
         const expectedError = createError(500, {
           message: `Error fetching sentence details for prisoner ${prisonerNumber}.`,
         })
-        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrow(expectedError)
 
         expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)
@@ -380,7 +378,7 @@ describe('PersonService', () => {
         personClient.findSentenceDetails.mockRejectedValue(clientError)
 
         const expectedError = createError(500, { message: 'Some other error' })
-        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrowError(expectedError)
+        await expect(() => service.getSentenceDetails(systemToken, prisonerNumber)).rejects.toThrow(expectedError)
 
         expect(personClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(personClient.findSentenceDetails).toHaveBeenCalledWith(prisonerNumber)

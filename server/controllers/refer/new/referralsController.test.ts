@@ -223,7 +223,7 @@ describe('NewReferralsController', () => {
         const requestHandler = controller.create()
         const expectedError = createError(400, 'Course offering is not referable.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
         expect(courseService.getOffering).toHaveBeenCalledWith(username, nonReferableCourseOffering.id)
       })
     })
@@ -268,7 +268,7 @@ describe('NewReferralsController', () => {
           `Unable to create referral for prison number ${draftReferral.prisonNumber} to course offering ${draftReferral.offeringId}`,
         )
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
   })
@@ -763,7 +763,7 @@ describe('NewReferralsController', () => {
         const requestHandler = controller.complete()
         const expectedError = createError(400, 'Referral has not been submitted.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
 
