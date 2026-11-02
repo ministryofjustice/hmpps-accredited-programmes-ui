@@ -1,4 +1,4 @@
-import { ApplicationRoles } from '../../../server/middleware/roleBasedAccessMiddleware'
+import { ApplicationRoles } from '../../../server/middleware/applicationRoles'
 import { referPaths } from '../../../server/paths'
 import { referralFactory, referralViewFactory } from '../../../server/testutils/factories'
 import FactoryHelpers from '../../../server/testutils/factories/factoryHelpers'

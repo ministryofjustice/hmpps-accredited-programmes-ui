@@ -7,7 +7,7 @@ import referRoutes from './refer'
 import reportsRoutes from './reports'
 import config from '../config'
 import type { Controllers } from '../controllers'
-import { RouteUtils } from '../utils'
+import RouteUtils from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers): Router {
   const router = Router()

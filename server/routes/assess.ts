@@ -3,7 +3,7 @@ import type { Router } from 'express'
 import type { Controllers } from '../controllers'
 import { ApplicationRoles } from '../middleware/roleBasedAccessMiddleware'
 import { assessPaths } from '../paths'
-import { RouteUtils } from '../utils'
+import RouteUtils from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
   const { get, post } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_PROGRAMME_TEAM] })

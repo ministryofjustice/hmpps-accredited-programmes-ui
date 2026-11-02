@@ -39,6 +39,14 @@ export default {
       },
       url: get('ACCREDITED_PROGRAMMES_API_URL', 'http://localhost:9091', requiredInProduction),
     },
+    componentApi: {
+      agent: new AgentConfig(Number(get('COMPONENT_API_TIMEOUT_RESPONSE', 10000))),
+      timeout: {
+        deadline: Number(get('COMPONENT_API_TIMEOUT_DEADLINE', 10000)),
+        response: Number(get('COMPONENT_API_TIMEOUT_RESPONSE', 10000)),
+      },
+      url: get('COMPONENT_API_URL', 'http://localhost:3001', requiredInProduction),
+    },
     hmppsAuth: {
       agent: new AgentConfig(Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000))),
       apiClientId: get('API_CLIENT_ID', 'clientid', requiredInProduction),

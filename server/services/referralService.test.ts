@@ -284,9 +284,12 @@ describe('ReferralService', () => {
     it('calls the correct service methods to return the information required to display other referrals for a referral', async () => {
       const loggedInUser: Express.User = { authSource: 'nomis', token: userToken, userId: 'user-id', username }
       const referral = referralFactory.build()
-      const otherReferrals = referralFactory.buildList(2, {
-        prisonNumber: referral.prisonNumber,
-      })
+      const otherReferrals = ['referral_submitted', 'withdrawn'].map(status =>
+        referralFactory.build({
+          prisonNumber: referral.prisonNumber,
+          status,
+        }),
+      )
 
       const expectedResponse = otherReferrals.map(otherReferral => {
         const user = userFactory.build({ username: otherReferral.referrerUsername })

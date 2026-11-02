@@ -1,14 +1,10 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express'
 
+import type { ApplicationRoles } from './applicationRoles'
 import logger from '../../logger'
 import type { MiddlewareOptions } from '@accredited-programmes/users'
 
-export enum ApplicationRoles {
-  ACP_EDITOR = 'ROLE_ACP_EDITOR',
-  ACP_PROGRAMME_TEAM = 'ROLE_ACP_PROGRAMME_TEAM',
-  ACP_REFERRER = 'ROLE_ACP_REFERRER',
-  ACP_HSP = 'ROLE_ACP_HSP',
-}
+export { ApplicationRoles } from './applicationRoles'
 
 export default function roleBasedAccessMiddleware(
   requestHandler: RequestHandler,
