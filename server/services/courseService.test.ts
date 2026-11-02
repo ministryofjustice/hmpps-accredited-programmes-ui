@@ -189,9 +189,7 @@ describe('CourseService', () => {
           .calledWith(referralId, pathway)
           .mockRejectedValue(clientError)
 
-        await expect(() =>
-          service.getBuildingChoicesCourseByReferral(username, referralId, pathway),
-        ).rejects.toThrowError(
+        await expect(() => service.getBuildingChoicesCourseByReferral(username, referralId, pathway)).rejects.toThrow(
           `Error fetching building choices course data for referral ${referralId} and pathway ${pathway}.`,
         )
 
@@ -235,9 +233,9 @@ describe('CourseService', () => {
         const course = courseFactory.build()
         const formRequestBody = { isConvictedOfSexualOffence: 'true' } as BuildingChoicesData
 
-        await expect(() =>
-          service.getBuildingChoicesVariants(username, course.id, formRequestBody),
-        ).rejects.toThrowError('Values for isConvictedOfSexualOffence and isInAWomensPrison must be provided.')
+        await expect(() => service.getBuildingChoicesVariants(username, course.id, formRequestBody)).rejects.toThrow(
+          'Values for isConvictedOfSexualOffence and isInAWomensPrison must be provided.',
+        )
 
         expect(courseClientBuilder).toHaveBeenCalledWith(systemToken)
       })
@@ -424,7 +422,7 @@ describe('CourseService', () => {
 
         const notFoundCourseParticipationId = 'NOT-FOUND'
 
-        await expect(() => service.getParticipation(username, notFoundCourseParticipationId)).rejects.toThrowError(
+        await expect(() => service.getParticipation(username, notFoundCourseParticipationId)).rejects.toThrow(
           `Course participation with ID ${notFoundCourseParticipationId} not found.`,
         )
 
@@ -440,7 +438,7 @@ describe('CourseService', () => {
 
         const courseParticipationId = faker.string.uuid()
 
-        await expect(() => service.getParticipation(username, courseParticipationId)).rejects.toThrowError(
+        await expect(() => service.getParticipation(username, courseParticipationId)).rejects.toThrow(
           `Error fetching course participation with ID ${courseParticipationId}.`,
         )
 

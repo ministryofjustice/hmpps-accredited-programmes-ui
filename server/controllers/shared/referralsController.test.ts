@@ -214,7 +214,7 @@ describe('ReferralsController', () => {
         const requestHandler = controller.additionalInformation()
         const expectedError = createError(400, 'Referral has not been submitted.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
 
@@ -464,7 +464,7 @@ describe('ReferralsController', () => {
         const requestHandler = controller.offenceHistory()
         const expectedError = createError(400, 'Referral has not been submitted.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
   })
@@ -493,7 +493,7 @@ describe('ReferralsController', () => {
         const requestHandler = controller.personalDetails()
         const expectedError = createError(400, 'Referral has not been submitted.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
 
@@ -545,7 +545,7 @@ describe('ReferralsController', () => {
         const requestHandler = controller.programmeHistory()
         const expectedError = createError(400, 'Referral has not been submitted.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
   })
@@ -580,7 +580,7 @@ describe('ReferralsController', () => {
         const requestHandler = controller.releaseDates()
         const expectedError = createError(400, 'Referral has not been submitted.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
   })
@@ -646,7 +646,7 @@ describe('ReferralsController', () => {
         const requestHandler = controller.sentenceInformation()
         const expectedError = createError(400, 'Referral has not been submitted.')
 
-        expect(() => requestHandler(request, response, next)).rejects.toThrowError(expectedError)
+        expect(() => requestHandler(request, response, next)).rejects.toThrow(expectedError)
       })
     })
   })
