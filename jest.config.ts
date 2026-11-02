@@ -34,10 +34,17 @@ const config: Config = {
       },
     ],
   ],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   showSeed: true,
   testEnvironment: 'node',
   testMatch: ['<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}'],
   transform: {
+    '^.+\\.m?js$': [
+      'babel-jest',
+      {
+        plugins: ['@babel/plugin-transform-modules-commonjs', 'babel-plugin-transform-import-meta'],
+      },
+    ],
     '^.+\\.tsx?$': [
       'ts-jest',
       {
@@ -45,6 +52,7 @@ const config: Config = {
       },
     ],
   },
+  transformIgnorePatterns: ['/node_modules/(?!(nock|@mswjs/interceptors|@open-draft/until|rettime)/)'],
 }
 
 export default config
