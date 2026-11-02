@@ -128,7 +128,7 @@
     "babel-jest": "^30.0.0",
     "babel-plugin-transform-import-meta": "^2.3.3",
     "concurrently": "^10.0.0",
-    "cypress": "^14.0.0",
+    "cypress": "^16.0.0",
     "cypress-axe": "^1.4.0",
     "cypress-mochawesome-reporter": "^5.0.0",
     "cypress-multi-reporters": "^2.0.0",
