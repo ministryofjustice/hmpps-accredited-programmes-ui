@@ -17,6 +17,7 @@ brew install nodenv
 ```
 
 And if necessary upgrade to v24:
+
 ```bash
 nodenv install 24.14.0
 ```
@@ -125,6 +126,13 @@ You can run the suite of unit tests with:
 ```bash
   npm run test:unit
 ```
+
+The application remains CommonJS. TypeScript uses NodeNext to support Node.js 24's
+ability to require ESM dependencies such as Nock 15. Jest uses Babel to transform
+Nock and its ESM-only dependencies, including their `import.meta` usage, for the
+CommonJS test runner. Keep the dependency allowlist in `jest.config.ts` in sync
+when upgrading Nock. The shared Jest setup restores Nock's HTTP interception after
+each suite to keep suites isolated.
 
 ### Running end-to-end tests with Cypress
 

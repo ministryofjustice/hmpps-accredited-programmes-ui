@@ -98,6 +98,7 @@
     "url-value-parser": "^2.2.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.29.7",
     "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
     "@golevelup/ts-jest": "^0.5.0",
@@ -124,6 +125,8 @@
     "@types/supertest": "^7.0.0",
     "audit-ci": "^7.0.0",
     "axe-core": "^4.7.2",
+    "babel-jest": "^29.7.0",
+    "babel-plugin-transform-import-meta": "^2.3.3",
     "concurrently": "^10.0.0",
     "cypress": "^14.0.0",
     "cypress-axe": "^1.4.0",
