@@ -34,12 +34,10 @@ function serviceCheckFactory(
           if (error) {
             logger.error(error.stack, `Error calling ${name}`)
             reject(error)
-          } else if (result && result.status === 200) {
+          } else if (result.status === 200) {
             resolve('OK')
-          } else if (result) {
-            reject(result.status)
           } else {
-            reject(new Error('No response received'))
+            reject(result.status)
           }
         })
     })

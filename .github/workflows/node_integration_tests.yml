@@ -67,7 +67,7 @@ jobs:
           ${{ inputs.app_start_command }} &
       - name: Wait for node app to start
         run: |
-          until curl http://localhost:3007/ping > /dev/null 2>&1; do
+          until curl http://localhost:3007/health > /dev/null 2>&1; do
             printf '.'
             sleep 1
           done
