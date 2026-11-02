@@ -49,38 +49,40 @@ describe('healthCheck', () => {
 
       const response = await healthcheck()
       expect(response).toEqual('OK')
+      expect(fakeServiceApi.isDone()).toBe(true)
     })
 
-    describe('due to timeout', () => {
+    describe('due to a response timeout', () => {
+      const pendingReplies: Array<Promise<nock.ReplyFnResult>> = []
+
+      // Nock 15's delay() delays the body, not the response headers.
+      function delayedReply(): Promise<nock.ReplyFnResult> {
+        const reply = new Promise<nock.ReplyFnResult>(resolve => {
+          setTimeout(() => resolve([200, 'pong']), 200)
+        })
+        pendingReplies.push(reply)
+        return reply
+      }
+
+      afterEach(async () => {
+        await Promise.all(pendingReplies)
+        pendingReplies.length = 0
+      })
+
       it('retries twice', async () => {
-        fakeServiceApi
-          .get('/ping')
-          .delay(10000) // delay set to 10s, timeout to 900/3=300ms
-          .reply(200, { failure: 'one' })
-          .get('/ping')
-          .delay(10000)
-          .reply(200, { failure: 'two' })
-          .get('/ping')
-          .reply(200, 'pong')
+        fakeServiceApi.get('/ping').twice().reply(delayedReply).get('/ping').reply(200, 'pong')
 
         const response = await healthcheck()
         expect(response).toEqual('OK')
+        expect(fakeServiceApi.isDone()).toBe(true)
       })
 
       describe('three times', () => {
         it('fails', async () => {
-          fakeServiceApi
-            .get('/ping')
-            .delay(10000) // delay set to 10s, timeout to 900/3=300ms
-            .reply(200, { failure: 'one' })
-            .get('/ping')
-            .delay(10000)
-            .reply(200, { failure: 'two' })
-            .get('/ping')
-            .delay(10000)
-            .reply(200, { failure: 'three' })
+          fakeServiceApi.get('/ping').thrice().reply(delayedReply)
 
           await expect(healthcheck()).rejects.toThrow('Response timeout of 100ms exceeded')
+          expect(fakeServiceApi.isDone()).toBe(true)
         })
       })
     })
