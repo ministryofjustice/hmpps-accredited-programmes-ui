@@ -1,10 +1,10 @@
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
+import OrganisationService from './organisationService'
 import { HmppsAuthClient, OrganisationClient, PrisonRegisterApiClient, TokenStore, createRedisClient } from '../data'
 import { prisonFactory } from '../testutils/factories'
 import { OrganisationUtils } from '../utils'
-import OrganisationService from './organisationService'
 import type { Organisation } from '@accredited-programmes-api'
 
 jest.mock('../data/hmppsAuthClient')
@@ -59,7 +59,7 @@ describe('OrganisationService', () => {
         prisonRegisterApiClient.all.mockRejectedValue(clientError)
 
         const expectedError = createError(500, 'Error fetching organisations.')
-        expect(() => service.getAllOrganisations(userToken)).rejects.toThrowError(expectedError)
+        expect(() => service.getAllOrganisations(userToken)).rejects.toThrow(expectedError)
 
         expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
         expect(prisonRegisterApiClient.all).toHaveBeenCalled()
@@ -104,7 +104,7 @@ describe('OrganisationService', () => {
           prisonRegisterApiClient.find.mockResolvedValue(prison)
 
           const expectedError = createError(404, `Active organisation with ID ${prison.prisonId} not found.`)
-          expect(() => service.getOrganisation(userToken, prison.prisonId)).rejects.toThrowError(expectedError)
+          expect(() => service.getOrganisation(userToken, prison.prisonId)).rejects.toThrow(expectedError)
 
           expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
           expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prison.prisonId)
@@ -120,7 +120,7 @@ describe('OrganisationService', () => {
         const notFoundPrisonId = 'NOT-FOUND'
 
         const expectedError = createError(404, `Active organisation with ID ${notFoundPrisonId} not found.`)
-        expect(() => service.getOrganisation(userToken, notFoundPrisonId)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisation(userToken, notFoundPrisonId)).rejects.toThrow(expectedError)
 
         expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
         expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(notFoundPrisonId)
@@ -135,7 +135,7 @@ describe('OrganisationService', () => {
         const prisonId = '04aba287-86ac-4b2c-b98e-048b5eefddbc'
 
         const expectedError = createError(500, `Error fetching organisation ${prisonId}.`)
-        expect(() => service.getOrganisation(userToken, prisonId)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisation(userToken, prisonId)).rejects.toThrow(expectedError)
 
         expect(prisonRegisterApiClientBuilder).toHaveBeenCalledWith(userToken)
         expect(prisonRegisterApiClient.find).toHaveBeenCalledWith(prisonId)
@@ -164,7 +164,7 @@ describe('OrganisationService', () => {
         organisationClient.findOrganisation.mockRejectedValue(clientError)
 
         const expectedError = createError(404, `Organisation with code ${organisationCode} not found.`)
-        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrow(expectedError)
       })
     })
 
@@ -174,7 +174,7 @@ describe('OrganisationService', () => {
         organisationClient.findOrganisation.mockRejectedValue(clientError)
 
         const expectedError = createError(500, `Error fetching organisation ${organisationCode}.`)
-        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrow(expectedError)
       })
 
       it('throws a 500 error for any unknown errors', async () => {
@@ -182,7 +182,7 @@ describe('OrganisationService', () => {
         organisationClient.findOrganisation.mockRejectedValue(clientError)
 
         const expectedError = createError(500, `Error fetching organisation ${organisationCode}.`)
-        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisationFromAcp(username, organisationCode)).rejects.toThrow(expectedError)
       })
     })
   })
@@ -227,7 +227,7 @@ describe('OrganisationService', () => {
         const allIds = [otherErrorPrisonId]
 
         const expectedError = createError(500, `Error fetching organisation ${otherErrorPrisonId}.`)
-        expect(() => service.getOrganisations(userToken, allIds)).rejects.toThrowError(expectedError)
+        expect(() => service.getOrganisations(userToken, allIds)).rejects.toThrow(expectedError)
       })
     })
   })
