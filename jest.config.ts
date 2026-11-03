@@ -39,16 +39,11 @@ const config: Config = {
   testEnvironment: 'node',
   testMatch: ['<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}'],
   transform: {
-    '^.+\\.m?js$': [
-      'babel-jest',
-      {
-        plugins: ['@babel/plugin-transform-modules-commonjs', 'babel-plugin-transform-import-meta'],
-      },
-    ],
-    '^.+\\.tsx?$': [
+    '^.+\\.[tj]sx?$': [
       'ts-jest',
       {
         isolatedModules: true,
+        useESM: true,
       },
     ],
   },
