@@ -25,6 +25,3 @@ generic-service:
       - internal
       - prisons
       - private_prisons
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-accredited-programmes-alerts-prod
