@@ -1,5 +1,5 @@
 # Stage: build assets
-FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS build
+FROM ghcr.io/ministryofjustice/hmpps-node:26-alpine AS build
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
@@ -8,6 +8,9 @@ WORKDIR /app
 
 RUN apk update && \
     apk add --no-cache make python3 g++
+
+# Base image ships npm 11; package.json engines (with engine-strict) require npm 12
+RUN npm install -g npm@12 --no-audit --no-fund
 
 # .npmrc and .allowed-scripts.mjs ensure only allowlisted dependency install scripts are run
 COPY package*.json .npmrc .allowed-scripts.mjs ./
@@ -23,7 +26,7 @@ RUN export BUILD_NUMBER=${BUILD_NUMBER} && \
 RUN npm prune --no-audit --omit=dev
 
 # Stage: copy production assets and dependencies onto a runtime image without npm
-FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine-runtime
+FROM ghcr.io/ministryofjustice/hmpps-node:26-alpine-runtime
 
 ARG BUILD_NUMBER=1_0_0
 
