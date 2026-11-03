@@ -1,8 +1,3 @@
 {
-  "recommendations": [
-    "ginfuru.better-nunjucks",
-    "monosans.djlint",
-    "okitavera.vscode-nunjucks-formatter",
-    "ronnidc.nunjucks"
-  ]
+  "recommendations": ["ginfuru.better-nunjucks", "okitavera.vscode-nunjucks-formatter", "ronnidc.nunjucks"]
 }

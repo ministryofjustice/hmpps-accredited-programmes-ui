@@ -1,7 +1,5 @@
 {
   "[nj][njk][nunjucks][twig]": {
-    "djlint.enableLinting": true,
-    "djlint.profile": "nunjucks",
     "editor.defaultFormatter": "okitavera.vscode-nunjucks-formatter",
     "editor.formatOnSave": true
   },
