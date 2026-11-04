@@ -13,7 +13,7 @@ import { findPaths, referPaths } from '../paths'
 
 const production = process.env.NODE_ENV === 'production'
 
-export default function nunjucksSetup(app: express.Express, path: typeof pathModule): void {
+export default function nunjucksSetup(app: express.Express, path: pathModule.PlatformPath): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
