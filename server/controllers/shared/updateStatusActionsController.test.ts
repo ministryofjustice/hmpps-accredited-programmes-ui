@@ -54,7 +54,7 @@ describe('UpdateStatusActionsController', () => {
 
     describe('when the path does not start with `/refer`', () => {
       it('should redirect to the assess paths', async () => {
-        request.path = assessPaths.withdraw({ referralId })
+        Object.assign(request, { path: assessPaths.withdraw({ referralId }) })
 
         controller.withdraw()(request, response, next)
 

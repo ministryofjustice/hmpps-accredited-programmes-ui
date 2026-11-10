@@ -733,7 +733,7 @@ describe('CourseParticipationUtils', () => {
       }
 
       beforeEach(() => {
-        request.path = referPaths.new.programmeHistory.index({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.new.programmeHistory.index({ referralId: referral.id }) })
       })
 
       it('returns a GovukFrontendTable with the correct properties and data', () => {
@@ -779,7 +779,7 @@ describe('CourseParticipationUtils', () => {
 
     describe('when viewing a submitted referral', () => {
       it('returns a GovukFrontendTable with the correct properties and data', () => {
-        request.path = assessPaths.show.programmeHistory({ referralId: referral.id })
+        Object.assign(request, { path: assessPaths.show.programmeHistory({ referralId: referral.id }) })
 
         expect(
           CourseParticipationUtils.table(courseParticipations, request.path, referral.id, 'existing-participations'),

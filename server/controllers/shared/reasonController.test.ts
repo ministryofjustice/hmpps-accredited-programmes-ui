@@ -149,7 +149,7 @@ describe('ReasonController', () => {
 
     describe('when the request path is on the assess journey', () => {
       it('should render the show template with the correct response locals', async () => {
-        request.path = assessPaths.updateStatus.reason.show({ referralId: referral.id })
+        Object.assign(request, { path: assessPaths.updateStatus.reason.show({ referralId: referral.id }) })
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -347,7 +347,7 @@ describe('ReasonController', () => {
 
     describe('when submitting the form on the assess journey', () => {
       it('should update `referralStatusUpdateData` and redirect to the assess selection page', async () => {
-        request.path = assessPaths.updateStatus.reason.show({ referralId: referral.id })
+        Object.assign(request, { path: assessPaths.updateStatus.reason.show({ referralId: referral.id }) })
 
         const requestHandler = controller.submit()
         await requestHandler(request, response, next)

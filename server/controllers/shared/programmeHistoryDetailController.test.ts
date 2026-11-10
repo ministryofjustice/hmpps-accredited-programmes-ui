@@ -69,9 +69,11 @@ describe('ProgrammeHistoryDetailController', () => {
   describe('show', () => {
     describe('when the request is for a new referral', () => {
       beforeEach(() => {
-        request.path = referPaths.new.programmeHistory.show({
-          courseParticipationId: courseParticipation.id,
-          referralId: referral.id,
+        Object.assign(request, {
+          path: referPaths.new.programmeHistory.show({
+            courseParticipationId: courseParticipation.id,
+            referralId: referral.id,
+          }),
         })
       })
 
@@ -122,9 +124,11 @@ describe('ProgrammeHistoryDetailController', () => {
     describe('when the request is for an existing referral', () => {
       describe('and on the assess path', () => {
         beforeEach(() => {
-          request.path = assessPaths.show.programmeHistoryDetail({
-            courseParticipationId: courseParticipation.id,
-            referralId: referral.id,
+          Object.assign(request, {
+            path: assessPaths.show.programmeHistoryDetail({
+              courseParticipationId: courseParticipation.id,
+              referralId: referral.id,
+            }),
           })
         })
 
@@ -159,9 +163,11 @@ describe('ProgrammeHistoryDetailController', () => {
 
       describe('and on the refer path', () => {
         beforeEach(() => {
-          request.path = referPaths.show.programmeHistoryDetail({
-            courseParticipationId: courseParticipation.id,
-            referralId: referral.id,
+          Object.assign(request, {
+            path: referPaths.show.programmeHistoryDetail({
+              courseParticipationId: courseParticipation.id,
+              referralId: referral.id,
+            }),
           })
         })
 
