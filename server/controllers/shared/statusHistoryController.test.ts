@@ -152,7 +152,7 @@ describe('StatusHistoryController', () => {
     })
     it('should render the show template with the previous referral link when the referral has a previous referral Id', async () => {
       request.params = { referralId: transferredReferral.id }
-      request.path = assessPaths.show.statusHistory({ referralId: transferredReferral.id })
+      Object.assign(request, { path: assessPaths.show.statusHistory({ referralId: transferredReferral.id }) })
       const requestHandler = controller.show()
       await requestHandler(request, response, next)
 
@@ -193,7 +193,7 @@ describe('StatusHistoryController', () => {
 
     describe('when on the assess path', () => {
       it('should not call `getStatusTransitions`', async () => {
-        request.path = assessPaths.show.statusHistory({ referralId: referral.id })
+        Object.assign(request, { path: assessPaths.show.statusHistory({ referralId: referral.id }) })
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)

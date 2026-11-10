@@ -137,7 +137,7 @@ describe('UpdateStatusSelectionController', () => {
 
     describe('when the request path is on the refer journey', () => {
       it('should render the show template with the correct response locals and make the correct call to `getConfirmationText`', async () => {
-        request.path = referPaths.updateStatus.selection.show({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.updateStatus.selection.show({ referralId: referral.id }) })
 
         const requestHandler = controller.show()
         await requestHandler(request, response, next)
@@ -259,7 +259,7 @@ describe('UpdateStatusSelectionController', () => {
 
     describe('when submitting the form on the refer journey', () => {
       it('should update the referral status, delete `referralStatusUpdateData` and redirect back to the refer status history page of the referral', async () => {
-        request.path = referPaths.updateStatus.selection.show({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.updateStatus.selection.show({ referralId: referral.id }) })
 
         const requestHandler = controller.submitReason()
         await requestHandler(request, response, next)

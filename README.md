@@ -127,12 +127,12 @@ You can run the suite of unit tests with:
   npm run test:unit
 ```
 
-The application remains CommonJS. TypeScript uses NodeNext to support Node.js 24's
-ability to require ESM dependencies such as Nock 15. Jest uses Babel to transform
-Nock and its ESM-only dependencies, including their `import.meta` usage, for the
-CommonJS test runner. Keep the dependency allowlist in `jest.config.ts` in sync
-when upgrading Nock. The shared Jest setup restores Nock's HTTP interception after
-each suite to keep suites isolated.
+The application remains CommonJS. TypeScript uses NodeNext to support Node.js'
+ability to require ESM dependencies such as Nock 15 and Faker 10. Jest runs with
+`--experimental-vm-modules` (see the `test:*` scripts in `package.json`) so it can
+load these ESM-only dependencies, and `ts-jest` transforms both TypeScript and
+JavaScript. The shared Jest setup restores Nock's HTTP interception after each
+suite to keep suites isolated.
 
 ### Running end-to-end tests with Cypress
 

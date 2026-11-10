@@ -161,7 +161,7 @@ describe('ReferralsController', () => {
 
   describe('additionalInformation', () => {
     beforeEach(() => {
-      request.path = referPaths.show.additionalInformation({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.additionalInformation({ referralId: referral.id }) })
     })
 
     it('renders the additional information template with the correct response locals', async () => {
@@ -220,7 +220,7 @@ describe('ReferralsController', () => {
 
     describe('when on the assess path', () => {
       beforeEach(() => {
-        request.path = assessPaths.show.additionalInformation({ referralId: referral.id })
+        Object.assign(request, { path: assessPaths.show.additionalInformation({ referralId: referral.id }) })
       })
 
       it('renders the additional information template with the correct response locals', async () => {
@@ -292,7 +292,7 @@ describe('ReferralsController', () => {
 
   describe('otherReferrals', () => {
     beforeEach(() => {
-      request.path = referPaths.show.otherReferrals({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.otherReferrals({ referralId: referral.id }) })
     })
 
     it('renders the other referrals template with the correct response locals', async () => {
@@ -331,7 +331,7 @@ describe('ReferralsController', () => {
 
   describe('duplicate', () => {
     beforeEach(() => {
-      request.path = referPaths.show.duplicate({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.duplicate({ referralId: referral.id }) })
     })
 
     it('renders the duplicate template with the correct response locals', async () => {
@@ -411,7 +411,7 @@ describe('ReferralsController', () => {
         indexOffence,
       })
 
-      request.path = referPaths.show.offenceHistory({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.offenceHistory({ referralId: referral.id }) })
 
       const requestHandler = controller.offenceHistory()
       await requestHandler(request, response, next)
@@ -441,7 +441,7 @@ describe('ReferralsController', () => {
           indexOffence: undefined,
         })
 
-        request.path = referPaths.show.offenceHistory({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.show.offenceHistory({ referralId: referral.id }) })
 
         const requestHandler = controller.offenceHistory()
         await requestHandler(request, response, next)
@@ -459,7 +459,7 @@ describe('ReferralsController', () => {
     describe('when the referral has not been submitted', () => {
       it('responds with a 400', async () => {
         referral.status = 'referral_started'
-        request.path = referPaths.show.offenceHistory({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.show.offenceHistory({ referralId: referral.id }) })
 
         const requestHandler = controller.offenceHistory()
         const expectedError = createError(400, 'Referral has not been submitted.')
@@ -471,7 +471,7 @@ describe('ReferralsController', () => {
 
   describe('personalDetails', () => {
     it('renders the personal details template with the correct response locals', async () => {
-      request.path = referPaths.show.personalDetails({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.personalDetails({ referralId: referral.id }) })
 
       const requestHandler = controller.personalDetails()
       await requestHandler(request, response, next)
@@ -488,7 +488,7 @@ describe('ReferralsController', () => {
     describe('when the referral has not been submitted', () => {
       it('responds with a 400', async () => {
         referral.status = 'referral_started'
-        request.path = referPaths.show.personalDetails({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.show.personalDetails({ referralId: referral.id }) })
 
         const requestHandler = controller.personalDetails()
         const expectedError = createError(400, 'Referral has not been submitted.')
@@ -500,7 +500,7 @@ describe('ReferralsController', () => {
     describe('when the referral has been requested with an `updatePerson` query', () => {
       it('calls `referralService.getReferral` with the same value', async () => {
         request.query.updatePerson = 'true'
-        request.path = referPaths.show.personalDetails({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.show.personalDetails({ referralId: referral.id }) })
 
         const requestHandler = controller.personalDetails()
         await requestHandler(request, response, next)
@@ -512,7 +512,7 @@ describe('ReferralsController', () => {
 
   describe('programmeHistory', () => {
     it('renders the programme history template with the correct response locals', async () => {
-      request.path = referPaths.show.programmeHistory({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.programmeHistory({ referralId: referral.id }) })
 
       const participations = courseParticipationFactory.buildList(2)
       const participationsTable: GovukFrontendTable = {
@@ -540,7 +540,7 @@ describe('ReferralsController', () => {
     describe('when the referral has not been submitted', () => {
       it('responds with a 400', async () => {
         referral.status = 'referral_started'
-        request.path = referPaths.show.programmeHistory({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.show.programmeHistory({ referralId: referral.id }) })
 
         const requestHandler = controller.programmeHistory()
         const expectedError = createError(400, 'Referral has not been submitted.')
@@ -558,7 +558,7 @@ describe('ReferralsController', () => {
       personService.getSentenceDetails.mockResolvedValue(sentenceDetails)
       mockPersonUtils.releaseDatesSummaryListRows.mockReturnValue(releaseDatesSummaryListRows)
 
-      request.path = referPaths.show.releaseDates({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.releaseDates({ referralId: referral.id }) })
 
       const requestHandler = controller.releaseDates()
       await requestHandler(request, response, next)
@@ -575,7 +575,7 @@ describe('ReferralsController', () => {
     describe('when the referral has not been submitted', () => {
       it('responds with a 400', async () => {
         referral.status = 'referral_started'
-        request.path = referPaths.show.releaseDates({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.show.releaseDates({ referralId: referral.id }) })
 
         const requestHandler = controller.releaseDates()
         const expectedError = createError(400, 'Referral has not been submitted.')
@@ -592,7 +592,7 @@ describe('ReferralsController', () => {
 
     it('Renders a response', async () => {
       // Given
-      request.path = 'hsp-details'
+      Object.assign(request, { path: 'hsp-details' })
       const hspReferral = hspReferralDetailsFactory.build()
       referralService.getHspReferralDetails.mockResolvedValueOnce(hspReferral)
 
@@ -621,7 +621,7 @@ describe('ReferralsController', () => {
       personService.getSentenceDetails.mockResolvedValue(sentenceDetails)
       mockSentenceInformationUtils.summaryLists.mockReturnValue(sentencesSummaryLists)
 
-      request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+      Object.assign(request, { path: referPaths.show.sentenceInformation({ referralId: referral.id }) })
     })
 
     describe('when there is sentence information', () => {
@@ -641,7 +641,7 @@ describe('ReferralsController', () => {
     describe('when the referral has not been submitted', () => {
       it('responds with a 400', async () => {
         referral.status = 'referral_started'
-        request.path = referPaths.show.sentenceInformation({ referralId: referral.id })
+        Object.assign(request, { path: referPaths.show.sentenceInformation({ referralId: referral.id }) })
 
         const requestHandler = controller.sentenceInformation()
         const expectedError = createError(400, 'Referral has not been submitted.')
