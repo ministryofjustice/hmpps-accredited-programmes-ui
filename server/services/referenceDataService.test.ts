@@ -1,6 +1,8 @@
+import { createMock } from '@golevelup/ts-jest'
 import { when } from 'jest-when'
 
-import { HmppsAuthClient, ReferenceDataClient, TokenStore, createRedisClient } from '../data'
+import type { AuthenticationClient } from '../data'
+import { ReferenceDataClient } from '../data'
 import ReferenceDataService from './referenceDataService'
 import {
   referralStatusCategoryFactory,
@@ -11,9 +13,6 @@ import {
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referenceDataClient')
-jest.mock('../data/hmppsAuthClient')
-
-const tokenStore = new TokenStore(createRedisClient()) as jest.Mocked<TokenStore>
 const systemToken = 'some system token'
 const username = 'USERNAME'
 const referralStatusCode: ReferralStatusUppercase = 'WITHDRAWN'
@@ -22,7 +21,7 @@ describe('ReferenceDataService', () => {
   const referenceDataClient = new ReferenceDataClient(systemToken) as jest.Mocked<ReferenceDataClient>
   const referenceDataClientBuilder = jest.fn()
 
-  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClient = createMock<AuthenticationClient>()
   const hmppsAuthClientBuilder = jest.fn()
 
   const service = new ReferenceDataService(hmppsAuthClientBuilder, referenceDataClientBuilder)
@@ -32,7 +31,7 @@ describe('ReferenceDataService', () => {
 
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     referenceDataClientBuilder.mockReturnValue(referenceDataClient)
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+    hmppsAuthClient.getToken.mockResolvedValue(systemToken)
   })
 
   describe('getReferralStatusCodeCategories', () => {

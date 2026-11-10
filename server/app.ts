@@ -4,7 +4,6 @@ import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
 import express from 'express'
 import createError from 'http-errors'
-import methodOverride from 'method-override'
 import path from 'path'
 
 import logger from '../logger'
@@ -24,7 +23,6 @@ import {
   setUpWebSecurity,
   setUpWebSession,
 } from './middleware'
-import { metricsMiddleware } from './monitoring/metricsApp'
 import routes from './routes'
 import type { Services } from './services'
 import { AppInsightsUtils, nunjucksSetup } from './utils'
@@ -36,9 +34,6 @@ export default function createApp(controllers: Controllers, services: Services):
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
-  app.use(methodOverride('_method'))
-
-  app.use(metricsMiddleware)
   app.use(setUpHealthChecks())
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())

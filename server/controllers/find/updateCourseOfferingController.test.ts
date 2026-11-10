@@ -57,7 +57,7 @@ describe('UpdateCourseOfferingController', () => {
       expect(organisationService.getAllOrganisations).toHaveBeenCalledWith(userToken)
 
       expect(response.render).toHaveBeenCalledWith('courses/offerings/form/show', {
-        action: `/find/offerings/${courseOffering.id}/update?_method=PUT`,
+        action: `/find/offerings/${courseOffering.id}/update`,
         backLinkHref: `/find/offerings/${courseOffering.id}`,
         offering: courseOffering,
         organisationSelectItems,

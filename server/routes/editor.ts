@@ -6,12 +6,7 @@ import { findPaths } from '../paths'
 import RouteUtils from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers, router: Router): Router {
-  const {
-    delete: deleteAction,
-    get,
-    post,
-    put,
-  } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_EDITOR] })
+  const { get, post } = RouteUtils.actions(router, { allowedRoles: [ApplicationRoles.ACP_EDITOR] })
   const {
     addCourseController,
     addCourseOfferingController,
@@ -24,14 +19,14 @@ export default function routes(controllers: Controllers, router: Router): Router
   post(findPaths.course.add.create.pattern, addCourseController.submit())
 
   get(findPaths.course.update.show.pattern, updateCourseController.show())
-  put(findPaths.course.update.submit.pattern, updateCourseController.submit())
+  post(findPaths.course.update.submit.pattern, updateCourseController.submit())
 
   get(findPaths.offerings.add.show.pattern, addCourseOfferingController.show())
   post(findPaths.offerings.add.create.pattern, addCourseOfferingController.submit())
 
   get(findPaths.offerings.update.show.pattern, updateCourseOfferingController.show())
-  put(findPaths.offerings.update.submit.pattern, updateCourseOfferingController.submit())
-  deleteAction(findPaths.offerings.delete.pattern, courseOfferingsController.delete())
+  post(findPaths.offerings.update.submit.pattern, updateCourseOfferingController.submit())
+  post(findPaths.offerings.delete.pattern, courseOfferingsController.delete())
 
   return router
 }

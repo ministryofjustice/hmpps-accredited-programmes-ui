@@ -75,7 +75,7 @@ export default class NewReferralsCourseParticipationsController {
       const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       return res.render('referrals/new/courseParticipations/delete', {
-        action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
+        action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}`,
         hideTitleServiceName: true,
         pageHeading: 'Remove programme',
         pageTitleOverride: 'Delete Accredited Programme history',
@@ -134,7 +134,7 @@ export default class NewReferralsCourseParticipationsController {
       const hasOtherCourseNameError = !!res.locals.errors.messages.otherCourseName
 
       return res.render('referrals/new/courseParticipations/course', {
-        action: `${referPaths.new.programmeHistory.updateProgramme({ courseParticipationId, referralId })}?_method=PUT`,
+        action: `${referPaths.new.programmeHistory.updateProgramme({ courseParticipationId, referralId })}`,
         courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
         formValues,
         hideTitleServiceName: true,
@@ -173,7 +173,7 @@ export default class NewReferralsCourseParticipationsController {
           : undefined
 
       return res.render('referrals/new/courseParticipations/index', {
-        action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId: referral.id })}?_method=PUT`,
+        action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId: referral.id })}`,
         existingParticipationsTable: CourseParticipationUtils.table(
           existingParticipations,
           req.path,

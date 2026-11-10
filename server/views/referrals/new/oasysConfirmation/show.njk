@@ -55,7 +55,7 @@
         <li>the information is up to date</li>
       </ul>
 
-      <form action="{{ referPaths.new.confirmOasys.update({ referralId: referral.id }) }}?_method=PUT" method="post">
+      <form action="{{ referPaths.new.confirmOasys.update({ referralId: referral.id }) }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
         {{ govukCheckboxes({

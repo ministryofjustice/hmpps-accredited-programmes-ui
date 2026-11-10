@@ -1,12 +1,12 @@
 import createHttpError from 'http-errors'
 
-import type { HmppsAuthClient, PniClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
+import type { AuthenticationClient, PniClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type { SanitisedError } from '../sanitisedError'
 import type { PniScore, Referral } from '@accredited-programmes-api'
 
 export default class PniService {
   constructor(
-    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient>,
     private readonly pniClientBuilder: RestClientBuilder<PniClient>,
   ) {}
 
@@ -16,7 +16,7 @@ export default class PniService {
     query?: { gender?: string; savePNI?: boolean },
   ): Promise<PniScore | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const pniClient = this.pniClientBuilder(systemToken)
 
     try {
@@ -26,11 +26,14 @@ export default class PniService {
     } catch (error) {
       const sanitisedError = error as SanitisedError
 
-      if (sanitisedError.status === 404) {
+      if (sanitisedError.responseStatus === 404) {
         return null
       }
 
-      throw createHttpError(sanitisedError.status || 500, `Error fetching PNI data for prison number ${prisonNumber}.`)
+      throw createHttpError(
+        sanitisedError.responseStatus || 500,
+        `Error fetching PNI data for prison number ${prisonNumber}.`,
+      )
     }
   }
 }

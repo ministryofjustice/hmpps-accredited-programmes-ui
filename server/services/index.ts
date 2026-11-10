@@ -1,7 +1,6 @@
 /* istanbul ignore file */
 
 import CourseService from './courseService'
-import healthCheck from './healthCheck'
 import OasysService from './oasysService'
 import OrganisationService from './organisationService'
 import PersonService from './personService'
@@ -73,7 +72,6 @@ export {
   ReferralService,
   StatisticsService,
   UserService,
-  healthCheck,
   services,
 }
 

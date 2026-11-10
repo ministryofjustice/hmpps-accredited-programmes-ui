@@ -3,7 +3,8 @@ import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import { CourseClient, HmppsAuthClient, TokenStore, createRedisClient } from '../data'
+import type { AuthenticationClient } from '../data'
+import { CourseClient } from '../data'
 import {
   audienceFactory,
   courseFactory,
@@ -14,6 +15,7 @@ import {
   referralFactory,
   userFactory,
 } from '../testutils/factories'
+import Helpers from '../testutils/helpers'
 import { CourseParticipationUtils, StringUtils } from '../utils'
 import CourseService from './courseService'
 import type UserService from './userService'
@@ -22,10 +24,7 @@ import type { BuildingChoicesData } from '@accredited-programmes/ui'
 import type { CourseParticipationCreate, CourseParticipationUpdate } from '@accredited-programmes-api'
 
 jest.mock('../data/accreditedProgrammesApi/courseClient')
-jest.mock('../data/hmppsAuthClient')
 jest.mock('../utils/courseParticipationUtils')
-
-const tokenStore = new TokenStore(createRedisClient())
 
 describe('CourseService', () => {
   const userToken = 'user token'
@@ -35,7 +34,7 @@ describe('CourseService', () => {
   const courseClient = new CourseClient(systemToken) as jest.Mocked<CourseClient>
   const courseClientBuilder = jest.fn()
 
-  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClient = createMock<AuthenticationClient>()
   const hmppsAuthClientBuilder = jest.fn()
 
   const userService = createMock<UserService>()
@@ -46,7 +45,7 @@ describe('CourseService', () => {
 
     courseClientBuilder.mockReturnValue(courseClient)
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+    hmppsAuthClient.getToken.mockResolvedValue(systemToken)
   })
 
   describe('addCourseOffering', () => {
@@ -167,7 +166,7 @@ describe('CourseService', () => {
 
     describe('when the course client throws a 404 error', () => {
       it('returns `null`', async () => {
-        const clientError = createError(404)
+        const clientError = Helpers.createApiError(404)
 
         when(courseClient.findBuildingChoicesCourseByReferral)
           .calledWith(referralId, pathway)
@@ -417,7 +416,7 @@ describe('CourseService', () => {
 
     describe('when the course client throws a 404 error', () => {
       it('throws a not found error message`', async () => {
-        const clientError = createError(404)
+        const clientError = Helpers.createApiError(404)
         courseClient.findParticipation.mockRejectedValue(clientError)
 
         const notFoundCourseParticipationId = 'NOT-FOUND'

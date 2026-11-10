@@ -209,7 +209,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       )
       expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/delete', {
-        action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}?_method=DELETE`,
+        action: `${referPaths.new.programmeHistory.destroy({ courseParticipationId, referralId })}`,
         hideTitleServiceName: true,
         pageHeading: 'Remove programme',
         pageTitleOverride: 'Delete Accredited Programme history',
@@ -301,7 +301,7 @@ describe('NewReferralsCourseParticipationsController', () => {
             action: `${referPaths.new.programmeHistory.updateProgramme({
               courseParticipationId: courseParticipation.id,
               referralId,
-            })}?_method=PUT`,
+            })}`,
             courseRadioOptions: CourseUtils.courseRadioOptions(courseNames),
             formValues: isKnownCourse ? { courseName } : { courseName: 'Other', otherCourseName: courseName },
             hideTitleServiceName: true,
@@ -366,7 +366,7 @@ describe('NewReferralsCourseParticipationsController', () => {
       expect(courseService.getParticipationsByReferral).toHaveBeenCalledWith(username, referralId)
 
       expect(response.render).toHaveBeenCalledWith('referrals/new/courseParticipations/index', {
-        action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId })}?_method=PUT`,
+        action: `${referPaths.new.programmeHistory.updateReviewedStatus({ referralId })}`,
         existingParticipationsTable,
         hideTitleServiceName: true,
         pageHeading: 'Accredited Programme history',

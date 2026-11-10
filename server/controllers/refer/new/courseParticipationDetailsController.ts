@@ -42,7 +42,7 @@ export default class NewReferralsCourseParticipationDetailsController {
       })
 
       return res.render('referrals/new/courseParticipations/details/show', {
-        action: `${referPaths.new.programmeHistory.details.update({ courseParticipationId, referralId })}?_method=PUT`,
+        action: `${referPaths.new.programmeHistory.details.update({ courseParticipationId, referralId })}`,
         backLinkHref: referPaths.new.programmeHistory.editProgramme({ courseParticipationId, referralId }),
         courseParticipationId,
         hideTitleServiceName: true,

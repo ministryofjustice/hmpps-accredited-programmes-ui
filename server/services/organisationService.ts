@@ -1,8 +1,8 @@
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import createError from 'http-errors'
-import type { ResponseError } from 'superagent'
 
 import type {
-  HmppsAuthClient,
+  AuthenticationClient,
   OrganisationClient,
   PrisonRegisterApiClient,
   RestClientBuilder,
@@ -15,7 +15,7 @@ import type { Prison } from '@prison-register-api'
 
 export default class OrganisationService {
   constructor(
-    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient>,
     private readonly organisationClientBuilder: RestClientBuilder<OrganisationClient>,
     private readonly prisonRegisterApiClientBuilder: RestClientBuilder<PrisonRegisterApiClient>,
   ) {}
@@ -36,20 +36,17 @@ export default class OrganisationService {
    */
   async getOrganisation(userToken: Express.User['token'], organisationId: Organisation['id']): Promise<Organisation> {
     const prisonRegisterApiClient = this.prisonRegisterApiClientBuilder(userToken)
+    const notFoundError = createError(404, `Active organisation with ID ${organisationId} not found.`)
+
+    let prison: Awaited<ReturnType<typeof prisonRegisterApiClient.find>>
 
     try {
-      const prison = await prisonRegisterApiClient.find(organisationId)
-
-      if (!prison.active) {
-        throw createError(404)
-      }
-
-      return OrganisationUtils.organisationFromPrison(prison)
+      prison = await prisonRegisterApiClient.find(organisationId)
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
-        throw createError(knownError.status, `Active organisation with ID ${organisationId} not found.`)
+      if (knownError.responseStatus === 404) {
+        throw notFoundError
       }
 
       const errorMessage =
@@ -57,26 +54,32 @@ export default class OrganisationService {
           ? `Error fetching organisation ${organisationId}.`
           : knownError.message
 
-      throw createError(knownError.status || 500, errorMessage)
+      throw createError(knownError.responseStatus || 500, errorMessage)
     }
+
+    if (!prison.active) {
+      throw notFoundError
+    }
+
+    return OrganisationUtils.organisationFromPrison(prison)
   }
 
   async getOrganisationFromAcp(username: Express.User['username'], organisationCode: string): Promise<AcpOrganisation> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
 
     const organisationClient = this.organisationClientBuilder(systemToken)
 
     try {
       return await organisationClient.findOrganisation(organisationCode)
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
-        throw createError(knownError.status, `Organisation with code ${organisationCode} not found.`)
+      if (knownError.responseStatus === 404) {
+        throw createError(knownError.responseStatus, `Organisation with code ${organisationCode} not found.`)
       }
 
-      throw createError(knownError.status || 500, `Error fetching organisation ${organisationCode}.`)
+      throw createError(knownError.responseStatus || 500, `Error fetching organisation ${organisationCode}.`)
     }
   }
 
@@ -91,13 +94,13 @@ export default class OrganisationService {
         try {
           return await prisonRegisterApiClient.find(organisationId)
         } catch (error) {
-          const knownError = error as ResponseError
+          const knownError = error as SanitisedError
 
-          if (knownError.status === 404) {
+          if (knownError.responseStatus === 404) {
             return null
           }
 
-          throw createError(knownError.status || 500, `Error fetching organisation ${organisationId}.`)
+          throw createError(knownError.responseStatus || 500, `Error fetching organisation ${organisationId}.`)
         }
       }),
     )

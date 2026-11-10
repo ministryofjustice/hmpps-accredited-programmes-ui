@@ -1,9 +1,10 @@
 /* istanbul ignore file */
 
-import type { ApiConfig } from '../../config'
+import { RestClient } from '@ministryofjustice/hmpps-rest-client'
+
+import logger from '../../../logger'
 import config from '../../config'
 import { apiPaths } from '../../paths'
-import RestClient from '../restClient'
 import type {
   ConfirmationFields,
   Paginated,
@@ -26,28 +27,37 @@ import type { SystemToken } from '@hmpps-auth'
 export default class ReferralClient {
   restClient: RestClient
 
-  constructor(systemToken: SystemToken) {
-    this.restClient = new RestClient('referralClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
+  constructor(private readonly token: SystemToken) {
+    this.restClient = new RestClient('referralClient', config.apis.accreditedProgrammesApi, logger)
   }
 
   async create(courseOfferingId: Referral['offeringId'], prisonNumber: Referral['prisonNumber']): Promise<Referral> {
-    return (await this.restClient.post({
-      data: { offeringId: courseOfferingId, prisonNumber },
-      path: apiPaths.referrals.create({}),
-    })) as Referral
+    return (await this.restClient.post(
+      {
+        data: { offeringId: courseOfferingId, prisonNumber },
+        path: apiPaths.referrals.create({}),
+      },
+      this.token,
+    )) as Referral
   }
 
   async createHspReferral(createHspBody: HspReferralCreate): Promise<Referral> {
-    return (await this.restClient.post({
-      data: { ...createHspBody },
-      path: apiPaths.referrals.createHsp({}),
-    })) as Referral
+    return (await this.restClient.post(
+      {
+        data: { ...createHspBody },
+        path: apiPaths.referrals.createHsp({}),
+      },
+      this.token,
+    )) as Referral
   }
 
   async deleteReferral(referralId: Referral['id']): Promise<void> {
-    await this.restClient.delete({
-      path: apiPaths.referrals.delete({ referralId }),
-    })
+    await this.restClient.delete(
+      {
+        path: apiPaths.referrals.delete({ referralId }),
+      },
+      this.token,
+    )
   }
 
   async find(
@@ -56,12 +66,15 @@ export default class ReferralClient {
       updatePerson?: string
     },
   ): Promise<Referral> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.show({ referralId }),
-      query: {
-        ...(query?.updatePerson && { updatePerson: query.updatePerson }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.show({ referralId }),
+        query: {
+          ...(query?.updatePerson && { updatePerson: query.updatePerson }),
+        },
       },
-    })) as Referral
+      this.token,
+    )) as Referral
   }
 
   async findConfirmationText(
@@ -72,29 +85,38 @@ export default class ReferralClient {
       ptUser?: boolean
     },
   ): Promise<ConfirmationFields> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.confirmationText({ chosenStatusCode, referralId }),
-      query: {
-        ...(query?.deselectAndKeepOpen && { deselectAndKeepOpen: 'true' }),
-        ...(query?.ptUser && { ptUser: 'true' }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.confirmationText({ chosenStatusCode, referralId }),
+        query: {
+          ...(query?.deselectAndKeepOpen && { deselectAndKeepOpen: 'true' }),
+          ...(query?.ptUser && { ptUser: 'true' }),
+        },
       },
-    })) as ConfirmationFields
+      this.token,
+    )) as ConfirmationFields
   }
 
   async findDuplicateReferrals(offeringId: string, prisonNumber: Referral['prisonNumber']): Promise<Array<Referral>> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.duplicates({}),
-      query: {
-        offeringId,
-        prisonNumber,
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.duplicates({}),
+        query: {
+          offeringId,
+          prisonNumber,
+        },
       },
-    })) as Array<Referral>
+      this.token,
+    )) as Array<Referral>
   }
 
   async findHspReferralDetails(referralId: Referral['id']): Promise<HspReferralDetails> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.hspDetails({ referralId }),
-    })) as HspReferralDetails
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.hspDetails({ referralId }),
+      },
+      this.token,
+    )) as HspReferralDetails
   }
 
   async findHspReferralViews(query?: {
@@ -105,18 +127,21 @@ export default class ReferralClient {
     status?: string
     statusGroup?: ReferralStatusGroup
   }): Promise<Paginated<ReferralView>> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.hspReferralDashboard({}),
-      query: {
-        ...(query?.nameOrId && { nameOrId: query.nameOrId }),
-        ...(query?.page && { page: query.page }),
-        ...(query?.status && { status: query.status }),
-        ...(query?.statusGroup && { statusGroup: query.statusGroup }),
-        ...(query?.sortColumn && { sortColumn: query.sortColumn }),
-        ...(query?.sortDirection && { sortDirection: query.sortDirection }),
-        size: '15',
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.hspReferralDashboard({}),
+        query: {
+          ...(query?.nameOrId && { nameOrId: query.nameOrId }),
+          ...(query?.page && { page: query.page }),
+          ...(query?.status && { status: query.status }),
+          ...(query?.statusGroup && { statusGroup: query.statusGroup }),
+          ...(query?.sortColumn && { sortColumn: query.sortColumn }),
+          ...(query?.sortDirection && { sortDirection: query.sortDirection }),
+          size: '15',
+        },
       },
-    })) as Paginated<ReferralView>
+      this.token,
+    )) as Paginated<ReferralView>
   }
 
   async findMyReferralViews(query?: {
@@ -127,30 +152,39 @@ export default class ReferralClient {
     status?: string
     statusGroup?: ReferralStatusGroup
   }): Promise<Paginated<ReferralView>> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.myDashboard({}),
-      query: {
-        ...(query?.nameOrId && { nameOrId: query.nameOrId }),
-        ...(query?.page && { page: query.page }),
-        ...(query?.status && { status: query.status }),
-        ...(query?.statusGroup && { statusGroup: query.statusGroup }),
-        ...(query?.sortColumn && { sortColumn: query.sortColumn }),
-        ...(query?.sortDirection && { sortDirection: query.sortDirection }),
-        size: '15',
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.myDashboard({}),
+        query: {
+          ...(query?.nameOrId && { nameOrId: query.nameOrId }),
+          ...(query?.page && { page: query.page }),
+          ...(query?.status && { status: query.status }),
+          ...(query?.statusGroup && { statusGroup: query.statusGroup }),
+          ...(query?.sortColumn && { sortColumn: query.sortColumn }),
+          ...(query?.sortDirection && { sortDirection: query.sortDirection }),
+          size: '15',
+        },
       },
-    })) as Paginated<ReferralView>
+      this.token,
+    )) as Paginated<ReferralView>
   }
 
   async findOtherReferrals(referralId: Referral['id']): Promise<Array<Referral>> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.otherReferrals({ referralId }),
-    })) as Array<Referral>
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.otherReferrals({ referralId }),
+      },
+      this.token,
+    )) as Array<Referral>
   }
 
   async findReferralStatusHistory(referralId: Referral['id']): Promise<Array<ReferralStatusHistory>> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.statusHistory({ referralId }),
-    })) as Array<ReferralStatusHistory>
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.statusHistory({ referralId }),
+      },
+      this.token,
+    )) as Array<ReferralStatusHistory>
   }
 
   async findReferralViews(
@@ -167,21 +201,24 @@ export default class ReferralClient {
       statusGroup?: ReferralStatusGroup
     },
   ): Promise<Paginated<ReferralView>> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.dashboard({ organisationId }),
-      query: {
-        ...(query?.audience && { audience: query.audience }),
-        ...(query?.courseName && { courseName: query.courseName }),
-        ...(query?.nameOrId && { nameOrId: query.nameOrId }),
-        ...(query?.page && { page: query.page }),
-        ...(query?.sortColumn && { sortColumn: query.sortColumn }),
-        ...(query?.sortDirection && { sortDirection: query.sortDirection }),
-        ...(query?.status && { status: query.status }),
-        ...(query?.statusGroup && { statusGroup: query.statusGroup }),
-        ...(query?.hasLdcString && { hasLdc: query.hasLdcString }),
-        size: '15',
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.dashboard({ organisationId }),
+        query: {
+          ...(query?.audience && { audience: query.audience }),
+          ...(query?.courseName && { courseName: query.courseName }),
+          ...(query?.nameOrId && { nameOrId: query.nameOrId }),
+          ...(query?.page && { page: query.page }),
+          ...(query?.sortColumn && { sortColumn: query.sortColumn }),
+          ...(query?.sortDirection && { sortDirection: query.sortDirection }),
+          ...(query?.status && { status: query.status }),
+          ...(query?.statusGroup && { statusGroup: query.statusGroup }),
+          ...(query?.hasLdcString && { hasLdc: query.hasLdcString }),
+          size: '15',
+        },
       },
-    })) as Paginated<ReferralView>
+      this.token,
+    )) as Paginated<ReferralView>
   }
 
   async findStatusTransitions(
@@ -191,39 +228,54 @@ export default class ReferralClient {
       ptUser?: boolean
     },
   ): Promise<Array<ReferralStatusRefData>> {
-    return (await this.restClient.get({
-      path: apiPaths.referrals.statusTransitions({ referralId }),
-      query: {
-        ...(query?.deselectAndKeepOpen && { deselectAndKeepOpen: 'true' }),
-        ...(query?.ptUser && { ptUser: 'true' }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.referrals.statusTransitions({ referralId }),
+        query: {
+          ...(query?.deselectAndKeepOpen && { deselectAndKeepOpen: 'true' }),
+          ...(query?.ptUser && { ptUser: 'true' }),
+        },
       },
-    })) as Array<ReferralStatusRefData>
+      this.token,
+    )) as Array<ReferralStatusRefData>
   }
 
   async submit(referralId: Referral['id']): Promise<void> {
-    await this.restClient.post({
-      path: apiPaths.referrals.submit({ referralId }),
-    })
+    await this.restClient.post(
+      {
+        path: apiPaths.referrals.submit({ referralId }),
+      },
+      this.token,
+    )
   }
 
   async transferToBuildingChoices(transferRequest: TransferReferralRequest): Promise<Referral> {
-    return (await this.restClient.post({
-      data: { ...transferRequest },
-      path: apiPaths.referrals.transfer({}),
-    })) as Referral
+    return (await this.restClient.post(
+      {
+        data: { ...transferRequest },
+        path: apiPaths.referrals.transfer({}),
+      },
+      this.token,
+    )) as Referral
   }
 
   async update(referralId: Referral['id'], referralUpdate: ReferralUpdate): Promise<void> {
-    await this.restClient.put({
-      data: { ...referralUpdate },
-      path: apiPaths.referrals.update({ referralId }),
-    })
+    await this.restClient.put(
+      {
+        data: { ...referralUpdate },
+        path: apiPaths.referrals.update({ referralId }),
+      },
+      this.token,
+    )
   }
 
   async updateStatus(referralId: Referral['id'], referralStatusUpdate: ReferralStatusUpdate): Promise<void> {
-    await this.restClient.put({
-      data: referralStatusUpdate,
-      path: apiPaths.referrals.updateStatus({ referralId }),
-    })
+    await this.restClient.put(
+      {
+        data: referralStatusUpdate,
+        path: apiPaths.referrals.updateStatus({ referralId }),
+      },
+      this.token,
+    )
   }
 }

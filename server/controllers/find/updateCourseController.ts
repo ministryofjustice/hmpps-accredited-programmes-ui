@@ -25,7 +25,7 @@ export default class UpdateCourseController {
       }
 
       res.render('courses/form/show', {
-        action: `${findPaths.course.update.submit({ courseId })}?_method=PUT`,
+        action: `${findPaths.course.update.submit({ courseId })}`,
         audienceSelectItems: CourseUtils.audienceSelectItems(audiences),
         backLinkHref: findPaths.show({ courseId }),
         formValues,

@@ -1,5 +1,5 @@
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import createError from 'http-errors'
-import type { ResponseError } from 'superagent'
 
 import logger from '../../logger'
 import type { HmppsManageUsersClient, PrisonApiClient, RestClientBuilder } from '../data'
@@ -38,16 +38,16 @@ export default class UserService {
 
       return userEmail.email
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
-        throw createError(knownError.status, { message: `User with username ${username} not found.` })
+      if (knownError.responseStatus === 404) {
+        throw createError(knownError.responseStatus, { message: `User with username ${username} not found.` })
       }
 
       const errorMessage =
         knownError.message === 'Internal Server Error' ? `Error fetching email for ${username}.` : knownError.message
 
-      throw createError(knownError.status || 500, errorMessage)
+      throw createError(knownError.responseStatus || 500, errorMessage)
     }
   }
 
@@ -66,10 +66,10 @@ export default class UserService {
     try {
       return await hmppsManageUsersClient.getUserFromUsername(username)
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
-        throw createError(knownError.status, `User with username ${username} not found.`)
+      if (knownError.responseStatus === 404) {
+        throw createError(knownError.responseStatus, `User with username ${username} not found.`)
       }
 
       throw this.createUserLoadNon404Error(username, knownError)
@@ -90,18 +90,18 @@ export default class UserService {
       const result = await hmppsManageUsersClient.getUserFromUsername(username)
       return result
     } catch (error) {
-      const knownError = error as ResponseError
-      if (knownError.status === 404) {
+      const knownError = error as SanitisedError
+      if (knownError.responseStatus === 404) {
         return null
       }
       throw this.createUserLoadNon404Error(username, knownError)
     }
   }
 
-  private createUserLoadNon404Error(username: string, knownError: ResponseError) {
+  private createUserLoadNon404Error(username: string, knownError: SanitisedError) {
     const errorMessage =
       knownError.message === 'Internal Server Error' ? `Error fetching user ${username}.` : knownError.message
-    return createError(knownError.status || 500, errorMessage)
+    return createError(knownError.responseStatus || 500, errorMessage)
   }
 
   private async getCaseloads(systemToken: SystemToken): Promise<Array<Caseload>> {

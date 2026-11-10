@@ -24,7 +24,7 @@ export default class UpdateCourseOfferingController {
       const organisationSelectItems = OrganisationUtils.organisationSelectItems(organisations)
 
       res.render('courses/offerings/form/show', {
-        action: `${findPaths.offerings.update.submit({ courseOfferingId })}?_method=PUT`,
+        action: `${findPaths.offerings.update.submit({ courseOfferingId })}`,
         backLinkHref: findPaths.offerings.show({ courseOfferingId }),
         offering,
         organisationSelectItems,

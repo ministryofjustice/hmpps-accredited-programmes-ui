@@ -1,23 +1,24 @@
+import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
+import type { AuthenticationClient } from '../data'
 import OrganisationService from './organisationService'
-import { HmppsAuthClient, OrganisationClient, PrisonRegisterApiClient, TokenStore, createRedisClient } from '../data'
+import { OrganisationClient, PrisonRegisterApiClient } from '../data'
 import { prisonFactory } from '../testutils/factories'
+import Helpers from '../testutils/helpers'
 import { OrganisationUtils } from '../utils'
 import type { Organisation } from '@accredited-programmes-api'
 
-jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/prisonRegisterApiClient')
 jest.mock('../data/accreditedProgrammesApi/organisationClient')
 
 describe('OrganisationService', () => {
-  const tokenStore = new TokenStore(createRedisClient())
   const username = 'USERNAME'
   const systemToken = 'system-token'
   const userToken = 'token'
 
-  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClient = createMock<AuthenticationClient>()
   const hmppsAuthClientBuilder = jest.fn()
 
   const organisationClient = new OrganisationClient(systemToken) as jest.Mocked<OrganisationClient>
@@ -37,7 +38,7 @@ describe('OrganisationService', () => {
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     organisationClientBuilder.mockReturnValue(organisationClient)
     prisonRegisterApiClientBuilder.mockReturnValue(prisonRegisterApiClient)
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+    hmppsAuthClient.getToken.mockResolvedValue(systemToken)
   })
 
   describe('getAllOrganisations', () => {
@@ -114,7 +115,7 @@ describe('OrganisationService', () => {
 
     describe('when the prison client throws a 404 error', () => {
       it('re-throws the error', async () => {
-        const clientError = createError(404)
+        const clientError = Helpers.createApiError(404)
         prisonRegisterApiClient.find.mockRejectedValue(clientError)
 
         const notFoundPrisonId = 'NOT-FOUND'
@@ -160,7 +161,7 @@ describe('OrganisationService', () => {
 
     describe('when the organisation client throws a 404 error', () => {
       it('re-throws the error', async () => {
-        const clientError = createError(404)
+        const clientError = Helpers.createApiError(404)
         organisationClient.findOrganisation.mockRejectedValue(clientError)
 
         const expectedError = createError(404, `Organisation with code ${organisationCode} not found.`)
@@ -202,7 +203,7 @@ describe('OrganisationService', () => {
 
     it('returns all found active prisons', async () => {
       const notFoundPrisonId = 'who-is-she'
-      const notFoundClientError = createError(404)
+      const notFoundClientError = Helpers.createApiError(404)
       when(prisonRegisterApiClient.find).calledWith(notFoundPrisonId).mockRejectedValue(notFoundClientError)
 
       const allIds = [...activePrisonIds, inactivePrisonId, notFoundPrisonId]

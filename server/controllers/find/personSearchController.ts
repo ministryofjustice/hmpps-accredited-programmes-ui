@@ -1,8 +1,8 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
+import type { HttpError } from 'http-errors'
 
 import { ApplicationRoles } from '../../middleware'
 import { findPaths } from '../../paths'
-import type { SanitisedError } from '../../sanitisedError'
 import type { PersonService } from '../../services'
 import { FormUtils } from '../../utils'
 
@@ -48,7 +48,7 @@ export default class PersonSearchController {
           prisonNumber: person.prisonNumber,
         }
       } catch (error) {
-        const sanitisedError = error as SanitisedError
+        const sanitisedError = error as HttpError
 
         if (sanitisedError.status === 404) {
           req.flash('prisonNumberError', `No person with prison number '${prisonNumber}' found`)

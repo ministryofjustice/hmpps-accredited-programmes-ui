@@ -25,7 +25,7 @@ export default class NewReferralsDeleteController {
       const person = await this.personService.getPerson(req.user.username, referral.prisonNumber)
 
       return res.render('referrals/new/delete/show', {
-        action: `${referPaths.new.delete({ referralId })}?_method=DELETE`,
+        action: `${referPaths.new.delete({ referralId })}`,
         hrefs: { back: referPaths.new.show({ referralId }) },
         pageHeading: 'Delete draft referral?',
         pageTitleOverride: 'Delete draft referral ',

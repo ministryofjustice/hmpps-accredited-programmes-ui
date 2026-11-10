@@ -1,6 +1,5 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
-import createError from 'http-errors'
-import type { ResponseError } from 'superagent'
+import type { HttpError } from 'http-errors'
 
 import config from '../../../config'
 import { ApplicationRoles } from '../../../middleware'
@@ -32,14 +31,14 @@ export default class NewReferralsPeopleController {
           canViewAllPrisoners ? [] : res.locals.user.caseloads,
         )
       } catch (error) {
-        const knownError = error as ResponseError
+        const knownError = error as HttpError
 
         if (knownError.status === 404) {
           req.flash('prisonNumberError', `No person with prison number '${req.params.prisonNumber}' found`)
           return res.redirect(findPaths.pniFind.personSearch({}))
         }
 
-        throw createError(knownError)
+        throw error
       }
 
       return res.render('referrals/new/people/show', {

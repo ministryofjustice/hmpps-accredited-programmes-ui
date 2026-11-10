@@ -1,21 +1,27 @@
-$('.js-repeater-button').on('click', function () {
-  const $lastDiv = $('div[id^="js-repeater-section-"]:last')
+document.querySelectorAll('.js-repeater-button').forEach(function (button) {
+  button.addEventListener('click', function () {
+    function incrementFirstNumber(value) {
+      return value.replace(/\d+/, function (match) {
+        return String(parseInt(match, 10) + 1)
+      })
+    }
 
-  const num = parseInt($lastDiv.prop('id').match(/\d+/g), 10) + 1
+    const sections = document.querySelectorAll('div[id^="js-repeater-section-"]')
+    const lastSection = sections[sections.length - 1]
 
-  const $clone = $lastDiv.clone().prop('id', `js-repeater-section-${num}`)
+    const newSection = lastSection.cloneNode(true)
+    newSection.id = incrementFirstNumber(lastSection.id)
 
-  $clone.find('label').each(function () {
-    const inputLabel = parseInt(this.htmlFor.match(/\d+/), 10) + 1
-    this.htmlFor = this.htmlFor.replace(/\d+/, inputLabel)
+    newSection.querySelectorAll('label').forEach(function (label) {
+      label.htmlFor = incrementFirstNumber(label.htmlFor)
+    })
+
+    newSection.querySelectorAll('input').forEach(function (input) {
+      input.value = ''
+      input.name = incrementFirstNumber(input.name)
+      input.id = incrementFirstNumber(input.id)
+    })
+
+    lastSection.after(newSection)
   })
-
-  $clone.find('input').each(function () {
-    this.value = ''
-    const inputNumber = parseInt(this.name.match(/\d+/), 10) + 1
-    this.name = this.name.replace(/\d+/, inputNumber)
-    this.id = this.id.replace(/\d+/, inputNumber)
-  })
-
-  $lastDiv.after($clone)
 })
