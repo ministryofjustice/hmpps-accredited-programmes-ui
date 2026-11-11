@@ -1,15 +1,17 @@
 /* istanbul ignore file */
-import config, { type ApiConfig } from '../../config'
+import { RestClient } from '@ministryofjustice/hmpps-rest-client'
+
+import logger from '../../../logger'
+import config from '../../config'
 import { apiPaths } from '../../paths'
-import RestClient from '../restClient'
 import type { ReportContent } from '@accredited-programmes-api'
 import type { SystemToken } from '@hmpps-auth'
 
 export default class StatisticsClient {
   restClient: RestClient
 
-  constructor(systemToken: SystemToken) {
-    this.restClient = new RestClient('statistics', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
+  constructor(private readonly token: SystemToken) {
+    this.restClient = new RestClient('statistics', config.apis.accreditedProgrammesApi, logger)
   }
 
   async findReport(
@@ -20,13 +22,16 @@ export default class StatisticsClient {
       locationCodes?: Array<string>
     },
   ): Promise<ReportContent> {
-    return (await this.restClient.get({
-      path: apiPaths.statistics.report({ reportType }),
-      query: {
-        startDate: query.startDate,
-        ...(query.endDate && { endDate: query.endDate }),
-        ...(query.locationCodes && { locationCodes: query.locationCodes.join(',') }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.statistics.report({ reportType }),
+        query: {
+          startDate: query.startDate,
+          ...(query.endDate && { endDate: query.endDate }),
+          ...(query.locationCodes && { locationCodes: query.locationCodes.join(',') }),
+        },
       },
-    })) as ReportContent
+      this.token,
+    )) as ReportContent
   }
 }

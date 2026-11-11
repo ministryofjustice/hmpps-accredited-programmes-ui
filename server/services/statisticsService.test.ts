@@ -1,18 +1,19 @@
+import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 
-import { HmppsAuthClient, StatisticsClient, TokenStore, createRedisClient } from '../data'
+import type { AuthenticationClient } from '../data'
+import { StatisticsClient } from '../data'
 import StatisticsService from './statisticsService'
 import { reportContentFactory } from '../testutils/factories'
+import Helpers from '../testutils/helpers'
 
 jest.mock('../data/accreditedProgrammesApi/statisticsClient')
-jest.mock('../data/hmppsAuthClient')
 
 describe('StatisticsService', () => {
-  const tokenStore = new TokenStore(createRedisClient()) as jest.Mocked<TokenStore>
   const systemToken = 'SYSTEM_TOKEN'
   const username = 'USERNAME'
 
-  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClient = createMock<AuthenticationClient>()
   const hmppsAuthClientBuilder = jest.fn()
 
   const statisticsClient = new StatisticsClient(systemToken) as jest.Mocked<StatisticsClient>
@@ -25,7 +26,7 @@ describe('StatisticsService', () => {
 
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     statisticsClientBuilder.mockReturnValue(statisticsClient)
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+    hmppsAuthClient.getToken.mockResolvedValue(systemToken)
   })
 
   describe('getReport', () => {
@@ -44,7 +45,7 @@ describe('StatisticsService', () => {
       expect(result).toEqual(reportContent)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
       expect(statisticsClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(statisticsClient.findReport).toHaveBeenCalledWith(reportContent.reportType, {
         endDate: reportContent.parameters.endDate,
@@ -54,7 +55,7 @@ describe('StatisticsService', () => {
 
     describe('when the statistics client throws an error', () => {
       it('returns null when the error status is 400', async () => {
-        const clientError = createError(400)
+        const clientError = Helpers.createApiError(400)
         statisticsClient.findReport.mockRejectedValue(clientError)
 
         const result = await service.getReport(username, reportContent.reportType, {

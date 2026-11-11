@@ -1,7 +1,7 @@
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import createError from 'http-errors'
-import type { ResponseError } from 'superagent'
 
-import type { HmppsAuthClient, OasysClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
+import type { AuthenticationClient, OasysClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
   AssessmentDateInfo,
   DrugAlcoholDetail,
@@ -22,7 +22,7 @@ import type {
 
 export default class OasysService {
   constructor(
-    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient>,
     private readonly oasysClientBuilder: RestClientBuilder<OasysClient>,
   ) {}
 
@@ -31,7 +31,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<AssessmentDateInfo | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -39,14 +39,14 @@ export default class OasysService {
 
       return assessmentDateInfo
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
       throw createError(
-        knownError.status || 500,
+        knownError.responseStatus || 500,
         `Error fetching assessment date info for prison number ${prisonNumber}.`,
       )
     }
@@ -57,7 +57,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<Attitude | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -65,13 +65,16 @@ export default class OasysService {
 
       return attitude
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching attitude data for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching attitude data for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -80,7 +83,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<Behaviour | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -88,13 +91,16 @@ export default class OasysService {
 
       return behaviour
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching behaviour data for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching behaviour data for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -103,7 +109,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<DrugAlcoholDetail | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -111,14 +117,14 @@ export default class OasysService {
 
       return drugAndAlcoholDetails
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
       throw createError(
-        knownError.status || 500,
+        knownError.responseStatus || 500,
         `Error fetching drug and alcohol details for prison number ${prisonNumber}.`,
       )
     }
@@ -126,7 +132,7 @@ export default class OasysService {
 
   async getHealth(username: Express.User['username'], prisonNumber: Referral['prisonNumber']): Promise<Health | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -134,13 +140,16 @@ export default class OasysService {
 
       return health
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching health data for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching health data for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -149,7 +158,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<LearningNeeds | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -157,14 +166,14 @@ export default class OasysService {
 
       return learningNeeds
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
       throw createError(
-        knownError.status || 500,
+        knownError.responseStatus || 500,
         `Error fetching learning needs data for prison number ${prisonNumber}.`,
       )
     }
@@ -175,7 +184,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<Lifestyle | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -183,13 +192,16 @@ export default class OasysService {
 
       return lifestyle
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching lifestyle data for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching lifestyle data for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -198,7 +210,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<OffenceDetail | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -206,13 +218,16 @@ export default class OasysService {
 
       return offenceDetails
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching offence details for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching offence details for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -221,7 +236,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<Psychiatric | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -229,13 +244,16 @@ export default class OasysService {
 
       return psychiatric
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching psychiatric data for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching psychiatric data for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -244,7 +262,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<Relationships | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -252,13 +270,16 @@ export default class OasysService {
 
       return relationships
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching relationships for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching relationships for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -267,7 +288,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<RisksAndAlerts | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -275,13 +296,16 @@ export default class OasysService {
 
       return risksAndAlerts
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching risks and alerts for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching risks and alerts for prison number ${prisonNumber}.`,
+      )
     }
   }
 
@@ -290,7 +314,7 @@ export default class OasysService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<RoshAnalysis | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const oasysClient = this.oasysClientBuilder(systemToken)
 
     try {
@@ -298,13 +322,16 @@ export default class OasysService {
 
       return roshAnalysis
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         return null
       }
 
-      throw createError(knownError.status || 500, `Error fetching RoSH analysis for prison number ${prisonNumber}.`)
+      throw createError(
+        knownError.responseStatus || 500,
+        `Error fetching RoSH analysis for prison number ${prisonNumber}.`,
+      )
     }
   }
 }

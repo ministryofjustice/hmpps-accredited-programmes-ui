@@ -3,7 +3,7 @@
     "target": "es2024",
     "module": "Node16",
     "moduleResolution": "node16",
-    "lib": ["es2023", "dom", "es2015.promise"],
+    "lib": ["es2024", "dom", "es2015.promise"],
     "strict": true,
     "noEmit": true,
     "types": ["cypress", "cypress-axe", "express", "express-session"],

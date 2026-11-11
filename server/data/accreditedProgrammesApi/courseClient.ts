@@ -1,7 +1,8 @@
-import type { ApiConfig } from '../../config'
+import { RestClient } from '@ministryofjustice/hmpps-rest-client'
+
+import logger from '../../../logger'
 import config from '../../config'
 import { apiPaths } from '../../paths'
-import RestClient from '../restClient'
 import type { CourseCreateRequest, CourseOffering, CoursePrerequisite, Person } from '@accredited-programmes/models'
 import type {
   Audience,
@@ -17,47 +18,62 @@ import type { SystemToken } from '@hmpps-auth'
 export default class CourseClient {
   restClient: RestClient
 
-  constructor(systemToken: SystemToken) {
-    this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi as ApiConfig, systemToken)
+  constructor(private readonly token: SystemToken) {
+    this.restClient = new RestClient('courseClient', config.apis.accreditedProgrammesApi, logger)
   }
 
   /* istanbul ignore next */
   async addCourseOffering(courseId: Course['id'], courseOffering: Omit<CourseOffering, 'id'>): Promise<CourseOffering> {
-    return (await this.restClient.post({
-      data: { ...courseOffering },
-      path: apiPaths.offerings.create({ courseId }),
-    })) as CourseOffering
+    return (await this.restClient.post(
+      {
+        data: { ...courseOffering },
+        path: apiPaths.offerings.create({ courseId }),
+      },
+      this.token,
+    )) as CourseOffering
   }
 
   async createCourse(courseCreateRequest: CourseCreateRequest): Promise<Course> {
-    return (await this.restClient.post({
-      data: { ...courseCreateRequest },
-      path: apiPaths.courses.create({}),
-    })) as Course
+    return (await this.restClient.post(
+      {
+        data: { ...courseCreateRequest },
+        path: apiPaths.courses.create({}),
+      },
+      this.token,
+    )) as Course
   }
 
   async createParticipation(participationCreateRequest: CourseParticipationCreate): Promise<CourseParticipation> {
-    return (await this.restClient.post({
-      data: { ...participationCreateRequest },
-      path: apiPaths.participations.create({}),
-    })) as CourseParticipation
+    return (await this.restClient.post(
+      {
+        data: { ...participationCreateRequest },
+        path: apiPaths.participations.create({}),
+      },
+      this.token,
+    )) as CourseParticipation
   }
 
   /* istanbul ignore next */
   async destroyOffering(courseId: Course['id'], courseOfferingId: CourseOffering['id']): Promise<void> {
-    await this.restClient.delete({
-      path: apiPaths.courses.offering({ courseId, courseOfferingId }),
-    })
+    await this.restClient.delete(
+      {
+        path: apiPaths.courses.offering({ courseId, courseOfferingId }),
+      },
+      this.token,
+    )
   }
 
   async destroyParticipation(courseParticipationId: CourseParticipation['id']): Promise<void> {
-    await this.restClient.delete({
-      path: apiPaths.participations.delete({ courseParticipationId }),
-    })
+    await this.restClient.delete(
+      {
+        path: apiPaths.participations.delete({ courseParticipationId }),
+      },
+      this.token,
+    )
   }
 
   async find(courseId: Course['id']): Promise<Course> {
-    return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) })) as Course
+    return (await this.restClient.get({ path: apiPaths.courses.show({ courseId }) }, this.token)) as Course
   }
 
   /* istanbul ignore next */
@@ -65,12 +81,15 @@ export default class CourseClient {
     referralId: Referral['id'],
     programmePathway?: PniScore['programmePathway'],
   ): Promise<Course> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.buildingChoicesByReferral({ referralId }),
-      query: {
-        ...(programmePathway && { programmePathway }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.courses.buildingChoicesByReferral({ referralId }),
+        query: {
+          ...(programmePathway && { programmePathway }),
+        },
       },
-    })) as Course
+      this.token,
+    )) as Course
   }
 
   /* istanbul ignore next */
@@ -81,99 +100,138 @@ export default class CourseClient {
       isInAWomensPrison: string
     },
   ): Promise<Array<Course>> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.buildingChoicesVariants({ courseId }),
-      query: {
-        ...(query?.isInAWomensPrison && { isInAWomensPrison: query.isInAWomensPrison }),
-        ...(query?.isConvictedOfSexualOffence && { isConvictedOfASexualOffence: query.isConvictedOfSexualOffence }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.courses.buildingChoicesVariants({ courseId }),
+        query: {
+          ...(query?.isInAWomensPrison && { isInAWomensPrison: query.isInAWomensPrison }),
+          ...(query?.isConvictedOfSexualOffence && { isConvictedOfASexualOffence: query.isConvictedOfSexualOffence }),
+        },
       },
-    })) as Array<Course>
+      this.token,
+    )) as Array<Course>
   }
 
   async findCourseAudiences(query?: { courseId: Course['id'] }): Promise<Array<Audience>> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.audiences({}),
-      query: {
-        ...(query?.courseId && { courseId: query.courseId }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.courses.audiences({}),
+        query: {
+          ...(query?.courseId && { courseId: query.courseId }),
+        },
       },
-    })) as Array<Audience>
+      this.token,
+    )) as Array<Audience>
   }
 
   async findCourseByOffering(courseOfferingId: CourseOffering['id']): Promise<Course> {
-    return (await this.restClient.get({
-      path: apiPaths.offerings.course({ courseOfferingId }),
-    })) as Course
+    return (await this.restClient.get(
+      {
+        path: apiPaths.offerings.course({ courseOfferingId }),
+      },
+      this.token,
+    )) as Course
   }
 
   async findCourseNames(): Promise<Array<Course['name']>> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.names({}),
-    })) as Array<Course['name']>
+    return (await this.restClient.get(
+      {
+        path: apiPaths.courses.names({}),
+      },
+      this.token,
+    )) as Array<Course['name']>
   }
 
   async findCourses(query?: { intensity?: 'HIGH' | 'MODERATE' }): Promise<Array<Course>> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.index({}),
-      query: {
-        ...(query?.intensity && { intensity: query.intensity }),
+    return (await this.restClient.get(
+      {
+        path: apiPaths.courses.index({}),
+        query: {
+          ...(query?.intensity && { intensity: query.intensity }),
+        },
       },
-    })) as Array<Course>
+      this.token,
+    )) as Array<Course>
   }
 
   async findCoursesByOrganisation(organisationId: string): Promise<Array<Course>> {
-    return (await this.restClient.get({
-      path: apiPaths.organisations.courses({ organisationId }),
-    })) as Array<Course>
+    return (await this.restClient.get(
+      {
+        path: apiPaths.organisations.courses({ organisationId }),
+      },
+      this.token,
+    )) as Array<Course>
   }
 
   async findOffering(courseOfferingId: CourseOffering['id']): Promise<CourseOffering> {
-    return (await this.restClient.get({
-      path: apiPaths.offerings.show({ courseOfferingId }),
-    })) as CourseOffering
+    return (await this.restClient.get(
+      {
+        path: apiPaths.offerings.show({ courseOfferingId }),
+      },
+      this.token,
+    )) as CourseOffering
   }
 
   async findOfferings(courseId: Course['id'], query?: { includeWithdrawn?: boolean }): Promise<Array<CourseOffering>> {
-    return (await this.restClient.get({
-      path: apiPaths.courses.offerings({ courseId }),
-      query: {
-        ...{ includeWithdrawn: query?.includeWithdrawn ? 'true' : 'false' },
+    return (await this.restClient.get(
+      {
+        path: apiPaths.courses.offerings({ courseId }),
+        query: {
+          ...{ includeWithdrawn: query?.includeWithdrawn ? 'true' : 'false' },
+        },
       },
-    })) as Array<CourseOffering>
+      this.token,
+    )) as Array<CourseOffering>
   }
 
   async findParticipation(courseParticipationId: CourseParticipation['id']): Promise<CourseParticipation> {
-    return (await this.restClient.get({
-      path: apiPaths.participations.show({ courseParticipationId }),
-    })) as CourseParticipation
+    return (await this.restClient.get(
+      {
+        path: apiPaths.participations.show({ courseParticipationId }),
+      },
+      this.token,
+    )) as CourseParticipation
   }
 
   async findParticipationsByPerson(prisonNumber: Person['prisonNumber']): Promise<Array<CourseParticipation>> {
-    return (await this.restClient.get({
-      path: apiPaths.people.participations({ prisonNumber }),
-    })) as Array<CourseParticipation>
+    return (await this.restClient.get(
+      {
+        path: apiPaths.people.participations({ prisonNumber }),
+      },
+      this.token,
+    )) as Array<CourseParticipation>
   }
 
   /* istanbul ignore next */
   async findParticipationsByReferral(referralId: string): Promise<Array<CourseParticipation>> {
-    return (await this.restClient.get({
-      path: apiPaths.participations.referral({ referralId }),
-    })) as Array<CourseParticipation>
+    return (await this.restClient.get(
+      {
+        path: apiPaths.participations.referral({ referralId }),
+      },
+      this.token,
+    )) as Array<CourseParticipation>
   }
 
   /* istanbul ignore next */
   async updateCourse(courseId: Course['id'], courseUpdate: CourseCreateRequest): Promise<Course> {
-    return (await this.restClient.put({
-      data: { ...courseUpdate },
-      path: apiPaths.courses.update({ courseId }),
-    })) as Course
+    return (await this.restClient.put(
+      {
+        data: { ...courseUpdate },
+        path: apiPaths.courses.update({ courseId }),
+      },
+      this.token,
+    )) as Course
   }
 
   /* istanbul ignore next */
   async updateCourseOffering(courseId: Course['id'], courseOffering: CourseOffering): Promise<CourseOffering> {
-    return (await this.restClient.put({
-      data: courseOffering,
-      path: apiPaths.offerings.update({ courseId }),
-    })) as CourseOffering
+    return (await this.restClient.put(
+      {
+        data: courseOffering,
+        path: apiPaths.offerings.update({ courseId }),
+      },
+      this.token,
+    )) as CourseOffering
   }
 
   /* istanbul ignore next */
@@ -181,19 +239,25 @@ export default class CourseClient {
     courseId: Course['id'],
     coursePrerequisites: Array<CoursePrerequisite>,
   ): Promise<Array<CoursePrerequisite>> {
-    return (await this.restClient.put({
-      data: { prerequisites: coursePrerequisites },
-      path: apiPaths.courses.prerequisites({ courseId }),
-    })) as Array<CoursePrerequisite>
+    return (await this.restClient.put(
+      {
+        data: { prerequisites: coursePrerequisites },
+        path: apiPaths.courses.prerequisites({ courseId }),
+      },
+      this.token,
+    )) as Array<CoursePrerequisite>
   }
 
   async updateParticipation(
     courseParticipationId: CourseParticipation['id'],
     courseParticipationUpdate: CourseParticipationUpdate,
   ): Promise<CourseParticipation> {
-    return (await this.restClient.put({
-      data: { ...courseParticipationUpdate },
-      path: apiPaths.participations.update({ courseParticipationId }),
-    })) as CourseParticipation
+    return (await this.restClient.put(
+      {
+        data: { ...courseParticipationUpdate },
+        path: apiPaths.participations.update({ courseParticipationId }),
+      },
+      this.token,
+    )) as CourseParticipation
   }
 }

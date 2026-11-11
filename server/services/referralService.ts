@@ -4,7 +4,7 @@ import type PniService from './pniService'
 import type ReferenceDataService from './referenceDataService'
 import type UserService from './userService'
 import logger from '../../logger'
-import type { HmppsAuthClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
+import type { AuthenticationClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
   ConfirmationFields,
   Paginated,
@@ -30,7 +30,7 @@ import type { User } from '@manage-users-api'
 
 export default class ReferralService {
   constructor(
-    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient>,
     private readonly referralClientBuilder: RestClientBuilder<ReferralClient>,
     private readonly userService: UserService,
     private readonly courseService: CourseService,
@@ -49,7 +49,7 @@ export default class ReferralService {
     },
   ): Promise<Referral> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     if (hspReferralData) {
@@ -65,7 +65,7 @@ export default class ReferralService {
 
   async deleteReferral(username: Express.User['username'], referralId: Referral['id']): Promise<void> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.deleteReferral(referralId)
@@ -81,7 +81,7 @@ export default class ReferralService {
     },
   ): Promise<ConfirmationFields> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findConfirmationText(referralId, chosenStatusCode, query)
@@ -93,7 +93,7 @@ export default class ReferralService {
     prisonNumber: Referral['prisonNumber'],
   ): Promise<Array<Referral>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findDuplicateReferrals(offeringId, prisonNumber)
@@ -104,7 +104,7 @@ export default class ReferralService {
     referralId: Referral['id'],
   ): Promise<HspReferralDetails> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findHspReferralDetails(referralId)
@@ -122,7 +122,7 @@ export default class ReferralService {
     },
   ): Promise<Paginated<ReferralView>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findMyReferralViews(query)
@@ -148,7 +148,7 @@ export default class ReferralService {
     Array<{ course: Course; organisation: Organisation; referral: Referral; status: ReferralStatusRefData; user: User }>
   > {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
+    const systemToken = await hmppsAuthClient.getToken(user.username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     const otherReferrals = await referralClient.findOtherReferrals(referralId)
@@ -178,7 +178,7 @@ export default class ReferralService {
     requested?: Course['intensity']
   }> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     const referral = await referralClient.find(referralId)
@@ -199,7 +199,7 @@ export default class ReferralService {
     query?: { updatePerson?: string },
   ): Promise<Referral> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.find(referralId, query)
@@ -211,7 +211,7 @@ export default class ReferralService {
     referralId: Referral['id'],
   ): Promise<Array<ReferralStatusHistoryPresenter>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(currentUsername)
+    const systemToken = await hmppsAuthClient.getToken(currentUsername)
     const referralClient = this.referralClientBuilder(systemToken)
 
     const referralStatusHistory = await referralClient.findReferralStatusHistory(referralId)
@@ -253,7 +253,7 @@ export default class ReferralService {
     },
   ): Promise<Paginated<ReferralView>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findReferralViews(organisationId, query)
@@ -268,7 +268,7 @@ export default class ReferralService {
     },
   ): Promise<Array<ReferralStatusRefData>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.findStatusTransitions(referralId, query)
@@ -276,7 +276,7 @@ export default class ReferralService {
 
   async submitReferral(username: Express.User['username'], referralId: Referral['id']): Promise<void> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.submit(referralId)
@@ -287,7 +287,7 @@ export default class ReferralService {
     transferRequest: TransferReferralRequest,
   ): Promise<Referral> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.transferToBuildingChoices(transferRequest)
@@ -299,7 +299,7 @@ export default class ReferralService {
     referralUpdate: ReferralUpdate,
   ): Promise<void> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.update(referralId, referralUpdate)
@@ -311,7 +311,7 @@ export default class ReferralService {
     referralStatusUpdate: ReferralStatusUpdate,
   ): Promise<void> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referralClient = this.referralClientBuilder(systemToken)
 
     return referralClient.updateStatus(referralId, referralStatusUpdate)

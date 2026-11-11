@@ -168,13 +168,13 @@ export default class NewReferralsController {
       } catch (error) {
         const sanitisedError = error as SanitisedError
 
-        if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.status === 409) {
+        if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.responseStatus === 409) {
           delete req.session.transferErrorData
           return res.redirect(referPaths.show.duplicate({ referralId: sanitisedError.data.id }))
         }
 
         throw createError(
-          sanitisedError.status || 500,
+          sanitisedError.responseStatus || 500,
           `Unable to create referral for prison number ${prisonNumber} to course offering ${courseOfferingId}`,
         )
       }
@@ -321,12 +321,12 @@ export default class NewReferralsController {
       } catch (error) {
         const sanitisedError = error as SanitisedError
 
-        if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.status === 409) {
+        if (isErrorWithData<Referral>(sanitisedError) && sanitisedError.responseStatus === 409) {
           delete req.session.transferErrorData
           return res.redirect(referPaths.show.duplicate({ referralId: sanitisedError.data.id }))
         }
 
-        throw createError(sanitisedError.status || 500, `Unable to submit referral with id ${referralId}.`)
+        throw createError(sanitisedError.responseStatus || 500, `Unable to submit referral with id ${referralId}.`)
       }
     }
   }

@@ -1,22 +1,22 @@
 /* istanbul ignore file */
 
-import type { RedisClientOptions } from 'redis'
+import type { RedisClientType } from 'redis'
 import { createClient } from 'redis'
 
 import logger from '../../logger'
 import config from '../config'
 
-type RedisClient = ReturnType<typeof createClient>
+type RedisClient = RedisClientType
 
 const url =
   config.redis.tls_enabled === 'true'
     ? `rediss://${config.redis.host}:${config.redis.port}`
     : `redis://${config.redis.host}:${config.redis.port}`
 
-const createRedisClient = (): ReturnType<typeof createClient> => {
+const createRedisClient = (): RedisClient => {
   const shouldUseTls = config.redis.tls_enabled === 'true'
 
-  const redisConfig: RedisClientOptions = {
+  const client = createClient({
     password: config.redis.password,
     socket: {
       host: config.redis.host,
@@ -30,9 +30,7 @@ const createRedisClient = (): ReturnType<typeof createClient> => {
       tls: shouldUseTls ? true : undefined,
     },
     url,
-  }
-
-  const client = createClient(redisConfig)
+  })
 
   client.on('error', (e: Error) => logger.error('Redis client error', e))
 

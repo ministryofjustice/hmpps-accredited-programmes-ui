@@ -1,10 +1,10 @@
+import type { AuthenticatedRequest, VerificationClient } from '@ministryofjustice/hmpps-auth-clients'
 import type { RequestHandler } from 'express'
 import passport from 'passport'
 import { Strategy } from 'passport-oauth2'
 
 import ClientCredentials from './clientCredentials'
 import config from '../config'
-import type { TokenVerifier } from '../data'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
@@ -16,14 +16,14 @@ passport.deserializeUser((user, done) => {
   done(null, user as Express.User)
 })
 
-type AuthenticationMiddleware = (tokenVerifier: TokenVerifier) => RequestHandler
+type AuthenticationMiddleware = (tokenVerificationClient: VerificationClient) => RequestHandler
 
 export type { AuthenticationMiddleware }
 
 export default class Auth {
-  static authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
+  static authenticationMiddleware: AuthenticationMiddleware = tokenVerificationClient => {
     return async (req, res, next) => {
-      if (req.isAuthenticated() && (await verifyToken(req))) {
+      if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as AuthenticatedRequest))) {
         return next()
       }
       req.session.returnTo = req.originalUrl

@@ -54,9 +54,9 @@ export default {
       show: newReferralPeoplePathBase.path(':prisonNumber'),
     },
     programmeHistory: {
-      create: newReferralProgrammeHistoryPath,
+      create: newReferralProgrammeHistoryPath.path('new'),
       delete: newReferralProgrammeHistoryShowPath.path('delete'),
-      destroy: newReferralProgrammeHistoryShowPath,
+      destroy: newReferralProgrammeHistoryShowPath.path('delete'),
       details: {
         show: newReferralProgrammeHistoryShowPath.path('details'),
         update: newReferralProgrammeHistoryShowPath,

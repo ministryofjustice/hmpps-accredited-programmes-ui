@@ -1,9 +1,8 @@
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import createError from 'http-errors'
-import type { ResponseError } from 'superagent'
 
 import type UserService from './userService'
-import type { CourseClient, HmppsAuthClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
-import type { SanitisedError } from '../sanitisedError'
+import type { AuthenticationClient, CourseClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import { CourseParticipationUtils } from '../utils'
 import type { CourseCreateRequest, CourseOffering, CoursePrerequisite, Person } from '@accredited-programmes/models'
 import type { BuildingChoicesData, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
@@ -21,7 +20,7 @@ import type { Prison } from '@prison-register-api'
 export default class CourseService {
   constructor(
     private readonly courseClientBuilder: RestClientBuilder<CourseClient>,
-    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient>,
     private readonly userService: UserService,
   ) {}
 
@@ -31,7 +30,7 @@ export default class CourseService {
     courseOffering: Omit<CourseOffering, 'id'>,
   ): Promise<CourseOffering> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.addCourseOffering(courseId, courseOffering)
@@ -39,7 +38,7 @@ export default class CourseService {
 
   async createCourse(username: Express.User['username'], courseCreateRequest: CourseCreateRequest): Promise<Course> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.createCourse(courseCreateRequest)
@@ -50,7 +49,7 @@ export default class CourseService {
     participationCreateRequest: CourseParticipationCreate,
   ): Promise<CourseParticipation> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.createParticipation(participationCreateRequest)
@@ -62,7 +61,7 @@ export default class CourseService {
     courseOfferingId: CourseOffering['id'],
   ): Promise<void> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.destroyOffering(courseId, courseOfferingId)
@@ -73,7 +72,7 @@ export default class CourseService {
     courseParticipationId: CourseParticipation['id'],
   ): Promise<void> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.destroyParticipation(courseParticipationId)
@@ -85,7 +84,7 @@ export default class CourseService {
     programmePathway: PniScore['programmePathway'],
   ): Promise<Course | null> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     try {
@@ -93,12 +92,12 @@ export default class CourseService {
     } catch (error) {
       const sanitisedError = error as SanitisedError
 
-      if (sanitisedError.status === 404) {
+      if (sanitisedError.responseStatus === 404) {
         return null
       }
 
       throw createError(
-        sanitisedError.status || 500,
+        sanitisedError.responseStatus || 500,
         `Error fetching building choices course data for referral ${referralId} and pathway ${programmePathway}.`,
       )
     }
@@ -110,7 +109,7 @@ export default class CourseService {
     requestBody: Omit<BuildingChoicesData, 'courseVariantId'>,
   ): Promise<Array<Course>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     const { isConvictedOfSexualOffence, isInAWomensPrison } = requestBody
@@ -127,7 +126,7 @@ export default class CourseService {
 
   async getCourse(username: Express.User['username'], courseId: Course['id']): Promise<Course> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.find(courseId)
@@ -138,7 +137,7 @@ export default class CourseService {
     query?: { courseId: Course['id'] },
   ): Promise<Array<Audience>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findCourseAudiences(query)
@@ -146,7 +145,7 @@ export default class CourseService {
 
   async getCourseByOffering(username: Express.User['username'], courseOfferingId: CourseOffering['id']) {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findCourseByOffering(courseOfferingId)
@@ -154,7 +153,7 @@ export default class CourseService {
 
   async getCourseNames(username: Express.User['username']): Promise<Array<Course['name']>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findCourseNames()
@@ -169,7 +168,7 @@ export default class CourseService {
     },
   ): Promise<Array<Course>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findCourses(query)
@@ -180,7 +179,7 @@ export default class CourseService {
     organisationId: Prison['prisonId'],
   ): Promise<Array<Course>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findCoursesByOrganisation(organisationId)
@@ -200,7 +199,7 @@ export default class CourseService {
     courseOfferingId: CourseOffering['id'],
   ): Promise<CourseOffering> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findOffering(courseOfferingId)
@@ -212,7 +211,7 @@ export default class CourseService {
     query?: { includeWithdrawn?: boolean },
   ): Promise<Array<CourseOffering>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findOfferings(courseId, query)
@@ -223,7 +222,7 @@ export default class CourseService {
     courseParticipationId: CourseParticipation['id'],
   ): Promise<CourseParticipation> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     try {
@@ -231,14 +230,14 @@ export default class CourseService {
 
       return courseParticipation
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
-        throw createError(knownError.status, `Course participation with ID ${courseParticipationId} not found.`)
+      if (knownError.responseStatus === 404) {
+        throw createError(knownError.responseStatus, `Course participation with ID ${courseParticipationId} not found.`)
       }
 
       throw createError(
-        knownError.status || 500,
+        knownError.responseStatus || 500,
         `Error fetching course participation with ID ${courseParticipationId}.`,
       )
     }
@@ -249,7 +248,7 @@ export default class CourseService {
     prisonNumber: Person['prisonNumber'],
   ): Promise<Array<CourseParticipation>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.findParticipationsByPerson(prisonNumber)
@@ -260,7 +259,7 @@ export default class CourseService {
     referralId: Referral['id'],
   ): Promise<Array<CourseParticipation>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     try {
@@ -270,10 +269,10 @@ export default class CourseService {
         participationA.createdAt.localeCompare(participationB.createdAt),
       )
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
       throw createError(
-        knownError.status || 500,
+        knownError.responseStatus || 500,
         `Error fetching course participations for referral with ID ${referralId}.`,
       )
     }
@@ -307,7 +306,7 @@ export default class CourseService {
     courseUpdate: CourseCreateRequest,
   ): Promise<Course> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.updateCourse(courseId, courseUpdate)
@@ -319,7 +318,7 @@ export default class CourseService {
     courseOffering: CourseOffering,
   ): Promise<CourseOffering> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.updateCourseOffering(courseId, courseOffering)
@@ -331,7 +330,7 @@ export default class CourseService {
     prerequisites: Array<CoursePrerequisite>,
   ): Promise<Array<CoursePrerequisite>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.updateCoursePrerequisites(courseId, prerequisites)
@@ -343,7 +342,7 @@ export default class CourseService {
     courseParticipationUpdate: CourseParticipationUpdate,
   ): Promise<CourseParticipation> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const courseClient = this.courseClientBuilder(systemToken)
 
     return courseClient.updateParticipation(courseParticipationId, courseParticipationUpdate)

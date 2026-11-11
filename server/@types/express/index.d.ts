@@ -36,8 +36,8 @@ declare global {
     interface User {
       authSource: string
       token: string
-      userId: string
       username: string
+      userId?: string
     }
 
     interface Request extends ConnectFlashRequest {

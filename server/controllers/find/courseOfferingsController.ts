@@ -52,7 +52,7 @@ export default class CourseOfferingsController {
           req.session.pniFindAndReferData !== undefined,
         course: coursePresenter,
         courseOffering,
-        deleteOfferingAction: `${findPaths.offerings.delete({ courseId: course.id, courseOfferingId: courseOffering.id })}?_method=DELETE`,
+        deleteOfferingAction: `${findPaths.offerings.delete({ courseId: course.id, courseOfferingId: courseOffering.id })}`,
         hideTitleServiceName: true,
         hrefs: {
           back: buildingChoicesCourseId

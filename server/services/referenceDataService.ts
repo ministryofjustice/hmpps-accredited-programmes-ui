@@ -1,4 +1,9 @@
-import type { HmppsAuthClient, ReferenceDataClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
+import type {
+  AuthenticationClient,
+  ReferenceDataClient,
+  RestClientBuilder,
+  RestClientBuilderWithoutToken,
+} from '../data'
 import type {
   ReferralStatus,
   ReferralStatusCategory,
@@ -10,7 +15,7 @@ import type { ReferralStatusReason, SexualOffenceDetails } from '@accredited-pro
 
 export default class ReferenceDataService {
   constructor(
-    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient>,
     private readonly referenceDataClient: RestClientBuilder<ReferenceDataClient>,
   ) {}
 
@@ -19,7 +24,7 @@ export default class ReferenceDataService {
     referralStatusCode: ReferralStatusUppercase,
   ): Promise<Array<ReferralStatusCategory>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findReferralStatusCodeCategories(referralStatusCode)
@@ -30,7 +35,7 @@ export default class ReferenceDataService {
     referralStatusCode: ReferralStatus | ReferralStatusUppercase,
   ): Promise<ReferralStatusRefData> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findReferralStatusCodeData(referralStatusCode)
@@ -45,7 +50,7 @@ export default class ReferenceDataService {
     },
   ): Promise<Array<ReferralStatusReason>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findReferralStatusCodeReasons(categoryCode, referralStatusCode, query)
@@ -59,7 +64,7 @@ export default class ReferenceDataService {
     },
   ): Promise<Array<ReferralStatusReason>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findReferralStatusCodeReasonsWithCategory(referralStatusCode, query)
@@ -67,7 +72,7 @@ export default class ReferenceDataService {
 
   async getReferralStatuses(username: Express.User['username']): Promise<Array<ReferralStatusRefData>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findReferralStatuses()
@@ -75,7 +80,7 @@ export default class ReferenceDataService {
 
   async getSexualOffenceDetails(username: Express.User['username']): Promise<Array<SexualOffenceDetails>> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const referenceDataClient = this.referenceDataClient(systemToken)
 
     return referenceDataClient.findSexualOffenceDetails()

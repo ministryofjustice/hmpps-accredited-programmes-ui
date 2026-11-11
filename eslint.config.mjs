@@ -89,6 +89,8 @@ export default [
             '**/*.test.js',
             '**/*.test.ts',
             '**/testutils/**',
+            'script/**',
+            'wiremock/**',
             '.allowed-scripts.mjs',
             'eslint.config.mjs',
             'cypress.config.ts',

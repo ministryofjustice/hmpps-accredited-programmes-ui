@@ -1,5 +1,9 @@
 /* istanbul ignore file */
 
+import { AuthenticationClient, RedisTokenStore, VerificationClient } from '@ministryofjustice/hmpps-auth-clients'
+
+import logger from '../../logger'
+import config from '../config'
 import CourseClient from './accreditedProgrammesApi/courseClient'
 import OasysClient from './accreditedProgrammesApi/oasysClient'
 import OrganisationClient from './accreditedProgrammesApi/organisationClient'
@@ -8,24 +12,23 @@ import PniClient from './accreditedProgrammesApi/pniClient'
 import ReferenceDataClient from './accreditedProgrammesApi/referenceDataClient'
 import ReferralClient from './accreditedProgrammesApi/referralClient'
 import StatisticsClient from './accreditedProgrammesApi/statisticsClient'
-import { serviceCheckFactory } from './healthCheck'
-import HmppsAuthClient from './hmppsAuthClient'
 import HmppsManageUsersClient from './hmppsManageUsersClient'
 import PrisonApiClient from './prisonApiClient'
 import PrisonRegisterApiClient from './prisonRegisterApiClient'
-import type { RedisClient } from './redisClient'
 import { createRedisClient } from './redisClient'
-import TokenStore from './tokenStore'
-import type { TokenVerifier } from './tokenVerification'
-import verifyToken from './tokenVerification'
 import type { SystemToken } from '@hmpps-auth'
 
 type RestClientBuilder<T> = (token: Express.User['token'] | SystemToken) => T
 type RestClientBuilderWithoutToken<T> = () => T
 
-const tokenStore = new TokenStore(createRedisClient())
+const hmppsAuthClient = new AuthenticationClient(
+  config.apis.hmppsAuth,
+  logger,
+  new RedisTokenStore(createRedisClient()),
+)
+const tokenVerificationClient = new VerificationClient(config.apis.tokenVerification, logger)
 
-const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient> = () => new HmppsAuthClient(tokenStore)
+const hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient> = () => hmppsAuthClient
 const hmppsManageUsersClientBuilder: RestClientBuilder<HmppsManageUsersClient> = (userToken: Express.User['token']) =>
   new HmppsManageUsersClient(userToken)
 const courseClientBuilder: RestClientBuilder<CourseClient> = (userToken: Express.User['token']) =>
@@ -47,8 +50,8 @@ const prisonApiClientBuilder: RestClientBuilder<PrisonApiClient> = (systemToken:
   new PrisonApiClient(systemToken)
 
 export {
+  AuthenticationClient,
   CourseClient,
-  HmppsAuthClient,
   HmppsManageUsersClient,
   OasysClient,
   OrganisationClient,
@@ -59,7 +62,6 @@ export {
   ReferenceDataClient,
   ReferralClient,
   StatisticsClient,
-  TokenStore,
   courseClientBuilder,
   createRedisClient,
   hmppsAuthClientBuilder,
@@ -72,9 +74,8 @@ export {
   prisonRegisterApiClientBuilder,
   referenceDataClientBuilder,
   referralClientBuilder,
-  serviceCheckFactory,
   statisticsClientBuilder,
-  verifyToken,
+  tokenVerificationClient,
 }
 
-export type { RedisClient, RestClientBuilder, RestClientBuilderWithoutToken, TokenVerifier }
+export type { RestClientBuilder, RestClientBuilderWithoutToken }

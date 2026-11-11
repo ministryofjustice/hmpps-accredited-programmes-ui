@@ -4,8 +4,6 @@ import HmppsManageUsersClient from './hmppsManageUsersClient'
 import config from '../config'
 import type { User, UserEmail } from '@manage-users-api'
 
-jest.mock('./tokenStore')
-
 const userToken = 'token-1'
 
 describe('HmppsManageUsersClient', () => {

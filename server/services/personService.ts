@@ -1,8 +1,8 @@
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import createError from 'http-errors'
-import type { ResponseError } from 'superagent'
 
 import type {
-  HmppsAuthClient,
+  AuthenticationClient,
   PersonClient,
   PrisonApiClient,
   RestClientBuilder,
@@ -15,7 +15,7 @@ import type { Caseload, OffenderSentenceAndOffences } from '@prison-api'
 
 export default class PersonService {
   constructor(
-    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<HmppsAuthClient>,
+    private readonly hmppsAuthClientBuilder: RestClientBuilderWithoutToken<AuthenticationClient>,
     private readonly prisonApiClientBuilder: RestClientBuilder<PrisonApiClient>,
     private readonly personClientBuilder: RestClientBuilder<PersonClient>,
   ) {}
@@ -25,7 +25,7 @@ export default class PersonService {
     prisonNumber: Person['prisonNumber'],
   ): Promise<OffenceHistory> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
 
     try {
       const prisonApiClient = this.prisonApiClientBuilder(systemToken)
@@ -33,7 +33,7 @@ export default class PersonService {
       const offenderBooking = await prisonApiClient.findOffenderBookingByOffenderNo(prisonNumber)
 
       if (!offenderBooking.offenceHistory) {
-        throw createError(404)
+        throw createError(404, `Offence history for prisoner ${prisonNumber} not found.`)
       }
 
       const offenceHistoryWithDetail: Array<OffenceDetails> = await Promise.all(
@@ -66,10 +66,14 @@ export default class PersonService {
         indexOffence: offenceHistoryWithDetail.find(offence => offence.mostSerious),
       }
     } catch (error) {
-      const knownError = error as ResponseError
+      if (createError.isHttpError(error)) {
+        throw error
+      }
 
-      if (knownError.status === 404) {
-        throw createError(knownError.status, `Offence history for prisoner ${prisonNumber} not found.`)
+      const knownError = error as SanitisedError
+
+      if (knownError.responseStatus === 404) {
+        throw createError(knownError.responseStatus, `Offence history for prisoner ${prisonNumber} not found.`)
       }
 
       const errorMessage =
@@ -77,7 +81,7 @@ export default class PersonService {
           ? `Error fetching offence history for prisoner ${prisonNumber}.`
           : knownError.message
 
-      throw createError(knownError.status || 500, errorMessage)
+      throw createError(knownError.responseStatus || 500, errorMessage)
     }
   }
 
@@ -85,21 +89,24 @@ export default class PersonService {
     username: Express.User['username'],
     bookingId: Person['bookingId'],
   ): Promise<OffenderSentenceAndOffences> {
-    try {
-      if (!bookingId) {
-        throw createError(400, 'No booking ID found: cannot request sentence and offence details.')
-      }
+    if (!bookingId) {
+      throw createError(400, 'No booking ID found: cannot request sentence and offence details.')
+    }
 
+    try {
       const hmppsAuthClient = this.hmppsAuthClientBuilder()
-      const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+      const systemToken = await hmppsAuthClient.getToken(username)
       const prisonApiClient = this.prisonApiClientBuilder(systemToken)
 
       return await prisonApiClient.findSentenceAndOffenceDetails(bookingId)
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
-        throw createError(knownError.status, `Sentence and offence details for booking with ID ${bookingId} not found.`)
+      if (knownError.responseStatus === 404) {
+        throw createError(
+          knownError.responseStatus,
+          `Sentence and offence details for booking with ID ${bookingId} not found.`,
+        )
       }
 
       const errorMessage =
@@ -107,7 +114,7 @@ export default class PersonService {
           ? `Error fetching sentence and offence details with booking ID ${bookingId}.`
           : knownError.message
 
-      throw createError(knownError.status || 500, errorMessage)
+      throw createError(knownError.responseStatus || 500, errorMessage)
     }
   }
 
@@ -117,28 +124,31 @@ export default class PersonService {
     caseloads?: Array<Caseload>,
   ): Promise<Person> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const personClient = this.personClientBuilder(systemToken)
 
     const caseloadIds = caseloads?.map(caseload => caseload.caseLoadId)
+    const notFoundError = createError(404, `Person with prison number ${prisonNumber} not found.`)
+
+    let prisoner: Awaited<ReturnType<typeof personClient.findPrisoner>>
 
     try {
-      const prisoner = await personClient.findPrisoner(prisonNumber, caseloadIds)
-
-      if (!prisoner) {
-        throw createError(404, `Person with prison number ${prisonNumber} not found.`)
-      }
-
-      return PersonUtils.personFromPrisoner(prisoner)
+      prisoner = await personClient.findPrisoner(prisonNumber, caseloadIds)
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
-        throw knownError
+      if (knownError.responseStatus === 404) {
+        throw notFoundError
       }
 
-      throw createError(knownError.status || 500, knownError, `Error fetching prisoner ${prisonNumber}.`)
+      throw createError(knownError.responseStatus || 500, knownError, `Error fetching prisoner ${prisonNumber}.`)
     }
+
+    if (!prisoner) {
+      throw notFoundError
+    }
+
+    return PersonUtils.personFromPrisoner(prisoner)
   }
 
   async getSentenceDetails(
@@ -146,15 +156,15 @@ export default class PersonService {
     prisonNumber: Person['prisonNumber'],
   ): Promise<SentenceDetails> {
     const hmppsAuthClient = this.hmppsAuthClientBuilder()
-    const systemToken = await hmppsAuthClient.getSystemClientToken(username)
+    const systemToken = await hmppsAuthClient.getToken(username)
     const personClient = this.personClientBuilder(systemToken)
 
     try {
       return await personClient.findSentenceDetails(prisonNumber)
     } catch (error) {
-      const knownError = error as ResponseError
+      const knownError = error as SanitisedError
 
-      if (knownError.status === 404) {
+      if (knownError.responseStatus === 404) {
         throw createError(404, `Sentence details for prisoner ${prisonNumber} not found.`)
       }
 
@@ -163,7 +173,7 @@ export default class PersonService {
           ? `Error fetching sentence details for prisoner ${prisonNumber}.`
           : knownError.message
 
-      throw createError(knownError.status || 500, errorMessage)
+      throw createError(knownError.responseStatus || 500, errorMessage)
     }
   }
 }

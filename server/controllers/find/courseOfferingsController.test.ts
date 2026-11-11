@@ -61,7 +61,7 @@ describe('CoursesOfferingsController', () => {
         canMakeReferral: false,
         course: coursePresenter,
         courseOffering,
-        deleteOfferingAction: `/find/programmes/${course.id}/offerings/${courseOffering.id}/delete?_method=DELETE`,
+        deleteOfferingAction: `/find/programmes/${course.id}/offerings/${courseOffering.id}/delete`,
         hideTitleServiceName: true,
         hrefs: {
           back: findPaths.show({ courseId: course.id }),

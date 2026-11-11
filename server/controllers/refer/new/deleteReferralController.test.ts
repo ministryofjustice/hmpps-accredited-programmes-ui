@@ -58,7 +58,7 @@ describe('NewReferralsDeleteController', () => {
       expect(referralService.getReferral).toHaveBeenCalledWith(username, referralId)
       expect(personService.getPerson).toHaveBeenCalledWith(username, draftReferral.prisonNumber)
       expect(response.render).toHaveBeenCalledWith('referrals/new/delete/show', {
-        action: '/refer/referrals/new/A-REFERRAL-ID/delete?_method=DELETE',
+        action: '/refer/referrals/new/A-REFERRAL-ID/delete',
         hrefs: { back: '/refer/referrals/new/A-REFERRAL-ID' },
         pageHeading: 'Delete draft referral?',
         pageTitleOverride: 'Delete draft referral ',

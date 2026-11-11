@@ -52,7 +52,7 @@ describe('UpdateCourseController', () => {
       await requestHandler(request, response, next)
 
       expect(response.render).toHaveBeenCalledWith('courses/form/show', {
-        action: `/find/programmes/${course.id}/update?_method=PUT`,
+        action: `/find/programmes/${course.id}/update`,
         audienceSelectItems,
         backLinkHref: `/find/programmes/${course.id}`,
         formValues: {

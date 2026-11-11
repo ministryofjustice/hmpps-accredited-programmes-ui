@@ -1,5 +1,3 @@
-import groupBy from 'object.groupby'
-
 import DateUtils from '../dateUtils'
 import StringUtils from '../stringUtils'
 import type { RiskLevel, RisksAndAlerts } from '@accredited-programmes/models'
@@ -8,9 +6,9 @@ import type { GovukFrontendTable, GovukFrontendTableCell } from '@govuk-frontend
 
 export default class RisksAndAlertsUtils {
   static alertsGroupTables(alerts: RisksAndAlerts['alerts']): Array<GovukFrontendTable> {
-    const groupedAlerts = alerts ? groupBy(alerts, ({ alertType }) => alertType) : {}
+    const groupedAlerts = Map.groupBy(alerts ?? [], ({ alertType }) => alertType)
 
-    return Object.entries(groupedAlerts).map(([category, groupAlerts], groupIndex) => ({
+    return Array.from(groupedAlerts, ([category, groupAlerts], groupIndex) => ({
       attributes: {
         'data-testid': `alerts-group-table-${groupIndex + 1}`,
       },

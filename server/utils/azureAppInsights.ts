@@ -14,7 +14,7 @@ initialiseTelemetry({
   serviceName: packageData.name,
   serviceVersion: buildNumber,
 })
-  .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/ping', '/metrics', '/assets/*', '/favicon.ico']))
+  .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/info', '/ping', '/assets/*', '/favicon.ico']))
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
   .startRecording()
 

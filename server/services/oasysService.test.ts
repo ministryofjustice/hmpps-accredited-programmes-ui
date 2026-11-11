@@ -1,7 +1,9 @@
+import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import { HmppsAuthClient, OasysClient, TokenStore, createRedisClient } from '../data'
+import type { AuthenticationClient } from '../data'
+import { OasysClient } from '../data'
 import OasysService from './oasysService'
 import {
   assessmentDateInfoFactory,
@@ -17,11 +19,9 @@ import {
   risksAndAlertsFactory,
   roshAnalysisFactory,
 } from '../testutils/factories'
+import Helpers from '../testutils/helpers'
 
 jest.mock('../data/accreditedProgrammesApi/oasysClient')
-jest.mock('../data/hmppsAuthClient')
-
-const tokenStore = new TokenStore(createRedisClient()) as jest.Mocked<TokenStore>
 const systemToken = 'some system token'
 const username = 'USERNAME'
 const prisonNumber = 'PRISONNUMBER'
@@ -30,12 +30,12 @@ describe('OasysService', () => {
   const oasysClient = new OasysClient(systemToken) as jest.Mocked<OasysClient>
   const oasysClientBuilder = jest.fn()
 
-  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClient = createMock<AuthenticationClient>()
   const hmppsAuthClientBuilder = jest.fn()
 
   const service = new OasysService(hmppsAuthClientBuilder, oasysClientBuilder)
 
-  const notFoundClientError = createError(404)
+  const notFoundClientError = Helpers.createApiError(404)
   const generalClientError = createError(500)
   const unknownError = new Error('Unknown error')
 
@@ -44,7 +44,7 @@ describe('OasysService', () => {
 
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     oasysClientBuilder.mockReturnValue(oasysClient)
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+    hmppsAuthClient.getToken.mockResolvedValue(systemToken)
   })
 
   describe('getAssessmentDateInfo', () => {
@@ -58,7 +58,7 @@ describe('OasysService', () => {
       expect(result).toEqual(assessmentDateInfo)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findAssessmentDateInfo).toHaveBeenCalledWith(prisonNumber)
@@ -112,7 +112,7 @@ describe('OasysService', () => {
       expect(result).toEqual(attitude)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findAttitude).toHaveBeenCalledWith(prisonNumber)
@@ -166,7 +166,7 @@ describe('OasysService', () => {
       expect(result).toEqual(behaviour)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findBehaviour).toHaveBeenCalledWith(prisonNumber)
@@ -220,7 +220,7 @@ describe('OasysService', () => {
       expect(result).toEqual(drugAndAlcoholDetails)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findDrugAndAlcoholDetails).toHaveBeenCalledWith(prisonNumber)
@@ -280,7 +280,7 @@ describe('OasysService', () => {
       expect(result).toEqual(health)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findHealth).toHaveBeenCalledWith(prisonNumber)
@@ -334,7 +334,7 @@ describe('OasysService', () => {
       expect(result).toEqual(learningNeeds)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findLearningNeeds).toHaveBeenCalledWith(prisonNumber)
@@ -388,7 +388,7 @@ describe('OasysService', () => {
       expect(result).toEqual(lifestyle)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findLifestyle).toHaveBeenCalledWith(prisonNumber)
@@ -442,7 +442,7 @@ describe('OasysService', () => {
       expect(result).toEqual(offenceDetails)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findOffenceDetails).toHaveBeenCalledWith(prisonNumber)
@@ -496,7 +496,7 @@ describe('OasysService', () => {
       expect(result).toEqual(psychiatric)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findPsychiatric).toHaveBeenCalledWith(prisonNumber)
@@ -550,7 +550,7 @@ describe('OasysService', () => {
       expect(result).toEqual(relationships)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findRelationships).toHaveBeenCalledWith(prisonNumber)
@@ -604,7 +604,7 @@ describe('OasysService', () => {
       expect(result).toEqual(risksAndAlerts)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findRisksAndAlerts).toHaveBeenCalledWith(prisonNumber)
@@ -658,7 +658,7 @@ describe('OasysService', () => {
       expect(result).toEqual(roshAnalysis)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
 
       expect(oasysClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(oasysClient.findRoshAnalysis).toHaveBeenCalledWith(prisonNumber)

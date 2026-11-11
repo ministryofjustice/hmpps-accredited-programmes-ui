@@ -1,13 +1,13 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
+import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import NewReferralsController from './referralsController'
 import { authPaths, findPaths, referPaths } from '../../../paths'
-import sanitiseError from '../../../sanitisedError'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
   audienceFactory,
@@ -231,8 +231,10 @@ describe('NewReferralsController', () => {
     describe('when there is a duplicate referral', () => {
       it('redirects to the show duplicate action', async () => {
         const duplicateReferral = referralFactory.started().build({ id: referralId })
-        const error = createError(409, 'Duplicate referral', { response: { body: duplicateReferral, status: 409 } })
-        const sanitisedError = sanitiseError(error)
+        const sanitisedError = Object.assign(new SanitisedError('Conflict'), {
+          data: duplicateReferral,
+          responseStatus: 409,
+        })
 
         referralService.createReferral.mockRejectedValue(sanitisedError)
 
@@ -718,8 +720,10 @@ describe('NewReferralsController', () => {
     describe('when there is a duplicate referral', () => {
       it('redirects to the show duplicate action', async () => {
         const duplicateReferral = referralFactory.started().build({ id: referralId })
-        const error = createError(409, 'Duplicate referral', { response: { body: duplicateReferral, status: 409 } })
-        const sanitisedError = sanitiseError(error)
+        const sanitisedError = Object.assign(new SanitisedError('Conflict'), {
+          data: duplicateReferral,
+          responseStatus: 409,
+        })
 
         referralService.submitReferral.mockRejectedValue(sanitisedError)
 

@@ -1,19 +1,20 @@
+import { createMock } from '@golevelup/ts-jest'
 import createError from 'http-errors'
 
-import { HmppsAuthClient, PniClient, TokenStore, createRedisClient } from '../data'
+import type { AuthenticationClient } from '../data'
+import { PniClient } from '../data'
 import PniService from './pniService'
 import { pniScoreFactory } from '../testutils/factories'
+import Helpers from '../testutils/helpers'
 
 jest.mock('../data/accreditedProgrammesApi/pniClient')
-jest.mock('../data/hmppsAuthClient')
 
 describe('PniService', () => {
-  const tokenStore = new TokenStore(createRedisClient())
   const systemToken = 'some system token'
   const username = 'USERNAME'
   const prisonNumber = 'PRISONNUMBER'
 
-  const hmppsAuthClient = new HmppsAuthClient(tokenStore) as jest.Mocked<HmppsAuthClient>
+  const hmppsAuthClient = createMock<AuthenticationClient>()
   const hmppsAuthClientBuilder = jest.fn()
 
   const pniClient = new PniClient(systemToken) as jest.Mocked<PniClient>
@@ -26,7 +27,7 @@ describe('PniService', () => {
 
     hmppsAuthClientBuilder.mockReturnValue(hmppsAuthClient)
     pniClientBuilder.mockReturnValue(pniClient)
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(systemToken)
+    hmppsAuthClient.getToken.mockResolvedValue(systemToken)
   })
 
   describe('getPni', () => {
@@ -40,7 +41,7 @@ describe('PniService', () => {
       expect(result).toEqual(pniScore)
 
       expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+      expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
       expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
       expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
     })
@@ -55,7 +56,7 @@ describe('PniService', () => {
 
     describe('when the PNI client throws an error', () => {
       it('returns null when the error status is 404', async () => {
-        const clientError = createError(404)
+        const clientError = Helpers.createApiError(404)
         pniClient.findPni.mockRejectedValue(clientError)
 
         const result = await service.getPni(username, prisonNumber)
@@ -63,7 +64,7 @@ describe('PniService', () => {
         expect(result).toBeNull()
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
         expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
       })
@@ -76,7 +77,7 @@ describe('PniService', () => {
         await expect(service.getPni(username, prisonNumber)).rejects.toThrow(expectedError)
 
         expect(hmppsAuthClientBuilder).toHaveBeenCalled()
-        expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalledWith(username)
+        expect(hmppsAuthClient.getToken).toHaveBeenCalledWith(username)
         expect(pniClientBuilder).toHaveBeenCalledWith(systemToken)
         expect(pniClient.findPni).toHaveBeenCalledWith(prisonNumber, undefined)
       })

@@ -4,6 +4,7 @@ import UserService from './userService'
 import logger from '../../logger'
 import { HmppsManageUsersClient, PrisonApiClient } from '../data'
 import { caseloadFactory, userFactory } from '../testutils/factories'
+import Helpers from '../testutils/helpers'
 import { StringUtils } from '../utils'
 
 jest.mock('../data/hmppsManageUsersClient')
@@ -102,7 +103,7 @@ describe('UserService', () => {
 
     describe('when the HMPPS Manage Users client throws a 404 error', () => {
       it('re-throws the error with a custom message', async () => {
-        const clientError = createError(404)
+        const clientError = Helpers.createApiError(404)
         hmppsManageUsersClient.getEmailFromUsername.mockRejectedValue(clientError)
 
         const expectedError = createError(404, { message: `User with username ${username} not found.` })
@@ -150,7 +151,7 @@ describe('UserService', () => {
     })
 
     it('returns the expected string when missing', async () => {
-      const clientError = createError(404)
+      const clientError = Helpers.createApiError(404)
       hmppsManageUsersClient.getUserFromUsername.mockRejectedValue(clientError)
       const result = await userService.getFullNameFromUsername(userToken, username)
       expect(result).toEqual(`User '${username}' not found`)
@@ -173,7 +174,7 @@ describe('UserService', () => {
 
     describe('when the HMPPS Manage Users client throws a 404 error', () => {
       it('re-throws the error', async () => {
-        const clientError = createError(404)
+        const clientError = Helpers.createApiError(404)
         hmppsManageUsersClient.getUserFromUsername.mockRejectedValue(clientError)
 
         const expectedError = createError(404, `User with username ${username} not found.`)
