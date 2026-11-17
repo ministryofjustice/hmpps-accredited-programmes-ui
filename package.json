@@ -95,7 +95,7 @@
     "@golevelup/ts-jest": "0.5.0",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
     "@pact-foundation/pact": "17.1.4",
-    "@tsconfig/node24": "^24.0.0",
+    "@tsconfig/node26": "^26.0.0",
     "@types/bunyan": "^1.8.8",
     "@types/bunyan-format": "^0.2.5",
     "@types/compression": "^1.7.2",
