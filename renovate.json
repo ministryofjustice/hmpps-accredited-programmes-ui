@@ -1,6 +1,24 @@
 {
-  "extends": ["github>ministryofjustice/arn-renovate-config"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base", ":disableDependencyDashboard", "docker:disable"],
+  "timezone": "Europe/London",
+  "schedule": ["after 9am every weekday", "before 5pm every weekday"],
+  "prCreation": "not-pending",
+  "rangeStrategy": "update-lockfile",
+  "rollbackPrs": true,
+  "rebaseWhen": "behind-base-branch",
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "vulnerabilityAlerts": {
+    "labels": ["security"]
+  },
   "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non major dependencies",
+      "groupSlug": "all-minor-patch"
+    },
     {
       "matchPackageNames": ["@golevelup/ts-jest"],
       "allowedVersions": "0.5.0"
