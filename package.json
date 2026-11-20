@@ -156,6 +156,7 @@
   },
   "overrides": {
     "@opentelemetry/core": "2.12.0",
+    "@opentelemetry/instrumentation-http": "0.223.2",
     "@types/express-serve-static-core": "$@types/express-serve-static-core",
     "serialize-javascript": "7.1.3",
     "minimatch@^3": {
