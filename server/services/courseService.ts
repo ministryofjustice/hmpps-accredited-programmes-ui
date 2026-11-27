@@ -1,9 +1,9 @@
 import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import createError from 'http-errors'
 
-import type UserService from './userService'
 import type { AuthenticationClient, CourseClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import { CourseParticipationUtils } from '../utils'
+import type UserService from './userService'
 import type { CourseCreateRequest, CourseOffering, CoursePrerequisite, Person } from '@accredited-programmes/models'
 import type { BuildingChoicesData, GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 import type {

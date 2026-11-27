@@ -1,5 +1,5 @@
-import AlcoholMisuseUtils from './alcoholMisuseUtils'
 import { drugAlcoholDetailFactory } from '../../testutils/factories'
+import AlcoholMisuseUtils from './alcoholMisuseUtils'
 
 describe('DrugMisuseUtils', () => {
   const drugAlcoholDetail = drugAlcoholDetailFactory.build({

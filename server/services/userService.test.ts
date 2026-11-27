@@ -1,11 +1,11 @@
 import createError from 'http-errors'
 
-import UserService from './userService'
 import logger from '../../logger'
 import { HmppsManageUsersClient, PrisonApiClient } from '../data'
 import { caseloadFactory, userFactory } from '../testutils/factories'
 import Helpers from '../testutils/helpers'
 import { StringUtils } from '../utils'
+import UserService from './userService'
 
 jest.mock('../data/hmppsManageUsersClient')
 jest.mock('../data/prisonApiClient')

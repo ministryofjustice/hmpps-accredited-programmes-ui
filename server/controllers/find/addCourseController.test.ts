@@ -2,11 +2,11 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import AddCourseController from './addCourseController'
 import { findPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { audienceFactory, courseFactory } from '../../testutils/factories'
 import { CourseUtils } from '../../utils'
+import AddCourseController from './addCourseController'
 import type { GovukFrontendSelectItem } from '@govuk-frontend'
 
 jest.mock('../../utils/courseUtils')

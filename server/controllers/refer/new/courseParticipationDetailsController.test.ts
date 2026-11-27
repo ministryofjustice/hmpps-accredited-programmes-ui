@@ -3,12 +3,12 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import NewReferralsCourseParticipationDetailsController from './courseParticipationDetailsController'
 import { referPaths } from '../../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../../services'
 import { courseParticipationFactory, personFactory, referralFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { CourseParticipationUtils, FormUtils } from '../../../utils'
+import NewReferralsCourseParticipationDetailsController from './courseParticipationDetailsController'
 import type {
   CourseParticipation,
   CourseParticipationSetting,

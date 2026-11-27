@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import StatusHistoryController from './statusHistoryController'
 import { assessPaths, referPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import {
@@ -17,6 +16,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, ShowReferralUtils } from '../../utils'
+import StatusHistoryController from './statusHistoryController'
 import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { CoursePresenter, MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { Course, Referral } from '@accredited-programmes-api'

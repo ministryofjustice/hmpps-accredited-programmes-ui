@@ -4,7 +4,6 @@ import { type NextFunction, type Request, type Response } from 'express'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import AssessCaseListController from './caseListController'
 import { assessPaths } from '../../paths'
 import type { CourseService, ReferenceDataService, ReferralService } from '../../services'
 import {
@@ -14,6 +13,7 @@ import {
   referralViewFactory,
 } from '../../testutils/factories'
 import { CaseListUtils, PaginationUtils, PathUtils } from '../../utils'
+import AssessCaseListController from './caseListController'
 import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type {
   CaseListColumnHeader,

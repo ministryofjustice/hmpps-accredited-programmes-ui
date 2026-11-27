@@ -1,7 +1,7 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express'
 
-import type { ApplicationRoles } from './applicationRoles'
 import logger from '../../logger'
+import type { ApplicationRoles } from './applicationRoles'
 import type { MiddlewareOptions } from '@accredited-programmes/users'
 
 export { ApplicationRoles } from './applicationRoles'

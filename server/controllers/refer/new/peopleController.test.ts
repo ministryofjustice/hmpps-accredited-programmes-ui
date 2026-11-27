@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 
-import NewReferralsPeopleController from './peopleController'
 import config from '../../../config'
 import { ApplicationRoles } from '../../../middleware'
 import { findPaths, referPaths } from '../../../paths'
@@ -11,6 +10,7 @@ import type PersonService from '../../../services/personService'
 import { personFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import PersonUtils from '../../../utils/personUtils'
+import NewReferralsPeopleController from './peopleController'
 
 jest.mock('../../../utils/personUtils')
 

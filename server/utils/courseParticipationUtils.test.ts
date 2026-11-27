@@ -3,10 +3,10 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { Request } from 'express'
 
-import type { RequestWithCourseParticipationDetailsBody } from './courseParticipationUtils'
-import CourseParticipationUtils from './courseParticipationUtils'
 import { assessPaths, referPaths } from '../paths'
 import { courseParticipationFactory, referralFactory } from '../testutils/factories'
+import type { RequestWithCourseParticipationDetailsBody } from './courseParticipationUtils'
+import CourseParticipationUtils from './courseParticipationUtils'
 import type { CourseParticipationPresenter } from '@accredited-programmes/ui'
 import type {
   CourseParticipationOutcome,

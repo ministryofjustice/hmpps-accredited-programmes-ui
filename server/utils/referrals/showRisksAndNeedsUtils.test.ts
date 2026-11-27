@@ -1,5 +1,5 @@
-import ShowRisksAndNeedsUtils from './showRisksAndNeedsUtils'
 import { assessPaths, referPaths } from '../../paths'
+import ShowRisksAndNeedsUtils from './showRisksAndNeedsUtils'
 
 describe('ShowRisksAndNeedsUtils', () => {
   describe('htmlTextValue', () => {

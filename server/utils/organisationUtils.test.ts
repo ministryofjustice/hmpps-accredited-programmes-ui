@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 
-import OrganisationUtils from './organisationUtils'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -8,6 +7,7 @@ import {
   organisationFactory,
   prisonFactory,
 } from '../testutils/factories'
+import OrganisationUtils from './organisationUtils'
 import type { CourseOffering, Organisation } from '@accredited-programmes/models'
 import type { OrganisationWithOfferingId } from '@accredited-programmes/ui'
 import type { Course } from '@accredited-programmes-api'

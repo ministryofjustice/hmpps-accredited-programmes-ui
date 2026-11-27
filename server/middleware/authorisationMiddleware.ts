@@ -1,8 +1,8 @@
 import type { RequestHandler } from 'express'
 
-import asyncMiddleware from './asyncMiddleware'
 import logger from '../../logger'
 import UserUtils from '../utils/userUtils'
+import asyncMiddleware from './asyncMiddleware'
 
 export default function authorisationMiddleware(authorisedRoles: Array<string> = []): RequestHandler {
   return asyncMiddleware((req, res, next) => {

@@ -2,10 +2,10 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import NewReferralsDeleteController from './deleteReferralController'
 import type { PersonService, ReferralService } from '../../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
+import NewReferralsDeleteController from './deleteReferralController'
 
 describe('NewReferralsDeleteController', () => {
   const username = 'SOME_USERNAME'

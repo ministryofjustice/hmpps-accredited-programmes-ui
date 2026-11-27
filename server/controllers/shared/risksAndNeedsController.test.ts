@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import RisksAndNeedsController from './risksAndNeedsController'
 import { assessPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OasysService, PersonService, ReferralService } from '../../services'
 import {
@@ -44,6 +43,7 @@ import {
   ShowRisksAndNeedsUtils,
   ThinkingAndBehavingUtils,
 } from '../../utils'
+import RisksAndNeedsController from './risksAndNeedsController'
 import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { OspBox, RiskBox, RisksAndNeedsSharedPageData } from '@accredited-programmes/ui'
 import type { Referral } from '@accredited-programmes-api'

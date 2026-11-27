@@ -1,9 +1,9 @@
 import { Router } from 'express'
 
-import populateCurrentUser from './populateCurrentUser'
 import { Auth } from '../authentication'
 import { tokenVerificationClient } from '../data'
 import type { Services } from '../services'
+import populateCurrentUser from './populateCurrentUser'
 
 export default function setUpCurrentUser({ userService }: Services): Router {
   const router = Router({ mergeParams: true })

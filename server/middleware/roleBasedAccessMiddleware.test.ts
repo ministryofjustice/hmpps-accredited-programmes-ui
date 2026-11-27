@@ -2,9 +2,9 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { Request, Response } from 'express'
 
+import logger from '../../logger'
 import type { ApplicationRoles } from './roleBasedAccessMiddleware'
 import roleBasedAccessMiddleware from './roleBasedAccessMiddleware'
-import logger from '../../logger'
 
 jest.mock('../../logger')
 

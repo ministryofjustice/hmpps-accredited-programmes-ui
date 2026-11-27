@@ -1,8 +1,8 @@
 import type { Request } from 'express'
 
+import { assessPathBase, assessPaths, referPaths } from '../paths'
 import DateUtils from './dateUtils'
 import StringUtils from './stringUtils'
-import { assessPathBase, assessPaths, referPaths } from '../paths'
 import type {
   CourseParticipationPresenter,
   GovukFrontendSummaryListCardActionsWithItems,

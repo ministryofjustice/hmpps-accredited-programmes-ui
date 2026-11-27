@@ -1,5 +1,5 @@
-import ReferralUtils from './referralUtils'
 import { referralStatusRefDataFactory } from '../../testutils/factories'
+import ReferralUtils from './referralUtils'
 import type { ReferralStatusCategory } from '@accredited-programmes/models'
 import type { ReferralStatusReason } from '@accredited-programmes-api'
 

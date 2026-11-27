@@ -1,7 +1,6 @@
 import { type InterfaceToTemplate, MatchersV2 as Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
-import CourseClient from './courseClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import {
@@ -12,6 +11,7 @@ import {
   courseParticipationOutcomeFactory,
   courseParticipationSettingFactory,
 } from '../../testutils/factories'
+import CourseClient from './courseClient'
 import type { CourseOffering } from '@accredited-programmes/models'
 import type {
   Audience,

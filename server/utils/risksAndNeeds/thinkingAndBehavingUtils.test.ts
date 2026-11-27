@@ -1,5 +1,5 @@
-import ThinkingAndBehavingUtils from './thinkingAndBehavingUtils'
 import { behaviourFactory } from '../../testutils/factories'
+import ThinkingAndBehavingUtils from './thinkingAndBehavingUtils'
 
 describe('ThinkingAndBehavingUtils', () => {
   const behaviour = behaviourFactory.build({

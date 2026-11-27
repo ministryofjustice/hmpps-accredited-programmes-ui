@@ -1,5 +1,5 @@
-import PersonUtils from './personUtils'
 import { keyDatesFactory, peopleSearchResponseFactory, personFactory } from '../testutils/factories'
+import PersonUtils from './personUtils'
 import type { PeopleSearchResponse } from '@accredited-programmes-api'
 
 describe('PersonUtils', () => {

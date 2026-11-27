@@ -1,8 +1,8 @@
 import nock from 'nock'
 
-import PrisonRegisterApiClient from './prisonRegisterApiClient'
 import config from '../config'
 import { prisonFactory } from '../testutils/factories'
+import PrisonRegisterApiClient from './prisonRegisterApiClient'
 import type { Prison } from '@prison-register-api'
 
 describe('PrisonRegisterApiClient', () => {

@@ -1,5 +1,5 @@
-import AttitudesUtils from './attitudesUtils'
 import { attitudeFactory } from '../../testutils/factories'
+import AttitudesUtils from './attitudesUtils'
 
 describe('AttitudesUtils', () => {
   const attitude = attitudeFactory.build({

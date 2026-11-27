@@ -6,10 +6,10 @@ import type express from 'express'
 import nunjucks from 'nunjucks'
 import type * as pathModule from 'path'
 
-import NunjucksUtils from './nunjucksUtils'
-import StringUtils from './stringUtils'
 import config from '../config'
 import { findPaths, referPaths } from '../paths'
+import NunjucksUtils from './nunjucksUtils'
+import StringUtils from './stringUtils'
 
 const production = process.env.NODE_ENV === 'production'
 

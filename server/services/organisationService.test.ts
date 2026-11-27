@@ -3,11 +3,11 @@ import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import type { AuthenticationClient } from '../data'
-import OrganisationService from './organisationService'
 import { OrganisationClient, PrisonRegisterApiClient } from '../data'
 import { prisonFactory } from '../testutils/factories'
 import Helpers from '../testutils/helpers'
 import { OrganisationUtils } from '../utils'
+import OrganisationService from './organisationService'
 import type { Organisation } from '@accredited-programmes-api'
 
 jest.mock('../data/prisonRegisterApiClient')

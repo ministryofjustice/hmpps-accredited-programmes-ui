@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
+import { StringUtils } from '../../utils'
 import courseParticipationOutcomeFactory from './courseParticipationOutcome'
 import courseParticipationSettingFactory from './courseParticipationSetting'
 import FactoryHelpers from './factoryHelpers'
-import { StringUtils } from '../../utils'
 import type { CourseParticipation } from '@accredited-programmes-api'
 
 class CourseParticipationFactory extends Factory<CourseParticipation> {

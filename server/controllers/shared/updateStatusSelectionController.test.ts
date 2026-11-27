@@ -2,7 +2,6 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import UpdateStatusSelectionController from './updateStatusSelectionController'
 import { assessPaths, referPaths } from '../../paths'
 import type { PersonService, ReferenceDataService, ReferralService } from '../../services'
 import {
@@ -14,6 +13,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils, ShowReferralUtils } from '../../utils'
+import UpdateStatusSelectionController from './updateStatusSelectionController'
 import type { ConfirmationFields, Person } from '@accredited-programmes/models'
 import type { MojTimelineItem, ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 import type { Referral } from '@accredited-programmes-api'

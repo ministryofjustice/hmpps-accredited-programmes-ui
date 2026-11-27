@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
-import staffDetail from './staffDetail'
 import { referralStatuses } from '../../@types/models/Referral'
+import staffDetail from './staffDetail'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { Referral } from '@accredited-programmes-api'
 

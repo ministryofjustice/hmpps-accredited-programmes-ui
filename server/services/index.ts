@@ -1,13 +1,5 @@
 /* istanbul ignore file */
 
-import CourseService from './courseService'
-import OasysService from './oasysService'
-import OrganisationService from './organisationService'
-import PersonService from './personService'
-import ReferenceDataService from './referenceDataService'
-import ReferralService from './referralService'
-import StatisticsService from './statisticsService'
-import UserService from './userService'
 import {
   courseClientBuilder,
   hmppsAuthClientBuilder,
@@ -22,7 +14,15 @@ import {
   referralClientBuilder,
   statisticsClientBuilder,
 } from '../data'
+import CourseService from './courseService'
+import OasysService from './oasysService'
+import OrganisationService from './organisationService'
+import PersonService from './personService'
 import PniService from './pniService'
+import ReferenceDataService from './referenceDataService'
+import ReferralService from './referralService'
+import StatisticsService from './statisticsService'
+import UserService from './userService'
 
 const services = () => {
   const oasysService = new OasysService(hmppsAuthClientBuilder, oasysClientBuilder)

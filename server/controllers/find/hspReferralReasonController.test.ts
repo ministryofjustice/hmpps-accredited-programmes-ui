@@ -2,11 +2,11 @@ import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import HspReferralReasonController from './hspReferralReasonController'
 import { findPaths, referPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { courseFactory, courseOfferingFactory, personFactory } from '../../testutils/factories'
 import { CourseUtils, FormUtils } from '../../utils'
+import HspReferralReasonController from './hspReferralReasonController'
 
 jest.mock('../../utils/formUtils')
 

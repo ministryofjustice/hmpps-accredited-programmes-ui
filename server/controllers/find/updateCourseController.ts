@@ -1,9 +1,9 @@
 import type { Request, Response, TypedRequestHandler } from 'express'
 
-import type { CourseBody } from './addCourseController'
 import { findPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { CourseUtils, TypeUtils } from '../../utils'
+import type { CourseBody } from './addCourseController'
 
 export default class UpdateCourseController {
   constructor(private readonly courseService: CourseService) {}

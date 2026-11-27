@@ -1,12 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { when } from 'jest-when'
 
-import type CourseService from './courseService'
-import type OrganisationService from './organisationService'
-import type PniService from './pniService'
-import type ReferenceDataService from './referenceDataService'
-import ReferralService from './referralService'
-import type UserService from './userService'
 import logger from '../../logger'
 import type { AuthenticationClient } from '../data'
 import { ReferralClient } from '../data'
@@ -22,6 +16,12 @@ import {
   referralViewFactory,
   userFactory,
 } from '../testutils/factories'
+import type CourseService from './courseService'
+import type OrganisationService from './organisationService'
+import type PniService from './pniService'
+import type ReferenceDataService from './referenceDataService'
+import ReferralService from './referralService'
+import type UserService from './userService'
 import type { ReferralStatus, ReferralStatusGroup, ReferralStatusUpdate } from '@accredited-programmes/models'
 import type { Organisation, ReferralUpdate, TransferReferralRequest } from '@accredited-programmes-api'
 

@@ -1,5 +1,5 @@
-import CourseUtils from './courseUtils'
 import { audienceFactory, courseFactory, coursePrerequisiteFactory } from '../testutils/factories'
+import CourseUtils from './courseUtils'
 import type { Course } from '@accredited-programmes-api'
 
 describe('CourseUtils', () => {

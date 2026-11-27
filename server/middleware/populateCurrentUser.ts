@@ -1,9 +1,9 @@
 import type { RequestHandler } from 'express'
 
-import { ApplicationRoles } from './roleBasedAccessMiddleware'
 import logger from '../../logger'
 import type { UserService } from '../services'
 import { UserUtils } from '../utils'
+import { ApplicationRoles } from './roleBasedAccessMiddleware'
 
 export default function populateCurrentUser(userService: UserService): RequestHandler {
   return async (req, res, next) => {

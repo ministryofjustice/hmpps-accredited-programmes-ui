@@ -3,11 +3,11 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import UpdateCourseOfferingController from './updateCourseOfferingController'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, prisonFactory } from '../../testutils/factories'
 import { OrganisationUtils } from '../../utils'
+import UpdateCourseOfferingController from './updateCourseOfferingController'
 import type { GovukFrontendSelectItem } from '@govuk-frontend'
 
 jest.mock('../../utils/organisationUtils')

@@ -4,7 +4,6 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import SubmittedReferralsController from './referralsController'
 import { assessPaths, findPaths, referPathBase, referPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../services'
 import {
@@ -29,6 +28,7 @@ import {
   SentenceInformationUtils,
   ShowReferralUtils,
 } from '../../utils'
+import SubmittedReferralsController from './referralsController'
 import type { Person, ReferralStatusRefData } from '@accredited-programmes/models'
 import type { GovukFrontendSummaryListRowWithKeyAndValue, ReferralSharedPageData } from '@accredited-programmes/ui'
 import type { Organisation, Referral } from '@accredited-programmes-api'

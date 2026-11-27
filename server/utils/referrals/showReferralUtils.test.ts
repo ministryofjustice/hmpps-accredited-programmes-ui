@@ -1,5 +1,3 @@
-import CaseListUtils from './caseListUtils'
-import ShowReferralUtils from './showReferralUtils'
 import { assessPaths, referPaths } from '../../paths'
 import {
   courseFactory,
@@ -11,6 +9,8 @@ import {
 } from '../../testutils/factories'
 import CourseUtils from '../courseUtils'
 import PniUtils from '../risksAndNeeds/pniUtils'
+import CaseListUtils from './caseListUtils'
+import ShowReferralUtils from './showReferralUtils'
 import type { ReferralStatusHistoryPresenter } from '@accredited-programmes/ui'
 
 jest.mock('./caseListUtils')

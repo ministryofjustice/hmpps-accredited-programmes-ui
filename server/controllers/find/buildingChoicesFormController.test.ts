@@ -2,11 +2,11 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import BuildingChoicesFormController from './buildingChoicesFormController'
 import { findPaths } from '../../paths'
 import type { OrganisationService, PersonService } from '../../services'
 import { personFactory } from '../../testutils/factories'
 import { FormUtils } from '../../utils'
+import BuildingChoicesFormController from './buildingChoicesFormController'
 import type { Organisation } from '@accredited-programmes-api'
 
 jest.mock('../../utils/formUtils')

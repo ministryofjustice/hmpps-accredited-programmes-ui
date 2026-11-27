@@ -2,8 +2,8 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { Request, Response } from 'express'
 
-import authorisationMiddleware from './authorisationMiddleware'
 import { UserUtils } from '../utils'
+import authorisationMiddleware from './authorisationMiddleware'
 
 jest.mock('../utils/userUtils')
 

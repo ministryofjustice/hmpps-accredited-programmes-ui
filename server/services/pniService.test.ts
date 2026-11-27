@@ -3,9 +3,9 @@ import createError from 'http-errors'
 
 import type { AuthenticationClient } from '../data'
 import { PniClient } from '../data'
-import PniService from './pniService'
 import { pniScoreFactory } from '../testutils/factories'
 import Helpers from '../testutils/helpers'
+import PniService from './pniService'
 
 jest.mock('../data/accreditedProgrammesApi/pniClient')
 

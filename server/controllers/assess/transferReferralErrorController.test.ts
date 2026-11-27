@@ -3,11 +3,11 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import TransferReferralErrorController from './transferReferralErrorController'
 import { assessPaths } from '../../paths'
 import type { CourseService, OrganisationService, PersonService } from '../../services'
 import { courseFactory, courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
+import TransferReferralErrorController from './transferReferralErrorController'
 import type { Organisation, Referral } from '@accredited-programmes-api'
 
 describe('TransferReferralErrorController', () => {
