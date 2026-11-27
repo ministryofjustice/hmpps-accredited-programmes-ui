@@ -1,5 +1,5 @@
-import RelationshipsUtils from './relationshipsUtils'
 import { relationshipsFactory } from '../../testutils/factories'
+import RelationshipsUtils from './relationshipsUtils'
 
 describe('RelationshipsUtils', () => {
   const relationships = relationshipsFactory.build({

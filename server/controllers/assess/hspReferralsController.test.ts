@@ -2,10 +2,10 @@ import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import HspReferralsController from './hspReferralsController'
 import { assessPaths } from '../../paths'
 import type { CourseService } from '../../services'
 import { courseFactory } from '../../testutils/factories'
+import HspReferralsController from './hspReferralsController'
 
 const username = 'USERNAME'
 const activeCaseLoadId = 'MDI'

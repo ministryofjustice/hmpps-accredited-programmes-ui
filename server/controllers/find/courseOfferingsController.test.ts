@@ -3,12 +3,12 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import CourseOfferingsController from './courseOfferingsController'
 import config from '../../config'
 import { findPaths, referPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
+import CourseOfferingsController from './courseOfferingsController'
 
 describe('CoursesOfferingsController', () => {
   const userToken = 'SOME_TOKEN'

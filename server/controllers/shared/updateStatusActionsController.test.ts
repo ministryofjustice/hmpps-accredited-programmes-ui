@@ -2,8 +2,8 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import UpdateStatusActionsController from './updateStatusActionsController'
 import { assessPaths, referPaths } from '../../paths'
+import UpdateStatusActionsController from './updateStatusActionsController'
 
 describe('UpdateStatusActionsController', () => {
   const referralId = 'REFERRAL-ID'

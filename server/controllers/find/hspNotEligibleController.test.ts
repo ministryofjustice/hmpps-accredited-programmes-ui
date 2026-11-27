@@ -2,11 +2,11 @@ import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import HspNotEligibleController from './hspNotEligibleController'
 import { findPaths } from '../../paths'
 import type { CourseService, PersonService } from '../../services'
 import { courseFactory, personFactory } from '../../testutils/factories'
 import { CourseUtils } from '../../utils'
+import HspNotEligibleController from './hspNotEligibleController'
 
 describe('HspNotEligibleController', () => {
   const username = 'SOME_USER'

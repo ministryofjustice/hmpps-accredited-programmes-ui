@@ -3,7 +3,6 @@ import createError from 'http-errors'
 import { when } from 'jest-when'
 
 import type { AuthenticationClient } from '../data'
-import PersonService from './personService'
 import { PersonClient, PrisonApiClient } from '../data'
 import {
   caseloadFactory,
@@ -16,6 +15,7 @@ import {
 } from '../testutils/factories'
 import Helpers from '../testutils/helpers'
 import { PersonUtils } from '../utils'
+import PersonService from './personService'
 import type { InmateDetail } from '@prison-api'
 
 jest.mock('../data/prisonApiClient')

@@ -165,12 +165,8 @@
     "minimatch@^5": {
       "brace-expansion": "^2.1.7"
     },
-    "minimatch@^9": {
-      "brace-expansion": "^2.1.7"
-    },
-    "minimatch@^10": {
-      "brace-expansion": "^5.0.12"
-    },
+    "minimatch@^9": "^11.0.1",
+    "minimatch@^10": "^11.0.1",
     "moment": "^2.31.0",
     "qs": "^6.17.1",
     "uuid": "^14.0.0",

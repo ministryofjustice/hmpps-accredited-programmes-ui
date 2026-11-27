@@ -7,7 +7,6 @@ import type {
   ReferralRecord,
   ReferrerUserRecord,
 } from '.'
-import organisationIds from './organisationIds'
 import {
   courseFactory,
   courseOfferingFactory,
@@ -17,6 +16,7 @@ import {
 import { randomStatus } from '../../../server/testutils/factories/referral'
 import { StringUtils } from '../../../server/utils'
 import { caseloads, prisoners } from '../../../wiremock/stubs'
+import organisationIds from './organisationIds'
 import type { Organisation } from '@accredited-programmes/models'
 import type { Referral } from '@accredited-programmes-api'
 

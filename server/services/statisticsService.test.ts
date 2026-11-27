@@ -3,9 +3,9 @@ import createError from 'http-errors'
 
 import type { AuthenticationClient } from '../data'
 import { StatisticsClient } from '../data'
-import StatisticsService from './statisticsService'
 import { reportContentFactory } from '../testutils/factories'
 import Helpers from '../testutils/helpers'
+import StatisticsService from './statisticsService'
 
 jest.mock('../data/accreditedProgrammesApi/statisticsClient')
 

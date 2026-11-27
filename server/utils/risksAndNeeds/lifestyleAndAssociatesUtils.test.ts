@@ -1,5 +1,5 @@
-import LifestyleAndAssociatesUtils from './lifestyleAndAssociatesUtils'
 import { lifestyleFactory } from '../../testutils/factories'
+import LifestyleAndAssociatesUtils from './lifestyleAndAssociatesUtils'
 
 describe('LifestyleAndAssociatesUtils', () => {
   const lifestyle = lifestyleFactory.build({

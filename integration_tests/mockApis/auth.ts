@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken'
 import type { Response } from 'superagent'
 
-import manageUserStubs from './manageUsers'
-import mockedUser from './mockedUser'
-import tokenVerification from './tokenVerification'
 import type { ApplicationRoles } from '../../server/middleware/roleBasedAccessMiddleware'
 import { userFactory } from '../../server/testutils/factories'
 import { getMatchingRequests, stubFor } from '../../wiremock'
+import manageUserStubs from './manageUsers'
+import mockedUser from './mockedUser'
+import tokenVerification from './tokenVerification'
 
 const createToken = ({ authorities = [] }: { authorities?: Array<ApplicationRoles> }) => {
   const payload = {

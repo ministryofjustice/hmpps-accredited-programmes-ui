@@ -1,10 +1,10 @@
+import logger from '../../logger'
+import type { AuthenticationClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type CourseService from './courseService'
 import type OrganisationService from './organisationService'
 import type PniService from './pniService'
 import type ReferenceDataService from './referenceDataService'
 import type UserService from './userService'
-import logger from '../../logger'
-import type { AuthenticationClient, ReferralClient, RestClientBuilder, RestClientBuilderWithoutToken } from '../data'
 import type {
   ConfirmationFields,
   Paginated,

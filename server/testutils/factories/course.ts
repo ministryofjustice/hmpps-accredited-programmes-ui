@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker/locale/en_GB'
 import { Factory } from 'fishery'
 
+import { StringUtils } from '../../utils'
 import audienceFactory from './audience'
 import courseOfferingFactory from './courseOffering'
 import coursePrerequisiteFactory from './coursePrerequisite'
-import { StringUtils } from '../../utils'
 import type { Course } from '@accredited-programmes-api'
 
 export default Factory.define<Course>(({ params }) => {

@@ -2,11 +2,11 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { Request, Response } from 'express'
 
-import populateCurrentUser from './populateCurrentUser'
 import logger from '../../logger'
 import type { UserService } from '../services'
 import { caseloadFactory } from '../testutils/factories'
 import { UserUtils } from '../utils'
+import populateCurrentUser from './populateCurrentUser'
 import type { UserDetails } from '@accredited-programmes/users'
 
 jest.mock('../utils/userUtils')

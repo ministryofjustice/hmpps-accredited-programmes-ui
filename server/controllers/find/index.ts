@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import type { Services } from '../../services'
 import AddCourseController from './addCourseController'
 import AddCourseOfferingController from './addCourseOfferingController'
 import BuildingChoicesController from './buildingChoicesController'
@@ -14,7 +15,6 @@ import RecommendedPathwayController from './recommendedPathwayController'
 import RecommendedProgrammesController from './recommendedProgrammesController'
 import UpdateCourseController from './updateCourseController'
 import UpdateCourseOfferingController from './updateCourseOfferingController'
-import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
   const addCourseController = new AddCourseController(services.courseService)

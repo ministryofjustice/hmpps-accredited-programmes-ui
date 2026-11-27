@@ -2,12 +2,12 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import NewReferralsAdditionalInformationController from './additionalInformationController'
 import { authPaths, referPaths } from '../../../paths'
 import type { PersonService, ReferralService } from '../../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { FormUtils, TypeUtils } from '../../../utils'
+import NewReferralsAdditionalInformationController from './additionalInformationController'
 import type { Course, PniScore } from '@accredited-programmes-api'
 
 jest.mock('../../../utils/formUtils')

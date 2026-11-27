@@ -6,7 +6,6 @@ import type { NextFunction, Request, Response } from 'express'
 import createError from 'http-errors'
 import { when } from 'jest-when'
 
-import NewReferralsController from './referralsController'
 import { authPaths, findPaths, referPaths } from '../../../paths'
 import type { CourseService, OrganisationService, PersonService, ReferralService, UserService } from '../../../services'
 import {
@@ -22,6 +21,7 @@ import {
 import Helpers from '../../../testutils/helpers'
 import { CourseUtils, FormUtils, NewReferralUtils, PersonUtils, TypeUtils } from '../../../utils'
 import SexualOffenceDetailsUtils from '../../../utils/sexualOffenceDetailsUtils'
+import NewReferralsController from './referralsController'
 import type {
   CoursePresenter,
   GovukFrontendSummaryListRowWithKeyAndValue,

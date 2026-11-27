@@ -3,12 +3,12 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import UpdateLdcController from './updateLdcController'
 import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../services'
 import { courseFactory, courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { FormUtils } from '../../utils'
+import UpdateLdcController from './updateLdcController'
 
 jest.mock('../../utils/formUtils')
 

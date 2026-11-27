@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
+import { StringUtils } from '../../utils'
 import audienceFactory from './audience'
 import FactoryHelpers from './factoryHelpers'
 import { randomStatus, statusDescriptionAndColour } from './referral'
-import { StringUtils } from '../../utils'
 import type { ReferralStatus, ReferralView } from '@accredited-programmes/models'
 
 interface ReferralViewTransientParams {

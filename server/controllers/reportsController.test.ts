@@ -3,9 +3,9 @@ import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
 import type { OrganisationService, StatisticsService } from '../services'
-import ReportsController from './reportsController'
 import { prisonFactory, reportContentFactory } from '../testutils/factories'
 import { OrganisationUtils, PathUtils, StatisticsReportUtils } from '../utils'
+import ReportsController from './reportsController'
 import type { Prison } from '@prison-register-api'
 
 jest.mock('../utils/organisationUtils')

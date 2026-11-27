@@ -1,7 +1,7 @@
 import nock from 'nock'
 
-import HmppsManageUsersClient from './hmppsManageUsersClient'
 import config from '../config'
+import HmppsManageUsersClient from './hmppsManageUsersClient'
 import type { User, UserEmail } from '@manage-users-api'
 
 const userToken = 'token-1'

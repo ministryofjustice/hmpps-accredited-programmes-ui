@@ -4,7 +4,6 @@ import { when } from 'jest-when'
 
 import type { AuthenticationClient } from '../data'
 import { OasysClient } from '../data'
-import OasysService from './oasysService'
 import {
   assessmentDateInfoFactory,
   attitudeFactory,
@@ -20,6 +19,7 @@ import {
   roshAnalysisFactory,
 } from '../testutils/factories'
 import Helpers from '../testutils/helpers'
+import OasysService from './oasysService'
 
 jest.mock('../data/accreditedProgrammesApi/oasysClient')
 const systemToken = 'some system token'

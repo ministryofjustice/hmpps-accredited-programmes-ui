@@ -1,5 +1,5 @@
-import EmotionalWellbeingUtils from './emotionalWellbeingUtils'
 import { psychiatricFactory } from '../../testutils/factories'
+import EmotionalWellbeingUtils from './emotionalWellbeingUtils'
 
 describe('EmotionalWellbeingUtils', () => {
   const psychiatric = psychiatricFactory.build({

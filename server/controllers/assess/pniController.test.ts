@@ -1,7 +1,6 @@
 import { type DeepMocked, createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import PniController from './pniController'
 import { assessPaths } from '../../paths'
 import type { CourseService, PersonService, PniService, ReferralService } from '../../services'
 import {
@@ -14,6 +13,7 @@ import {
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
 import { CourseUtils, PniUtils, ShowReferralUtils } from '../../utils'
+import PniController from './pniController'
 import type { Person } from '@accredited-programmes/models'
 import type { Referral } from '@accredited-programmes-api'
 

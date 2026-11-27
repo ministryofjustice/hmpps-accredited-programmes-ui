@@ -1,5 +1,5 @@
-import OffenceUtils from './offenceUtils'
 import { offenceDetailsFactory } from '../testutils/factories'
+import OffenceUtils from './offenceUtils'
 
 describe('OffenceUtils', () => {
   describe('summaryListRows', () => {

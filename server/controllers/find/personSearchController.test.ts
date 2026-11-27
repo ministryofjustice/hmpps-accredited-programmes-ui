@@ -4,12 +4,12 @@ import type { NextFunction, Request, Response } from 'express'
 import createHttpError from 'http-errors'
 import { when } from 'jest-when'
 
-import PersonSearchController from './personSearchController'
 import { ApplicationRoles } from '../../middleware'
 import { findPaths } from '../../paths'
 import type { PersonService } from '../../services'
 import { caseloadFactory, personFactory } from '../../testutils/factories'
 import { FormUtils } from '../../utils'
+import PersonSearchController from './personSearchController'
 
 jest.mock('../../utils/formUtils')
 

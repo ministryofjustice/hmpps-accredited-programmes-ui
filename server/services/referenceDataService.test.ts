@@ -3,13 +3,13 @@ import { when } from 'jest-when'
 
 import type { AuthenticationClient } from '../data'
 import { ReferenceDataClient } from '../data'
-import ReferenceDataService from './referenceDataService'
 import {
   referralStatusCategoryFactory,
   referralStatusReasonFactory,
   referralStatusRefDataFactory,
   sexualOffenceDetailsFactory,
 } from '../testutils/factories'
+import ReferenceDataService from './referenceDataService'
 import type { ReferralStatusUppercase } from '@accredited-programmes/models'
 
 jest.mock('../data/accreditedProgrammesApi/referenceDataClient')

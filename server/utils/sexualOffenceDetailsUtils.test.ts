@@ -1,5 +1,5 @@
-import SexualOffenceDetailsUtils from './sexualOffenceDetailsUtils'
 import { sexualOffenceDetailsFactory } from '../testutils/factories'
+import SexualOffenceDetailsUtils from './sexualOffenceDetailsUtils'
 
 describe('SexualOffenceDetailsUtils', () => {
   describe('offenceSummaryListRows', () => {

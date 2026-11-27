@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
-import { statusDescriptionAndColour } from './referral'
 import { referralStatuses } from '../../@types/models/Referral'
+import { statusDescriptionAndColour } from './referral'
 import type { ReferralStatusRefData, ReferralStatusUppercase } from '@accredited-programmes/models'
 import type { TagColour } from '@accredited-programmes/ui'
 

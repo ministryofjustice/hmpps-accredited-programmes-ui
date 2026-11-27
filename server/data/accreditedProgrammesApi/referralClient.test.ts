@@ -2,11 +2,11 @@ import { faker } from '@faker-js/faker'
 import { type InterfaceToTemplate, MatchersV2 as Matchers } from '@pact-foundation/pact'
 import { pactWith } from 'jest-pact'
 
-import ReferralClient from './referralClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import { referralFactory, referralViewFactory } from '../../testutils/factories'
 import FactoryHelpers from '../../testutils/factories/factoryHelpers'
+import ReferralClient from './referralClient'
 import type { Paginated, ReferralView } from '@accredited-programmes/models'
 import type { Referral, ReferralUpdate } from '@accredited-programmes-api'
 

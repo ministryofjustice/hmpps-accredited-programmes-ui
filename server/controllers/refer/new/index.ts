@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import type { Services } from '../../../services'
 import NewReferralsAdditionalInformationController from './additionalInformationController'
 import NewReferralsCourseParticipationDetailsController from './courseParticipationDetailsController'
 import NewReferralsCourseParticipationsController from './courseParticipationsController'
@@ -7,7 +8,6 @@ import NewReferralsDeleteController from './deleteReferralController'
 import NewReferralsOasysConfirmationController from './oasysConfirmationController'
 import NewReferralsPeopleController from './peopleController'
 import NewReferralsController from './referralsController'
-import type { Services } from '../../../services'
 
 const controllers = (services: Services) => {
   const newReferralsController = new NewReferralsController(

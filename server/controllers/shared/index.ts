@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import type { Services } from '../../services'
 import CategoryController from './categoryController'
 import ProgrammeHistoryDetailController from './programmeHistoryDetailController'
 import ReasonController from './reasonController'
@@ -8,7 +9,6 @@ import RisksAndNeedsController from './risksAndNeedsController'
 import StatusHistoryController from './statusHistoryController'
 import UpdateStatusActionsController from './updateStatusActionsController'
 import UpdateStatusSelectionController from './updateStatusSelectionController'
-import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
   const programmeHistoryDetailController = new ProgrammeHistoryDetailController(

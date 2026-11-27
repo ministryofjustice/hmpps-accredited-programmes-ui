@@ -1,5 +1,5 @@
-import SentenceInformationUtils from './sentenceInformationUtils'
 import { sentenceDetailsFactory } from '../testutils/factories'
+import SentenceInformationUtils from './sentenceInformationUtils'
 
 describe('SentenceInformationUtils', () => {
   describe('summaryLists', () => {

@@ -1,5 +1,5 @@
-import RoshAnalysisUtils from './roshAnalysisUtils'
 import { roshAnalysisFactory } from '../../testutils/factories'
+import RoshAnalysisUtils from './roshAnalysisUtils'
 
 describe('RoshAnalysisUtils', () => {
   const roshAnalysis = roshAnalysisFactory.build({

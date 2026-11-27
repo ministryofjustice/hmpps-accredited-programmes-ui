@@ -1,13 +1,13 @@
 import { Router } from 'express'
 
+import config from '../config'
+import type { Controllers } from '../controllers'
+import RouteUtils from '../utils/routeUtils'
 import assessRoutes from './assess'
 import editorRoutes from './editor'
 import findRoutes from './find'
 import referRoutes from './refer'
 import reportsRoutes from './reports'
-import config from '../config'
-import type { Controllers } from '../controllers'
-import RouteUtils from '../utils/routeUtils'
 
 export default function routes(controllers: Controllers): Router {
   const router = Router()

@@ -1,11 +1,11 @@
 import type { Request } from 'express'
 
-import CaseListUtils from './caseListUtils'
 import { assessPathBase, assessPaths, referPaths } from '../../paths'
 import CourseUtils from '../courseUtils'
 import DateUtils from '../dateUtils'
 import PniUtils from '../risksAndNeeds/pniUtils'
 import StringUtils from '../stringUtils'
+import CaseListUtils from './caseListUtils'
 import type { CourseOffering, ReferralStatusRefData } from '@accredited-programmes/models'
 import type {
   CoursePresenter,

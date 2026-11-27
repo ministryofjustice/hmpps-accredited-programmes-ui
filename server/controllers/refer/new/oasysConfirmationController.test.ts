@@ -2,12 +2,12 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import NewReferralsOasysConfirmationController from './oasysConfirmationController'
 import { authPaths, referPaths } from '../../../paths'
 import type { OasysService, PersonService, ReferralService } from '../../../services'
 import { courseOfferingFactory, personFactory, referralFactory } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { DateUtils, FormUtils, TypeUtils } from '../../../utils'
+import NewReferralsOasysConfirmationController from './oasysConfirmationController'
 
 jest.mock('../../../utils/dateUtils')
 jest.mock('../../../utils/formUtils')

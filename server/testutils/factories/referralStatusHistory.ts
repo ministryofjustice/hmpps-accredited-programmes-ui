@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 
+import { referralStatuses } from '../../@types/models/Referral'
 import FactoryHelpers from './factoryHelpers'
 import { randomStatus, statusDescriptionAndColour } from './referral'
-import { referralStatuses } from '../../@types/models/Referral'
 import type { ReferralStatusHistory } from '@accredited-programmes-api'
 
 class ReferralStatusHistoryFactory extends Factory<ReferralStatusHistory> {

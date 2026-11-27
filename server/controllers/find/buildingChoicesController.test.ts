@@ -3,11 +3,11 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import BuildingChoicesController from './buildingChoicesController'
 import { findPaths } from '../../paths'
 import type { CourseService, OrganisationService } from '../../services'
 import { courseFactory, courseOfferingFactory, organisationFactory } from '../../testutils/factories'
 import { CourseUtils, OrganisationUtils } from '../../utils'
+import BuildingChoicesController from './buildingChoicesController'
 import type { BuildingChoicesData } from '@accredited-programmes/ui'
 import type { GovukFrontendTableRow } from '@govuk-frontend'
 

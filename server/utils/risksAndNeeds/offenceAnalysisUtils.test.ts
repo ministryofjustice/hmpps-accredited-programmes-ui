@@ -1,5 +1,5 @@
-import OffenceAnalysisUtils from './offenceAnalysisUtils'
 import { offenceDetailFactory } from '../../testutils/factories'
+import OffenceAnalysisUtils from './offenceAnalysisUtils'
 
 describe('OffenceAnalysisUtils', () => {
   const offenceDetail = offenceDetailFactory.build({

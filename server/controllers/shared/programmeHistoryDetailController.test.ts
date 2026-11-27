@@ -2,7 +2,6 @@ import type { DeepMocked } from '@golevelup/ts-jest'
 import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 
-import ProgrammeHistoryDetailController from './programmeHistoryDetailController'
 import { assessPaths, referPaths } from '../../paths'
 import assess from '../../paths/assess'
 import refer from '../../paths/refer'
@@ -15,6 +14,7 @@ import {
   userFactory,
 } from '../../testutils/factories'
 import Helpers from '../../testutils/helpers'
+import ProgrammeHistoryDetailController from './programmeHistoryDetailController'
 import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 
 describe('ProgrammeHistoryDetailController', () => {

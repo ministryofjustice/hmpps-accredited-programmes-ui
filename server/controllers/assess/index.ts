@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+import type { Services } from '../../services'
 import AssessCaseListController from './caseListController'
 import HspReferralsController from './hspReferralsController'
 import PniController from './pniController'
@@ -7,7 +8,6 @@ import TransferReferralController from './transferReferralController'
 import TransferReferralErrorController from './transferReferralErrorController'
 import UpdateLdcController from './updateLdcController'
 import UpdateStatusDecisionController from './updateStatusDecisionController'
-import type { Services } from '../../services'
 
 const controllers = (services: Services) => {
   const assessCaseListController = new AssessCaseListController(

@@ -1,5 +1,5 @@
-import LearningNeedsUtils from './learningNeedsUtils'
 import { learningNeedsFactory } from '../../testutils/factories'
+import LearningNeedsUtils from './learningNeedsUtils'
 
 describe('LearningNeedsUtils', () => {
   const learningNeeds = learningNeedsFactory.build({

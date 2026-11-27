@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-jest'
 import type { NextFunction, Request, Response } from 'express'
 import { when } from 'jest-when'
 
-import NewReferralsCourseParticipationsController from './courseParticipationsController'
 import { referPaths } from '../../../paths'
 import type { CourseService, PersonService, ReferralService } from '../../../services'
 import {
@@ -15,6 +14,7 @@ import {
 } from '../../../testutils/factories'
 import Helpers from '../../../testutils/helpers'
 import { CourseParticipationUtils, CourseUtils, FormUtils } from '../../../utils'
+import NewReferralsCourseParticipationsController from './courseParticipationsController'
 import type { GovukFrontendSummaryListWithRowsWithKeysAndValues } from '@accredited-programmes/ui'
 import type { CourseParticipation } from '@accredited-programmes-api'
 import type { GovukFrontendTable } from '@govuk-frontend'

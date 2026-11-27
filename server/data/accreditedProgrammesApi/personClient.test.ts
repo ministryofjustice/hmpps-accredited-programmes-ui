@@ -1,9 +1,9 @@
 import nock from 'nock'
 
-import PersonClient from './personClient'
 import config from '../../config'
 import { apiPaths } from '../../paths'
 import { peopleSearchResponseFactory, sentenceDetailsFactory } from '../../testutils/factories'
+import PersonClient from './personClient'
 
 describe('PersonClient', () => {
   let fakeAccreditedProgrammesApi: nock.Scope

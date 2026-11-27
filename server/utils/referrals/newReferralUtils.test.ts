@@ -1,6 +1,6 @@
-import NewReferralUtils from './newReferralUtils'
 import { courseFactory, courseOfferingFactory, personFactory, referralFactory } from '../../testutils/factories'
 import CourseUtils from '../courseUtils'
+import NewReferralUtils from './newReferralUtils'
 import type { ReferralTaskListItem, ReferralTaskListSection } from '@accredited-programmes/ui'
 import type { Organisation } from '@accredited-programmes-api'
 

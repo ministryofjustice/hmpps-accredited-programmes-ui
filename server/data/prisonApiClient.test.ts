@@ -1,6 +1,5 @@
 import nock from 'nock'
 
-import PrisonApiClient from './prisonApiClient'
 import config from '../config'
 import { prisonApiPaths } from '../paths'
 import {
@@ -10,6 +9,7 @@ import {
   offenderSentenceAndOffencesFactory,
   peopleSearchResponseFactory,
 } from '../testutils/factories'
+import PrisonApiClient from './prisonApiClient'
 import type { Caseload } from '@prison-api'
 
 describe('PrisonApiClient', () => {

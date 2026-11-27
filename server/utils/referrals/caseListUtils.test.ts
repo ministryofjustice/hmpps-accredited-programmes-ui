@@ -1,7 +1,7 @@
-import CaseListUtils from './caseListUtils'
 import { assessPaths, referPaths } from '../../paths'
 import { courseFactory, referralStatusRefDataFactory, referralViewFactory } from '../../testutils/factories'
 import FormUtils from '../formUtils'
+import CaseListUtils from './caseListUtils'
 import type { ReferralStatus } from '@accredited-programmes/models'
 import type { CaseListColumnHeader, SortableCaseListColumnKey } from '@accredited-programmes/ui'
 import type { Audience } from '@accredited-programmes-api'

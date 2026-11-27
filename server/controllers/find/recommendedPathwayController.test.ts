@@ -4,12 +4,12 @@ import type { NextFunction, Request, Response } from 'express'
 import createHttpError from 'http-errors'
 import { when } from 'jest-when'
 
-import RecommendedPathwayController from './recommendedPathwayController'
 import { ApplicationRoles } from '../../middleware'
 import { findPaths } from '../../paths'
 import type { PersonService, PniService } from '../../services'
 import { caseloadFactory, personFactory, pniScoreFactory } from '../../testutils/factories'
 import { PniUtils } from '../../utils'
+import RecommendedPathwayController from './recommendedPathwayController'
 
 jest.mock('../../utils/risksAndNeeds/pniUtils')
 
